@@ -1,0 +1,16 @@
+MwtWinDll.NET Change Log
+
+Version 3.1.2161; December 1, 2005
+	- Updated the Mass member of type udtIsotopeInfoType to be double precision rather than single precision
+	- Updated the mass of the most abundant isotope for each element to match the default monoisotopic mass for each element
+		- The elemental masses come from two different sources and the monoisotopic mass was sometimes slightly different than the most abundant isotope's mass; this has been corrected
+
+Version 3.1.2110; October 11, 2005
+	- Replaced all instances of On Error Goto and On Error Resume Next to use Try-Catch blocks
+	- Replaced all instances where a value is returned from a function to use the Return statement
+	- Updated AppRevision to use the Revision number from AssemblyInfo.vb
+	- Updated the copyright statements to assert the Apache License, Version 2.0
+
+Version 3.0; March 23, 2005
+	- Ported from VB6 to VB.NET by Nikša Blonder
+

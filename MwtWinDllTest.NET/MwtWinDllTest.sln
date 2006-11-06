@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "MwtWindll", "..\MwtWindll.vbproj", "{78332537-7ECC-4B74-8AA9-BA66AB296AF0}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "MwtWinDllTest", "MwtWinDllTest.vbproj", "{FCA57D89-BD62-49A3-8449-8743887DC0CD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{78332537-7ECC-4B74-8AA9-BA66AB296AF0}.Debug.ActiveCfg = Debug|.NET
+		{78332537-7ECC-4B74-8AA9-BA66AB296AF0}.Debug.Build.0 = Debug|.NET
+		{78332537-7ECC-4B74-8AA9-BA66AB296AF0}.Release.ActiveCfg = Release|.NET
+		{78332537-7ECC-4B74-8AA9-BA66AB296AF0}.Release.Build.0 = Release|.NET
+		{FCA57D89-BD62-49A3-8449-8743887DC0CD}.Debug.ActiveCfg = Debug|.NET
+		{FCA57D89-BD62-49A3-8449-8743887DC0CD}.Debug.Build.0 = Debug|.NET
+		{FCA57D89-BD62-49A3-8449-8743887DC0CD}.Release.ActiveCfg = Release|.NET
+		{FCA57D89-BD62-49A3-8449-8743887DC0CD}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
