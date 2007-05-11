@@ -44,6 +44,7 @@ echo 4) Creating %SourceAndSupportingDLLsFile%
 If Exist %SourceAndSupportingDLLsFile% (Del %SourceAndSupportingDLLsFile%)
 "c:\program files\winrar\winRar.exe" a -ep %SourceAndSupportingDLLsFile% SourceAndSupportingDLLs\*.zip
 "c:\program files\winrar\winRar.exe" a -ep %SourceAndSupportingDLLsFile% ..\bin\ReadMe.txt
+"c:\program files\winrar\winRar.exe" a -ep %SourceAndSupportingDLLsFile% ..\bin\RevisionHistory.txt
 
 echo.
 echo 5) Copying %SourceAndSupportingDLLsFile% to %DistributionFolderFinal%

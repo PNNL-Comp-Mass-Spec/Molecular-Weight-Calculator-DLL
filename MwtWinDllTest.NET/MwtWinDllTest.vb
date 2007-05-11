@@ -652,7 +652,7 @@ Friend Class frmMwtWinDllTest
         Dim strStatement As String
         Dim dblmass, dblUncertainty As Double
         Dim intIsotopeCount, intIsotopeCount2 As Short
-        Dim sngIsotopeMasses() As Single
+        Dim dblIsotopeMasses() As Double
         Dim sngIsotopeAbundances() As Single
         Dim dblNewPressure As Double
 
@@ -696,14 +696,14 @@ Friend Class frmMwtWinDllTest
                 intResult = .SetElement(strSymbol, dblmass, dblUncertainty, sngCharge, False)
                 System.Diagnostics.Debug.Assert(intResult = 0, "")
 
-                ReDim sngIsotopeMasses(intIsotopeCount + 1)
+                ReDim dblIsotopeMasses(intIsotopeCount + 1)
                 ReDim sngIsotopeAbundances(intIsotopeCount + 1)
 
-                intResult = .GetElementIsotopes(CShort(intIndex), intIsotopeCount2, sngIsotopeMasses, sngIsotopeAbundances)
+                intResult = .GetElementIsotopes(CShort(intIndex), intIsotopeCount2, dblIsotopeMasses, sngIsotopeAbundances)
                 System.Diagnostics.Debug.Assert(intIsotopeCount = intIsotopeCount2, "")
                 System.Diagnostics.Debug.Assert(intResult = 0, "")
 
-                intResult = .SetElementIsotopes(strSymbol, intIsotopeCount, sngIsotopeMasses, sngIsotopeAbundances)
+                intResult = .SetElementIsotopes(strSymbol, intIsotopeCount, dblIsotopeMasses, sngIsotopeAbundances)
                 System.Diagnostics.Debug.Assert(intResult = 0, "")
             Next intIndex
 
@@ -851,9 +851,12 @@ Friend Class frmMwtWinDllTest
 
             udtFragSpectrumOptions = .GetFragmentationSpectrumOptions()
 
-            udtFragSpectrumOptions.DoubleChargeIonsShow = False
-            udtFragSpectrumOptions.DoubleChargeIonsThreshold = 200
+            udtFragSpectrumOptions.DoubleChargeIonsShow = True
+            udtFragSpectrumOptions.DoubleChargeIonsThreshold = 300
             udtFragSpectrumOptions.IntensityOptions.BYIonShoulder = 0
+
+            udtFragSpectrumOptions.TripleChargeIonsShow = True
+            udtFragSpectrumOptions.TripleChargeIonsThreshold = 400
 
             udtFragSpectrumOptions.IonTypeOptions(MwtWinDll.MWPeptideClass.itIonTypeConstants.itAIon).ShowIon = True
 

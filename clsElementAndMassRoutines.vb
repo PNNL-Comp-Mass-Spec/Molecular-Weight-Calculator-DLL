@@ -65,39 +65,39 @@ Public Class MWElementAndMassRoutines
     End Enum
 
     Public Structure udtOptionsType
-        Dim AbbrevRecognitionMode As MolecularWeightCalculator.arAbbrevRecognitionModeConstants
-        Dim BracketsAsParentheses As Boolean
-        Dim CaseConversion As ccCaseConversionConstants
-        Dim DecimalSeparator As Char
-        Dim RtfFontName As String
-        Dim RtfFontSize As Short
-        Dim StdDevMode As smStdDevModeConstants ' Can be 0, 1, or 2 (see smStdDevModeConstants)
+        Public AbbrevRecognitionMode As MolecularWeightCalculator.arAbbrevRecognitionModeConstants
+        Public BracketsAsParentheses As Boolean
+        Public CaseConversion As ccCaseConversionConstants
+        Public DecimalSeparator As Char
+        Public RtfFontName As String
+        Public RtfFontSize As Short
+        Public StdDevMode As smStdDevModeConstants ' Can be 0, 1, or 2 (see smStdDevModeConstants)
     End Structure
 
     Public Structure usrIsotopicAtomInfoType
-        Dim Count As Double ' Can have non-integer counts of atoms, eg. ^13C5.5
-        Dim Mass As Double
+        Public Count As Double ' Can have non-integer counts of atoms, eg. ^13C5.5
+        Public Mass As Double
     End Structure
 
     Public Structure udtElementUseStatsType
-        Dim Used As Boolean
-        Dim Count As Double ' Can have non-integer counts of atoms, eg. C5.5
-        Dim IsotopicCorrection As Double
-        Dim IsotopeCount As Short ' Number of specific isotopes defined
-        Dim Isotopes() As usrIsotopicAtomInfoType
+        Public Used As Boolean
+        Public Count As Double ' Can have non-integer counts of atoms, eg. C5.5
+        Public IsotopicCorrection As Double
+        Public IsotopeCount As Short ' Number of specific isotopes defined
+        Public Isotopes() As usrIsotopicAtomInfoType
     End Structure
 
     Public Structure udtPctCompType
-        Dim PercentComposition As Double
-        Dim StdDeviation As Double
+        Public PercentComposition As Double
+        Public StdDeviation As Double
     End Structure
 
     Public Structure udtComputationStatsType
-        Dim Elements() As udtElementUseStatsType        ' 1-based array, ranging from 1 to ELEMENT_COUNT
-        Dim TotalMass As Double
-        Dim PercentCompositions() As udtPctCompType     ' 1-based array, ranging from 1 to ELEMENT_COUNT
-        Dim Charge As Single
-        Dim StandardDeviation As Double
+        Public Elements() As udtElementUseStatsType        ' 1-based array, ranging from 1 to ELEMENT_COUNT
+        Public TotalMass As Double
+        Public PercentCompositions() As udtPctCompType     ' 1-based array, ranging from 1 to ELEMENT_COUNT
+        Public Charge As Single
+        Public StandardDeviation As Double
 
         ' Note: "Initialize" must be called to initialize instances of this structure
         Public Sub Initialize()
@@ -107,17 +107,17 @@ Public Class MWElementAndMassRoutines
     End Structure
 
     Public Structure udtIsotopeInfoType
-        Dim Mass As Double
-        Dim Abundance As Single
+        Public Mass As Double
+        Public Abundance As Single
     End Structure
 
     Public Structure udtElementStatsType
-        Dim Symbol As String
-        Dim Mass As Double
-        Dim Uncertainty As Double
-        Dim Charge As Single
-        Dim IsotopeCount As Short ' # of isotopes an element has
-        Dim Isotopes() As udtIsotopeInfoType ' Masses and Abundances of the isotopes; 1-based array, ranging from 1 to MAX_Isotopes
+        Public Symbol As String
+        Public Mass As Double
+        Public Uncertainty As Double
+        Public Charge As Single
+        Public IsotopeCount As Short ' # of isotopes an element has
+        Public Isotopes() As udtIsotopeInfoType ' Masses and Abundances of the isotopes; 1-based array, ranging from 1 to MAX_Isotopes
 
         ' Note: "Initialize" must be called to initialize instances of this structure
         Public Sub Initialize()
@@ -126,40 +126,40 @@ Public Class MWElementAndMassRoutines
     End Structure
 
     Public Structure udtAbbrevStatsType
-        Dim Symbol As String ' The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
-        Dim Formula As String ' Cannot contain other abbreviations
-        Dim Mass As Double ' Computed mass for quick reference
-        Dim Charge As Single
-        Dim IsAminoAcid As Boolean ' True if an amino acid
-        Dim OneLetterSymbol As String ' Only used for amino acids
-        Dim Comment As String ' Description of the abbreviation
-        Dim InvalidSymbolOrFormula As Boolean
+        Public Symbol As String ' The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
+        Public Formula As String ' Cannot contain other abbreviations
+        Public Mass As Double ' Computed mass for quick reference
+        Public Charge As Single
+        Public IsAminoAcid As Boolean ' True if an amino acid
+        Public OneLetterSymbol As String ' Only used for amino acids
+        Public Comment As String ' Description of the abbreviation
+        Public InvalidSymbolOrFormula As Boolean
     End Structure
 
     Private Structure udtErrorDescriptionType
-        Dim ErrorID As Integer ' Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
-        Dim ErrorPosition As Integer
-        Dim ErrorCharacter As String
+        Public ErrorID As Integer ' Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
+        Public ErrorPosition As Integer
+        Public ErrorCharacter As String
     End Structure
 
     Private Structure udtIsoResultsByElementType
-        Dim ElementIndex As Short ' Index of element in ElementStats() array; look in ElementStats() to get information on its isotopes
-        Dim boolExplicitIsotope As Boolean ' True if an explicitly defined isotope
-        Dim ExplicitMass As Double
-        Dim AtomCount As Integer ' Number of atoms of this element in the formula being parsed
-        Dim ResultsCount As Integer ' Number of masses in MassAbundances
-        Dim StartingResultsMass As Integer ' Starting mass of the results for this element
-        Dim MassAbundances() As Single ' Abundance of each mass, starting with StartingResultsMass
+        Public ElementIndex As Short ' Index of element in ElementStats() array; look in ElementStats() to get information on its isotopes
+        Public boolExplicitIsotope As Boolean ' True if an explicitly defined isotope
+        Public ExplicitMass As Double
+        Public AtomCount As Integer ' Number of atoms of this element in the formula being parsed
+        Public ResultsCount As Integer ' Number of masses in MassAbundances
+        Public StartingResultsMass As Integer ' Starting mass of the results for this element
+        Public MassAbundances() As Single ' Abundance of each mass, starting with StartingResultsMass
     End Structure
 
     Private Structure udtIsoResultsOverallType
-        Dim Abundance As Single
-        Dim Multiplicity As Integer
+        Public Abundance As Single
+        Public Multiplicity As Integer
     End Structure
 
     Private Structure udtAbbrevSymbolStackType
-        Dim Count As Short
-        Dim SymbolReferenceStack() As Short ' 0-based array
+        Public Count As Short
+        Public SymbolReferenceStack() As Short ' 0-based array
     End Structure
 
     Public gComputationOptions As udtOptionsType
@@ -343,7 +343,8 @@ Public Class MWElementAndMassRoutines
     End Function
 
     Public Function ComputeIsotopicAbundancesInternal(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, Optional ByVal strHeaderIsotopicAbundances As String = "Isotopic Abundances for", Optional ByVal strHeaderMassToCharge As String = "Mass/Charge", Optional ByVal strHeaderFraction As String = "Fraction", Optional ByVal strHeaderIntensity As String = "Intensity", Optional ByRef blnUseFactorials As Boolean = False) As Short
-        ' Computes the Isotopic Distribution for a formula, convoluting to lower m/z if intChargeState is > 1
+        ' Computes the Isotopic Distribution for a formula, returns uncharged mass vlaues if intChargeState=0,
+        '  M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
         ' Updates strFormulaIn to the properly formatted formula
         ' Returns the results in strResults
         ' Returns 0 if success, or -1 if an error
@@ -422,6 +423,13 @@ Public Class MWElementAndMassRoutines
         End If
 
         Try
+            ' Change strHeaderMassToCharge to "Neutral Mass" if intChargeState = 0 and strHeaderMassToCharge is "Mass/Charge"
+            If intChargeState = 0 Then
+                If strHeaderMassToCharge = "Mass/Charge" Then
+                    strHeaderMassToCharge = "Neutral Mass"
+                End If
+            End If
+
             ' Parse Formula to determine if valid and number of each element
             strFormula = strFormulaIn
             dblWorkingFormulaMass = ParseFormulaPublic(strFormula, udtComputationStats, False)
@@ -900,15 +908,15 @@ Public Class MWElementAndMassRoutines
             Next lngMassIndex
 
             ' Populate the results array with the masses and abundances
-            ' If intChargeState is > 1, then convolute the mass to lower m/z
+            ' Also, if intChargeState is >= 1, then convolute the mass to the appropriate m/z
             If dblMaxAbundance = 0 Then dblMaxAbundance = 1
             For lngMassIndex = 1 To ConvolutedMSDataCount
                 With ConvolutedAbundances(lngMassIndex)
                     ConvolutedMSData2DOneBased(lngMassIndex, 0) = (ConvolutedAbundanceStartMass + lngMassIndex - 1) + dblMassDefect
                     ConvolutedMSData2DOneBased(lngMassIndex, 1) = .Abundance / dblMaxAbundance * 100
 
-                    If intChargeState > 1 Then
-                        ConvolutedMSData2DOneBased(lngMassIndex, 0) = ConvoluteMassInternal(ConvolutedMSData2DOneBased(lngMassIndex, 0), 1, intChargeState)
+                    If intChargeState >= 1 Then
+                        ConvolutedMSData2DOneBased(lngMassIndex, 0) = ConvoluteMassInternal(ConvolutedMSData2DOneBased(lngMassIndex, 0), 0, intChargeState)
                     End If
                 End With
             Next lngMassIndex
@@ -1055,9 +1063,12 @@ Public Class MWElementAndMassRoutines
 
         ' If dblChargeCarrierMass is 0, then uses mChargeCarrierMass
 
+        Const DEFAULT_CHARGE_CARRIER_MASS_MONOISO As Double = 1.00727649
+
         Dim dblNewMZ As Double
 
         If dblChargeCarrierMass = 0 Then dblChargeCarrierMass = mChargeCarrierMass
+        If dblChargeCarrierMass = 0 Then dblChargeCarrierMass = DEFAULT_CHARGE_CARRIER_MASS_MONOISO
 
         If intCurrentCharge = intDesiredCharge Then
             dblNewMZ = dblMassMZ

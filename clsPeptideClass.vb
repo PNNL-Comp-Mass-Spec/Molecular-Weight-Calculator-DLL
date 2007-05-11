@@ -72,20 +72,20 @@ Public Class MWPeptideClass
     End Enum
 
     Private Structure udtModificationSymbolType
-        Dim Symbol As String ' Symbol used for modification in formula; may be 1 or more characters; for example: + ++ * ** etc.
-        Dim ModificationMass As Double ' Normally positive, but could be negative
-        Dim IndicatesPhosphorylation As Boolean ' When true, then this symbol means a residue is phosphorylated
-        Dim Comment As String
+        Public Symbol As String ' Symbol used for modification in formula; may be 1 or more characters; for example: + ++ * ** etc.
+        Public ModificationMass As Double ' Normally positive, but could be negative
+        Public IndicatesPhosphorylation As Boolean ' When true, then this symbol means a residue is phosphorylated
+        Public Comment As String
     End Structure
 
     Private Structure udtResidueType
-        Dim Symbol As String ' 3 letter symbol
-        Dim Mass As Double ' The mass of the residue alone (excluding any modification)
-        Dim MassWithMods As Double ' The mass of the residue, including phosphorylation or any modification
-        Dim IonMass() As Double ' 0-based array; the masses that the a, b, and y ions ending/starting with this residue will produce in the mass spectrum (includes H+)
-        Dim Phosphorylated As Boolean ' Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
-        Dim ModificationIDCount As Short
-        Dim ModificationIDs() As Integer ' 1-based array
+        Public Symbol As String ' 3 letter symbol
+        Public Mass As Double ' The mass of the residue alone (excluding any modification)
+        Public MassWithMods As Double ' The mass of the residue, including phosphorylation or any modification
+        Public IonMass() As Double ' 0-based array; the masses that the a, b, and y ions ending/starting with this residue will produce in the mass spectrum (includes H+)
+        Public Phosphorylated As Boolean ' Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
+        Public ModificationIDCount As Short
+        Public ModificationIDs() As Integer ' 1-based array
 
         ' Note: "Initialize" must be called to initialize instances of this structure
         Public Sub Initialize(Optional ByVal blnForceInit As Boolean = False)
@@ -97,10 +97,10 @@ Public Class MWPeptideClass
     End Structure
 
     Private Structure udtTerminusType
-        Dim Formula As String
-        Dim Mass As Double
-        Dim PrecedingResidue As udtResidueType ' If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
-        Dim FollowingResidue As udtResidueType ' If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
+        Public Formula As String
+        Public Mass As Double
+        Public PrecedingResidue As udtResidueType ' If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
+        Public FollowingResidue As udtResidueType ' If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
 
         ' Note: "Initialize" must be called to initialize instances of this structure
         Public Sub Initialize()
@@ -110,9 +110,9 @@ Public Class MWPeptideClass
     End Structure
 
     Public Structure udtFragmentionSpectrumIntensitiesType
-        Dim IonType() As Double ' 0-based array
-        Dim BYIonShoulder As Double ' If > 0 then shoulder ions will be created by B and Y ions
-        Dim NeutralLoss As Double
+        Public IonType() As Double ' 0-based array
+        Public BYIonShoulder As Double ' If > 0 then shoulder ions will be created by B and Y ions
+        Public NeutralLoss As Double
 
         ' Note: "Initialize" must be called to initialize instances of this structure
         Public Sub Initialize()
@@ -123,17 +123,19 @@ Public Class MWPeptideClass
     ' Note: A ions can have ammonia and phosphate loss, but not water loss, so this is set to false by default
     '       The graphical version of MwtWin does not allow this to be overridden, but a programmer could do so via a call to this Dll
     Public Structure udtIonTypeOptionsType
-        Dim ShowIon As Boolean
-        Dim NeutralLossWater As Boolean
-        Dim NeutralLossAmmonia As Boolean
-        Dim NeutralLossPhosphate As Boolean
+        Public ShowIon As Boolean
+        Public NeutralLossWater As Boolean
+        Public NeutralLossAmmonia As Boolean
+        Public NeutralLossPhosphate As Boolean
     End Structure
 
     Public Structure udtFragmentationSpectrumOptionsType
-        Dim IntensityOptions As udtFragmentionSpectrumIntensitiesType
-        Dim IonTypeOptions() As udtIonTypeOptionsType
-        Dim DoubleChargeIonsShow As Boolean
-        Dim DoubleChargeIonsThreshold As Single
+        Public IntensityOptions As udtFragmentionSpectrumIntensitiesType
+        Public IonTypeOptions() As udtIonTypeOptionsType
+        Public DoubleChargeIonsShow As Boolean
+        Public DoubleChargeIonsThreshold As Single
+        Public TripleChargeIonsShow As Boolean
+        Public TripleChargeIonsThreshold As Single
 
         ' Note: "Initialize" must be called to initialize instances of this structure
         Public Sub Initialize()
@@ -143,15 +145,15 @@ Public Class MWPeptideClass
     End Structure
 
     Public Structure udtFragmentationSpectrumDataType
-        Dim Mass As Double
-        Dim Intensity As Double
-        Dim Symbol As String ' The symbol, with the residue number (e.g. y1, y2, b3-H2O, Shoulder-y1, etc.)
-        Dim SymbolGeneric As String ' The symbol, without the residue number (e.g. a, b, y, b++, Shoulder-y, etc.)
-        Dim SourceResidueNumber As Integer ' The residue number that resulted in this mass
-        Dim SourceResidueSymbol3Letter As String ' The residue symbol that resulted in this mass
-        Dim Charge As Short
-        Dim IonType As itIonTypeConstants
-        Dim IsShoulderIon As Boolean ' B and Y ions can have Shoulder ions at +-1
+        Public Mass As Double
+        Public Intensity As Double
+        Public Symbol As String ' The symbol, with the residue number (e.g. y1, y2, b3-H2O, Shoulder-y1, etc.)
+        Public SymbolGeneric As String ' The symbol, without the residue number (e.g. a, b, y, b++, Shoulder-y, etc.)
+        Public SourceResidueNumber As Integer ' The residue number that resulted in this mass
+        Public SourceResidueSymbol3Letter As String ' The residue symbol that resulted in this mass
+        Public Charge As Short
+        Public IonType As itIonTypeConstants
+        Public IsShoulderIon As Boolean ' B and Y ions can have Shoulder ions at +-1
     End Structure
 
     ' Note: A peptide goes from N to C, eg. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
@@ -342,6 +344,9 @@ Public Class MWPeptideClass
                 intIonCount *= 2S
             End If
 
+            If .TripleChargeIonsShow Then
+                intIonCount *= 2S
+            End If
         End With
 
         ComputeMaxIonsPerResidue = intIonCount
@@ -392,6 +397,8 @@ Public Class MWPeptideClass
     Public Function GetFragmentationMasses(ByRef udtFragSpectrum() As udtFragmentationSpectrumDataType) As Integer
         ' Returns the number of ions in FragSpectrumWork()
 
+        Const MAX_CHARGE As Integer = 3
+
         Dim lngResidueIndex As Integer
         Dim intChargeIndex, intShoulderIndex As Short
         Dim eIonType As itIonTypeConstants
@@ -400,21 +407,26 @@ Public Class MWPeptideClass
         Dim sngIonIntensities() As Single
         ReDim sngIonIntensities(ION_TYPE_MAX)
         Dim sngIonShoulderIntensity, sngNeutralLossIntensity As Single
-        Dim blnShowDoublecharge As Boolean
-        Dim sngDoubleChargeThreshold As Single
+
+        Dim blnShowCharge() As Boolean
+        Dim sngChargeThreshold() As Single
+
         Dim sngConvolutedMass, sngBaseMass, sngObservedMass As Single
         Dim strResidues As String
         Dim blnPhosphorylated As Boolean
         Dim sngIntensity As Single
         Dim strIonSymbol, strIonSymbolGeneric As String
         Dim FragSpectrumWork() As udtFragmentationSpectrumDataType
-        'FragSpectrumWork.Initialize()
+
         Dim PointerArray() As Integer
 
         If ResidueCount = 0 Then
             ' No residues
             Return 0
         End If
+
+        ReDim blnShowCharge(MAX_CHARGE)
+        ReDim sngChargeThreshold(MAX_CHARGE)
 
         ' Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
         With mFragSpectrumOptions
@@ -424,8 +436,15 @@ Public Class MWPeptideClass
             sngIonShoulderIntensity = CSng(.IntensityOptions.BYIonShoulder)
             sngNeutralLossIntensity = CSng(.IntensityOptions.NeutralLoss)
 
-            blnShowDoublecharge = .DoubleChargeIonsShow
-            sngDoubleChargeThreshold = .DoubleChargeIonsThreshold
+            If MAX_CHARGE >= 2 Then
+                blnShowCharge(2) = .DoubleChargeIonsShow
+                sngChargeThreshold(2) = .DoubleChargeIonsThreshold
+            End If
+
+            If MAX_CHARGE >= 3 Then
+                blnShowCharge(3) = .TripleChargeIonsShow
+                sngChargeThreshold(3) = .TripleChargeIonsThreshold
+            End If
         End With
 
         ' Populate sngIonMassesZeroBased() and sngIonIntensitiesZeroBased()
@@ -456,8 +475,8 @@ Public Class MWPeptideClass
                             ' Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() functions below
                             strResidues = GetInternalResidues(lngResidueIndex, eIonType, blnPhosphorylated)
 
-                            For intChargeIndex = 1 To 2
-                                If intChargeIndex = 1 Or (intChargeIndex = 2 And blnShowDoublecharge) Then
+                            For intChargeIndex = 1 To MAX_CHARGE
+                                If intChargeIndex = 1 Or (intChargeIndex > 1 And blnShowCharge(intChargeIndex)) Then
                                     If intChargeIndex = 1 Then
                                         sngConvolutedMass = sngBaseMass
                                     Else
@@ -465,7 +484,7 @@ Public Class MWPeptideClass
                                         sngConvolutedMass = CSng(ElementAndMassRoutines.ConvoluteMassInternal(sngBaseMass, 1, intChargeIndex, dblChargeCarrierMass))
                                     End If
 
-                                    If intChargeIndex > 1 And sngBaseMass < sngDoubleChargeThreshold Then
+                                    If intChargeIndex > 1 And sngBaseMass < sngChargeThreshold(intChargeIndex) Then
                                         ' BaseMass is below threshold, do not add to Predicted Spectrum
                                     Else
                                         ' Add ion to Predicted Spectrum
@@ -479,9 +498,9 @@ Public Class MWPeptideClass
                                             strIonSymbol = strIonSymbolGeneric & Trim(Str(lngResidueIndex))
                                         End If
 
-                                        If intChargeIndex = 2 Then
-                                            strIonSymbol = strIonSymbol & "++"
-                                            strIonSymbolGeneric = strIonSymbolGeneric & "++"
+                                        If intChargeIndex > 1 Then
+                                            strIonSymbol = strIonSymbol & New String("+"c, intChargeIndex)
+                                            strIonSymbolGeneric = strIonSymbolGeneric & New String("+"c, intChargeIndex)
                                         End If
 
 
@@ -1643,6 +1662,9 @@ Public Class MWPeptideClass
 
                 .DoubleChargeIonsShow = True
                 .DoubleChargeIonsThreshold = 800
+
+                .TripleChargeIonsShow = False
+                .TripleChargeIonsThreshold = 900
             End With
 
             SetSymbolWaterLoss("-H2O")
