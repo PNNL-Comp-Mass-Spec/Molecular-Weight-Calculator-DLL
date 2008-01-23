@@ -3,6 +3,10 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "MwtWinDll", "MwtWinDll.vbpr
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MwtWinDll_Installer", "MwtWinDll_Installer\MwtWinDll_Installer.vdproj", "{DD0C8D49-B8B0-4249-AB2A-B4F449ABB154}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -13,6 +17,8 @@ Global
 		{78332537-7ECC-4B74-8AA9-BA66AB296AF0}.Debug.Build.0 = Debug|.NET
 		{78332537-7ECC-4B74-8AA9-BA66AB296AF0}.Release.ActiveCfg = Release|.NET
 		{78332537-7ECC-4B74-8AA9-BA66AB296AF0}.Release.Build.0 = Release|.NET
+		{DD0C8D49-B8B0-4249-AB2A-B4F449ABB154}.Debug.ActiveCfg = Debug
+		{DD0C8D49-B8B0-4249-AB2A-B4F449ABB154}.Release.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

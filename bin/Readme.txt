@@ -5,6 +5,13 @@ It also includes a Mole/Mass Converter, Formula Finder, Capillary Flow
 Modeller, Amino Acid Notation Converter, Isotopic Distribution Calculator, 
 and Peptide Sequence Fragmentation Modeler.
 
+To install, double click file MwtWinDll_Installer.msi  The DLL will be
+installed at C:\Program Files\MwtWinDll\
+
+To use, include the DLL in a .NET project.  Or, you can add a reference
+to the DLL in a Microsoft Excel file.  In Excel 2003, go to Tools->Addins,
+then click Automation and choose MwtWinDll.MolecularWeightCalculator.
+
 -------------------------------------------------------------------------------
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
 Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002

@@ -1,5 +1,9 @@
 MwtWinDll.NET Change Log
 
+Version 3.2.2943; January 22, 2008
+	- Removed dependence on SharedVBNetRoutines.dll
+	- Created installer for the DLL
+	
 Version 3.1.2687; May 11, 2007
 	- Updated ComputeIsotopicAbundancesInternal to properly interpret Charge state
 		- If intChargeState=0, then returns neutral masses

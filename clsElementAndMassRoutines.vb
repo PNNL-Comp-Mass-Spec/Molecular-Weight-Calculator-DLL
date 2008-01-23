@@ -3542,7 +3542,7 @@ Public Class MWElementAndMassRoutines
                                     dblDashMultiplier = dblDashMultiplierPrior
                                 End If
                             Else
-                                If SharedVBNetRoutines.VBNetRoutines.CDblSafe(Mid(strFormula, intCharIndex - 1, 1)) > 0 Then
+                                If clsNumberConversionRoutines.CDblSafe(Mid(strFormula, intCharIndex - 1, 1)) > 0 Then
                                     ' Number too large
                                     ErrorParams.ErrorID = 7 : ErrorParams.ErrorPosition = intCharIndex
                                 Else
@@ -3668,8 +3668,8 @@ Public Class MWElementAndMassRoutines
                                         Else
                                             ' blnCaretPresent = True
                                             ' Check to make sure isotopic mass is reasonable
-                                            dblIsoDifferenceTop = SharedVBNetRoutines.VBNetRoutines.CIntSafe(0.63 * SymbolReference + 6)
-                                            dblIsoDifferenceBottom = SharedVBNetRoutines.VBNetRoutines.CIntSafe(0.008 * SymbolReference ^ 2 - 0.4 * SymbolReference - 6)
+                                            dblIsoDifferenceTop = clsNumberConversionRoutines.CIntSafe(0.63 * SymbolReference + 6)
+                                            dblIsoDifferenceBottom = clsNumberConversionRoutines.CIntSafe(0.008 * SymbolReference ^ 2 - 0.4 * SymbolReference - 6)
                                             dblCaretValDifference = dblCaretVal - SymbolReference * 2
 
                                             If dblCaretValDifference >= dblIsoDifferenceTop Then
@@ -3985,7 +3985,7 @@ Public Class MWElementAndMassRoutines
             End If
 
             If intNumLength < 0 Then intNumLength = CShort(Len(strFoundNum))
-            ParseNum = SharedVBNetRoutines.VBNetRoutines.CDblSafe(strFoundNum)
+            ParseNum = clsNumberConversionRoutines.CDblSafe(strFoundNum)
         End If
 
     End Function
@@ -4005,7 +4005,7 @@ Public Class MWElementAndMassRoutines
         ' Old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman\fcharset2 Times New Roman;}{\f3\froman " & lblMWT(0).FontName & ";}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f3\fs25 "
         ' old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & lblMWT(0).FontName & ";}{\f3\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f2\fs25 "
         '                                                            f0                               f1                                 f2                          f3                               f4                      cf0 (black)        cf1 (red)          cf3 (white)
-        strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & gComputationOptions.RtfFontName & ";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" & Trim(Str(SharedVBNetRoutines.VBNetRoutines.CIntSafe(gComputationOptions.RtfFontSize * 2.5))) & " "
+        strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & gComputationOptions.RtfFontName & ";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" & Trim(Str(clsNumberConversionRoutines.CIntSafe(gComputationOptions.RtfFontSize * 2.5))) & " "
 
         If strWorkText = "" Then
             ' Return a blank RTF string
@@ -4103,7 +4103,7 @@ Public Class MWElementAndMassRoutines
             ' Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUSTCHAR)
             ' It is used to add additional height to the formula line when isotopes are used
             ' It is colored white so the user does not see it
-            strRTF = strRTF & "{\fs" & Trim(Str(SharedVBNetRoutines.VBNetRoutines.CIntSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUSTCHAR & "}}"
+            strRTF = strRTF & "{\fs" & Trim(Str(clsNumberConversionRoutines.CIntSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUSTCHAR & "}}"
         Else
             strRTF = strRTF & "}"
         End If
@@ -4256,7 +4256,7 @@ Public Class MWElementAndMassRoutines
                 strWork = dblStdDev.ToString("0E+000")
                 strStdDevShort = Left(strWork, 1)
 
-                intExponentValue = SharedVBNetRoutines.VBNetRoutines.CIntSafe(Right(strWork, 4))
+                intExponentValue = clsNumberConversionRoutines.CIntSafe(Right(strWork, 4))
                 dblWork = dblMass / 10 ^ intExponentValue
                 dblWork = System.Math.Round(dblWork, 0)
                 dblRoundedMain = dblWork * 10 ^ intExponentValue

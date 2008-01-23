@@ -82,11 +82,6 @@
                     AssemblyName = "ProgressFormNET"
                     HintPath = "bin\ProgressFormNET.dll"
                 />
-                <Reference
-                    Name = "SharedVBNetRoutines"
-                    AssemblyName = "SharedVBNetRoutines"
-                    HintPath = "..\SharedVBNetRoutines\bin\SharedVBNetRoutines.dll"
-                />
             </References>
             <Imports>
                 <Import Namespace = "Microsoft.VisualBasic" />
@@ -127,6 +122,11 @@
                 />
                 <File
                     RelPath = "clsMwtWin.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "clsNumberConversionRoutines.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
