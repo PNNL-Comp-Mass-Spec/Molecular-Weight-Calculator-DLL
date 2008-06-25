@@ -27,6 +27,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_69D97D80DE674F548233265A705129E8"
+        "OwnerKey" = "8:_91C9113D5185440392E1B37FE1D77903"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_69D97D80DE674F548233265A705129E8"
+        "OwnerKey" = "8:_6E131A18179F00E2F904BDC9CDD18A94"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6E131A18179F00E2F904BDC9CDD18A94"
         "OwnerKey" = "8:_91C9113D5185440392E1B37FE1D77903"
         "MsmSig" = "8:_UNDEFINED"
@@ -35,18 +47,6 @@
         {
         "MsmKey" = "8:_91C9113D5185440392E1B37FE1D77903"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CA895289F7CE4D01ABE8F9E1E8CFB149"
-        "OwnerKey" = "8:_91C9113D5185440392E1B37FE1D77903"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CA895289F7CE4D01ABE8F9E1E8CFB149"
-        "OwnerKey" = "8:_6E131A18179F00E2F904BDC9CDD18A94"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -251,13 +251,13 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MwtWinDll"
-        "ProductCode" = "8:{6EA9A21A-9454-4D93-B8F4-CC56B06DAC24}"
-        "PackageCode" = "8:{52B1F1F8-5669-4FD4-A664-B6E10C37B8CC}"
+        "ProductCode" = "8:{D05A1D90-708C-4230-BCB7-B9DDBB87E9E1}"
+        "PackageCode" = "8:{FD4ACFEC-6517-4CC2-81FD-9EE62F657E43}"
         "UpgradeCode" = "8:{791D3749-1592-4622-AB1B-BDC60593C064}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:Battelle Memorial Institute"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -763,7 +763,7 @@
         }
         "MergeModule"
         {
-            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_CA895289F7CE4D01ABE8F9E1E8CFB149"
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_69D97D80DE674F548233265A705129E8"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"

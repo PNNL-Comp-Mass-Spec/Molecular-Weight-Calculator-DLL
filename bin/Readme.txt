@@ -3,14 +3,8 @@ molecular weight and percent composition of chemical formulas and amino acids.
 It recognizes user-definable abbreviations and custom elemental isotopes.
 It also includes a Mole/Mass Converter, Formula Finder, Capillary Flow 
 Modeller, Amino Acid Notation Converter, Isotopic Distribution Calculator, 
-and Peptide Sequence Fragmentation Modeler.
-
-To install, double click file MwtWinDll_Installer.msi  The DLL will be
-installed at C:\Program Files\MwtWinDll\
-
-To use, include the DLL in a .NET project.  Or, you can add a reference
-to the DLL in a Microsoft Excel file.  In Excel 2003, go to Tools->Addins,
-then click Automation and choose MwtWinDll.MolecularWeightCalculator.
+and Peptide Sequence Fragmentation Modeller.  To use, simply include the 
+DLL in a .NET project.
 
 -------------------------------------------------------------------------------
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)

@@ -39,7 +39,7 @@ Public Class MolecularWeightCalculator
         If Not mDataInitialized Then LoadDefaults()
     End Sub
 
-    Private Const PROGRAM_DATE As String = "January 22, 2008"
+    Private Const PROGRAM_DATE As String = "January 23, 2008"
 
     Public Enum arAbbrevRecognitionModeConstants
         arNormalOnly = 0
