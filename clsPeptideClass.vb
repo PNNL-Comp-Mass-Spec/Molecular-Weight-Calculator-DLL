@@ -64,11 +64,13 @@ Public Class MWPeptideClass
         ntgNone = 6
     End Enum
 
-    Private Const ION_TYPE_MAX As itIonTypeConstants = itIonTypeConstants.itYIon
+    Private Const ION_TYPE_MAX As itIonTypeConstants = itIonTypeConstants.itZIon
     Public Enum itIonTypeConstants
         itAIon = 0
         itBIon = 1
         itYIon = 2
+        itCIon = 3
+        itZIon = 4
     End Enum
 
     Private Structure udtModificationSymbolType
@@ -328,7 +330,8 @@ Public Class MWPeptideClass
                     intIonCount += 1S
 
                     If System.Math.Abs(.IntensityOptions.BYIonShoulder) > 0 Then
-                        If eIonIndex = itIonTypeConstants.itBIon Or eIonIndex = itIonTypeConstants.itYIon Then
+                        If eIonIndex = itIonTypeConstants.itBIon OrElse eIonIndex = itIonTypeConstants.itYIon OrElse _
+                           eIonIndex = itIonTypeConstants.itCIon Or eIonIndex = itIonTypeConstants.itZIon Then
                             intIonCount += 2S
                         End If
                     End If
@@ -463,8 +466,8 @@ Public Class MWPeptideClass
 
                 For eIonType = 0 To ION_TYPE_MAX
                     If mFragSpectrumOptions.IonTypeOptions(eIonType).ShowIon Then
-                        If (lngResidueIndex = 1 Or lngResidueIndex = ResidueCount) And (eIonType = itIonTypeConstants.itAIon Or eIonType = itIonTypeConstants.itBIon) Then
-                            ' Don't include a or b ions in the output masses
+                        If (lngResidueIndex = 1 OrElse lngResidueIndex = ResidueCount) AndAlso (eIonType = itIonTypeConstants.itAIon OrElse eIonType = itIonTypeConstants.itBIon OrElse eIonType = itIonTypeConstants.itCIon) Then
+                            ' Don't include a, b, or c ions in the output masses for this residue
                         Else
 
                             ' Ion is used
@@ -489,10 +492,10 @@ Public Class MWPeptideClass
                                     Else
                                         ' Add ion to Predicted Spectrum
 
-                                        ' Y Ions are numbered in decreasing order: y5, y4, y3, y2, y1
-                                        ' A and B ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
+                                        ' Y and Z Ions are numbered in decreasing order: y5, y4, y3, y2, y1
+                                        ' A, B, and C ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
                                         strIonSymbolGeneric = LookupIonTypeString(eIonType)
-                                        If eIonType = itIonTypeConstants.itYIon Then
+                                        If eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itZIon Then
                                             strIonSymbol = strIonSymbolGeneric & Trim(Str(ResidueCount - lngResidueIndex + 1))
                                         Else
                                             strIonSymbol = strIonSymbolGeneric & Trim(Str(lngResidueIndex))
@@ -506,10 +509,9 @@ Public Class MWPeptideClass
 
                                         AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngConvolutedMass, sngIntensity, strIonSymbol, strIonSymbolGeneric, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
 
-                                        ' Add shoulder ions to PredictedSpectrum()
-                                        '   if a B or Y ion and the shoulder intensity is > 0
+                                        ' Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
                                         ' Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
-                                        If System.Math.Abs(sngIonShoulderIntensity) > 0 And (eIonType = itIonTypeConstants.itBIon Or eIonType = itIonTypeConstants.itYIon) Then
+                                        If System.Math.Abs(sngIonShoulderIntensity) > 0 AndAlso (eIonType = itIonTypeConstants.itBIon OrElse eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itCIon OrElse eIonType = itIonTypeConstants.itZIon) Then
                                             For intShoulderIndex = -1 To 1 Step 2
                                                 sngObservedMass = CSng(sngConvolutedMass + intShoulderIndex * (1 / intChargeIndex))
                                                 AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngIonShoulderIntensity, SHOULDER_ION_PREFIX & strIonSymbol, SHOULDER_ION_PREFIX & strIonSymbolGeneric, lngResidueIndex, .Symbol, intChargeIndex, eIonType, True)
@@ -604,8 +606,8 @@ Public Class MWPeptideClass
 
     Private Function GetInternalResidues(ByRef lngCurrentResidueIndex As Integer, ByRef eIonType As itIonTypeConstants, Optional ByRef blnPhosphorylated As Boolean = False) As String
         ' Determines the residues preceding or following the given residue (up to and including the current residue)
-        ' If eIonType is a or b ions, then returns residues from the N terminus
-        ' If eIonType is y ion, then returns residues from the C terminus
+        ' If eIonType is a, b, or c ions, then returns residues from the N terminus
+        ' If eIonType is y or ions, then returns residues from the C terminus
         ' Also, set blnPhosphorylated to true if any of the residues is Ser, Thr, or Tyr and is phosphorylated
         '
         ' Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() function
@@ -615,7 +617,7 @@ Public Class MWPeptideClass
 
         strInternalResidues = ""
         blnPhosphorylated = False
-        If eIonType = itIonTypeConstants.itYIon Then
+        If eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itZIon Then
             For lngResidueIndex = lngCurrentResidueIndex To ResidueCount
                 With Residues(lngResidueIndex)
                     strInternalResidues = strInternalResidues & .Symbol & " "
@@ -1377,10 +1379,13 @@ Public Class MWPeptideClass
     Public Function LookupIonTypeString(ByRef eIonType As itIonTypeConstants) As String
 
         Select Case eIonType
-            Case itIonTypeConstants.itAIon : LookupIonTypeString = "a"
-            Case itIonTypeConstants.itBIon : LookupIonTypeString = "b"
-            Case itIonTypeConstants.itYIon : LookupIonTypeString = "y"
-            Case Else : LookupIonTypeString = ""
+            Case itIonTypeConstants.itAIon : Return "a"
+            Case itIonTypeConstants.itBIon : Return "b"
+            Case itIonTypeConstants.itYIon : Return "y"
+            Case itIonTypeConstants.itCIon : Return "c"
+            Case itIonTypeConstants.itZIon : Return "z"
+            Case Else
+                Return ""
         End Select
 
     End Function
@@ -1413,27 +1418,27 @@ Public Class MWPeptideClass
         Dim blnHRemoved As Boolean
 
         blnHRemoved = False
-        If UCase(Left(strWorkingSequence, 1)) = "H" And Len(strWorkingSequence) >= 4 Then
-            ' If next character is not a character, then remove the H
-            If Not Char.IsLetter(CChar(Mid(strWorkingSequence, 2, 1))) Then
-                strWorkingSequence = Mid(strWorkingSequence, 3)
+        If strWorkingSequence.Length >= 4 AndAlso strWorkingSequence.ToUpper.StartsWith("H") Then
+            ' If next character is not a character, then remove the H and the non-letter character
+            If Not Char.IsLetter(strWorkingSequence.Chars(1)) Then
+                strWorkingSequence = strWorkingSequence.Substring(2)
                 blnHRemoved = True
             Else
                 ' Otherwise, see if next three characters are letters
-                If Char.IsLetter(CChar(Mid(strWorkingSequence, 2, 1))) And Char.IsLetter(CChar(Mid(strWorkingSequence, 3, 1))) And Char.IsLetter(CChar(Mid(strWorkingSequence, 4, 1))) Then
+                If Char.IsLetter(strWorkingSequence.Chars(1)) AndAlso Char.IsLetter(strWorkingSequence.Chars(2)) AndAlso Char.IsLetter(strWorkingSequence.Chars(3)) Then
                     ' Formula starts with 4 characters and the first is H, see if the first 3 characters are a valid amino acid code
-                    lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(Left(strWorkingSequence, 3), True)
+                    lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strWorkingSequence.Substring(0, 3), True)
 
                     If lngAbbrevID <= 0 Then
                         ' Doesn't start with a valid amino acid 3 letter abbreviation, so remove the initial H
-                        strWorkingSequence = Mid(strWorkingSequence, 2)
+                        strWorkingSequence = strWorkingSequence.Substring(1)
                         blnHRemoved = True
                     End If
                 End If
             End If
         End If
 
-        RemoveLeadingH = blnHRemoved
+        Return blnHRemoved
     End Function
 
     Private Function RemoveTrailingOH(ByRef strWorkingSequence As String) As Boolean
@@ -1444,7 +1449,7 @@ Public Class MWPeptideClass
 
         blnOHRemoved = False
         lngStringLength = Len(strWorkingSequence)
-        If UCase(Right(strWorkingSequence, 2)) = "OH" And lngStringLength >= 5 Then
+        If strWorkingSequence.Length >= 5 AndAlso strWorkingSequence.ToUpper.EndsWith("OH") Then
             ' If previous character is not a character, then remove the OH
             If Not Char.IsLetter(CChar(Mid(strWorkingSequence, lngStringLength - 2, 1))) Then
                 strWorkingSequence = Left(strWorkingSequence, lngStringLength - 3)
@@ -1639,6 +1644,8 @@ Public Class MWPeptideClass
                     .IonType(itIonTypeConstants.itAIon) = 20
                     .IonType(itIonTypeConstants.itBIon) = 100
                     .IonType(itIonTypeConstants.itYIon) = 100
+                    .IonType(itIonTypeConstants.itCIon) = 100
+                    .IonType(itIonTypeConstants.itZIon) = 100
                     .BYIonShoulder = 50
                     .NeutralLoss = 20
                 End With
@@ -1651,7 +1658,7 @@ Public Class MWPeptideClass
                     .NeutralLossWater = False
                 End With
 
-                For eIonIndex = itIonTypeConstants.itBIon To itIonTypeConstants.itYIon
+                For eIonIndex = itIonTypeConstants.itBIon To itIonTypeConstants.itZIon
                     With .IonTypeOptions(eIonIndex)
                         .ShowIon = True
                         .NeutralLossAmmonia = True
@@ -2141,6 +2148,9 @@ Public Class MWPeptideClass
 
                     .IonMass(itIonTypeConstants.itAIon) = dblRunningTotal - dblImmoniumMassDifference - dblChargeCarrierMass
                     .IonMass(itIonTypeConstants.itBIon) = dblRunningTotal
+                
+                    ' Add NH3 (ammonia) to the B ion mass to get the C ion mass
+                    .IonMass(itIonTypeConstants.itCIon) = .IonMass(itIonTypeConstants.itBIon) + dblNH3Mass
                 Else
                     .Mass = 0
                     .MassWithMods = 0
@@ -2160,7 +2170,7 @@ Public Class MWPeptideClass
             mTotalMass = 0
         End If
 
-        ' Now compute the y-ion masses
+        ' Now compute the y-ion and z-ion masses
         dblRunningTotal = mCTerminus.Mass + dblChargeCarrierMass
 
         For lngIndex = ResidueCount To 1 Step -1
@@ -2179,6 +2189,9 @@ Public Class MWPeptideClass
                             .IonMass(itIonTypeConstants.itYIon) = .IonMass(itIonTypeConstants.itYIon) - dblHydrogenMass
                         End If
                     End If
+                
+                    ' Subtract NH2 (amide) from the Y ion mass to get the Z ion mass
+                    .IonMass(itIonTypeConstants.itZIon) = .IonMass(itIonTypeConstants.itYIon) - (dblNH3Mass - dblHydrogenMass)
                 End If
             End With
         Next lngIndex

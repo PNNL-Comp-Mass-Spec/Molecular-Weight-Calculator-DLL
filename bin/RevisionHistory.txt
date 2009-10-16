@@ -1,5 +1,8 @@
 MwtWinDll.NET Change Log
 
+Version 3.2.3576; October 16, 2009
+	- Added support for c and z ions in function GetFragmentationMasses()
+
 Version 3.2.2944; January 23, 2008
 	- Removed dependence on SharedVBNetRoutines.dll
 	

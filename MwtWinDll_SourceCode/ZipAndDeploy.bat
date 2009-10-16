@@ -11,7 +11,7 @@ rem 6. Create the zipped installer file
 rem 7. Copy the zipped installer file to the final folder
 
 Set ProgramName=MwtWinDll
-Set DistributionFolderBase=D:\Public\Software
+Set DistributionFolderBase=F:\Public\Software
 
 Set SourceCodeFolder=%ProgramName%_SourceCode
 Set SourceCodeFile=%ProgramName%_Source_v*.zip
@@ -37,7 +37,7 @@ echo.
 echo 3) Updating Source Code file for %ProgramName%
 Move %SourceCodeFile% ..\..\
 CD ..\..
-"c:\program files\winrar\winRar.exe" f %SourceCodeFile%
+for %%i in (%SourceCodeFile%) do "c:\program files\winrar\winRar.exe" f %%i
 Move %SourceCodeFile% %SourceCodeFolder%\SourceAndSupportingDLLs\
 
 cd %SourceCodeFolder%
