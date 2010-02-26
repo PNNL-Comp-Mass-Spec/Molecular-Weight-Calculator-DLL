@@ -567,6 +567,8 @@ Friend Class frmMwtWinDllTest
 
     Private Sub InitializeControls()
         mMwtWin = New MwtWinDll.MolecularWeightCalculator
+        mMwtWin.ShowErrorDialogs = True
+
         lblDLLVersion.Text = "DLL Info: " & mMwtWin.AppDate & ", Version " & mMwtWin.AppVersion
         PopulateComboBoxes()
     End Sub
