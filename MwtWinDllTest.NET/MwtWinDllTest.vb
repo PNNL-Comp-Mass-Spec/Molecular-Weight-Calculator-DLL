@@ -69,6 +69,7 @@ Friend Class frmMwtWinDllTest
     Friend WithEvents rtfFormula As System.Windows.Forms.RichTextBox
     Friend WithEvents chkShowRTFSource As System.Windows.Forms.CheckBox
     Public WithEvents txtRTFSource As System.Windows.Forms.TextBox
+    Public WithEvents lblProgress As System.Windows.Forms.Label
     Public WithEvents lblDLLVersion As System.Windows.Forms.Label
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container
@@ -96,6 +97,7 @@ Friend Class frmMwtWinDllTest
         Me.chkShowRTFSource = New System.Windows.Forms.CheckBox
         Me.txtRTFSource = New System.Windows.Forms.TextBox
         Me.lblDLLVersion = New System.Windows.Forms.Label
+        Me.lblProgress = New System.Windows.Forms.Label
         CType(Me.dgDataGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -105,12 +107,13 @@ Friend Class frmMwtWinDllTest
         Me.cmdTestGetTrypticName.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdTestGetTrypticName.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdTestGetTrypticName.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdTestGetTrypticName.Location = New System.Drawing.Point(256, 296)
+        Me.cmdTestGetTrypticName.Location = New System.Drawing.Point(256, 322)
         Me.cmdTestGetTrypticName.Name = "cmdTestGetTrypticName"
         Me.cmdTestGetTrypticName.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdTestGetTrypticName.Size = New System.Drawing.Size(89, 41)
         Me.cmdTestGetTrypticName.TabIndex = 19
         Me.cmdTestGetTrypticName.Text = "Test Get Tryptic Name"
+        Me.cmdTestGetTrypticName.UseVisualStyleBackColor = False
         '
         'cmdExpandAbbreviations
         '
@@ -124,6 +127,7 @@ Friend Class frmMwtWinDllTest
         Me.cmdExpandAbbreviations.Size = New System.Drawing.Size(89, 41)
         Me.cmdExpandAbbreviations.TabIndex = 4
         Me.cmdExpandAbbreviations.Text = "Expand Abbreviations"
+        Me.cmdExpandAbbreviations.UseVisualStyleBackColor = False
         '
         'cmdTestFunctions
         '
@@ -137,6 +141,7 @@ Friend Class frmMwtWinDllTest
         Me.cmdTestFunctions.Size = New System.Drawing.Size(89, 41)
         Me.cmdTestFunctions.TabIndex = 6
         Me.cmdTestFunctions.Text = "Test Functions"
+        Me.cmdTestFunctions.UseVisualStyleBackColor = False
         '
         'cboStdDevMode
         '
@@ -145,7 +150,7 @@ Friend Class frmMwtWinDllTest
         Me.cboStdDevMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboStdDevMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboStdDevMode.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboStdDevMode.Location = New System.Drawing.Point(104, 232)
+        Me.cboStdDevMode.Location = New System.Drawing.Point(104, 258)
         Me.cboStdDevMode.Name = "cboStdDevMode"
         Me.cboStdDevMode.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboStdDevMode.Size = New System.Drawing.Size(145, 22)
@@ -158,7 +163,7 @@ Friend Class frmMwtWinDllTest
         Me.cboWeightMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboWeightMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboWeightMode.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboWeightMode.Location = New System.Drawing.Point(104, 208)
+        Me.cboWeightMode.Location = New System.Drawing.Point(104, 234)
         Me.cboWeightMode.Name = "cboWeightMode"
         Me.cboWeightMode.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboWeightMode.Size = New System.Drawing.Size(145, 22)
@@ -176,6 +181,7 @@ Friend Class frmMwtWinDllTest
         Me.cmdConvertToEmpirical.Size = New System.Drawing.Size(89, 41)
         Me.cmdConvertToEmpirical.TabIndex = 5
         Me.cmdConvertToEmpirical.Text = "Convert to &Empirical"
+        Me.cmdConvertToEmpirical.UseVisualStyleBackColor = False
         '
         'cmdFindMass
         '
@@ -183,17 +189,17 @@ Friend Class frmMwtWinDllTest
         Me.cmdFindMass.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdFindMass.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdFindMass.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdFindMass.Location = New System.Drawing.Point(8, 304)
+        Me.cmdFindMass.Location = New System.Drawing.Point(8, 330)
         Me.cmdFindMass.Name = "cmdFindMass"
         Me.cmdFindMass.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdFindMass.Size = New System.Drawing.Size(89, 33)
         Me.cmdFindMass.TabIndex = 8
         Me.cmdFindMass.Text = "&Calculate"
+        Me.cmdFindMass.UseVisualStyleBackColor = False
         '
         'txtFormula
         '
         Me.txtFormula.AcceptsReturn = True
-        Me.txtFormula.AutoSize = False
         Me.txtFormula.BackColor = System.Drawing.SystemColors.Window
         Me.txtFormula.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFormula.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -202,7 +208,7 @@ Friend Class frmMwtWinDllTest
         Me.txtFormula.MaxLength = 0
         Me.txtFormula.Name = "txtFormula"
         Me.txtFormula.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFormula.Size = New System.Drawing.Size(129, 19)
+        Me.txtFormula.Size = New System.Drawing.Size(129, 20)
         Me.txtFormula.TabIndex = 0
         Me.txtFormula.Text = "Cl2PhH4OH"
         '
@@ -213,12 +219,13 @@ Friend Class frmMwtWinDllTest
         Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.cmdClose.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdClose.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdClose.Location = New System.Drawing.Point(104, 304)
+        Me.cmdClose.Location = New System.Drawing.Point(104, 330)
         Me.cmdClose.Name = "cmdClose"
         Me.cmdClose.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdClose.Size = New System.Drawing.Size(89, 33)
         Me.cmdClose.TabIndex = 9
         Me.cmdClose.Text = "Cl&ose"
+        Me.cmdClose.UseVisualStyleBackColor = False
         '
         'lblStdDevMode
         '
@@ -226,7 +233,7 @@ Friend Class frmMwtWinDllTest
         Me.lblStdDevMode.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblStdDevMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblStdDevMode.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblStdDevMode.Location = New System.Drawing.Point(8, 232)
+        Me.lblStdDevMode.Location = New System.Drawing.Point(8, 258)
         Me.lblStdDevMode.Name = "lblStdDevMode"
         Me.lblStdDevMode.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblStdDevMode.Size = New System.Drawing.Size(73, 32)
@@ -239,7 +246,7 @@ Friend Class frmMwtWinDllTest
         Me.lblWeightMode.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblWeightMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblWeightMode.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblWeightMode.Location = New System.Drawing.Point(8, 208)
+        Me.lblWeightMode.Location = New System.Drawing.Point(8, 234)
         Me.lblWeightMode.Name = "lblWeightMode"
         Me.lblWeightMode.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblWeightMode.Size = New System.Drawing.Size(73, 17)
@@ -291,10 +298,10 @@ Friend Class frmMwtWinDllTest
         Me.lblStatus.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblStatus.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblStatus.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblStatus.Location = New System.Drawing.Point(104, 152)
+        Me.lblStatus.Location = New System.Drawing.Point(104, 139)
         Me.lblStatus.Name = "lblStatus"
         Me.lblStatus.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblStatus.Size = New System.Drawing.Size(225, 48)
+        Me.lblStatus.Size = New System.Drawing.Size(225, 33)
         Me.lblStatus.TabIndex = 13
         '
         'lblMass
@@ -338,11 +345,13 @@ Friend Class frmMwtWinDllTest
         '
         'dgDataGrid
         '
+        Me.dgDataGrid.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.dgDataGrid.DataMember = ""
         Me.dgDataGrid.HeaderForeColor = System.Drawing.SystemColors.ControlText
         Me.dgDataGrid.Location = New System.Drawing.Point(360, 72)
         Me.dgDataGrid.Name = "dgDataGrid"
-        Me.dgDataGrid.Size = New System.Drawing.Size(280, 360)
+        Me.dgDataGrid.Size = New System.Drawing.Size(280, 365)
         Me.dgDataGrid.TabIndex = 20
         '
         'rtfFormula
@@ -356,7 +365,7 @@ Friend Class frmMwtWinDllTest
         '
         'chkShowRTFSource
         '
-        Me.chkShowRTFSource.Location = New System.Drawing.Point(8, 352)
+        Me.chkShowRTFSource.Location = New System.Drawing.Point(8, 378)
         Me.chkShowRTFSource.Name = "chkShowRTFSource"
         Me.chkShowRTFSource.Size = New System.Drawing.Size(88, 24)
         Me.chkShowRTFSource.TabIndex = 22
@@ -365,20 +374,20 @@ Friend Class frmMwtWinDllTest
         'txtRTFSource
         '
         Me.txtRTFSource.AcceptsReturn = True
-        Me.txtRTFSource.AutoSize = False
+        Me.txtRTFSource.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.txtRTFSource.BackColor = System.Drawing.SystemColors.Window
         Me.txtRTFSource.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtRTFSource.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtRTFSource.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtRTFSource.Location = New System.Drawing.Point(112, 344)
+        Me.txtRTFSource.Location = New System.Drawing.Point(112, 370)
         Me.txtRTFSource.MaxLength = 0
         Me.txtRTFSource.Multiline = True
         Me.txtRTFSource.Name = "txtRTFSource"
         Me.txtRTFSource.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtRTFSource.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtRTFSource.Size = New System.Drawing.Size(240, 80)
+        Me.txtRTFSource.Size = New System.Drawing.Size(240, 67)
         Me.txtRTFSource.TabIndex = 23
-        Me.txtRTFSource.Text = ""
         Me.txtRTFSource.Visible = False
         '
         'lblDLLVersion
@@ -387,12 +396,24 @@ Friend Class frmMwtWinDllTest
         Me.lblDLLVersion.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblDLLVersion.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblDLLVersion.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblDLLVersion.Location = New System.Drawing.Point(8, 272)
+        Me.lblDLLVersion.Location = New System.Drawing.Point(8, 298)
         Me.lblDLLVersion.Name = "lblDLLVersion"
         Me.lblDLLVersion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblDLLVersion.Size = New System.Drawing.Size(336, 16)
         Me.lblDLLVersion.TabIndex = 24
         Me.lblDLLVersion.Text = "DLL Version"
+        '
+        'lblProgress
+        '
+        Me.lblProgress.BackColor = System.Drawing.SystemColors.Control
+        Me.lblProgress.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblProgress.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblProgress.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblProgress.Location = New System.Drawing.Point(104, 182)
+        Me.lblProgress.Name = "lblProgress"
+        Me.lblProgress.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblProgress.Size = New System.Drawing.Size(225, 39)
+        Me.lblProgress.TabIndex = 25
         '
         'frmMwtWinDllTest
         '
@@ -400,7 +421,8 @@ Friend Class frmMwtWinDllTest
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.cmdClose
-        Me.ClientSize = New System.Drawing.Size(652, 446)
+        Me.ClientSize = New System.Drawing.Size(652, 453)
+        Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.lblDLLVersion)
         Me.Controls.Add(Me.txtRTFSource)
         Me.Controls.Add(Me.txtFormula)
@@ -432,11 +454,12 @@ Friend Class frmMwtWinDllTest
         Me.Text = "Mwt Win Dll Test"
         CType(Me.dgDataGrid, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 #End Region
 
-    Private objMwtWin As MwtWinDll.MolecularWeightCalculator
+    Private WithEvents mMwtWin As MwtWinDll.MolecularWeightCalculator
     Private mMDIDListDataView As System.Data.DataView
     Private myDataSet As System.Data.DataSet
 
@@ -497,13 +520,13 @@ Friend Class frmMwtWinDllTest
 
         Dim strPctCompositions() As String
 
-        With objMwtWin.Compound
+        With mMwtWin.Compound
             .Formula = txtFormula.Text
 
             dblPctCompForCarbon = .GetPercentCompositionForElement(6)
             strPctCompForCarbon = .GetPercentCompositionForElementAsString(6)
 
-            intElementCount = CShort(objMwtWin.GetElementCount)
+            intElementCount = CShort(mMwtWin.GetElementCount)
             ReDim strPctCompositions(intElementCount)
 
             .GetPercentCompositionForAllElements(strPctCompositions)
@@ -518,12 +541,15 @@ Friend Class frmMwtWinDllTest
 
 
     Private Sub FindMass()
-        ' Can simply compute the mass of a formula using ComputeMass
-        lblMass.Text = CStr(objMwtWin.ComputeMass(txtFormula.Text))
 
-        ' If we want to do more complex operations, need to fill objMwtWin.Compound with valid info
+        lblProgress.Text = String.Empty
+
+        ' Can simply compute the mass of a formula using ComputeMass
+        lblMass.Text = CStr(mMwtWin.ComputeMass(txtFormula.Text))
+
+        ' If we want to do more complex operations, need to fill mMwtWin.Compound with valid info
         ' Then, can read out values from it
-        With objMwtWin.Compound
+        With mMwtWin.Compound
             .Formula = txtFormula.Text
 
             If .ErrorDescription = "" Then
@@ -540,8 +566,8 @@ Friend Class frmMwtWinDllTest
     End Sub
 
     Private Sub InitializeControls()
-        objMwtWin = New MwtWinDll.MolecularWeightCalculator
-        lblDLLVersion.Text = "DLL Info: " & objMwtWin.AppDate & ", Version " & objMwtWin.AppVersion
+        mMwtWin = New MwtWinDll.MolecularWeightCalculator
+        lblDLLVersion.Text = "DLL Info: " & mMwtWin.AppDate & ", Version " & mMwtWin.AppVersion
         PopulateComboBoxes()
     End Sub
 
@@ -609,7 +635,7 @@ Friend Class frmMwtWinDllTest
 
         For intIndex = 1 To intElementCount
             If strPctCompositions(intIndex) <> "" Then
-                objMwtWin.GetElement(intIndex, strSymbol, 0, 0, 0, 0)
+                mMwtWin.GetElement(intIndex, strSymbol, 0, 0, 0, 0)
                 newRow1 = tDataTable.NewRow()
                 newRow1("Element") = strSymbol
                 newRow1("Pct Comp") = strPctCompositions(intIndex)
@@ -660,10 +686,12 @@ Friend Class frmMwtWinDllTest
 
         Dim objResults As New frmTextbrowser
 
+        lblProgress.Text = String.Empty
+
         objResults.Show()
         objResults.SetText = String.Empty
 
-        With objMwtWin
+        With mMwtWin
             ' Test Abbreviations
             lngItemCount = .GetAbbreviationCount
             For intIndex = 1 To lngItemCount
@@ -817,7 +845,7 @@ Friend Class frmMwtWinDllTest
         Dim strNewSeq As String
 
 
-        With objMwtWin.Peptide
+        With mMwtWin.Peptide
 
             .SetSequence("K.ACYEFGHRKACYEFGHRK.G", MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogen, MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, False, True)
             '.SetSequence("K.ACYEFGHRKACYEFGHRK.G")
@@ -876,7 +904,7 @@ Friend Class frmMwtWinDllTest
         Dim ConvolutedMSData2D(,) As Double
         Dim ConvolutedMSDataCount As Integer
 
-        With objMwtWin
+        With mMwtWin
             intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", 1, strResults, ConvolutedMSData2D, ConvolutedMSDataCount)
             objResults.AppendText = strResults
         End With
@@ -913,6 +941,8 @@ Friend Class frmMwtWinDllTest
 
         Dim objResults As New frmTextbrowser
 
+        lblProgress.Text = String.Empty
+
         lngMwtWinDimCount = DIM_CHUNK
         ReDim strPeptideNameMwtWin(lngMwtWinDimCount)
 
@@ -939,13 +969,13 @@ Friend Class frmMwtWinDllTest
         strProtein = "MMKANVTKKTLNEGLGLLERVIPSRSSNPLLTALKVETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVRNLGGELVELELSGQELSVRSGGSDFKLQTGDIEAYPPLSFPAQADVSLDGGELSRAFSSVRYAASNEAFQAVFRGIKLEHHGESARVVASDGYRVAIRDFPASGDGKNLIIPARSVDELIRVLKDGEARFTYGDGMLTVTTDRVKMNLKLLDGDFPDYERVIPKDIKLQVTLPATALKEAVNRVAVLADKNANNRVEFLVSEGTLRLAAEGDYGRAQDTLSVTQGGTEQAMSLAFNARHVLDALGPIDGDAELLFSGSTSPAIFRARRWGRRVYGGHGHAARLRGLLRPLRGMSALAHHPESSPPLEPRPEFA"
 
         objResults.AppendText = "Testing GetTrypticNameMultipleMatches() function"
-        objResults.AppendText = "MatchList for NL: " & objMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, "NL", lngMatchCount)
+        objResults.AppendText = "MatchList for NL: " & mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, "NL", lngMatchCount)
         objResults.AppendText = "MatchCount = " & lngMatchCount
 
         objResults.AppendText = String.Empty
         objResults.AppendText = "Testing GetTrypticPeptideByFragmentNumber function"
         For lngIndex = 1 To 43
-            strPeptideFragMwtWin = objMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, CShort(lngIndex), lngResidueStart, lngResidueEnd)
+            strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, CShort(lngIndex), lngResidueStart, lngResidueEnd)
             ''        strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(lngIndex))
             ''
             ''        Debug.Assert strPeptideFragMwtWin = strPeptideFragIcr2ls
@@ -953,7 +983,7 @@ Friend Class frmMwtWinDllTest
             If Len(strPeptideFragMwtWin) > 1 Then
                 ' Make sure lngResidueStart and lngResidueEnd are correct
                 ' Do this using .GetTrypticNameMultipleMatches()
-                strPeptideName = objMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, Mid(strProtein, lngResidueStart, lngResidueEnd - lngResidueStart + 1))
+                strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, Mid(strProtein, lngResidueStart, lngResidueEnd - lngResidueStart + 1))
                 System.Diagnostics.Debug.Assert(InStr(strPeptideName, "t" & Trim(Str(lngIndex))) > 0, "")
             End If
         Next lngIndex
@@ -964,7 +994,7 @@ Friend Class frmMwtWinDllTest
         objResults.AppendText = "Test tryptic digest of: " & strProtein
         lngIndex = 1
         Do
-            strPeptideFragMwtWin = objMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, CShort(lngIndex), lngResidueStart, lngResidueEnd)
+            strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, CShort(lngIndex), lngResidueStart, lngResidueEnd)
             objResults.AppendText = "Tryptic fragment " & Trim(CStr(lngIndex)) & ": " & strPeptideFragMwtWin
             lngIndex = lngIndex + 1
         Loop While Len(strPeptideFragMwtWin) > 0
@@ -999,7 +1029,7 @@ Friend Class frmMwtWinDllTest
                     End If
 
                     strPeptideResidues = Mid(strProtein, lngResidueStart, lngResidueEnd)
-                    strPeptideNameMwtWin(lngMwtWinResultCount) = objMwtWin.Peptide.GetTrypticName(strProtein, strPeptideResidues, 0, 0, True)
+                    strPeptideNameMwtWin(lngMwtWinResultCount) = mMwtWin.Peptide.GetTrypticName(strProtein, strPeptideResidues, 0, 0, True)
 
                     lngMwtWinResultCount = lngMwtWinResultCount + 1
                     If lngMwtWinResultCount > lngMwtWinDimCount Then
@@ -1085,11 +1115,11 @@ Friend Class frmMwtWinDllTest
     Private Sub cboStdDevMode_SelectedIndexChanged(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cboStdDevMode.SelectedIndexChanged
         Select Case cboStdDevMode.SelectedIndex
             Case 1
-                objMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smScientific
+                mMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smScientific
             Case 2
-                objMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smDecimal
+                mMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smDecimal
             Case Else
-                objMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smShort
+                mMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smShort
         End Select
 
     End Sub
@@ -1097,38 +1127,44 @@ Friend Class frmMwtWinDllTest
     Private Sub cboWeightMode_SelectedIndexChanged(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cboWeightMode.SelectedIndexChanged
         Select Case cboWeightMode.SelectedIndex
             Case 1
-                objMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
+                mMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
             Case 2
-                objMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIntegerMass)
+                mMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIntegerMass)
             Case Else
-                objMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emAverageMass)
+                mMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emAverageMass)
         End Select
 
     End Sub
 
     Private Sub cmdClose_Click(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cmdClose.Click
-        objMwtWin = Nothing
+        mMwtWin = Nothing
         Me.Close()
         End
     End Sub
 
     Private Sub cmdConvertToEmpirical_Click(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cmdConvertToEmpirical.Click
-        With objMwtWin.Compound
+
+        lblProgress.Text = String.Empty
+
+        With mMwtWin.Compound
             .Formula = txtFormula.Text
             .ConvertToEmpirical()
         End With
 
-        UpdateResultsForCompound(objMwtWin.Compound)
+        UpdateResultsForCompound(mMwtWin.Compound)
 
     End Sub
 
     Private Sub cmdExpandAbbreviations_Click(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cmdExpandAbbreviations.Click
-        With objMwtWin.Compound
+
+        lblProgress.Text = String.Empty
+
+        With mMwtWin.Compound
             .Formula = txtFormula.Text
             .ExpandAbbreviations()
         End With
 
-        UpdateResultsForCompound(objMwtWin.Compound)
+        UpdateResultsForCompound(mMwtWin.Compound)
     End Sub
 
     Private Sub cmdFindMass_Click(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles cmdFindMass.Click
@@ -1144,15 +1180,32 @@ Friend Class frmMwtWinDllTest
         TestTrypticName()
     End Sub
 
-    Private Sub frmMwtWinDllTest_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
-    End Sub
-
     Private Sub rtfFormula_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rtfFormula.TextChanged
         txtRTFSource.Text = rtfFormula.Rtf
     End Sub
 
     Private Sub chkShowRTFSource_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkShowRTFSource.CheckedChanged
         txtRTFSource.Visible = chkShowRTFSource.Checked
+    End Sub
+
+    Private Sub mMwtWin_ProgressChanged(ByVal taskDescription As String, ByVal percentComplete As Single) Handles mMwtWin.ProgressChanged
+        Static dtLastUpdate As System.DateTime
+
+        lblProgress.Text = mMwtWin.ProgressStepDescription & "; " & percentComplete.ToString("0.0") & "% complete"
+
+        If System.DateTime.Now.Subtract(dtLastUpdate).TotalMilliseconds > 100 Then
+            dtLastUpdate = System.DateTime.Now
+            Application.DoEvents()
+        End If
+    End Sub
+
+    Private Sub mMwtWin_ProgressComplete() Handles mMwtWin.ProgressComplete
+        lblProgress.Text = mMwtWin.ProgressStepDescription & "; 100% complete"
+        Application.DoEvents()
+    End Sub
+
+    Private Sub mMwtWin_ProgressReset() Handles mMwtWin.ProgressReset
+        lblProgress.Text = mMwtWin.ProgressStepDescription
+        Application.DoEvents()
     End Sub
 End Class

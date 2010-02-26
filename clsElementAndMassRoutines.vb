@@ -27,6 +27,8 @@ Public Class MWElementAndMassRoutines
         Initialize()
     End Sub
 
+#Region "Constants and Enums"
+
     Public Const ELEMENT_COUNT As Short = 103
     Public Const MAX_ABBREV_COUNT As Short = 500
 
@@ -63,6 +65,16 @@ Public Class MWElementAndMassRoutines
         smtElement = 1
         smtAbbreviation = 2
     End Enum
+
+    Protected Enum eMessageTypeConstants
+        Normal = 0
+        ErrorMsg = 1
+        Warning = 2
+    End Enum
+
+#End Region
+
+#Region "Structures"
 
     Public Structure udtOptionsType
         Public AbbrevRecognitionMode As MolecularWeightCalculator.arAbbrevRecognitionModeConstants
@@ -162,6 +174,10 @@ Public Class MWElementAndMassRoutines
         Public SymbolReferenceStack() As Short ' 0-based array
     End Structure
 
+#End Region
+
+#Region "Classwide Variables"
+
     Public gComputationOptions As udtOptionsType
 
     Private ElementAlph() As String ' Stores the elements in alphabetical order; used for constructing empirical formulas; 1 to ELEMENT_COUNT
@@ -190,6 +206,89 @@ Public Class MWElementAndMassRoutines
     Private mComputationStatsSaved As udtComputationStatsType
 
     Private mShowErrorMessageDialogs As Boolean
+    Protected mAbortProcessing As Boolean
+
+    Protected mLogMessagesToFile As Boolean
+    Protected mLogFilePath As String
+    Protected mLogFile As System.IO.StreamWriter
+    Protected mLogFolderPath As String          ' If blank, then mOutputFolderPath will be used; if mOutputFolderPath is also blank, then the log is created in the same folder as the executing assembly
+
+    Public Event ProgressReset()
+    Public Event ProgressChanged(ByVal taskDescription As String, ByVal percentComplete As Single)     ' PercentComplete ranges from 0 to 100, but can contain decimal percentage values
+    Public Event ProgressComplete()
+
+    Protected mProgressStepDescription As String
+    Protected mProgressPercentComplete As Single        ' Ranges from 0 to 100, but can contain decimal percentage values
+
+#End Region
+
+#Region "Interface Functions"
+
+    Public Property AbortProcessing() As Boolean
+        Get
+            Return mAbortProcessing
+        End Get
+        Set(ByVal Value As Boolean)
+            mAbortProcessing = Value
+        End Set
+    End Property
+
+    Public Property ElementModeInternal() As emElementModeConstants
+        Get
+            Return mCurrentElementMode
+        End Get
+        Set(ByVal value As emElementModeConstants)
+            SetElementModeInternal(value)
+        End Set
+    End Property
+
+    Public ReadOnly Property LogFilePath() As String
+        Get
+            Return mLogFilePath
+        End Get
+    End Property
+
+    Public Property LogFolderPath() As String
+        Get
+            Return mLogFolderPath
+        End Get
+        Set(ByVal value As String)
+            mLogFolderPath = value
+        End Set
+    End Property
+
+    Public Property LogMessagesToFile() As Boolean
+        Get
+            Return mLogMessagesToFile
+        End Get
+        Set(ByVal value As Boolean)
+            mLogMessagesToFile = value
+        End Set
+    End Property
+
+    Public Overridable ReadOnly Property ProgressStepDescription() As String
+        Get
+            Return mProgressStepDescription
+        End Get
+    End Property
+
+    ' ProgressPercentComplete ranges from 0 to 100, but can contain decimal percentage values
+    Public ReadOnly Property ProgressPercentComplete() As Single
+        Get
+            Return CType(Math.Round(mProgressPercentComplete, 2), Single)
+        End Get
+    End Property
+
+    Public Property ShowErrorMessageDialogs() As Boolean
+        Get
+            Return mShowErrorMessageDialogs
+        End Get
+        Set(ByVal value As Boolean)
+            mShowErrorMessageDialogs = value
+        End Set
+    End Property
+
+#End Region
 
     Private Sub AbbrevSymbolStackAdd(ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType, ByRef SymbolReference As Short)
 
@@ -200,7 +299,7 @@ Public Class MWElementAndMassRoutines
                 .SymbolReferenceStack(.Count - 1) = SymbolReference
             End With
         Catch ex As Exception
-            System.Diagnostics.Debug.Assert(False, "")
+            GeneralErrorHandler("MWElementAndMassRoutines.AbbrevSymbolStackAdd", 0, ex.Message)
         End Try
 
     End Sub
@@ -211,6 +310,10 @@ Public Class MWElementAndMassRoutines
                 .Count -= 1S
             End If
         End With
+    End Sub
+
+    Public Overridable Sub AbortProcessingNow()
+        mAbortProcessing = True
     End Sub
 
     Private Sub AddAbbreviationWork(ByRef intAbbrevIndex As Short, ByRef strSymbol As String, ByRef strFormula As String, ByRef sngCharge As Single, ByRef blnIsAminoAcid As Boolean, Optional ByRef strOneLetter As String = "", Optional ByRef strComment As String = "", Optional ByRef blnInvalidSymbolOrFormula As Boolean = False)
@@ -241,16 +344,18 @@ Public Class MWElementAndMassRoutines
     Private Sub CheckCaution(ByRef strFormulaExcerpt As String)
         Dim strTest As String
         Dim strNewCaution As String
-        Dim intIndex As Short
+        Dim intLength As Short
 
-        For intIndex = 1 To MAX_ABBREV_LENGTH
-            strTest = Left(strFormulaExcerpt, intIndex)
+        For intLength = 1 To MAX_ABBREV_LENGTH
+            If intLength > strFormulaExcerpt.Length Then Exit For
+
+            strTest = strFormulaExcerpt.Substring(0, intLength)
             strNewCaution = LookupCautionStatement(strTest)
-            If Len(strNewCaution) > 0 Then
+            If Not strNewCaution Is Nothing AndAlso strNewCaution.Length > 0 Then
                 AddToCautionDescription(strNewCaution)
                 Exit For
             End If
-        Next intIndex
+        Next intLength
 
     End Sub
 
@@ -297,7 +402,7 @@ Public Class MWElementAndMassRoutines
         ' List is sorted by reverse length, so can do all at once
 
         For intIndex = 1 To MasterSymbolsListCount
-            If Len(MasterSymbolsList(intIndex, 0)) > 0 Then
+            If MasterSymbolsList(intIndex, 0).Length > 0 Then
                 If Left(strFormulaExcerpt, Len(MasterSymbolsList(intIndex, 0))) = MasterSymbolsList(intIndex, 0) Then
                     ' Matched a symbol
                     Select Case UCase(Left(MasterSymbolsList(intIndex, 1), 1))
@@ -316,11 +421,11 @@ Public Class MWElementAndMassRoutines
                     Exit For
                 End If
             Else
-                System.Diagnostics.Debug.Assert(False, "")
+                Console.WriteLine("Zero-length entry found in MasterSymbolsList(); this is unexpected")
             End If
         Next intIndex
 
-        CheckElemAndAbbrev = eSymbolMatchType
+        Return eSymbolMatchType
 
     End Function
 
@@ -342,8 +447,43 @@ Public Class MWElementAndMassRoutines
         End If
     End Function
 
-    Public Function ComputeIsotopicAbundancesInternal(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, Optional ByVal strHeaderIsotopicAbundances As String = "Isotopic Abundances for", Optional ByVal strHeaderMassToCharge As String = "Mass/Charge", Optional ByVal strHeaderFraction As String = "Fraction", Optional ByVal strHeaderIntensity As String = "Intensity", Optional ByRef blnUseFactorials As Boolean = False) As Short
-        ' Computes the Isotopic Distribution for a formula, returns uncharged mass vlaues if intChargeState=0,
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, _
+                                                     ByVal intChargeState As Short, _
+                                                     ByRef strResults As String, _
+                                                     ByRef ConvolutedMSData2DOneBased(,) As Double, _
+                                                     ByRef ConvolutedMSDataCount As Integer) As Short
+
+        Return ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount)
+
+    End Function
+
+    ''' <summary>
+    ''' Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
+    ''' M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
+    ''' </summary>
+    ''' <param name="strFormulaIn">The properly formatted formula to parse</param>
+    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z vlaues</param>
+    ''' <param name="strResults">Table of results</param>
+    ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+    ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+    ''' <param name="strHeaderIsotopicAbundances">Header to use in strResultes</param>
+    ''' <param name="strHeaderMassToCharge">Header to use in strResultes</param>
+    ''' <param name="strHeaderFraction">Header to use in strResultes</param>
+    ''' <param name="strHeaderIntensity">Header to use in strResultes</param>
+    ''' <param name="blnUseFactorials"></param>
+    ''' <returns>0 if success, -1 if an error</returns>
+    ''' <remarks></remarks>
+    Public Function ComputeIsotopicAbundancesInternal(ByRef strFormulaIn As String, _
+                                                      ByVal intChargeState As Short, _
+                                                      ByRef strResults As String, _
+                                                      ByRef ConvolutedMSData2DOneBased(,) As Double, _
+                                                      ByRef ConvolutedMSDataCount As Integer, _
+                                                      Optional ByVal strHeaderIsotopicAbundances As String = "Isotopic Abundances for", _
+                                                      Optional ByVal strHeaderMassToCharge As String = "Mass/Charge", _
+                                                      Optional ByVal strHeaderFraction As String = "Fraction", _
+                                                      Optional ByVal strHeaderIntensity As String = "Intensity", _
+                                                      Optional ByRef blnUseFactorials As Boolean = False) As Short
+        ' Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
         '  M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
         ' Updates strFormulaIn to the properly formatted formula
         ' Returns the results in strResults
@@ -354,8 +494,10 @@ Public Class MWElementAndMassRoutines
         Dim dblMassDefect, dblExactBaseIsoMass, dblMaxPercentDifference As Double
         Dim intElementIndex, intElementCount As Short
         Dim lngMassIndex, lngRowIndex As Integer
+
         Dim udtComputationStats As udtComputationStatsType
         udtComputationStats.Initialize()
+
         Dim dblTemp As Double
 
         Dim IsoStats() As udtIsoResultsByElementType
@@ -380,7 +522,7 @@ Public Class MWElementAndMassRoutines
 
         Dim PredictedConvIterations As Integer
         Dim PredictedTotalComboCalcs, CompletedComboCalcs As Integer
-        Const COMBO_ITERATIONS_SHOW_PROGRESS As Short = 500
+
         Const MIN_ABUNDANCE_TO_KEEP As Double = 0.000001
         Const CUTOFF_FOR_RATIO_METHOD As Double = 0.00001
 
@@ -415,12 +557,15 @@ Public Class MWElementAndMassRoutines
         Dim lngM, lngMPrime As Double
         Dim dblRatioOfFreqs As Double
 
-        Dim objProgress As ProgressFormNET.frmProgress
+        Dim strMessage As String
+        Dim sngPercentComplete As Single
 
         ' Make sure formula is not blank
-        If Len(strFormulaIn) = 0 Then
+        If strFormulaIn Is Nothing OrElse strFormulaIn.Length = 0 Then
             Return -1
         End If
+
+        mAbortProcessing = False
 
         Try
             ' Change strHeaderMassToCharge to "Neutral Mass" if intChargeState = 0 and strHeaderMassToCharge is "Mass/Charge"
@@ -436,9 +581,8 @@ Public Class MWElementAndMassRoutines
 
             If dblWorkingFormulaMass < 0 Then
                 ' Error occurred; information is stored in ErrorParams
-                ComputeIsotopicAbundancesInternal = -1
                 strResults = LookupMessage(350) & ": " & LookupMessage(ErrorParams.ErrorID)
-                Return 0
+                Return -1
             End If
 
             ' See if Deuterium is present by looking for a fractional amount of Hydrogen
@@ -480,9 +624,8 @@ Public Class MWElementAndMassRoutines
 
                 If dblWorkingFormulaMass < 0 Then
                     ' Error occurred; information is stored in ErrorParams
-                    ComputeIsotopicAbundancesInternal = -1
                     strResults = LookupMessage(350) & ": " & LookupMessage(ErrorParams.ErrorID)
-                    Return 0
+                    Return -1
                 End If
             End If
 
@@ -490,9 +633,8 @@ Public Class MWElementAndMassRoutines
             For intElementIndex = 1 To ELEMENT_COUNT
                 dblCount = udtComputationStats.Elements(intElementIndex).Count
                 If dblCount <> CInt(dblCount) Then
-                    ComputeIsotopicAbundancesInternal = -1
                     strResults = LookupMessage(350) & ": " & LookupMessage(805) & ": " & ElementStats(intElementIndex).Symbol & dblCount
-                    Return 0
+                    Return -1
                 End If
             Next intElementIndex
 
@@ -593,14 +735,10 @@ Public Class MWElementAndMassRoutines
                 IsotopeCount = ElementStats(MasterElementIndex).IsotopeCount
 
                 PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount)
-                PredictedTotalComboCalcs = PredictedTotalComboCalcs + PredictedCombos
+                PredictedTotalComboCalcs += PredictedCombos
             Next intElementIndex
 
-            If PredictedTotalComboCalcs > COMBO_ITERATIONS_SHOW_PROGRESS Then
-                objProgress = New ProgressFormNET.frmProgress
-                objProgress.InitializeProgressForm("Finding Isotopic Abundances", 0, PredictedTotalComboCalcs, False)
-                objProgress.UpdateCurrentSubTask("Computing abundances")
-            End If
+            ResetProgress("Finding Isotopic Abundances: Computing abundances")
 
             ' For each element, compute all of the possible combinations
             CompletedComboCalcs = 0
@@ -624,7 +762,11 @@ Public Class MWElementAndMassRoutines
                 PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount)
 
                 If PredictedCombos > 10000000 Then
-                    MsgBox("Too many combinations necessary for prediction of isotopic distribution: " & PredictedCombos.ToString("#,##0") & ControlChars.NewLine & "Please use a simpler formula or reduce the isotopic range defined for the element (currently " & IsotopeCount & ")")
+                    strMessage = "Too many combinations necessary for prediction of isotopic distribution: " & PredictedCombos.ToString("#,##0") & ControlChars.NewLine & "Please use a simpler formula or reduce the isotopic range defined for the element (currently " & IsotopeCount & ")"
+                    If mShowErrorMessageDialogs Then
+                        MsgBox(strMessage)
+                    End If
+                    LogMessage(strMessage, eMessageTypeConstants.ErrorMsg)
                     Return -1
                 End If
 
@@ -637,7 +779,9 @@ Public Class MWElementAndMassRoutines
 
                 ' The predicted value should always match the actual value, unless blnExplicitIsotopesPresent = True
                 If Not blnExplicitIsotopesPresent Then
-                    System.Diagnostics.Debug.Assert(PredictedCombos = CombosFound, "")
+                    If PredictedCombos <> CombosFound Then
+                        Console.WriteLine("PredictedCombos doesn't match CombosFound (" & PredictedCombos & " vs. " & CombosFound & "); this is unexpected")
+                    End If
                 End If
 
                 ' Reserve space for the abundances based on the minimum and maximum weight of the isotopes of the element
@@ -655,11 +799,10 @@ Public Class MWElementAndMassRoutines
                     dblFractionalAbundanceSaved = 0
                     For ComboIndex = 1 To CombosFound
                         CompletedComboCalcs = CompletedComboCalcs + 1
-                        If Not objProgress Is Nothing Then
-                            If CompletedComboCalcs Mod 10 = 0 Then
-                                objProgress.UpdateProgressBar(CompletedComboCalcs)
-                                If objProgress.KeyPressAbortProcess Then Exit For
-                            End If
+
+                        sngPercentComplete = CompletedComboCalcs / CSng(PredictedTotalComboCalcs) * 100
+                        If CompletedComboCalcs Mod 10 = 0 Then
+                            UpdateProgress(sngPercentComplete)
                         End If
 
                         dblThisComboFractionalAbundance = -1
@@ -803,15 +946,13 @@ Public Class MWElementAndMassRoutines
                     Next ComboIndex
                 End If
 
-                If Not objProgress Is Nothing AndAlso objProgress.KeyPressAbortProcess Then Exit For
+                If mAbortProcessing Then Exit For
 
             Next intElementIndex
 
-            If Not objProgress Is Nothing AndAlso objProgress.KeyPressAbortProcess Then
+            If mAbortProcessing Then
                 ' Process Aborted
                 strResults = LookupMessage(940)
-                objProgress.HideForm()
-                objProgress = Nothing
                 Return -1
             End If
 
@@ -835,27 +976,22 @@ Public Class MWElementAndMassRoutines
                 PredictedConvIterations = PredictedConvIterations * IsoStats(2).ResultsCount
             Next intElementIndex
 
-            If Not objProgress Is Nothing Then
-                objProgress.InitializeProgressForm("Finding Isotopic Abundances", 0, IsoStats(1).ResultsCount, False)
-                objProgress.UpdateCurrentSubTask("Convoluting results")
-            End If
+            ResetProgress("Finding Isotopic Abundances: Convoluting results")
 
             ' Convolute the results for each element using a recursive convolution routine
             Dim ConvolutionIterations As Integer
             ConvolutionIterations = 0
             For lngRowIndex = 1 To IsoStats(1).ResultsCount
-                If Not objProgress Is Nothing Then
-                    objProgress.UpdateProgressBar(lngRowIndex - 1)
-                    If objProgress.KeyPressAbortProcess Then Exit For
-                End If
-                ConvoluteMasses(objProgress, ConvolutedAbundances, ConvolutedAbundanceStartMass, lngRowIndex, 1, 0, 1, IsoStats, intElementCount, ConvolutionIterations)
+                ConvoluteMasses(ConvolutedAbundances, ConvolutedAbundanceStartMass, lngRowIndex, 1, 0, 1, IsoStats, intElementCount, ConvolutionIterations)
+
+                sngPercentComplete = lngRowIndex / CSng(IsoStats(1).ResultsCount) * 100
+                UpdateProgress(sngPercentComplete)
+
             Next lngRowIndex
 
-            If Not objProgress Is Nothing AndAlso objProgress.KeyPressAbortProcess Then
+            If mAbortProcessing Then
                 ' Process Aborted
                 strResults = LookupMessage(940)
-                objProgress.HideForm()
-                objProgress = Nothing
                 Return -1
             End If
 
@@ -881,7 +1017,10 @@ Public Class MWElementAndMassRoutines
                 dblTemp = ConvolutedAbundanceStartMass
             End If
             dblMaxPercentDifference = 10 ^ -(3 - System.Math.Round(Math.Log10(CDbl(dblTemp)), 0))
-            System.Diagnostics.Debug.Assert(System.Math.Abs(dblMassDefect / dblExactBaseIsoMass) < dblMaxPercentDifference, "")
+
+            If System.Math.Abs(dblMassDefect / dblExactBaseIsoMass) >= dblMaxPercentDifference Then
+                Console.WriteLine("dblMassDefect / dblExactBaseIsoMass is greater dblMaxPercentDifference: (" & dblMassDefect / dblExactBaseIsoMass & " vs. " & dblMaxPercentDifference & "); this is unexpected")
+            End If
 
             ' Step Through ConvolutedAbundances(), starting at the end, and find the first value above MIN_ABUNDANCE_TO_KEEP
             ' Decrease ConvolutedMSDataCount to remove the extra values below MIN_ABUNDANCE_TO_KEEP
@@ -951,18 +1090,14 @@ Public Class MWElementAndMassRoutines
 
             strResults = strOutput
 
-            If Not objProgress Is Nothing Then
-                objProgress.HideForm()
-                objProgress = Nothing
-            End If
-
-            Return 0 ' Success
         Catch ex As Exception
             MwtWinDllErrorHandler("MwtWinDll|ComputeIsotopicAbundances")
             ErrorParams.ErrorID = 590
             ErrorParams.ErrorPosition = 0
             Return -1
         End Try
+
+        Return 0 ' Success
 
     End Function
 
@@ -1109,8 +1244,10 @@ Public Class MWElementAndMassRoutines
         ' If an error occurs, returns -1
 
         Dim dblMass As Double
+
         Dim udtComputationStats As udtComputationStatsType
         udtComputationStats.Initialize()
+
         Dim strEmpiricalFormula As String
         Dim intElementIndex, intElementSearchIndex As Short
         Dim intElementIndexToUse As Short
@@ -1170,6 +1307,7 @@ Public Class MWElementAndMassRoutines
         ' If an error occurs, returns -1
 
         Dim dblMass As Double
+
         Dim udtComputationStats As udtComputationStatsType
         udtComputationStats.Initialize()
 
@@ -1197,16 +1335,16 @@ Public Class MWElementAndMassRoutines
         FindIndexForNominalMass = (CInt(lngWorkingMass - AtomCount * System.Math.Round(ThisElementsIsotopes(1).Mass, 0)) + 1)
     End Function
 
-    Private Sub ConvoluteMasses(ByRef objProgress As ProgressFormNET.frmProgress, ByRef ConvolutedAbundances() As udtIsoResultsOverallType, ByRef ConvolutedAbundanceStartMass As Integer, ByRef WorkingRow As Integer, ByRef WorkingAbundance As Single, ByRef WorkingMassTotal As Integer, ByRef ElementTrack As Short, ByRef IsoStats() As udtIsoResultsByElementType, ByRef ElementCount As Short, ByRef Iterations As Integer)
+    Private Sub ConvoluteMasses(ByRef ConvolutedAbundances() As udtIsoResultsOverallType, ByRef ConvolutedAbundanceStartMass As Integer, ByRef WorkingRow As Integer, ByRef WorkingAbundance As Single, ByRef WorkingMassTotal As Integer, ByRef ElementTrack As Short, ByRef IsoStats() As udtIsoResultsByElementType, ByRef ElementCount As Short, ByRef Iterations As Integer)
         ' Recursive function to Convolute the Results in IsoStats() and store in ConvolutedAbundances(); 1-based array
 
         Dim IndexToStoreResult, RowIndex As Integer
         Dim NewAbundance As Single
         Dim NewMassTotal As Integer
 
-        If Not objProgress Is Nothing AndAlso objProgress.KeyPressAbortProcess Then Exit Sub
+        If mAbortProcessing Then Exit Sub
 
-        Iterations = Iterations + 1
+        Iterations += 1
         If Iterations Mod 10000 = 0 Then
             System.Windows.Forms.Application.DoEvents()
         End If
@@ -1224,7 +1362,7 @@ Public Class MWElementAndMassRoutines
             End With
         Else
             For RowIndex = 1 To IsoStats(ElementTrack + 1).ResultsCount
-                ConvoluteMasses(objProgress, ConvolutedAbundances, ConvolutedAbundanceStartMass, RowIndex, NewAbundance, NewMassTotal, ElementTrack + 1S, IsoStats, ElementCount, Iterations)
+                ConvoluteMasses(ConvolutedAbundances, ConvolutedAbundanceStartMass, RowIndex, NewAbundance, NewMassTotal, ElementTrack + 1S, IsoStats, ElementCount, Iterations)
             Next RowIndex
         End If
     End Sub
@@ -1258,63 +1396,69 @@ Public Class MWElementAndMassRoutines
 
 
     ' Note: This function is unused
-    Private Function FindCombinations(Optional ByRef AtomCount As Integer = 2, Optional ByRef IsotopeCount As Short = 2, Optional ByRef boolPrintOutput As Boolean = False) As Integer
-        ' Find Combinations of atoms for a given number of atoms and number of potential isotopes
-        ' Can print results to debug window
+    ''Private Function FindCombinations(Optional ByRef AtomCount As Integer = 2, Optional ByRef IsotopeCount As Short = 2, Optional ByRef boolPrintOutput As Boolean = False) As Integer
+    ''    ' Find Combinations of atoms for a given number of atoms and number of potential isotopes
+    ''    ' Can print results to debug window
 
-        Dim ComboResults(,) As Integer
-        Dim AtomTrackHistory() As Integer
-        Dim PredictedCombos, CombosFound As Integer
+    ''    Dim ComboResults(,) As Integer
+    ''    Dim AtomTrackHistory() As Integer
+    ''    Dim PredictedCombos, CombosFound As Integer
 
-        PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount)
+    ''    Dim strMessage As String
 
-        If PredictedCombos > 10000000 Then
-            MsgBox("Too many combinations necessary for prediction of isotopic distribution: " & PredictedCombos.ToString("#,##0") & ControlChars.NewLine & "Please use a simpler formula or reduce the isotopic range defined for the element (currently " & IsotopeCount & ")")
-            Return -1
-        End If
+    ''    PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount)
 
-        Try
-            ReDim ComboResults(PredictedCombos, IsotopeCount)
+    ''    If PredictedCombos > 10000000 Then
+    ''        strMessage = "Too many combinations necessary for prediction of isotopic distribution: " & PredictedCombos.ToString("#,##0") & ControlChars.NewLine & "Please use a simpler formula or reduce the isotopic range defined for the element (currently " & IsotopeCount & ")"
+    ''        If mShowErrorMessageDialogs Then
+    ''            MsgBox(strMessage)
+    ''        End If
+    ''        LogMessage(strMessage, eMessageTypeConstants.ErrorMsg)
+    ''        Return -1
+    ''    End If
 
-            ReDim AtomTrackHistory(IsotopeCount)
-            AtomTrackHistory(1) = AtomCount
+    ''    Try
+    ''        ReDim ComboResults(PredictedCombos, IsotopeCount)
 
-            CombosFound = FindCombosRecurse(ComboResults, AtomCount, IsotopeCount, IsotopeCount, 1, 1, AtomTrackHistory)
+    ''        ReDim AtomTrackHistory(IsotopeCount)
+    ''        AtomTrackHistory(1) = AtomCount
 
-            Dim strOutput, strHeader As String
-            Dim RowIndex As Integer
-            Dim ColIndex As Short
-            If boolPrintOutput Then
+    ''        CombosFound = FindCombosRecurse(ComboResults, AtomCount, IsotopeCount, IsotopeCount, 1, 1, AtomTrackHistory)
 
-                strHeader = CombosFound & " combos found for " & AtomCount & " atoms for element with " & IsotopeCount & " isotopes"
-                If CombosFound > 5000 Then
-                    strHeader = strHeader & ControlChars.NewLine & "Only displaying the first 5000 combinations"
-                End If
+    ''        Dim strOutput, strHeader As String
+    ''        Dim RowIndex As Integer
+    ''        Dim ColIndex As Short
+    ''        If boolPrintOutput Then
 
-                System.Diagnostics.Debug.WriteLine(strHeader)
+    ''            strHeader = CombosFound & " combos found for " & AtomCount & " atoms for element with " & IsotopeCount & " isotopes"
+    ''            If CombosFound > 5000 Then
+    ''                strHeader = strHeader & ControlChars.NewLine & "Only displaying the first 5000 combinations"
+    ''            End If
 
-                For RowIndex = 1 To CombosFound
-                    strOutput = ""
-                    For ColIndex = 1 To IsotopeCount
-                        strOutput = strOutput & ComboResults(RowIndex, ColIndex) & vbTab
-                    Next ColIndex
-                    System.Diagnostics.Debug.WriteLine(strOutput)
-                    If RowIndex > 5000 Then Exit For
-                Next RowIndex
+    ''            System.Diagnostics.Debug.WriteLine(strHeader)
 
-                If CombosFound > 50 Then System.Diagnostics.Debug.WriteLine(strHeader)
+    ''            For RowIndex = 1 To CombosFound
+    ''                strOutput = ""
+    ''                For ColIndex = 1 To IsotopeCount
+    ''                    strOutput = strOutput & ComboResults(RowIndex, ColIndex) & vbTab
+    ''                Next ColIndex
+    ''                System.Diagnostics.Debug.WriteLine(strOutput)
+    ''                If RowIndex > 5000 Then Exit For
+    ''            Next RowIndex
 
-            End If
+    ''            If CombosFound > 50 Then System.Diagnostics.Debug.WriteLine(strHeader)
 
-            Return CombosFound
-        Catch ex As Exception
-            MwtWinDllErrorHandler("MwtWinDll|FindCombinations")
-            ErrorParams.ErrorID = 590
-            ErrorParams.ErrorPosition = 0
-            Return -1
-        End Try
+    ''        End If
 
-    End Function
+    ''        Return CombosFound
+    ''    Catch ex As Exception
+    ''        MwtWinDllErrorHandler("MwtWinDll|FindCombinations")
+    ''        ErrorParams.ErrorID = 590
+    ''        ErrorParams.ErrorPosition = 0
+    ''        Return -1
+    ''    End Try
+
+    ''End Function
 
     Private Function FindCombosPredictIterations(ByRef AtomCount As Integer, ByRef IsotopeCount As Short) As Integer
         ' Determines the number of Combo results (iterations) for the given
@@ -1437,7 +1581,7 @@ Public Class MWElementAndMassRoutines
                     AtomTrackHistory(intNewColumn - 1) = AtomTrack
                     FindCombosRecurse(ComboResults, AtomCount - AtomTrack, MaxIsotopeCount, CurrentIsotopeCount - 1S, CurrentRow, intNewColumn, AtomTrackHistory)
                 Else
-                    System.Diagnostics.Debug.Assert(False, "Program bug. This line should not be reached.", "")
+                    Console.WriteLine("Program bug in FindCombosRecurse. This line should not be reached.")
                 End If
             Loop
 
@@ -1456,12 +1600,15 @@ Public Class MWElementAndMassRoutines
         strMessage = "Error in " & strCallingProcedure & ": " & ErrorToString(lngErrorNumber) & " (#" & Trim(CStr(lngErrorNumber)) & ")"
         If Len(strErrorDescriptionAddnl) > 0 Then strMessage = strMessage & ControlChars.NewLine & strErrorDescriptionAddnl
 
+        LogMessage(strMessage, eMessageTypeConstants.ErrorMsg)
+
         If mShowErrorMessageDialogs Then
             MsgBox(strMessage, MsgBoxStyle.Exclamation, "Error in MwtWinDll")
         Else
             System.Diagnostics.Debug.WriteLine(strMessage)
-            System.Diagnostics.Debug.Assert(False, "")
         End If
+
+        LogMessage(strMessage, eMessageTypeConstants.ErrorMsg)
 
         Try
             strErrorFilePath = System.IO.Path.Combine(System.Environment.CurrentDirectory, "ErrorLog.txt")
@@ -1731,7 +1878,7 @@ Public Class MWElementAndMassRoutines
             ' Append Prefix to certain strings
             Select Case lngMessageID
                 ' Add Error: to the front of certain error codes
-            Case 1 To 99, 120, 130, 140, 260, 270, 300
+                Case 1 To 99, 120, 130, 140, 260, 270, 300
                     strMessage = GetMessageStatementInternal(350) & ": " & strMessage
             End Select
 
@@ -1763,7 +1910,7 @@ Public Class MWElementAndMassRoutines
             Return blnFound
 
         Catch ex As Exception
-            System.Diagnostics.Debug.Assert(False, "")
+            GeneralErrorHandler("IsPresentInAbrevSymbolStack", 0, ex.Message)
             Return False
         End Try
 
@@ -1819,15 +1966,88 @@ Public Class MWElementAndMassRoutines
         IsStringAllLetters = blnAllLetters
     End Function
 
+    Protected Sub LogMessage(ByVal strMessage As String)
+        LogMessage(strMessage, eMessageTypeConstants.Normal)
+    End Sub
+
+    Protected Sub LogMessage(ByVal strMessage As String, ByVal eMessageType As eMessageTypeConstants)
+        ' Note that CleanupFilePaths() will update mOutputFolderPath, which is used here if mLogFolderPath is blank
+        ' Thus, be sure to call CleanupFilePaths (or update mLogFolderPath) before the first call to LogMessage
+
+        Dim strMessageType As String
+        Dim blnOpeningExistingFile As Boolean = False
+
+        If mLogFile Is Nothing AndAlso mLogMessagesToFile Then
+            Try
+                mLogFilePath = System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location)
+                mLogFilePath &= "_log_" & System.DateTime.Now.ToString("yyyy-MM-dd") & ".txt"
+
+                Try
+                    If mLogFolderPath Is Nothing Then mLogFolderPath = String.Empty
+
+                    If mLogFolderPath.Length > 0 Then
+                        ' Create the log folder if it doesn't exist
+                        If Not System.IO.Directory.Exists(mLogFolderPath) Then
+                            System.IO.Directory.CreateDirectory(mLogFolderPath)
+                        End If
+                    End If
+                Catch ex As Exception
+                    mLogFolderPath = String.Empty
+                End Try
+
+                If mLogFolderPath.Length > 0 Then
+                    mLogFilePath = System.IO.Path.Combine(mLogFolderPath, mLogFilePath)
+                End If
+
+                blnOpeningExistingFile = System.IO.File.Exists(mLogFilePath)
+
+                mLogFile = New System.IO.StreamWriter(New System.IO.FileStream(mLogFilePath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))
+                mLogFile.AutoFlush = True
+
+                If Not blnOpeningExistingFile Then
+                    mLogFile.WriteLine("Date" & ControlChars.Tab & _
+                                       "Type" & ControlChars.Tab & _
+                                       "Message")
+                End If
+
+            Catch ex As Exception
+                ' Error creating the log file; set mLogMessagesToFile to false so we don't repeatedly try to create it
+                mLogMessagesToFile = False
+            End Try
+
+        End If
+
+        If Not mLogFile Is Nothing Then
+            Select Case eMessageType
+                Case eMessageTypeConstants.Normal
+                    strMessageType = "Normal"
+                Case eMessageTypeConstants.ErrorMsg
+                    strMessageType = "Error"
+                Case eMessageTypeConstants.Warning
+                    strMessageType = "Warning"
+                Case Else
+                    strMessageType = "Unknown"
+            End Select
+
+            mLogFile.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") & ControlChars.Tab & _
+                               strMessageType & ControlChars.Tab & _
+                               strMessage)
+        End If
+
+    End Sub
+
     Private Function LookupCautionStatement(ByRef strCompareText As String) As String
         Dim intIndex As Short
 
         For intIndex = 1 To CShort(CautionStatementCount)
             If strCompareText = CautionStatements(intIndex, 0) Then
-                LookupCautionStatement = CautionStatements(intIndex, 1)
+                Return CautionStatements(intIndex, 1)
                 Exit For
             End If
         Next intIndex
+
+        Return String.Empty
+
     End Function
 
     Private Function LookupMessage(ByRef lngMessageID As Integer, Optional ByRef strAppendText As String = "") As String
@@ -1852,7 +2072,7 @@ Public Class MWElementAndMassRoutines
         ' Now prepend Prefix to certain strings
         Select Case lngMessageID
             ' Add Error: to the front of certain error codes
-        Case 1 To 99, 120, 130, 140, 260, 270, 300
+            Case 1 To 99, 120, 130, 140, 260, 270, 300
                 strMessage = LookupMessage(350) & ": " & strMessage
         End Select
 
@@ -2220,7 +2440,7 @@ Public Class MWElementAndMassRoutines
         End If
 
         Select Case eElementMode
-            Case eElementMode.emIntegerMass
+            Case emElementModeConstants.emIntegerMass
                 ' Integer Isotopic Weights
                 dblElemVals(1, 1) = 1
                 dblElemVals(2, 1) = 4
@@ -2329,7 +2549,7 @@ Public Class MWElementAndMassRoutines
                 ' Unused elements
                 ' data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
 
-            Case eElementMode.emIsotopicMass
+            Case emElementModeConstants.emIsotopicMass
                 ' isotopic Element Weights
                 dblElemVals(1, 1) = 1.0078246
                 dblElemVals(2, 1) = 4.0026029
@@ -3158,16 +3378,27 @@ Public Class MWElementAndMassRoutines
         Dim blnShowErrorMessageDialogsSaved As Boolean
 
         If Err.Number = 6 Then
-            MsgBox(LookupMessage(590), MsgBoxStyle.OKOnly, LookupMessage(350))
+            strMessage = LookupMessage(590)
+            If mShowErrorMessageDialogs Then
+                MsgBox(LookupMessage(590), MsgBoxStyle.OkOnly, LookupMessage(350))
+            End If
+            LogMessage(strMessage, eMessageTypeConstants.ErrorMsg)
         Else
             strMessage = LookupMessage(600) & ": " & Err.Description & ControlChars.NewLine & " (" & strSourceForm & " handler)"
-            strMessage = strMessage & ControlChars.NewLine & LookupMessage(605)
-            MsgBox(strMessage, MsgBoxStyle.OKOnly, LookupMessage(350))
+            strMessage &= ControlChars.NewLine & LookupMessage(605)
+
+            If mShowErrorMessageDialogs Then
+                MsgBox(strMessage, MsgBoxStyle.OkOnly, LookupMessage(350))
+            End If
+
+            ' Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
+            ' Note that GeneralErrorHandler will call LogMessage
+
+            ' Make sure mShowErrorMessageDialogs is false when calling GeneralErrorHandler
 
             blnShowErrorMessageDialogsSaved = mShowErrorMessageDialogs
             mShowErrorMessageDialogs = False
 
-            ' Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
             GeneralErrorHandler(strSourceForm, Err.Number)
 
             mShowErrorMessageDialogs = blnShowErrorMessageDialogsSaved
@@ -3185,6 +3416,12 @@ Public Class MWElementAndMassRoutines
         ReDim AbbrevStats(MAX_ABBREV_COUNT)
         ReDim CautionStatements(MAX_CAUTION_STATEMENTS, 2)
         ReDim MessageStatements(MESSAGE_STATEMENT_DIMCOUNT)
+
+        mProgressStepDescription = String.Empty
+        mProgressPercentComplete = 0
+
+        mLogFolderPath = String.Empty
+        mLogFilePath = String.Empty
 
     End Sub
 
@@ -3270,7 +3507,7 @@ Public Class MWElementAndMassRoutines
             End If
 
         Catch ex As Exception
-            GeneralErrorHandler("MWPeptideClass.ParseFormulaPublic", Err.Number)
+            GeneralErrorHandler("MWElementAndMassRoutines.ParseFormulaPublic", 0, ex.Message)
             Return -1
         End Try
 
@@ -3303,6 +3540,7 @@ Public Class MWElementAndMassRoutines
         Dim strLeftHalf, strRightHalf As String
         Dim blnMatchFound As Boolean
         Dim strNewFormulaRightHalf As String
+
         Dim udtComputationStatsRightHalf As udtComputationStatsType
         udtComputationStatsRightHalf.Initialize()
 
@@ -3335,6 +3573,8 @@ Public Class MWElementAndMassRoutines
             blnInsideBrackets = False ' Switch for in or out of brackets
 
             intDashPos = 0
+            strNewFormula = String.Empty
+            strNewFormulaRightHalf = String.Empty
 
             LoneCarbonOrSilicon = 0 ' The number of carbon or silicon atoms
             CarbonOrSiliconReturnCount = 0
@@ -3365,8 +3605,6 @@ Public Class MWElementAndMassRoutines
                     End If
                     intCharIndex = intCharIndex + 1S
                 Loop While intCharIndex <= Len(strFormula)
-                ' blnMatchFound should always be true; thus, I can probably remove it
-                System.Diagnostics.Debug.Assert(blnMatchFound, "")
 
                 If blnMatchFound Then
                     ' Update strFormula
@@ -3378,16 +3616,15 @@ Public Class MWElementAndMassRoutines
                         With udtComputationStats.Elements(intElementIndex)
                             If ElementStats(intElementIndex).Mass * .Count + .IsotopicCorrection >= ElementStats(intElementIndex).Mass * udtComputationStatsRightHalf.Elements(intElementIndex).Count + udtComputationStatsRightHalf.Elements(intElementIndex).IsotopicCorrection Then
 
-                                .Count = .Count - udtComputationStatsRightHalf.Elements(intElementIndex).Count
+                                .Count -= -udtComputationStatsRightHalf.Elements(intElementIndex).Count
                                 If .Count < 0 Then
                                     ' This shouldn't happen
-                                    System.Diagnostics.Debug.Assert(False, "")
+                                    Console.WriteLine(".Count is less than 0 in ParseFormulaRecursive; this shouldn't happen")
                                     .Count = 0
                                 End If
 
                                 If udtComputationStatsRightHalf.Elements(intElementIndex).IsotopicCorrection <> 0 Then
                                     ' This assertion is here simply because I want to check the code
-                                    System.Diagnostics.Debug.Assert(False, "")
                                     .IsotopicCorrection = .IsotopicCorrection - udtComputationStatsRightHalf.Elements(intElementIndex).IsotopicCorrection
                                 End If
                             Else
@@ -3904,6 +4141,7 @@ Public Class MWElementAndMassRoutines
 
             With ErrorParams
                 If .ErrorID <> 0 And Len(.ErrorCharacter) = 0 Then
+                    If strChar1 Is Nothing Then strChar1 = EMPTY_STRINGCHAR
                     .ErrorCharacter = strChar1
                     .ErrorPosition = .ErrorPosition + intCharCountPrior
                 End If
@@ -3923,9 +4161,11 @@ Public Class MWElementAndMassRoutines
             Return strFormula
 
         Catch ex As Exception
-            MwtWinDllErrorHandler("MwtWinDll_clsElementAndMassRoutines|ParseFormula")
+            MwtWinDllErrorHandler("MwtWinDll_clsElementAndMassRoutines|ParseFormula: " & ex.Message)
             ErrorParams.ErrorID = -10
             ErrorParams.ErrorPosition = 0
+
+            Return strFormula
         End Try
 
     End Function
@@ -3949,6 +4189,7 @@ Public Class MWElementAndMassRoutines
         ' If it doesn't get set to 0 (due to an error), it will get set to the
         '   length of the matched number before exiting the sub
         intNumLength = -1
+        strFoundNum = String.Empty
 
         If strWork = "" Then strWork = EMPTY_STRINGCHAR
         If (Asc(Left(strWork, 1)) < 48 Or Asc(Left(strWork, 1)) > 57) And Left(strWork, 1) <> gComputationOptions.DecimalSeparator And Not (Left(strWork, 1) = "-" And blnAllowNegative = True) Then
@@ -3959,7 +4200,7 @@ Public Class MWElementAndMassRoutines
             For intIndex = 1 To CShort(Len(strWork))
                 strWorking = Mid(strWork, intIndex, 1)
                 If IsNumeric(strWorking) Or strWorking = gComputationOptions.DecimalSeparator Or (blnAllowNegative = True And strWorking = "-") Then
-                    strFoundNum = strFoundNum & strWorking
+                    strFoundNum &= strWorking
                 Else
                     Exit For
                 End If
@@ -4214,6 +4455,15 @@ Public Class MWElementAndMassRoutines
         End With
     End Sub
 
+    Protected Sub ResetProgress()
+        RaiseEvent ProgressReset()
+    End Sub
+
+    Protected Sub ResetProgress(ByVal strProgressStepDescription As String)
+        UpdateProgress(strProgressStepDescription, 0)
+        RaiseEvent ProgressReset()
+    End Sub
+
     Public Function ReturnFormattedMassAndStdDev(ByRef dblMass As Double, ByRef dblStdDev As Double, Optional ByRef blnIncludeStandardDeviation As Boolean = True, Optional ByRef blnIncludePctSign As Boolean = False) As String
         ' Plan:
         ' Round dblStdDev to 1 final digit.
@@ -4269,18 +4519,18 @@ Public Class MWElementAndMassRoutines
                     If blnIncludeStandardDeviation Then
                         strResult = strResult & "(" & Chr(177) & strStdDevShort & ")"
                     End If
-                    strResult = strResult & strPctSign
+                    strResult &= strPctSign
                 ElseIf gComputationOptions.StdDevMode = smStdDevModeConstants.smScientific Then
                     ' StdDevType Scientific (Type 1)
                     strResult = CStr(dblRoundedMain) & strPctSign
                     If blnIncludeStandardDeviation Then
-                        strResult = strResult & " (" & Chr(177) & Trim(dblStdDev.ToString("0.000E+00")) & ")"
+                        strResult &= " (" & Chr(177) & Trim(dblStdDev.ToString("0.000E+00")) & ")"
                     End If
                 Else
                     ' StdDevType Decimal
                     strResult = dblMass.ToString("0.0####") & strPctSign
                     If blnIncludeStandardDeviation Then
-                        strResult = strResult & " (" & Chr(177) & Trim(CStr(dblRoundedStdDev)) & ")"
+                        strResult &= " (" & Chr(177) & Trim(CStr(dblRoundedStdDev)) & ")"
                     End If
                 End If
             End If
@@ -4291,6 +4541,9 @@ Public Class MWElementAndMassRoutines
             ErrorParams.ErrorID = -10
             ErrorParams.ErrorPosition = 0
         End Try
+
+        If strResult Is Nothing Then strResult = String.Empty
+        Return strResult
 
     End Function
 
@@ -4468,9 +4721,9 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function SetChargeCarrierMassInternal(ByRef dblMass As Double) As Object
+    Public Sub SetChargeCarrierMassInternal(ByRef dblMass As Double)
         mChargeCarrierMass = dblMass
-    End Function
+    End Sub
 
     Public Function SetElementInternal(ByRef strSymbol As String, ByRef dblMass As Double, ByRef dblUncertainty As Double, ByRef sngCharge As Single, Optional ByRef blnRecomputeAbbreviationMasses As Boolean = True) As Integer
         ' Used to update the values for a single element (based on strSymbol)
@@ -4546,7 +4799,7 @@ Public Class MWElementAndMassRoutines
                 End If
             End If
         Catch ex As Exception
-            GeneralErrorHandler("MWPeptideClass.SetElementModeInternal", Err.Number)
+            GeneralErrorHandler("MWElementAndMassRoutines.SetElementModeInternal", 0, ex.Message)
         End Try
 
     End Sub
@@ -4646,10 +4899,6 @@ Public Class MWElementAndMassRoutines
         mShowErrorMessageDialogs = blnValue
     End Sub
 
-    Public Function ShowErrorMessageDialogs() As Boolean
-        ShowErrorMessageDialogs = mShowErrorMessageDialogs
-    End Function
-
     Public Sub SortAbbreviationsInternal()
         Dim lngLowIndex, lngHighIndex As Integer
         Dim lngCount As Integer
@@ -4713,6 +4962,61 @@ Public Class MWElementAndMassRoutines
         SpacePadFront = strWork
 
     End Function
+
+    ''' <summary>
+    ''' Update the progress description
+    ''' </summary>
+    ''' <param name="strProgressStepDescription">Description of the current processing occurring</param>
+    ''' <remarks></remarks>
+    Protected Sub UpdateProgress(ByVal strProgressStepDescription As String)
+        UpdateProgress(strProgressStepDescription, mProgressPercentComplete)
+    End Sub
+
+    ''' <summary>
+    ''' Update the progress
+    ''' </summary>
+    ''' <param name="sngPercentComplete">Value between 0 and 100, indicating percent complete</param>
+    ''' <remarks></remarks>
+    Protected Sub UpdateProgress(ByVal sngPercentComplete As Single)
+        UpdateProgress(Me.ProgressStepDescription, sngPercentComplete)
+    End Sub
+
+    ''' <summary>
+    ''' Update the progress
+    ''' </summary>
+    ''' <param name="strProgressStepDescription">Description of the current processing occurring</param>
+    ''' <param name="sngPercentComplete">Value between 0 and 100, indicating percent complete</param>
+    ''' <remarks></remarks>
+    Protected Sub UpdateProgress(ByVal strProgressStepDescription As String, ByVal sngPercentComplete As Single)
+        Dim blnDescriptionChanged As Boolean = False
+
+        If strProgressStepDescription <> mProgressStepDescription Then
+            blnDescriptionChanged = True
+        End If
+
+        mProgressStepDescription = String.Copy(strProgressStepDescription)
+        If sngPercentComplete < 0 Then
+            sngPercentComplete = 0
+        ElseIf sngPercentComplete > 100 Then
+            sngPercentComplete = 100
+        End If
+        mProgressPercentComplete = sngPercentComplete
+
+        If blnDescriptionChanged Then
+            If mProgressPercentComplete = 0 Then
+                LogMessage(mProgressStepDescription)
+            Else
+                LogMessage(mProgressStepDescription & " (" & mProgressPercentComplete.ToString("0.0") & "% complete)")
+            End If
+        End If
+
+        RaiseEvent ProgressChanged(Me.ProgressStepDescription, Me.ProgressPercentComplete)
+
+    End Sub
+
+    Protected Sub OperationComplete()
+        RaiseEvent ProgressComplete()
+    End Sub
 
     Public Function ValidateAllAbbreviationsInternal() As Integer
         ' Checks the formula of all abbreviations to make sure it's valid

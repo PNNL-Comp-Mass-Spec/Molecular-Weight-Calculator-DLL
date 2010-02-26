@@ -1,5 +1,11 @@
 MwtWinDll.NET Change Log
 
+Version 3.3.3709; February 26, 2010
+	- Converted to Visual Studio 2010
+	- Added progress events
+		- Removed references to ProgressFormNET.dll (it was previously only used in ComputeIsotopicAbundancesInternal
+	- Added option to log messages to a file
+
 Version 3.2.3576; October 16, 2009
 	- Added support for c and z ions in function GetFragmentationMasses()
 

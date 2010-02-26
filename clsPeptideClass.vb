@@ -201,7 +201,7 @@ Public Class MWPeptideClass
         Try
             If lngIonCount > UBound(FragSpectrumWork) Then
                 ' This shouldn't happen
-                System.Diagnostics.Debug.Assert(False, "")
+                Console.WriteLine("In AppendDataToFragSpectrum, lngIonCount is greater than UBound(FragSpectrumWork); this is unexpected")
                 ReDim Preserve FragSpectrumWork(UBound(FragSpectrumWork) + 10)
             End If
 
@@ -219,7 +219,6 @@ Public Class MWPeptideClass
             lngIonCount += 1
         Catch ex As Exception
             System.Diagnostics.Debug.WriteLine(Err.Description)
-            System.Diagnostics.Debug.Assert(False, "")
         End Try
 
     End Sub
@@ -250,7 +249,7 @@ Public Class MWPeptideClass
         lngSequenceStrLength = Len(strPartialSequence)
 
         ' Find the entire group of potential modification symbols
-        strModSymbolGroup = ""
+        strModSymbolGroup = String.Empty
         lngCompareIndex = 1
         Do While lngCompareIndex <= lngSequenceStrLength
             strTestChar = Mid(strPartialSequence, lngCompareIndex, 1)
@@ -280,13 +279,13 @@ Public Class MWPeptideClass
             If Not blnMatchFound Then
                 If blnAddMissingModificationSymbols Then
                     ' Add strModSymbolGroup as a new modification, using a mass of 0 since we don't know the modification mass
-                    SetModificationSymbol(strModSymbolGroup, 0, False, "")
+                    SetModificationSymbol(strModSymbolGroup, 0, False, String.Empty)
                     blnMatchFound = True
                 Else
                     ' Ignore the modification
                     strModSymbolGroup = CStr(0)
                 End If
-                strModSymbolGroup = ""
+                strModSymbolGroup = String.Empty
             End If
 
             If blnMatchFound Then
@@ -305,7 +304,7 @@ Public Class MWPeptideClass
                     ' Remove the matched portion from strModSymbolGroup and test again
                     strModSymbolGroup = Mid(strModSymbolGroup, lngIndex + 1)
                 Else
-                    strModSymbolGroup = ""
+                    strModSymbolGroup = String.Empty
                 End If
             End If
         Loop
@@ -366,13 +365,16 @@ Public Class MWPeptideClass
 
         ' Initialize the UDTs
         udtResidue.Initialize()
+        strSymbol3Letter = String.Empty
 
         If Len(strSymbol) > 0 Then
             If blnUse3LetterCode Then
                 strSymbol3Letter = strSymbol
             Else
                 strSymbol3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, True)
-                If strSymbol3Letter = "" Then strSymbol3Letter = strSymbol
+                If strSymbol3Letter.Length = 0 Then
+                    strSymbol3Letter = strSymbol
+                End If
             End If
 
             lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strSymbol3Letter, True)
@@ -593,6 +595,11 @@ Public Class MWPeptideClass
             ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.GetFragmentationSpectrumOptions", Err.Number)
         End Try
 
+        Dim udtDefaultOptions As udtFragmentationSpectrumOptionsType
+        udtDefaultOptions.Initialize()
+
+        Return udtDefaultOptions
+
     End Function
 
     Public Function GetPeptideMass() As Double
@@ -615,7 +622,7 @@ Public Class MWPeptideClass
         Dim strInternalResidues As String
         Dim lngResidueIndex As Integer
 
-        strInternalResidues = ""
+        strInternalResidues = String.Empty
         blnPhosphorylated = False
         If eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itZIon Then
             For lngResidueIndex = lngCurrentResidueIndex To ResidueCount
@@ -650,10 +657,10 @@ Public Class MWPeptideClass
             End With
             Return 0
         Else
-            strModSymbol = ""
+            strModSymbol = String.Empty
             dblModificationMass = 0
             blnIndicatesPhosphorylation = False
-            strComment = ""
+            strComment = String.Empty
             Return 1
         End If
 
@@ -756,7 +763,7 @@ Public Class MWPeptideClass
     End Function
 
     Public Function GetResidueSymbolOnly(ByVal lngResidueNumber As Integer, Optional ByRef blnUse3LetterCode As Boolean = True) As String
-        ' Returns the symbol at the given residue number, or "" if an invalid residue number
+        ' Returns the symbol at the given residue number, or string.empty if an invalid residue number
 
         Dim strSymbol As String
 
@@ -766,7 +773,7 @@ Public Class MWPeptideClass
             End With
             If Not blnUse3LetterCode Then strSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, False)
         Else
-            strSymbol = ""
+            strSymbol = String.Empty
         End If
 
         Return strSymbol
@@ -785,9 +792,9 @@ Public Class MWPeptideClass
         Dim intModIndex As Short
         Dim lngError As Integer
 
-        If blnSeparateResiduesWithDash Then strDashAdd = "-" Else strDashAdd = ""
+        If blnSeparateResiduesWithDash Then strDashAdd = "-" Else strDashAdd = String.Empty
 
-        strSequence = ""
+        strSequence = String.Empty
         For lngIndex = 1 To ResidueCount
             With Residues(lngIndex)
                 strSymbol3Letter = .Symbol
@@ -795,7 +802,7 @@ Public Class MWPeptideClass
                     strSequence = strSequence & strSymbol3Letter
                 Else
                     strSymbol1Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol3Letter, False)
-                    If strSymbol1Letter = "" Then strSymbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER
+                    If strSymbol1Letter = String.Empty Then strSymbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER
                     strSequence = strSequence & strSymbol1Letter
                 End If
 
@@ -805,7 +812,7 @@ Public Class MWPeptideClass
                         If lngError = 0 Then
                             strSequence = strSequence & strModSymbol
                         Else
-                            System.Diagnostics.Debug.Assert(False, "")
+                            System.Console.WriteLine("GetModificationSymbol returned error code " & lngError & " in GetSequence")
                         End If
                     Next intModIndex
                 End If
@@ -974,7 +981,7 @@ Public Class MWPeptideClass
             ' Residues not found
             lngReturnResidueStart = 0
             lngReturnResidueEnd = 0
-            Return ""
+            Return String.Empty
         End If
 
     End Function
@@ -994,14 +1001,16 @@ Public Class MWPeptideClass
 
         lngCurrentSearchLoc = lngProteinSearchStartLoc
         lngReturnMatchCount = 0
+        strNameList = String.Empty
+
         Do
             strCurrentName = GetTrypticName(strProteinResidues, strPeptideResidues, lngCurrentResidueStart, lngCurrentResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, blnIgnoreCase, lngCurrentSearchLoc)
 
             If Len(strCurrentName) > 0 Then
-                If Len(strNameList) > 0 Then
-                    strNameList = strNameList & strListDelimeter
+                If strNameList.Length > 0 Then
+                    strNameList &= strListDelimeter
                 End If
-                strNameList = strNameList & strCurrentName
+                strNameList &= strCurrentName
                 lngCurrentSearchLoc = lngCurrentResidueEnd + 1
                 lngReturnMatchCount = lngReturnMatchCount + 1
 
@@ -1122,7 +1131,7 @@ Public Class MWPeptideClass
 
         lngProteinResiduesLength = Len(strProteinResidues)
         If lngSearchStartLoc > lngProteinResiduesLength Then
-            Return ""
+            Return String.Empty
         End If
 
         lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResidues, strTerminiiSymbol, lngSearchStartLoc, strRuleResidues, strExceptionResidues, strTerminiiSymbol)
@@ -1161,7 +1170,7 @@ Public Class MWPeptideClass
         Dim strMatchingFragment As String
 
         If intDesiredPeptideNumber < 1 Then
-            Return ""
+            Return String.Empty
         End If
 
         If blnIgnoreCase Then
@@ -1181,22 +1190,21 @@ Public Class MWPeptideClass
 
                 If lngPrevStartLoc > lngProteinResiduesLength Then
                     ' User requested a peptide number that doesn't exist
-                    Return ""
+                    Return String.Empty
                 End If
             Else
                 ' I don't think I'll ever reach this code
-                System.Diagnostics.Debug.Assert(False, "")
                 Exit Do
             End If
         Loop While intCurrentTrypticPeptideNumber < intDesiredPeptideNumber
 
-        strMatchingFragment = ""
+        strMatchingFragment = String.Empty
         If intCurrentTrypticPeptideNumber > 0 And lngPrevStartLoc > 0 Then
             If lngPrevStartLoc > Len(strProteinResidues) Then
                 ' User requested a peptide number that is too high
                 lngReturnResidueStart = 0
                 lngReturnResidueEnd = 0
-                strMatchingFragment = ""
+                strMatchingFragment = String.Empty
             Else
                 ' Match found, find the extent of this peptide
                 lngReturnResidueStart = lngPrevStartLoc
@@ -1242,18 +1250,22 @@ Public Class MWPeptideClass
 
         ' Need to reset this to zero since passed ByRef
         intRuleMatchCount = 0
+        strPrefix = String.Empty
+        strSuffix = String.Empty
 
         ' First, make sure the sequence is in the form A.BCDEFG.H or A.BCDEFG or BCDEFG.H
         ' If it isn't, then we can't check it (we'll return true)
 
-        If Len(strRuleResidues) = 0 Then
-            ' No rules
+        If strRuleResidues Is Nothing OrElse strRuleResidues.Length = 0 Then
+            ' No rule residues
             Return True
         End If
 
-        If InStr(strSequence, strSeparationChar) = 0 Then
+        If strSeparationChar Is Nothing Then strSeparationChar = "."
+
+        If strSequence.IndexOf(strSeparationChar) < 0 Then
             ' No periods, can't check
-            System.Diagnostics.Debug.Assert(False, "")
+            Console.WriteLine("Warning: strSequence does not contain " & strSeparationChar & "; unable to determine cleavage state")
             Return True
         End If
 
@@ -1280,7 +1292,8 @@ Public Class MWPeptideClass
         If strRuleResidues = strTerminiiSymbol Then
             ' Peptide database rules
             ' See if prefix and suffix are "" or are strTerminiiSymbol
-            If (strPrefix = strTerminiiSymbol And strSuffix = strTerminiiSymbol) Or (strPrefix = "" And strSuffix = "") Then
+            If (strPrefix = strTerminiiSymbol And strSuffix = strTerminiiSymbol) OrElse _
+               (strPrefix = String.Empty And strSuffix = String.Empty) Then
                 intRuleMatchCount = 2
                 blnMatchesCleavageRule = True
             Else
@@ -1385,7 +1398,7 @@ Public Class MWPeptideClass
             Case itIonTypeConstants.itCIon : Return "c"
             Case itIonTypeConstants.itZIon : Return "z"
             Case Else
-                Return ""
+                Return String.Empty
         End Select
 
     End Function
@@ -1586,7 +1599,7 @@ Public Class MWPeptideClass
             Else
                 SetCTerminus = 0
             End If
-            .PrecedingResidue = FillResidueStructureUsingSymbol("")
+            .PrecedingResidue = FillResidueStructureUsingSymbol(String.Empty)
             .FollowingResidue = FillResidueStructureUsingSymbol(strFollowingResidue, blnUse3LetterCode)
         End With
 
@@ -1601,7 +1614,7 @@ Public Class MWPeptideClass
         Select Case eCTerminusGroup
             Case ctgCTerminusGroupConstants.ctgHydroxyl : lngError = SetCTerminus("OH", strFollowingResidue, blnUse3LetterCode)
             Case ctgCTerminusGroupConstants.ctgAmide : lngError = SetCTerminus("NH2", strFollowingResidue, blnUse3LetterCode)
-            Case ctgCTerminusGroupConstants.ctgNone : lngError = SetCTerminus("", strFollowingResidue, blnUse3LetterCode)
+            Case ctgCTerminusGroupConstants.ctgNone : lngError = SetCTerminus(String.Empty, strFollowingResidue, blnUse3LetterCode)
             Case Else : lngError = 1
         End Select
 
@@ -1754,7 +1767,7 @@ Public Class MWPeptideClass
                 SetNTerminus = 0
             End If
             .PrecedingResidue = FillResidueStructureUsingSymbol(strPrecedingResidue, blnUse3LetterCode)
-            .FollowingResidue = FillResidueStructureUsingSymbol("")
+            .FollowingResidue = FillResidueStructureUsingSymbol(String.Empty)
         End With
 
         UpdateResidueMasses()
@@ -1772,7 +1785,7 @@ Public Class MWPeptideClass
             Case ntgNTerminusGroupConstants.ntgPyroGlu : lngError = SetNTerminus("C5O2NH6", strPrecedingResidue, blnUse3LetterCode)
             Case ntgNTerminusGroupConstants.ntgCarbamyl : lngError = SetNTerminus("CONH2", strPrecedingResidue, blnUse3LetterCode)
             Case ntgNTerminusGroupConstants.ntgPTC : lngError = SetNTerminus("C7H6NS", strPrecedingResidue, blnUse3LetterCode)
-            Case ntgNTerminusGroupConstants.ntgNone : lngError = SetNTerminus("", strPrecedingResidue, blnUse3LetterCode)
+            Case ntgNTerminusGroupConstants.ntgNone : lngError = SetNTerminus(String.Empty, strPrecedingResidue, blnUse3LetterCode)
             Case Else : lngError = 1
         End Select
 
@@ -1788,7 +1801,7 @@ Public Class MWPeptideClass
         Dim lngIndexToUse As Integer
         Dim str3LetterSymbol As String
 
-        If Len(strSymbol) = 0 Then
+        If strSymbol Is Nothing OrElse strSymbol.Length = 0 Then
             Return -1
         End If
 
@@ -1817,7 +1830,9 @@ Public Class MWPeptideClass
             If blnPhosphorylated Then
                 ' Only Ser, Thr, or Tyr should be phosphorylated
                 ' However, if the user sets other residues as phosphorylated, we'll allow that
-                System.Diagnostics.Debug.Assert(.Symbol = "Ser" Or .Symbol = "Thr" Or .Symbol = "Tyr", "")
+                If Not (.Symbol = "Ser" OrElse .Symbol = "Thr" OrElse .Symbol = "Tyr") Then
+                    Console.WriteLine("Residue '" & .Symbol & "' is marked as being phosphorylated; this is unexpected")
+                End If
             End If
 
             .ModificationIDCount = 0
@@ -2133,7 +2148,7 @@ Public Class MWPeptideClass
                             End If
                         Else
                             ' Invalid ModificationID
-                            System.Diagnostics.Debug.Assert(False, "")
+                            Console.WriteLine("Invalid ModificationID: " & .ModificationIDs(intModIndex))
                         End If
                     Next intModIndex
 

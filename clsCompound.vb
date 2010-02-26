@@ -76,7 +76,7 @@ Public Class MWCompoundClass
 
     Public Function ElementPresent(ByRef intElementID As Short) As Boolean
         ' Returns True if the element is present
-        If intElementID >= 1 And intElementID <= ElementAndMassRoutines.ELEMENT_COUNT Then
+        If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
             ElementPresent = mComputationStats.Elements(intElementID).Used
         Else
             ElementPresent = False
@@ -106,7 +106,7 @@ Public Class MWCompoundClass
         ' Return the number of atoms of a given element that are present in the formula
         ' Note that the number of atoms is not necessarily an integer (e.g. C5.5)
 
-        If intElementID >= 1 And intElementID <= ElementAndMassRoutines.ELEMENT_COUNT Then
+        If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
             GetAtomCountForElement = mComputationStats.Elements(intElementID).Count
         Else
             GetAtomCountForElement = 0
@@ -118,7 +118,7 @@ Public Class MWCompoundClass
         ' Returns the percent composition for element
         ' Returns -1 if an invalid ID
 
-        If intElementID >= 1 And intElementID <= ElementAndMassRoutines.ELEMENT_COUNT Then
+        If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
             GetPercentCompositionForElement = mComputationStats.PercentCompositions(intElementID).PercentComposition
         Else
             GetPercentCompositionForElement = -1
@@ -132,7 +132,7 @@ Public Class MWCompoundClass
         Dim strElementSymbol As String
         Dim strPctComposition As String
 
-        If intElementID >= 1 And intElementID <= ElementAndMassRoutines.ELEMENT_COUNT Then
+        If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
 
             With mComputationStats.PercentCompositions(intElementID)
 
@@ -157,17 +157,17 @@ Public Class MWCompoundClass
         Try
             intMaxIndex = CShort(UBound(strPctCompositionsOneBased))
 
-            If intMaxIndex < ElementAndMassRoutines.ELEMENT_COUNT Then
+            If intMaxIndex < MWElementAndMassRoutines.ELEMENT_COUNT Then
                 ' Try to reserve more space in strPctCompositionsOneBased()
                 Try
-                    ReDim strPctCompositionsOneBased(ElementAndMassRoutines.ELEMENT_COUNT)
+                    ReDim strPctCompositionsOneBased(MWElementAndMassRoutines.ELEMENT_COUNT)
                     intMaxIndex = CShort(UBound(strPctCompositionsOneBased))
                 Catch ex As Exception
                     ' Ignore errors; probably a fixed length array that cannot be resized
                 End Try
             End If
 
-            If intMaxIndex >= ElementAndMassRoutines.ELEMENT_COUNT Then intMaxIndex = ElementAndMassRoutines.ELEMENT_COUNT
+            If intMaxIndex >= MWElementAndMassRoutines.ELEMENT_COUNT Then intMaxIndex = MWElementAndMassRoutines.ELEMENT_COUNT
 
             ElementAndMassRoutines.ComputePercentComposition(mComputationStats)
 
@@ -194,7 +194,7 @@ Public Class MWCompoundClass
 
         ' Determine # of elements in formula
         intTotalElements = 0
-        For intElementIndex = 1 To ElementAndMassRoutines.ELEMENT_COUNT
+        For intElementIndex = 1 To MWElementAndMassRoutines.ELEMENT_COUNT
             ' Increment .TotalElements if element is present
             If mComputationStats.Elements(intElementIndex).Used Then
                 intTotalElements = intTotalElements + 1S
