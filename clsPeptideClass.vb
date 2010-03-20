@@ -90,7 +90,10 @@ Public Class MWPeptideClass
         Public ModificationIDs() As Integer ' 1-based array
 
         ' Note: "Initialize" must be called to initialize instances of this structure
-        Public Sub Initialize(Optional ByVal blnForceInit As Boolean = False)
+        Public Sub Initialize()
+            Me.Initialize(False)
+        End Sub
+        Public Sub Initialize(ByVal blnForceInit As Boolean)
             If blnForceInit OrElse IonMass Is Nothing Then
                 ReDim IonMass(ION_TYPE_MAX)
                 ReDim ModificationIDs(MAX_MODIFICATIONS)
@@ -232,7 +235,8 @@ Public Class MWPeptideClass
         End If
     End Function
 
-    Private Function CheckForModifications(ByRef strPartialSequence As String, ByRef lngResidueIndex As Integer, Optional ByRef blnAddMissingModificationSymbols As Boolean = False) As Integer
+    Private Function CheckForModifications(ByRef strPartialSequence As String, ByRef lngResidueIndex As Integer, _
+                                           Optional ByRef blnAddMissingModificationSymbols As Boolean = False) As Integer
         ' Looks at strPartialSequence to see if it contains 1 or more modifications
         ' If any modification symbols are found, the modification is recorded in .ModificationIDs()
         ' If all or part of the modification symbol is not found in ModificationSymbols(), then a new entry
@@ -355,7 +359,8 @@ Public Class MWPeptideClass
 
     End Function
 
-    Private Function FillResidueStructureUsingSymbol(ByRef strSymbol As String, Optional ByRef blnUse3LetterCode As Boolean = True) As udtResidueType
+    Private Function FillResidueStructureUsingSymbol(ByRef strSymbol As String, _
+                                                     Optional ByRef blnUse3LetterCode As Boolean = True) As udtResidueType
         ' Returns a variable of type udtResidueType containing strSymbol as the residue symbol
         ' If strSymbol is a valid amino acid type, then also updates udtResidue with the default information
 
@@ -709,7 +714,7 @@ Public Class MWPeptideClass
         Return ResidueCount
     End Function
 
-    Public Function GetResidueCountSpecificResidue(ByRef strResidueSymbol As String, Optional ByRef blnUse3LetterCode As Boolean = True) As Integer
+    Public Function GetResidueCountSpecificResidue(ByVal strResidueSymbol As String, ByVal blnUse3LetterCode As Boolean) As Integer
         ' Returns the number of occurrences of the given residue in the loaded sequence
 
         Dim strSearchResidue3Letter As String
@@ -762,7 +767,7 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function GetResidueSymbolOnly(ByVal lngResidueNumber As Integer, Optional ByRef blnUse3LetterCode As Boolean = True) As String
+    Public Function GetResidueSymbolOnly(ByVal lngResidueNumber As Integer, ByVal blnUse3LetterCode As Boolean) As String
         ' Returns the symbol at the given residue number, or string.empty if an invalid residue number
 
         Dim strSymbol As String
@@ -780,7 +785,38 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function GetSequence(Optional ByRef blnUse3LetterCode As Boolean = True, Optional ByRef blnAddSpaceEvery10Residues As Boolean = False, Optional ByRef blnSeparateResiduesWithDash As Boolean = False, Optional ByRef blnIncludeNandCTerminii As Boolean = False, Optional ByRef blnIncludeModificationSymbols As Boolean = True) As String
+    Public Function GetSequence() As String
+        Return GetSequence(True, False, False, False, True)
+    End Function
+
+    Public Function GetSequence(ByVal blnUse3LetterCode As Boolean) As String
+        Return GetSequence(blnUse3LetterCode, False, False, False, True)
+    End Function
+
+    Public Function GetSequence(ByVal blnUse3LetterCode As Boolean, _
+                                ByVal blnAddSpaceEvery10Residues As Boolean) As String
+        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, False, False, True)
+    End Function
+
+    Public Function GetSequence(ByVal blnUse3LetterCode As Boolean, _
+                                ByVal blnAddSpaceEvery10Residues As Boolean, _
+                                ByVal blnSeparateResiduesWithDash As Boolean) As String
+        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, False, True)
+    End Function
+
+    Public Function GetSequence(ByVal blnUse3LetterCode As Boolean, _
+                                ByVal blnAddSpaceEvery10Residues As Boolean, _
+                                ByVal blnSeparateResiduesWithDash As Boolean, _
+                                ByVal blnIncludeNandCTerminii As Boolean) As String
+        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNandCTerminii, True)
+    End Function
+
+    Public Function GetSequence(ByVal blnUse3LetterCode As Boolean, _
+                                ByVal blnAddSpaceEvery10Residues As Boolean, _
+                                ByVal blnSeparateResiduesWithDash As Boolean, _
+                                ByVal blnIncludeNandCTerminii As Boolean, _
+                                ByVal blnIncludeModificationSymbols As Boolean) As String
+
         ' Construct a text sequence using Residues() and the N and C Terminus info
 
         Dim strSymbol3Letter, strSequence, strSymbol1Letter As String
@@ -852,10 +888,82 @@ Public Class MWPeptideClass
         Return mAmmoniaLossSymbol
     End Function
 
-    Public Function GetTrypticName(ByVal strProteinResidues As String, ByVal strPeptideResidues As String, Optional ByRef lngReturnResidueStart As Integer = 0, Optional ByRef lngReturnResidueEnd As Integer = 0, Optional ByVal blnICR2LSCompatible As Boolean = False, Optional ByVal strRuleResidues As String = TRYPTIC_RULE_RESIDUES, Optional ByVal strExceptionResidues As String = TRYPTIC_EXCEPTION_RESIDUES, Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL, Optional ByVal blnIgnoreCase As Boolean = True, Optional ByVal lngProteinSearchStartLoc As Integer = 1) As String
-        ' Examines strPeptideResidues to see where they exist in strProteinResidues
-        ' Constructs a name string based on their position and based on whether the fragment is truly tryptic
-        ' In addition, returns the position of the first and last residue in lngReturnResidueStart and lngReturnResidueEnd
+    Public Function GetTrypticName(ByVal strProteinResidues As String, ByVal strPeptideResidues As String) As String
+
+        Return GetTrypticName(strProteinResidues, strPeptideResidues, 0, 0, False, _
+                              TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, 1)
+
+    End Function
+
+    Public Function GetTrypticName(ByVal strProteinResidues As String, ByVal strPeptideResidues As String, _
+                                   ByVal lngProteinSearchStartLoc As Integer) As String
+
+        Return GetTrypticName(strProteinResidues, strPeptideResidues, 0, 0, False, _
+                              TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, lngProteinSearchStartLoc)
+
+    End Function
+
+    Public Function GetTrypticName(ByVal strProteinResidues As String, ByVal strPeptideResidues As String, _
+                               ByRef lngReturnResidueStart As Integer, _
+                               ByRef lngReturnResidueEnd As Integer) As String
+
+        Return GetTrypticName(strProteinResidues, strPeptideResidues, lngReturnResidueStart, lngReturnResidueEnd, False, _
+                              TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, 1)
+
+    End Function
+
+    Public Function GetTrypticName(ByVal strProteinResidues As String, ByVal strPeptideResidues As String, _
+                                  ByRef lngReturnResidueStart As Integer, _
+                                  ByRef lngReturnResidueEnd As Integer, _
+                                  ByVal blnICR2LSCompatible As Boolean) As String
+
+        Return GetTrypticName(strProteinResidues, strPeptideResidues, lngReturnResidueStart, lngReturnResidueEnd, blnICR2LSCompatible, _
+                              TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, 1)
+
+    End Function
+
+
+    Public Function GetTrypticName(ByVal strProteinResidues As String, ByVal strPeptideResidues As String, _
+                                  ByRef lngReturnResidueStart As Integer, _
+                                  ByRef lngReturnResidueEnd As Integer, _
+                                  ByVal blnICR2LSCompatible As Boolean, _
+                                  ByVal strRuleResidues As String, _
+                                  ByVal strExceptionResidues As String, _
+                                  ByVal strTerminiiSymbol As String) As String
+
+        Return GetTrypticName(strProteinResidues, strPeptideResidues, lngReturnResidueStart, lngReturnResidueEnd, blnICR2LSCompatible, _
+                              strRuleResidues, strExceptionResidues, strTerminiiSymbol, True, 1)
+
+    End Function
+
+
+    ''' <summary>
+    ''' Examines strPeptideResidues to see where they exist in strProteinResidues
+    ''' Constructs a name string based on their position and based on whether the fragment is truly tryptic
+    ''' In addition, returns the position of the first and last residue in lngReturnResidueStart and lngReturnResidueEnd
+    ''' </summary>
+    ''' <param name="strProteinResidues"></param>
+    ''' <param name="strPeptideResidues"></param>
+    ''' <param name="lngReturnResidueStart">Output: start peptides of the peptide residues in the protein</param>
+    ''' <param name="lngReturnResidueEnd">Output: end peptides of the peptide residues in the protein</param>
+    ''' <param name="blnICR2LSCompatible"></param>
+    ''' <param name="strRuleResidues"></param>
+    ''' <param name="strExceptionResidues"></param>
+    ''' <param name="strTerminiiSymbol"></param>
+    ''' <param name="blnIgnoreCase"></param>
+    ''' <param name="lngProteinSearchStartLoc"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function GetTrypticName(ByVal strProteinResidues As String, ByVal strPeptideResidues As String, _
+                                   ByRef lngReturnResidueStart As Integer, _
+                                   ByRef lngReturnResidueEnd As Integer, _
+                                   ByVal blnICR2LSCompatible As Boolean, _
+                                   ByVal strRuleResidues As String, _
+                                   ByVal strExceptionResidues As String, _
+                                   ByVal strTerminiiSymbol As String, _
+                                   ByVal blnIgnoreCase As Boolean, _
+                                   ByVal lngProteinSearchStartLoc As Integer) As String
+
         ' The tryptic name in the following format
         ' t1  indicates tryptic peptide 1
         ' t2 represents tryptic peptide 2, etc.
@@ -928,7 +1036,13 @@ Public Class MWPeptideClass
                 strSuffix = Mid(strProteinResidues, intEndLoc + 1, 1)
             End If
 
-            blnMatchesCleavageRule = CheckSequenceAgainstCleavageRule(strPrefix & "." & strPeptideResidues & "." & strSuffix, strRuleResidues, strExceptionResidues, False, ".", strTerminiiSymbol, blnIgnoreCase)
+            blnMatchesCleavageRule = CheckSequenceAgainstCleavageRule(strPrefix & "." & strPeptideResidues & "." & strSuffix, _
+                                                                      strRuleResidues, _
+                                                                      strExceptionResidues, _
+                                                                      False, _
+                                                                      ".", _
+                                                                      strTerminiiSymbol, _
+                                                                      blnIgnoreCase)
 
             If blnMatchesCleavageRule Then
                 ' Construct strTrypticName
@@ -986,9 +1100,109 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function GetTrypticNameMultipleMatches(ByVal strProteinResidues As String, ByVal strPeptideResidues As String, Optional ByRef lngReturnMatchCount As Integer = 0, Optional ByRef lngReturnResidueStart As Integer = 0, Optional ByRef lngReturnResidueEnd As Integer = 0, Optional ByVal blnICR2LSCompatible As Boolean = False, Optional ByVal strRuleResidues As String = TRYPTIC_RULE_RESIDUES, Optional ByVal strExceptionResidues As String = TRYPTIC_EXCEPTION_RESIDUES, Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL, Optional ByVal blnIgnoreCase As Boolean = True, Optional ByVal lngProteinSearchStartLoc As Integer = 1, Optional ByVal strListDelimeter As String = ", ") As String
-        ' Examines strPeptideResidues to see where they exist in strProteinResidues
-        ' Looks for all possible matches, returning them as a comma separated list
+    Public Function GetTrypticNameMultipleMatches(ByVal strProteinResidues As String, _
+                                                 ByVal strPeptideResidues As String) As String
+
+        Return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, _
+                                             0, 0, 0, False, _
+                                             TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, 1, ", ")
+    End Function
+
+    Public Function GetTrypticNameMultipleMatches(ByVal strProteinResidues As String, _
+                                                  ByVal strPeptideResidues As String, _
+                                                  ByVal lngProteinSearchStartLoc As Integer) As String
+
+        Return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, _
+                                             0, 0, 0, False, _
+                                             TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, _
+                                             lngProteinSearchStartLoc, ", ")
+    End Function
+
+    Public Function GetTrypticNameMultipleMatches(ByVal strProteinResidues As String, _
+                                              ByVal strPeptideResidues As String, _
+                                              ByVal lngProteinSearchStartLoc As Integer, _
+                                              ByVal strListDelimeter As String) As String
+
+        Return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, _
+                                             0, 0, 0, False, _
+                                             TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, _
+                                             lngProteinSearchStartLoc, strListDelimeter)
+    End Function
+
+
+    Public Function GetTrypticNameMultipleMatches(ByVal strProteinResidues As String, _
+                                                  ByVal strPeptideResidues As String, _
+                                                  ByRef lngReturnMatchCount As Integer, _
+                                                  ByRef lngReturnResidueStart As Integer, _
+                                                  ByRef lngReturnResidueEnd As Integer) As String
+
+        Return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, _
+                                            lngReturnMatchCount, lngReturnResidueStart, lngReturnResidueEnd, False, _
+                                            TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, 1, ", ")
+
+    End Function
+
+    Public Function GetTrypticNameMultipleMatches(ByVal strProteinResidues As String, _
+                                                ByVal strPeptideResidues As String, _
+                                                ByRef lngReturnMatchCount As Integer, _
+                                                ByRef lngReturnResidueStart As Integer, _
+                                                ByRef lngReturnResidueEnd As Integer, _
+                                                ByVal blnICR2LSCompatible As Boolean) As String
+
+        Return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, _
+                                            lngReturnMatchCount, lngReturnResidueStart, lngReturnResidueEnd, blnICR2LSCompatible, _
+                                            TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True, 1, ", ")
+
+    End Function
+
+    Public Function GetTrypticNameMultipleMatches(ByVal strProteinResidues As String, _
+                                              ByVal strPeptideResidues As String, _
+                                              ByRef lngReturnMatchCount As Integer, _
+                                              ByRef lngReturnResidueStart As Integer, _
+                                              ByRef lngReturnResidueEnd As Integer, _
+                                              ByVal blnICR2LSCompatible As Boolean, _
+                                              ByVal strRuleResidues As String, _
+                                              ByVal strExceptionResidues As String, _
+                                              ByVal strTerminiiSymbol As String) As String
+
+
+        Return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, _
+                                            lngReturnMatchCount, lngReturnResidueStart, lngReturnResidueEnd, blnICR2LSCompatible, _
+                                            strRuleResidues, strExceptionResidues, strTerminiiSymbol, True, 1, ", ")
+
+    End Function
+
+    ''' <summary>
+    ''' Examines strPeptideResidues to see where they exist in strProteinResidues
+    ''' Looks for all possible matches, returning them as a comma separated list
+    ''' </summary>
+    ''' <param name="strProteinResidues"></param>
+    ''' <param name="strPeptideResidues"></param>
+    ''' <param name="lngReturnMatchCount"></param>
+    ''' <param name="lngReturnResidueStart"></param>
+    ''' <param name="lngReturnResidueEnd"></param>
+    ''' <param name="blnICR2LSCompatible"></param>
+    ''' <param name="strRuleResidues"></param>
+    ''' <param name="strExceptionResidues"></param>
+    ''' <param name="strTerminiiSymbol"></param>
+    ''' <param name="blnIgnoreCase"></param>
+    ''' <param name="lngProteinSearchStartLoc"></param>
+    ''' <param name="strListDelimeter"></param>
+    ''' <returns>The number of matches</returns>
+    ''' <remarks></remarks>
+    Public Function GetTrypticNameMultipleMatches(ByVal strProteinResidues As String, _
+                                                  ByVal strPeptideResidues As String, _
+                                                  ByRef lngReturnMatchCount As Integer, _
+                                                  ByRef lngReturnResidueStart As Integer, _
+                                                  ByRef lngReturnResidueEnd As Integer, _
+                                                  ByVal blnICR2LSCompatible As Boolean, _
+                                                  ByVal strRuleResidues As String, _
+                                                  ByVal strExceptionResidues As String, _
+                                                  ByVal strTerminiiSymbol As String, _
+                                                  ByVal blnIgnoreCase As Boolean, _
+                                                  ByVal lngProteinSearchStartLoc As Integer, _
+                                                  ByVal strListDelimeter As String) As String
+
         ' Returns the number of matches in lngReturnMatchCount
         ' lngReturnResidueStart contains the residue number of the start of the first match
         ' lngReturnResidueEnd contains the residue number of the end of the last match
@@ -1029,7 +1243,11 @@ Public Class MWPeptideClass
 
     End Function
 
-    Private Function GetTrypticNameFindNextCleavageLoc(ByRef strSearchResidues As String, ByRef strResidueFollowingSearchResidues As String, ByVal lngStartChar As Integer, Optional ByVal strSearchChars As String = TRYPTIC_RULE_RESIDUES, Optional ByVal strExceptionSuffixResidues As String = TRYPTIC_EXCEPTION_RESIDUES, Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL) As Integer
+    Private Function GetTrypticNameFindNextCleavageLoc(ByRef strSearchResidues As String, ByRef strResidueFollowingSearchResidues As String, _
+                                                       ByVal lngStartChar As Integer, _
+                                                       Optional ByVal strSearchChars As String = TRYPTIC_RULE_RESIDUES, _
+                                                       Optional ByVal strExceptionSuffixResidues As String = TRYPTIC_EXCEPTION_RESIDUES, _
+                                                       Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL) As Integer
         ' Finds the location of the next strSearchChar in strSearchResidues (K or R by default)
         ' Assumes strSearchResidues are already upper case
         ' Examines the residue following the matched residue
@@ -1117,7 +1335,20 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function GetTrypticPeptideNext(ByVal strProteinResidues As String, ByVal lngSearchStartLoc As Integer, Optional ByRef lngReturnResidueStart As Integer = 0, Optional ByRef lngReturnResidueEnd As Integer = 0, Optional ByVal strRuleResidues As String = TRYPTIC_RULE_RESIDUES, Optional ByVal strExceptionResidues As String = TRYPTIC_EXCEPTION_RESIDUES, Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL) As String
+    Public Function GetTrypticPeptideNext(ByVal strProteinResidues As String, _
+                                          ByVal lngSearchStartLoc As Integer) As String
+
+        Return GetTrypticPeptideNext(strProteinResidues, lngSearchStartLoc, 0, 0, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL)
+    End Function
+
+    Public Function GetTrypticPeptideNext(ByVal strProteinResidues As String, _
+                                          ByVal lngSearchStartLoc As Integer, _
+                                          ByRef lngReturnResidueStart As Integer, _
+                                          ByRef lngReturnResidueEnd As Integer, _
+                                          ByVal strRuleResidues As String, _
+                                          ByVal strExceptionResidues As String, _
+                                          ByVal strTerminiiSymbol As String) As String
+
         ' Returns the next tryptic peptide in strProteinResidues, starting the search as lngSearchStartLoc
         ' Useful when obtaining all of the tryptic peptides for a protein, since this function will operate
         '  much faster than repeatedly calling GetTrypticPeptideByFragmentNumber()
@@ -1151,7 +1382,35 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function GetTrypticPeptideByFragmentNumber(ByVal strProteinResidues As String, ByVal intDesiredPeptideNumber As Short, Optional ByRef lngReturnResidueStart As Integer = 0, Optional ByRef lngReturnResidueEnd As Integer = 0, Optional ByVal strRuleResidues As String = TRYPTIC_RULE_RESIDUES, Optional ByVal strExceptionResidues As String = TRYPTIC_EXCEPTION_RESIDUES, Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL, Optional ByVal blnIgnoreCase As Boolean = True) As String
+    Public Function GetTrypticPeptideByFragmentNumber(ByVal strProteinResidues As String, _
+                                                      ByVal intDesiredPeptideNumber As Short) As String
+
+        Return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber, 0, 0, _
+                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True)
+
+    End Function
+
+    Public Function GetTrypticPeptideByFragmentNumber(ByVal strProteinResidues As String, _
+                                                      ByVal intDesiredPeptideNumber As Short, _
+                                                      ByRef lngReturnResidueStart As Integer, _
+                                                      ByRef lngReturnResidueEnd As Integer) As String
+
+        Return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber, _
+                                                 lngReturnResidueStart, lngReturnResidueEnd, _
+                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True)
+
+    End Function
+
+
+    Public Function GetTrypticPeptideByFragmentNumber(ByVal strProteinResidues As String, _
+                                                      ByVal intDesiredPeptideNumber As Short, _
+                                                      ByRef lngReturnResidueStart As Integer, _
+                                                      ByRef lngReturnResidueEnd As Integer, _
+                                                      ByVal strRuleResidues As String, _
+                                                      ByVal strExceptionResidues As String, _
+                                                      ByVal strTerminiiSymbol As String, _
+                                                      ByVal blnIgnoreCase As Boolean) As String
+
         ' Returns the desired tryptic peptide from strProteinResidues
         ' For example, if strProteinResidues = "IGKANRMTFGL" then
         '  when intDesiredPeptideNumber = 1, returns "IGK"
@@ -1225,7 +1484,51 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function CheckSequenceAgainstCleavageRule(ByVal strSequence As String, ByVal strRuleResidues As String, ByVal strExceptionSuffixResidues As String, ByVal blnAllowPartialCleavage As Boolean, Optional ByVal strSeparationChar As String = ".", Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL, Optional ByVal blnIgnoreCase As Boolean = True, Optional ByRef intRuleMatchCount As Short = 0) As Boolean
+    Public Function CheckSequenceAgainstCleavageRule(ByVal strSequence As String, _
+                                                     ByVal strRuleResidues As String, _
+                                                     ByVal strExceptionSuffixResidues As String, _
+                                                     ByVal blnAllowPartialCleavage As Boolean) As Boolean
+
+        Return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues, _
+                                                blnAllowPartialCleavage, ".", TERMINII_SYMBOL, True, 0)
+
+    End Function
+
+    Public Function CheckSequenceAgainstCleavageRule(ByVal strSequence As String, _
+                                                     ByVal strRuleResidues As String, _
+                                                     ByVal strExceptionSuffixResidues As String, _
+                                                     ByVal blnAllowPartialCleavage As Boolean, _
+                                                     ByRef intRuleMatchCount As Short) As Boolean
+
+        Return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues, _
+                                                blnAllowPartialCleavage, ".", TERMINII_SYMBOL, True, intRuleMatchCount)
+
+    End Function
+
+
+    Public Function CheckSequenceAgainstCleavageRule(ByVal strSequence As String, _
+                                                     ByVal strRuleResidues As String, _
+                                                     ByVal strExceptionSuffixResidues As String, _
+                                                     ByVal blnAllowPartialCleavage As Boolean, _
+                                                     ByVal strSeparationChar As String, _
+                                                     ByVal strTerminiiSymbol As String, _
+                                                     ByVal blnIgnoreCase As Boolean) As Boolean
+
+        Return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues, _
+                                                blnAllowPartialCleavage, strSeparationChar, strTerminiiSymbol, blnIgnoreCase, 0)
+
+    End Function
+
+
+    Public Function CheckSequenceAgainstCleavageRule(ByVal strSequence As String, _
+                                                     ByVal strRuleResidues As String, _
+                                                     ByVal strExceptionSuffixResidues As String, _
+                                                     ByVal blnAllowPartialCleavage As Boolean, _
+                                                     ByVal strSeparationChar As String, _
+                                                     ByVal strTerminiiSymbol As String, _
+                                                     ByVal blnIgnoreCase As Boolean, _
+                                                     ByRef intRuleMatchCount As Short) As Boolean
+
         ' Checks strSequence to see if it matches the cleavage rule
         ' Returns True if valid, False if invalid
         ' Returns True if doesn't contain any periods, and thus, can't be examined
@@ -1571,7 +1874,7 @@ Public Class MWPeptideClass
         End If
     End Sub
 
-    Private Sub ReserveMemoryForModifications(ByRef lngNewModificationCount As Integer, ByRef blnPreserveContents As Boolean)
+    Private Sub ReserveMemoryForModifications(ByVal lngNewModificationCount As Integer, ByVal blnPreserveContents As Boolean)
 
         If lngNewModificationCount > ModificationSymbolCountDimmed Then
             ModificationSymbolCountDimmed = lngNewModificationCount + 10
@@ -1583,7 +1886,18 @@ Public Class MWPeptideClass
         End If
     End Sub
 
-    Public Function SetCTerminus(ByRef strFormula As String, Optional ByRef strFollowingResidue As String = "", Optional ByRef blnUse3LetterCode As Boolean = True) As Integer
+    Public Function SetCTerminus(ByVal strFormula As String) As Integer
+        Return SetCTerminus(strFormula, "", True)
+    End Function
+
+    Public Function SetCTerminus(ByVal strFormula As String, ByVal strFollowingResidue As String) As Integer
+        Return SetCTerminus(strFormula, strFollowingResidue, True)
+    End Function
+
+    Public Function SetCTerminus(ByVal strFormula As String, _
+                                  ByVal strFollowingResidue As String, _
+                                  ByVal blnUse3LetterCode As Boolean) As Integer
+
         ' Returns 0 if success; 1 if error
 
         ' Typical N terminus mods
@@ -1606,7 +1920,18 @@ Public Class MWPeptideClass
         UpdateResidueMasses()
     End Function
 
-    Public Function SetCTerminusGroup(ByRef eCTerminusGroup As ctgCTerminusGroupConstants, Optional ByRef strFollowingResidue As String = "", Optional ByRef blnUse3LetterCode As Boolean = True) As Integer
+    Public Function SetCTerminusGroup(ByVal eCTerminusGroup As ctgCTerminusGroupConstants) As Integer
+        Return SetCTerminusGroup(eCTerminusGroup, "", True)
+    End Function
+
+    Public Function SetCTerminusGroup(ByVal eCTerminusGroup As ctgCTerminusGroupConstants, ByVal strFollowingResidue As String) As Integer
+        Return SetCTerminusGroup(eCTerminusGroup, strFollowingResidue, True)
+    End Function
+
+    Public Function SetCTerminusGroup(ByVal eCTerminusGroup As ctgCTerminusGroupConstants, _
+                                      ByVal strFollowingResidue As String, _
+                                      ByVal blnUse3LetterCode As Boolean) As Integer
+
         ' Returns 0 if success; 1 if error
         Dim lngError As Integer
 
@@ -1618,7 +1943,7 @@ Public Class MWPeptideClass
             Case Else : lngError = 1
         End Select
 
-        SetCTerminusGroup = lngError
+        Return lngError
 
     End Function
 
@@ -1747,7 +2072,17 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function SetNTerminus(ByRef strFormula As String, Optional ByRef strPrecedingResidue As String = "", Optional ByRef blnUse3LetterCode As Boolean = True) As Integer
+    Public Function SetNTerminus(ByVal strFormula As String) As Integer
+        Return SetNTerminus(strFormula, "", True)
+    End Function
+
+    Public Function SetNTerminus(ByVal strFormula As String, ByVal strPrecedingResidue As String) As Integer
+        Return SetNTerminus(strFormula, strPrecedingResidue, True)
+    End Function
+
+    Public Function SetNTerminus(ByVal strFormula As String, _
+                                 ByVal strPrecedingResidue As String, _
+                                 ByVal blnUse3LetterCode As Boolean) As Integer
         ' Returns 0 if success; 1 if error
 
         ' Typical N terminus mods
@@ -1773,7 +2108,19 @@ Public Class MWPeptideClass
         UpdateResidueMasses()
     End Function
 
-    Public Function SetNTerminusGroup(ByRef eNTerminusGroup As ntgNTerminusGroupConstants, Optional ByRef strPrecedingResidue As String = "", Optional ByRef blnUse3LetterCode As Boolean = True) As Integer
+    Public Function SetNTerminusGroup(ByVal eNTerminusGroup As ntgNTerminusGroupConstants) As Integer
+        Return SetNTerminusGroup(eNTerminusGroup, "", True)
+    End Function
+
+    Public Function SetNTerminusGroup(ByVal eNTerminusGroup As ntgNTerminusGroupConstants, ByVal strPrecedingResidue As String) As Integer
+        Return SetNTerminusGroup(eNTerminusGroup, strPrecedingResidue, True)
+    End Function
+
+
+    Public Function SetNTerminusGroup(ByVal eNTerminusGroup As ntgNTerminusGroupConstants, _
+                                      ByVal strPrecedingResidue As String, _
+                                      ByVal blnUse3LetterCode As Boolean) As Integer
+
         ' Returns 0 if success; 1 if error
         Dim lngError As Integer
 
@@ -1789,11 +2136,27 @@ Public Class MWPeptideClass
             Case Else : lngError = 1
         End Select
 
-        SetNTerminusGroup = lngError
+        Return lngError
 
     End Function
 
-    Public Function SetResidue(ByVal lngResidueNumber As Integer, ByRef strSymbol As String, Optional ByRef blnIs3LetterCode As Boolean = True, Optional ByRef blnPhosphorylated As Boolean = False) As Integer
+    Public Function SetResidue(ByVal lngResidueNumber As Integer, _
+                               ByVal strSymbol As String) As Integer
+        Return SetResidue(lngResidueNumber, strSymbol, True, False)
+    End Function
+
+    Public Function SetResidue(ByVal lngResidueNumber As Integer, _
+                               ByVal strSymbol As String, _
+                               ByVal blnIs3LetterCode As Boolean) As Integer
+        Return SetResidue(lngResidueNumber, strSymbol, blnIs3LetterCode, False)
+    End Function
+
+
+    Public Function SetResidue(ByVal lngResidueNumber As Integer, _
+                               ByVal strSymbol As String, _
+                               ByVal blnIs3LetterCode As Boolean, _
+                               ByVal blnPhosphorylated As Boolean) As Integer
+
         ' Sets or adds a residue (must add residues in order)
         ' Returns the index of the modified residue, or the new index if added
         ' Returns -1 if a problem
@@ -1883,7 +2246,65 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function SetSequence(ByVal strSequence As String, Optional ByRef eNTerminus As ntgNTerminusGroupConstants = ntgNTerminusGroupConstants.ntgHydrogen, Optional ByRef eCTerminus As ctgCTerminusGroupConstants = ctgCTerminusGroupConstants.ctgHydroxyl, Optional ByRef blnIs3LetterCode As Boolean = True, Optional ByRef bln1LetterCheckForPrefixAndSuffixResidues As Boolean = True, Optional ByRef bln3LetterCheckForPrefixHandSuffixOH As Boolean = True, Optional ByRef blnAddMissingModificationSymbols As Boolean = False) As Integer
+    Public Function SetSequence(ByVal strSequence As String) As Integer
+        Return SetSequence(strSequence, _
+                           ntgNTerminusGroupConstants.ntgHydrogen, _
+                           ctgCTerminusGroupConstants.ctgHydroxyl, _
+                           True, True, True, False)
+
+    End Function
+
+    Public Function SetSequence(ByVal strSequence As String, _
+                                ByVal eNTerminus As ntgNTerminusGroupConstants, _
+                                ByVal eCTerminus As ctgCTerminusGroupConstants) As Integer
+
+        Return SetSequence(strSequence, eNTerminus, eCTerminus, _
+                           True, True, True, False)
+    End Function
+
+    Public Function SetSequence(ByVal strSequence As String, _
+                                ByVal eNTerminus As ntgNTerminusGroupConstants, _
+                                ByVal eCTerminus As ctgCTerminusGroupConstants, _
+                                ByVal blnIs3LetterCode As Boolean) As Integer
+
+        Return SetSequence(strSequence, eNTerminus, eCTerminus, _
+                           blnIs3LetterCode, True, True, False)
+
+    End Function
+
+    Public Function SetSequence(ByVal strSequence As String, _
+                               ByVal eNTerminus As ntgNTerminusGroupConstants, _
+                               ByVal eCTerminus As ctgCTerminusGroupConstants, _
+                               ByVal blnIs3LetterCode As Boolean, _
+                               ByVal bln1LetterCheckForPrefixAndSuffixResidues As Boolean) As Integer
+
+        Return SetSequence(strSequence, eNTerminus, eCTerminus, _
+                           blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, True, False)
+
+    End Function
+
+    Public Function SetSequence(ByVal strSequence As String, _
+                                ByVal eNTerminus As ntgNTerminusGroupConstants, _
+                                ByVal eCTerminus As ctgCTerminusGroupConstants, _
+                                ByVal blnIs3LetterCode As Boolean, _
+                                ByVal bln1LetterCheckForPrefixAndSuffixResidues As Boolean, _
+                                ByVal bln3LetterCheckForPrefixHandSuffixOH As Boolean) As Integer
+
+        Return SetSequence(strSequence, eNTerminus, eCTerminus, _
+                   blnIs3LetterCode, _
+                   bln1LetterCheckForPrefixAndSuffixResidues, _
+                   bln3LetterCheckForPrefixHandSuffixOH, False)
+
+    End Function
+
+    Public Function SetSequence(ByVal strSequence As String, _
+                            ByVal eNTerminus As ntgNTerminusGroupConstants, _
+                            ByVal eCTerminus As ctgCTerminusGroupConstants, _
+                            ByVal blnIs3LetterCode As Boolean, _
+                            ByVal bln1LetterCheckForPrefixAndSuffixResidues As Boolean, _
+                            ByVal bln3LetterCheckForPrefixHandSuffixOH As Boolean, _
+                            ByVal blnAddMissingModificationSymbols As Boolean) As Integer
+
         ' If blnIs3LetterCode = false, then look for sequence of the form: R.ABCDEF.R
         ' If found, remove the leading and ending residues since these aren't for this peptide
         ' Returns 0 if success or 1 if an error
@@ -2163,7 +2584,7 @@ Public Class MWPeptideClass
 
                     .IonMass(itIonTypeConstants.itAIon) = dblRunningTotal - dblImmoniumMassDifference - dblChargeCarrierMass
                     .IonMass(itIonTypeConstants.itBIon) = dblRunningTotal
-                
+
                     ' Add NH3 (ammonia) to the B ion mass to get the C ion mass
                     .IonMass(itIonTypeConstants.itCIon) = .IonMass(itIonTypeConstants.itBIon) + dblNH3Mass
                 Else
@@ -2204,7 +2625,7 @@ Public Class MWPeptideClass
                             .IonMass(itIonTypeConstants.itYIon) = .IonMass(itIonTypeConstants.itYIon) - dblHydrogenMass
                         End If
                     End If
-                
+
                     ' Subtract NH2 (amide) from the Y ion mass to get the Z ion mass
                     .IonMass(itIonTypeConstants.itZIon) = .IonMass(itIonTypeConstants.itYIon) - (dblNH3Mass - dblHydrogenMass)
                 End If

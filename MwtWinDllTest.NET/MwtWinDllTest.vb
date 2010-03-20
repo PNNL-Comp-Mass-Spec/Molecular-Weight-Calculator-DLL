@@ -849,7 +849,10 @@ Friend Class frmMwtWinDllTest
 
         With mMwtWin.Peptide
 
-            .SetSequence("K.ACYEFGHRKACYEFGHRK.G", MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogen, MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, False, True)
+            .SetSequence("K.ACYEFGHRKACYEFGHRK.G", _
+                         MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogen, _
+                         MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, _
+                         False, True)
             '.SetSequence("K.ACYEFGHRKACYEFGHRK.G")
 
             ' Can change the terminii to various standard groups

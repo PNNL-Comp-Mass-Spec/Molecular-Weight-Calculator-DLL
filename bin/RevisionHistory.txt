@@ -1,5 +1,10 @@
 MwtWinDll.NET Change Log
 
+Version 3.4.3730; March 19, 2010
+	- Changed many of the functions to use overloaded function definitions instead of Optional function parameters
+		- Allows MwtWinDll.dll to be C# compatible
+	- Fixed bug that always reported a mass of 0 when calling clsMwtWin.ComputeMass()
+
 Version 3.3.3709; February 26, 2010
 	- Converted to Visual Studio 2010
 	- Added progress events

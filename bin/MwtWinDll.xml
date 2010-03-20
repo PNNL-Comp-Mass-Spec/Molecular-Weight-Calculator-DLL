@@ -6,7 +6,44 @@ MwtWinDll
 </name>
 </assembly>
 <members>
-<member name="M:MwtWinDll.MWElementAndMassRoutines.ComputeIsotopicAbundancesInternal(System.String@,System.Int16,System.String@,System.Double[0:,0:]@,System.Int32@,System.String,System.String,System.String,System.String,System.Boolean@)">
+<member name="M:MwtWinDll.MWPeptideClass.GetTrypticName(System.String,System.String,System.Int32@,System.Int32@,System.Boolean,System.String,System.String,System.String,System.Boolean,System.Int32)">
+	<summary>
+ Examines strPeptideResidues to see where they exist in strProteinResidues
+ Constructs a name string based on their position and based on whether the fragment is truly tryptic
+ In addition, returns the position of the first and last residue in lngReturnResidueStart and lngReturnResidueEnd
+ </summary>
+	<param name="strProteinResidues"></param>
+	<param name="strPeptideResidues"></param>
+	<param name="lngReturnResidueStart">Output: start peptides of the peptide residues in the protein</param>
+	<param name="lngReturnResidueEnd">Output: end peptides of the peptide residues in the protein</param>
+	<param name="blnICR2LSCompatible"></param>
+	<param name="strRuleResidues"></param>
+	<param name="strExceptionResidues"></param>
+	<param name="strTerminiiSymbol"></param>
+	<param name="blnIgnoreCase"></param>
+	<param name="lngProteinSearchStartLoc"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:MwtWinDll.MWPeptideClass.GetTrypticNameMultipleMatches(System.String,System.String,System.Int32@,System.Int32@,System.Int32@,System.Boolean,System.String,System.String,System.String,System.Boolean,System.Int32,System.String)">
+	<summary>
+ Examines strPeptideResidues to see where they exist in strProteinResidues
+ Looks for all possible matches, returning them as a comma separated list
+ </summary>
+	<param name="strProteinResidues"></param>
+	<param name="strPeptideResidues"></param>
+	<param name="lngReturnMatchCount"></param>
+	<param name="lngReturnResidueStart"></param>
+	<param name="lngReturnResidueEnd"></param>
+	<param name="blnICR2LSCompatible"></param>
+	<param name="strRuleResidues"></param>
+	<param name="strExceptionResidues"></param>
+	<param name="strTerminiiSymbol"></param>
+	<param name="blnIgnoreCase"></param>
+	<param name="lngProteinSearchStartLoc"></param>
+	<param name="strListDelimeter"></param>
+	<returns>The number of matches</returns>
+	<remarks></remarks>
+</member><member name="M:MwtWinDll.MWElementAndMassRoutines.ComputeIsotopicAbundancesInternal(System.String@,System.Int16,System.String@,System.Double[0:,0:]@,System.Int32@,System.String,System.String,System.String,System.String,System.Boolean@)">
 	<summary>
  Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
  M+H values if intChargeState=1, and convoluted m/z if intChargeState is &gt; 1

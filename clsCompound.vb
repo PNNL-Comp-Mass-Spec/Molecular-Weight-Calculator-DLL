@@ -126,7 +126,12 @@ Public Class MWCompoundClass
 
     End Function
 
-    Public Function GetPercentCompositionForElementAsString(ByVal intElementID As Short, Optional ByRef blnIncludeStandardDeviation As Boolean = True) As String
+    Public Function GetPercentCompositionForElementAsString(ByVal intElementID As Short) As String
+        Return GetPercentCompositionForElementAsString(intElementID, True)
+
+    End Function
+
+    Public Function GetPercentCompositionForElementAsString(ByVal intElementID As Short, ByVal blnIncludeStandardDeviation As Boolean) As String
         ' Returns the percent composition and standard deviation for element
         ' Returns "" if an invalid ID
         Dim strElementSymbol As String
@@ -314,7 +319,13 @@ Public Class MWCompoundClass
         End Get
     End Property
 
-    Public ReadOnly Property Mass(Optional ByVal blnRecomputeMass As Boolean = True) As Double
+    Public ReadOnly Property Mass() As Double
+        Get
+            Return Me.Mass(True)
+        End Get
+    End Property
+
+    Public ReadOnly Property Mass(ByVal blnRecomputeMass As Boolean) As Double
         Get
             If blnRecomputeMass Then UpdateMass()
 
@@ -322,7 +333,12 @@ Public Class MWCompoundClass
         End Get
     End Property
 
-    Public ReadOnly Property MassAndStdDevString(Optional ByVal blnRecomputeMass As Boolean = True) As String
+    Public ReadOnly Property MassAndStdDevString() As String
+        Get
+            Return Me.MassAndStdDevString(True)
+        End Get
+    End Property
+    Public ReadOnly Property MassAndStdDevString(ByVal blnRecomputeMass As Boolean) As String
         Get
             If blnRecomputeMass Then UpdateMass()
 

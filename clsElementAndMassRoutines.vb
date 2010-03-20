@@ -316,7 +316,13 @@ Public Class MWElementAndMassRoutines
         mAbortProcessing = True
     End Sub
 
-    Private Sub AddAbbreviationWork(ByRef intAbbrevIndex As Short, ByRef strSymbol As String, ByRef strFormula As String, ByRef sngCharge As Single, ByRef blnIsAminoAcid As Boolean, Optional ByRef strOneLetter As String = "", Optional ByRef strComment As String = "", Optional ByRef blnInvalidSymbolOrFormula As Boolean = False)
+    Private Sub AddAbbreviationWork(ByVal intAbbrevIndex As Short, ByVal strSymbol As String, _
+                                    ByRef strFormula As String, ByVal sngCharge As Single, _
+                                    ByVal blnIsAminoAcid As Boolean, _
+                                    Optional ByVal strOneLetter As String = "", _
+                                    Optional ByVal strComment As String = "", _
+                                    Optional ByVal blnInvalidSymbolOrFormula As Boolean = False)
+
         With AbbrevStats(intAbbrevIndex)
             .InvalidSymbolOrFormula = blnInvalidSymbolOrFormula
             .Symbol = strSymbol
@@ -448,12 +454,17 @@ Public Class MWElementAndMassRoutines
     End Function
 
     Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, _
-                                                     ByVal intChargeState As Short, _
-                                                     ByRef strResults As String, _
-                                                     ByRef ConvolutedMSData2DOneBased(,) As Double, _
-                                                     ByRef ConvolutedMSDataCount As Integer) As Short
+                                              ByVal intChargeState As Short, _
+                                              ByRef strResults As String, _
+                                              ByRef ConvolutedMSData2DOneBased(,) As Double, _
+                                              ByRef ConvolutedMSDataCount As Integer) As Short
 
-        Return ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount)
+        Return ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, _
+                                                 "Isotopic Abundances for", _
+                                                 "Mass/Charge", _
+                                                 "Fraction", _
+                                                 "Intensity", _
+                                                 False)
 
     End Function
 
@@ -478,11 +489,12 @@ Public Class MWElementAndMassRoutines
                                                       ByRef strResults As String, _
                                                       ByRef ConvolutedMSData2DOneBased(,) As Double, _
                                                       ByRef ConvolutedMSDataCount As Integer, _
-                                                      Optional ByVal strHeaderIsotopicAbundances As String = "Isotopic Abundances for", _
-                                                      Optional ByVal strHeaderMassToCharge As String = "Mass/Charge", _
-                                                      Optional ByVal strHeaderFraction As String = "Fraction", _
-                                                      Optional ByVal strHeaderIntensity As String = "Intensity", _
-                                                      Optional ByRef blnUseFactorials As Boolean = False) As Short
+                                                      ByVal strHeaderIsotopicAbundances As String, _
+                                                      ByVal strHeaderMassToCharge As String, _
+                                                      ByVal strHeaderFraction As String, _
+                                                      ByVal strHeaderIntensity As String, _
+                                                      ByRef blnUseFactorials As Boolean) As Short
+
         ' Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
         '  M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
         ' Updates strFormulaIn to the properly formatted formula
@@ -1192,7 +1204,18 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Public Function ConvoluteMassInternal(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short, Optional ByVal intDesiredCharge As Short = 1, Optional ByVal dblChargeCarrierMass As Double = 0) As Double
+    Public Function ConvoluteMassInternal(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short) As Double
+        Return ConvoluteMassInternal(dblMassMZ, intCurrentCharge, 1, 0)
+    End Function
+
+    Public Function ConvoluteMassInternal(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short, ByVal intDesiredCharge As Short) As Double
+        Return ConvoluteMassInternal(dblMassMZ, intCurrentCharge, intDesiredCharge, 0)
+    End Function
+
+    Public Function ConvoluteMassInternal(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short, _
+                                           ByVal intDesiredCharge As Short, _
+                                           ByVal dblChargeCarrierMass As Double) As Double
+
         ' Converts dblMassMZ to the MZ that would appear at the given intDesiredCharge
         ' To return the neutral mass, set intDesiredCharge to 0
 
@@ -1592,13 +1615,20 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Sub GeneralErrorHandler(ByRef strCallingProcedure As String, ByRef lngErrorNumber As Integer, Optional ByRef strErrorDescriptionAddnl As String = "")
+    Public Sub GeneralErrorHandler(ByRef strCallingProcedure As String, ByVal lngErrorNumber As Integer)
+        GeneralErrorHandler(strCallingProcedure, lngErrorNumber)
+    End Sub
+
+    Public Sub GeneralErrorHandler(ByRef strCallingProcedure As String, ByVal lngErrorNumber As Integer, ByVal strErrorDescriptionAddnl As String)
         Dim strMessage As String
         Dim strErrorFilePath As String
         Dim srOutFile As System.IO.StreamWriter
 
         strMessage = "Error in " & strCallingProcedure & ": " & ErrorToString(lngErrorNumber) & " (#" & Trim(CStr(lngErrorNumber)) & ")"
-        If Len(strErrorDescriptionAddnl) > 0 Then strMessage = strMessage & ControlChars.NewLine & strErrorDescriptionAddnl
+        If Not strErrorDescriptionAddnl Is Nothing AndAlso strErrorDescriptionAddnl.Length > 0 Then
+            strMessage &= ControlChars.NewLine & strErrorDescriptionAddnl
+        End If
+
 
         LogMessage(strMessage, eMessageTypeConstants.ErrorMsg)
 
@@ -1630,7 +1660,11 @@ Public Class MWElementAndMassRoutines
         GetAbbreviationCountInternal = AbbrevAllCount
     End Function
 
-    Public Function GetAbbreviationIDInternal(ByVal strSymbol As String, Optional ByRef blnAminoAcidsOnly As Boolean = False) As Integer
+    Public Function GetAbbreviationIDInternal(ByVal strSymbol As String) As Integer
+        Return GetAbbreviationIDInternal(strSymbol, False)
+    End Function
+
+    Public Function GetAbbreviationIDInternal(ByVal strSymbol As String, ByVal blnAminoAcidsOnly As Boolean) As Integer
         ' Returns 0 if not found, the ID if found
 
         Dim lngIndex As Integer
@@ -1646,7 +1680,21 @@ Public Class MWElementAndMassRoutines
         Return 0
     End Function
 
-    Public Function GetAbbreviationInternal(ByVal lngAbbreviationID As Integer, ByRef strSymbol As String, ByRef strFormula As String, ByRef sngCharge As Single, ByRef blnIsAminoAcid As Boolean, Optional ByRef strOneLetterSymbol As String = "", Optional ByRef strComment As String = "", Optional ByRef blnInvalidSymbolOrFormula As Boolean = False) As Integer
+    Public Function GetAbbreviationInternal(ByVal lngAbbreviationID As Integer, ByRef strSymbol As String, _
+                                            ByRef strFormula As String, ByRef sngCharge As Single, _
+                                            ByRef blnIsAminoAcid As Boolean) As Integer
+
+        Return GetAbbreviationInternal(lngAbbreviationID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", False)
+
+    End Function
+
+    Public Function GetAbbreviationInternal(ByVal lngAbbreviationID As Integer, ByRef strSymbol As String, _
+                                            ByRef strFormula As String, ByRef sngCharge As Single, _
+                                            ByRef blnIsAminoAcid As Boolean, _
+                                            ByRef strOneLetterSymbol As String, _
+                                            ByRef strComment As String, _
+                                            ByRef blnInvalidSymbolOrFormula As Boolean) As Integer
+
         ' Returns the contents of AbbrevStats() in the ByRef variables
         ' Returns 0 if success, 1 if failure
 
@@ -1683,7 +1731,7 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function GetAminoAcidSymbolConversionInternal(ByRef strSymbolToFind As String, ByRef bln1LetterTo3Letter As Boolean) As String
+    Public Function GetAminoAcidSymbolConversionInternal(ByVal strSymbolToFind As String, ByVal bln1LetterTo3Letter As Boolean) As String
         ' If bln1LetterTo3Letter = True, then converting 1 letter codes to 3 letter codes
         ' Returns the symbol, if found
         ' Otherwise, returns ""
@@ -1867,7 +1915,11 @@ Public Class MWElementAndMassRoutines
         Return MessageStatmentCount
     End Function
 
-    Public Function GetMessageStatementInternal(ByRef lngMessageID As Integer, Optional ByRef strAppendText As String = "") As String
+    Public Function GetMessageStatementInternal(ByVal lngMessageID As Integer) As String
+        Return GetMessageStatementInternal(lngMessageID, String.Empty)
+    End Function
+
+    Public Function GetMessageStatementInternal(ByVal lngMessageID As Integer, ByVal strAppendText As String) As String
         ' GetMessageStringInternal simply returns the message for lngMessageID
         ' LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
         Dim strMessage As String
@@ -1916,7 +1968,7 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function IsModSymbolInternal(ByRef strTestChar As String) As Boolean
+    Public Function IsModSymbolInternal(ByVal strTestChar As String) As Boolean
         ' Returns True if the first letter of strTestChar is a ModSymbol
         ' Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
         ' Valid Mod Symbols are ! # $ % & ' * + ? ^ _ ` ~
@@ -2050,7 +2102,11 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Private Function LookupMessage(ByRef lngMessageID As Integer, Optional ByRef strAppendText As String = "") As String
+    Private Function LookupMessage(ByVal lngMessageID As Integer) As String
+        Return LookupMessage(lngMessageID, "")
+    End Function
+
+    Private Function LookupMessage(ByVal lngMessageID As Integer, ByVal strAppendText As String) As String
         ' Looks up the message for lngMessageID
         ' Also appends any data in strAppendText to the message
         ' Returns the complete message
@@ -2099,18 +2155,23 @@ Public Class MWElementAndMassRoutines
         ' Converts dblMassToConvert to ppm, based on the value of dblCurrentMZ
 
         If dblCurrentMZ > 0 Then
-            MassToPPMInternal = dblMassToConvert * 1000000.0# / dblCurrentMZ
+            Return dblMassToConvert * 1000000.0# / dblCurrentMZ
         Else
-            MassToPPMInternal = 0
+            Return 0
         End If
     End Function
 
-    Public Function MonoMassToMZInternal(ByVal dblMonoisotopicMass As Double, ByVal intCharge As Short, Optional ByVal dblChargeCarrierMass As Double = 0) As Double
+    Public Function MonoMassToMZInternal(ByVal dblMonoisotopicMass As Double, ByVal intCharge As Short) As Double
+        Return MonoMassToMZInternal(dblMonoisotopicMass, intCharge, 0)
+    End Function
+
+    Public Function MonoMassToMZInternal(ByVal dblMonoisotopicMass As Double, ByVal intCharge As Short, _
+                                         ByVal dblChargeCarrierMass As Double) As Double
         ' If dblChargeCarrierMass is 0, then uses mChargeCarrierMass
         If dblChargeCarrierMass = 0 Then dblChargeCarrierMass = mChargeCarrierMass
 
         ' Call ConvoluteMass to convert to the desired charge state
-        MonoMassToMZInternal = ConvoluteMassInternal(dblMonoisotopicMass + dblChargeCarrierMass, 1, intCharge, dblChargeCarrierMass)
+        Return ConvoluteMassInternal(dblMonoisotopicMass + dblChargeCarrierMass, 1, intCharge, dblChargeCarrierMass)
     End Function
 
     Public Sub MemoryLoadAll(ByRef eElementMode As emElementModeConstants)
@@ -2284,7 +2345,14 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Public Sub MemoryLoadElements(ByRef eElementMode As emElementModeConstants, Optional ByRef intSpecificElement As Short = 0, Optional ByRef eSpecificStatToReset As MolecularWeightCalculator.esElementStatsConstants = MolecularWeightCalculator.esElementStatsConstants.esMass)
+    Public Sub MemoryLoadElements(ByRef eElementMode As emElementModeConstants)
+        MemoryLoadElements(eElementMode, 0S, MolecularWeightCalculator.esElementStatsConstants.esMass)
+    End Sub
+
+    Public Sub MemoryLoadElements(ByRef eElementMode As emElementModeConstants, _
+                                  ByVal intSpecificElement As Short, _
+                                  ByVal eSpecificStatToReset As MolecularWeightCalculator.esElementStatsConstants)
+
         ' intSpecificElement and intSpecificElementProperty are zero when updating all of the elements
         ' nonzero intSpecificElement and intSpecificElementProperty values will set just that specific value to the default
         ' eElementMode = 0 should not occur
@@ -3454,7 +3522,22 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Public Function ParseFormulaPublic(ByRef strFormula As String, ByRef udtComputationStats As udtComputationStatsType, Optional ByRef blnExpandAbbreviations As Boolean = False, Optional ByRef dblValueForX As Double = 1.0#) As Double
+    Public Function ParseFormulaPublic(ByRef strFormula As String, _
+                                   ByRef udtComputationStats As udtComputationStatsType) As Double
+        Return ParseFormulaPublic(strFormula, udtComputationStats, False, 1)
+    End Function
+
+    Public Function ParseFormulaPublic(ByRef strFormula As String, _
+                                   ByRef udtComputationStats As udtComputationStatsType, _
+                                   ByRef blnExpandAbbreviations As Boolean) As Double
+        Return ParseFormulaPublic(strFormula, udtComputationStats, blnExpandAbbreviations, 1)
+    End Function
+
+    Public Function ParseFormulaPublic(ByRef strFormula As String, _
+                                       ByRef udtComputationStats As udtComputationStatsType, _
+                                        ByRef blnExpandAbbreviations As Boolean, _
+                                        ByRef dblValueForX As Double) As Double
+
         ' Determines the molecular weight and elemental composition of strFormula
         ' Returns the computed molecular weight if no error; otherwise, returns -1
         ' ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
@@ -3513,7 +3596,17 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Private Function ParseFormulaRecursive(ByVal strFormula As String, ByRef udtComputationStats As udtComputationStatsType, ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType, ByVal blnExpandAbbreviations As Boolean, ByRef dblStdDevSum As Double, Optional ByRef dblValueForX As Double = 1.0#, Optional ByVal intCharCountPrior As Integer = 0, Optional ByVal dblParenthMultiplier As Double = 1.0#, Optional ByVal dblDashMultiplierPrior As Double = 1.0#, Optional ByVal dblBracketMultiplierPrior As Double = 1.0#, Optional ByRef CarbonOrSiliconReturnCount As Integer = 0, Optional ByVal intParenthLevelPrevious As Short = 0) As String
+    Private Function ParseFormulaRecursive(ByVal strFormula As String, ByRef udtComputationStats As udtComputationStatsType, _
+                                           ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType, _
+                                           ByVal blnExpandAbbreviations As Boolean, _
+                                           ByRef dblStdDevSum As Double, _
+                                           Optional ByRef dblValueForX As Double = 1.0#, _
+                                           Optional ByVal intCharCountPrior As Integer = 0, _
+                                           Optional ByVal dblParenthMultiplier As Double = 1.0#, _
+                                           Optional ByVal dblDashMultiplierPrior As Double = 1.0#, _
+                                           Optional ByVal dblBracketMultiplierPrior As Double = 1.0#, _
+                                           Optional ByRef CarbonOrSiliconReturnCount As Integer = 0, _
+                                           Optional ByVal intParenthLevelPrevious As Short = 0) As String
 
         ' Determine elements in an abbreviation or elements and abbreviations in a formula
         ' Stores results in udtComputationStats
@@ -4231,7 +4324,25 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function PlainTextToRtfInternal(ByRef strWorkText As String, Optional ByRef CalculatorMode As Boolean = False, Optional ByRef blnHighlightCharFollowingPercentSign As Boolean = True, Optional ByRef blnOverrideErrorID As Boolean = False, Optional ByRef lngErrorIDOverride As Integer = 0) As String
+    Public Function PlainTextToRtfInternal(ByRef strWorkText As String) As String
+        Return PlainTextToRtfInternal(strWorkText, False, True, False, 0)
+    End Function
+
+    Public Function PlainTextToRtfInternal(ByRef strWorkText As String, ByVal CalculatorMode As Boolean) As String
+        Return PlainTextToRtfInternal(strWorkText, CalculatorMode, True, False, 0)
+    End Function
+
+    Public Function PlainTextToRtfInternal(ByRef strWorkText As String, ByVal CalculatorMode As Boolean, _
+                                           ByVal blnHighlightCharFollowingPercentSign As Boolean) As String
+        Return PlainTextToRtfInternal(strWorkText, CalculatorMode, blnHighlightCharFollowingPercentSign, False, 0)
+    End Function
+
+    Public Function PlainTextToRtfInternal(ByRef strWorkText As String, _
+                                           ByRef CalculatorMode As Boolean, _
+                                           ByRef blnHighlightCharFollowingPercentSign As Boolean, _
+                                           ByRef blnOverrideErrorID As Boolean, _
+                                           ByRef lngErrorIDOverride As Integer) As String
+
         Dim strWorkCharPrev, strWorkChar, strRTF As String
         Dim intCharIndex, intCharIndex2 As Integer
         Dim blnSuperFound As Boolean
@@ -4464,7 +4575,22 @@ Public Class MWElementAndMassRoutines
         RaiseEvent ProgressReset()
     End Sub
 
-    Public Function ReturnFormattedMassAndStdDev(ByRef dblMass As Double, ByRef dblStdDev As Double, Optional ByRef blnIncludeStandardDeviation As Boolean = True, Optional ByRef blnIncludePctSign As Boolean = False) As String
+    Public Function ReturnFormattedMassAndStdDev(ByVal dblMass As Double, _
+                                                 ByVal dblStdDev As Double) As String
+
+        Return ReturnFormattedMassAndStdDev(dblMass, dblStdDev, True, False)
+    End Function
+
+    Public Function ReturnFormattedMassAndStdDev(ByVal dblMass As Double, _
+                                                 ByVal dblStdDev As Double, _
+                                                 ByVal blnIncludeStandardDeviation As Boolean) As String
+        Return ReturnFormattedMassAndStdDev(dblMass, dblStdDev, blnIncludeStandardDeviation, False)
+    End Function
+
+    Public Function ReturnFormattedMassAndStdDev(ByVal dblMass As Double, _
+                                                 ByVal dblStdDev As Double, _
+                                                 ByVal blnIncludeStandardDeviation As Boolean, _
+                                                 ByVal blnIncludePctSign As Boolean) As String
         ' Plan:
         ' Round dblStdDev to 1 final digit.
         ' Round dblMass to the appropriate place based on stddev.
@@ -4547,7 +4673,33 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function SetAbbreviationInternal(ByVal strSymbol As String, ByVal strFormula As String, ByVal sngCharge As Single, ByVal blnIsAminoAcid As Boolean, Optional ByVal strOneLetterSymbol As String = "", Optional ByRef strComment As String = "", Optional ByRef blnValidateFormula As Boolean = True) As Integer
+    Public Function SetAbbreviationInternal(ByVal strSymbol As String, ByVal strFormula As String, _
+                                            ByVal sngCharge As Single, ByVal blnIsAminoAcid As Boolean) As Integer
+
+        Return SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", True)
+    End Function
+
+    Public Function SetAbbreviationInternal(ByVal strSymbol As String, ByVal strFormula As String, _
+                                            ByVal sngCharge As Single, ByVal blnIsAminoAcid As Boolean, _
+                                            ByVal strOneLetterSymbol As String) As Integer
+
+        Return SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, "", True)
+    End Function
+
+    Public Function SetAbbreviationInternal(ByVal strSymbol As String, ByVal strFormula As String, _
+                                            ByVal sngCharge As Single, ByVal blnIsAminoAcid As Boolean, _
+                                            ByVal strOneLetterSymbol As String, _
+                                            ByVal strComment As String) As Integer
+
+        Return SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, True)
+    End Function
+
+    Public Function SetAbbreviationInternal(ByVal strSymbol As String, ByVal strFormula As String, _
+                                            ByVal sngCharge As Single, ByVal blnIsAminoAcid As Boolean, _
+                                            ByVal strOneLetterSymbol As String, _
+                                            ByVal strComment As String, _
+                                            ByVal blnValidateFormula As Boolean) As Integer
+
         ' Adds a new abbreviation or updates an existing one (based on strSymbol)
         ' Returns 0 if successful, otherwise, returns an error ID
 
@@ -4583,7 +4735,40 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function SetAbbreviationByIDInternal(ByVal intAbbrevID As Short, ByVal strSymbol As String, ByVal strFormula As String, ByVal sngCharge As Single, ByVal blnIsAminoAcid As Boolean, Optional ByVal strOneLetterSymbol As String = "", Optional ByRef strComment As String = "", Optional ByRef blnValidateFormula As Boolean = True) As Integer
+    Public Function SetAbbreviationByIDInternal(ByVal intAbbrevID As Short, ByVal strSymbol As String, _
+                                                ByVal strFormula As String, ByVal sngCharge As Single, _
+                                                ByVal blnIsAminoAcid As Boolean) As Integer
+
+        Return SetAbbreviationByIDInternal(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", True)
+
+    End Function
+
+    Public Function SetAbbreviationByIDInternal(ByVal intAbbrevID As Short, ByVal strSymbol As String, _
+                                                ByVal strFormula As String, ByVal sngCharge As Single, _
+                                                ByVal blnIsAminoAcid As Boolean, _
+                                                ByVal strOneLetterSymbol As String) As Integer
+
+        Return SetAbbreviationByIDInternal(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, "", True)
+
+    End Function
+
+    Public Function SetAbbreviationByIDInternal(ByVal intAbbrevID As Short, ByVal strSymbol As String, _
+                                              ByVal strFormula As String, ByVal sngCharge As Single, _
+                                              ByVal blnIsAminoAcid As Boolean, _
+                                              ByVal strOneLetterSymbol As String, _
+                                              ByVal strComment As String) As Integer
+
+        Return SetAbbreviationByIDInternal(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, True)
+
+    End Function
+
+    Public Function SetAbbreviationByIDInternal(ByVal intAbbrevID As Short, ByVal strSymbol As String, _
+                                                ByVal strFormula As String, ByVal sngCharge As Single, _
+                                                ByVal blnIsAminoAcid As Boolean, _
+                                                ByVal strOneLetterSymbol As String, _
+                                                ByVal strComment As String, _
+                                                ByVal blnValidateFormula As Boolean) As Integer
+
         ' Adds a new abbreviation or updates an existing one (based on intAbbrevID)
         ' If intAbbrevID < 1 then adds as a new abbreviation
         ' Returns 0 if successful, otherwise, returns an error ID
@@ -4721,11 +4906,19 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Sub SetChargeCarrierMassInternal(ByRef dblMass As Double)
+    Public Sub SetChargeCarrierMassInternal(ByVal dblMass As Double)
         mChargeCarrierMass = dblMass
     End Sub
 
-    Public Function SetElementInternal(ByRef strSymbol As String, ByRef dblMass As Double, ByRef dblUncertainty As Double, ByRef sngCharge As Single, Optional ByRef blnRecomputeAbbreviationMasses As Boolean = True) As Integer
+    Public Function SetElementInternal(ByVal strSymbol As String, ByVal dblMass As Double, _
+                                       ByVal dblUncertainty As Double, ByVal sngCharge As Single) As Integer
+        Return SetElementInternal(strSymbol, dblMass, dblUncertainty, sngCharge, True)
+    End Function
+
+    Public Function SetElementInternal(ByVal strSymbol As String, ByVal dblMass As Double, _
+                                       ByVal dblUncertainty As Double, ByVal sngCharge As Single, _
+                                       ByVal blnRecomputeAbbreviationMasses As Boolean) As Integer
+
         ' Used to update the values for a single element (based on strSymbol)
         ' Set blnRecomputeAbbreviationMasses to False if updating several elements
 
@@ -4780,7 +4973,11 @@ Public Class MWElementAndMassRoutines
         End If
     End Function
 
-    Public Sub SetElementModeInternal(ByRef NewElementMode As emElementModeConstants, Optional ByRef blnMemoryLoadElementValues As Boolean = True)
+    Public Sub SetElementModeInternal(ByVal NewElementMode As emElementModeConstants)
+        SetElementModeInternal(NewElementMode, True)
+    End Sub
+
+    Public Sub SetElementModeInternal(ByVal NewElementMode As emElementModeConstants, ByVal blnMemoryLoadElementValues As Boolean)
         ' The only time you would want blnMemoryLoadElementValues to be False is if you're
         '  manually setting element weight values, but want to let the software know that
         '  they're average, isotopic, or integer values
