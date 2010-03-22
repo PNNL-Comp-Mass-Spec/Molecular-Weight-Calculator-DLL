@@ -10,7 +10,7 @@ DLL in a .NET project.
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
 Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002
 VB6 ActiveX Dll version written by Matthew Monroe in 2002
-Ported to VB.NET by Nikša Blonder in 2005
+Ported to VB.NET by Nikša Blonder and Matthew Monroe in 2005
 
 E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com
 Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/

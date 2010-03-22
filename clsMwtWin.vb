@@ -431,7 +431,7 @@ Public Class MolecularWeightCalculator
     End Function
 
     Public Function GetMessageStatement(ByVal intMessageID As Integer) As String
-        Return GetMessageStatement(intMessageID, "")
+        Return GetMessageStatement(intMessageID, String.Empty)
     End Function
 
     Public Function GetMessageStatement(ByVal intMessageID As Integer, ByVal strAppendText As String) As String

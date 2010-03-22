@@ -1616,7 +1616,7 @@ Public Class MWElementAndMassRoutines
     End Function
 
     Public Sub GeneralErrorHandler(ByRef strCallingProcedure As String, ByVal lngErrorNumber As Integer)
-        GeneralErrorHandler(strCallingProcedure, lngErrorNumber)
+        GeneralErrorHandler(strCallingProcedure, lngErrorNumber, String.Empty)
     End Sub
 
     Public Sub GeneralErrorHandler(ByRef strCallingProcedure As String, ByVal lngErrorNumber As Integer, ByVal strErrorDescriptionAddnl As String)
@@ -2103,7 +2103,7 @@ Public Class MWElementAndMassRoutines
     End Function
 
     Private Function LookupMessage(ByVal lngMessageID As Integer) As String
-        Return LookupMessage(lngMessageID, "")
+        Return LookupMessage(lngMessageID, String.Empty)
     End Function
 
     Private Function LookupMessage(ByVal lngMessageID As Integer, ByVal strAppendText As String) As String
