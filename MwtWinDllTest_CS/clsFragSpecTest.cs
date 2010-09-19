@@ -1,0 +1,109 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data;
+
+namespace MwtWinDllTestCS
+{
+    /*
+     * This class demonstrates how to obtain the fragmentation spectrum for a peptide sequence
+     * It also demonstrates how to compute the theoretical isotopic distribution for the peptide
+     * Written by Matthew Monroe for PNNL in 2010
+     */
+
+    class clsFragSpecTest
+    {
+
+        MwtWinDll.MolecularWeightCalculator mMwtWin;
+
+
+        public clsFragSpecTest() {
+            mMwtWin = new MwtWinDll.MolecularWeightCalculator();
+        }
+
+        public clsFragSpecTest(ref MwtWinDll.MolecularWeightCalculator objMwtWin) {
+            mMwtWin = objMwtWin;
+        }
+
+        public void TestAccessFunctions() {
+
+            // Set the element mode (average, monoisotopic, or integer)
+            mMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass);
+
+            MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType udtFragSpectrumOptions = default(MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType);
+            udtFragSpectrumOptions.Initialize();
+
+            // Initialize udtFragSpectrumOptions with the defaults
+            udtFragSpectrumOptions = mMwtWin.Peptide.GetFragmentationSpectrumOptions();
+
+            // Customize the options
+            udtFragSpectrumOptions.DoubleChargeIonsShow = true;
+            udtFragSpectrumOptions.TripleChargeIonsShow = false;
+
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itAIon].ShowIon = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itBIon].ShowIon = true;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].ShowIon = true;
+
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itCIon].ShowIon = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itZIon].ShowIon = false;
+
+
+            string strNewSeq = "TDMESALPVTVLSAEDIAK";
+
+            // Obtain the fragmentation spectrum for a peptide
+
+            // First define the peptide sequence
+            // Need to pass "false" to parameter blnIs3LetterCode since strNewSeq is in one-letter notation
+            mMwtWin.Peptide.SetSequence(strNewSeq,
+                                        MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogen,
+                                        MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl,
+                                        false);
+
+            // Update the options
+            mMwtWin.Peptide.SetFragmentationSpectrumOptions(ref udtFragSpectrumOptions);
+
+            // Get the fragmentation masses
+            MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType[] udtFragSpectrum = null;
+            mMwtWin.Peptide.GetFragmentationMasses(ref udtFragSpectrum);
+
+            // Print the results to the console
+            Console.WriteLine("Fragmentation spectrum for " + mMwtWin.Peptide.GetSequence(false, true, false, false));
+            Console.WriteLine();
+
+            Console.WriteLine("Mass     Intensity    \tSymbol");
+
+            for (int i = 0; i < udtFragSpectrum.Length; i++) {
+                Console.WriteLine(udtFragSpectrum[i].Mass.ToString("0.000") + "  " + udtFragSpectrum[i].Intensity.ToString("###0") + "        \t" + udtFragSpectrum[i].Symbol);
+
+                // For debugging purposes, stop after displaying 20 ions
+                if (i >= 20) {
+                    Console.WriteLine("...");
+                    break;
+                }
+            }
+
+            Console.WriteLine();
+
+            short intSuccess = 0;
+            string strResults = null;
+            double[,] ConvolutedMSData2D = null;
+            int ConvolutedMSDataCount = 0;
+            
+            // Compute the Isotopic distribution for the peptide
+            // Need to first convert to an empirical formula
+            // To do this, first obtain the peptide sequence in 3-letter notation
+            string strSeq3Letter = mMwtWin.Peptide.GetSequence(true, false, false, true, false);
+
+            // Now assing to the Compound class
+            mMwtWin.Compound.SetFormula(strSeq3Letter);
+
+            // Now convert to an empirical formula
+            string s = mMwtWin.Compound.ConvertToEmpirical();
+            
+            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, 1, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount);
+            Console.WriteLine(strResults);
+
+        }
+
+    }
+}

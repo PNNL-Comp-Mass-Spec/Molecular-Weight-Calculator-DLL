@@ -447,9 +447,9 @@ Public Class MWElementAndMassRoutines
         dblMass = ParseFormulaPublic(strFormula, udtComputationStats, False)
 
         If ErrorParams.ErrorID = 0 Then
-            ComputeFormulaWeight = udtComputationStats.TotalMass
+            Return udtComputationStats.TotalMass
         Else
-            ComputeFormulaWeight = -1
+            Return -1
         End If
     End Function
 
@@ -1358,7 +1358,16 @@ Public Class MWElementAndMassRoutines
         FindIndexForNominalMass = (CInt(lngWorkingMass - AtomCount * System.Math.Round(ThisElementsIsotopes(1).Mass, 0)) + 1)
     End Function
 
-    Private Sub ConvoluteMasses(ByRef ConvolutedAbundances() As udtIsoResultsOverallType, ByRef ConvolutedAbundanceStartMass As Integer, ByRef WorkingRow As Integer, ByRef WorkingAbundance As Single, ByRef WorkingMassTotal As Integer, ByRef ElementTrack As Short, ByRef IsoStats() As udtIsoResultsByElementType, ByRef ElementCount As Short, ByRef Iterations As Integer)
+    Private Sub ConvoluteMasses(ByRef ConvolutedAbundances() As udtIsoResultsOverallType, _
+                                ByRef ConvolutedAbundanceStartMass As Integer, _
+                                ByRef WorkingRow As Integer, _
+                                ByRef WorkingAbundance As Single, _
+                                ByRef WorkingMassTotal As Integer, _
+                                ByRef ElementTrack As Short, _
+                                ByRef IsoStats() As udtIsoResultsByElementType, _
+                                ByRef ElementCount As Short, _
+                                ByRef Iterations As Integer)
+
         ' Recursive function to Convolute the Results in IsoStats() and store in ConvolutedAbundances(); 1-based array
 
         Dim IndexToStoreResult, RowIndex As Integer
@@ -3523,20 +3532,20 @@ Public Class MWElementAndMassRoutines
     End Sub
 
     Public Function ParseFormulaPublic(ByRef strFormula As String, _
-                                   ByRef udtComputationStats As udtComputationStatsType) As Double
+                                       ByRef udtComputationStats As udtComputationStatsType) As Double
         Return ParseFormulaPublic(strFormula, udtComputationStats, False, 1)
     End Function
 
     Public Function ParseFormulaPublic(ByRef strFormula As String, _
-                                   ByRef udtComputationStats As udtComputationStatsType, _
-                                   ByRef blnExpandAbbreviations As Boolean) As Double
+                                       ByRef udtComputationStats As udtComputationStatsType, _
+                                       ByRef blnExpandAbbreviations As Boolean) As Double
         Return ParseFormulaPublic(strFormula, udtComputationStats, blnExpandAbbreviations, 1)
     End Function
 
     Public Function ParseFormulaPublic(ByRef strFormula As String, _
                                        ByRef udtComputationStats As udtComputationStatsType, _
-                                        ByRef blnExpandAbbreviations As Boolean, _
-                                        ByRef dblValueForX As Double) As Double
+                                       ByRef blnExpandAbbreviations As Boolean, _
+                                       ByRef dblValueForX As Double) As Double
 
         ' Determines the molecular weight and elemental composition of strFormula
         ' Returns the computed molecular weight if no error; otherwise, returns -1

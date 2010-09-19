@@ -166,14 +166,6 @@ Public Class frmTextbrowser
         End Set
     End Property
 
-    Public WriteOnly Property AppendText() As String
-        Set(ByVal Value As String)
-            txtData.Text &= Value & ControlChars.NewLine
-            txtData.SelectionStart = txtData.TextLength
-            txtData.ScrollToCaret()
-        End Set
-    End Property
-
     Public ReadOnly Property GetText() As String
         Get
             Return txtData.Text
@@ -210,6 +202,13 @@ Public Class frmTextbrowser
 #End Region
 
 #Region "Procedures"
+
+    Public Sub AppendText(ByVal Value As String)
+        txtData.Text &= Value & ControlChars.NewLine
+        txtData.SelectionStart = txtData.TextLength
+        txtData.ScrollToCaret()
+    End Sub
+
     Private Sub CopyText()
         txtData.Copy()
     End Sub

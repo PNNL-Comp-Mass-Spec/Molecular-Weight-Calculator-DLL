@@ -6,7 +6,34 @@ MwtWinDll
 </name>
 </assembly>
 <members>
-<member name="M:MwtWinDll.MWPeptideClass.GetTrypticName(System.String,System.String,System.Int32@,System.Int32@,System.Boolean,System.String,System.String,System.String,System.Boolean,System.Int32)">
+<member name="M:MwtWinDll.MolecularWeightCalculator.ConvoluteMass(System.Double,System.Int16)">
+	<summary>
+ Converts a given mass or m/z value to the MH+ m/z value
+ </summary>
+	<param name="dblMassMZ">Mass or m/z value</param>
+	<param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:MwtWinDll.MolecularWeightCalculator.ConvoluteMass(System.Double,System.Int16,System.Int16)">
+	<summary>
+ Converts a given mass or m/z value to the MH+ m/z value
+ </summary>
+	<param name="dblMassMZ">Mass or m/z value</param>
+	<param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+	<param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:MwtWinDll.MolecularWeightCalculator.ConvoluteMass(System.Double,System.Int16,System.Int16,System.Double)">
+	<summary>
+ Converts a given mass or m/z value to the MH+ m/z value
+ </summary>
+	<param name="dblMassMZ">Mass or m/z value</param>
+	<param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+	<param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
+	<param name="dblChargeCarrierMass">Custom charge carrier mass (default is 1.00727649)</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:MwtWinDll.MWPeptideClass.GetTrypticName(System.String,System.String,System.Int32@,System.Int32@,System.Boolean,System.String,System.String,System.String,System.Boolean,System.Int32)">
 	<summary>
  Examines strPeptideResidues to see where they exist in strProteinResidues
  Constructs a name string based on their position and based on whether the fragment is truly tryptic

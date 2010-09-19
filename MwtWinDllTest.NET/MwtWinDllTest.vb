@@ -678,13 +678,12 @@ Friend Class frmMwtWinDllTest
         Dim blnIsAminoAcid As Boolean
         Dim strOneLetterSymbol, strComment As String
         Dim strStatement As String
-        Dim dblmass, dblUncertainty As Double
+        Dim dblMass As Double
+        Dim dblUncertainty As Double
         Dim intIsotopeCount, intIsotopeCount2 As Short
         Dim dblIsotopeMasses() As Double
         Dim sngIsotopeAbundances() As Single
         Dim dblNewPressure As Double
-
-        Dim objCompound As New MwtWinDll.MWCompoundClass
 
         Dim objResults As New frmTextbrowser
 
@@ -719,11 +718,11 @@ Friend Class frmMwtWinDllTest
             ' Test Element access
             lngItemCount = .GetElementCount
             For intIndex = 1 To lngItemCount
-                intResult = .GetElement(CShort(intIndex), strSymbol, dblmass, dblUncertainty, sngCharge, intIsotopeCount)
+                intResult = .GetElement(CShort(intIndex), strSymbol, dblMass, dblUncertainty, sngCharge, intIsotopeCount)
                 System.Diagnostics.Debug.Assert(intResult = 0, "")
                 System.Diagnostics.Debug.Assert(.GetElementID(strSymbol) = intIndex, "")
 
-                intResult = .SetElement(strSymbol, dblmass, dblUncertainty, sngCharge, False)
+                intResult = .SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, False)
                 System.Diagnostics.Debug.Assert(intResult = 0, "")
 
                 ReDim dblIsotopeMasses(intIsotopeCount + 1)
@@ -745,8 +744,29 @@ Friend Class frmMwtWinDllTest
                 intResult = .SetMessageStatement(lngIndex, strStatement)
             Next lngIndex
 
-            ' Test Capillary flow functions
+            ' Test m/z conversion
+            ' Switch to isotopic masses
 
+            .SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
+
+            .Compound.SetFormula("C19H36O5NH4")
+            dblMass = .Compound.Mass
+            objResults.AppendText("Mass of " & .Compound.FormulaCapitalized() & ": " & dblMass)
+            For intCharge As Short = 1 To 4
+                objResults.AppendText("  m/z of " & intCharge.ToString & "+: " & .ConvoluteMass(dblMass, 0, intCharge))
+            Next
+
+            objResults.AppendText("")
+
+            .Compound.SetFormula("C19H36O5NH3")
+            dblMass = .Compound.Mass
+            objResults.AppendText("m/z values if we first lose a hydrogen before adding a proton")
+            For intCharge As Short = 1 To 4
+                objResults.AppendText("  m/z of " & intCharge.ToString & "+: " & .ConvoluteMass(dblMass, 0, intCharge))
+            Next
+
+
+            ' Test Capillary flow functions
             With .CapFlow
                 .SetAutoComputeEnabled(False)
                 .SetBackPressure(2000, MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi)
@@ -757,74 +777,74 @@ Friend Class frmMwtWinDllTest
                 .SetParticleDiameter(2, MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons)
                 .SetAutoComputeEnabled(True)
 
-                objResults.AppendText = ""
-                objResults.AppendText = "Check capillary flow calcs"
-                objResults.AppendText = "Linear Velocity: " & .ComputeLinearVelocity(MwtWinDll.MWCapillaryFlowClass.ulvUnitsLinearVelocityConstants.ulvCmPerSec)
-                objResults.AppendText = "Vol flow rate:   " & .ComputeVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin) & "  (newly computed)"
+                objResults.AppendText("")
+                objResults.AppendText("Check capillary flow calcs")
+                objResults.AppendText("Linear Velocity: " & .ComputeLinearVelocity(MwtWinDll.MWCapillaryFlowClass.ulvUnitsLinearVelocityConstants.ulvCmPerSec))
+                objResults.AppendText("Vol flow rate:   " & .ComputeVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin) & "  (newly computed)")
 
-                objResults.AppendText = "Vol flow rate:   " & .GetVolFlowRate
-                objResults.AppendText = "Back pressure:   " & .ComputeBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi)
-                objResults.AppendText = "Column Length:   " & .ComputeColumnLength(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnCM)
-                objResults.AppendText = "Column ID:       " & .ComputeColumnID(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons)
-                objResults.AppendText = "Column Volume:   " & .ComputeColumnVolume(MwtWinDll.MWCapillaryFlowClass.uvoUnitsVolumeConstants.uvoNL)
-                objResults.AppendText = "Dead time:       " & .ComputeDeadTime(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmSeconds)
+                objResults.AppendText("Vol flow rate:   " & .GetVolFlowRate)
+                objResults.AppendText("Back pressure:   " & .ComputeBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi))
+                objResults.AppendText("Column Length:   " & .ComputeColumnLength(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnCM))
+                objResults.AppendText("Column ID:       " & .ComputeColumnID(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons))
+                objResults.AppendText("Column Volume:   " & .ComputeColumnVolume(MwtWinDll.MWCapillaryFlowClass.uvoUnitsVolumeConstants.uvoNL))
+                objResults.AppendText("Dead time:       " & .ComputeDeadTime(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmSeconds))
 
-                objResults.AppendText = ""
+                objResults.AppendText("")
 
-                objResults.AppendText = "Repeat Computations, but in a different order (should give same results)"
-                objResults.AppendText = "Vol flow rate:   " & .ComputeVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin)
-                objResults.AppendText = "Column ID:       " & .ComputeColumnID(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons)
-                objResults.AppendText = "Back pressure:   " & .ComputeBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi)
-                objResults.AppendText = "Column Length:   " & .ComputeColumnLength(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnCM)
+                objResults.AppendText("Repeat Computations, but in a different order (should give same results)")
+                objResults.AppendText("Vol flow rate:   " & .ComputeVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin))
+                objResults.AppendText("Column ID:       " & .ComputeColumnID(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons))
+                objResults.AppendText("Back pressure:   " & .ComputeBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi))
+                objResults.AppendText("Column Length:   " & .ComputeColumnLength(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnCM))
 
-                objResults.AppendText = ""
+                objResults.AppendText("")
 
-                objResults.AppendText = "Old Dead time: " & .GetDeadTime(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmMinutes)
+                objResults.AppendText("Old Dead time: " & .GetDeadTime(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmMinutes))
 
                 .SetAutoComputeMode(MwtWinDll.MWCapillaryFlowClass.acmAutoComputeModeConstants.acmVolFlowrateUsingDeadTime)
 
                 .SetDeadTime(25, MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmMinutes)
-                objResults.AppendText = "Dead time is now 25.0 minutes"
+                objResults.AppendText("Dead time is now 25.0 minutes")
 
-                objResults.AppendText = "Vol flow rate: " & .GetVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin) & " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)"
+                objResults.AppendText("Vol flow rate: " & .GetVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin) & " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)")
 
                 ' Confirm that auto-compute worked
 
-                objResults.AppendText = "Vol flow rate: " & .ComputeVolFlowRateUsingDeadTime(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin, dblNewPressure, MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi) & "  (confirmation of computed volumetric flow rate)"
-                objResults.AppendText = "New pressure: " & dblNewPressure
+                objResults.AppendText("Vol flow rate: " & .ComputeVolFlowRateUsingDeadTime(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin, dblNewPressure, MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi) & "  (confirmation of computed volumetric flow rate)")
+                objResults.AppendText("New pressure: " & dblNewPressure)
 
-                objResults.AppendText = ""
+                objResults.AppendText("")
 
                 ' Can set a new back pressure, but since auto-compute is on, and the
                 '  auto-compute mode is acmVolFlowRateUsingDeadTime, the pressure will get changed back to
                 '  the pressure needed to give a vol flow rate matching the dead time
                 .SetBackPressure(2000)
-                objResults.AppendText = "Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure"
-                objResults.AppendText = "  was automatically changed back to pressure needed to give vol flow rate matching dead time"
-                objResults.AppendText = "Pressure is now: " & .GetBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi) & " psi (thus, not 2000 as one might expect)"
+                objResults.AppendText("Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure")
+                objResults.AppendText("  was automatically changed back to pressure needed to give vol flow rate matching dead time")
+                objResults.AppendText("Pressure is now: " & .GetBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi) & " psi (thus, not 2000 as one might expect)")
 
                 .SetAutoComputeMode(MwtWinDll.MWCapillaryFlowClass.acmAutoComputeModeConstants.acmVolFlowrate)
-                objResults.AppendText = "Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed."
+                objResults.AppendText("Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.")
 
                 .SetBackPressure(2000, MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi)
 
                 ' Calling GetVolFlowRate will get the new computed vol flow rate (since auto-compute is on)
-                objResults.AppendText = "Vol flow rate: " & .GetVolFlowRate
+                objResults.AppendText("Vol flow rate: " & .GetVolFlowRate)
 
                 .SetMassRateSampleMass(1000)
                 .SetMassRateConcentration(1, MwtWinDll.MWCapillaryFlowClass.ucoUnitsConcentrationConstants.ucoMicroMolar)
                 .SetMassRateVolFlowRate(600, MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin)
                 .SetMassRateInjectionTime(5, MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmMinutes)
 
-                objResults.AppendText = "Mass flow rate: " & .GetMassFlowRate(MwtWinDll.MWCapillaryFlowClass.umfMassFlowRateConstants.umfFmolPerSec) & " fmol/sec"
-                objResults.AppendText = "Moles injected: " & .GetMassRateMolesInjected(MwtWinDll.MWCapillaryFlowClass.umaMolarAmountConstants.umaFemtoMoles) & " fmoles"
+                objResults.AppendText("Mass flow rate: " & .GetMassFlowRate(MwtWinDll.MWCapillaryFlowClass.umfMassFlowRateConstants.umfFmolPerSec) & " fmol/sec")
+                objResults.AppendText("Moles injected: " & .GetMassRateMolesInjected(MwtWinDll.MWCapillaryFlowClass.umaMolarAmountConstants.umaFemtoMoles) & " fmoles")
 
                 .SetMassRateSampleMass(1234)
                 .SetMassRateConcentration(1, MwtWinDll.MWCapillaryFlowClass.ucoUnitsConcentrationConstants.ucongperml)
 
-                objResults.AppendText = "Computing mass flow rate for compound weighing 1234 g/mol and at 1 ng/mL concentration                "
-                objResults.AppendText = "Mass flow rate: " & .GetMassFlowRate(MwtWinDll.MWCapillaryFlowClass.umfMassFlowRateConstants.umfAmolPerMin) & " amol/min"
-                objResults.AppendText = "Moles injected: " & .GetMassRateMolesInjected(MwtWinDll.MWCapillaryFlowClass.umaMolarAmountConstants.umaFemtoMoles) & " fmoles"
+                objResults.AppendText("Computing mass flow rate for compound weighing 1234 g/mol and at 1 ng/mL concentration")
+                objResults.AppendText("Mass flow rate: " & .GetMassFlowRate(MwtWinDll.MWCapillaryFlowClass.umfMassFlowRateConstants.umfAmolPerMin) & " amol/min")
+                objResults.AppendText("Moles injected: " & .GetMassRateMolesInjected(MwtWinDll.MWCapillaryFlowClass.umaMolarAmountConstants.umaFemtoMoles) & " fmoles")
 
                 .SetExtraColumnBroadeningLinearVelocity(4, MwtWinDll.MWCapillaryFlowClass.ulvUnitsLinearVelocityConstants.ulvCmPerMin)
                 .SetExtraColumnBroadeningDiffusionCoefficient(0.0003, MwtWinDll.MWCapillaryFlowClass.udcDiffusionCoefficientConstants.udcCmSquaredPerMin)
@@ -832,8 +852,8 @@ Friend Class frmMwtWinDllTest
                 .SetExtraColumnBroadeningOpenTubeID(250, MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons)
                 .SetExtraColumnBroadeningInitialPeakWidthAtBase(30, MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmSeconds)
 
-                objResults.AppendText = "Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)"
-                objResults.AppendText = .GetExtraColumnBroadeningResultantPeakWidth(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmSeconds).ToString
+                objResults.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)")
+                objResults.AppendText(.GetExtraColumnBroadeningResultantPeakWidth(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmSeconds).ToString)
 
             End With
         End With
@@ -870,17 +890,17 @@ Friend Class frmMwtWinDllTest
             .SetModificationSymbol("*", 15, False, "")
 
             strNewSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys"
-            objResults.AppendText = strNewSeq
+            objResults.AppendText(strNewSeq)
             .SetSequence(strNewSeq)
 
             .SetSequence("K.TQPLE*VK.-", MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, False, True)
 
-            objResults.AppendText = .GetSequence(True, False, True, False)
-            objResults.AppendText = .GetSequence(False, True, False, False)
-            objResults.AppendText = .GetSequence(True, False, True, True)
+            objResults.AppendText(.GetSequence(True, False, True, False))
+            objResults.AppendText(.GetSequence(False, True, False, False))
+            objResults.AppendText(.GetSequence(True, False, True, True))
 
             .SetCTerminusGroup(MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgNone)
-            objResults.AppendText = .GetSequence(True, False, True, True)
+            objResults.AppendText(.GetSequence(True, False, True, True))
 
             udtFragSpectrumOptions = .GetFragmentationSpectrumOptions()
 
@@ -902,7 +922,7 @@ Friend Class frmMwtWinDllTest
         MakeDataSet(lngIonCount, udtFragSpectrum)
         dgDataGrid.SetDataBinding(myDataSet, "DataTable1")
 
-        objResults.AppendText = String.Empty
+        objResults.AppendText(String.Empty)
 
         Dim intSuccess As Short
         Dim strResults As String
@@ -911,7 +931,7 @@ Friend Class frmMwtWinDllTest
 
         With mMwtWin
             intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", 1, strResults, ConvolutedMSData2D, ConvolutedMSDataCount)
-            objResults.AppendText = strResults
+            objResults.AppendText(strResults)
         End With
 
     End Sub
@@ -966,19 +986,19 @@ Friend Class frmMwtWinDllTest
         ''
         ''    Set ICRTools = CreateObject("ICR2LS.ICR2LScls")
         ''
-        ''    objResults.AppendText = "ICR2ls Version: " & ICRTools.ICR2LSversion
+        ''    objResults.AppendText("ICR2ls Version: " & ICRTools.ICR2LSversion)
 
         'strProtein = "MGNISFLTGGNPSSPQSIAESIYQLENTSVVFLSAWQRTTPDFQRAARASQEAMLHLDHIVNEIMRNRDQLQADGTYTGSQLEGLLNISRAVSVSPVTRAEQDDLANYGPGNGVLPSAGSSISMEKLLNKIKHRRTNSANFRIGASGEHIFIIGVDKPNRQPDSIVEFIVGDFCQHCSDIAALI"
 
         ' Bigger protein
         strProtein = "MMKANVTKKTLNEGLGLLERVIPSRSSNPLLTALKVETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVRNLGGELVELELSGQELSVRSGGSDFKLQTGDIEAYPPLSFPAQADVSLDGGELSRAFSSVRYAASNEAFQAVFRGIKLEHHGESARVVASDGYRVAIRDFPASGDGKNLIIPARSVDELIRVLKDGEARFTYGDGMLTVTTDRVKMNLKLLDGDFPDYERVIPKDIKLQVTLPATALKEAVNRVAVLADKNANNRVEFLVSEGTLRLAAEGDYGRAQDTLSVTQGGTEQAMSLAFNARHVLDALGPIDGDAELLFSGSTSPAIFRARRWGRRVYGGHGHAARLRGLLRPLRGMSALAHHPESSPPLEPRPEFA"
 
-        objResults.AppendText = "Testing GetTrypticNameMultipleMatches() function"
-        objResults.AppendText = "MatchList for NL: " & mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, "NL", lngMatchCount)
-        objResults.AppendText = "MatchCount = " & lngMatchCount
+        objResults.AppendText("Testing GetTrypticNameMultipleMatches() function")
+        objResults.AppendText("MatchList for NL: " & mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, "NL", lngMatchCount))
+        objResults.AppendText("MatchCount = " & lngMatchCount)
 
-        objResults.AppendText = String.Empty
-        objResults.AppendText = "Testing GetTrypticPeptideByFragmentNumber function"
+        objResults.AppendText(String.Empty)
+        objResults.AppendText("Testing GetTrypticPeptideByFragmentNumber function")
         For lngIndex = 1 To 43
             strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, CShort(lngIndex), lngResidueStart, lngResidueEnd)
             ''        strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(lngIndex))
@@ -992,20 +1012,20 @@ Friend Class frmMwtWinDllTest
                 System.Diagnostics.Debug.Assert(InStr(strPeptideName, "t" & Trim(Str(lngIndex))) > 0, "")
             End If
         Next lngIndex
-        objResults.AppendText = "Check of GetTrypticPeptideByFragmentNumber Complete"
-        objResults.AppendText = String.Empty
+        objResults.AppendText("Check of GetTrypticPeptideByFragmentNumber Complete")
+        objResults.AppendText(String.Empty)
 
 
-        objResults.AppendText = "Test tryptic digest of: " & strProtein
+        objResults.AppendText("Test tryptic digest of: " & strProtein)
         lngIndex = 1
         Do
             strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, CShort(lngIndex), lngResidueStart, lngResidueEnd)
-            objResults.AppendText = "Tryptic fragment " & Trim(CStr(lngIndex)) & ": " & strPeptideFragMwtWin
+            objResults.AppendText("Tryptic fragment " & Trim(CStr(lngIndex)) & ": " & strPeptideFragMwtWin)
             lngIndex = lngIndex + 1
         Loop While Len(strPeptideFragMwtWin) > 0
 
 
-        objResults.AppendText = String.Empty
+        objResults.AppendText(String.Empty)
         Randomize()
         For lngMultipleIteration = 1 To ITERATIONS_TO_RUN
             ' Generate random protein
@@ -1017,7 +1037,7 @@ Friend Class frmMwtWinDllTest
                 strProtein = strProtein & strNewResidue
             Next lngResidueRand
 
-            objResults.AppendText = "Iteration: " & lngMultipleIteration & " = " & strProtein
+            objResults.AppendText("Iteration: " & lngMultipleIteration & " = " & strProtein)
 
             lngMwtWinResultCount = 0
             System.Diagnostics.Debug.Write("Starting residue is ")
@@ -1086,13 +1106,13 @@ Friend Class frmMwtWinDllTest
             ''                If Val(Right(strPeptideNameMwtWin(lngIndex), 1)) < 5 Then
             ''                    ' Icr2LS does not return the correct name when strPeptideResidues contains 5 or more tryptic peptides
             ''                    If strPeptideNameMwtWin(lngIndex) <> strPeptideNameIcr2ls(lngIndex) Then
-            ''                        objResults.AppendText = "Difference found, index = " & lngIndex & ", " & strPeptideNameMwtWin(lngIndex) & " vs. " & strPeptideNameIcr2ls(lngIndex)
+            ''                        objResults.AppendText("Difference found, index = " & lngIndex & ", " & strPeptideNameMwtWin(lngIndex) & " vs. " & strPeptideNameIcr2ls(lngIndex))
             ''                        blnDifferenceFound = True
             ''                    End If
             ''                End If
             ''            Else
             ''                If strPeptideNameMwtWin(lngIndex) <> strPeptideNameIcr2ls(lngIndex) Then
-            ''                    objResults.AppendText = "Difference found, index = " & lngIndex & ", " & strPeptideNameMwtWin(lngIndex) & " vs. " & strPeptideNameIcr2ls(lngIndex)
+            ''                    objResults.AppendText("Difference found, index = " & lngIndex & ", " & strPeptideNameMwtWin(lngIndex) & " vs. " & strPeptideNameIcr2ls(lngIndex))
             ''                    blnDifferenceFound = True
             ''                End If
             ''            End If
@@ -1100,7 +1120,7 @@ Friend Class frmMwtWinDllTest
 
         Next lngMultipleIteration
 
-        objResults.AppendText = "Check of Tryptic Sequence functions Complete"
+        objResults.AppendText("Check of Tryptic Sequence functions Complete")
 
         Me.Cursor = System.Windows.Forms.Cursors.Default
     End Sub

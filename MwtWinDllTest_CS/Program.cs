@@ -6,7 +6,7 @@ namespace MwtWinDllTestCS
 {
     /*
      * This is a very simple C# application that shows how to use MwtWinDll.dll 
-     * by Matthew Monroe
+     * Written by Matthew Monroe for PNNL in 2010
      */
 
     class Program
@@ -63,8 +63,13 @@ namespace MwtWinDllTestCS
 
             Console.WriteLine();
             Console.WriteLine();
+
+            clsFragSpecTest objFragTest = new clsFragSpecTest(ref objMwtWin);
+            objFragTest.TestAccessFunctions();
+
             Console.WriteLine("Press any key to continue");
             Console.ReadKey(true);
         }
+
     }
 }

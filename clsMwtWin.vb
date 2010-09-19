@@ -284,14 +284,38 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False)
     End Function
 
+    ''' <summary>
+    ''' Converts a given mass or m/z value to the MH+ m/z value
+    ''' </summary>
+    ''' <param name="dblMassMZ">Mass or m/z value</param>
+    ''' <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
     Public Function ConvoluteMass(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short) As Double
         Return ConvoluteMass(dblMassMZ, intCurrentCharge, 1S, 0)
     End Function
 
+    ''' <summary>
+    ''' Converts a given mass or m/z value to the MH+ m/z value
+    ''' </summary>
+    ''' <param name="dblMassMZ">Mass or m/z value</param>
+    ''' <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+    ''' <param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
     Public Function ConvoluteMass(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short, ByVal intDesiredCharge As Short) As Double
         Return ConvoluteMass(dblMassMZ, intCurrentCharge, intDesiredCharge, 0)
     End Function
 
+    ''' <summary>
+    ''' Converts a given mass or m/z value to the MH+ m/z value
+    ''' </summary>
+    ''' <param name="dblMassMZ">Mass or m/z value</param>
+    ''' <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+    ''' <param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
+    ''' <param name="dblChargeCarrierMass">Custom charge carrier mass (default is 1.00727649)</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
     Public Function ConvoluteMass(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short, ByVal intDesiredCharge As Short, ByVal dblChargeCarrierMass As Double) As Double
         Return mElementAndMassRoutines.ConvoluteMassInternal(dblMassMZ, intCurrentCharge, intDesiredCharge, dblChargeCarrierMass)
     End Function
