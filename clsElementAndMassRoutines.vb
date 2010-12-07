@@ -532,7 +532,7 @@ Public Class MWElementAndMassRoutines
         Dim IsotopeCountInThisCombo As Integer
         Dim strOutput As String
 
-        Dim PredictedConvIterations As Integer
+        Dim PredictedConvIterations As Int64
         Dim PredictedTotalComboCalcs, CompletedComboCalcs As Integer
 
         Const MIN_ABUNDANCE_TO_KEEP As Double = 0.000001
@@ -985,13 +985,13 @@ Public Class MWElementAndMassRoutines
             ' Examine IsoStats() to predict the number of ConvolutionIterations
             PredictedConvIterations = IsoStats(1).ResultsCount
             For intElementIndex = 2 To intElementCount
-                PredictedConvIterations = PredictedConvIterations * IsoStats(2).ResultsCount
+                PredictedConvIterations *= IsoStats(2).ResultsCount
             Next intElementIndex
 
             ResetProgress("Finding Isotopic Abundances: Convoluting results")
 
             ' Convolute the results for each element using a recursive convolution routine
-            Dim ConvolutionIterations As Integer
+            Dim ConvolutionIterations As Int64
             ConvolutionIterations = 0
             For lngRowIndex = 1 To IsoStats(1).ResultsCount
                 ConvoluteMasses(ConvolutedAbundances, ConvolutedAbundanceStartMass, lngRowIndex, 1, 0, 1, IsoStats, intElementCount, ConvolutionIterations)
@@ -1366,7 +1366,7 @@ Public Class MWElementAndMassRoutines
                                 ByRef ElementTrack As Short, _
                                 ByRef IsoStats() As udtIsoResultsByElementType, _
                                 ByRef ElementCount As Short, _
-                                ByRef Iterations As Integer)
+                                ByRef Iterations As Int64)
 
         ' Recursive function to Convolute the Results in IsoStats() and store in ConvolutedAbundances(); 1-based array
 

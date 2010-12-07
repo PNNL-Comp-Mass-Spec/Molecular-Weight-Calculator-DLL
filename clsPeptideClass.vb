@@ -35,6 +35,15 @@ Public Class MWPeptideClass
         InitializeClass()
     End Sub
 
+
+    Public Const DEFAULT_B_Y_ION_SHOULDER_INTENSITY As Single = 50
+    Public Const DEFAULT_BYCZ_ION_INTENSITY As Single = 100
+    Public Const DEFAULT_A_ION_INTENSITY As Single = 20
+    Public Const DEFAULT_NEUTRAL_LOSS_ION_INTENSITY As Single = 20
+
+    Public Const DEFAULT_DOUBLE_CHARGE_MZ_THRESHOLD As Single = 800
+    Public Const DEFAULT_TRIPLE_CHARGE_MZ_THRESHOLD As Single = 900
+
     Private Const RESIDUE_DIM_CHUNK As Short = 50
     Private Const MAX_MODIFICATIONS As Short = 6 ' Maximum number of modifications for a single residue
     Private Const UNKNOWN_SYMBOL As String = "Xxx"
@@ -1979,13 +1988,13 @@ Public Class MWPeptideClass
         Try
             With mFragSpectrumOptions
                 With .IntensityOptions
-                    .IonType(itIonTypeConstants.itAIon) = 20
-                    .IonType(itIonTypeConstants.itBIon) = 100
-                    .IonType(itIonTypeConstants.itYIon) = 100
-                    .IonType(itIonTypeConstants.itCIon) = 100
-                    .IonType(itIonTypeConstants.itZIon) = 100
-                    .BYIonShoulder = 50
-                    .NeutralLoss = 20
+                    .IonType(itIonTypeConstants.itAIon) = DEFAULT_A_ION_INTENSITY
+                    .IonType(itIonTypeConstants.itBIon) = DEFAULT_BYCZ_ION_INTENSITY
+                    .IonType(itIonTypeConstants.itYIon) = DEFAULT_BYCZ_ION_INTENSITY
+                    .IonType(itIonTypeConstants.itCIon) = DEFAULT_BYCZ_ION_INTENSITY
+                    .IonType(itIonTypeConstants.itZIon) = DEFAULT_BYCZ_ION_INTENSITY
+                    .BYIonShoulder = DEFAULT_B_Y_ION_SHOULDER_INTENSITY
+                    .NeutralLoss = DEFAULT_NEUTRAL_LOSS_ION_INTENSITY
                 End With
 
                 ' A ions can have ammonia and phosphate loss, but not water loss
@@ -2006,10 +2015,10 @@ Public Class MWPeptideClass
                 Next eIonIndex
 
                 .DoubleChargeIonsShow = True
-                .DoubleChargeIonsThreshold = 800
+                .DoubleChargeIonsThreshold = DEFAULT_DOUBLE_CHARGE_MZ_THRESHOLD
 
                 .TripleChargeIonsShow = False
-                .TripleChargeIonsThreshold = 900
+                .TripleChargeIonsThreshold = DEFAULT_TRIPLE_CHARGE_MZ_THRESHOLD
             End With
 
             SetSymbolWaterLoss("-H2O")

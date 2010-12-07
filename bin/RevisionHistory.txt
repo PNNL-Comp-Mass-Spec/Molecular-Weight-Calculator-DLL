@@ -1,5 +1,12 @@
 MwtWinDll.NET Change Log
 
+Version 3.4.3989; December 3, 2010
+	- Added several public constants to clsPeptideClass.vb
+
+Version 3.4.3935; October 10, 2010
+	- Changed the iteration tracking variables in ComputeIsotopicAbundancesInternal and ConvoluteMasses to be 64-bit integers
+		- PredictedConvIterations surpassed the 32-bit integer boundary for isotopic formula C489 H300 F27 Fe8 N72 Ni6 O27 S9
+
 Version 3.4.3848; July 15, 2010
 	- Minor code updates
 

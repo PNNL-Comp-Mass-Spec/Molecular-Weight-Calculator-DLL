@@ -490,7 +490,6 @@ Friend Class frmMwtWinDllTest
     Private Sub AppendBoolColumnToTableStyle(ByRef tsTableStyle As System.Windows.Forms.DataGridTableStyle, ByVal strMappingName As String, ByVal strHeaderText As String, Optional ByVal intWidth As Integer = 75, Optional ByVal blnIsReadOnly As Boolean = False, Optional ByVal blnSourceIsTrueFalse As Boolean = True)
         ' If intDecimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
         Dim BoolCol As New DataGridBoolColumn
-        Dim i As Integer
 
         With BoolCol
             .MappingName = strMappingName
@@ -513,7 +512,7 @@ Friend Class frmMwtWinDllTest
     End Sub
 
     Private Sub FindPercentComposition()
-        Dim intIndex, intElementCount As Short
+        Dim intElementCount As Short
         Dim dblPctCompForCarbon As Double
         Dim strPctCompForCarbon As String
 
@@ -925,11 +924,12 @@ Friend Class frmMwtWinDllTest
         objResults.AppendText(String.Empty)
 
         Dim intSuccess As Short
-        Dim strResults As String
+        Dim strResults As String = String.Empty
         Dim ConvolutedMSData2D(,) As Double
         Dim ConvolutedMSDataCount As Integer
 
         With mMwtWin
+            ' Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
             intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", 1, strResults, ConvolutedMSData2D, ConvolutedMSDataCount)
             objResults.AppendText(strResults)
         End With
@@ -949,11 +949,10 @@ Friend Class frmMwtWinDllTest
         Dim strProtein, strPeptideResidues As String
         Dim lngResidueStart, lngResidueEnd As Integer
         Dim strPeptideNameMwtWin() As String
-        Dim strPeptideNameIcr2ls() As String
         Dim strPeptideName As String
 
-        Dim lngMwtWinResultCount, lngIcr2lsResultCount As Integer
-        Dim lngMwtWinDimCount, lngICR2lsDimCount As Integer
+        Dim lngMwtWinResultCount As Integer
+        Dim lngMwtWinDimCount As Integer
         Dim lngIndex As Integer
         Dim lngResidueRand, lngProteinLengthRand As Single
         Dim strNewResidue As String
@@ -962,7 +961,6 @@ Friend Class frmMwtWinDllTest
         Dim lngMwtWinWorkTime As Integer
         Dim strPeptideFragMwtWin As String
         Dim lngMatchCount As Integer
-        Dim blnDifferenceFound As Boolean
 
         Dim objResults As New frmTextbrowser
 
