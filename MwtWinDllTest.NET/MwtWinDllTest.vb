@@ -6,8 +6,8 @@ Friend Class frmMwtWinDllTest
 
     ' -------------------------------------------------------------------------------
     ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
-    ' E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com
-    ' Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/
+    ' E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
+    ' Website: http://ncrr.pnnl.gov/ or http://www.sysbio.org/resources/staff/
     ' -------------------------------------------------------------------------------
     ' 
     ' Licensed under the Apache License, Version 2.0; you may not use this file except
@@ -1216,8 +1216,8 @@ Friend Class frmMwtWinDllTest
 
         lblProgress.Text = mMwtWin.ProgressStepDescription & "; " & percentComplete.ToString("0.0") & "% complete"
 
-        If System.DateTime.Now.Subtract(dtLastUpdate).TotalMilliseconds > 100 Then
-            dtLastUpdate = System.DateTime.Now
+        If System.DateTime.UtcNow.Subtract(dtLastUpdate).TotalMilliseconds > 100 Then
+            dtLastUpdate = System.DateTime.UtcNow
             Application.DoEvents()
         End If
     End Sub
