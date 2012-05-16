@@ -609,7 +609,7 @@ Friend Class frmMwtWinDllTest
 
     Private Sub MakePercentCompositionDataSet(ByVal intElementCount As Short, ByVal strPctCompositions() As String)
 
-        Dim strSymbol As String
+		Dim strSymbol As String = String.Empty
 
         ' Create a DataSet.
         myDataSet = New DataSet("myDataSet")
@@ -672,11 +672,13 @@ Friend Class frmMwtWinDllTest
         Dim intIndex, intResult As Integer
         Dim lngIndex As Integer
         Dim lngItemCount As Integer
-        Dim strSymbol, strFormula As String
+		Dim strSymbol As String = String.Empty
+		Dim strFormula As String = String.Empty
         Dim sngCharge As Single
         Dim blnIsAminoAcid As Boolean
-        Dim strOneLetterSymbol, strComment As String
-        Dim strStatement As String
+		Dim strOneLetterSymbol As String = String.Empty
+		Dim strComment As String = String.Empty
+		Dim strStatement As String = String.Empty
         Dim dblMass As Double
         Dim dblUncertainty As Double
         Dim intIsotopeCount, intIsotopeCount2 As Short
@@ -858,7 +860,7 @@ Friend Class frmMwtWinDllTest
         End With
 
 
-        Dim udtFragSpectrumOptions As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType
+		Dim udtFragSpectrumOptions As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType = New MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType
         udtFragSpectrumOptions.Initialize()
 
         Dim udtFragSpectrum() As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType
@@ -929,10 +931,19 @@ Friend Class frmMwtWinDllTest
         Dim ConvolutedMSDataCount As Integer
 
         With mMwtWin
-            ' Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
-            intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", 1, strResults, ConvolutedMSData2D, ConvolutedMSDataCount)
+			' Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
+			Dim intChargeState As Short = 1
+			Dim blnAddProtonChargeCarrier As Boolean = True
+			objResults.AppendText("Isotopic abundance test with Charge=" & intChargeState)
+			intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2D, ConvolutedMSDataCount)
             objResults.AppendText(strResults)
-        End With
+
+			blnAddProtonChargeCarrier = False
+			objResults.AppendText("Isotopic abundance test with Charge=" & intChargeState & "; do not add a proton charge carrier")
+			intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2D, ConvolutedMSDataCount, blnAddProtonChargeCarrier)
+			objResults.AppendText(strResults)
+
+		End With
 
     End Sub
 

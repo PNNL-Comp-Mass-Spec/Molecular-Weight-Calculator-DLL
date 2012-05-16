@@ -28,7 +28,7 @@ Public Class MolecularWeightCalculator
     ' this computer software.
 
 
-    Private Const PROGRAM_DATE As String = "December 3, 2010"
+	Private Const PROGRAM_DATE As String = "May 15, 2012"
 
     Public Sub New()
         MyBase.New()
@@ -263,13 +263,21 @@ Public Class MolecularWeightCalculator
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
-                                              ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer) As Short
+	Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
+	  ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer) As Short
 
-        Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, _
-                                         "Isotopic Abundances for", "Mass", "Fraction", "Intensity")
+		Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, _
+										 "Isotopic Abundances for", "Mass", "Fraction", "Intensity")
 
-    End Function
+	End Function
+
+	Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
+	  ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, ByVal blnAddProtonChargeCarrier As Boolean) As Short
+
+		Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, _
+		   "Isotopic Abundances for", "Mass", "Fraction", "Intensity", blnAddProtonChargeCarrier)
+
+	End Function
 
     Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
                                               ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, _
@@ -280,9 +288,23 @@ Public Class MolecularWeightCalculator
 
         ' Computes the Isotopic Distribution for a formula
         ' Returns 0 if success, or -1 if an error
-
-        Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False)
+		Dim blnAddProtonChargeCarrier As Boolean = True
+		Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
     End Function
+
+	Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
+			   ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, _
+			   ByVal strHeaderIsotopicAbundances As String, _
+			   ByVal strHeaderMass As String, _
+			   ByVal strHeaderFraction As String, _
+			   ByVal strHeaderIntensity As String, _
+			   ByVal blnAddProtonChargeCarrier As Boolean) As Short
+
+		' Computes the Isotopic Distribution for a formula
+		' Returns 0 if success, or -1 if an error		
+		Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
+	End Function
+
 
     ''' <summary>
     ''' Converts a given mass or m/z value to the MH+ m/z value

@@ -1,5 +1,8 @@
 MwtWinDll.NET Change Log
 
+Version 3.4.4518; May 15, 2012
+	- Added parameter blnAddProtonChargeCarrier to ComputeIsotopicAbundances
+
 Version 3.4.3989; December 3, 2010
 	- Added several public constants to clsPeptideClass.vb
 

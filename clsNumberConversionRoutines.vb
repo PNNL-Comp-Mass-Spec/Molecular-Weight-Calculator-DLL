@@ -49,10 +49,9 @@ Class clsNumberConversionRoutines
         End Try
     End Function
 
-    Public Shared Function IsNumber(ByVal strValue As String) As Boolean
-        Dim objFormatProvider As System.Globalization.NumberFormatInfo
+    Public Shared Function IsNumber(ByVal strValue As String) As Boolean        
         Try
-            Return Double.TryParse(strValue, Globalization.NumberStyles.Any, objFormatProvider, 0)
+			Return Double.TryParse(strValue, 0)
         Catch ex As Exception
             Return False
         End Try

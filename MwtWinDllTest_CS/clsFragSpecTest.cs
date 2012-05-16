@@ -99,9 +99,18 @@ namespace MwtWinDllTestCS
 
             // Now convert to an empirical formula
             string s = mMwtWin.Compound.ConvertToEmpirical();
-            
-            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, 1, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount);
+
+			bool blnAddProtonChargeCarrier = true;
+			short intChargeState = 1;
+			Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState);
+            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, intChargeState, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount);
             Console.WriteLine(strResults);
+
+			blnAddProtonChargeCarrier = false;
+			intChargeState = 1;
+			Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
+			intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, intChargeState, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount, blnAddProtonChargeCarrier);
+			Console.WriteLine(strResults);
 
         }
 
