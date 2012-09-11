@@ -24,6 +24,6 @@ Imports System.Runtime.CompilerServices
 ' by using the '*' as shown below
 
 
-<Assembly: AssemblyVersion("3.4.*")> 
+<Assembly: AssemblyVersion("3.5.*")> 
 
 

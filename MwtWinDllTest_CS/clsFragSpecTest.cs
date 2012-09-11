@@ -38,29 +38,37 @@ namespace MwtWinDllTestCS
 
             // Customize the options
             udtFragSpectrumOptions.DoubleChargeIonsShow = true;
-            udtFragSpectrumOptions.TripleChargeIonsShow = false;
+            udtFragSpectrumOptions.TripleChargeIonsShow = true;
+			udtFragSpectrumOptions.DoubleChargeIonsThreshold = 400;
+			udtFragSpectrumOptions.TripleChargeIonsThreshold = 400;
 
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itAIon].ShowIon = false;
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itBIon].ShowIon = true;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itBIon].ShowIon = false;
+
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].ShowIon = true;
+			udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossAmmonia = false;
+			udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossPhosphate = false;
+			udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossWater = false;
 
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itCIon].ShowIon = false;
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itZIon].ShowIon = false;
 
+			udtFragSpectrumOptions.IntensityOptions.BYIonShoulder = 0;
 
-            string strNewSeq = "TDMESALPVTVLSAEDIAK";
+			// Customize the modification symbols
+			mMwtWin.Peptide.SetModificationSymbol("!", 57.02146, false, "Carbamidomethylation");
+			mMwtWin.Peptide.SetModificationSymbol("+", 10.0, false, "Heavy Arg");
+
+			string strNewSeq = "C!ETQNPVSAR+";
 
             // Obtain the fragmentation spectrum for a peptide
 
             // First define the peptide sequence
             // Need to pass "false" to parameter blnIs3LetterCode since strNewSeq is in one-letter notation
-            mMwtWin.Peptide.SetSequence(strNewSeq,
-                                        MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogen,
-                                        MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl,
-                                        false);
+            mMwtWin.Peptide.SetSequence1LetterSymbol(strNewSeq);
 
             // Update the options
-            mMwtWin.Peptide.SetFragmentationSpectrumOptions(ref udtFragSpectrumOptions);
+            mMwtWin.Peptide.SetFragmentationSpectrumOptions(udtFragSpectrumOptions);
 
             // Get the fragmentation masses
             MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType[] udtFragSpectrum = null;
@@ -76,7 +84,7 @@ namespace MwtWinDllTestCS
                 Console.WriteLine(udtFragSpectrum[i].Mass.ToString("0.000") + "  " + udtFragSpectrum[i].Intensity.ToString("###0") + "        \t" + udtFragSpectrum[i].Symbol);
 
                 // For debugging purposes, stop after displaying 20 ions
-                if (i >= 20) {
+                if (i >= 30) {
                     Console.WriteLine("...");
                     break;
                 }

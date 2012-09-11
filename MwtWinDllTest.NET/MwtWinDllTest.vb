@@ -870,11 +870,8 @@ Friend Class frmMwtWinDllTest
 
         With mMwtWin.Peptide
 
-            .SetSequence("K.ACYEFGHRKACYEFGHRK.G", _
-                         MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogen, _
-                         MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, _
-                         False, True)
-            '.SetSequence("K.ACYEFGHRKACYEFGHRK.G")
+			.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G")
+			'.SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
 
             ' Can change the terminii to various standard groups
             .SetNTerminusGroup(MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgCarbamyl)
@@ -894,7 +891,7 @@ Friend Class frmMwtWinDllTest
             objResults.AppendText(strNewSeq)
             .SetSequence(strNewSeq)
 
-            .SetSequence("K.TQPLE*VK.-", MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, False, True)
+			.SetSequence("K.TQPLE*VK.-", MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode:=False)
 
             objResults.AppendText(.GetSequence(True, False, True, False))
             objResults.AppendText(.GetSequence(False, True, False, False))

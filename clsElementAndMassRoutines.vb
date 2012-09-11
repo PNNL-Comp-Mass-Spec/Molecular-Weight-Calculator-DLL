@@ -2008,14 +2008,14 @@ Public Class MWElementAndMassRoutines
 		' Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
 		' Valid Mod Symbols are ! # $ % & ' * + ? ^ _ ` ~
 
-		Dim strFirstChar As String
+		Dim chFirstChar As Char
 		Dim blnIsModSymbol As Boolean
 
 		blnIsModSymbol = False
-		If Len(strTestChar) > 0 Then
-			strFirstChar = Left(strTestChar, 1)
+		If strTestChar.Length > 0 Then
+			chFirstChar = strTestChar.Chars(0)
 
-			Select Case Asc(strFirstChar)
+			Select Case Convert.ToInt32(chFirstChar)
 				Case 34	' " is not allowed
 					blnIsModSymbol = False
 				Case 40 To 41 ' ( and ) are not allowed
@@ -4375,10 +4375,10 @@ Public Class MWElementAndMassRoutines
 	End Function
 
 	Public Function PlainTextToRtfInternal(ByRef strWorkText As String, _
-	   ByRef CalculatorMode As Boolean, _
-	   ByRef blnHighlightCharFollowingPercentSign As Boolean, _
-	   ByRef blnOverrideErrorID As Boolean, _
-	   ByRef lngErrorIDOverride As Integer) As String
+	ByRef CalculatorMode As Boolean, _
+	ByRef blnHighlightCharFollowingPercentSign As Boolean, _
+	ByRef blnOverrideErrorID As Boolean, _
+	ByRef lngErrorIDOverride As Integer) As String
 
 		Dim strWorkCharPrev, strWorkChar, strRTF As String
 		Dim intCharIndex, intCharIndex2 As Integer
@@ -4394,7 +4394,7 @@ Public Class MWElementAndMassRoutines
 		' Old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman\fcharset2 Times New Roman;}{\f3\froman " & lblMWT(0).FontName & ";}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f3\fs25 "
 		' old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & lblMWT(0).FontName & ";}{\f3\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f2\fs25 "
 		'                                                            f0                               f1                                 f2                          f3                               f4                      cf0 (black)        cf1 (red)          cf3 (white)
-		strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & gComputationOptions.RtfFontName & ";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" & Trim(Str(clsNumberConversionRoutines.CIntSafe(gComputationOptions.RtfFontSize * 2.5))) & " "
+		strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & gComputationOptions.RtfFontName & ";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" & Trim(Str(clsNumberConversionRoutines.CShortSafe(gComputationOptions.RtfFontSize * 2.5))) & " "
 
 		If strWorkText = "" Then
 			' Return a blank RTF string
@@ -4492,7 +4492,7 @@ Public Class MWElementAndMassRoutines
 			' Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUSTCHAR)
 			' It is used to add additional height to the formula line when isotopes are used
 			' It is colored white so the user does not see it
-			strRTF = strRTF & "{\fs" & Trim(Str(clsNumberConversionRoutines.CIntSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUSTCHAR & "}}"
+			strRTF = strRTF & "{\fs" & Trim(Str(clsNumberConversionRoutines.CShortSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUSTCHAR & "}}"
 		Else
 			strRTF = strRTF & "}"
 		End If
@@ -4669,7 +4669,7 @@ Public Class MWElementAndMassRoutines
 				strWork = dblStdDev.ToString("0E+000")
 				strStdDevShort = Left(strWork, 1)
 
-				intExponentValue = clsNumberConversionRoutines.CIntSafe(Right(strWork, 4))
+				intExponentValue = clsNumberConversionRoutines.CShortSafe(Right(strWork, 4))
 				dblWork = dblMass / 10 ^ intExponentValue
 				dblWork = System.Math.Round(dblWork, 0)
 				dblRoundedMain = dblWork * 10 ^ intExponentValue

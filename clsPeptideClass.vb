@@ -208,123 +208,122 @@ Public Class MWPeptideClass
     Private mDelayUpdateResidueMass As Boolean
     '
 
-    Private Sub AppendDataToFragSpectrum(ByRef lngIonCount As Integer, ByRef FragSpectrumWork() As udtFragmentationSpectrumDataType, ByRef sngMass As Single, ByRef sngIntensity As Single, ByRef strIonSymbol As String, ByRef strIonSymbolGeneric As String, ByRef lngSourceResidue As Integer, ByRef strSourceResidueSymbol3Letter As String, ByRef intCharge As Short, ByRef eIonType As itIonTypeConstants, ByRef blnIsShoulderIon As Boolean)
+	Private Sub AppendDataToFragSpectrum(ByRef lngIonCount As Integer, ByRef FragSpectrumWork() As udtFragmentationSpectrumDataType, ByVal sngMass As Single, ByVal sngIntensity As Single, ByVal strIonSymbol As String, ByVal strIonSymbolGeneric As String, ByVal lngSourceResidue As Integer, ByVal strSourceResidueSymbol3Letter As String, ByVal intCharge As Short, ByVal eIonType As itIonTypeConstants, ByVal blnIsShoulderIon As Boolean)
 
-        Try
-            If lngIonCount > UBound(FragSpectrumWork) Then
-                ' This shouldn't happen
-                Console.WriteLine("In AppendDataToFragSpectrum, lngIonCount is greater than UBound(FragSpectrumWork); this is unexpected")
-                ReDim Preserve FragSpectrumWork(UBound(FragSpectrumWork) + 10)
-            End If
+		Try
+			If lngIonCount > UBound(FragSpectrumWork) Then
+				' This shouldn't happen
+				Console.WriteLine("In AppendDataToFragSpectrum, lngIonCount is greater than UBound(FragSpectrumWork); this is unexpected")
+				ReDim Preserve FragSpectrumWork(UBound(FragSpectrumWork) + 10)
+			End If
 
-            With FragSpectrumWork(lngIonCount)
-                .Mass = sngMass
-                .Intensity = sngIntensity
-                .Symbol = strIonSymbol
-                .SymbolGeneric = strIonSymbolGeneric
-                .SourceResidueNumber = lngSourceResidue
-                .SourceResidueSymbol3Letter = strSourceResidueSymbol3Letter
-                .Charge = intCharge
-                .IonType = eIonType
-                .IsShoulderIon = blnIsShoulderIon
-            End With
-            lngIonCount += 1
-        Catch ex As Exception
-            System.Diagnostics.Debug.WriteLine(Err.Description)
-        End Try
+			With FragSpectrumWork(lngIonCount)
+				.Mass = sngMass
+				.Intensity = sngIntensity
+				.Symbol = strIonSymbol
+				.SymbolGeneric = strIonSymbolGeneric
+				.SourceResidueNumber = lngSourceResidue
+				.SourceResidueSymbol3Letter = strSourceResidueSymbol3Letter
+				.Charge = intCharge
+				.IonType = eIonType
+				.IsShoulderIon = blnIsShoulderIon
+			End With
+			lngIonCount += 1
+		Catch ex As Exception
+			System.Diagnostics.Debug.WriteLine(Err.Description)
+		End Try
 
-    End Sub
+	End Sub
 
-    Public Function AssureNonZero(ByRef lngNumber As Integer) As Integer
-        ' Returns a non-zero number, either -1 if lngNumber = 0 or lngNumber if it's nonzero
-        If lngNumber = 0 Then
-            AssureNonZero = -1
-        Else
-            AssureNonZero = lngNumber
-        End If
-    End Function
+	Public Function AssureNonZero(ByVal lngNumber As Integer) As Integer
+		' Returns a non-zero number, either -1 if lngNumber = 0 or lngNumber if it's nonzero
+		If lngNumber = 0 Then
+			Return -1
+		Else
+			Return lngNumber
+		End If
+	End Function
 
-    Private Function CheckForModifications(ByRef strPartialSequence As String, ByRef lngResidueIndex As Integer, _
-                                           Optional ByRef blnAddMissingModificationSymbols As Boolean = False) As Integer
-        ' Looks at strPartialSequence to see if it contains 1 or more modifications
-        ' If any modification symbols are found, the modification is recorded in .ModificationIDs()
-        ' If all or part of the modification symbol is not found in ModificationSymbols(), then a new entry
-        '  is added to ModificationSymbols()
-        ' Returns the total length of all modifications found
+	Private Function CheckForModifications(ByVal strPartialSequence As String, ByVal intResidueNumber As Integer, Optional ByVal blnAddMissingModificationSymbols As Boolean = False) As Integer
+		' Looks at strPartialSequence to see if it contains 1 or more modifications
+		' If any modification symbols are found, the modification is recorded in .ModificationIDs()
+		' If all or part of the modification symbol is not found in ModificationSymbols(), then a new entry
+		'  is added to ModificationSymbols()
+		' Returns the total length of all modifications found
 
-        Dim lngCompareIndex, lngSequenceStrLength As Integer
-        Dim strModSymbolGroup As String
-        Dim lngModificationID, lngModSymbolLengthTotal As Integer
-        Dim strTestChar As String
-        Dim lngIndex As Integer
-        Dim blnMatchFound As Boolean
+		Dim intCompareIndex, intSequenceStrLength As Integer
+		Dim strModSymbolGroup As String
+		Dim intModificationID, intModSymbolLengthTotal As Integer
+		Dim strTestChar As String
+		Dim intSubpartLength As Integer
+		Dim blnMatchFound As Boolean
 
-        lngSequenceStrLength = Len(strPartialSequence)
+		intSequenceStrLength = strPartialSequence.Length
 
-        ' Find the entire group of potential modification symbols
-        strModSymbolGroup = String.Empty
-        lngCompareIndex = 1
-        Do While lngCompareIndex <= lngSequenceStrLength
-            strTestChar = Mid(strPartialSequence, lngCompareIndex, 1)
-            If ElementAndMassRoutines.IsModSymbolInternal(strTestChar) Then
-                strModSymbolGroup = strModSymbolGroup & strTestChar
-            Else
-                Exit Do
-            End If
-            lngCompareIndex = lngCompareIndex + 1
-        Loop
+		' Find the entire group of potential modification symbols
+		strModSymbolGroup = String.Empty
+		intCompareIndex = 0
+		Do While intCompareIndex < intSequenceStrLength
+			strTestChar = strPartialSequence.Substring(intCompareIndex, 1)
+			If ElementAndMassRoutines.IsModSymbolInternal(strTestChar) Then
+				strModSymbolGroup &= strTestChar
+			Else
+				Exit Do
+			End If
+			intCompareIndex += 1
+		Loop
 
-        lngModSymbolLengthTotal = Len(strModSymbolGroup)
-        Do While Len(strModSymbolGroup) > 0
-            ' Step through strModSymbolGroup to see if all of it or parts of it match any of the defined
-            '  modification symbols
+		intModSymbolLengthTotal = strModSymbolGroup.Length
+		Do While strModSymbolGroup.Length > 0
+			' Step through strModSymbolGroup to see if all of it or parts of it match any of the defined
+			'  modification symbols
 
-            blnMatchFound = False
-            For lngIndex = Len(strModSymbolGroup) To 1 Step -1
-                ' See if the modification is already defined
-                lngModificationID = GetModificationSymbolID(Left(strModSymbolGroup, lngIndex))
-                If lngModificationID > 0 Then
-                    blnMatchFound = True
-                    Exit For
-                End If
-            Next lngIndex
+			blnMatchFound = False
+			For intSubpartLength = strModSymbolGroup.Length To 1 Step -1
+				' See if the modification is already defined
+				intModificationID = GetModificationSymbolID(strModSymbolGroup.Substring(0, intSubpartLength))
+				If intModificationID > 0 Then
+					blnMatchFound = True
+					Exit For
+				End If
+			Next
 
-            If Not blnMatchFound Then
-                If blnAddMissingModificationSymbols Then
-                    ' Add strModSymbolGroup as a new modification, using a mass of 0 since we don't know the modification mass
-                    SetModificationSymbol(strModSymbolGroup, 0, False, String.Empty)
-                    blnMatchFound = True
-                Else
-                    ' Ignore the modification
-                    strModSymbolGroup = CStr(0)
-                End If
-                strModSymbolGroup = String.Empty
-            End If
+			If Not blnMatchFound Then
+				If blnAddMissingModificationSymbols Then
+					' Add strModSymbolGroup as a new modification, using a mass of 0 since we don't know the modification mass
+					SetModificationSymbol(strModSymbolGroup, 0)
+					blnMatchFound = True
+				Else
+					' Ignore the modification
+					strModSymbolGroup = "0"
+				End If
+				strModSymbolGroup = String.Empty
+			End If
 
-            If blnMatchFound Then
-                ' Record the modification for this residue
-                With Residues(lngResidueIndex)
-                    If .ModificationIDCount < MAX_MODIFICATIONS Then
-                        .ModificationIDCount += 1S
-                        .ModificationIDs(.ModificationIDCount) = lngModificationID
-                        If ModificationSymbols(lngModificationID).IndicatesPhosphorylation Then
-                            .Phosphorylated = True
-                        End If
-                    End If
-                End With
+			If blnMatchFound Then
+				' Record the modification for this residue
+				With Residues(intResidueNumber)
+					If .ModificationIDCount < MAX_MODIFICATIONS Then
+						.ModificationIDCount += 1S
+						.ModificationIDs(.ModificationIDCount) = intModificationID
+						If ModificationSymbols(intModificationID).IndicatesPhosphorylation Then
+							.Phosphorylated = True
+						End If
+					End If
+				End With
 
-                If lngIndex < Len(strModSymbolGroup) Then
-                    ' Remove the matched portion from strModSymbolGroup and test again
-                    strModSymbolGroup = Mid(strModSymbolGroup, lngIndex + 1)
-                Else
-                    strModSymbolGroup = String.Empty
-                End If
-            End If
-        Loop
+				If intSubpartLength < strModSymbolGroup.Length Then
+					' Remove the matched portion from strModSymbolGroup and test again
+					strModSymbolGroup = strModSymbolGroup.Substring(intSubpartLength)
+				Else
+					strModSymbolGroup = String.Empty
+				End If
+			End If
+		Loop
 
-        CheckForModifications = lngModSymbolLengthTotal
+		Return intModSymbolLengthTotal
 
-    End Function
+	End Function
 
     Private Function ComputeMaxIonsPerResidue() As Short
         ' Estimate the total ions per residue that will be created
@@ -368,49 +367,48 @@ Public Class MWPeptideClass
 
     End Function
 
-    Private Function FillResidueStructureUsingSymbol(ByRef strSymbol As String, _
-                                                     Optional ByRef blnUse3LetterCode As Boolean = True) As udtResidueType
-        ' Returns a variable of type udtResidueType containing strSymbol as the residue symbol
-        ' If strSymbol is a valid amino acid type, then also updates udtResidue with the default information
+	Private Function FillResidueStructureUsingSymbol(ByVal strSymbol As String, Optional ByVal blnUse3LetterCode As Boolean = True) As udtResidueType
+		' Returns a variable of type udtResidueType containing strSymbol as the residue symbol
+		' If strSymbol is a valid amino acid type, then also updates udtResidue with the default information
 
-        Dim strSymbol3Letter As String
-        Dim lngAbbrevID As Integer
+		Dim strSymbol3Letter As String
+		Dim lngAbbrevID As Integer
 		Dim udtResidue As udtResidueType = New udtResidueType
 
-        ' Initialize the UDTs
-        udtResidue.Initialize()
-        strSymbol3Letter = String.Empty
+		' Initialize the UDTs
+		udtResidue.Initialize()
+		strSymbol3Letter = String.Empty
 
-        If Len(strSymbol) > 0 Then
-            If blnUse3LetterCode Then
-                strSymbol3Letter = strSymbol
-            Else
-                strSymbol3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, True)
-                If strSymbol3Letter.Length = 0 Then
-                    strSymbol3Letter = strSymbol
-                End If
-            End If
+		If strSymbol.Length > 0 Then
+			If blnUse3LetterCode Then
+				strSymbol3Letter = strSymbol
+			Else
+				strSymbol3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, True)
+				If strSymbol3Letter.Length = 0 Then
+					strSymbol3Letter = strSymbol
+				End If
+			End If
 
-            lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strSymbol3Letter, True)
-        Else
-            lngAbbrevID = 0
-        End If
+			lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strSymbol3Letter, True)
+		Else
+			lngAbbrevID = 0
+		End If
 
-        With udtResidue
-            .Symbol = strSymbol3Letter
-            .ModificationIDCount = 0
-            .Phosphorylated = False
-            If lngAbbrevID > 0 Then
-                .Mass = ElementAndMassRoutines.GetAbbreviationMass(lngAbbrevID)
-            Else
-                .Mass = 0
-            End If
-            .MassWithMods = .Mass
-        End With
+		With udtResidue
+			.Symbol = strSymbol3Letter
+			.ModificationIDCount = 0
+			.Phosphorylated = False
+			If lngAbbrevID > 0 Then
+				.Mass = ElementAndMassRoutines.GetAbbreviationMass(lngAbbrevID)
+			Else
+				.Mass = 0
+			End If
+			.MassWithMods = .Mass
+		End With
 
-        Return udtResidue
+		Return udtResidue
 
-    End Function
+	End Function
 
     'Public Function GetFragmentationMasses(ByVal lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
     Public Function GetFragmentationMasses(ByRef udtFragSpectrum() As udtFragmentationSpectrumDataType) As Integer
@@ -625,38 +623,43 @@ Public Class MWPeptideClass
         Return mTotalMass
     End Function
 
-    Private Function GetInternalResidues(ByRef lngCurrentResidueIndex As Integer, ByRef eIonType As itIonTypeConstants, Optional ByRef blnPhosphorylated As Boolean = False) As String
-        ' Determines the residues preceding or following the given residue (up to and including the current residue)
-        ' If eIonType is a, b, or c ions, then returns residues from the N terminus
-        ' If eIonType is y or ions, then returns residues from the C terminus
-        ' Also, set blnPhosphorylated to true if any of the residues is Ser, Thr, or Tyr and is phosphorylated
-        '
-        ' Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() function
+	Private Function GetInternalResidues(ByVal lngCurrentResidueIndex As Integer, ByVal eIonType As itIonTypeConstants) As String
+		Dim blnPhosphorylated As Boolean = False
+		Return GetInternalResidues(lngCurrentResidueIndex, eIonType, blnPhosphorylated)
+	End Function
 
-        Dim strInternalResidues As String
-        Dim lngResidueIndex As Integer
+	Private Function GetInternalResidues(ByVal lngCurrentResidueIndex As Integer, ByVal eIonType As itIonTypeConstants, ByRef blnPhosphorylated As Boolean) As String
+		' Determines the residues preceding or following the given residue (up to and including the current residue)
+		' If eIonType is a, b, or c ions, then returns residues from the N terminus
+		' If eIonType is y or ions, then returns residues from the C terminus
+		' Also, set blnPhosphorylated to true if any of the residues is Ser, Thr, or Tyr and is phosphorylated
+		'
+		' Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() function
 
-        strInternalResidues = String.Empty
-        blnPhosphorylated = False
-        If eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itZIon Then
-            For lngResidueIndex = lngCurrentResidueIndex To ResidueCount
-                With Residues(lngResidueIndex)
-                    strInternalResidues = strInternalResidues & .Symbol & " "
-                    If .Phosphorylated Then blnPhosphorylated = True
-                End With
-            Next lngResidueIndex
-        Else
-            For lngResidueIndex = 1 To lngCurrentResidueIndex
-                With Residues(lngResidueIndex)
-                    strInternalResidues = strInternalResidues & .Symbol & " "
-                    If .Phosphorylated Then blnPhosphorylated = True
-                End With
-            Next lngResidueIndex
-        End If
+		Dim strInternalResidues As String
+		Dim lngResidueIndex As Integer
 
-        Return strInternalResidues
+		strInternalResidues = String.Empty
+		blnPhosphorylated = False
+		If eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itZIon Then
+			For lngResidueIndex = lngCurrentResidueIndex To ResidueCount
+				With Residues(lngResidueIndex)
+					strInternalResidues = strInternalResidues & .Symbol & " "
+					If .Phosphorylated Then blnPhosphorylated = True
+				End With
+			Next lngResidueIndex
+		Else
+			For lngResidueIndex = 1 To lngCurrentResidueIndex
+				With Residues(lngResidueIndex)
+					strInternalResidues = strInternalResidues & .Symbol & " "
+					If .Phosphorylated Then blnPhosphorylated = True
+				End With
+			Next lngResidueIndex
+		End If
 
-    End Function
+		Return strInternalResidues
+
+	End Function
 
     Public Function GetModificationSymbol(ByVal lngModificationID As Integer, ByRef strModSymbol As String, ByRef dblModificationMass As Double, ByRef blnIndicatesPhosphorylation As Boolean, ByRef strComment As String) As Integer
         ' Returns information on the modification with lngModificationID
@@ -747,34 +750,34 @@ Public Class MWPeptideClass
         Return lngResidueCount
     End Function
 
-    Public Function GetResidueModificationIDs(ByRef lngResidueNumber As Integer, ByRef lngModificationIDsOneBased() As Integer) As Integer
-        ' Returns the number of Modifications
-        ' ReDims lngModificationIDsOneBased() to hold the values
+	Public Function GetResidueModificationIDs(ByVal lngResidueNumber As Integer, ByRef lngModificationIDsOneBased() As Integer) As Integer
+		' Returns the number of Modifications
+		' ReDims lngModificationIDsOneBased() to hold the values
 
-        Dim intIndex As Short
+		Dim intIndex As Short
 
-        If lngResidueNumber >= 1 And lngResidueNumber <= ResidueCount Then
+		If lngResidueNumber >= 1 And lngResidueNumber <= ResidueCount Then
 
-            With Residues(lngResidueNumber)
+			With Residues(lngResidueNumber)
 
-                ' Need to use this in case the calling program is sending an array with fixed dimensions
-                Try
-                    ReDim lngModificationIDsOneBased(.ModificationIDCount)
-                Catch ex As Exception
-                    ' Ignore errors
-                End Try
+				' Need to use this in case the calling program is sending an array with fixed dimensions
+				Try
+					ReDim lngModificationIDsOneBased(.ModificationIDCount)
+				Catch ex As Exception
+					' Ignore errors
+				End Try
 
-                For intIndex = 1 To .ModificationIDCount
-                    lngModificationIDsOneBased(intIndex) = .ModificationIDs(intIndex)
-                Next intIndex
+				For intIndex = 1 To .ModificationIDCount
+					lngModificationIDsOneBased(intIndex) = .ModificationIDs(intIndex)
+				Next intIndex
 
-                Return .ModificationIDCount
-            End With
-        Else
-            Return 0
-        End If
+				Return .ModificationIDCount
+			End With
+		Else
+			Return 0
+		End If
 
-    End Function
+	End Function
 
     Public Function GetResidueSymbolOnly(ByVal lngResidueNumber As Integer, ByVal blnUse3LetterCode As Boolean) As String
         ' Returns the symbol at the given residue number, or string.empty if an invalid residue number
@@ -795,29 +798,33 @@ Public Class MWPeptideClass
     End Function
 
     Public Function GetSequence() As String
-        Return GetSequence(True, False, False, False, True)
+		Return GetSequence(blnUse3LetterCode:=True, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
+	Public Function GetSequence1LetterCode() As String
+		Return GetSequence(blnUse3LetterCode:=False, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
+	End Function
+
     Public Function GetSequence(ByVal blnUse3LetterCode As Boolean) As String
-        Return GetSequence(blnUse3LetterCode, False, False, False, True)
+		Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(ByVal blnUse3LetterCode As Boolean, _
                                 ByVal blnAddSpaceEvery10Residues As Boolean) As String
-        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, False, False, True)
+		Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash:=False, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(ByVal blnUse3LetterCode As Boolean, _
                                 ByVal blnAddSpaceEvery10Residues As Boolean, _
                                 ByVal blnSeparateResiduesWithDash As Boolean) As String
-        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, False, True)
+		Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(ByVal blnUse3LetterCode As Boolean, _
                                 ByVal blnAddSpaceEvery10Residues As Boolean, _
                                 ByVal blnSeparateResiduesWithDash As Boolean, _
                                 ByVal blnIncludeNandCTerminii As Boolean) As String
-        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNandCTerminii, True)
+		Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNandCTerminii, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(ByVal blnUse3LetterCode As Boolean, _
@@ -1253,97 +1260,97 @@ Public Class MWPeptideClass
 
     End Function
 
-    Private Function GetTrypticNameFindNextCleavageLoc(ByRef strSearchResidues As String, ByRef strResidueFollowingSearchResidues As String, _
-                                                       ByVal lngStartChar As Integer, _
-                                                       Optional ByVal strSearchChars As String = TRYPTIC_RULE_RESIDUES, _
-                                                       Optional ByVal strExceptionSuffixResidues As String = TRYPTIC_EXCEPTION_RESIDUES, _
-                                                       Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL) As Integer
-        ' Finds the location of the next strSearchChar in strSearchResidues (K or R by default)
-        ' Assumes strSearchResidues are already upper case
-        ' Examines the residue following the matched residue
-        '   If it matches one of the characters in strExceptionSuffixResidues, then the match is not counted
-        ' Note that strResidueFollowingSearchResidues is necessary in case the potential cleavage residue is the final residue in strSearchResidues
-        ' We need to know the next residue to determine if it matches an exception residue
-        ' For example, if strSearchResidues =      "IGASGEHIFIIGVDKPNR"
-        '  and the protein it is part of is: TNSANFRIGASGEHIFIIGVDKPNRQPDS
-        '  and strSearchChars = "KR while strExceptionSuffixResidues  = "P"
-        ' Then the K in IGASGEHIFIIGVDKPNR is ignored because the following residue is P,
-        '  while the R in IGASGEHIFIIGVDKPNR is OK because strResidueFollowingSearchResidues is Q
-        ' It is the calling function's responsibility to assign the correct residue to strResidueFollowingSearchResidues
-        ' If no match is found, but strResidueFollowingSearchResidues is "-", then the cleavage location returned is Len(strSearchResidues) + 1
+	Private Function GetTrypticNameFindNextCleavageLoc(ByVal strSearchResidues As String, ByVal strResidueFollowingSearchResidues As String, _
+				ByVal lngStartChar As Integer, _
+				Optional ByVal strSearchChars As String = TRYPTIC_RULE_RESIDUES, _
+				Optional ByVal strExceptionSuffixResidues As String = TRYPTIC_EXCEPTION_RESIDUES, _
+				Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL) As Integer
+		' Finds the location of the next strSearchChar in strSearchResidues (K or R by default)
+		' Assumes strSearchResidues are already upper case
+		' Examines the residue following the matched residue
+		'   If it matches one of the characters in strExceptionSuffixResidues, then the match is not counted
+		' Note that strResidueFollowingSearchResidues is necessary in case the potential cleavage residue is the final residue in strSearchResidues
+		' We need to know the next residue to determine if it matches an exception residue
+		' For example, if strSearchResidues =      "IGASGEHIFIIGVDKPNR"
+		'  and the protein it is part of is: TNSANFRIGASGEHIFIIGVDKPNRQPDS
+		'  and strSearchChars = "KR while strExceptionSuffixResidues  = "P"
+		' Then the K in IGASGEHIFIIGVDKPNR is ignored because the following residue is P,
+		'  while the R in IGASGEHIFIIGVDKPNR is OK because strResidueFollowingSearchResidues is Q
+		' It is the calling function's responsibility to assign the correct residue to strResidueFollowingSearchResidues
+		' If no match is found, but strResidueFollowingSearchResidues is "-", then the cleavage location returned is Len(strSearchResidues) + 1
 
-        Dim intCharLocInSearchChars As Short
-        Dim lngCharLoc, lngMinCharLoc As Integer
-        Dim intExceptionSuffixResidueCount As Short
-        Dim intCharLocInExceptionChars As Short
-        Dim strResidueFollowingCleavageResidue As String
-        Dim lngExceptionCharLocInSearchResidues, lngCharLocViaRecursiveSearch As Integer
+		Dim intCharLocInSearchChars As Short
+		Dim lngCharLoc, lngMinCharLoc As Integer
+		Dim intExceptionSuffixResidueCount As Short
+		Dim intCharLocInExceptionChars As Short
+		Dim strResidueFollowingCleavageResidue As String
+		Dim lngExceptionCharLocInSearchResidues, lngCharLocViaRecursiveSearch As Integer
 
-        intExceptionSuffixResidueCount = CShort(Len(strExceptionSuffixResidues))
+		intExceptionSuffixResidueCount = CShort(Len(strExceptionSuffixResidues))
 
-        lngMinCharLoc = -1
-        For intCharLocInSearchChars = 1 To CShort(Len(strSearchChars))
-            lngCharLoc = InStr(Mid(strSearchResidues, lngStartChar), Mid(strSearchChars, intCharLocInSearchChars, 1))
+		lngMinCharLoc = -1
+		For intCharLocInSearchChars = 1 To CShort(Len(strSearchChars))
+			lngCharLoc = InStr(Mid(strSearchResidues, lngStartChar), Mid(strSearchChars, intCharLocInSearchChars, 1))
 
-            If lngCharLoc > 0 Then
-                lngCharLoc = lngCharLoc + lngStartChar - 1
+			If lngCharLoc > 0 Then
+				lngCharLoc = lngCharLoc + lngStartChar - 1
 
-                If intExceptionSuffixResidueCount > 0 Then
-                    ' Make sure strSuffixResidue does not match strExceptionSuffixResidues
-                    If lngCharLoc < Len(strSearchResidues) Then
-                        lngExceptionCharLocInSearchResidues = lngCharLoc + 1
-                        strResidueFollowingCleavageResidue = Mid(strSearchResidues, lngExceptionCharLocInSearchResidues, 1)
-                    Else
-                        ' Matched the last residue in strSearchResidues
-                        lngExceptionCharLocInSearchResidues = Len(strSearchResidues) + 1
-                        strResidueFollowingCleavageResidue = strResidueFollowingSearchResidues
-                    End If
+				If intExceptionSuffixResidueCount > 0 Then
+					' Make sure strSuffixResidue does not match strExceptionSuffixResidues
+					If lngCharLoc < Len(strSearchResidues) Then
+						lngExceptionCharLocInSearchResidues = lngCharLoc + 1
+						strResidueFollowingCleavageResidue = Mid(strSearchResidues, lngExceptionCharLocInSearchResidues, 1)
+					Else
+						' Matched the last residue in strSearchResidues
+						lngExceptionCharLocInSearchResidues = Len(strSearchResidues) + 1
+						strResidueFollowingCleavageResidue = strResidueFollowingSearchResidues
+					End If
 
-                    For intCharLocInExceptionChars = 1 To intExceptionSuffixResidueCount
-                        If strResidueFollowingCleavageResidue = Mid(strExceptionSuffixResidues, intCharLocInExceptionChars, 1) Then
-                            ' Exception char is the following character; can't count this as the cleavage point
+					For intCharLocInExceptionChars = 1 To intExceptionSuffixResidueCount
+						If strResidueFollowingCleavageResidue = Mid(strExceptionSuffixResidues, intCharLocInExceptionChars, 1) Then
+							' Exception char is the following character; can't count this as the cleavage point
 
-                            If lngExceptionCharLocInSearchResidues < Len(strSearchResidues) Then
-                                ' Recursively call this function to find the next cleavage position, using an updated lngStartChar position
-                                lngCharLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(strSearchResidues, strResidueFollowingSearchResidues, lngExceptionCharLocInSearchResidues, strSearchChars, strExceptionSuffixResidues, strTerminiiSymbol)
+							If lngExceptionCharLocInSearchResidues < Len(strSearchResidues) Then
+								' Recursively call this function to find the next cleavage position, using an updated lngStartChar position
+								lngCharLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(strSearchResidues, strResidueFollowingSearchResidues, lngExceptionCharLocInSearchResidues, strSearchChars, strExceptionSuffixResidues, strTerminiiSymbol)
 
-                                If lngCharLocViaRecursiveSearch > 0 Then
-                                    ' Found a residue further along that is a valid cleavage point
-                                    lngCharLoc = lngCharLocViaRecursiveSearch
-                                Else
-                                    lngCharLoc = 0
-                                End If
-                            Else
-                                lngCharLoc = 0
-                            End If
-                            Exit For
-                        End If
-                    Next intCharLocInExceptionChars
-                End If
-            End If
+								If lngCharLocViaRecursiveSearch > 0 Then
+									' Found a residue further along that is a valid cleavage point
+									lngCharLoc = lngCharLocViaRecursiveSearch
+								Else
+									lngCharLoc = 0
+								End If
+							Else
+								lngCharLoc = 0
+							End If
+							Exit For
+						End If
+					Next intCharLocInExceptionChars
+				End If
+			End If
 
-            If lngCharLoc > 0 Then
-                If lngMinCharLoc < 0 Then
-                    lngMinCharLoc = lngCharLoc
-                Else
-                    If lngCharLoc < lngMinCharLoc Then
-                        lngMinCharLoc = lngCharLoc
-                    End If
-                End If
-            End If
-        Next intCharLocInSearchChars
+			If lngCharLoc > 0 Then
+				If lngMinCharLoc < 0 Then
+					lngMinCharLoc = lngCharLoc
+				Else
+					If lngCharLoc < lngMinCharLoc Then
+						lngMinCharLoc = lngCharLoc
+					End If
+				End If
+			End If
+		Next intCharLocInSearchChars
 
-        If lngMinCharLoc < 0 And strResidueFollowingSearchResidues = strTerminiiSymbol Then
-            lngMinCharLoc = Len(strSearchResidues) + 1
-        End If
+		If lngMinCharLoc < 0 And strResidueFollowingSearchResidues = strTerminiiSymbol Then
+			lngMinCharLoc = strSearchResidues.Length + 1
+		End If
 
-        If lngMinCharLoc < 0 Then
-            Return 0
-        Else
-            Return (lngMinCharLoc)
-        End If
+		If lngMinCharLoc < 0 Then
+			Return 0
+		Else
+			Return (lngMinCharLoc)
+		End If
 
-    End Function
+	End Function
 
     Public Function GetTrypticPeptideNext(ByVal strProteinResidues As String, _
                                           ByVal lngSearchStartLoc As Integer) As String
@@ -1670,31 +1677,29 @@ Public Class MWPeptideClass
 
     End Function
 
-    Private Function CheckSequenceAgainstCleavageRuleMatchTestResidue(ByRef strTestResidue As String, ByRef strRuleResidues As String) As Boolean
-        ' Checks to see if strTestResidue matches one of the residues in strRuleResidues
-        ' Used to test by Rule Residues and Exception Residues
+	Private Function CheckSequenceAgainstCleavageRuleMatchTestResidue(ByVal strTestResidue As String, ByVal strRuleResidues As String) As Boolean
+		' Checks to see if strTestResidue matches one of the residues in strRuleResidues
+		' Used to test by Rule Residues and Exception Residues
 
-        Dim intCharLocInRuleResidues As Short
-        Dim strCompareResidue As String
-        Dim blnMatchFound As Boolean
+		Dim strCompareResidue As String
 
-        For intCharLocInRuleResidues = 1 To CShort(Len(strRuleResidues))
-            strCompareResidue = Trim(Mid(strRuleResidues, intCharLocInRuleResidues, 1))
-            If Len(strCompareResidue) > 0 Then
-                If strTestResidue = strCompareResidue Then
-                    blnMatchFound = True
-                    Exit For
-                End If
-            End If
-        Next intCharLocInRuleResidues
+		For intCharIndex As Integer = 0 To strRuleResidues.Length - 1
+			strCompareResidue = strRuleResidues.Substring(intCharIndex, 1).Trim()
+			If strCompareResidue.Length > 0 Then
+				If strTestResidue = strCompareResidue Then
+					' Match found
+					Return True
+				End If
+			End If
+		Next
 
-        Return blnMatchFound
+		Return False
 
-    End Function
+	End Function
 
-    Public Function ComputeImmoniumMass(ByRef dblResidueMass As Double) As Double
-        Return dblResidueMass - dblImmoniumMassDifference
-    End Function
+	Public Function ComputeImmoniumMass(ByVal dblResidueMass As Double) As Double
+		Return dblResidueMass - dblImmoniumMassDifference
+	End Function
 
     Private Sub InitializeArrays()
         mNTerminus.Initialize()
@@ -1702,19 +1707,19 @@ Public Class MWPeptideClass
         mFragSpectrumOptions.Initialize()
     End Sub
 
-    Public Function LookupIonTypeString(ByRef eIonType As itIonTypeConstants) As String
+	Public Function LookupIonTypeString(ByVal eIonType As itIonTypeConstants) As String
 
-        Select Case eIonType
-            Case itIonTypeConstants.itAIon : Return "a"
-            Case itIonTypeConstants.itBIon : Return "b"
-            Case itIonTypeConstants.itYIon : Return "y"
-            Case itIonTypeConstants.itCIon : Return "c"
-            Case itIonTypeConstants.itZIon : Return "z"
-            Case Else
-                Return String.Empty
-        End Select
+		Select Case eIonType
+			Case itIonTypeConstants.itAIon : Return "a"
+			Case itIonTypeConstants.itBIon : Return "b"
+			Case itIonTypeConstants.itYIon : Return "y"
+			Case itIonTypeConstants.itCIon : Return "c"
+			Case itIonTypeConstants.itZIon : Return "z"
+			Case Else
+				Return String.Empty
+		End Select
 
-    End Function
+	End Function
 
     Public Function RemoveAllResidues() As Integer
         ' Removes all the residues
@@ -1843,46 +1848,46 @@ Public Class MWPeptideClass
 
     End Function
 
-    Public Function RemoveResidue(ByRef lngResidueNumber As Integer) As Integer
-        ' Returns 0 if found and removed; 1 if error
+	Public Function RemoveResidue(ByVal lngResidueNumber As Integer) As Integer
+		' Returns 0 if found and removed; 1 if error
 
-        Dim lngIndex As Integer
+		Dim lngIndex As Integer
 
-        If lngResidueNumber >= 1 And lngResidueNumber <= ResidueCount Then
-            For lngIndex = lngResidueNumber To ResidueCount - 1
-                Residues(lngIndex) = Residues(lngIndex + 1)
-            Next lngIndex
-            ResidueCount -= 1
-            Return 0
-        Else
-            Return 1
-        End If
+		If lngResidueNumber >= 1 And lngResidueNumber <= ResidueCount Then
+			For lngIndex = lngResidueNumber To ResidueCount - 1
+				Residues(lngIndex) = Residues(lngIndex + 1)
+			Next lngIndex
+			ResidueCount -= 1
+			Return 0
+		Else
+			Return 1
+		End If
 
-    End Function
+	End Function
 
-    Private Sub ReserveMemoryForResidues(ByRef lngNewResidueCount As Integer, ByRef blnPreserveContents As Boolean)
-        ' Only reserves the memory if necessary
-        ' Thus, do not use this sub to clear Residues()
+	Private Sub ReserveMemoryForResidues(ByVal lngNewResidueCount As Integer, ByVal blnPreserveContents As Boolean)
+		' Only reserves the memory if necessary
+		' Thus, do not use this sub to clear Residues()
 
-        Dim intIndex As Integer
-        Dim intOldIndexEnd As Integer
+		Dim intIndex As Integer
+		Dim intOldIndexEnd As Integer
 
-        If lngNewResidueCount > ResidueCountDimmed Then
-            ResidueCountDimmed = lngNewResidueCount + RESIDUE_DIM_CHUNK
-            If blnPreserveContents And Not Residues Is Nothing Then
-                intOldIndexEnd = Residues.Length - 1
-                ReDim Preserve Residues(ResidueCountDimmed)
-                For intIndex = intOldIndexEnd + 1 To ResidueCountDimmed
-                    Residues(intIndex).Initialize(True)
-                Next intIndex
-            Else
-                ReDim Residues(ResidueCountDimmed)
-                For intIndex = 0 To ResidueCountDimmed
-                    Residues(intIndex).Initialize(True)
-                Next intIndex
-            End If
-        End If
-    End Sub
+		If lngNewResidueCount > ResidueCountDimmed Then
+			ResidueCountDimmed = lngNewResidueCount + RESIDUE_DIM_CHUNK
+			If blnPreserveContents And Not Residues Is Nothing Then
+				intOldIndexEnd = Residues.Length - 1
+				ReDim Preserve Residues(ResidueCountDimmed)
+				For intIndex = intOldIndexEnd + 1 To ResidueCountDimmed
+					Residues(intIndex).Initialize(True)
+				Next intIndex
+			Else
+				ReDim Residues(ResidueCountDimmed)
+				For intIndex = 0 To ResidueCountDimmed
+					Residues(intIndex).Initialize(True)
+				Next intIndex
+			End If
+		End If
+	End Sub
 
     Private Sub ReserveMemoryForModifications(ByVal lngNewModificationCount As Integer, ByVal blnPreserveContents As Boolean)
 
@@ -2035,52 +2040,60 @@ Public Class MWPeptideClass
 
     End Sub
 
-    Public Sub SetFragmentationSpectrumOptions(ByRef udtNewFragSpectrumOptions As udtFragmentationSpectrumOptionsType)
-        mFragSpectrumOptions = udtNewFragSpectrumOptions
-    End Sub
+	Public Sub SetFragmentationSpectrumOptions(ByVal udtNewFragSpectrumOptions As udtFragmentationSpectrumOptionsType)
+		mFragSpectrumOptions = udtNewFragSpectrumOptions
+	End Sub
 
-    Public Function SetModificationSymbol(ByVal strModSymbol As String, ByVal dblModificationMass As Double, ByRef blnIndicatesPhosphorylation As Boolean, ByRef strComment As String) As Integer
-        ' Adds a new modification or updates an existing one (based on strModSymbol)
-        ' Returns 0 if successful, otherwise, returns -1
+	Public Function SetModificationSymbol(ByVal strModSymbol As String, ByVal dblModificationMass As Double) As Integer
+		SetModificationSymbol(strModSymbol, dblModificationMass, blnIndicatesPhosphorylation:=False, strComment:=String.Empty)
+	End Function
 
-        Dim strTestChar As String
-        Dim lngIndexToUse, lngIndex, lngErrorID As Integer
+	Public Function SetModificationSymbol(ByVal strModSymbol As String, ByVal dblModificationMass As Double, ByVal strComment As String) As Integer
+		SetModificationSymbol(strModSymbol, dblModificationMass, blnIndicatesPhosphorylation:=False, strComment:=strComment)
+	End Function
 
-        lngErrorID = 0
-        If Len(strModSymbol) < 1 Then
-            lngErrorID = -1
-        Else
-            ' Make sure strModSymbol contains no letters, numbers, spaces, dashes, or periods
-            For lngIndex = 1 To Len(strModSymbol)
-                strTestChar = Mid(strModSymbol, lngIndex, 1)
-                If Not ElementAndMassRoutines.IsModSymbolInternal(strTestChar) Then
-                    lngErrorID = -1
-                End If
-            Next lngIndex
+	Public Function SetModificationSymbol(ByVal strModSymbol As String, ByVal dblModificationMass As Double, ByVal blnIndicatesPhosphorylation As Boolean, ByVal strComment As String) As Integer
+		' Adds a new modification or updates an existing one (based on strModSymbol)
+		' Returns 0 if successful, otherwise, returns -1
 
-            If lngErrorID = 0 Then
-                ' See if the modification is alrady present
-                lngIndexToUse = GetModificationSymbolID(strModSymbol)
+		Dim strTestChar As String
+		Dim lngIndexToUse, lngIndex, lngErrorID As Integer
 
-                If lngIndexToUse = 0 Then
-                    ' Need to add the modification
-                    ModificationSymbolCount = ModificationSymbolCount + 1
-                    lngIndexToUse = ModificationSymbolCount
-                    ReserveMemoryForModifications(ModificationSymbolCount, True)
-                End If
+		lngErrorID = 0
+		If Len(strModSymbol) < 1 Then
+			lngErrorID = -1
+		Else
+			' Make sure strModSymbol contains no letters, numbers, spaces, dashes, or periods
+			For lngIndex = 1 To Len(strModSymbol)
+				strTestChar = Mid(strModSymbol, lngIndex, 1)
+				If Not ElementAndMassRoutines.IsModSymbolInternal(strTestChar) Then
+					lngErrorID = -1
+				End If
+			Next lngIndex
 
-                With ModificationSymbols(lngIndexToUse)
-                    .Symbol = strModSymbol
-                    .ModificationMass = dblModificationMass
-                    .IndicatesPhosphorylation = blnIndicatesPhosphorylation
-                    .Comment = strComment
-                End With
-            End If
-        End If
+			If lngErrorID = 0 Then
+				' See if the modification is alrady present
+				lngIndexToUse = GetModificationSymbolID(strModSymbol)
 
-        SetModificationSymbol = lngErrorID
+				If lngIndexToUse = 0 Then
+					' Need to add the modification
+					ModificationSymbolCount = ModificationSymbolCount + 1
+					lngIndexToUse = ModificationSymbolCount
+					ReserveMemoryForModifications(ModificationSymbolCount, True)
+				End If
 
-    End Function
+				With ModificationSymbols(lngIndexToUse)
+					.Symbol = strModSymbol
+					.ModificationMass = dblModificationMass
+					.IndicatesPhosphorylation = blnIndicatesPhosphorylation
+					.Comment = strComment
+				End With
+			End If
+		End If
+
+		SetModificationSymbol = lngErrorID
+
+	End Function
 
     Public Function SetNTerminus(ByVal strFormula As String) As Integer
         Return SetNTerminus(strFormula, "", True)
@@ -2216,97 +2229,184 @@ Public Class MWPeptideClass
         SetResidue = lngIndexToUse
     End Function
 
-    Public Function SetResidueModifications(ByVal lngResidueNumber As Integer, ByVal intModificationCount As Short, ByRef lngModificationIDsOneBased() As Integer) As Integer
-        ' Sets the modifications for a specific residue
-        ' Modification Symbols are defined using successive calls to SetModificationSymbol()
+	Public Function SetResidueModifications(ByVal lngResidueNumber As Integer, ByVal intModificationCount As Short, ByVal lngModificationIDsOneBased() As Integer) As Integer
+		' Sets the modifications for a specific residue
+		' Modification Symbols are defined using successive calls to SetModificationSymbol()
 
-        ' Returns 0 if modifications set; returns 1 if an error
+		' Returns 0 if modifications set; returns 1 if an error
 
-        Dim intIndex As Short
-        Dim lngNewModID As Integer
+		Dim intIndex As Short
+		Dim lngNewModID As Integer
 
-        If lngResidueNumber >= 1 And lngResidueNumber <= ResidueCount And intModificationCount >= 0 Then
-            With Residues(lngResidueNumber)
-                If intModificationCount > MAX_MODIFICATIONS Then
-                    intModificationCount = MAX_MODIFICATIONS
-                End If
+		If lngResidueNumber >= 1 And lngResidueNumber <= ResidueCount And intModificationCount >= 0 Then
+			With Residues(lngResidueNumber)
+				If intModificationCount > MAX_MODIFICATIONS Then
+					intModificationCount = MAX_MODIFICATIONS
+				End If
 
-                .ModificationIDCount = 0
-                .Phosphorylated = False
-                For intIndex = 1 To intModificationCount
-                    lngNewModID = lngModificationIDsOneBased(intIndex)
-                    If lngNewModID >= 1 And lngNewModID <= ModificationSymbolCount Then
-                        .ModificationIDs(.ModificationIDCount) = lngNewModID
+				.ModificationIDCount = 0
+				.Phosphorylated = False
+				For intIndex = 1 To intModificationCount
+					lngNewModID = lngModificationIDsOneBased(intIndex)
+					If lngNewModID >= 1 And lngNewModID <= ModificationSymbolCount Then
+						.ModificationIDs(.ModificationIDCount) = lngNewModID
 
-                        ' Check for phosphorylation
-                        If ModificationSymbols(lngNewModID).IndicatesPhosphorylation Then
-                            .Phosphorylated = True
-                        End If
+						' Check for phosphorylation
+						If ModificationSymbols(lngNewModID).IndicatesPhosphorylation Then
+							.Phosphorylated = True
+						End If
 
-                        .ModificationIDCount = .ModificationIDCount + 1S
-                    End If
-                Next intIndex
+						.ModificationIDCount = .ModificationIDCount + 1S
+					End If
+				Next intIndex
 
-            End With
+			End With
 
-            SetResidueModifications = 0
-        Else
-            SetResidueModifications = 1
-        End If
+			SetResidueModifications = 0
+		Else
+			SetResidueModifications = 1
+		End If
 
-    End Function
+	End Function
 
+	''' <summary>
+	''' Defines the peptide sequence
+	''' </summary>
+	''' <param name="strSequence">Peptide sequence using 3-letter amino acid symbols</param>
+	''' <returns>0 if success or 1 if an error</returns>
+	''' <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
     Public Function SetSequence(ByVal strSequence As String) As Integer
-        Return SetSequence(strSequence, _
-                           ntgNTerminusGroupConstants.ntgHydrogen, _
-                           ctgCTerminusGroupConstants.ctgHydroxyl, _
-                           True, True, True, False)
+		Return SetSequence(strSequence, _
+			   ntgNTerminusGroupConstants.ntgHydrogen, _
+			   ctgCTerminusGroupConstants.ctgHydroxyl, _
+			   blnIs3LetterCode:=True, bln1LetterCheckForPrefixAndSuffixResidues:=True, bln3LetterCheckForPrefixHandSuffixOH:=True, blnAddMissingModificationSymbols:=False)
 
     End Function
 
-    Public Function SetSequence(ByVal strSequence As String, _
-                                ByVal eNTerminus As ntgNTerminusGroupConstants, _
-                                ByVal eCTerminus As ctgCTerminusGroupConstants) As Integer
+	''' <summary>
+	''' Defines the peptide sequence
+	''' </summary>
+	''' <param name="strSequence">Peptide sequence using 1-letter amino acid symbols</param>
+	''' <returns>0 if success or 1 if an error</returns>
+	''' <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+	Public Function SetSequence1LetterSymbol(ByVal strSequence As String) As Integer
+		Return SetSequence(strSequence, _
+		 ntgNTerminusGroupConstants.ntgHydrogen, _
+		 ctgCTerminusGroupConstants.ctgHydroxyl, _
+		 blnIs3LetterCode:=False, bln1LetterCheckForPrefixAndSuffixResidues:=True, bln3LetterCheckForPrefixHandSuffixOH:=True, blnAddMissingModificationSymbols:=False)
 
-        Return SetSequence(strSequence, eNTerminus, eCTerminus, _
-                           True, True, True, False)
-    End Function
+	End Function
 
-    Public Function SetSequence(ByVal strSequence As String, _
-                                ByVal eNTerminus As ntgNTerminusGroupConstants, _
-                                ByVal eCTerminus As ctgCTerminusGroupConstants, _
-                                ByVal blnIs3LetterCode As Boolean) As Integer
+	''' <summary>
+	''' Defines the peptide sequence
+	''' </summary>
+	''' <param name="strSequence">Peptide sequence</param>
+	''' <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+	''' <param name="bln1LetterCheckForPrefixAndSuffixResidues"></param>
+	''' <returns>0 if success or 1 if an error</returns>
+	''' <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+	Public Function SetSequence(ByVal strSequence As String, _
+	 ByVal blnIs3LetterCode As Boolean, _
+	 ByVal bln1LetterCheckForPrefixAndSuffixResidues As Boolean) As Integer
 
-        Return SetSequence(strSequence, eNTerminus, eCTerminus, _
-                           blnIs3LetterCode, True, True, False)
+		Return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl, _
+		 blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH:=True, blnAddMissingModificationSymbols:=False)
 
-    End Function
+	End Function
 
-    Public Function SetSequence(ByVal strSequence As String, _
-                               ByVal eNTerminus As ntgNTerminusGroupConstants, _
-                               ByVal eCTerminus As ctgCTerminusGroupConstants, _
-                               ByVal blnIs3LetterCode As Boolean, _
-                               ByVal bln1LetterCheckForPrefixAndSuffixResidues As Boolean) As Integer
+	''' <summary>
+	''' Defines the peptide sequence
+	''' </summary>
+	''' <param name="strSequence">Peptide sequence using 3-letter amino acid symbols</param>
+	''' <param name="eNTerminus">N-terminus group</param>
+	''' <param name="eCTerminus">C-terminus group</param>
+	''' <returns>0 if success or 1 if an error</returns>
+	''' <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+	Public Function SetSequence(ByVal strSequence As String, _
+								ByVal eNTerminus As ntgNTerminusGroupConstants, _
+								ByVal eCTerminus As ctgCTerminusGroupConstants) As Integer
 
-        Return SetSequence(strSequence, eNTerminus, eCTerminus, _
-                           blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, True, False)
+		Return SetSequence(strSequence, eNTerminus, eCTerminus, _
+			blnIs3LetterCode:=True, bln1LetterCheckForPrefixAndSuffixResidues:=True, bln3LetterCheckForPrefixHandSuffixOH:=True, blnAddMissingModificationSymbols:=False)
+	End Function
 
-    End Function
+	''' <summary>
+	''' Defines the peptide sequence
+	''' </summary>
+	''' <param name="strSequence">Peptide sequence</param>
+	''' <param name="eNTerminus">N-terminus group</param>
+	''' <param name="eCTerminus">C-terminus group</param>
+	''' <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+	''' <returns>0 if success or 1 if an error</returns>
+	''' <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+	Public Function SetSequence(ByVal strSequence As String, _
+								ByVal eNTerminus As ntgNTerminusGroupConstants, _
+								ByVal eCTerminus As ctgCTerminusGroupConstants, _
+								ByVal blnIs3LetterCode As Boolean) As Integer
 
-    Public Function SetSequence(ByVal strSequence As String, _
-                                ByVal eNTerminus As ntgNTerminusGroupConstants, _
-                                ByVal eCTerminus As ctgCTerminusGroupConstants, _
-                                ByVal blnIs3LetterCode As Boolean, _
-                                ByVal bln1LetterCheckForPrefixAndSuffixResidues As Boolean, _
-                                ByVal bln3LetterCheckForPrefixHandSuffixOH As Boolean) As Integer
+		Return SetSequence(strSequence, eNTerminus, eCTerminus, _
+			blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues:=True, bln3LetterCheckForPrefixHandSuffixOH:=True, blnAddMissingModificationSymbols:=False)
 
-        Return SetSequence(strSequence, eNTerminus, eCTerminus, _
-                   blnIs3LetterCode, _
-                   bln1LetterCheckForPrefixAndSuffixResidues, _
-                   bln3LetterCheckForPrefixHandSuffixOH, False)
+	End Function
 
-    End Function
+	''' <summary>
+	''' Defines the peptide sequence
+	''' </summary>
+	''' <param name="strSequence">Peptide sequence</param>
+	''' <param name="eNTerminus">N-terminus group</param>
+	''' <param name="eCTerminus">C-terminus group</param>
+	''' <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+	''' <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+	''' <returns>0 if success or 1 if an error</returns>
+	''' <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+	Public Function SetSequence(ByVal strSequence As String, _
+			 ByVal eNTerminus As ntgNTerminusGroupConstants, _
+			 ByVal eCTerminus As ctgCTerminusGroupConstants, _
+			 ByVal blnIs3LetterCode As Boolean, _
+			 ByVal bln1LetterCheckForPrefixAndSuffixResidues As Boolean) As Integer
 
+		Return SetSequence(strSequence, eNTerminus, eCTerminus, _
+			blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH:=True, blnAddMissingModificationSymbols:=False)
+
+	End Function
+
+	''' <summary>
+	''' Defines the peptide sequence
+	''' </summary>
+	''' <param name="strSequence">Peptide sequence</param>
+	''' <param name="eNTerminus">N-terminus group</param>
+	''' <param name="eCTerminus">C-terminus group</param>
+	''' <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+	''' <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+	''' <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
+	''' <returns>0 if success or 1 if an error</returns>
+	''' <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+	Public Function SetSequence(ByVal strSequence As String, _
+								ByVal eNTerminus As ntgNTerminusGroupConstants, _
+								ByVal eCTerminus As ctgCTerminusGroupConstants, _
+								ByVal blnIs3LetterCode As Boolean, _
+								ByVal bln1LetterCheckForPrefixAndSuffixResidues As Boolean, _
+								ByVal bln3LetterCheckForPrefixHandSuffixOH As Boolean) As Integer
+
+		Return SetSequence(strSequence, eNTerminus, eCTerminus, _
+		  blnIs3LetterCode, _
+		  bln1LetterCheckForPrefixAndSuffixResidues, _
+		  bln3LetterCheckForPrefixHandSuffixOH, blnAddMissingModificationSymbols:=False)
+
+	End Function
+
+	''' <summary>
+	''' Defines the peptide sequence
+	''' </summary>
+	''' <param name="strSequence">Peptide sequence</param>
+	''' <param name="eNTerminus">N-terminus group</param>
+	''' <param name="eCTerminus">C-terminus group</param>
+	''' <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+	''' <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+	''' <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
+	''' <param name="blnAddMissingModificationSymbols">Set to True to automatically add missing modification symbols (though the mod masses will be 0)</param>
+	''' <returns>0 if success or 1 if an error</returns>
+	''' <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
     Public Function SetSequence(ByVal strSequence As String, _
                             ByVal eNTerminus As ntgNTerminusGroupConstants, _
                             ByVal eCTerminus As ctgCTerminusGroupConstants, _
@@ -2315,12 +2415,7 @@ Public Class MWPeptideClass
                             ByVal bln3LetterCheckForPrefixHandSuffixOH As Boolean, _
                             ByVal blnAddMissingModificationSymbols As Boolean) As Integer
 
-        ' If blnIs3LetterCode = false, then look for sequence of the form: R.ABCDEF.R
-        ' If found, remove the leading and ending residues since these aren't for this peptide
-        ' Returns 0 if success or 1 if an error
-        ' Will return 0 even in strSequence is blank or if it contains no valid residues
-
-        Dim lngIndex, lngSequenceStrLength, lngModSymbolLength As Integer
+		Dim lngIndex, lngSequenceStrLength, lngModSymbolLength As Integer
         Dim str3LetterSymbol, str1LetterSymbol, strFirstChar As String
 
         Try
@@ -2381,7 +2476,7 @@ Public Class MWPeptideClass
                         ' Look at following character(s), and record any modification symbols present
                         lngModSymbolLength = CheckForModifications(Mid(strSequence, lngIndex + 1), ResidueCount, blnAddMissingModificationSymbols)
 
-                        lngIndex = lngIndex + lngModSymbolLength
+						lngIndex += lngModSymbolLength
                     Else
                         ' If . or - or space, then ignore it
                         ' If a number, ignore it
@@ -2461,41 +2556,40 @@ Public Class MWPeptideClass
 
     End Function
 
-    Private Sub SetSequenceAddResidue(ByRef str3LetterSymbol As String)
+	Private Sub SetSequenceAddResidue(ByVal str3LetterSymbol As String)
 
-        If Len(str3LetterSymbol) = 0 Then
-            str3LetterSymbol = UNKNOWN_SYMBOL
-        End If
+		If String.IsNullOrWhiteSpace(str3LetterSymbol) Then
+			str3LetterSymbol = UNKNOWN_SYMBOL
+		End If
 
-        ResidueCount = ResidueCount + 1
-        ReserveMemoryForResidues(ResidueCount, True)
+		ResidueCount += 1
+		ReserveMemoryForResidues(ResidueCount, True)
 
-        With Residues(ResidueCount)
-            .Symbol = str3LetterSymbol
-            .Phosphorylated = False
-            .ModificationIDCount = 0
-        End With
+		With Residues(ResidueCount)
+			.Symbol = str3LetterSymbol
+			.Phosphorylated = False
+			.ModificationIDCount = 0
+		End With
 
-    End Sub
+	End Sub
 
-    Public Sub SetSymbolAmmoniaLoss(ByRef strNewSymbol As String)
-        If Len(strNewSymbol) > 0 Then
-            mAmmoniaLossSymbol = strNewSymbol
-        End If
-    End Sub
+	Public Sub SetSymbolAmmoniaLoss(ByVal strNewSymbol As String)
+		If Not String.IsNullOrWhiteSpace(strNewSymbol) Then
+			mAmmoniaLossSymbol = strNewSymbol
+		End If
+	End Sub
 
-    Public Sub SetSymbolPhosphoLoss(ByRef strNewSymbol As String)
-        If Len(strNewSymbol) > 0 Then
-            mPhosphoLossSymbol = strNewSymbol
-        End If
-    End Sub
+	Public Sub SetSymbolPhosphoLoss(ByVal strNewSymbol As String)
+		If Not String.IsNullOrWhiteSpace(strNewSymbol) Then
+			mPhosphoLossSymbol = strNewSymbol
+		End If
+	End Sub
 
-    Public Sub SetSymbolWaterLoss(ByRef strNewSymbol As String)
-        If Len(strNewSymbol) > 0 Then
-            mWaterLossSymbol = strNewSymbol
-        End If
-    End Sub
-
+	Public Sub SetSymbolWaterLoss(ByVal strNewSymbol As String)
+		If Not String.IsNullOrWhiteSpace(strNewSymbol) Then
+			mWaterLossSymbol = strNewSymbol
+		End If
+	End Sub
 
     Private Sub ShellSortFragSpectrum(ByRef FragSpectrumWork() As udtFragmentationSpectrumDataType, ByRef PointerArray() As Integer, ByVal lngLowIndex As Integer, ByVal lngHighIndex As Integer)
         ' Sort the list using a shell sort
