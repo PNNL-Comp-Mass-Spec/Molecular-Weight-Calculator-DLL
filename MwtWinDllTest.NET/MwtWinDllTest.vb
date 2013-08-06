@@ -938,20 +938,20 @@ Friend Class frmMwtWinDllTest
 			objResults.AppendText("Convert isotopic distribution to gaussian")
 			Dim lstXYVals = New Generic.List(Of Generic.KeyValuePair(Of Double, Double))
 			For intIndex As Integer = 1 To ConvolutedMSDataCount
-				If ConvolutedMSData2DOneBased(intIndex, 0) >= 15180 AndAlso ConvolutedMSData2DOneBased(intIndex, 0) < 15195 Then
-					lstXYVals.Add(New Generic.KeyValuePair(Of Double, Double)(ConvolutedMSData2DOneBased(intIndex, 0), ConvolutedMSData2DOneBased(intIndex, 1)))
-				End If
+				lstXYVals.Add(New Generic.KeyValuePair(Of Double, Double)(ConvolutedMSData2DOneBased(intIndex, 0), ConvolutedMSData2DOneBased(intIndex, 1)))
 			Next
 			Dim intResolution As Integer = 2000
 			Dim dblResolutionMass As Double = 1000
-			Dim intQualityFactor As Integer = 15
+			Dim intQualityFactor As Integer = 50
 
 			Dim lstGaussianData = .ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor)
 
 			Dim sbResults As New System.Text.StringBuilder
 			sbResults.AppendLine("m/z" & ControlChars.Tab & "Intensity")
-			For intIndex As Integer = 0 To Math.Min(lstGaussianData.Count, 500) - 1
-				sbResults.AppendLine(lstGaussianData(intIndex).Key.ToString("0.00") & ControlChars.Tab & lstGaussianData(intIndex).Value.ToString("0.0"))
+			For intIndex As Integer = 0 To lstGaussianData.Count - 1
+				If lstGaussianData(intIndex).Key >= 15175 AndAlso lstGaussianData(intIndex).Key < 15193 Then
+					sbResults.AppendLine(lstGaussianData(intIndex).Key.ToString("0.000") & ControlChars.Tab & lstGaussianData(intIndex).Value.ToString("0.000"))
+				End If
 			Next
 			objResults.AppendText(sbResults.ToString)
 

@@ -410,187 +410,211 @@ Public Class MWPeptideClass
 
 	End Function
 
-    'Public Function GetFragmentationMasses(ByVal lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
-    Public Function GetFragmentationMasses(ByRef udtFragSpectrum() As udtFragmentationSpectrumDataType) As Integer
-        ' Returns the number of ions in FragSpectrumWork()
+	''' <summary>
+	''' 
+	''' </summary>
+	''' <param name="udtFragSpectrum"></param>
+	''' <returns>The number of ions in udtFragSpectrum()</returns>
+	''' <remarks></remarks>
+	Public Function GetFragmentationMasses(ByRef udtFragSpectrum() As udtFragmentationSpectrumDataType) As Integer
+		' Old: Func GetFragmentationMasses(ByVal lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
 
-        Const MAX_CHARGE As Integer = 3
+		Dim lstFragSpectraData As Generic.List(Of udtFragmentationSpectrumDataType)
 
-        Dim lngResidueIndex As Integer
-        Dim intChargeIndex, intShoulderIndex As Short
-        Dim eIonType As itIonTypeConstants
-        Dim lngIndex As Integer
-        Dim lngPredictedIonCount, lngIonCount As Integer
-        Dim sngIonIntensities() As Single
-        ReDim sngIonIntensities(ION_TYPE_MAX)
-        Dim sngIonShoulderIntensity, sngNeutralLossIntensity As Single
+		lstFragSpectraData = GetFragmentationMasses()
 
-        Dim blnShowCharge() As Boolean
-        Dim sngChargeThreshold() As Single
+		If lstFragSpectraData.Count = 0 Then
+			ReDim udtFragSpectrum(0)
+			Return 0
+		End If
 
-        Dim sngConvolutedMass, sngBaseMass, sngObservedMass As Single
-        Dim strResidues As String
-        Dim blnPhosphorylated As Boolean
-        Dim sngIntensity As Single
-        Dim strIonSymbol, strIonSymbolGeneric As String
-        Dim FragSpectrumWork() As udtFragmentationSpectrumDataType
+		ReDim udtFragSpectrum(lstFragSpectraData.Count)
 
-        Dim PointerArray() As Integer
+		For intIndex As Integer = 0 To lstFragSpectraData.Count - 1
+			udtFragSpectrum(intIndex) = lstFragSpectraData(intIndex)
+		Next
 
-        If ResidueCount = 0 Then
-            ' No residues
-            Return 0
-        End If
+		Return lstFragSpectraData.Count
 
-        ReDim blnShowCharge(MAX_CHARGE)
-        ReDim sngChargeThreshold(MAX_CHARGE)
+	End Function
 
-        ' Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
-        With mFragSpectrumOptions
-            For eIonType = 0 To ION_TYPE_MAX
-                sngIonIntensities(eIonType) = CSng(.IntensityOptions.IonType(eIonType))
-            Next eIonType
-            sngIonShoulderIntensity = CSng(.IntensityOptions.BYIonShoulder)
-            sngNeutralLossIntensity = CSng(.IntensityOptions.NeutralLoss)
+	Public Function GetFragmentationMasses() As Generic.List(Of udtFragmentationSpectrumDataType)		
 
-            If MAX_CHARGE >= 2 Then
-                blnShowCharge(2) = .DoubleChargeIonsShow
-                sngChargeThreshold(2) = .DoubleChargeIonsThreshold
-            End If
+		Const MAX_CHARGE As Integer = 3
 
-            If MAX_CHARGE >= 3 Then
-                blnShowCharge(3) = .TripleChargeIonsShow
-                sngChargeThreshold(3) = .TripleChargeIonsThreshold
-            End If
-        End With
+		Dim lngResidueIndex As Integer
+		Dim intChargeIndex, intShoulderIndex As Short
+		Dim eIonType As itIonTypeConstants
+		Dim lngIndex As Integer
+		Dim lngPredictedIonCount, lngIonCount As Integer
+		Dim sngIonIntensities() As Single
+		ReDim sngIonIntensities(ION_TYPE_MAX)
+		Dim sngIonShoulderIntensity, sngNeutralLossIntensity As Single
 
-        ' Populate sngIonMassesZeroBased() and sngIonIntensitiesZeroBased()
-        ' Put ion descriptions in strIonSymbolsZeroBased
-        lngPredictedIonCount = GetFragmentationSpectrumRequiredDataPoints()
+		Dim blnShowCharge() As Boolean
+		Dim sngChargeThreshold() As Single
 
-        If lngPredictedIonCount = 0 Then lngPredictedIonCount = ResidueCount
-        ReDim FragSpectrumWork(lngPredictedIonCount)
+		Dim sngConvolutedMass, sngBaseMass, sngObservedMass As Single
+		Dim strResidues As String
+		Dim blnPhosphorylated As Boolean
+		Dim sngIntensity As Single
+		Dim strIonSymbol, strIonSymbolGeneric As String
+		Dim FragSpectrumWork() As udtFragmentationSpectrumDataType
 
-        ' Need to update the residue masses in case the modifications have changed
-        UpdateResidueMasses()
+		Dim PointerArray() As Integer
 
-        lngIonCount = 0
-        For lngResidueIndex = 1 To ResidueCount
-            With Residues(lngResidueIndex)
+		If ResidueCount = 0 Then
+			' No residues
+			Return New Generic.List(Of udtFragmentationSpectrumDataType)
+		End If
 
-                For eIonType = 0 To ION_TYPE_MAX
-                    If mFragSpectrumOptions.IonTypeOptions(eIonType).ShowIon Then
-                        If (lngResidueIndex = 1 OrElse lngResidueIndex = ResidueCount) AndAlso (eIonType = itIonTypeConstants.itAIon OrElse eIonType = itIonTypeConstants.itBIon OrElse eIonType = itIonTypeConstants.itCIon) Then
-                            ' Don't include a, b, or c ions in the output masses for this residue
-                        Else
+		ReDim blnShowCharge(MAX_CHARGE)
+		ReDim sngChargeThreshold(MAX_CHARGE)
 
-                            ' Ion is used
-                            sngBaseMass = CSng(.IonMass(eIonType)) ' Already in the H+ state
-                            sngIntensity = sngIonIntensities(eIonType)
+		' Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
+		With mFragSpectrumOptions
+			For eIonType = 0 To ION_TYPE_MAX
+				sngIonIntensities(eIonType) = CSng(.IntensityOptions.IonType(eIonType))
+			Next eIonType
+			sngIonShoulderIntensity = CSng(.IntensityOptions.BYIonShoulder)
+			sngNeutralLossIntensity = CSng(.IntensityOptions.NeutralLoss)
 
-                            ' Get the list of residues preceding or following this residue
-                            ' Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() functions below
-                            strResidues = GetInternalResidues(lngResidueIndex, eIonType, blnPhosphorylated)
+			If MAX_CHARGE >= 2 Then
+				blnShowCharge(2) = .DoubleChargeIonsShow
+				sngChargeThreshold(2) = .DoubleChargeIonsThreshold
+			End If
 
-                            For intChargeIndex = 1 To MAX_CHARGE
-                                If intChargeIndex = 1 Or (intChargeIndex > 1 And blnShowCharge(intChargeIndex)) Then
-                                    If intChargeIndex = 1 Then
-                                        sngConvolutedMass = sngBaseMass
-                                    Else
-                                        ' Compute mass at higher charge
-                                        sngConvolutedMass = CSng(ElementAndMassRoutines.ConvoluteMassInternal(sngBaseMass, 1, intChargeIndex, dblChargeCarrierMass))
-                                    End If
+			If MAX_CHARGE >= 3 Then
+				blnShowCharge(3) = .TripleChargeIonsShow
+				sngChargeThreshold(3) = .TripleChargeIonsThreshold
+			End If
+		End With
 
-                                    If intChargeIndex > 1 And sngBaseMass < sngChargeThreshold(intChargeIndex) Then
-                                        ' BaseMass is below threshold, do not add to Predicted Spectrum
-                                    Else
-                                        ' Add ion to Predicted Spectrum
+		' Populate sngIonMassesZeroBased() and sngIonIntensitiesZeroBased()
+		' Put ion descriptions in strIonSymbolsZeroBased
+		lngPredictedIonCount = GetFragmentationSpectrumRequiredDataPoints()
 
-                                        ' Y and Z Ions are numbered in decreasing order: y5, y4, y3, y2, y1
-                                        ' A, B, and C ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
-                                        strIonSymbolGeneric = LookupIonTypeString(eIonType)
-                                        If eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itZIon Then
-                                            strIonSymbol = strIonSymbolGeneric & Trim(Str(ResidueCount - lngResidueIndex + 1))
-                                        Else
-                                            strIonSymbol = strIonSymbolGeneric & Trim(Str(lngResidueIndex))
-                                        End If
+		If lngPredictedIonCount = 0 Then lngPredictedIonCount = ResidueCount
+		ReDim FragSpectrumWork(lngPredictedIonCount)
 
-                                        If intChargeIndex > 1 Then
-                                            strIonSymbol = strIonSymbol & New String("+"c, intChargeIndex)
-                                            strIonSymbolGeneric = strIonSymbolGeneric & New String("+"c, intChargeIndex)
-                                        End If
+		' Need to update the residue masses in case the modifications have changed
+		UpdateResidueMasses()
+
+		lngIonCount = 0
+		For lngResidueIndex = 1 To ResidueCount
+			With Residues(lngResidueIndex)
+
+				For eIonType = 0 To ION_TYPE_MAX
+					If mFragSpectrumOptions.IonTypeOptions(eIonType).ShowIon Then
+						If (lngResidueIndex = 1 OrElse lngResidueIndex = ResidueCount) AndAlso (eIonType = itIonTypeConstants.itAIon OrElse eIonType = itIonTypeConstants.itBIon OrElse eIonType = itIonTypeConstants.itCIon) Then
+							' Don't include a, b, or c ions in the output masses for this residue
+						Else
+
+							' Ion is used
+							sngBaseMass = CSng(.IonMass(eIonType)) ' Already in the H+ state
+							sngIntensity = sngIonIntensities(eIonType)
+
+							' Get the list of residues preceding or following this residue
+							' Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() functions below
+							strResidues = GetInternalResidues(lngResidueIndex, eIonType, blnPhosphorylated)
+
+							For intChargeIndex = 1 To MAX_CHARGE
+								If intChargeIndex = 1 Or (intChargeIndex > 1 And blnShowCharge(intChargeIndex)) Then
+									If intChargeIndex = 1 Then
+										sngConvolutedMass = sngBaseMass
+									Else
+										' Compute mass at higher charge
+										sngConvolutedMass = CSng(ElementAndMassRoutines.ConvoluteMassInternal(sngBaseMass, 1, intChargeIndex, dblChargeCarrierMass))
+									End If
+
+									If intChargeIndex > 1 And sngBaseMass < sngChargeThreshold(intChargeIndex) Then
+										' BaseMass is below threshold, do not add to Predicted Spectrum
+									Else
+										' Add ion to Predicted Spectrum
+
+										' Y and Z Ions are numbered in decreasing order: y5, y4, y3, y2, y1
+										' A, B, and C ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
+										strIonSymbolGeneric = LookupIonTypeString(eIonType)
+										If eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itZIon Then
+											strIonSymbol = strIonSymbolGeneric & Trim(Str(ResidueCount - lngResidueIndex + 1))
+										Else
+											strIonSymbol = strIonSymbolGeneric & Trim(Str(lngResidueIndex))
+										End If
+
+										If intChargeIndex > 1 Then
+											strIonSymbol = strIonSymbol & New String("+"c, intChargeIndex)
+											strIonSymbolGeneric = strIonSymbolGeneric & New String("+"c, intChargeIndex)
+										End If
 
 
-                                        AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngConvolutedMass, sngIntensity, strIonSymbol, strIonSymbolGeneric, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
+										AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngConvolutedMass, sngIntensity, strIonSymbol, strIonSymbolGeneric, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
 
-                                        ' Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
-                                        ' Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
-                                        If System.Math.Abs(sngIonShoulderIntensity) > 0 AndAlso (eIonType = itIonTypeConstants.itBIon OrElse eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itCIon OrElse eIonType = itIonTypeConstants.itZIon) Then
-                                            For intShoulderIndex = -1 To 1 Step 2
-                                                sngObservedMass = CSng(sngConvolutedMass + intShoulderIndex * (1 / intChargeIndex))
-                                                AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngIonShoulderIntensity, SHOULDER_ION_PREFIX & strIonSymbol, SHOULDER_ION_PREFIX & strIonSymbolGeneric, lngResidueIndex, .Symbol, intChargeIndex, eIonType, True)
-                                            Next intShoulderIndex
-                                        End If
+										' Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
+										' Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
+										If System.Math.Abs(sngIonShoulderIntensity) > 0 AndAlso (eIonType = itIonTypeConstants.itBIon OrElse eIonType = itIonTypeConstants.itYIon OrElse eIonType = itIonTypeConstants.itCIon OrElse eIonType = itIonTypeConstants.itZIon) Then
+											For intShoulderIndex = -1 To 1 Step 2
+												sngObservedMass = CSng(sngConvolutedMass + intShoulderIndex * (1 / intChargeIndex))
+												AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngIonShoulderIntensity, SHOULDER_ION_PREFIX & strIonSymbol, SHOULDER_ION_PREFIX & strIonSymbolGeneric, lngResidueIndex, .Symbol, intChargeIndex, eIonType, True)
+											Next intShoulderIndex
+										End If
 
-                                        ' Apply neutral loss modifications
-                                        If mFragSpectrumOptions.IonTypeOptions(eIonType).NeutralLossWater Then
-                                            ' Loss of water only affects Ser, Thr, Asp, or Glu (S, T, E, or D)
-                                            ' See if the residues up to this point contain any of these residues
-                                            If strResidues.IndexOf("Ser") >= 0 Or strResidues.IndexOf("Thr") >= 0 Or strResidues.IndexOf("Glue") >= 0 Or strResidues.IndexOf("Asp") >= 0 Then
-                                                sngObservedMass = CSng(sngConvolutedMass - (dblHOHMass / intChargeIndex))
-                                                AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol & mWaterLossSymbol, strIonSymbolGeneric & mWaterLossSymbol, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
-                                            End If
-                                        End If
+										' Apply neutral loss modifications
+										If mFragSpectrumOptions.IonTypeOptions(eIonType).NeutralLossWater Then
+											' Loss of water only affects Ser, Thr, Asp, or Glu (S, T, E, or D)
+											' See if the residues up to this point contain any of these residues
+											If strResidues.IndexOf("Ser") >= 0 Or strResidues.IndexOf("Thr") >= 0 Or strResidues.IndexOf("Glue") >= 0 Or strResidues.IndexOf("Asp") >= 0 Then
+												sngObservedMass = CSng(sngConvolutedMass - (dblHOHMass / intChargeIndex))
+												AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol & mWaterLossSymbol, strIonSymbolGeneric & mWaterLossSymbol, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
+											End If
+										End If
 
-                                        If mFragSpectrumOptions.IonTypeOptions(eIonType).NeutralLossAmmonia Then
-                                            ' Loss of Ammonia only affects Arg, Lys, Gln, or Asn (R, K, Q, or N)
-                                            ' See if the residues up to this point contain any of these residues
-                                            If strResidues.IndexOf("Arg") >= 0 Or strResidues.IndexOf("Lys") >= 0 Or strResidues.IndexOf("Gln") >= 0 Or strResidues.IndexOf("Asn") >= 0 Then
-                                                sngObservedMass = CSng(sngConvolutedMass - (dblNH3Mass / intChargeIndex))
-                                                AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol & mAmmoniaLossSymbol, strIonSymbolGeneric & mAmmoniaLossSymbol, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
-                                            End If
-                                        End If
+										If mFragSpectrumOptions.IonTypeOptions(eIonType).NeutralLossAmmonia Then
+											' Loss of Ammonia only affects Arg, Lys, Gln, or Asn (R, K, Q, or N)
+											' See if the residues up to this point contain any of these residues
+											If strResidues.IndexOf("Arg") >= 0 Or strResidues.IndexOf("Lys") >= 0 Or strResidues.IndexOf("Gln") >= 0 Or strResidues.IndexOf("Asn") >= 0 Then
+												sngObservedMass = CSng(sngConvolutedMass - (dblNH3Mass / intChargeIndex))
+												AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol & mAmmoniaLossSymbol, strIonSymbolGeneric & mAmmoniaLossSymbol, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
+											End If
+										End If
 
-                                        If mFragSpectrumOptions.IonTypeOptions(eIonType).NeutralLossPhosphate Then
-                                            ' Loss of phosphate only affects phosphorylated residues
-                                            ' Technically, only Ser, Thr, or Tyr (S, T, or Y) can be phosphorylated, but if the user marks other residues as phosphorylated, we'll allow that
-                                            ' See if the residues up to this point contain phosphorylated residues
-                                            If blnPhosphorylated Then
-                                                sngObservedMass = CSng(sngConvolutedMass - (dblH3PO4Mass / intChargeIndex))
-                                                AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol & mPhosphoLossSymbol, strIonSymbolGeneric & mPhosphoLossSymbol, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
-                                            End If
-                                        End If
+										If mFragSpectrumOptions.IonTypeOptions(eIonType).NeutralLossPhosphate Then
+											' Loss of phosphate only affects phosphorylated residues
+											' Technically, only Ser, Thr, or Tyr (S, T, or Y) can be phosphorylated, but if the user marks other residues as phosphorylated, we'll allow that
+											' See if the residues up to this point contain phosphorylated residues
+											If blnPhosphorylated Then
+												sngObservedMass = CSng(sngConvolutedMass - (dblH3PO4Mass / intChargeIndex))
+												AppendDataToFragSpectrum(lngIonCount, FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol & mPhosphoLossSymbol, strIonSymbolGeneric & mPhosphoLossSymbol, lngResidueIndex, .Symbol, intChargeIndex, eIonType, False)
+											End If
+										End If
 
-                                    End If
-                                End If
-                            Next intChargeIndex
-                        End If
-                    End If
-                Next eIonType
-            End With
-        Next lngResidueIndex
+									End If
+								End If
+							Next intChargeIndex
+						End If
+					End If
+				Next eIonType
+			End With
+		Next lngResidueIndex
 
-        ' Sort arrays by mass (using a pointer array to synchronize the arrays)
-        ReDim PointerArray(lngIonCount)
+		' Sort arrays by mass (using a pointer array to synchronize the arrays)
+		ReDim PointerArray(lngIonCount)
 
-        For lngIndex = 0 To lngIonCount - 1
-            PointerArray(lngIndex) = lngIndex
-        Next lngIndex
+		For lngIndex = 0 To lngIonCount - 1
+			PointerArray(lngIndex) = lngIndex
+		Next lngIndex
 
-        ShellSortFragSpectrum(FragSpectrumWork, PointerArray, 0, lngIonCount - 1)
+		ShellSortFragSpectrum(FragSpectrumWork, PointerArray, 0, lngIonCount - 1)
 
-        ' Copy the data from FragSpectrumWork() to udtFragSpectrum()
+		' Copy the data from FragSpectrumWork() to lstFragSpectraData
+		Dim lstFragSpectraData = New Generic.List(Of udtFragmentationSpectrumDataType)(lngIonCount)
 
-        ReDim udtFragSpectrum(lngIonCount)
+		For lngIndex = 0 To lngIonCount - 1
+			lstFragSpectraData.Add(FragSpectrumWork(PointerArray(lngIndex)))
+		Next lngIndex
 
-        For lngIndex = 0 To lngIonCount - 1
-            udtFragSpectrum(lngIndex) = FragSpectrumWork(PointerArray(lngIndex))
-        Next lngIndex
+		Return lstFragSpectraData
 
-        ' Return the actual number of ions computed
-        Return lngIonCount
-
-    End Function
+	End Function
 
     Public Function GetFragmentationSpectrumRequiredDataPoints() As Integer
         ' Determines the total number of data points that will be required for a theoretical fragmentation spectrum

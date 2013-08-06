@@ -1273,7 +1273,7 @@ Public Class MWElementAndMassRoutines
 			intDataToAddCount = CInt(dblXValWindowRange / DeltaX)
 
 			' Make sure intDataToAddCount is odd
-			If CSng(intDataToAddCount / 2.0) = CSng(Math.Round(intDataToAddCount / 2.0, 0)) Then
+			If intDataToAddCount Mod 2 = 0 Then
 				intDataToAddCount += 1
 			End If
 
