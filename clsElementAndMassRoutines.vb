@@ -174,6 +174,10 @@ Public Class MWElementAndMassRoutines
 		Public SymbolReferenceStack() As Short ' 0-based array
 	End Structure
 
+	Private Structure udtXYDataType
+		Public X As Double
+		Public Y As Double
+	End Structure
 #End Region
 
 #Region "Classwide Variables"
@@ -1183,6 +1187,254 @@ Public Class MWElementAndMassRoutines
 		End With
 
 	End Sub
+
+	''' <summary>
+	''' Convert the centroided data (stick data) in XYVals to a Gaussian representation
+	''' </summary>
+	''' <param name="XYVals">XY data, as key-value pairs</param>
+	''' <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
+	''' <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
+	''' <param name="intQualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
+	''' <returns>Gaussian spectrum data</returns>
+	''' <remarks></remarks>
+	Public Function ConvertStickDataToGaussian2DArray(ByVal XYVals As Generic.List(Of Generic.KeyValuePair(Of Double, Double)), ByVal intResolution As Integer, ByVal dblResolutionMass As Double, ByVal intQualityFactor As Integer) As Generic.List(Of Generic.KeyValuePair(Of Double, Double))
+		' dblXVals() and dblYVals() are parallel arrays, 0-based (thus ranging from 0 to XYVals.count-1)
+		' The arrays should contain stick data
+		' The original data in the arrays will be replaced with Gaussian peaks in place of each "stick"
+		' Note: Assumes dblXVals() is sorted in the x direction
+
+		Const MAX_DATA_POINTS As Integer = 1000000
+		Const MASS_PRECISION As Short = 7
+
+		Dim intDataIndex As Integer, intMidPointIndex As Integer
+		Dim intStickIndex As Integer, DeltaX As Double
+
+		Dim dblXValRange As Double, dblXValWindowRange As Double, dblRangeWork As Double
+		Dim dblMinimalXValOfWindow As Double, dblMinimalXValSpacing As Double
+		Dim blnSearchForMinimumXVal As Boolean
+
+		Dim dblXOffSet As Double, dblSigma As Double
+
+		Dim lstXYSummation As Generic.List(Of udtXYDataType)
+		Dim intSummationIndex As Integer, intMinimalSummationIndex As Integer
+
+		Dim lstDataToAdd As Generic.List(Of udtXYDataType)
+		Dim intDataToAddCount As Integer, blnAppendNewData As Boolean
+		Dim udtThisDataPoint As udtXYDataType
+
+		Dim lstGaussianData = New Generic.List(Of Generic.KeyValuePair(Of Double, Double))
+
+		Try
+
+			If XYVals Is Nothing OrElse XYVals.Count = 0 Then
+				Return lstGaussianData
+			End If
+
+			lstXYSummation = New Generic.List(Of udtXYDataType)(XYVals.Count * 10)
+
+			' Determine the data range for dblXVals() and dblYVals()
+			If XYVals.Count > 1 Then
+				dblXValRange = XYVals.Last.Key - XYVals.First.Key
+			Else
+				dblXValRange = 1
+			End If
+
+			If dblXValRange < 1 Then dblXValRange = 1
+
+			If intResolution < 1 Then intResolution = 1
+			If intQualityFactor < 1 Or intQualityFactor > 75 Then intQualityFactor = 50
+
+			' Compute DeltaX using .intResolution and .intResolutionMass
+			' Do not allow the DeltaX to be so small that the total points required > MAX_DATA_POINTS
+			DeltaX = dblResolutionMass / intResolution / intQualityFactor
+
+			' Make sure DeltaX is a reasonable number
+			DeltaX = RoundToMultipleOf10(DeltaX)
+
+			If DeltaX = 0 Then DeltaX = 1
+
+			' Set the Window Range to 1/10 the magnitude of the midpoint x value
+			dblRangeWork = XYVals.First.Key + dblXValRange / 2
+			dblRangeWork = RoundToMultipleOf10(dblRangeWork)
+
+			dblSigma = (dblResolutionMass / intResolution) / Math.Sqrt(5.54)
+
+			' Set the window range (the xvalue window width range) to calculate the Gaussian representation for each data point
+			' The width at the base of a peak is 4 dblSigma
+			' Use a width of 2 * 6 dblSigma
+			dblXValWindowRange = 2 * 6 * dblSigma
+
+			If dblXValRange / DeltaX > MAX_DATA_POINTS Then
+				' Delta x is too small; change to a reasonable value
+				' This isn't a bug, but it may mean one of the default settings is inappropriate
+				DeltaX = dblXValRange / MAX_DATA_POINTS
+			End If
+
+			intDataToAddCount = CInt(dblXValWindowRange / DeltaX)
+
+			' Make sure intDataToAddCount is odd
+			If CSng(intDataToAddCount / 2.0) = CSng(Math.Round(intDataToAddCount / 2.0, 0)) Then
+				intDataToAddCount += 1
+			End If
+
+			lstDataToAdd = New Generic.List(Of udtXYDataType)(intDataToAddCount)
+			intMidPointIndex = CInt((intDataToAddCount + 1) / 2 - 1)
+
+			' Compute the Gaussian data for each point in dblXVals()
+
+			For intStickIndex = 0 To XYVals.Count - 1
+				If intStickIndex Mod 25 = 0 Then
+					If AbortProcessing Then Exit For
+				End If
+
+				' Search through lstXYSummation to determine the index of the smallest XValue with which
+				'   data in lstDataToAdd could be combined
+				intMinimalSummationIndex = 0
+				lstDataToAdd.Clear()
+
+				dblMinimalXValOfWindow = XYVals(intStickIndex).Key - (intMidPointIndex) * DeltaX
+
+				blnSearchForMinimumXVal = True
+				If lstXYSummation.Count > 0 Then
+					If dblMinimalXValOfWindow > lstXYSummation(lstXYSummation.Count - 1).X Then
+						intMinimalSummationIndex = lstXYSummation.Count - 1
+						blnSearchForMinimumXVal = False
+					End If
+				End If
+
+				If blnSearchForMinimumXVal Then
+					If lstXYSummation.Count <= 0 Then
+						intMinimalSummationIndex = 0
+					Else
+						For intSummationIndex = 0 To lstXYSummation.Count - 1
+							If lstXYSummation(intSummationIndex).X >= dblMinimalXValOfWindow Then
+								intMinimalSummationIndex = intSummationIndex - 1
+								If intMinimalSummationIndex < 0 Then intMinimalSummationIndex = 0
+								Exit For
+							End If
+						Next intSummationIndex
+						If intSummationIndex >= lstXYSummation.Count Then
+							intMinimalSummationIndex = lstXYSummation.Count - 1
+						End If
+					End If
+				End If
+
+				' Construct the Gaussian representation for this Data Point
+				udtThisDataPoint.X = XYVals(intStickIndex).Key
+				udtThisDataPoint.Y = XYVals(intStickIndex).Value
+
+				' Round ThisDataPoint.XVal to the nearest DeltaX
+				' If .XVal is not an even multiple of DeltaX then bump up .XVal until it is
+				udtThisDataPoint.X = RoundToEvenMultiple(udtThisDataPoint.X, DeltaX, True)
+
+				For intDataIndex = 0 To intDataToAddCount - 1
+					' Equation for Gaussian is: Amplitude * Exp[ -(x - mu)^2 / (2*dblSigma^2) ]
+					'        Use intDataIndex, .YVal, and DeltaX
+					dblXOffSet = (intMidPointIndex - intDataIndex) * DeltaX
+
+					Dim udtNewPoint As udtXYDataType = New udtXYDataType()
+
+					udtNewPoint.X = udtThisDataPoint.X - dblXOffSet
+					udtNewPoint.Y = udtThisDataPoint.Y * Math.Exp(-(dblXOffSet) ^ 2 / (2 * dblSigma ^ 2))
+
+					lstDataToAdd.Add(udtNewPoint)
+				Next intDataIndex
+
+				' Now merge lstDataToAdd into lstXYSummation
+				' XValues in lstDataToAdd and those in lstXYSummation have the same DeltaX value
+				' The XValues in lstDataToAdd might overlap partially with those in lstXYSummation
+
+				intDataIndex = 0
+
+				' First, see if the first XValue in lstDataToAdd is larger than the last XValue in lstXYSummation
+				If lstXYSummation.Count <= 0 Then
+					blnAppendNewData = True
+				ElseIf lstDataToAdd(intDataIndex).X > lstXYSummation.Last.X Then
+					blnAppendNewData = True
+				Else
+					blnAppendNewData = False
+					' Step through lstXYSummation starting at intMinimalSummationIndex, looking for
+					'   the index to start combining data at
+					For intSummationIndex = intMinimalSummationIndex To lstXYSummation.Count - 1
+						If Math.Round(lstDataToAdd(intDataIndex).X, MASS_PRECISION) <= Math.Round(lstXYSummation(intSummationIndex).X, MASS_PRECISION) Then
+
+							' Within Tolerance; start combining the values here
+							Do While intSummationIndex <= lstXYSummation.Count - 1
+								Dim udtCurrentVal As udtXYDataType = lstXYSummation(intSummationIndex)
+								udtCurrentVal.Y += lstDataToAdd(intDataIndex).Y
+
+								lstXYSummation(intSummationIndex) = udtCurrentVal
+
+								intSummationIndex += 1
+								intDataIndex += 1
+								If intDataIndex >= intDataToAddCount Then
+									' Successfully combined all of the data
+									Exit Do
+								End If
+							Loop
+
+							If intDataIndex < intDataToAddCount Then
+								' Data still remains to be added
+								blnAppendNewData = True
+							End If
+							Exit For
+						End If
+					Next intSummationIndex
+				End If
+
+				If blnAppendNewData = True Then
+					Do While intDataIndex < intDataToAddCount
+						lstXYSummation.Add(lstDataToAdd(intDataIndex))
+						intDataIndex += 1
+					Loop
+				End If
+
+			Next intStickIndex
+
+			' Assure there is a data point at each 1% point along x range (to give better looking plots)
+			' Probably need to add data, but may need to remove some
+			dblMinimalXValSpacing = dblXValRange / 100
+
+			intSummationIndex = 0
+			Do While intSummationIndex < lstXYSummation.Count - 1
+				If lstXYSummation(intSummationIndex).X + dblMinimalXValSpacing < lstXYSummation(intSummationIndex + 1).X Then
+					' Need to insert a data point
+
+					' Choose the appropriate new .XVal
+					dblRangeWork = lstXYSummation(intSummationIndex + 1).X - lstXYSummation(intSummationIndex).X
+					If dblRangeWork < dblMinimalXValSpacing * 2 Then
+						dblRangeWork = dblRangeWork / 2
+					Else
+						dblRangeWork = dblMinimalXValSpacing
+					End If
+
+					Dim udtNewDataPoint As udtXYDataType = New udtXYDataType
+
+
+					udtNewDataPoint.X = lstXYSummation(intSummationIndex).X + dblRangeWork
+
+					' The new .YVal is the average of that at intSummationIndex and that at intSummationIndex + 1
+					udtNewDataPoint.Y = (lstXYSummation(intSummationIndex).Y + lstXYSummation(intSummationIndex + 1).Y) / 2
+
+					lstXYSummation.Insert(intSummationIndex + 1, udtNewDataPoint)
+
+				End If
+				intSummationIndex += 1
+			Loop
+
+			' Copy data from lstXYSummation to lstGaussianData
+
+			For Each item In lstXYSummation
+				lstGaussianData.Add(New Generic.KeyValuePair(Of Double, Double)(item.X, item.Y))
+			Next
+
+		Catch ex As Exception
+			GeneralErrorHandler("ConvertStickDataToGaussian", 0, ex.Message)
+		End Try
+
+		Return lstGaussianData
+
+	End Function
 
 	Public Sub ConstructMasterSymbolsList()
 		' Call after loading or changing abbreviations or elements
@@ -4708,6 +4960,67 @@ Public Class MWElementAndMassRoutines
 		If String.IsNullOrEmpty(strResult) Then strResult = String.Empty
 		Return strResult
 
+	End Function
+
+	Public Function RoundToMultipleOf10(ByVal dblThisNum As Double) As Double
+		Dim strWork As String, dblWork As Double
+		Dim intExponentValue As Integer
+
+		' Round to nearest 1, 2, or 5 (or multiple of 10 thereof)
+		' First, find the exponent of dblThisNum
+		strWork = dblThisNum.ToString("0E+000")
+		intExponentValue = clsNumberConversionRoutines.CIntSafe(Right(strWork, 4))
+		dblWork = dblThisNum / 10 ^ intExponentValue
+		dblWork = clsNumberConversionRoutines.CIntSafe(dblWork)
+
+		' dblWork should now be between 0 and 9
+		Select Case dblWork
+			Case 0, 1
+				dblThisNum = 1
+			Case 2 To 4
+				dblThisNum = 2
+			Case Else
+				dblThisNum = 5
+		End Select
+
+		' Convert dblThisNum back to the correct magnitude
+		dblThisNum *= 10 ^ intExponentValue
+
+		Return dblThisNum
+	End Function
+
+	Public Function RoundToEvenMultiple(ByVal dblValueToRound As Double, ByVal MultipleValue As Double, ByVal blnRoundUp As Boolean) As Double
+		Dim intLoopCount As Integer
+		Dim strWork As String, dblWork As Double
+		Dim intExponentValue As Integer
+
+		' Find the exponent of MultipleValue
+		strWork = MultipleValue.ToString("0E+000")
+		intExponentValue = clsNumberConversionRoutines.CIntSafe(Right(strWork, 4))
+
+		intLoopCount = 0
+		Do While (dblValueToRound / MultipleValue).ToString.Trim() <> Math.Round(dblValueToRound / MultipleValue, 0).ToString.Trim()
+			dblWork = dblValueToRound / 10 ^ (intExponentValue)
+			dblWork = CDbl(dblWork.ToString("0"))
+			dblWork *= 10 ^ intExponentValue
+			If blnRoundUp Then
+				If dblWork <= dblValueToRound Then
+					dblWork += 10 ^ intExponentValue
+				End If
+			Else
+				If dblWork >= dblValueToRound Then
+					dblWork -= 10 ^ intExponentValue
+				End If
+			End If
+			dblValueToRound = dblWork
+			intLoopCount += 1
+			If intLoopCount > 500 Then
+				'            Debug.Assert False
+				Exit Do
+			End If
+		Loop
+
+		Return dblValueToRound
 	End Function
 
 	Public Function SetAbbreviationInternal(ByVal strSymbol As String, ByVal strFormula As String, _

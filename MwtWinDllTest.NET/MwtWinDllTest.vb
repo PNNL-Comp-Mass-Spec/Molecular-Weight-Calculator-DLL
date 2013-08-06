@@ -632,19 +632,17 @@ Friend Class frmMwtWinDllTest
         Dim newRow1 As DataRow
 
         ' Create rows in the Customers Table.
-        Dim intIndex As Short
+		For intIndex As Short = 1 To intElementCount
+			If strPctCompositions(intIndex) <> "" Then
+				mMwtWin.GetElement(intIndex, strSymbol, 0, 0, 0, 0)
+				newRow1 = tDataTable.NewRow()
+				newRow1("Element") = strSymbol
+				newRow1("Pct Comp") = strPctCompositions(intIndex)
+				' Add the row to the Customers table.
+				tDataTable.Rows.Add(newRow1)
+			End If
 
-        For intIndex = 1 To intElementCount
-            If strPctCompositions(intIndex) <> "" Then
-                mMwtWin.GetElement(intIndex, strSymbol, 0, 0, 0, 0)
-                newRow1 = tDataTable.NewRow()
-                newRow1("Element") = strSymbol
-                newRow1("Pct Comp") = strPctCompositions(intIndex)
-                ' Add the row to the Customers table.
-                tDataTable.Rows.Add(newRow1)
-            End If
-
-        Next intIndex
+		Next intIndex
 
     End Sub
 
@@ -669,7 +667,7 @@ Friend Class frmMwtWinDllTest
     End Sub
 
     Public Sub TestAccessFunctions()
-        Dim intIndex, intResult As Integer
+		Dim intResult As Integer
         Dim lngIndex As Integer
         Dim lngItemCount As Integer
 		Dim strSymbol As String = String.Empty
@@ -696,46 +694,46 @@ Friend Class frmMwtWinDllTest
         With mMwtWin
             ' Test Abbreviations
             lngItemCount = .GetAbbreviationCount
-            For intIndex = 1 To lngItemCount
-                intResult = .GetAbbreviation(intIndex, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment)
-                System.Diagnostics.Debug.Assert(intResult = 0, "")
-                System.Diagnostics.Debug.Assert(.GetAbbreviationID(strSymbol) = intIndex, "")
+			For intIndex As Integer = 1 To lngItemCount
+				intResult = .GetAbbreviation(intIndex, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment)
+				System.Diagnostics.Debug.Assert(intResult = 0, "")
+				System.Diagnostics.Debug.Assert(.GetAbbreviationID(strSymbol) = intIndex, "")
 
-                intResult = .SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment)
-                System.Diagnostics.Debug.Assert(intResult = 0, "")
-            Next intIndex
+				intResult = .SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment)
+				System.Diagnostics.Debug.Assert(intResult = 0, "")
+			Next intIndex
 
             ' Test Caution statements
             lngItemCount = .GetCautionStatementCount
-            For intIndex = 1 To lngItemCount
-                intResult = .GetCautionStatement(intIndex, strSymbol, strStatement)
-                System.Diagnostics.Debug.Assert(intResult = 0, "")
-                System.Diagnostics.Debug.Assert(.GetCautionStatementID(strSymbol) = intIndex, "")
+			For intIndex As Integer = 1 To lngItemCount
+				intResult = .GetCautionStatement(intIndex, strSymbol, strStatement)
+				System.Diagnostics.Debug.Assert(intResult = 0, "")
+				System.Diagnostics.Debug.Assert(.GetCautionStatementID(strSymbol) = intIndex, "")
 
-                intResult = .SetCautionStatement(strSymbol, strStatement)
-                System.Diagnostics.Debug.Assert(intResult = 0, "")
-            Next intIndex
+				intResult = .SetCautionStatement(strSymbol, strStatement)
+				System.Diagnostics.Debug.Assert(intResult = 0, "")
+			Next intIndex
 
             ' Test Element access
             lngItemCount = .GetElementCount
-            For intIndex = 1 To lngItemCount
-                intResult = .GetElement(CShort(intIndex), strSymbol, dblMass, dblUncertainty, sngCharge, intIsotopeCount)
-                System.Diagnostics.Debug.Assert(intResult = 0, "")
-                System.Diagnostics.Debug.Assert(.GetElementID(strSymbol) = intIndex, "")
+			For intIndex As Integer = 1 To lngItemCount
+				intResult = .GetElement(CShort(intIndex), strSymbol, dblMass, dblUncertainty, sngCharge, intIsotopeCount)
+				System.Diagnostics.Debug.Assert(intResult = 0, "")
+				System.Diagnostics.Debug.Assert(.GetElementID(strSymbol) = intIndex, "")
 
-                intResult = .SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, False)
-                System.Diagnostics.Debug.Assert(intResult = 0, "")
+				intResult = .SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, False)
+				System.Diagnostics.Debug.Assert(intResult = 0, "")
 
-                ReDim dblIsotopeMasses(intIsotopeCount + 1)
-                ReDim sngIsotopeAbundances(intIsotopeCount + 1)
+				ReDim dblIsotopeMasses(intIsotopeCount + 1)
+				ReDim sngIsotopeAbundances(intIsotopeCount + 1)
 
-                intResult = .GetElementIsotopes(CShort(intIndex), intIsotopeCount2, dblIsotopeMasses, sngIsotopeAbundances)
-                System.Diagnostics.Debug.Assert(intIsotopeCount = intIsotopeCount2, "")
-                System.Diagnostics.Debug.Assert(intResult = 0, "")
+				intResult = .GetElementIsotopes(CShort(intIndex), intIsotopeCount2, dblIsotopeMasses, sngIsotopeAbundances)
+				System.Diagnostics.Debug.Assert(intIsotopeCount = intIsotopeCount2, "")
+				System.Diagnostics.Debug.Assert(intResult = 0, "")
 
-                intResult = .SetElementIsotopes(strSymbol, intIsotopeCount, dblIsotopeMasses, sngIsotopeAbundances)
-                System.Diagnostics.Debug.Assert(intResult = 0, "")
-            Next intIndex
+				intResult = .SetElementIsotopes(strSymbol, intIsotopeCount, dblIsotopeMasses, sngIsotopeAbundances)
+				System.Diagnostics.Debug.Assert(intResult = 0, "")
+			Next intIndex
 
             ' Test Message Statements access
             lngItemCount = .GetMessageStatementCount
@@ -924,20 +922,42 @@ Friend Class frmMwtWinDllTest
 
         Dim intSuccess As Short
         Dim strResults As String = String.Empty
-        Dim ConvolutedMSData2D(,) As Double
-        Dim ConvolutedMSDataCount As Integer
+		Dim ConvolutedMSData2DOneBased(,) As Double
+		Dim ConvolutedMSDataCount As Integer
 
-        With mMwtWin
+		With mMwtWin
 			' Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
 			Dim intChargeState As Short = 1
 			Dim blnAddProtonChargeCarrier As Boolean = True
 			objResults.AppendText("Isotopic abundance test with Charge=" & intChargeState)
-			intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2D, ConvolutedMSDataCount)
-            objResults.AppendText(strResults)
+
+			ReDim ConvolutedMSData2DOneBased(0, 1)
+			intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount)
+			objResults.AppendText(strResults)
+
+			objResults.AppendText("Convert isotopic distribution to gaussian")
+			Dim lstXYVals = New Generic.List(Of Generic.KeyValuePair(Of Double, Double))
+			For intIndex As Integer = 1 To ConvolutedMSDataCount
+				If ConvolutedMSData2DOneBased(intIndex, 0) >= 15180 AndAlso ConvolutedMSData2DOneBased(intIndex, 0) < 15195 Then
+					lstXYVals.Add(New Generic.KeyValuePair(Of Double, Double)(ConvolutedMSData2DOneBased(intIndex, 0), ConvolutedMSData2DOneBased(intIndex, 1)))
+				End If
+			Next
+			Dim intResolution As Integer = 2000
+			Dim dblResolutionMass As Double = 1000
+			Dim intQualityFactor As Integer = 15
+
+			Dim lstGaussianData = .ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor)
+
+			Dim sbResults As New System.Text.StringBuilder
+			sbResults.AppendLine("m/z" & ControlChars.Tab & "Intensity")
+			For intIndex As Integer = 0 To Math.Min(lstGaussianData.Count, 500) - 1
+				sbResults.AppendLine(lstGaussianData(intIndex).Key.ToString("0.00") & ControlChars.Tab & lstGaussianData(intIndex).Value.ToString("0.0"))
+			Next
+			objResults.AppendText(sbResults.ToString)
 
 			blnAddProtonChargeCarrier = False
 			objResults.AppendText("Isotopic abundance test with Charge=" & intChargeState & "; do not add a proton charge carrier")
-			intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2D, ConvolutedMSDataCount, blnAddProtonChargeCarrier)
+			intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, blnAddProtonChargeCarrier)
 			objResults.AppendText(strResults)
 
 		End With
