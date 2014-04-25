@@ -12,8 +12,8 @@ Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monro
 VB6 ActiveX Dll version written by Matthew Monroe in 2002
 Ported to VB.NET by Nikša Blonder and Matthew Monroe in 2005
 
-E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com
-Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/
+E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
+Website: http://omics.pnl.gov/ or http://www.sysbio.org/resources/staff/
 -------------------------------------------------------------------------------
 
 Licensed under the Apache License, Version 2.0; you may not use this file except 
