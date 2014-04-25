@@ -15,19 +15,19 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_229439E0653C48A4818A26AFD226E272"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2667F792F05540278D1C416E47DC9B78"
+        "MsmKey" = "8:_76E4BF6C93624498853C5B20CCC99FC9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_91C9113D5185440392E1B37FE1D77903"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FF7FC548540847D2AC9ED0CC918EDEBD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -143,10 +143,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_229439E0653C48A4818A26AFD226E272"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_76E4BF6C93624498853C5B20CCC99FC9"
             {
-            "SourcePath" = "8:..\\bin\\Readme.txt"
-            "TargetName" = "8:Readme.txt"
+            "SourcePath" = "8:..\\RevisionHistory.txt"
+            "TargetName" = "8:RevisionHistory.txt"
             "Tag" = "8:"
             "Folder" = "8:_AC597385EC9A4C4FB1D776CE24D4A06F"
             "Condition" = "8:"
@@ -163,10 +163,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2667F792F05540278D1C416E47DC9B78"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FF7FC548540847D2AC9ED0CC918EDEBD"
             {
-            "SourcePath" = "8:..\\bin\\RevisionHistory.txt"
-            "TargetName" = "8:RevisionHistory.txt"
+            "SourcePath" = "8:..\\Readme.txt"
+            "TargetName" = "8:Readme.txt"
             "Tag" = "8:"
             "Folder" = "8:_AC597385EC9A4C4FB1D776CE24D4A06F"
             "Condition" = "8:"
@@ -371,15 +371,15 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8ECEA6E86A7B47E5844E779398BAA315"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_ECA251899ED548759EAA498B9B28F1D5"
             {
-            "Name" = "8:MwtWin.Dll Readme.txt"
+            "Name" = "8:MwtWin DLL Readme.txt"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_229439E0653C48A4818A26AFD226E272"
+            "Target" = "8:_FF7FC548540847D2AC9ED0CC918EDEBD"
             "Folder" = "8:_24F444BCA0194B349A881D50203193FF"
             "WorkingFolder" = "8:_AC597385EC9A4C4FB1D776CE24D4A06F"
             "Icon" = "8:"
