@@ -6,8 +6,8 @@ Imports System.Runtime.CompilerServices
 ' associated with an assembly
 
 <Assembly: AssemblyTitle("Molecular Weight Calculator - VB.NET Dll Version")> 
-<Assembly: AssemblyDescription("Written by Matthew Monroe for the Department of Energy (at PNNL); matthew.monroe@pnl.gov or matt@alchemistmatt.com")> 
-<Assembly: AssemblyCompany("Battelle Memorial Institute")> 
+<Assembly: AssemblyDescription("Written by Matthew Monroe for the Department of Energy (at PNNL); matthew.monroe@pnnl.gov or matt@alchemistmatt.com")> 
+<Assembly: AssemblyCompany("Pacific Northwest National Laboratory")> 
 <Assembly: AssemblyProduct("Molecular Weight Calculator - VB.NET Dll Version")> 
 <Assembly: AssemblyCopyright("Licensed under the Apache License, Version 2.0")> 
 <Assembly: AssemblyTrademark("")>

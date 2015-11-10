@@ -28,10 +28,9 @@ Public Class MolecularWeightCalculator
     ' this computer software.
 
 
-	Private Const PROGRAM_DATE As String = "August 6, 2013"
+    Private Const PROGRAM_DATE As String = "November 6, 2015"
 
     Public Sub New()
-        MyBase.New()
 
         mElementAndMassRoutines = New MWElementAndMassRoutines
 
