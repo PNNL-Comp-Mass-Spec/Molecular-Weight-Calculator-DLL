@@ -168,6 +168,10 @@ Public Class MWPeptideClass
         Public Charge As Short
         Public IonType As itIonTypeConstants
         Public IsShoulderIon As Boolean ' B and Y ions can have Shoulder ions at +-1
+
+        Public Overloads Function ToString() As String
+            Return Symbol & ", " & Mass.ToString("0.00")
+        End Function
     End Structure
 
     ' Note: A peptide goes from N to C, eg. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH

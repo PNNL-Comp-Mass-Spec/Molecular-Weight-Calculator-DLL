@@ -230,14 +230,13 @@ Public Class MWCompoundClass
     End Sub
 
     Private Sub UpdateMass()
-        Dim dblMass As Double
 
         mStrFormattedFormula = mStrFormula
 
         ' mStrFormattedFormula is passed ByRef
         ' If gComputationOptions.CaseConversion = ccConvertCaseUp then mStrFormattedFormula is properly capitalized
         ' The mass of the compound is stored in mComputationStats.TotalMass
-        dblMass = ElementAndMassRoutines.ParseFormulaPublic(mStrFormattedFormula, mComputationStats, False, mValueForX)
+        ElementAndMassRoutines.ParseFormulaPublic(mStrFormattedFormula, mComputationStats, False, mValueForX)
 
         ElementAndMassRoutines.ComputePercentComposition(mComputationStats)
 
@@ -292,8 +291,7 @@ Public Class MWCompoundClass
             Return mErrorID
         End Get
     End Property
-
-
+    
     Public Property Formula() As String
         Get
             Return mStrFormula
