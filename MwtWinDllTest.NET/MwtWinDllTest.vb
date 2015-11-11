@@ -70,34 +70,36 @@ Friend Class frmMwtWinDllTest
     Friend WithEvents chkShowRTFSource As System.Windows.Forms.CheckBox
     Public WithEvents txtRTFSource As System.Windows.Forms.TextBox
     Public WithEvents lblProgress As System.Windows.Forms.Label
+    Public WithEvents cmdTestFormulaFinder As System.Windows.Forms.Button
     Public WithEvents lblDLLVersion As System.Windows.Forms.Label
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
+        Me.components = New System.ComponentModel.Container()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.cmdTestGetTrypticName = New System.Windows.Forms.Button
-        Me.cmdExpandAbbreviations = New System.Windows.Forms.Button
-        Me.cmdTestFunctions = New System.Windows.Forms.Button
-        Me.cboStdDevMode = New System.Windows.Forms.ComboBox
-        Me.cboWeightMode = New System.Windows.Forms.ComboBox
-        Me.cmdConvertToEmpirical = New System.Windows.Forms.Button
-        Me.cmdFindMass = New System.Windows.Forms.Button
-        Me.txtFormula = New System.Windows.Forms.TextBox
-        Me.cmdClose = New System.Windows.Forms.Button
-        Me.lblStdDevMode = New System.Windows.Forms.Label
-        Me.lblWeightMode = New System.Windows.Forms.Label
-        Me.lblStatusLabel = New System.Windows.Forms.Label
-        Me.lblMassAndStdDevLabel = New System.Windows.Forms.Label
-        Me.lblMassAndStdDev = New System.Windows.Forms.Label
-        Me.lblStatus = New System.Windows.Forms.Label
-        Me.lblMass = New System.Windows.Forms.Label
-        Me.lblMassLabel = New System.Windows.Forms.Label
-        Me.lblFormula = New System.Windows.Forms.Label
-        Me.dgDataGrid = New System.Windows.Forms.DataGrid
-        Me.rtfFormula = New System.Windows.Forms.RichTextBox
-        Me.chkShowRTFSource = New System.Windows.Forms.CheckBox
-        Me.txtRTFSource = New System.Windows.Forms.TextBox
-        Me.lblDLLVersion = New System.Windows.Forms.Label
-        Me.lblProgress = New System.Windows.Forms.Label
+        Me.cmdTestGetTrypticName = New System.Windows.Forms.Button()
+        Me.cmdExpandAbbreviations = New System.Windows.Forms.Button()
+        Me.cmdTestFunctions = New System.Windows.Forms.Button()
+        Me.cboStdDevMode = New System.Windows.Forms.ComboBox()
+        Me.cboWeightMode = New System.Windows.Forms.ComboBox()
+        Me.cmdConvertToEmpirical = New System.Windows.Forms.Button()
+        Me.cmdFindMass = New System.Windows.Forms.Button()
+        Me.txtFormula = New System.Windows.Forms.TextBox()
+        Me.cmdClose = New System.Windows.Forms.Button()
+        Me.lblStdDevMode = New System.Windows.Forms.Label()
+        Me.lblWeightMode = New System.Windows.Forms.Label()
+        Me.lblStatusLabel = New System.Windows.Forms.Label()
+        Me.lblMassAndStdDevLabel = New System.Windows.Forms.Label()
+        Me.lblMassAndStdDev = New System.Windows.Forms.Label()
+        Me.lblStatus = New System.Windows.Forms.Label()
+        Me.lblMass = New System.Windows.Forms.Label()
+        Me.lblMassLabel = New System.Windows.Forms.Label()
+        Me.lblFormula = New System.Windows.Forms.Label()
+        Me.dgDataGrid = New System.Windows.Forms.DataGrid()
+        Me.rtfFormula = New System.Windows.Forms.RichTextBox()
+        Me.chkShowRTFSource = New System.Windows.Forms.CheckBox()
+        Me.txtRTFSource = New System.Windows.Forms.TextBox()
+        Me.lblDLLVersion = New System.Windows.Forms.Label()
+        Me.lblProgress = New System.Windows.Forms.Label()
+        Me.cmdTestFormulaFinder = New System.Windows.Forms.Button()
         CType(Me.dgDataGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -107,10 +109,10 @@ Friend Class frmMwtWinDllTest
         Me.cmdTestGetTrypticName.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdTestGetTrypticName.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdTestGetTrypticName.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdTestGetTrypticName.Location = New System.Drawing.Point(256, 322)
+        Me.cmdTestGetTrypticName.Location = New System.Drawing.Point(307, 396)
         Me.cmdTestGetTrypticName.Name = "cmdTestGetTrypticName"
         Me.cmdTestGetTrypticName.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdTestGetTrypticName.Size = New System.Drawing.Size(89, 41)
+        Me.cmdTestGetTrypticName.Size = New System.Drawing.Size(107, 51)
         Me.cmdTestGetTrypticName.TabIndex = 19
         Me.cmdTestGetTrypticName.Text = "Test Get Tryptic Name"
         Me.cmdTestGetTrypticName.UseVisualStyleBackColor = False
@@ -121,10 +123,10 @@ Friend Class frmMwtWinDllTest
         Me.cmdExpandAbbreviations.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdExpandAbbreviations.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdExpandAbbreviations.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdExpandAbbreviations.Location = New System.Drawing.Point(288, 8)
+        Me.cmdExpandAbbreviations.Location = New System.Drawing.Point(346, 10)
         Me.cmdExpandAbbreviations.Name = "cmdExpandAbbreviations"
         Me.cmdExpandAbbreviations.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdExpandAbbreviations.Size = New System.Drawing.Size(89, 41)
+        Me.cmdExpandAbbreviations.Size = New System.Drawing.Size(106, 50)
         Me.cmdExpandAbbreviations.TabIndex = 4
         Me.cmdExpandAbbreviations.Text = "Expand Abbreviations"
         Me.cmdExpandAbbreviations.UseVisualStyleBackColor = False
@@ -135,10 +137,10 @@ Friend Class frmMwtWinDllTest
         Me.cmdTestFunctions.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdTestFunctions.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdTestFunctions.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdTestFunctions.Location = New System.Drawing.Point(512, 8)
+        Me.cmdTestFunctions.Location = New System.Drawing.Point(614, 10)
         Me.cmdTestFunctions.Name = "cmdTestFunctions"
         Me.cmdTestFunctions.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdTestFunctions.Size = New System.Drawing.Size(89, 41)
+        Me.cmdTestFunctions.Size = New System.Drawing.Size(107, 50)
         Me.cmdTestFunctions.TabIndex = 6
         Me.cmdTestFunctions.Text = "Test Functions"
         Me.cmdTestFunctions.UseVisualStyleBackColor = False
@@ -150,10 +152,10 @@ Friend Class frmMwtWinDllTest
         Me.cboStdDevMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboStdDevMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboStdDevMode.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboStdDevMode.Location = New System.Drawing.Point(104, 258)
+        Me.cboStdDevMode.Location = New System.Drawing.Point(125, 318)
         Me.cboStdDevMode.Name = "cboStdDevMode"
         Me.cboStdDevMode.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboStdDevMode.Size = New System.Drawing.Size(145, 22)
+        Me.cboStdDevMode.Size = New System.Drawing.Size(174, 24)
         Me.cboStdDevMode.TabIndex = 3
         '
         'cboWeightMode
@@ -163,10 +165,10 @@ Friend Class frmMwtWinDllTest
         Me.cboWeightMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboWeightMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboWeightMode.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboWeightMode.Location = New System.Drawing.Point(104, 234)
+        Me.cboWeightMode.Location = New System.Drawing.Point(125, 288)
         Me.cboWeightMode.Name = "cboWeightMode"
         Me.cboWeightMode.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboWeightMode.Size = New System.Drawing.Size(145, 22)
+        Me.cboWeightMode.Size = New System.Drawing.Size(174, 24)
         Me.cboWeightMode.TabIndex = 2
         '
         'cmdConvertToEmpirical
@@ -175,10 +177,10 @@ Friend Class frmMwtWinDllTest
         Me.cmdConvertToEmpirical.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdConvertToEmpirical.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdConvertToEmpirical.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdConvertToEmpirical.Location = New System.Drawing.Point(400, 8)
+        Me.cmdConvertToEmpirical.Location = New System.Drawing.Point(480, 10)
         Me.cmdConvertToEmpirical.Name = "cmdConvertToEmpirical"
         Me.cmdConvertToEmpirical.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdConvertToEmpirical.Size = New System.Drawing.Size(89, 41)
+        Me.cmdConvertToEmpirical.Size = New System.Drawing.Size(107, 50)
         Me.cmdConvertToEmpirical.TabIndex = 5
         Me.cmdConvertToEmpirical.Text = "Convert to &Empirical"
         Me.cmdConvertToEmpirical.UseVisualStyleBackColor = False
@@ -189,10 +191,10 @@ Friend Class frmMwtWinDllTest
         Me.cmdFindMass.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdFindMass.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdFindMass.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdFindMass.Location = New System.Drawing.Point(8, 330)
+        Me.cmdFindMass.Location = New System.Drawing.Point(10, 406)
         Me.cmdFindMass.Name = "cmdFindMass"
         Me.cmdFindMass.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdFindMass.Size = New System.Drawing.Size(89, 33)
+        Me.cmdFindMass.Size = New System.Drawing.Size(106, 41)
         Me.cmdFindMass.TabIndex = 8
         Me.cmdFindMass.Text = "&Calculate"
         Me.cmdFindMass.UseVisualStyleBackColor = False
@@ -204,11 +206,11 @@ Friend Class frmMwtWinDllTest
         Me.txtFormula.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtFormula.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtFormula.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFormula.Location = New System.Drawing.Point(104, 16)
+        Me.txtFormula.Location = New System.Drawing.Point(125, 20)
         Me.txtFormula.MaxLength = 0
         Me.txtFormula.Name = "txtFormula"
         Me.txtFormula.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFormula.Size = New System.Drawing.Size(129, 20)
+        Me.txtFormula.Size = New System.Drawing.Size(155, 23)
         Me.txtFormula.TabIndex = 0
         Me.txtFormula.Text = "Cl2PhH4OH"
         '
@@ -219,10 +221,10 @@ Friend Class frmMwtWinDllTest
         Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.cmdClose.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdClose.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdClose.Location = New System.Drawing.Point(104, 330)
+        Me.cmdClose.Location = New System.Drawing.Point(125, 406)
         Me.cmdClose.Name = "cmdClose"
         Me.cmdClose.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdClose.Size = New System.Drawing.Size(89, 33)
+        Me.cmdClose.Size = New System.Drawing.Size(107, 41)
         Me.cmdClose.TabIndex = 9
         Me.cmdClose.Text = "Cl&ose"
         Me.cmdClose.UseVisualStyleBackColor = False
@@ -233,10 +235,10 @@ Friend Class frmMwtWinDllTest
         Me.lblStdDevMode.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblStdDevMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblStdDevMode.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblStdDevMode.Location = New System.Drawing.Point(8, 258)
+        Me.lblStdDevMode.Location = New System.Drawing.Point(10, 318)
         Me.lblStdDevMode.Name = "lblStdDevMode"
         Me.lblStdDevMode.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblStdDevMode.Size = New System.Drawing.Size(73, 32)
+        Me.lblStdDevMode.Size = New System.Drawing.Size(87, 39)
         Me.lblStdDevMode.TabIndex = 18
         Me.lblStdDevMode.Text = "Std Dev Mode"
         '
@@ -246,10 +248,10 @@ Friend Class frmMwtWinDllTest
         Me.lblWeightMode.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblWeightMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblWeightMode.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblWeightMode.Location = New System.Drawing.Point(8, 234)
+        Me.lblWeightMode.Location = New System.Drawing.Point(10, 288)
         Me.lblWeightMode.Name = "lblWeightMode"
         Me.lblWeightMode.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblWeightMode.Size = New System.Drawing.Size(73, 17)
+        Me.lblWeightMode.Size = New System.Drawing.Size(87, 21)
         Me.lblWeightMode.TabIndex = 17
         Me.lblWeightMode.Text = "Weight Mode"
         '
@@ -259,10 +261,10 @@ Friend Class frmMwtWinDllTest
         Me.lblStatusLabel.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblStatusLabel.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblStatusLabel.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblStatusLabel.Location = New System.Drawing.Point(8, 136)
+        Me.lblStatusLabel.Location = New System.Drawing.Point(10, 167)
         Me.lblStatusLabel.Name = "lblStatusLabel"
         Me.lblStatusLabel.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblStatusLabel.Size = New System.Drawing.Size(73, 17)
+        Me.lblStatusLabel.Size = New System.Drawing.Size(87, 21)
         Me.lblStatusLabel.TabIndex = 16
         Me.lblStatusLabel.Text = "Status:"
         '
@@ -272,10 +274,10 @@ Friend Class frmMwtWinDllTest
         Me.lblMassAndStdDevLabel.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblMassAndStdDevLabel.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMassAndStdDevLabel.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblMassAndStdDevLabel.Location = New System.Drawing.Point(8, 64)
+        Me.lblMassAndStdDevLabel.Location = New System.Drawing.Point(10, 79)
         Me.lblMassAndStdDevLabel.Name = "lblMassAndStdDevLabel"
         Me.lblMassAndStdDevLabel.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblMassAndStdDevLabel.Size = New System.Drawing.Size(89, 40)
+        Me.lblMassAndStdDevLabel.Size = New System.Drawing.Size(106, 49)
         Me.lblMassAndStdDevLabel.TabIndex = 15
         Me.lblMassAndStdDevLabel.Text = "Mass and StdDev:"
         '
@@ -285,10 +287,10 @@ Friend Class frmMwtWinDllTest
         Me.lblMassAndStdDev.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblMassAndStdDev.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMassAndStdDev.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblMassAndStdDev.Location = New System.Drawing.Point(104, 64)
+        Me.lblMassAndStdDev.Location = New System.Drawing.Point(125, 79)
         Me.lblMassAndStdDev.Name = "lblMassAndStdDev"
         Me.lblMassAndStdDev.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblMassAndStdDev.Size = New System.Drawing.Size(209, 17)
+        Me.lblMassAndStdDev.Size = New System.Drawing.Size(251, 21)
         Me.lblMassAndStdDev.TabIndex = 14
         Me.lblMassAndStdDev.Text = "0"
         '
@@ -298,10 +300,10 @@ Friend Class frmMwtWinDllTest
         Me.lblStatus.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblStatus.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblStatus.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblStatus.Location = New System.Drawing.Point(104, 139)
+        Me.lblStatus.Location = New System.Drawing.Point(125, 171)
         Me.lblStatus.Name = "lblStatus"
         Me.lblStatus.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblStatus.Size = New System.Drawing.Size(225, 33)
+        Me.lblStatus.Size = New System.Drawing.Size(270, 41)
         Me.lblStatus.TabIndex = 13
         '
         'lblMass
@@ -310,10 +312,10 @@ Friend Class frmMwtWinDllTest
         Me.lblMass.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblMass.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMass.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblMass.Location = New System.Drawing.Point(104, 40)
+        Me.lblMass.Location = New System.Drawing.Point(125, 49)
         Me.lblMass.Name = "lblMass"
         Me.lblMass.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblMass.Size = New System.Drawing.Size(129, 17)
+        Me.lblMass.Size = New System.Drawing.Size(155, 21)
         Me.lblMass.TabIndex = 12
         Me.lblMass.Text = "0"
         '
@@ -323,10 +325,10 @@ Friend Class frmMwtWinDllTest
         Me.lblMassLabel.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblMassLabel.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMassLabel.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblMassLabel.Location = New System.Drawing.Point(8, 40)
+        Me.lblMassLabel.Location = New System.Drawing.Point(10, 49)
         Me.lblMassLabel.Name = "lblMassLabel"
         Me.lblMassLabel.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblMassLabel.Size = New System.Drawing.Size(73, 17)
+        Me.lblMassLabel.Size = New System.Drawing.Size(87, 21)
         Me.lblMassLabel.TabIndex = 11
         Me.lblMassLabel.Text = "Mass:"
         '
@@ -336,38 +338,39 @@ Friend Class frmMwtWinDllTest
         Me.lblFormula.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblFormula.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblFormula.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblFormula.Location = New System.Drawing.Point(8, 16)
+        Me.lblFormula.Location = New System.Drawing.Point(10, 20)
         Me.lblFormula.Name = "lblFormula"
         Me.lblFormula.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblFormula.Size = New System.Drawing.Size(89, 17)
+        Me.lblFormula.Size = New System.Drawing.Size(106, 21)
         Me.lblFormula.TabIndex = 10
         Me.lblFormula.Text = "Formula:"
         '
         'dgDataGrid
         '
-        Me.dgDataGrid.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.dgDataGrid.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgDataGrid.DataMember = ""
         Me.dgDataGrid.HeaderForeColor = System.Drawing.SystemColors.ControlText
-        Me.dgDataGrid.Location = New System.Drawing.Point(360, 72)
+        Me.dgDataGrid.Location = New System.Drawing.Point(432, 89)
         Me.dgDataGrid.Name = "dgDataGrid"
-        Me.dgDataGrid.Size = New System.Drawing.Size(280, 365)
+        Me.dgDataGrid.Size = New System.Drawing.Size(417, 396)
         Me.dgDataGrid.TabIndex = 20
         '
         'rtfFormula
         '
-        Me.rtfFormula.Location = New System.Drawing.Point(104, 88)
+        Me.rtfFormula.Location = New System.Drawing.Point(125, 108)
         Me.rtfFormula.Name = "rtfFormula"
         Me.rtfFormula.ReadOnly = True
-        Me.rtfFormula.Size = New System.Drawing.Size(232, 48)
+        Me.rtfFormula.Size = New System.Drawing.Size(278, 59)
         Me.rtfFormula.TabIndex = 21
         Me.rtfFormula.Text = ""
         '
         'chkShowRTFSource
         '
-        Me.chkShowRTFSource.Location = New System.Drawing.Point(8, 378)
+        Me.chkShowRTFSource.Location = New System.Drawing.Point(10, 465)
         Me.chkShowRTFSource.Name = "chkShowRTFSource"
-        Me.chkShowRTFSource.Size = New System.Drawing.Size(88, 24)
+        Me.chkShowRTFSource.Size = New System.Drawing.Size(105, 30)
         Me.chkShowRTFSource.TabIndex = 22
         Me.chkShowRTFSource.Text = "Show RTF Source"
         '
@@ -375,18 +378,18 @@ Friend Class frmMwtWinDllTest
         '
         Me.txtRTFSource.AcceptsReturn = True
         Me.txtRTFSource.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.txtRTFSource.BackColor = System.Drawing.SystemColors.Window
         Me.txtRTFSource.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtRTFSource.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtRTFSource.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtRTFSource.Location = New System.Drawing.Point(112, 370)
+        Me.txtRTFSource.Location = New System.Drawing.Point(134, 455)
         Me.txtRTFSource.MaxLength = 0
         Me.txtRTFSource.Multiline = True
         Me.txtRTFSource.Name = "txtRTFSource"
         Me.txtRTFSource.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtRTFSource.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtRTFSource.Size = New System.Drawing.Size(240, 67)
+        Me.txtRTFSource.Size = New System.Drawing.Size(288, 52)
         Me.txtRTFSource.TabIndex = 23
         Me.txtRTFSource.Visible = False
         '
@@ -396,10 +399,10 @@ Friend Class frmMwtWinDllTest
         Me.lblDLLVersion.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblDLLVersion.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblDLLVersion.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblDLLVersion.Location = New System.Drawing.Point(8, 298)
+        Me.lblDLLVersion.Location = New System.Drawing.Point(10, 367)
         Me.lblDLLVersion.Name = "lblDLLVersion"
         Me.lblDLLVersion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblDLLVersion.Size = New System.Drawing.Size(336, 16)
+        Me.lblDLLVersion.Size = New System.Drawing.Size(403, 19)
         Me.lblDLLVersion.TabIndex = 24
         Me.lblDLLVersion.Text = "DLL Version"
         '
@@ -409,19 +412,34 @@ Friend Class frmMwtWinDllTest
         Me.lblProgress.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblProgress.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblProgress.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblProgress.Location = New System.Drawing.Point(104, 182)
+        Me.lblProgress.Location = New System.Drawing.Point(125, 224)
         Me.lblProgress.Name = "lblProgress"
         Me.lblProgress.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblProgress.Size = New System.Drawing.Size(225, 39)
+        Me.lblProgress.Size = New System.Drawing.Size(270, 48)
         Me.lblProgress.TabIndex = 25
+        '
+        'cmdTestFormulaFinder
+        '
+        Me.cmdTestFormulaFinder.BackColor = System.Drawing.SystemColors.Control
+        Me.cmdTestFormulaFinder.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cmdTestFormulaFinder.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdTestFormulaFinder.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.cmdTestFormulaFinder.Location = New System.Drawing.Point(743, 10)
+        Me.cmdTestFormulaFinder.Name = "cmdTestFormulaFinder"
+        Me.cmdTestFormulaFinder.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cmdTestFormulaFinder.Size = New System.Drawing.Size(107, 51)
+        Me.cmdTestFormulaFinder.TabIndex = 26
+        Me.cmdTestFormulaFinder.Text = "Test Formula Finder"
+        Me.cmdTestFormulaFinder.UseVisualStyleBackColor = False
         '
         'frmMwtWinDllTest
         '
         Me.AcceptButton = Me.cmdFindMass
-        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
+        Me.AutoScaleBaseSize = New System.Drawing.Size(6, 16)
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.cmdClose
-        Me.ClientSize = New System.Drawing.Size(652, 453)
+        Me.ClientSize = New System.Drawing.Size(872, 505)
+        Me.Controls.Add(Me.cmdTestFormulaFinder)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.lblDLLVersion)
         Me.Controls.Add(Me.txtRTFSource)
