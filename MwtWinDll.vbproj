@@ -119,6 +119,7 @@
     <Compile Include="clsFormulaFinder.vb" />
     <Compile Include="clsFormulaFinderCandidateElement.vb" />
     <Compile Include="clsFormulaFinderOptions.vb" />
+    <Compile Include="clsFormulaFinderResult.vb" />
     <Compile Include="clsMoleMassDilutionClass.vb">
       <SubType>Code</SubType>
     </Compile>

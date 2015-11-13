@@ -25,4 +25,11 @@
         Symbol = String.Copy(elementOrAbbrevSymbol)
     End Sub
 
+    Public Overrides Function ToString() As String
+        If Symbol = mOriginalName Then
+            Return Symbol & ": " & Mass.ToString("0.0000") & " Da"
+        Else
+            Return mOriginalName & "(" & Symbol & "): " & Mass.ToString("0.0000") & " Da"
+        End If
+    End Function
 End Class

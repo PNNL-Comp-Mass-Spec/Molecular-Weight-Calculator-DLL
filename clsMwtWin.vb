@@ -36,6 +36,7 @@ Public Class MolecularWeightCalculator
 
         Compound = New MWCompoundClass(mElementAndMassRoutines)
         Peptide = New MWPeptideClass(mElementAndMassRoutines)
+        FormulaFinder = New MWFormulaFinder(mElementAndMassRoutines)
 
         CapFlow = New MWCapillaryFlowClass
         If Not mDataInitialized Then LoadDefaults()
@@ -64,7 +65,7 @@ Public Class MolecularWeightCalculator
 
     Public Compound As MWCompoundClass
     Public Peptide As MWPeptideClass
-
+    Public FormulaFinder As MWFormulaFinder
     Public CapFlow As MWCapillaryFlowClass
 
     Private WithEvents mElementAndMassRoutines As MWElementAndMassRoutines

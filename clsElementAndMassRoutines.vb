@@ -103,6 +103,10 @@ Public Class MWElementAndMassRoutines
     Public Structure udtPctCompType
         Public PercentComposition As Double
         Public StdDeviation As Double
+
+        Public Overrides Function ToString() As String
+            Return PercentComposition.ToString("0.0000")
+        End Function
     End Structure
 
     Public Structure udtComputationStatsType
@@ -122,6 +126,10 @@ Public Class MWElementAndMassRoutines
     Public Structure udtIsotopeInfoType
         Public Mass As Double
         Public Abundance As Single
+
+        Public Overrides Function ToString() As String
+            Return Mass.ToString("0.0000")
+        End Function
     End Structure
 
     Public Structure udtElementStatsType
@@ -136,6 +144,10 @@ Public Class MWElementAndMassRoutines
         Public Sub Initialize()
             ReDim Isotopes(MAX_ISOTOPES)
         End Sub
+
+        Public Overrides Function ToString() As String
+            Return Symbol & ": " & Mass.ToString("0.0000")
+        End Function
     End Structure
 
     Public Structure udtAbbrevStatsType
@@ -147,12 +159,20 @@ Public Class MWElementAndMassRoutines
         Public OneLetterSymbol As String ' Only used for amino acids
         Public Comment As String ' Description of the abbreviation
         Public InvalidSymbolOrFormula As Boolean
+
+        Public Overrides Function ToString() As String
+            Return Symbol & ": " & Formula
+        End Function
     End Structure
 
     Private Structure udtErrorDescriptionType
         Public ErrorID As Integer ' Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
         Public ErrorPosition As Integer
         Public ErrorCharacter As String
+
+        Public Overrides Function ToString() As String
+            Return "ErrorID " & ErrorID & " at " & ErrorPosition & ": " & ErrorCharacter
+        End Function
     End Structure
 
     Private Structure udtIsoResultsByElementType
@@ -2022,13 +2042,13 @@ Public Class MWElementAndMassRoutines
     ''' </summary>
     ''' <param name="strSymbol"></param>
     ''' <param name="blnAminoAcidsOnly"></param>
-    ''' <returns></returns>
+    ''' <returns>ID if a match, otherwise 0</returns>
     ''' <remarks></remarks>
     Public Function GetAbbreviationIDInternal(ByVal strSymbol As String, ByVal blnAminoAcidsOnly As Boolean) As Integer
         ' Returns 0 if not found, the ID if found
 
         For index = 1 To AbbrevAllCount
-            If LCase(AbbrevStats(vbAbortRetryIgnore).Symbol) = LCase(strSymbol) Then
+            If LCase(AbbrevStats(index).Symbol) = LCase(strSymbol) Then
                 If Not blnAminoAcidsOnly Or (blnAminoAcidsOnly And AbbrevStats(index).IsAminoAcid) Then
                     Return index
                 End If

@@ -1,7 +1,10 @@
 Option Strict On
 Option Explicit On
+
+Imports MwtWinDll
+
 Module modMwtWinDllTest
-	
+
     ' Molecular Weight Calculator Dll test program
 
     ' -------------------------------------------------------------------------------
@@ -24,11 +27,34 @@ Module modMwtWinDllTest
     ' this computer software.
 
     Public Declare Function GetTickCount Lib "kernel32" () As Integer
-	
-    Public Sub Main()
-        Dim objMwtWinDllTest As New frmMwtWinDllTest
 
-        objMwtWinDllTest.ShowDialog()
+    Public Sub Main()
+        'Dim objMwtWinDllTest As New frmMwtWinDllTest
+        'objMwtWinDllTest.ShowDialog()
+
+        Dim oMwtWin = New MolecularWeightCalculator()
+        oMwtWin.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
+
+        Dim searchOptions = New clsFormulaFinderOptions()
+
+        oMwtWin.FormulaFinder.CandidateElements.Clear()
+
+        oMwtWin.FormulaFinder.AddCandidateElement("C", 66)
+        oMwtWin.FormulaFinder.AddCandidateElement("H", 5)
+        oMwtWin.FormulaFinder.AddCandidateElement("N", 14)
+        oMwtWin.FormulaFinder.AddCandidateElement("O", 5)
+        oMwtWin.FormulaFinder.AddCandidateElement("Ser", 10)
+
+        'Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMass(200, 0.05, searchOptions)
+        'Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
+
+        Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByPercentComposition(400, 1, searchOptions)
+
+        Console.WriteLine("Results")
+
+        For Each result In lstResults
+            Console.WriteLine(result.ToString())
+        Next
 
     End Sub
 End Module

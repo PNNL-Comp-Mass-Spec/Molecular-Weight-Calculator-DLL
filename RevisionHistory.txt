@@ -1,5 +1,8 @@
 MwtWinDll.NET Change Log
 
+Version 3.5.5794; November 12, 2015
+	- Finalizing the target mass search mode algorithm
+
 Version 3.5.5792; November 10, 2015
 	- Added clsFormulaFinder
 

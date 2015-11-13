@@ -982,6 +982,10 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
+    Public Sub TestFormulaFinder()
+        Windows.Forms.MessageBox.Show("Not yet implemented")
+    End Sub
+
     Private Sub TestTrypticName()
         Const DIM_CHUNK As Short = 1000
 
@@ -1276,5 +1280,9 @@ Friend Class frmMwtWinDllTest
     Private Sub mMwtWin_ProgressReset() Handles mMwtWin.ProgressReset
         lblProgress.Text = mMwtWin.ProgressStepDescription
         Application.DoEvents()
+    End Sub
+
+    Private Sub cmdTestFormulaFinder_Click(sender As Object, e As EventArgs) Handles cmdTestFormulaFinder.Click
+        TestFormulaFinder()
     End Sub
 End Class

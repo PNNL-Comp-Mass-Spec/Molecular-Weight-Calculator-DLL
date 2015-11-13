@@ -5,7 +5,7 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 Imports MwtWinDll.MolecularWeightCalculator
 
-Public Class clsFormulaFinder
+Public Class MWFormulaFinder
 
 #Region "Constants"
     Private Const MAX_MATCHINGELEMENTS = 10
@@ -28,26 +28,6 @@ Public Class clsFormulaFinder
         Public TargetPercentComposition As Double
         Public MinimumCount As Integer
         Public MaximumCount As Integer
-    End Structure
-
-    Public Structure udtFormulaFinderMassResult
-        Public EmpiricalFormula As String
-        Public CountsByElement As Dictionary(Of String, Integer)
-        Public Mass As Double
-        Public MassError As Double
-        Public DeltaMass As Double
-        Public DeltaMassIsPPM As Boolean
-        Public MZ As Double
-
-        Public ChargeState As Integer
-
-        ''' <summary>
-        ''' Percent composition results (only valid if matching percent compositions)
-        ''' </summary>
-        ''' <remarks>Keys are element or abbreviation symbols, values are percent composition, between 0 and 100</remarks>
-        Public PercentComposition As Dictionary(Of String, Double)
-
-        Public SortKey As String
     End Structure
     
     Private Structure udtElementNumType
@@ -192,10 +172,19 @@ Public Class clsFormulaFinder
 
 #Region "Public Methods"
 
+    ''' <summary>
+    ''' Abort processing
+    ''' </summary>
+    ''' <remarks>Only useful if the formula finder is running on a separate thread from the calling program</remarks>
     Public Sub AbortProcessingNow()
         mAbortProcessing = True
     End Sub
 
+    ''' <summary>
+    ''' Add a candidate element, abbreviation, or monoisotopic mass
+    ''' </summary>
+    ''' <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
+    ''' <remarks></remarks>
     Public Sub AddCandidateElement(elementSymbolAbbrevOrMass As String)
 
         Dim udtElementTolerances = GetDefaultCandidateElementTolerance()
@@ -203,6 +192,22 @@ Public Class clsFormulaFinder
         AddCandidateElement(elementSymbolAbbrevOrMass, udtElementTolerances)
     End Sub
 
+    ''' <summary>
+    ''' Add a candidate element, abbreviation, or monoisotopic mass
+    ''' </summary>
+    ''' <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
+    ''' <param name="targetPercentComposition">Target percent composition</param>
+    ''' <remarks></remarks>
+    Public Sub AddCandidateElement(elementSymbolAbbrevOrMass As String, targetPercentComposition As Double)
+        Dim udtElementTolerances = GetDefaultCandidateElementTolerance(targetPercentComposition)
+        AddCandidateElement(elementSymbolAbbrevOrMass, udtElementTolerances)
+    End Sub
+    ''' <summary>
+    ''' Add a candidate element, abbreviation, or monoisotopic mass
+    ''' </summary>
+    ''' <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
+    ''' <param name="udtElementTolerances">Search tolerances, including % composition range and Min/Max count when using a bounded search</param>
+    ''' <remarks></remarks>
     Public Sub AddCandidateElement(elementSymbolAbbrevOrMass As String, udtElementTolerances As udtCandidateElementTolerances)
 
         If mCandidateElements.ContainsKey(elementSymbolAbbrevOrMass) Then
@@ -212,35 +217,88 @@ Public Class clsFormulaFinder
         End If
     End Sub
 
-    Public Function FindMatchesByMassPPM(targetMass As Double, massTolerancePPM As Double, massSearchOptions As clsFormulaFinderOptions) As List(Of udtFormulaFinderMassResult)
-        Dim massToleranceDa = massTolerancePPM * targetMass / 1000000.0
-        If massSearchOptions Is Nothing Then massSearchOptions = New clsFormulaFinderOptions()
+    ''' <summary>
+    ''' Find empirical formulas that match the given target mass, with the given ppm tolerance
+    ''' </summary>
+    ''' <param name="targetMass"></param>
+    ''' <param name="massTolerancePPM"></param>
+    ''' <returns></returns>
+    ''' <remarks>Uses default search options</remarks>
+    Public Function FindMatchesByMassPPM(targetMass As Double, massTolerancePPM As Double) As List(Of clsFormulaFinderResult)
 
-        Dim lsResults = FindMatchesByMass(targetMass, massToleranceDa, massSearchOptions, True)
-        Return lsResults
+        Dim lstResults = FindMatchesByMassPPM(targetMass, massTolerancePPM, Nothing)
+
+        ' No need to sort because FindMatchesByMassPPM has already done so
+        Return lstResults
 
     End Function
 
-    Public Function FindMatchesByMass(targetMass As Double, massToleranceDa As Double, massSearchOptions As clsFormulaFinderOptions) As List(Of udtFormulaFinderMassResult)
+    ''' <summary>
+    ''' Find empirical formulas that match the given target mass, with the given ppm tolerance
+    ''' </summary>
+    ''' <param name="targetMass"></param>
+    ''' <param name="massTolerancePPM"></param>
+    ''' <param name="massSearchOptions"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function FindMatchesByMassPPM(targetMass As Double, massTolerancePPM As Double, massSearchOptions As clsFormulaFinderOptions) As List(Of clsFormulaFinderResult)
+        Dim massToleranceDa = massTolerancePPM * targetMass / 1000000.0
         If massSearchOptions Is Nothing Then massSearchOptions = New clsFormulaFinderOptions()
 
-        Dim lsResults = FindMatchesByMass(targetMass, massToleranceDa, massSearchOptions, False)
-        Return lsResults
+        Dim lstResults = FindMatchesByMass(targetMass, massToleranceDa, massSearchOptions, True)
+
+        Dim sortedResults = (From item In lstResults Order By item.SortKey Select item).ToList()
+        Return sortedResults
+
+    End Function
+
+    ''' <summary>
+    ''' Find empirical formulas that match the given target mass, with the given tolerance
+    ''' </summary>
+    ''' <param name="targetMass"></param>
+    ''' <param name="massToleranceDa"></param>
+    ''' <returns></returns>
+    ''' <remarks>Uses default search options</remarks>
+    Public Function FindMatchesByMass(targetMass As Double, massToleranceDa As Double) As List(Of clsFormulaFinderResult)
+        Dim lstResults = FindMatchesByMass(targetMass, massToleranceDa, Nothing)
+
+        ' No need to sort because FindMatchesByMassPPM has already done so
+        Return lstResults
+
+    End Function
+
+    ''' <summary>
+    ''' Find empirical formulas that match the given target mass, with the given tolerance
+    ''' </summary>
+    ''' <param name="targetMass"></param>
+    ''' <param name="massToleranceDa"></param>
+    ''' <param name="massSearchOptions"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function FindMatchesByMass(targetMass As Double, massToleranceDa As Double, massSearchOptions As clsFormulaFinderOptions) As List(Of clsFormulaFinderResult)
+        If massSearchOptions Is Nothing Then massSearchOptions = New clsFormulaFinderOptions()
+
+        Dim lstResults = FindMatchesByMass(targetMass, massToleranceDa, massSearchOptions, False)
+
+        Dim sortedResults = (From item In lstResults Order By item.SortKey Select item).ToList()
+        Return sortedResults
 
     End Function
 
     Public Function FindMatchesByPercentComposition(
      maximumFormulaMass As Double,
      percentTolerance As Double,
-     massSearchOptions As clsFormulaFinderOptions) As List(Of udtFormulaFinderMassResult)
+     massSearchOptions As clsFormulaFinderOptions) As List(Of clsFormulaFinderResult)
 
         If massSearchOptions Is Nothing Then massSearchOptions = New clsFormulaFinderOptions()
 
-        Dim lsResults = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, massSearchOptions)
-        Return lsResults
+        Dim lstResults = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, massSearchOptions)
+
+        Dim sortedResults = (From item In lstResults Order By item.SortKey Select item).ToList()
+        Return sortedResults
 
     End Function
-    
+
     ''' <summary>
     ''' Reset to defaults
     ''' </summary>
@@ -258,7 +316,7 @@ Public Class clsFormulaFinder
 
         MaximumHits = DEFAULT_RESULTS_TO_FIND
         SortResults = True
-
+        VerifyHydrogens = True
     End Sub
 
 #End Region
@@ -275,14 +333,14 @@ Public Class clsFormulaFinder
     End Sub
 
     Private Sub AppendPercentCompositionResult(
-       udtSearchResult As udtFormulaFinderMassResult,
+       searchResult As clsFormulaFinderResult,
        elementcount As Integer,
        sortedElementStats As List(Of clsFormulaFinderCandidateElement),
        targetIndex As Integer,
        percentComposition As Double)
 
         If elementcount <> 0 AndAlso targetIndex < sortedElementStats.Count Then
-            udtSearchResult.PercentComposition.Add(sortedElementStats(targetIndex).Symbol, percentComposition)
+            searchResult.PercentComposition.Add(sortedElementStats(targetIndex).Symbol, percentComposition)
         End If
 
     End Sub
@@ -306,9 +364,9 @@ Public Class clsFormulaFinder
        massSearchOptions As clsFormulaFinderOptions,
        ppmMode As Boolean,
        calculationMode As eCalculationMode,
-       sortedElementStats As List(Of clsFormulaFinderCandidateElement)) As List(Of udtFormulaFinderMassResult)
+       sortedElementStats As List(Of clsFormulaFinderCandidateElement)) As List(Of clsFormulaFinderResult)
 
-        Dim lstResults As List(Of udtFormulaFinderMassResult)
+        Dim lstResults As List(Of clsFormulaFinderResult)
 
         If massSearchOptions.FindTargetMZ Then
             ' Searching for target m/z rather than target mass
@@ -329,7 +387,7 @@ Public Class clsFormulaFinder
 
     End Function
 
-    Private Sub ComputeSortKeys(lstResults As IEnumerable(Of udtFormulaFinderMassResult))
+    Private Sub ComputeSortKeys(lstResults As IEnumerable(Of clsFormulaFinderResult))
 
         ' Compute the sort key for each result
         Dim sbCodeString = New StringBuilder()
@@ -337,6 +395,7 @@ Public Class clsFormulaFinder
         For Each item In lstResults
             item.SortKey = ComputeSortKey(sbCodeString, item.EmpiricalFormula)
         Next
+
     End Sub
 
     Private Function ComputeSortKey(sbCodeString As StringBuilder, empiricalFormula As String) As String
@@ -496,14 +555,16 @@ Public Class clsFormulaFinder
        targetMass As Double,
        massToleranceDa As Double,
        totalCharge As Double,
-       intMultipleMtoZCharge As Integer) As Boolean
+       intMultipleMtoZCharge As Integer,
+       <Out> ByRef empiricalResultSymbols As Dictionary(Of String, Integer)) As Boolean
+
+        ' This dictionary tracks the elements and abbreviations of the found formula so that they can be properly ordered according to empirical formula conventions
+        ' Key is the element or abbreviation symbol, value is the number of each element or abbreviation
+        empiricalResultSymbols = New Dictionary(Of String, Integer)
 
         sbEmpiricalFormula.Clear()
 
         Try
-            ' This dictionary tracks the elements and abbreviations of the found formula so that they can be properly ordered according to empirical formula conventions
-            ' Key is the element or abbreviation symbol, value is the number of each element or abbreviation
-            Dim empiricalResultSymbols As New Dictionary(Of String, Integer)
 
             ' Convert to empirical formula and sort
             ConstructAndVerifyAddIfValid(sortedElementStats, empiricalResultSymbols, 0, count1)
@@ -517,7 +578,11 @@ Public Class clsFormulaFinder
             ConstructAndVerifyAddIfValid(sortedElementStats, empiricalResultSymbols, 8, count9)
             ConstructAndVerifyAddIfValid(sortedElementStats, empiricalResultSymbols, 9, count10)
 
-            Dim valid = ConstructAndVerifyCompoundWork(massSearchOptions, sbEmpiricalFormula, totalMass, targetMass, massToleranceDa, totalCharge, intMultipleMtoZCharge, empiricalResultSymbols)
+            Dim valid = ConstructAndVerifyCompoundWork(massSearchOptions,
+                                                       sbEmpiricalFormula,
+                                                       totalMass, targetMass, massToleranceDa,
+                                                       totalCharge, intMultipleMtoZCharge,
+                                                       empiricalResultSymbols)
             Return valid
 
         Catch ex As Exception
@@ -554,22 +619,23 @@ Public Class clsFormulaFinder
     Private Function ConstructAndVerifyCompoundRecursive(
        massSearchOptions As clsFormulaFinderOptions,
        sbEmpiricalFormula As StringBuilder,
-       sortedElementStats As List(Of clsFormulaFinderCandidateElement),
-       lstNewPotentialElementPointers As List(Of Integer),
+       sortedElementStats As IList(Of clsFormulaFinderCandidateElement),
+       lstNewPotentialElementPointers As IEnumerable(Of Integer),
        totalMass As Double,
        targetMass As Double,
        massToleranceDa As Double,
        totalCharge As Double,
-       intMultipleMtoZCharge As Integer) As Boolean
+       intMultipleMtoZCharge As Integer,
+       <Out> ByRef empiricalResultSymbols As Dictionary(Of String, Integer)) As Boolean
+
+        ' This dictionary tracks the elements and abbreviations of the found formula so that they can be properly ordered according to empirical formula conventions
+        ' Key is the element or abbreviation symbol, value is the number of each element or abbreviation
+        empiricalResultSymbols = New Dictionary(Of String, Integer)
 
         sbEmpiricalFormula.Clear()
 
         Try
             Dim elementCountArray = GetElementCountArray(sortedElementStats.Count, lstNewPotentialElementPointers)
-
-            ' This dictionary tracks the elements and abbreviations of the found formula so that they can be properly ordered according to empirical formula conventions
-            ' Key is the element or abbreviation symbol, value is the number of each element or abbreviation
-            Dim empiricalResultSymbols As New Dictionary(Of String, Integer)
 
             For intIndex = 0 To sortedElementStats.Count - 1
                 If elementCountArray(intIndex) <> 0 Then
@@ -577,7 +643,18 @@ Public Class clsFormulaFinder
                 End If
             Next intIndex
 
-            Dim valid = ConstructAndVerifyCompoundWork(massSearchOptions, sbEmpiricalFormula, totalMass, targetMass, massToleranceDa, totalCharge, intMultipleMtoZCharge, empiricalResultSymbols)
+            Dim valid = ConstructAndVerifyCompoundWork(massSearchOptions,
+                                                       sbEmpiricalFormula,
+                                                       totalMass, targetMass, massToleranceDa,
+                                                       totalCharge, intMultipleMtoZCharge,
+                                                       empiricalResultSymbols)
+
+            ' Uncomment to debug:
+            'Dim computedMass = mElementAndMassRoutines.ComputeFormulaWeight(sbEmpiricalFormula.ToString())
+            'If Math.Abs(computedMass - totalMass) > massToleranceDa Then
+            '    Console.WriteLine("Wrong result: " & sbEmpiricalFormula.ToString())
+            'End If
+
             Return valid
 
         Catch ex As Exception
@@ -592,7 +669,7 @@ Public Class clsFormulaFinder
        lstNewPotentialElementPointers As IEnumerable(Of Integer)) As Integer()
 
         ' Store the occurrence count of each element
-        Dim elementCountArray(potentialElementCount) As Integer
+        Dim elementCountArray(potentialElementCount - 1) As Integer
 
         For Each elementIndex In lstNewPotentialElementPointers
             elementCountArray(elementIndex) += 1
@@ -760,44 +837,41 @@ Public Class clsFormulaFinder
        sbEmpiricalFormula As StringBuilder,
        totalMass As Double,
        targetMass As Double,
-       totalCharge As Double) As udtFormulaFinderMassResult
-
-        Dim udtSearchResult = New udtFormulaFinderMassResult
-        udtSearchResult.EmpiricalFormula = String.Empty
-        udtSearchResult.PercentComposition = New Dictionary(Of String, Double)
+       totalCharge As Double,
+       empiricalResultSymbols As Dictionary(Of String, Integer)) As clsFormulaFinderResult
 
         Try
 
-            udtSearchResult.EmpiricalFormula = sbEmpiricalFormula.ToString()
+            Dim searchResult = New clsFormulaFinderResult(sbEmpiricalFormula.ToString(), empiricalResultSymbols)
 
             If massSearchOptions.FindCharge Then
-                udtSearchResult.ChargeState = CInt(Math.Round(totalCharge))
+                searchResult.ChargeState = CInt(Math.Round(totalCharge))
             End If
 
             If targetMass > 0 Then
 
                 If ppmMode Then
-                    udtSearchResult.Mass = totalMass
-                    udtSearchResult.DeltaMass = CDbl(((totalMass) / targetMass - 1) * 1000000.0#)
-                    udtSearchResult.DeltaMassIsPPM = True
+                    searchResult.Mass = totalMass
+                    searchResult.DeltaMass = CDbl(((totalMass) / targetMass - 1) * 1000000.0#)
+                    searchResult.DeltaMassIsPPM = True
                 Else
-                    udtSearchResult.Mass = totalMass
-                    udtSearchResult.DeltaMass = totalMass - targetMass
-                    udtSearchResult.DeltaMassIsPPM = False
+                    searchResult.Mass = totalMass
+                    searchResult.DeltaMass = totalMass - targetMass
+                    searchResult.DeltaMassIsPPM = False
                 End If
 
                 If massSearchOptions.ComputeMZ AndAlso Math.Abs(totalCharge) > 0.1 Then
                     ' Compute m/z value
-                    udtSearchResult.MZ = Math.Abs(totalMass / totalCharge)
+                    searchResult.MZ = Math.Abs(totalMass / totalCharge)
                 End If
 
             End If
 
-            Return udtSearchResult
+            Return searchResult
 
         Catch ex As Exception
             mElementAndMassRoutines.GeneralErrorHandler("GetSearchResult", 0, ex.Message)
-            Return udtSearchResult
+            Return New clsFormulaFinderResult(String.Empty, New Dictionary(Of String, Integer))
         End Try
 
     End Function
@@ -928,27 +1002,27 @@ Public Class clsFormulaFinder
        targetMass As Double,
        massToleranceDa As Double,
        massSearchOptions As clsFormulaFinderOptions,
-       ppmMode As Boolean) As List(Of udtFormulaFinderMassResult)
+       ppmMode As Boolean) As List(Of clsFormulaFinderResult)
 
         ' Validate the Inputs
         If Not ValidateSettings(eCalculationMode.MatchMolecularWeight) Then
-            Return New List(Of udtFormulaFinderMassResult)
+            Return New List(Of clsFormulaFinderResult)
         End If
 
         If Val(targetMass) <= 0 Then
             ReportError("Target molecular weight must be greater than 0")
-            Return New List(Of udtFormulaFinderMassResult)
+            Return New List(Of clsFormulaFinderResult)
         End If
 
         If massToleranceDa < 0 Then
             ReportError("Mass tolerance cannot be negative")
-            Return New List(Of udtFormulaFinderMassResult)
+            Return New List(Of clsFormulaFinderResult)
         End If
 
         Dim candidateElementsStats = GetCandidateElements()
 
         If candidateElementsStats.Count = 0 Then
-            Return New List(Of udtFormulaFinderMassResult)
+            Return New List(Of clsFormulaFinderResult)
         End If
 
         Dim sortedElementStats = (From item In candidateElementsStats Order By item.Mass Descending Select item).ToList()
@@ -961,7 +1035,7 @@ Public Class clsFormulaFinder
             ' Pointers to the potential elements
             Dim lstPotentialElementPointers = New List(Of Integer)
 
-            Dim lstResults = New List(Of udtFormulaFinderMassResult)
+            Dim lstResults = New List(Of clsFormulaFinderResult)
 
             If massSearchOptions.FindTargetMZ Then
                 ' Searching for target m/z rather than target mass
@@ -999,27 +1073,27 @@ Public Class clsFormulaFinder
     Private Function FindMatchesByPercentCompositionWork(
        maximumFormulaMass As Double,
        percentTolerance As Double,
-       massSearchOptions As clsFormulaFinderOptions) As List(Of udtFormulaFinderMassResult)
+       massSearchOptions As clsFormulaFinderOptions) As List(Of clsFormulaFinderResult)
 
         ' Validate the Inputs
         If Not ValidateSettings(eCalculationMode.MatchPercentComposition) Then
-            Return New List(Of udtFormulaFinderMassResult)
+            Return New List(Of clsFormulaFinderResult)
         End If
 
         If Val(maximumFormulaMass) <= 0 Then
             ReportError("Maximum molecular weight must be greater than 0")
-            Return New List(Of udtFormulaFinderMassResult)
+            Return New List(Of clsFormulaFinderResult)
         End If
 
         If percentTolerance < 0 Then
             ReportError("Percent tolerance cannot be negative")
-            Return New List(Of udtFormulaFinderMassResult)
+            Return New List(Of clsFormulaFinderResult)
         End If
 
         Dim candidateElementsStats = GetCandidateElements(percentTolerance)
 
         If candidateElementsStats.Count = 0 Then
-            Return New List(Of udtFormulaFinderMassResult)
+            Return New List(Of clsFormulaFinderResult)
         End If
 
         Dim sortedElementStats = (From item In candidateElementsStats Order By item.Mass Descending Select item).ToList()
@@ -1032,7 +1106,7 @@ Public Class clsFormulaFinder
             ' Pointers to the potential elements
             Dim lstPotentialElementPointers = New List(Of Integer)
 
-            Dim lstResults = New List(Of udtFormulaFinderMassResult)
+            Dim lstResults = New List(Of clsFormulaFinderResult)
 
             RecursivePCompFinder(lstResults, massSearchOptions, sortedElementStats, 0, lstPotentialElementPointers, 0, maximumFormulaMass, 9)
 
@@ -1099,7 +1173,7 @@ Public Class clsFormulaFinder
                     ' A single element or abbreviation was entered
 
                     ' Convert input to default format of first letter capitalized and rest lowercase
-                    Dim abbrevSymbol = item.Key.Substring(0).ToUpper() & item.Key.Substring(1).ToLower()
+                    Dim abbrevSymbol = item.Key.Substring(0, 1).ToUpper() & item.Key.Substring(1).ToLower()
 
                     For Each currentChar In abbrevSymbol
                         If Not (Char.IsLetter(currentChar) OrElse currentChar = "+" OrElse currentChar = "_") Then
@@ -1117,7 +1191,6 @@ Public Class clsFormulaFinder
                     ' See if this is an abbreviation
                     Dim intSymbolReference = mElementAndMassRoutines.GetAbbreviationIDInternal(abbrevSymbol)
                     If intSymbolReference < 1 Then
-
                         ReportError("Unknown element or abbreviation for custom elemental weight: " & abbrevSymbol)
                         Return New List(Of clsFormulaFinderCandidateElement)
                     End If
@@ -1309,12 +1382,12 @@ Public Class clsFormulaFinder
        sortedElementStats As List(Of clsFormulaFinderCandidateElement),
        targetMass As Double,
        massToleranceDa As Double,
-       maximumFormulaMass As Double) As List(Of udtFormulaFinderMassResult)
+       maximumFormulaMass As Double) As List(Of clsFormulaFinderResult)
 
         ' The calculated percentages for the specific compound
         Dim Percent(MAX_MATCHINGELEMENTS) As Double
 
-        Dim lstResults = New List(Of udtFormulaFinderMassResult)
+        Dim lstResults = New List(Of clsFormulaFinderResult)
 
         Try
 
@@ -1381,32 +1454,34 @@ Public Class clsFormulaFinder
                                                             If intSubTrack = potentialElementCount Then
                                                                 ' All of the elements have percent compositions matching the target
 
+                                                                Dim empiricalResultSymbols As Dictionary(Of String, Integer)
+
                                                                 ' Construct the empirical formula and verify hydrogens
                                                                 Dim blnHOK = ConstructAndVerifyCompound(massSearchOptions,
                                                                                                         sbEmpiricalFormula,
                                                                                                         j, k, l, m, N, O, P, q, r, S,
                                                                                                         sortedElementStats,
                                                                                                         totalMass, targetMass, massToleranceDa,
-                                                                                                        totalCharge, 0)
+                                                                                                        totalCharge, 0, empiricalResultSymbols)
 
 
                                                                 If sbEmpiricalFormula.Length > 0 AndAlso blnHOK Then
-                                                                    Dim udtSearchResult = GetSearchResult(massSearchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, totalCharge)
+                                                                    Dim searchResult = GetSearchResult(massSearchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, totalCharge, empiricalResultSymbols)
 
                                                                     ' Add % composition info
 
-                                                                    AppendPercentCompositionResult(udtSearchResult, j, sortedElementStats, 0, Percent(0))
-                                                                    AppendPercentCompositionResult(udtSearchResult, k, sortedElementStats, 1, Percent(1))
-                                                                    AppendPercentCompositionResult(udtSearchResult, l, sortedElementStats, 2, Percent(2))
-                                                                    AppendPercentCompositionResult(udtSearchResult, m, sortedElementStats, 3, Percent(3))
-                                                                    AppendPercentCompositionResult(udtSearchResult, N, sortedElementStats, 4, Percent(4))
-                                                                    AppendPercentCompositionResult(udtSearchResult, O, sortedElementStats, 5, Percent(5))
-                                                                    AppendPercentCompositionResult(udtSearchResult, P, sortedElementStats, 6, Percent(6))
-                                                                    AppendPercentCompositionResult(udtSearchResult, q, sortedElementStats, 7, Percent(7))
-                                                                    AppendPercentCompositionResult(udtSearchResult, r, sortedElementStats, 8, Percent(8))
-                                                                    AppendPercentCompositionResult(udtSearchResult, S, sortedElementStats, 9, Percent(9))
+                                                                    AppendPercentCompositionResult(searchResult, j, sortedElementStats, 0, Percent(0))
+                                                                    AppendPercentCompositionResult(searchResult, k, sortedElementStats, 1, Percent(1))
+                                                                    AppendPercentCompositionResult(searchResult, l, sortedElementStats, 2, Percent(2))
+                                                                    AppendPercentCompositionResult(searchResult, m, sortedElementStats, 3, Percent(3))
+                                                                    AppendPercentCompositionResult(searchResult, N, sortedElementStats, 4, Percent(4))
+                                                                    AppendPercentCompositionResult(searchResult, O, sortedElementStats, 5, Percent(5))
+                                                                    AppendPercentCompositionResult(searchResult, P, sortedElementStats, 6, Percent(6))
+                                                                    AppendPercentCompositionResult(searchResult, q, sortedElementStats, 7, Percent(7))
+                                                                    AppendPercentCompositionResult(searchResult, r, sortedElementStats, 8, Percent(8))
+                                                                    AppendPercentCompositionResult(searchResult, S, sortedElementStats, 9, Percent(9))
 
-                                                                    lstResults.Add(udtSearchResult)
+                                                                    lstResults.Add(searchResult)
                                                                 End If
                                                             End If
                                                         End If
@@ -1424,18 +1499,21 @@ Public Class clsFormulaFinder
                                                                    totalMass >= dblMatchWeight - massToleranceDa Then
                                                                     ' Within massToleranceDa
 
+                                                                    Dim empiricalResultSymbols As Dictionary(Of String, Integer)
+
                                                                     ' Construct the empirical formula and verify hydrogens
                                                                     Dim blnHOK = ConstructAndVerifyCompound(massSearchOptions,
                                                                                                             sbEmpiricalFormula,
                                                                                                             j, k, l, m, N, O, P, q, r, S,
                                                                                                             sortedElementStats,
                                                                                                             totalMass, targetMass * intCurrentCharge, massToleranceDa,
-                                                                                                            totalCharge, intCurrentCharge)
+                                                                                                            totalCharge, intCurrentCharge,
+                                                                                                            empiricalResultSymbols)
 
                                                                     If sbEmpiricalFormula.Length > 0 AndAlso blnHOK Then
-                                                                        Dim udtSearchResult = GetSearchResult(massSearchOptions, ppmMode, sbEmpiricalFormula, totalMass, targetMass, totalCharge)
+                                                                        Dim searchResult = GetSearchResult(massSearchOptions, ppmMode, sbEmpiricalFormula, totalMass, targetMass, totalCharge, empiricalResultSymbols)
 
-                                                                        lstResults.Add(udtSearchResult)
+                                                                        lstResults.Add(searchResult)
                                                                     End If
                                                                     Exit For
                                                                 End If
@@ -1573,153 +1651,6 @@ Public Class clsFormulaFinder
 
     End Sub
 
-    'ToDo: Delete this
-    ' Private Function FormulaFinderCalculate(calculationMode As eCalculationMode) As List(Of udtFormulaFinderMassResult)
-
-    '    Dim potentialElementCount As Integer, blnCalculationsAborted As Boolean
-    '    Dim x As Integer, y As Integer
-    '    Dim blnBad As Boolean
-    '    Dim intMultipleSearchMin As Integer, intMultipleSearchMax As Integer
-    '    Dim tolerance As Double, dblTargetWeight As Double, percentcompsum As Double
-    '    Dim strMessage As String, strWork As String, strSwap As String
-    '    Dim dblSwapVal As Double
-    '    Dim strMatchSymbol As String, Charge As Single
-
-
-    '    Dim intPotentialElementPointers(0) As Integer                           ' Empty array of pointers to the potential elements
-    '    Dim intRange(MAX_MATCHINGELEMENTS, 2) As Integer                        ' The min and max number for each element (first dimension is element index, second dimension is min and max value for that element)
-    '    Dim dblPotentialElementStats(MAX_MATCHINGELEMENTS, 1) As Double         ' The elemental weight and charge for each element or abbreviation
-    '    Dim strPotentialElements(MAX_MATCHINGELEMENTS) As String                ' The symbol for each element or abbreviation
-    '    Dim dblTargetPercents(MAX_MATCHINGELEMENTS, 1) As Double                ' The min and max percentages for each element (if applicable)
-
-    '    Dim strCompoundList() As String
-
-    '    If mCalculating Then Exit Function
-
-    '    mAbortProcessing = False
-    '    blnCalculationsAborted = False
-
-    '    Dim lstResults = New List(Of udtFormulaFinderMassResult)
-
-    '    Try
-
-    '        mCalculating = True
-    '        mPercentComplete = 0
-
-    '        If frmFinderOptions.cboSearchType.ListIndex = 0 Then
-    '            ' Thorough search
-
-    '        Else
-    '            ' Bounded search
-
-    '        End If
-
-    '        ' Show abort messages if necessary
-    '        If mAbortProcessing Then
-    '            ReportWarning("Calculations aborted")
-    '            blnCalculationsAborted = True
-    '        ElseIf lstResults.Count >= mMaximumHits Then
-    '            ReportWarning("The maximum number of hits has been reached." & "  " & "Stopping calculations.")
-    '        End If
-
-
-    '        ' Compute the sort key for each result
-    '        For Each item In lstResults
-    '            item.SortKey = ComputeSortKey(item.EmpiricalFormula)
-    '        Next
-
-    '        ReDim strCodestring(lstResults.ListCount + 1)
-    '        ReDim udtResultStats(lstResults.ListCount + 1)
-    '        ReDim intPointerArray(lstResults.ListCount + 1)
-
-    '        ' Convert compounds in list to code
-    '        CompoundToCode(dblTargetWeight, strCodestring(), udtResultStats(), intPointerArray())
-
-    '        ' Sort the compounds
-    '        ShellSortResults(strCodestring(), udtResultStats(), intPointerArray(), 0, lstResults.ListCount - 1)
-
-    '        ReDim strCompoundList(lstResults.ListCount)            ' Temporary storage for the results box
-
-    '        ' First, copy all of the results to a temporary array (I know it eats up memory, but I have no choice)
-    '        For x = 0 To lstResults.ListCount - 1
-    '            strCompoundList(x) = lstResults.List(x)
-    '        Next x
-
-    '        ' Now, put them back into the lstResults.ListCount box in the correct order
-    '        ' Use intPointerArray() for this
-    '        For x = 0 To lstResults.ListCount - 1
-    '            lstResults.List(x) = strCompoundList(intPointerArray(x))
-    '        Next x
-
-    '        If gKeyPressAbortFormulaFinder < 2 Then
-    '            lblPercentCompleted.Caption = "100% " & "Completed"
-    '        Else
-    '            lblPercentCompleted.Caption = "Sorting Interrupted"
-    '        End If
-    '        Else
-    '        ' Don't sort
-    '        If gKeyPressAbortFormulaFinder < 2 Then
-    '            lblPercentCompleted.Caption = "100% " & "Completed"
-    '        Else
-    '            lblPercentCompleted.Caption = "Calculations Interrupted"
-    '        End If
-    '        End If
-
-    '        If optType(1).value = True Then
-    '            ' Matching percent compositions
-    '            ' Separate results into two lines per compound for better readability
-
-    '            ' First, change view of lstresults box so first line is on top, avoids screen update problem when sorting
-    '            If lstResults.ListCount > 0 Then
-    '                lstResults.ListIndex = 0
-    '                lstResults.ListIndex = -1
-    '            End If
-    '            x = 0
-    '            Do While x <= lstResults.ListCount - 1
-    '                y = InStr(lstResults.List(x), " " & "has")
-    '                If y > 0 Then
-    '                    lstResults.AddItem(Mid(lstResults.List(x), y), x + 1)
-    '                    lstResults.List(x) = Left(lstResults.List(x), y - 1)
-    '                    x = x + 1
-    '                End If
-    '                x = x + 1
-    '            Loop
-    '        End If
-
-    '        ' Add line for total number of compounds found
-    '        strMessage = "Compounds found" & ": " & Str(lngCount)
-    '        lstResults.AddItem(strMessage, 0)
-
-    '        ' Set the ToolTipText for the listing
-    '        If lngCount > 0 And cChkBox(frmProgramPreferences.chkShowToolTips) Then
-    '            lstResults.ToolTipText = LookupToolTipLanguageCaption(10200, "Double click any line to expand it")
-    '        Else
-    '            lstResults.ToolTipText = ""
-    '        End If
-
-    '        mCalculating = False
-
-    '        ' Copy results from lstResults to rtfResults
-    '        If gKeyPressAbortFormulaFinder < 2 Then
-    '            ConvertListToRTF()
-    '            lstResults.Visible = False
-    '            rtfResults.Visible = True
-    '        End If
-
-    '        If blnCalculationsAborted Then
-    '            lblPercentCompleted.Caption = "Calculations Interrupted"
-    '        End If
-
-
-    '    Catch ex As Exception
-    '        mElementAndMassRoutines.GeneralErrorHandler("FormulaFinderCalculate", 0, ex.Message)
-    '    End Try
-
-    '    mCalculating = False
-
-
-    'End Function
-
     ''' <summary>
     ''' Recursively serch for a target mass
     ''' </summary>
@@ -1735,7 +1666,7 @@ Public Class clsFormulaFinder
     ''' <param name="intMultipleMtoZCharge">When massSearchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
     ''' <remarks></remarks>
     Private Sub RecursiveMWFinder(
-       lstResults As ICollection(Of udtFormulaFinderMassResult),
+       lstResults As ICollection(Of clsFormulaFinderResult),
        massSearchOptions As clsFormulaFinderOptions,
        ppmMode As Boolean,
        sortedElementStats As List(Of clsFormulaFinderCandidateElement),
@@ -1761,13 +1692,14 @@ Public Class clsFormulaFinder
                 Dim totalMass = dblPotentialMassTotal + sortedElementStats(intCurrentIndex).Mass
                 Dim totalCharge = potentialChargeTotal + sortedElementStats(intCurrentIndex).Charge
 
+                lstNewPotentialElementPointers.Clear()
+
                 If totalMass <= targetMass + massToleranceDa Then
                     ' Below or within dblMassTolerance, add current element's pointer to pointer array
                     lstNewPotentialElementPointers.AddRange(lstPotentialElementPointers)
 
                     ' Append the current element's number
                     lstNewPotentialElementPointers.Add(intCurrentIndex)
-                    '            ReportCompound "", strPotentialElements(), dblPotentialElementStats(), potentialElementCount, intNewPotentialElementPointers(), intPointerCount + 1, totalMass, targetMass, dblMassTolerance, totalCharge, intMultipleMtoZCharge
 
                     ' Update status
                     UpdateStatus()
@@ -1777,22 +1709,31 @@ Public Class clsFormulaFinder
                     End If
 
                     If totalMass >= targetMass - massToleranceDa Then
+                        ' Matching compound
+
+                        Dim empiricalResultSymbols As Dictionary(Of String, Integer)
 
                         ' Construct the empirical formula and verify hydrogens
-                        Dim blnHOK = ConstructAndVerifyCompoundRecursive(massSearchOptions, sbEmpiricalFormula, sortedElementStats, lstNewPotentialElementPointers, totalMass, targetMass, massToleranceDa, totalCharge, intMultipleMtoZCharge)
+                        Dim blnHOK = ConstructAndVerifyCompoundRecursive(massSearchOptions,
+                                                                         sbEmpiricalFormula, sortedElementStats,
+                                                                         lstNewPotentialElementPointers,
+                                                                         totalMass, targetMass, massToleranceDa,
+                                                                         totalCharge, intMultipleMtoZCharge,
+                                                                         empiricalResultSymbols)
 
                         If sbEmpiricalFormula.Length > 0 AndAlso blnHOK Then
-                            Dim udtSearchResult = GetSearchResult(massSearchOptions, ppmMode, sbEmpiricalFormula, totalMass, targetMass, totalCharge)
+                            Dim searchResult = GetSearchResult(massSearchOptions, ppmMode, sbEmpiricalFormula, totalMass, targetMass, totalCharge, empiricalResultSymbols)
 
-                            lstResults.Add(udtSearchResult)
+                            lstResults.Add(searchResult)
                         End If
 
                     End If
 
                     ' Haven't reached targetMass - dblMassTolerance region, so call RecursiveFinder again
+
+                    ' But first, if adding the lightest element (i.e. the last in the list),
+                    ' add a bunch of it until the potential compound's weight is close to the target
                     If intCurrentIndex = sortedElementStats.Count - 1 Then
-                        ' But first, if adding the lightest element (i.e. the last in the list),
-                        ' add a bunch of it until the potential compound's weight is close to the target
 
                         Dim intExtra = 0
                         Do While totalMass < targetMass - massToleranceDa - sortedElementStats(intCurrentIndex).Mass
@@ -1833,7 +1774,7 @@ Public Class clsFormulaFinder
     ''' <param name="potentialChargeTotal"></param>
     ''' <remarks></remarks>
     Private Sub RecursivePCompFinder(
-       lstResults As ICollection(Of udtFormulaFinderMassResult),
+       lstResults As ICollection(Of clsFormulaFinderResult),
        massSearchOptions As clsFormulaFinderOptions,
        sortedElementStats As List(Of clsFormulaFinderCandidateElement),
        intStartIndex As Integer,
@@ -1858,6 +1799,8 @@ Public Class clsFormulaFinder
             For intCurrentIndex = intStartIndex To sortedElementStats.Count - 1  ' potentialElementCount >= 1, if 1, means just dblPotentialElementStats(0,0), etc.
                 Dim totalMass = dblPotentialMassTotal + sortedElementStats(intCurrentIndex).Mass
                 Dim totalCharge = potentialChargeTotal + sortedElementStats(intCurrentIndex).Charge
+
+                lstNewPotentialElementPointers.Clear()
 
                 If totalMass <= maximumFormulaMass Then
                     ' only proceed if weight is less than max weight
@@ -1892,23 +1835,30 @@ Public Class clsFormulaFinder
                         If intPercentTrack = sortedElementStats.Count Then
                             ' Matching compound
 
+                            Dim empiricalResultSymbols As Dictionary(Of String, Integer)
+
                             ' Construct the empirical formula and verify hydrogens
-                            Dim blnHOK = ConstructAndVerifyCompoundRecursive(massSearchOptions, sbEmpiricalFormula, sortedElementStats, lstNewPotentialElementPointers, totalMass, 0, 0, totalCharge, 0)
+                            Dim blnHOK = ConstructAndVerifyCompoundRecursive(massSearchOptions,
+                                                                             sbEmpiricalFormula, sortedElementStats,
+                                                                             lstNewPotentialElementPointers,
+                                                                             totalMass, 0, 0,
+                                                                             totalCharge, 0,
+                                                                             empiricalResultSymbols)
 
                             If sbEmpiricalFormula.Length > 0 AndAlso blnHOK Then
-                                Dim udtSearchResult = GetSearchResult(massSearchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, totalCharge)
+                                Dim searchResult = GetSearchResult(massSearchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, totalCharge, empiricalResultSymbols)
 
                                 ' Add % composition info
                                 For intIndex = 0 To sortedElementStats.Count - 1
                                     If elementCountArray(intIndex) <> 0 Then
                                         Dim percentComposition = elementCountArray(intIndex) * sortedElementStats(intIndex).Mass / totalMass * 100
 
-                                        AppendPercentCompositionResult(udtSearchResult, elementCountArray(intIndex), sortedElementStats, intIndex, percentComposition)
+                                        AppendPercentCompositionResult(searchResult, elementCountArray(intIndex), sortedElementStats, intIndex, percentComposition)
 
                                     End If
                                 Next intIndex
 
-                                lstResults.Add(udtSearchResult)
+                                lstResults.Add(searchResult)
                             End If
 
                         End If
