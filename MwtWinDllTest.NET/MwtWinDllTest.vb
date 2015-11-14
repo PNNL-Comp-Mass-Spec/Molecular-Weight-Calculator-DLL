@@ -1,6 +1,10 @@
 Option Strict On
 Option Explicit On
 
+Imports System.Collections.Generic
+Imports System.Text
+Imports MwtWinDll
+
 Friend Class frmMwtWinDllTest
     ' Molecular Weight Calculator Dll test program
 
@@ -71,6 +75,7 @@ Friend Class frmMwtWinDllTest
     Public WithEvents txtRTFSource As System.Windows.Forms.TextBox
     Public WithEvents lblProgress As System.Windows.Forms.Label
     Public WithEvents cmdTestFormulaFinder As System.Windows.Forms.Button
+    Public WithEvents cboFormulaFinderTestMode As System.Windows.Forms.ComboBox
     Public WithEvents lblDLLVersion As System.Windows.Forms.Label
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
@@ -100,6 +105,7 @@ Friend Class frmMwtWinDllTest
         Me.lblDLLVersion = New System.Windows.Forms.Label()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.cmdTestFormulaFinder = New System.Windows.Forms.Button()
+        Me.cboFormulaFinderTestMode = New System.Windows.Forms.ComboBox()
         CType(Me.dgDataGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -354,7 +360,7 @@ Friend Class frmMwtWinDllTest
         Me.dgDataGrid.HeaderForeColor = System.Drawing.SystemColors.ControlText
         Me.dgDataGrid.Location = New System.Drawing.Point(432, 89)
         Me.dgDataGrid.Name = "dgDataGrid"
-        Me.dgDataGrid.Size = New System.Drawing.Size(417, 396)
+        Me.dgDataGrid.Size = New System.Drawing.Size(540, 396)
         Me.dgDataGrid.TabIndex = 20
         '
         'rtfFormula
@@ -427,10 +433,25 @@ Friend Class frmMwtWinDllTest
         Me.cmdTestFormulaFinder.Location = New System.Drawing.Point(743, 10)
         Me.cmdTestFormulaFinder.Name = "cmdTestFormulaFinder"
         Me.cmdTestFormulaFinder.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdTestFormulaFinder.Size = New System.Drawing.Size(107, 51)
+        Me.cmdTestFormulaFinder.Size = New System.Drawing.Size(161, 33)
         Me.cmdTestFormulaFinder.TabIndex = 26
         Me.cmdTestFormulaFinder.Text = "Test Formula Finder"
         Me.cmdTestFormulaFinder.UseVisualStyleBackColor = False
+        '
+        'cboFormulaFinderTestMode
+        '
+        Me.cboFormulaFinderTestMode.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboFormulaFinderTestMode.BackColor = System.Drawing.SystemColors.Window
+        Me.cboFormulaFinderTestMode.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboFormulaFinderTestMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboFormulaFinderTestMode.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cboFormulaFinderTestMode.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboFormulaFinderTestMode.Location = New System.Drawing.Point(743, 46)
+        Me.cboFormulaFinderTestMode.Name = "cboFormulaFinderTestMode"
+        Me.cboFormulaFinderTestMode.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboFormulaFinderTestMode.Size = New System.Drawing.Size(239, 24)
+        Me.cboFormulaFinderTestMode.TabIndex = 27
         '
         'frmMwtWinDllTest
         '
@@ -438,7 +459,8 @@ Friend Class frmMwtWinDllTest
         Me.AutoScaleBaseSize = New System.Drawing.Size(6, 16)
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.cmdClose
-        Me.ClientSize = New System.Drawing.Size(872, 505)
+        Me.ClientSize = New System.Drawing.Size(995, 505)
+        Me.Controls.Add(Me.cboFormulaFinderTestMode)
         Me.Controls.Add(Me.cmdTestFormulaFinder)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.lblDLLVersion)
@@ -609,25 +631,24 @@ Friend Class frmMwtWinDllTest
         myDataSet.Tables.Add(tDataTable)
 
         ' Populates the table. 
-        Dim newRow1 As DataRow
+        Dim newRow As DataRow
 
-        ' Create rows in the Customers Table.
+        ' Append rows to the table.
         Dim lngIndex As Integer
 
         For lngIndex = 0 To lngIonCount - 1
-            newRow1 = tDataTable.NewRow()
-            newRow1("Mass") = udtFragSpectrum(lngIndex).Mass
-            newRow1("Intensity") = udtFragSpectrum(lngIndex).Intensity
-            newRow1("Symbol") = udtFragSpectrum(lngIndex).Symbol
-            ' Add the row to the Customers table.
-            tDataTable.Rows.Add(newRow1)
+            newRow = tDataTable.NewRow()
+            newRow("Mass") = udtFragSpectrum(lngIndex).Mass
+            newRow("Intensity") = udtFragSpectrum(lngIndex).Intensity
+            newRow("Symbol") = udtFragSpectrum(lngIndex).Symbol
+            tDataTable.Rows.Add(newRow)
         Next lngIndex
 
     End Sub
 
     Private Sub MakePercentCompositionDataSet(ByVal intElementCount As Short, ByVal strPctCompositions() As String)
 
-		Dim strSymbol As String = String.Empty
+        Dim strSymbol As String = String.Empty
 
         ' Create a DataSet.
         myDataSet = New DataSet("myDataSet")
@@ -647,20 +668,19 @@ Friend Class frmMwtWinDllTest
         myDataSet.Tables.Add(tDataTable)
 
         ' Populates the table. 
-        Dim newRow1 As DataRow
+        Dim newRow As DataRow
 
-        ' Create rows in the Customers Table.
-		For intIndex As Short = 1 To intElementCount
-			If strPctCompositions(intIndex) <> "" Then
-				mMwtWin.GetElement(intIndex, strSymbol, 0, 0, 0, 0)
-				newRow1 = tDataTable.NewRow()
-				newRow1("Element") = strSymbol
-				newRow1("Pct Comp") = strPctCompositions(intIndex)
-				' Add the row to the Customers table.
-				tDataTable.Rows.Add(newRow1)
-			End If
+        ' Append rows to the table.
+        For intIndex As Short = 1 To intElementCount
+            If strPctCompositions(intIndex) <> "" Then
+                mMwtWin.GetElement(intIndex, strSymbol, 0, 0, 0, 0)
+                newRow = tDataTable.NewRow()
+                newRow("Element") = strSymbol
+                newRow("Pct Comp") = strPctCompositions(intIndex)
+                tDataTable.Rows.Add(newRow)
+            End If
 
-		Next intIndex
+        Next intIndex
 
     End Sub
 
@@ -681,20 +701,30 @@ Friend Class frmMwtWinDllTest
             .SelectedIndex = 0
         End With
 
+        With cboFormulaFinderTestMode
+            .Items.Clear()
+            .Items.Add("Match 200 Da, +/- 0.05 Da")
+            .Items.Add("Match 200 Da, +/- 250 ppm")
+            .Items.Add("Match 200 Da, +/- 250 ppm, limit charge range")
+            .Items.Add("Match 100 m/z, +/- 250 ppm")
+            .Items.Add("Match percent composition values")
+            .Items.Add("Match 200 Da, +/- 250 ppm, Bounded search")
+            .SelectedIndex = 0
+        End With
 
     End Sub
 
     Public Sub TestAccessFunctions()
-		Dim intResult As Integer
+        Dim intResult As Integer
         Dim lngIndex As Integer
         Dim lngItemCount As Integer
-		Dim strSymbol As String = String.Empty
-		Dim strFormula As String = String.Empty
+        Dim strSymbol As String = String.Empty
+        Dim strFormula As String = String.Empty
         Dim sngCharge As Single
         Dim blnIsAminoAcid As Boolean
-		Dim strOneLetterSymbol As String = String.Empty
-		Dim strComment As String = String.Empty
-		Dim strStatement As String = String.Empty
+        Dim strOneLetterSymbol As String = String.Empty
+        Dim strComment As String = String.Empty
+        Dim strStatement As String = String.Empty
         Dim dblMass As Double
         Dim dblUncertainty As Double
         Dim intIsotopeCount, intIsotopeCount2 As Short
@@ -712,46 +742,46 @@ Friend Class frmMwtWinDllTest
         With mMwtWin
             ' Test Abbreviations
             lngItemCount = .GetAbbreviationCount
-			For intIndex As Integer = 1 To lngItemCount
-				intResult = .GetAbbreviation(intIndex, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment)
-				System.Diagnostics.Debug.Assert(intResult = 0, "")
-				System.Diagnostics.Debug.Assert(.GetAbbreviationID(strSymbol) = intIndex, "")
+            For intIndex As Integer = 1 To lngItemCount
+                intResult = .GetAbbreviation(intIndex, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment)
+                System.Diagnostics.Debug.Assert(intResult = 0, "")
+                System.Diagnostics.Debug.Assert(.GetAbbreviationID(strSymbol) = intIndex, "")
 
-				intResult = .SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment)
-				System.Diagnostics.Debug.Assert(intResult = 0, "")
-			Next intIndex
+                intResult = .SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment)
+                System.Diagnostics.Debug.Assert(intResult = 0, "")
+            Next intIndex
 
             ' Test Caution statements
             lngItemCount = .GetCautionStatementCount
-			For intIndex As Integer = 1 To lngItemCount
-				intResult = .GetCautionStatement(intIndex, strSymbol, strStatement)
-				System.Diagnostics.Debug.Assert(intResult = 0, "")
-				System.Diagnostics.Debug.Assert(.GetCautionStatementID(strSymbol) = intIndex, "")
+            For intIndex As Integer = 1 To lngItemCount
+                intResult = .GetCautionStatement(intIndex, strSymbol, strStatement)
+                System.Diagnostics.Debug.Assert(intResult = 0, "")
+                System.Diagnostics.Debug.Assert(.GetCautionStatementID(strSymbol) = intIndex, "")
 
-				intResult = .SetCautionStatement(strSymbol, strStatement)
-				System.Diagnostics.Debug.Assert(intResult = 0, "")
-			Next intIndex
+                intResult = .SetCautionStatement(strSymbol, strStatement)
+                System.Diagnostics.Debug.Assert(intResult = 0, "")
+            Next intIndex
 
             ' Test Element access
             lngItemCount = .GetElementCount
-			For intIndex As Integer = 1 To lngItemCount
-				intResult = .GetElement(CShort(intIndex), strSymbol, dblMass, dblUncertainty, sngCharge, intIsotopeCount)
-				System.Diagnostics.Debug.Assert(intResult = 0, "")
-				System.Diagnostics.Debug.Assert(.GetElementID(strSymbol) = intIndex, "")
+            For intIndex As Integer = 1 To lngItemCount
+                intResult = .GetElement(CShort(intIndex), strSymbol, dblMass, dblUncertainty, sngCharge, intIsotopeCount)
+                System.Diagnostics.Debug.Assert(intResult = 0, "")
+                System.Diagnostics.Debug.Assert(.GetElementID(strSymbol) = intIndex, "")
 
-				intResult = .SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, False)
-				System.Diagnostics.Debug.Assert(intResult = 0, "")
+                intResult = .SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, False)
+                System.Diagnostics.Debug.Assert(intResult = 0, "")
 
-				ReDim dblIsotopeMasses(intIsotopeCount + 1)
-				ReDim sngIsotopeAbundances(intIsotopeCount + 1)
+                ReDim dblIsotopeMasses(intIsotopeCount + 1)
+                ReDim sngIsotopeAbundances(intIsotopeCount + 1)
 
-				intResult = .GetElementIsotopes(CShort(intIndex), intIsotopeCount2, dblIsotopeMasses, sngIsotopeAbundances)
-				System.Diagnostics.Debug.Assert(intIsotopeCount = intIsotopeCount2, "")
-				System.Diagnostics.Debug.Assert(intResult = 0, "")
+                intResult = .GetElementIsotopes(CShort(intIndex), intIsotopeCount2, dblIsotopeMasses, sngIsotopeAbundances)
+                System.Diagnostics.Debug.Assert(intIsotopeCount = intIsotopeCount2, "")
+                System.Diagnostics.Debug.Assert(intResult = 0, "")
 
-				intResult = .SetElementIsotopes(strSymbol, intIsotopeCount, dblIsotopeMasses, sngIsotopeAbundances)
-				System.Diagnostics.Debug.Assert(intResult = 0, "")
-			Next intIndex
+                intResult = .SetElementIsotopes(strSymbol, intIsotopeCount, dblIsotopeMasses, sngIsotopeAbundances)
+                System.Diagnostics.Debug.Assert(intResult = 0, "")
+            Next intIndex
 
             ' Test Message Statements access
             lngItemCount = .GetMessageStatementCount
@@ -876,7 +906,7 @@ Friend Class frmMwtWinDllTest
         End With
 
 
-		Dim udtFragSpectrumOptions As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType = New MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType
+        Dim udtFragSpectrumOptions As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType = New MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType
         udtFragSpectrumOptions.Initialize()
 
         Dim udtFragSpectrum() As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType = Nothing
@@ -886,8 +916,8 @@ Friend Class frmMwtWinDllTest
 
         With mMwtWin.Peptide
 
-			.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G")
-			'.SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
+            .SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G")
+            '.SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
 
             ' Can change the terminii to various standard groups
             .SetNTerminusGroup(MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgCarbamyl)
@@ -907,7 +937,7 @@ Friend Class frmMwtWinDllTest
             objResults.AppendText(strNewSeq)
             .SetSequence(strNewSeq)
 
-			.SetSequence("K.TQPLE*VK.-", MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode:=False)
+            .SetSequence("K.TQPLE*VK.-", MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode:=False)
 
             objResults.AppendText(.GetSequence(True, False, True, False))
             objResults.AppendText(.GetSequence(False, True, False, False))
@@ -940,50 +970,239 @@ Friend Class frmMwtWinDllTest
 
         Dim intSuccess As Short
         Dim strResults As String = String.Empty
-		Dim ConvolutedMSData2DOneBased(,) As Double
-		Dim ConvolutedMSDataCount As Integer
+        Dim ConvolutedMSData2DOneBased(,) As Double
+        Dim ConvolutedMSDataCount As Integer
 
-		With mMwtWin
-			' Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
-			Dim intChargeState As Short = 1
-			Dim blnAddProtonChargeCarrier As Boolean = True
-			objResults.AppendText("Isotopic abundance test with Charge=" & intChargeState)
+        With mMwtWin
+            ' Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
+            Dim intChargeState As Short = 1
+            Dim blnAddProtonChargeCarrier As Boolean = True
+            objResults.AppendText("Isotopic abundance test with Charge=" & intChargeState)
 
-			ReDim ConvolutedMSData2DOneBased(0, 1)
-			intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount)
-			objResults.AppendText(strResults)
+            ReDim ConvolutedMSData2DOneBased(0, 1)
+            intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount)
+            objResults.AppendText(strResults)
 
-			objResults.AppendText("Convert isotopic distribution to gaussian")
-			Dim lstXYVals = New Generic.List(Of Generic.KeyValuePair(Of Double, Double))
-			For intIndex As Integer = 1 To ConvolutedMSDataCount
-				lstXYVals.Add(New Generic.KeyValuePair(Of Double, Double)(ConvolutedMSData2DOneBased(intIndex, 0), ConvolutedMSData2DOneBased(intIndex, 1)))
-			Next
-			Dim intResolution As Integer = 2000
-			Dim dblResolutionMass As Double = 1000
-			Dim intQualityFactor As Integer = 50
+            objResults.AppendText("Convert isotopic distribution to gaussian")
+            Dim lstXYVals = New Generic.List(Of Generic.KeyValuePair(Of Double, Double))
+            For intIndex As Integer = 1 To ConvolutedMSDataCount
+                lstXYVals.Add(New Generic.KeyValuePair(Of Double, Double)(ConvolutedMSData2DOneBased(intIndex, 0), ConvolutedMSData2DOneBased(intIndex, 1)))
+            Next
+            Dim intResolution As Integer = 2000
+            Dim dblResolutionMass As Double = 1000
+            Dim intQualityFactor As Integer = 50
 
-			Dim lstGaussianData = .ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor)
+            Dim lstGaussianData = .ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor)
 
-			Dim sbResults As New System.Text.StringBuilder
-			sbResults.AppendLine("m/z" & ControlChars.Tab & "Intensity")
-			For intIndex As Integer = 0 To lstGaussianData.Count - 1
-				If lstGaussianData(intIndex).Key >= 15175 AndAlso lstGaussianData(intIndex).Key < 15193 Then
-					sbResults.AppendLine(lstGaussianData(intIndex).Key.ToString("0.000") & ControlChars.Tab & lstGaussianData(intIndex).Value.ToString("0.000"))
-				End If
-			Next
-			objResults.AppendText(sbResults.ToString)
+            Dim sbResults As New System.Text.StringBuilder
+            sbResults.AppendLine("m/z" & ControlChars.Tab & "Intensity")
+            For intIndex As Integer = 0 To lstGaussianData.Count - 1
+                If lstGaussianData(intIndex).Key >= 15175 AndAlso lstGaussianData(intIndex).Key < 15193 Then
+                    sbResults.AppendLine(lstGaussianData(intIndex).Key.ToString("0.000") & ControlChars.Tab & lstGaussianData(intIndex).Value.ToString("0.000"))
+                End If
+            Next
+            objResults.AppendText(sbResults.ToString)
 
-			blnAddProtonChargeCarrier = False
-			objResults.AppendText("Isotopic abundance test with Charge=" & intChargeState & "; do not add a proton charge carrier")
-			intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, blnAddProtonChargeCarrier)
-			objResults.AppendText(strResults)
+            blnAddProtonChargeCarrier = False
+            objResults.AppendText("Isotopic abundance test with Charge=" & intChargeState & "; do not add a proton charge carrier")
+            intSuccess = .ComputeIsotopicAbundances("C1255H43O2Cl", intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, blnAddProtonChargeCarrier)
+            objResults.AppendText(strResults)
 
-		End With
+        End With
 
     End Sub
 
     Public Sub TestFormulaFinder()
-        Windows.Forms.MessageBox.Show("Not yet implemented")
+
+        Dim oMwtWin = New MolecularWeightCalculator()
+
+        oMwtWin.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
+        
+        oMwtWin.FormulaFinder.CandidateElements.Clear()
+
+        oMwtWin.FormulaFinder.AddCandidateElement("C")
+        oMwtWin.FormulaFinder.AddCandidateElement("H")
+        oMwtWin.FormulaFinder.AddCandidateElement("N")
+        oMwtWin.FormulaFinder.AddCandidateElement("O")
+
+        ' Abbreviations are supported, for example Serine
+        oMwtWin.FormulaFinder.AddCandidateElement("Ser")
+
+        Dim searchOptions = New clsFormulaFinderOptions()
+
+        searchOptions.LimitChargeRange = False
+        searchOptions.ChargeMin = 1
+        searchOptions.ChargeMax = 1
+        searchOptions.FindTargetMZ = False
+
+        cmdTestFormulaFinder.Enabled = False
+        Windows.Forms.Application.DoEvents()
+
+        If cboFormulaFinderTestMode.SelectedIndex = 0 Then FormulaFinderTest1(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text)
+
+        If cboFormulaFinderTestMode.SelectedIndex = 1 Then FormulaFinderTest2(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text)
+
+        If cboFormulaFinderTestMode.SelectedIndex = 2 Then FormulaFinderTest3(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text)
+
+        If cboFormulaFinderTestMode.SelectedIndex = 3 Then FormulaFinderTest4(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text)
+
+        If cboFormulaFinderTestMode.SelectedIndex = 4 Then FormulaFinderTest5(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text)
+
+        If cboFormulaFinderTestMode.SelectedIndex = 5 Then FormulaFinderTest6(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text)
+
+        cmdTestFormulaFinder.Enabled = True
+
+        If cboFormulaFinderTestMode.SelectedIndex > 5 Then
+            MessageBox.Show("Formula finder test mode not recognized", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+    End Sub
+
+    Private Sub FormulaFinderTest1(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+
+        ' Search for 200 Da, +/- 0.05 Da
+        Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMass(200, 0.05, searchOptions)
+        ShowFormulaFinderResults(currentTask, searchOptions, lstResults)
+
+    End Sub
+
+    Private Sub FormulaFinderTest2(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+
+        ' Search for 200 Da, +/- 250 ppm
+        Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
+        ShowFormulaFinderResults(currentTask, searchOptions, lstResults, True)
+
+    End Sub
+
+    Private Sub FormulaFinderTest3(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+
+        searchOptions.LimitChargeRange = True
+        searchOptions.ChargeMin = -4
+        searchOptions.ChargeMax = 6
+
+        ' Search for 200 Da, +/- 250 ppm
+        Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
+        ShowFormulaFinderResults(currentTask, searchOptions, lstResults, True)
+
+    End Sub
+
+    Private Sub FormulaFinderTest4(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+
+        searchOptions.LimitChargeRange = True
+        searchOptions.ChargeMin = -4
+        searchOptions.ChargeMax = 6
+        searchOptions.FindTargetMZ = True
+
+        ' Search for 100 m/z, +/- 250 ppm
+        Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(100, 250, searchOptions)
+        ShowFormulaFinderResults(currentTask, searchOptions, lstResults, True)
+
+    End Sub
+
+    Private Sub FormulaFinderTest5(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+
+        oMwtWin.FormulaFinder.CandidateElements.Clear()
+
+        oMwtWin.FormulaFinder.AddCandidateElement("C", 70)
+        oMwtWin.FormulaFinder.AddCandidateElement("H", 10)
+        oMwtWin.FormulaFinder.AddCandidateElement("N", 10)
+        oMwtWin.FormulaFinder.AddCandidateElement("O", 10)
+
+        ' Search for percent composition results, maximum mass 400 Da
+        Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByPercentComposition(400, 1, searchOptions)
+        ShowFormulaFinderResults(currentTask, searchOptions, lstResults, False, True)
+
+    End Sub
+
+    Private Sub FormulaFinderTest6(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+
+        searchOptions.SearchMode = clsFormulaFinderOptions.eSearchMode.Bounded
+
+        ' Search for 200 Da, +/- 250 ppm
+        Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
+        ShowFormulaFinderResults(currentTask, searchOptions, lstResults, True)
+
+    End Sub
+
+    Private Sub ShowFormulaFinderResults(
+      currentTask As String,
+      searchOptions As clsFormulaFinderOptions,
+      lstResults As List(Of clsFormulaFinderResult),
+      Optional deltaMassIsPPM As Boolean = False,
+      Optional percentCompositionSearch As Boolean = False)
+
+        myDataSet = New DataSet("myDataSet")
+
+        ' Create a DataTable.
+        Dim tDataTable As New DataTable("DataTable1")
+
+        Dim massColumnName As String
+        If deltaMassIsPPM Then
+            massColumnName = "DeltaPPM"
+        Else
+            massColumnName = "DeltaMass"
+        End If
+
+        ' Add coluns to the table
+        Dim cFormula As New DataColumn("Formula", GetType(String))
+        Dim cMass As New DataColumn("Mass", GetType(Double))
+        Dim cDeltaMass As New DataColumn(massColumnName, GetType(Double))
+        Dim cCharge As New DataColumn("Charge", GetType(Integer))
+        Dim cMZ As New DataColumn("M/Z", GetType(Double))
+        Dim cPercentComp As New DataColumn("PercentCompInfo", GetType(String))
+
+        tDataTable.Columns.Add(cFormula)
+        tDataTable.Columns.Add(cMass)
+        tDataTable.Columns.Add(cDeltaMass)
+        tDataTable.Columns.Add(cCharge)
+        tDataTable.Columns.Add(cMZ)
+        tDataTable.Columns.Add(cPercentComp)
+
+        If myDataSet.Tables.Count > 0 Then
+            myDataSet.Tables.Clear()
+        End If
+
+        ' Add the table to the DataSet.
+        myDataSet.Tables.Add(tDataTable)
+
+        ' Populates the table. 
+        Dim newRow As DataRow
+
+        Dim sbPercentCompInfo = New StringBuilder()
+
+        For Each result In lstResults
+            newRow = tDataTable.NewRow()
+            newRow("Formula") = result.EmpiricalFormula
+            newRow("Mass") = Math.Round(result.Mass, 4)
+
+            If deltaMassIsPPM Then
+                newRow(massColumnName) = result.DeltaMass.ToString("0.0")
+            Else
+                newRow(massColumnName) = result.DeltaMass.ToString("0.000")
+            End If
+
+            newRow("Charge") = result.ChargeState
+
+            If searchOptions.FindCharge Then
+                newRow("M/Z") = Math.Round(result.MZ, 3)
+            End If
+
+            If percentCompositionSearch Then
+
+                sbPercentCompInfo.Clear()
+
+                For Each percentCompValue In result.PercentComposition
+                    sbPercentCompInfo.Append(" " & percentCompValue.Key & "=" & percentCompValue.Value.ToString("0.00") & "%")
+                Next
+                newRow("PercentCompInfo") = sbPercentCompInfo.ToString().TrimStart()
+            Else
+                newRow("PercentCompInfo") = String.Empty
+            End If
+
+            tDataTable.Rows.Add(newRow)
+        Next
+
+        dgDataGrid.SetDataBinding(myDataSet, "DataTable1")
+
     End Sub
 
     Private Sub TestTrypticName()
@@ -1114,8 +1333,8 @@ Friend Class frmMwtWinDllTest
             Next lngResidueStart
             lngStopTime = GetTickCount()
             lngMwtWinWorkTime = lngStopTime - lngStartTime
-            System.Diagnostics.Debug.WriteLine("")
-            System.Diagnostics.Debug.WriteLine("MwtWin time (" & lngMwtWinResultCount & " peptides) = " & lngMwtWinWorkTime & " msec")
+            Console.WriteLine("")
+            Console.WriteLine("MwtWin time (" & lngMwtWinResultCount & " peptides) = " & lngMwtWinWorkTime & " msec")
 
             ''        lngIcr2lsResultCount = 0
             ''        Debug.Print "Starting residue is ";
