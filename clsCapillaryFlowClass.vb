@@ -214,13 +214,13 @@ Public Class MWCapillaryFlowClass
 
             dblRadius = .ColumnID / 2.0#
 
-            If dblRadius <> 0 Then
+            If Math.Abs(dblRadius) > Single.Epsilon Then
                 If .CapillaryType = ctCapillaryTypeConstants.ctOpenTubularCapillary Then
                     ' Open tubular capillary
                     dblBackPressure = (.VolumetricFlowRate * 8 * .SolventViscosity * .ColumnLength) / (dblRadius ^ 4 * PI * 60) ' Pressure in dynes/cm^2
                 Else
                     ' Packed capillary
-                    If .ParticleDiameter <> 0 And .InterparticlePorosity <> 0 Then
+                    If Math.Abs(.ParticleDiameter) > Single.Epsilon And Math.Abs(.InterparticlePorosity) > Single.Epsilon Then
                         ' Flow rate in mL/sec
                         dblBackPressure = (.VolumetricFlowRate * 180 * .SolventViscosity * .ColumnLength * (1 - .InterparticlePorosity) ^ 2) / (.ParticleDiameter ^ 2 * .InterparticlePorosity ^ 2 * PI * dblRadius ^ 2 * 60) / .InterparticlePorosity
                     Else
@@ -252,13 +252,13 @@ Public Class MWCapillaryFlowClass
 
             dblRadius = .ColumnID / 2.0#
 
-            If .SolventViscosity <> 0 And .VolumetricFlowRate <> 0 Then
+            If Math.Abs(.SolventViscosity) > Single.Epsilon And Math.Abs(.VolumetricFlowRate) > Single.Epsilon Then
                 If .CapillaryType = ctCapillaryTypeConstants.ctOpenTubularCapillary Then
                     ' Open tubular capillary
                     dblColumnLength = (.BackPressure * dblRadius ^ 4 * PI * 60) / (8 * .SolventViscosity * .VolumetricFlowRate) ' Column length in cm
                 Else
                     ' Packed capillary
-                    If .InterparticlePorosity <> 1 Then
+                    If Math.Abs(.InterparticlePorosity - 1) > Single.Epsilon Then
                         ' Flow rate in mL/sec
                         dblColumnLength = (.BackPressure * .ParticleDiameter ^ 2 * .InterparticlePorosity ^ 2 * PI * dblRadius ^ 2 * 60) * .InterparticlePorosity / (180 * .SolventViscosity * .VolumetricFlowRate * (1 - .InterparticlePorosity) ^ 2)
                     Else
@@ -307,13 +307,13 @@ Public Class MWCapillaryFlowClass
 
         With mCapillaryFlowParameters
 
-            If .BackPressure <> 0 Then
+            If Math.Abs(.BackPressure) > Single.Epsilon Then
                 If .CapillaryType = ctCapillaryTypeConstants.ctOpenTubularCapillary Then
                     ' Open tubular capillary
                     dblRadius = ((.VolumetricFlowRate * 8 * .SolventViscosity * .ColumnLength) / (.BackPressure * PI * 60)) ^ (0.25)
                 Else
                     ' Packed capillary
-                    If .ParticleDiameter <> 0 And .InterparticlePorosity <> 1 Then
+                    If Math.Abs(.ParticleDiameter) > Single.Epsilon And Math.Abs(.InterparticlePorosity - 1) > Single.Epsilon Then
                         ' Flow rate in mL/sec
                         dblRadius = ((.VolumetricFlowRate * 180 * .SolventViscosity * .ColumnLength * (1 - .InterparticlePorosity) ^ 2) / (.BackPressure * .ParticleDiameter ^ 2 * .InterparticlePorosity ^ 2 * PI * 60) / .InterparticlePorosity) ^ 0.5
                     Else
@@ -345,7 +345,7 @@ Public Class MWCapillaryFlowClass
 
         With mCapillaryFlowParameters
 
-            If .LinearVelocity <> 0 Then
+            If Math.Abs(.LinearVelocity) > Single.Epsilon Then
                 dblDeadTime = .ColumnLength / .LinearVelocity ' Dead time in minutes
             Else
                 dblDeadTime = 0
@@ -370,7 +370,7 @@ Public Class MWCapillaryFlowClass
         Dim dblSumOfVariances As Double
 
         With mExtraColumnBroadeningParameters
-            If .LinearVelocity <> 0 And .DiffusionCoefficient <> 0 Then
+            If Math.Abs(.LinearVelocity) > Single.Epsilon And Math.Abs(.DiffusionCoefficient) > Single.Epsilon Then
                 .TemporalVariance = .OpenTubeID ^ 2 * .OpenTubeLength / (96 * .DiffusionCoefficient * .LinearVelocity / 60) ' in sec^2
             Else
                 .TemporalVariance = 0
@@ -382,7 +382,7 @@ Public Class MWCapillaryFlowClass
 
             If dblSumOfVariances >= 0 Then
                 ' ResultantPeakWidth at the base = 4 sigma  and  sigma = Sqr(Total_Variance)
-                .ResultantPeakWidth = 4 * System.Math.Sqrt(dblSumOfVariances)
+                .ResultantPeakWidth = 4 * Math.Sqrt(dblSumOfVariances)
             Else
                 .ResultantPeakWidth = 0
             End If
@@ -400,11 +400,11 @@ Public Class MWCapillaryFlowClass
 
         With mCapillaryFlowParameters
             dblRadius = .ColumnID / 2.0#
-            If dblRadius <> 0 Then
+            If Math.Abs(dblRadius) > Single.Epsilon Then
                 dblLinearVelocity = .VolumetricFlowRate / (PI * dblRadius ^ 2) ' Units in cm/min
 
                 ' Divide Linear Velocity by epsilon if a packed capillary
-                If .CapillaryType = ctCapillaryTypeConstants.ctPackedCapillary And .InterparticlePorosity <> 0 Then
+                If .CapillaryType = ctCapillaryTypeConstants.ctPackedCapillary And Math.Abs(.InterparticlePorosity) > Single.Epsilon Then
                     dblLinearVelocity = dblLinearVelocity / .InterparticlePorosity
                 End If
             Else
@@ -453,7 +453,7 @@ Public Class MWCapillaryFlowClass
         Dim dblOptimumLinearVelocity As Double
 
         With mCapillaryFlowParameters
-            If .ParticleDiameter <> 0 Then
+            If Math.Abs(.ParticleDiameter) > Single.Epsilon Then
                 dblOptimumLinearVelocity = 3 * mExtraColumnBroadeningParameters.DiffusionCoefficient / .ParticleDiameter
 
                 dblOptimumLinearVelocity = ConvertLinearVelocity(dblOptimumLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerSec, eUnits)
@@ -478,7 +478,7 @@ Public Class MWCapillaryFlowClass
             dblKelvin = ConvertTemperature(dblTemperature, eTemperatureUnits, utpUnitsTemperatureConstants.utpKelvin)
 
             If dblKelvin > 0 Then
-                dblViscosityInCentiPoise = System.Math.Exp(dblPhi * (-3.476 + 726 / dblKelvin) + (1 - dblPhi) * (-5.414 + 1566 / dblKelvin) + dblPhi * (1 - dblPhi) * (-1.762 + 929 / dblKelvin))
+                dblViscosityInCentiPoise = Math.Exp(dblPhi * (-3.476 + 726 / dblKelvin) + (1 - dblPhi) * (-5.414 + 1566 / dblKelvin) + dblPhi * (1 - dblPhi) * (-1.762 + 929 / dblKelvin))
             Else
                 dblViscosityInCentiPoise = 0
             End If
@@ -500,13 +500,13 @@ Public Class MWCapillaryFlowClass
 
             dblRadius = .ColumnID / 2.0#
 
-            If .SolventViscosity <> 0 And .ColumnLength <> 0 Then
+            If Math.Abs(.SolventViscosity) > Single.Epsilon And Math.Abs(.ColumnLength) > Single.Epsilon Then
                 If .CapillaryType = ctCapillaryTypeConstants.ctOpenTubularCapillary Then
                     ' Open tubular capillary
                     dblVolFlowRate = (.BackPressure * dblRadius ^ 4 * PI) / (8 * .SolventViscosity * .ColumnLength) ' Flow rate in mL/sec
                 Else
                     ' Packed capillary
-                    If .InterparticlePorosity <> 1 Then
+                    If Math.Abs(.InterparticlePorosity - 1) > Single.Epsilon Then
                         ' Flow rate in mL/sec
                         dblVolFlowRate = (.BackPressure * .ParticleDiameter ^ 2 * .InterparticlePorosity ^ 2 * PI * dblRadius ^ 2) * .InterparticlePorosity / (180 * .SolventViscosity * .ColumnLength * (1 - .InterparticlePorosity) ^ 2)
                     Else
@@ -540,7 +540,7 @@ Public Class MWCapillaryFlowClass
             dblRadius = .ColumnID / 2.0#
 
             ' First find vol flow rate that gives observed dead time
-            If .ColumnDeadTime <> 0 Then
+            If Math.Abs(.ColumnDeadTime) > Single.Epsilon Then
 
                 dblVolFlowRate = .ColumnLength * (PI * dblRadius ^ 2) / .ColumnDeadTime ' Vol flow rate in mL/sec
 
@@ -580,14 +580,14 @@ Public Class MWCapillaryFlowClass
         dblSampleMass = mMassRateParameters.SampleMass
 
         dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblConcentrationIn * dblFactor
         End If
 
         dblFactor = FactorConcentration(eNewUnits, dblSampleMass)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -603,14 +603,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorDiffusionCoeff(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblDiffusionCoefficientIn * dblFactor
         End If
 
         dblFactor = FactorDiffusionCoeff(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             ConvertDiffusionCoefficient = -1
         Else
             ConvertDiffusionCoefficient = dblValue / dblFactor
@@ -626,14 +626,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorLength(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblLengthIn * dblFactor
         End If
 
         dblFactor = FactorLength(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -649,14 +649,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorLinearVelocity(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblLinearVelocityIn * dblFactor
         End If
 
         dblFactor = FactorLinearVelocity(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             ConvertLinearVelocity = -1
         Else
             ConvertLinearVelocity = dblValue / dblFactor
@@ -672,14 +672,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorMassFlowRate(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblMassFlowRateIn * dblFactor
         End If
 
         dblFactor = FactorMassFlowRate(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -695,14 +695,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorMoles(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblMolesIn * dblFactor
         End If
 
         dblFactor = FactorMoles(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -719,14 +719,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorPressure(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblPressureIn * dblFactor
         End If
 
         dblFactor = FactorPressure(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -782,14 +782,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorTime(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblTimeIn * dblFactor
         End If
 
         dblFactor = FactorTime(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -805,14 +805,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorViscosity(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblViscosityIn * dblFactor
         End If
 
         dblFactor = FactorViscosity(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -828,14 +828,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorVolFlowRate(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblVolFlowRateIn * dblFactor
         End If
 
         dblFactor = FactorVolFlowRate(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -851,14 +851,14 @@ Public Class MWCapillaryFlowClass
         End If
 
         dblFactor = FactorVolume(eCurrentUnits)
-        If dblFactor = -1 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
             Return -1
         Else
             dblValue = dblVolume * dblFactor
         End If
 
         dblFactor = FactorVolume(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -872,7 +872,7 @@ Public Class MWCapillaryFlowClass
     Private Function FactorConcentration(ByRef eUnits As ucoUnitsConcentrationConstants, Optional ByVal dblSampleMass As Double = 0) As Double
         Dim dblFactor As Double
 
-        If dblSampleMass = 0 Then
+        If Math.Abs(dblSampleMass) < Single.Epsilon Then
             dblFactor = -1
         Else
             Select Case eUnits
@@ -1233,14 +1233,14 @@ Public Class MWCapillaryFlowClass
         ComputeMassRateValues()
     End Sub
 
-    Public Function SetMassRateSampleMass(ByRef dblMassInGramsPerMole As Double) As Double
+    Public Sub SetMassRateSampleMass(ByRef dblMassInGramsPerMole As Double)
         If dblMassInGramsPerMole >= 0 Then
             mMassRateParameters.SampleMass = dblMassInGramsPerMole
         Else
             mMassRateParameters.SampleMass = 0
         End If
         ComputeMassRateValues()
-    End Function
+    End Sub
 
     Public Sub SetMassRateVolFlowRate(ByRef dblVolFlowRate As Double, Optional ByRef eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin)
         mMassRateParameters.VolumetricFlowRate = ConvertVolFlowRate(dblVolFlowRate, eUnits, ufrUnitsFlowRateConstants.ufrMLPerMin)
