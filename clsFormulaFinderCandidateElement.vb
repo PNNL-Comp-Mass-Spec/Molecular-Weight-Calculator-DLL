@@ -27,9 +27,9 @@
 
     Public Overrides Function ToString() As String
         If Symbol = mOriginalName Then
-            Return Symbol & ": " & Mass.ToString("0.0000") & " Da"
+            Return Symbol & ": " & Mass.ToString("0.0000") & " Da, charge " & Charge.ToString()
         Else
-            Return mOriginalName & "(" & Symbol & "): " & Mass.ToString("0.0000") & " Da"
+            Return mOriginalName & "(" & Symbol & "): " & Mass.ToString("0.0000") & " Da, charge " & Charge.ToString()
         End If
     End Function
 End Class

@@ -879,7 +879,7 @@ Friend Class frmMwtWinDllTest
 		Dim udtFragSpectrumOptions As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType = New MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType
         udtFragSpectrumOptions.Initialize()
 
-        Dim udtFragSpectrum() As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType
+        Dim udtFragSpectrum() As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType = Nothing
         Dim lngIonCount As Integer
         Dim strNewSeq As String
 

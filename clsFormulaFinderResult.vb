@@ -14,7 +14,6 @@ Public Class clsFormulaFinderResult
     End Property
 
     Public Property Mass As Double
-    Public Property MassError As Double
     Public Property DeltaMass As Double
     Public Property DeltaMassIsPPM As Boolean
     Public Property MZ As Double

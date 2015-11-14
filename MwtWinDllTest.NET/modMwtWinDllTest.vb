@@ -1,6 +1,7 @@
 Option Strict On
 Option Explicit On
 
+Imports System.Collections.Generic
 Imports MwtWinDll
 
 Module modMwtWinDllTest
@@ -39,22 +40,65 @@ Module modMwtWinDllTest
 
         oMwtWin.FormulaFinder.CandidateElements.Clear()
 
-        oMwtWin.FormulaFinder.AddCandidateElement("C", 66)
-        oMwtWin.FormulaFinder.AddCandidateElement("H", 5)
-        oMwtWin.FormulaFinder.AddCandidateElement("N", 14)
-        oMwtWin.FormulaFinder.AddCandidateElement("O", 5)
-        oMwtWin.FormulaFinder.AddCandidateElement("Ser", 10)
+        oMwtWin.FormulaFinder.AddCandidateElement("C", 70)
+        oMwtWin.FormulaFinder.AddCandidateElement("H", 10)
+        oMwtWin.FormulaFinder.AddCandidateElement("N", 10)
+        oMwtWin.FormulaFinder.AddCandidateElement("O", 10)
+        'oMwtWin.FormulaFinder.AddCandidateElement("Ser", 10)
 
-        'Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMass(200, 0.05, searchOptions)
+        searchOptions.LimitChargeRange = False
+        searchOptions.ChargeMin = 1
+        searchOptions.ChargeMax = 1
+        searchOptions.FindTargetMZ = False
+
+        ' Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMass(200, 0.05, searchOptions)
         'Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
 
+        Dim percentCompSearch = True
         Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByPercentComposition(400, 1, searchOptions)
 
-        Console.WriteLine("Results")
+        ' Dim lstResults = TestBoundedsearch(oMwtWin)
+
+        Console.WriteLine("Result count: " & lstResults.Count)
+        Console.WriteLine()
 
         For Each result In lstResults
-            Console.WriteLine(result.ToString())
+            Console.Write(result.ToString() & ", charge " & result.ChargeState)
+            If searchOptions.FindCharge Then
+                Console.Write(", " & result.MZ.ToString("0.000") & " m/z")
+            End If
+            Console.WriteLine()
+
+            If percentCompSearch Then
+                Console.Write(" has")
+                For Each percentCompValue In result.PercentComposition
+                    Console.Write(" " & percentCompValue.Key & "=" & percentCompValue.Value.ToString("0.00") & "%")
+                Next
+
+                Console.WriteLine()
+            End If
         Next
 
     End Sub
+
+    Private Function TestBoundedsearch(oMwtWin As MolecularWeightCalculator) As List(Of clsFormulaFinderResult)
+
+        Dim searchOptions = New clsFormulaFinderOptions()
+
+        searchOptions.SearchMode = clsFormulaFinderOptions.eSearchMode.Bounded
+        searchOptions.FindCharge = True
+
+        oMwtWin.FormulaFinder.CandidateElements.Clear()
+
+        oMwtWin.FormulaFinder.AddCandidateElement("C", 0, 39)
+        oMwtWin.FormulaFinder.AddCandidateElement("H", 0, 224)
+        oMwtWin.FormulaFinder.AddCandidateElement("N", 0, 33)
+        oMwtWin.FormulaFinder.AddCandidateElement("O", 0, 29)
+        oMwtWin.FormulaFinder.AddCandidateElement("Ser", 0, 6)
+
+        Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
+
+        Return lstResults
+
+    End Function
 End Module

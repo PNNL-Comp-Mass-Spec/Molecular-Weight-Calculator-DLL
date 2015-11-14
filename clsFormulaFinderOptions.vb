@@ -1,9 +1,19 @@
 ﻿Public Class clsFormulaFinderOptions
 
+#Region "Contants and Enums"
+    Public Enum eSearchMode
+        Thorough = 0
+        Bounded = 1
+    End Enum
+#End Region
+
+#Region "Member Variables"
     Private mFindCharge As Boolean
     Private mLimitChargeRange As Boolean
-    Private mComputeMZ As Boolean
     Private mFindTargetMZ As Boolean
+#End Region
+
+#Region "Properties"
 
     ''' <summary>
     ''' When true, compute the overall charge of each compound
@@ -19,7 +29,6 @@
             If mFindCharge = False Then
                 ' Auto-disable a few options
                 mLimitChargeRange = False
-                mComputeMZ = False
                 mFindTargetMZ = False
             End If
 
@@ -59,22 +68,6 @@
     Public Property ChargeMax As Integer
 
     ''' <summary>
-    ''' Set to true to report the m/z value of identified compounds
-    ''' </summary>
-    ''' <remarks>Only valid if FindCharge is True.  Setting to false auto-sets FindTargetMZ to false</remarks>
-    Public Property ComputeMZ As Boolean
-        Get
-            Return mComputeMZ
-        End Get
-        Set(value As Boolean)
-            mComputeMZ = value
-            If mComputeMZ = False Then
-                mFindTargetMZ = False
-            End If
-        End Set
-    End Property
-
-    ''' <summary>
     ''' Set to true to search for a target m/z value instead of a target mass
     ''' </summary>
     ''' <remarks>Setting this to True auto-sets FindCharge and LimitChargeRange to True</remarks>
@@ -91,17 +84,23 @@
         End Set
     End Property
 
+    Public Property SearchMode As eSearchMode
+
+    Public Property VerifyHydrogens As Boolean
+
+#End Region
+
     ''' <summary>
     ''' Constructor
     ''' </summary>
     ''' <remarks></remarks>
     Public Sub New()
-        FindCharge = False
+        FindCharge = True
         LimitChargeRange = False
         ChargeMin = -4
         ChargeMax = 4
-        ComputeMZ = False
         FindTargetMZ = False
+        SearchMode = eSearchMode.Thorough
+        VerifyHydrogens = True
     End Sub
-
 End Class
