@@ -30,11 +30,11 @@ Public Class MolecularWeightCalculator
     ' this computer software.
 
 
-    Private Const PROGRAM_DATE As String = "November 6, 2015"
+    Private Const PROGRAM_DATE As String = "July 14,2016"
 
     Public Sub New()
 
-        mElementAndMassRoutines = New MWElementAndMassRoutines
+        mElementAndMassRoutines = New MWElementAndMassRoutines()
 
         Compound = New MWCompoundClass(mElementAndMassRoutines)
         Peptide = New MWPeptideClass(mElementAndMassRoutines)
@@ -45,6 +45,10 @@ Public Class MolecularWeightCalculator
 
     End Sub
 
+    Public Sub New(elementMode As MWElementAndMassRoutines.emElementModeConstants)
+        Me.New()
+        Me.SetElementMode(elementMode)
+    End Sub
 
 #Region "Constants and Enums"
 
