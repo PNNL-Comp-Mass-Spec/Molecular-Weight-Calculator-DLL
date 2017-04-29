@@ -1,0 +1,7 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+build:
+  project: MwtWinDll.sln
+  verbosity: minimal
+artifacts:
+- path: bin\MwtWinDll.dll
