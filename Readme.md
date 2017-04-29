@@ -10,7 +10,7 @@ DLL in a .NET project.
 
 ### Continuous Integration
 
-Obtain the DLL from the AppVeyor CI server
+Obtain the DLL from the [AppVeyor CI server](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll/build/artifacts)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/akbap1xwd92flnsv?svg=true)](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll)
 
