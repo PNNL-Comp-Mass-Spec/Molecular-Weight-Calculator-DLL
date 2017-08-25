@@ -14,7 +14,8 @@ Obtain the DLL from the [AppVeyor CI server](https://ci.appveyor.com/project/PNN
 
 [![Build status](https://ci.appveyor.com/api/projects/status/akbap1xwd92flnsv?svg=true)](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll)
 
--------------------------------------------------------------------------------
+## Contacts
+
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) \
 Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002 \
 VB6 ActiveX Dll version written by Matthew Monroe in 2002 \
@@ -22,7 +23,8 @@ Ported to VB.NET by Nikša Blonder and Matthew Monroe in 2005 \
 
 E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com \
 Website: http://omics.pnl.gov/ or http://www.sysbio.org/resources/staff/
--------------------------------------------------------------------------------
+
+## License
 
 Licensed under the Apache License, Version 2.0; you may not use this file except 
 in compliance with the License.  You may obtain a copy of the License at 
