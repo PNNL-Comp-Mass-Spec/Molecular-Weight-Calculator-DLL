@@ -1,6 +1,6 @@
 ﻿Public Class clsFormulaFinderOptions
 
-#Region "Contants and Enums"
+#Region "Constants and Enums"
     Public Enum eSearchMode
         Thorough = 0
         Bounded = 1

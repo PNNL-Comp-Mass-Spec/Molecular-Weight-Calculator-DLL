@@ -210,7 +210,7 @@ Public Class MWElementAndMassRoutines
     Private ElementStats() As udtElementStatsType ' 1 to ELEMENT_COUNT
 
     ' No number for array size since we dynamically allocate memory for it
-    Private MasterSymbolsList(,) As String ' Stores the element symbols, abbreviations, & amino acids in order of longest symbol length to shortest length, non-alphabatized, for use in symbol matching when parsing a formula; 1 To MasterSymbolsListcount
+    Private MasterSymbolsList(,) As String ' Stores the element symbols, abbreviations, & amino acids in order of longest symbol length to shortest length, non-alphabetized, for use in symbol matching when parsing a formula; 1 To MasterSymbolsListCount
     Private MasterSymbolsListCount As Short
 
     Private AbbrevStats() As udtAbbrevStatsType ' Includes both abbreviations and amino acids; 1-based array
@@ -422,7 +422,7 @@ Public Class MWElementAndMassRoutines
         Dim eSymbolMatchType As smtSymbolMatchTypeConstants
 
         ' MasterSymbolsList() stores the element symbols, abbreviations, & amino acids in order of longest length to
-        '   shortest length, non-alphabatized, for use in symbol matching when parsing a formula
+        '   shortest length, non-alphabetized, for use in symbol matching when parsing a formula
 
         ' MasterSymbolsList(intIndex,0) contains the symbol to be matched
         ' MasterSymbolsList(intIndex,1) contains E for element, A for amino acid, or N for normal abbreviation, followed by
@@ -485,7 +485,7 @@ Public Class MWElementAndMassRoutines
     ''' M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
     ''' </summary>
     ''' <param name="strFormulaIn">The properly formatted formula to parse</param>
-    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z vlaues</param>
+    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
     ''' <param name="strResults">Table of results</param>
     ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
     ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
@@ -515,11 +515,11 @@ Public Class MWElementAndMassRoutines
     ''' M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
     ''' </summary>
     ''' <param name="strFormulaIn">The properly formatted formula to parse</param>
-    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z vlaues</param>
+    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
     ''' <param name="strResults">Table of results</param>
     ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
     ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    ''' <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convlutes by charge, but doesn't add a proton</param>
+    ''' <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
     ''' <returns>0 if success, -1 if an error</returns>
     ''' <remarks></remarks>
     Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String,
@@ -546,16 +546,16 @@ Public Class MWElementAndMassRoutines
     ''' M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
     ''' </summary>
     ''' <param name="strFormulaIn">The properly formatted formula to parse</param>
-    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z vlaues</param>
+    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
     ''' <param name="strResults">Table of results</param>
     ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
     ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    ''' <param name="strHeaderIsotopicAbundances">Header to use in strResultes</param>
-    ''' <param name="strHeaderMassToCharge">Header to use in strResultes</param>
-    ''' <param name="strHeaderFraction">Header to use in strResultes</param>
-    ''' <param name="strHeaderIntensity">Header to use in strResultes</param>
+    ''' <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
+    ''' <param name="strHeaderMassToCharge">Header to use in strResults</param>
+    ''' <param name="strHeaderFraction">Header to use in strResults</param>
+    ''' <param name="strHeaderIntensity">Header to use in strResults</param>
     ''' <param name="blnUseFactorials">Set to true to use Factorial math, which is typically slower; default is False</param>
-    ''' <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convlutes by charge, but doesn't add a proton</param>
+    ''' <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
     ''' <returns>0 if success, -1 if an error</returns>
     ''' <remarks></remarks>
     Public Function ComputeIsotopicAbundancesInternal(ByRef strFormulaIn As String,
@@ -572,7 +572,7 @@ Public Class MWElementAndMassRoutines
 
         ' Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
         '  M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
-        ' If blnAddProtonChargeCarrier is False, then still convlutes by charge, but doesn't add a proton
+        ' If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton
         ' Updates strFormulaIn to the properly formatted formula
         ' Returns the results in strResults
         ' Returns 0 if success, or -1 if an error
@@ -583,7 +583,7 @@ Public Class MWElementAndMassRoutines
         Dim intElementIndex, intElementCount As Short
         Dim massIndex, rowIndex As Integer
 
-        Dim udtComputationStats As udtComputationStatsType = New udtComputationStatsType
+        Dim udtComputationStats = New udtComputationStatsType
         udtComputationStats.Initialize()
 
         Dim dblTemp As Double
@@ -3274,7 +3274,7 @@ Public Class MWElementAndMassRoutines
                 End With
             Next intElementIndex
 
-            ' Alphabatize ElementAlph() array via bubble sort
+            ' Alphabetize ElementAlph() array via bubble sort
             For intCompareIndex = ELEMENT_COUNT To 2 Step -1 ' Sort from end to start
                 For intIndex = 1 To intCompareIndex - 1S
                     If ElementAlph(intIndex) > ElementAlph(intIndex + 1) Then
