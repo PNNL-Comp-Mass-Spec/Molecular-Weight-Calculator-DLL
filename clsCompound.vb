@@ -1,5 +1,7 @@
 Option Strict On
 
+Imports System.Collections.Generic
+
 Public Class MWCompoundClass
 
     ' Molecular Weight Calculator routines with ActiveX Class interfaces: MWCompoundClass
@@ -153,42 +155,43 @@ Public Class MWCompoundClass
 
     End Function
 
-    Public Sub GetPercentCompositionForAllElements(ByRef strPctCompositionsOneBased() As String)
+    ''' <summary>
+    ''' Get the percent composition for all elements in an empirical formula
+    ''' </summary>
+    ''' <returns>
+    ''' Dictionary of percent composition values
+    ''' Keys are element symbols; values are the percent composition
+    ''' </returns>
+    Public Function GetPercentCompositionForAllElements() As Dictionary(Of String, String)
         ' Returns the percent composition for all elements in strPctCompositionsOneBased
 
-        Dim intElementIndex, intMaxIndex As Short
+        Dim percentCompositionByElement = New Dictionary(Of String, String)
 
         Try
-            intMaxIndex = CShort(UBound(strPctCompositionsOneBased))
-
-            If intMaxIndex < MWElementAndMassRoutines.ELEMENT_COUNT Then
-                ' Try to reserve more space in strPctCompositionsOneBased()
-                Try
-                    ReDim strPctCompositionsOneBased(MWElementAndMassRoutines.ELEMENT_COUNT)
-                    intMaxIndex = CShort(UBound(strPctCompositionsOneBased))
-                Catch ex As Exception
-                    ' Ignore errors; probably a fixed length array that cannot be resized
-                End Try
-            End If
-
-            If intMaxIndex >= MWElementAndMassRoutines.ELEMENT_COUNT Then intMaxIndex = MWElementAndMassRoutines.ELEMENT_COUNT
 
             ElementAndMassRoutines.ComputePercentComposition(mComputationStats)
 
-            For intElementIndex = 1 To intMaxIndex
-                With mComputationStats.PercentCompositions(intElementIndex)
-                    If .PercentComposition > 0 Then
-                        strPctCompositionsOneBased(intElementIndex) = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(.PercentComposition, .StdDeviation)
-                    Else
-                        strPctCompositionsOneBased(intElementIndex) = ""
+            For elementId As Short = 1 To MWElementAndMassRoutines.ELEMENT_COUNT
+                If mComputationStats.PercentCompositions(elementId).PercentComposition > 0 Then
+                    Dim percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(
+                        mComputationStats.PercentCompositions(elementId).PercentComposition,
+                        mComputationStats.PercentCompositions(elementId).StdDeviation)
+
+                    Dim elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId)
+
+                    If Not percentCompositionByElement.ContainsKey(elementSymbol) Then
+                        percentCompositionByElement.Add(elementSymbol, percentCompositionAndStDev)
                     End If
-                End With
-            Next intElementIndex
+                End If
+
+            Next elementId
         Catch ex As Exception
             System.Diagnostics.Debug.WriteLine("Error occurred while copying percent composition values.  Probably an uninitialized array.")
         End Try
 
-    End Sub
+        Return percentCompositionByElement
+
+    End Function
 
     Public Function GetUsedElementCount() As Short
         ' Returns the number of unique elements present in mStrFormula

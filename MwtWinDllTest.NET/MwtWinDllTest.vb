@@ -552,27 +552,15 @@ Friend Class frmMwtWinDllTest
     End Sub
 
     Private Sub FindPercentComposition()
-        Dim intElementCount As Short
-        Dim dblPctCompForCarbon As Double
-        Dim strPctCompForCarbon As String
 
+        mMwtWin.Compound.Formula = txtFormula.Text
 
-        Dim strPctCompositions() As String
+        Dim dblPctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElement(6)
+        Dim strPctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElementAsString(6)
 
-        With mMwtWin.Compound
-            .Formula = txtFormula.Text
+        Dim percentCompositionByElement As Dictionary(Of String, String) = mMwtWin.Compound.GetPercentCompositionForAllElements()
 
-            dblPctCompForCarbon = .GetPercentCompositionForElement(6)
-            strPctCompForCarbon = .GetPercentCompositionForElementAsString(6)
-
-            intElementCount = CShort(mMwtWin.GetElementCount)
-            ReDim strPctCompositions(intElementCount)
-
-            .GetPercentCompositionForAllElements(strPctCompositions)
-
-        End With
-
-        MakePercentCompositionDataSet(intElementCount, strPctCompositions)
+        MakePercentCompositionDataSet(percentCompositionByElement)
 
         dgDataGrid.SetDataBinding(myDataSet, "DataTable1")
 
@@ -630,7 +618,7 @@ Friend Class frmMwtWinDllTest
         ' Add the table to the DataSet.
         myDataSet.Tables.Add(tDataTable)
 
-        ' Populates the table. 
+        ' Populates the table.
         Dim newRow As DataRow
 
         ' Append rows to the table.
