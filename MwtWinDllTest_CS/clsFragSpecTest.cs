@@ -1,4 +1,5 @@
 ﻿using System;
+using MwtWinDll;
 
 namespace MwtWinDllTestCS
 {
@@ -11,23 +12,23 @@ namespace MwtWinDllTestCS
     class clsFragSpecTest
     {
 
-        MwtWinDll.MolecularWeightCalculator mMwtWin;
+        MolecularWeightCalculator mMwtWin;
 
 
         public clsFragSpecTest() {
-            mMwtWin = new MwtWinDll.MolecularWeightCalculator();
+            mMwtWin = new MolecularWeightCalculator();
         }
 
-        public clsFragSpecTest(ref MwtWinDll.MolecularWeightCalculator objMwtWin) {
+        public clsFragSpecTest(ref MolecularWeightCalculator objMwtWin) {
             mMwtWin = objMwtWin;
         }
 
         public void TestAccessFunctions() {
 
             // Set the element mode (average, monoisotopic, or integer)
-            mMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass);
+            mMwtWin.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass);
 
-            MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType udtFragSpectrumOptions = default(MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType);
+            MWPeptideClass.udtFragmentationSpectrumOptionsType udtFragSpectrumOptions = default;
             udtFragSpectrumOptions.Initialize();
 
             // Initialize udtFragSpectrumOptions with the defaults
@@ -39,16 +40,16 @@ namespace MwtWinDllTestCS
             udtFragSpectrumOptions.DoubleChargeIonsThreshold = 400;
             udtFragSpectrumOptions.TripleChargeIonsThreshold = 400;
 
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itAIon].ShowIon = false;
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itBIon].ShowIon = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itAIon].ShowIon = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itBIon].ShowIon = false;
 
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].ShowIon = true;
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossAmmonia = false;
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossPhosphate = false;
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossWater = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itYIon].ShowIon = true;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossAmmonia = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossPhosphate = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossWater = false;
 
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itCIon].ShowIon = false;
-            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itZIon].ShowIon = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itCIon].ShowIon = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itZIon].ShowIon = false;
 
             udtFragSpectrumOptions.IntensityOptions.BYIonShoulder = 0;
 
@@ -68,7 +69,7 @@ namespace MwtWinDllTestCS
             mMwtWin.Peptide.SetFragmentationSpectrumOptions(udtFragSpectrumOptions);
 
             // Get the fragmentation masses
-            MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType[] udtFragSpectrum = null;
+            MWPeptideClass.udtFragmentationSpectrumDataType[] udtFragSpectrum = null;
             mMwtWin.Peptide.GetFragmentationMasses(ref udtFragSpectrum);
 
             // Print the results to the console
