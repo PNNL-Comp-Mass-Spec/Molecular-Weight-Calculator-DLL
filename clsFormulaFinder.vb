@@ -8,7 +8,7 @@ Imports MwtWinDll.MolecularWeightCalculator
 Public Class MWFormulaFinder
 
 #Region "Constants"
-    Private Const MAX_MATCHINGELEMENTS = 10
+    Private Const MAX_MATCHING_ELEMENTS = 10
     Public Const DEFAULT_RESULTS_TO_FIND = 1000
     Public Const MAXIMUM_ALLOWED_RESULTS_TO_FIND = 1000000
 
@@ -1458,7 +1458,7 @@ Public Class MWFormulaFinder
        maximumFormulaMass As Double) As List(Of clsFormulaFinderResult)
 
         ' The calculated percentages for the specific compound
-        Dim Percent(MAX_MATCHINGELEMENTS) As Double
+        Dim Percent(MAX_MATCHING_ELEMENTS) As Double
 
         Dim lstResults = New List(Of clsFormulaFinderResult)
 
@@ -1478,7 +1478,7 @@ Public Class MWFormulaFinder
                 lstRanges.Add(udtBoundedSearchRange)
             Next
 
-            While lstRanges.Count < MAX_MATCHINGELEMENTS
+            While lstRanges.Count < MAX_MATCHING_ELEMENTS
                 Dim udtBoundedSearchRange = New udtBoundedSearchRangeType
                 udtBoundedSearchRange.Min = 0
                 udtBoundedSearchRange.Max = 0
