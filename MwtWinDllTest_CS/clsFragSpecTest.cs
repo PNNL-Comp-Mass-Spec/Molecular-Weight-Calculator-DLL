@@ -39,27 +39,27 @@ namespace MwtWinDllTestCS
             // Customize the options
             udtFragSpectrumOptions.DoubleChargeIonsShow = true;
             udtFragSpectrumOptions.TripleChargeIonsShow = true;
-			udtFragSpectrumOptions.DoubleChargeIonsThreshold = 400;
-			udtFragSpectrumOptions.TripleChargeIonsThreshold = 400;
+            udtFragSpectrumOptions.DoubleChargeIonsThreshold = 400;
+            udtFragSpectrumOptions.TripleChargeIonsThreshold = 400;
 
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itAIon].ShowIon = false;
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itBIon].ShowIon = false;
 
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].ShowIon = true;
-			udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossAmmonia = false;
-			udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossPhosphate = false;
-			udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossWater = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossAmmonia = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossPhosphate = false;
+            udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossWater = false;
 
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itCIon].ShowIon = false;
             udtFragSpectrumOptions.IonTypeOptions[(int)MwtWinDll.MWPeptideClass.itIonTypeConstants.itZIon].ShowIon = false;
 
-			udtFragSpectrumOptions.IntensityOptions.BYIonShoulder = 0;
+            udtFragSpectrumOptions.IntensityOptions.BYIonShoulder = 0;
 
-			// Customize the modification symbols
-			mMwtWin.Peptide.SetModificationSymbol("!", 57.02146, false, "Carbamidomethylation");
-			mMwtWin.Peptide.SetModificationSymbol("+", 10.0, false, "Heavy Arg");
+            // Customize the modification symbols
+            mMwtWin.Peptide.SetModificationSymbol("!", 57.02146, false, "Carbamidomethylation");
+            mMwtWin.Peptide.SetModificationSymbol("+", 10.0, false, "Heavy Arg");
 
-			string strNewSeq = "C!ETQNPVSAR+";
+            string strNewSeq = "C!ETQNPVSAR+";
 
             // Obtain the fragmentation spectrum for a peptide
 
@@ -96,7 +96,7 @@ namespace MwtWinDllTestCS
             string strResults = null;
             double[,] ConvolutedMSData2D = null;
             int ConvolutedMSDataCount = 0;
-            
+
             // Compute the Isotopic distribution for the peptide
             // Need to first convert to an empirical formula
             // To do this, first obtain the peptide sequence in 3-letter notation
@@ -108,17 +108,17 @@ namespace MwtWinDllTestCS
             // Now convert to an empirical formula
             string s = mMwtWin.Compound.ConvertToEmpirical();
 
-			bool blnAddProtonChargeCarrier = true;
-			short intChargeState = 1;
-			Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState);
+            bool blnAddProtonChargeCarrier = true;
+            short intChargeState = 1;
+            Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState);
             intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, intChargeState, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount);
             Console.WriteLine(strResults);
 
-			blnAddProtonChargeCarrier = false;
-			intChargeState = 1;
-			Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
-			intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, intChargeState, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount, blnAddProtonChargeCarrier);
-			Console.WriteLine(strResults);
+            blnAddProtonChargeCarrier = false;
+            intChargeState = 1;
+            Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
+            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, intChargeState, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount, blnAddProtonChargeCarrier);
+            Console.WriteLine(strResults);
 
         }
 

@@ -318,7 +318,7 @@ Public Class MWFormulaFinder
         mAbortProcessing = False
 
         MaximumHits = DEFAULT_RESULTS_TO_FIND
-        
+
     End Sub
 
 #End Region
@@ -349,7 +349,7 @@ Public Class MWFormulaFinder
 
 
     ''' <summary>
-    ''' 
+    '''
     ''' </summary>
     ''' <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
     ''' <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
@@ -485,7 +485,7 @@ Public Class MWFormulaFinder
     End Function
 
     ''' <summary>
-    ''' 
+    '''
     ''' </summary>
     ''' <param name="totalMass"></param>
     ''' <param name="totalCharge"></param>
@@ -646,7 +646,7 @@ Public Class MWFormulaFinder
         sbEmpiricalFormula.Clear()
 
         Try
-            ' The empiricalResultSymbols dictionary tracks the elements and abbreviations of the found formula 
+            ' The empiricalResultSymbols dictionary tracks the elements and abbreviations of the found formula
             ' so that they can be properly ordered according to empirical formula conventions
             ' Keys are the element or abbreviation symbol, value is the number of each element or abbreviation
             empiricalResultSymbols = ConvertElementPointersToElementStats(sortedElementStats, lstPotentialElementPointers)
@@ -915,11 +915,11 @@ Public Class MWFormulaFinder
     End Function
 
     ''' <summary>
-    ''' Search empiricalResultSymbols for the elements in targetCountStats 
+    ''' Search empiricalResultSymbols for the elements in targetCountStats
     ''' </summary>
     ''' <param name="empiricalResultSymbols"></param>
     ''' <param name="targetCountStats"></param>
-    ''' <returns>True if all of the elements are present in the given counts (extra elements may also be present), 
+    ''' <returns>True if all of the elements are present in the given counts (extra elements may also be present),
     ''' false one or more is not found or has the wrong occurrence count</returns>
     ''' <remarks></remarks>
     Private Function EmpiricalFormulaHasElementCounts(
@@ -1119,7 +1119,7 @@ Public Class MWFormulaFinder
 
             Const targetMass = 0
             Const massToleranceDa = 0
-            Const ppmMode As Boolean = False
+            Const ppmMode = False
 
             Dim boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
                                                      searchOptions, ppmMode, eCalculationMode.MatchPercentComposition,
@@ -1413,7 +1413,7 @@ Public Class MWFormulaFinder
     End Function
 
     ''' <summary>
-    ''' 
+    '''
     ''' </summary>
     ''' <param name="potentialElementCount"></param>
     ''' <param name="searchOptions"></param>
@@ -1437,7 +1437,7 @@ Public Class MWFormulaFinder
     End Sub
 
     ''' <summary>
-    ''' Formula finder that uses a series of nested for loops and is thus slow when a large number of candidate elements 
+    ''' Formula finder that uses a series of nested for loops and is thus slow when a large number of candidate elements
     ''' or when elements have a large range of potential counts
     ''' </summary>
     ''' <param name="searchOptions"></param>
@@ -1547,7 +1547,7 @@ Public Class MWFormulaFinder
                                                             End If
                                                         End If
                                                     End If
-                                                    
+
                                                     If calculationMode = eCalculationMode.MatchPercentComposition Then
                                                         ' Matching Percent Compositions
                                                         If totalMass > 0 And totalMass <= maximumFormulaMass Then

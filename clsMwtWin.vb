@@ -15,18 +15,18 @@ Public Class MolecularWeightCalculator
     ' E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
     ' Website: http://ncrr.pnnl.gov/ or http://www.sysbio.org/resources/staff/
     ' -------------------------------------------------------------------------------
-    ' 
+    '
     ' Licensed under the Apache License, Version 2.0; you may not use this file except
-    ' in compliance with the License.  You may obtain a copy of the License at 
+    ' in compliance with the License.  You may obtain a copy of the License at
     ' http://www.apache.org/licenses/LICENSE-2.0
     '
-    ' Notice: This computer software was prepared by Battelle Memorial Institute, 
-    ' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the 
-    ' Department of Energy (DOE).  All rights in the computer software are reserved 
-    ' by DOE on behalf of the United States Government and the Contractor as 
-    ' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY 
-    ' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS 
-    ' SOFTWARE.  This notice including this sentence must appear on any copies of 
+    ' Notice: This computer software was prepared by Battelle Memorial Institute,
+    ' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
+    ' Department of Energy (DOE).  All rights in the computer software are reserved
+    ' by DOE on behalf of the United States Government and the Contractor as
+    ' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
+    ' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
+    ' SOFTWARE.  This notice including this sentence must appear on any copies of
     ' this computer software.
 
 
@@ -269,27 +269,27 @@ Public Class MolecularWeightCalculator
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String,
       ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer) As Short
 
-        Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, _
+        Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount,
                                          "Isotopic Abundances for", "Mass", "Fraction", "Intensity")
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String,
       ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, ByVal blnAddProtonChargeCarrier As Boolean) As Short
 
-        Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, _
+        Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount,
            "Isotopic Abundances for", "Mass", "Fraction", "Intensity", blnAddProtonChargeCarrier)
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
-                                              ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, _
-                                              ByVal strHeaderIsotopicAbundances As String, _
-                                              ByVal strHeaderMass As String, _
-                                              ByVal strHeaderFraction As String, _
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String,
+                                              ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer,
+                                              ByVal strHeaderIsotopicAbundances As String,
+                                              ByVal strHeaderMass As String,
+                                              ByVal strHeaderFraction As String,
                                               ByVal strHeaderIntensity As String) As Short
 
         ' Computes the Isotopic Distribution for a formula
@@ -298,16 +298,16 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String, _
-               ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, _
-               ByVal strHeaderIsotopicAbundances As String, _
-               ByVal strHeaderMass As String, _
-               ByVal strHeaderFraction As String, _
-               ByVal strHeaderIntensity As String, _
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String,
+               ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer,
+               ByVal strHeaderIsotopicAbundances As String,
+               ByVal strHeaderMass As String,
+               ByVal strHeaderFraction As String,
+               ByVal strHeaderIntensity As String,
                ByVal blnAddProtonChargeCarrier As Boolean) As Short
 
         ' Computes the Isotopic Distribution for a formula
-        ' Returns 0 if success, or -1 if an error		
+        ' Returns 0 if success, or -1 if an error
         Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
     End Function
 

@@ -27,7 +27,7 @@ namespace UnitTests
         {
             mMwtWinAvg = new MolecularWeightCalculator(MWElementAndMassRoutines.emElementModeConstants.emAverageMass);
             mMwtWinIso = new MolecularWeightCalculator(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass);
-        }       
+        }
 
         [Test]
         [TestCase(243.000, 1, 0,   241.99272351)]
@@ -57,7 +57,7 @@ namespace UnitTests
                 Assert.AreEqual(resultMH, resultMz, MATCHING_MASS_EPSILON,
                                 "resultMH and resultMz computed conflicting values");
             }
-            
+
             Assert.AreEqual(expectedMz, resultMz, MATCHING_MASS_EPSILON, "Actual m/z does not match expected m/z");
         }
 

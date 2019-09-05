@@ -13,18 +13,18 @@ Friend Class frmMwtWinDllTest
     ' E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
     ' Website: http://ncrr.pnnl.gov/ or http://www.sysbio.org/resources/staff/
     ' -------------------------------------------------------------------------------
-    ' 
+    '
     ' Licensed under the Apache License, Version 2.0; you may not use this file except
-    ' in compliance with the License.  You may obtain a copy of the License at 
+    ' in compliance with the License.  You may obtain a copy of the License at
     ' http://www.apache.org/licenses/LICENSE-2.0
     '
-    ' Notice: This computer software was prepared by Battelle Memorial Institute, 
-    ' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the 
-    ' Department of Energy (DOE).  All rights in the computer software are reserved 
-    ' by DOE on behalf of the United States Government and the Contractor as 
-    ' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY 
-    ' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS 
-    ' SOFTWARE.  This notice including this sentence must appear on any copies of 
+    ' Notice: This computer software was prepared by Battelle Memorial Institute,
+    ' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
+    ' Department of Energy (DOE).  All rights in the computer software are reserved
+    ' by DOE on behalf of the United States Government and the Contractor as
+    ' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
+    ' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
+    ' SOFTWARE.  This notice including this sentence must appear on any copies of
     ' this computer software.
 
     Inherits System.Windows.Forms.Form
@@ -634,9 +634,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub MakePercentCompositionDataSet(ByVal intElementCount As Short, ByVal strPctCompositions() As String)
-
-        Dim strSymbol As String = String.Empty
+    Private Sub MakePercentCompositionDataSet(percentCompositionByElement As Dictionary(Of String, String))
 
         ' Create a DataSet.
         myDataSet = New DataSet("myDataSet")
@@ -655,20 +653,15 @@ Friend Class frmMwtWinDllTest
         ' Add the table to the DataSet.
         myDataSet.Tables.Add(tDataTable)
 
-        ' Populates the table. 
-        Dim newRow As DataRow
+        ' Populates the table
 
         ' Append rows to the table.
-        For intIndex As Short = 1 To intElementCount
-            If strPctCompositions(intIndex) <> "" Then
-                mMwtWin.GetElement(intIndex, strSymbol, 0, 0, 0, 0)
-                newRow = tDataTable.NewRow()
-                newRow("Element") = strSymbol
-                newRow("Pct Comp") = strPctCompositions(intIndex)
-                tDataTable.Rows.Add(newRow)
-            End If
-
-        Next intIndex
+        For Each item In percentCompositionByElement
+            Dim newRow = tDataTable.NewRow()
+            newRow("Element") = item.Key
+            newRow("Pct Comp") = item.Value
+            tDataTable.Rows.Add(newRow)
+        Next
 
     End Sub
 
@@ -1005,7 +998,7 @@ Friend Class frmMwtWinDllTest
         Dim oMwtWin = New MolecularWeightCalculator()
 
         oMwtWin.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
-        
+
         oMwtWin.FormulaFinder.CandidateElements.Clear()
 
         oMwtWin.FormulaFinder.AddCandidateElement("C")
@@ -1152,7 +1145,7 @@ Friend Class frmMwtWinDllTest
         ' Add the table to the DataSet.
         myDataSet.Tables.Add(tDataTable)
 
-        ' Populates the table. 
+        ' Populates the table.
         Dim newRow As DataRow
 
         Dim sbPercentCompInfo = New StringBuilder()
