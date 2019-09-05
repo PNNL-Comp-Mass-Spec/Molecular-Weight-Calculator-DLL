@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MwtWinDll;
 
 namespace MwtWinDllTestCS
 {
     /*
-     * This is a very simple C# application that shows how to use MwtWinDll.dll 
+     * This is a very simple C# application that shows how to use MwtWinDll.dll
      * Written by Matthew Monroe for PNNL in 2010
      */
 
@@ -59,6 +60,15 @@ namespace MwtWinDllTestCS
                  Console.WriteLine(sTestFormula + " auto-capitalizes to " + objMwtWin.Compound.FormulaCapitalized);
                  Console.WriteLine("Mass: " + objMwtWin.Compound.Mass);
 
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Percent composition");
+            var percentCompositionByElement = objMwtWin.Compound.GetPercentCompositionForAllElements();
+
+            foreach (var item in percentCompositionByElement)
+            {
+                Console.WriteLine(item.Key + ": " + item.Value);
             }
 
             Console.WriteLine();
