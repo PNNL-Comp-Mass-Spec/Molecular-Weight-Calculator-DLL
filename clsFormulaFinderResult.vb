@@ -4,14 +4,7 @@ Public Class clsFormulaFinderResult
 
     Public ReadOnly EmpiricalFormula As String
 
-    Private ReadOnly mCountsByElement As Dictionary(Of String, Integer)
-
-    ' ReSharper disable once ConvertToVbAutoProperty
     Public ReadOnly Property CountsByElement As Dictionary(Of String, Integer)
-        Get
-            Return mCountsByElement
-        End Get
-    End Property
 
     Public Property Mass As Double
     Public Property DeltaMass As Double
@@ -30,7 +23,7 @@ Public Class clsFormulaFinderResult
 
     Public Sub New(newEmpiricalFormula As String, empiricalResultSymbols As Dictionary(Of String, Integer))
         EmpiricalFormula = newEmpiricalFormula
-        mCountsByElement = empiricalResultSymbols
+        CountsByElement = empiricalResultSymbols
 
         SortKey = String.Empty
         PercentComposition = New Dictionary(Of String, Double)
@@ -44,6 +37,6 @@ Public Class clsFormulaFinderResult
         End If
     End Function
 
-   
+
 
 End Class
