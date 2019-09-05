@@ -56,7 +56,7 @@ Public Class MWCompoundClass
 
     Private mComputationStats As MWElementAndMassRoutines.udtComputationStatsType
 
-    Private ElementAndMassRoutines As MWElementAndMassRoutines
+    Private ReadOnly ElementAndMassRoutines As MWElementAndMassRoutines
 
     Public Function ConvertToEmpirical() As String
         ' Converts mStrFormula to its empirical formula and returns the result
