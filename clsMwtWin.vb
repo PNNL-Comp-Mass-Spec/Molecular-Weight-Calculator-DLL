@@ -77,7 +77,7 @@ Public Class MolecularWeightCalculator
     Private WithEvents mElementAndMassRoutines As MWElementAndMassRoutines
 
     Public Event ProgressReset()
-    Public Event ProgressChanged(ByVal taskDescription As String, ByVal percentComplete As Single)     ' PercentComplete ranges from 0 to 100, but can contain decimal percentage values
+    Public Event ProgressChanged(taskDescription As String, percentComplete As Single)     ' PercentComplete ranges from 0 to 100, but can contain decimal percentage values
     Public Event ProgressComplete()
 
 #End Region
@@ -87,7 +87,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode
         End Get
-        Set(ByVal Value As arAbbrevRecognitionModeConstants)
+        Set(Value As arAbbrevRecognitionModeConstants)
             If Value >= arAbbrevRecognitionModeConstants.arNormalOnly And Value <= arAbbrevRecognitionModeConstants.arNoAbbreviations Then
                 mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode = Value
                 mElementAndMassRoutines.ConstructMasterSymbolsList()
@@ -121,7 +121,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses = Value
         End Set
     End Property
@@ -131,7 +131,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.CaseConversion
         End Get
-        Set(ByVal Value As MWElementAndMassRoutines.ccCaseConversionConstants)
+        Set(Value As MWElementAndMassRoutines.ccCaseConversionConstants)
             If Value >= MWElementAndMassRoutines.ccCaseConversionConstants.ccConvertCaseUp And Value <= MWElementAndMassRoutines.ccCaseConversionConstants.ccSmartCase Then
                 mElementAndMassRoutines.gComputationOptions.CaseConversion = Value
             End If
@@ -143,7 +143,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.DecimalSeparator
         End Get
-        Set(ByVal Value As Char)
+        Set(Value As Char)
             mElementAndMassRoutines.gComputationOptions.DecimalSeparator = Value
         End Set
     End Property
@@ -183,7 +183,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.LogFolderPath
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             mElementAndMassRoutines.LogFolderPath = value
         End Set
     End Property
@@ -192,7 +192,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.LogMessagesToFile
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             mElementAndMassRoutines.LogMessagesToFile = value
         End Set
     End Property
@@ -215,7 +215,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.RtfFontName
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             If Len(Value) > 0 Then
                 mElementAndMassRoutines.gComputationOptions.RtfFontName = Value
             End If
@@ -227,7 +227,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.RtfFontSize
         End Get
-        Set(ByVal Value As Short)
+        Set(Value As Short)
             If Value > 0 Then
                 mElementAndMassRoutines.gComputationOptions.RtfFontSize = Value
             End If
@@ -239,7 +239,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.ShowErrorMessageDialogs()
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             mElementAndMassRoutines.SetShowErrorMessageDialogs(Value)
         End Set
     End Property
@@ -249,7 +249,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.StdDevMode
         End Get
-        Set(ByVal Value As MWElementAndMassRoutines.smStdDevModeConstants)
+        Set(Value As MWElementAndMassRoutines.smStdDevModeConstants)
             If Value >= MWElementAndMassRoutines.smStdDevModeConstants.smShort And Value <= MWElementAndMassRoutines.smStdDevModeConstants.smDecimal Then
                 mElementAndMassRoutines.gComputationOptions.StdDevMode = Value
             End If
@@ -261,7 +261,7 @@ Public Class MolecularWeightCalculator
         mElementAndMassRoutines.ResetErrorParamsInternal()
     End Sub
 
-    Public Function ComputeMass(ByVal strFormula As String) As Double
+    Public Function ComputeMass(strFormula As String) As Double
 
         ' Simply assigning strFormula to .Formula will update the Mass
         Compound.Formula = strFormula
@@ -269,7 +269,7 @@ Public Class MolecularWeightCalculator
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String,
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
       ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer) As Short
 
         Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount,
@@ -277,20 +277,20 @@ Public Class MolecularWeightCalculator
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String,
-      ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, ByVal blnAddProtonChargeCarrier As Boolean) As Short
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
+      ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, blnAddProtonChargeCarrier As Boolean) As Short
 
         Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount,
            "Isotopic Abundances for", "Mass", "Fraction", "Intensity", blnAddProtonChargeCarrier)
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String,
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
                                               ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer,
-                                              ByVal strHeaderIsotopicAbundances As String,
-                                              ByVal strHeaderMass As String,
-                                              ByVal strHeaderFraction As String,
-                                              ByVal strHeaderIntensity As String) As Short
+                                              strHeaderIsotopicAbundances As String,
+                                              strHeaderMass As String,
+                                              strHeaderFraction As String,
+                                              strHeaderIntensity As String) As Short
 
         ' Computes the Isotopic Distribution for a formula
         ' Returns 0 if success, or -1 if an error
@@ -298,25 +298,25 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, ByVal intChargeState As Short, ByRef strResults As String,
+    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
                ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer,
-               ByVal strHeaderIsotopicAbundances As String,
-               ByVal strHeaderMass As String,
-               ByVal strHeaderFraction As String,
-               ByVal strHeaderIntensity As String,
-               ByVal blnAddProtonChargeCarrier As Boolean) As Short
+               strHeaderIsotopicAbundances As String,
+               strHeaderMass As String,
+               strHeaderFraction As String,
+               strHeaderIntensity As String,
+               blnAddProtonChargeCarrier As Boolean) As Short
 
         ' Computes the Isotopic Distribution for a formula
         ' Returns 0 if success, or -1 if an error
         Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
     End Function
 
-    Public Function ConvertStickDataToGaussian2DArray(ByVal XYVals As List(Of KeyValuePair(Of Double, Double)), ByVal intResolution As Integer, ByVal dblResolutionMass As Double) As List(Of KeyValuePair(Of Double, Double))
+    Public Function ConvertStickDataToGaussian2DArray(XYVals As List(Of KeyValuePair(Of Double, Double)), intResolution As Integer, dblResolutionMass As Double) As List(Of KeyValuePair(Of Double, Double))
         Dim intQualityFactor As Integer = 50
         Return ConvertStickDataToGaussian2DArray(XYVals, intResolution, dblResolutionMass, intQualityFactor)
     End Function
 
-    Public Function ConvertStickDataToGaussian2DArray(ByVal XYVals As List(Of KeyValuePair(Of Double, Double)), ByVal intResolution As Integer, ByVal dblResolutionMass As Double, ByVal intQualityFactor As Integer) As List(Of KeyValuePair(Of Double, Double))
+    Public Function ConvertStickDataToGaussian2DArray(XYVals As List(Of KeyValuePair(Of Double, Double)), intResolution As Integer, dblResolutionMass As Double, intQualityFactor As Integer) As List(Of KeyValuePair(Of Double, Double))
         Return mElementAndMassRoutines.ConvertStickDataToGaussian2DArray(XYVals, intResolution, dblResolutionMass, intQualityFactor)
     End Function
 
@@ -327,7 +327,7 @@ Public Class MolecularWeightCalculator
     ''' <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function ConvoluteMass(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short) As Double
+    Public Function ConvoluteMass(dblMassMZ As Double, intCurrentCharge As Short) As Double
         Return ConvoluteMass(dblMassMZ, intCurrentCharge, 1S, 0)
     End Function
 
@@ -339,7 +339,7 @@ Public Class MolecularWeightCalculator
     ''' <param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function ConvoluteMass(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short, ByVal intDesiredCharge As Short) As Double
+    Public Function ConvoluteMass(dblMassMZ As Double, intCurrentCharge As Short, intDesiredCharge As Short) As Double
         Return ConvoluteMass(dblMassMZ, intCurrentCharge, intDesiredCharge, 0)
     End Function
 
@@ -352,7 +352,7 @@ Public Class MolecularWeightCalculator
     ''' <param name="dblChargeCarrierMass">Custom charge carrier mass (default is 1.00727649)</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function ConvoluteMass(ByVal dblMassMZ As Double, ByVal intCurrentCharge As Short, ByVal intDesiredCharge As Short, ByVal dblChargeCarrierMass As Double) As Double
+    Public Function ConvoluteMass(dblMassMZ As Double, intCurrentCharge As Short, intDesiredCharge As Short, dblChargeCarrierMass As Double) As Double
         Return mElementAndMassRoutines.ConvoluteMassInternal(dblMassMZ, intCurrentCharge, intDesiredCharge, dblChargeCarrierMass)
     End Function
 
@@ -382,32 +382,32 @@ Public Class MolecularWeightCalculator
 
     End Function
 
-    Public Function GetAbbreviation(ByVal intAbbreviationID As Integer, ByRef strSymbol As String, _
-            ByRef strFormula As String, ByRef sngCharge As Single, _
+    Public Function GetAbbreviation(intAbbreviationID As Integer, ByRef strSymbol As String,
+            ByRef strFormula As String, ByRef sngCharge As Single,
             ByRef blnIsAminoAcid As Boolean) As Integer
 
         Return GetAbbreviation(intAbbreviationID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", False)
     End Function
 
-    Public Function GetAbbreviation(ByVal intAbbreviationID As Integer, ByRef strSymbol As String, _
-           ByRef strFormula As String, ByRef sngCharge As Single, _
-           ByRef blnIsAminoAcid As Boolean, _
-           ByRef strOneLetterSymbol As String, _
+    Public Function GetAbbreviation(intAbbreviationID As Integer, ByRef strSymbol As String,
+           ByRef strFormula As String, ByRef sngCharge As Single,
+           ByRef blnIsAminoAcid As Boolean,
+           ByRef strOneLetterSymbol As String,
            ByRef strComment As String) As Integer
 
         Return GetAbbreviation(intAbbreviationID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, False)
     End Function
 
-    Public Function GetAbbreviation(ByVal intAbbreviationID As Integer, ByRef strSymbol As String, _
-            ByRef strFormula As String, ByRef sngCharge As Single, _
-            ByRef blnIsAminoAcid As Boolean, _
-            ByRef strOneLetterSymbol As String, _
-            ByRef strComment As String, _
+    Public Function GetAbbreviation(intAbbreviationID As Integer, ByRef strSymbol As String,
+            ByRef strFormula As String, ByRef sngCharge As Single,
+            ByRef blnIsAminoAcid As Boolean,
+            ByRef strOneLetterSymbol As String,
+            ByRef strComment As String,
             ByRef blnInvalidSymbolOrFormula As Boolean) As Integer
 
         ' Returns 0 if success, 1 if failure
-        GetAbbreviation = mElementAndMassRoutines.GetAbbreviationInternal(intAbbreviationID, strSymbol, strFormula, _
-                          sngCharge, blnIsAminoAcid, strOneLetterSymbol, _
+        GetAbbreviation = mElementAndMassRoutines.GetAbbreviationInternal(intAbbreviationID, strSymbol, strFormula,
+                          sngCharge, blnIsAminoAcid, strOneLetterSymbol,
                           strComment, blnInvalidSymbolOrFormula)
     End Function
 
@@ -419,19 +419,19 @@ Public Class MolecularWeightCalculator
         GetAbbreviationCountMax = MWElementAndMassRoutines.MAX_ABBREV_COUNT
     End Function
 
-    Public Function GetAbbreviationID(ByVal strSymbol As String) As Integer
+    Public Function GetAbbreviationID(strSymbol As String) As Integer
         ' Returns 0 if not found, the ID if found
         GetAbbreviationID = mElementAndMassRoutines.GetAbbreviationIDInternal(strSymbol)
     End Function
 
-    Public Function GetAminoAcidSymbolConversion(ByVal strSymbolToFind As String, ByVal bln1LetterTo3Letter As Boolean) As String
+    Public Function GetAminoAcidSymbolConversion(strSymbolToFind As String, bln1LetterTo3Letter As Boolean) As String
         ' If bln1LetterTo3Letter = True, then converting 1 letter codes to 3 letter codes
         ' Returns the symbol, if found
         ' Otherwise, returns ""
         Return mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbolToFind, bln1LetterTo3Letter)
     End Function
 
-    Public Function GetCautionStatement(ByVal intCautionStatementID As Integer, ByRef strSymbolCombo As String, ByRef strCautionStatement As String) As Integer
+    Public Function GetCautionStatement(intCautionStatementID As Integer, ByRef strSymbolCombo As String, ByRef strCautionStatement As String) As Integer
         ' Returns the contents of CautionStatements() in the ByRef variables
         ' Returns 0 if success, 1 if failure
         GetCautionStatement = mElementAndMassRoutines.GetCautionStatementInternal(intCautionStatementID, strSymbolCombo, strCautionStatement)
@@ -442,7 +442,7 @@ Public Class MolecularWeightCalculator
         GetCautionStatementCount = mElementAndMassRoutines.GetCautionStatementCountInternal()
     End Function
 
-    Public Function GetCautionStatementID(ByVal strSymbolCombo As String) As Integer
+    Public Function GetCautionStatementID(strSymbolCombo As String) As Integer
         ' Returns -1 if not found, the ID if found
         GetCautionStatementID = mElementAndMassRoutines.GetCautionStatementIDInternal(strSymbolCombo)
     End Function
@@ -451,7 +451,7 @@ Public Class MolecularWeightCalculator
         GetChargeCarrierMass = mElementAndMassRoutines.GetChargeCarrierMassInternal()
     End Function
 
-    Public Function GetElement(ByVal intElementID As Short, ByRef strSymbol As String, ByRef dblMass As Double, ByRef dblUncertainty As Double, ByRef sngCharge As Single, ByRef intIsotopeCount As Short) As Integer
+    Public Function GetElement(intElementID As Short, ByRef strSymbol As String, ByRef dblMass As Double, ByRef dblUncertainty As Double, ByRef sngCharge As Single, ByRef intIsotopeCount As Short) As Integer
         ' Returns the settings for the element with intElementID in the ByRef variables
         ' Returns 0 if success, 1 if failure
         GetElement = mElementAndMassRoutines.GetElementInternal(intElementID, strSymbol, dblMass, dblUncertainty, sngCharge, intIsotopeCount)
@@ -462,12 +462,12 @@ Public Class MolecularWeightCalculator
         GetElementCount = mElementAndMassRoutines.GetElementCountInternal()
     End Function
 
-    Public Function GetElementID(ByVal strSymbol As String) As Integer
+    Public Function GetElementID(strSymbol As String) As Integer
         ' Returns 0 if not found, the ID if found
         GetElementID = mElementAndMassRoutines.GetElementIDInternal(strSymbol)
     End Function
 
-    Public Function GetElementIsotopes(ByVal intElementID As Short, ByRef intIsotopeCount As Short, ByRef dblIsotopeMasses() As Double, ByRef sngIsotopeAbundances() As Single) As Integer
+    Public Function GetElementIsotopes(intElementID As Short, ByRef intIsotopeCount As Short, ByRef dblIsotopeMasses() As Double, ByRef sngIsotopeAbundances() As Single) As Integer
         ' Returns the Isotope masses for the element with intElementID
         GetElementIsotopes = mElementAndMassRoutines.GetElementIsotopesInternal(intElementID, intIsotopeCount, dblIsotopeMasses, sngIsotopeAbundances)
     End Function
@@ -480,21 +480,21 @@ Public Class MolecularWeightCalculator
         GetElementMode = mElementAndMassRoutines.GetElementModeInternal()
     End Function
 
-    Public Function GetElementSymbol(ByVal intElementID As Short) As String
+    Public Function GetElementSymbol(intElementID As Short) As String
         ' Returns the symbol for the given element ID
         GetElementSymbol = mElementAndMassRoutines.GetElementSymbolInternal(intElementID)
     End Function
 
-    Public Function GetElementStat(ByVal intElementID As Short, ByVal eElementStat As esElementStatsConstants) As Double
+    Public Function GetElementStat(intElementID As Short, eElementStat As esElementStatsConstants) As Double
         ' Returns a single bit of information about a single element
         GetElementStat = mElementAndMassRoutines.GetElementStatInternal(intElementID, eElementStat)
     End Function
 
-    Public Function GetMessageStatement(ByVal intMessageID As Integer) As String
+    Public Function GetMessageStatement(intMessageID As Integer) As String
         Return GetMessageStatement(intMessageID, String.Empty)
     End Function
 
-    Public Function GetMessageStatement(ByVal intMessageID As Integer, ByVal strAppendText As String) As String
+    Public Function GetMessageStatement(intMessageID As Integer, strAppendText As String) As String
         ' Returns the message for lngMessageID
         GetMessageStatement = mElementAndMassRoutines.GetMessageStatementInternal(intMessageID, strAppendText)
     End Function
@@ -503,7 +503,7 @@ Public Class MolecularWeightCalculator
         GetMessageStatementCount = mElementAndMassRoutines.GetMessageStatementCountInternal()
     End Function
 
-    Public Function IsModSymbol(ByVal strSymbol As String) As Boolean
+    Public Function IsModSymbol(strSymbol As String) As Boolean
         ' Returns True if strSymbol starts with a ModSymbol
         IsModSymbol = mElementAndMassRoutines.IsModSymbolInternal(strSymbol)
     End Function
@@ -533,15 +533,15 @@ Public Class MolecularWeightCalculator
         mElementAndMassRoutines.RemoveAllCautionStatementsInternal()
     End Sub
 
-    Public Function MassToPPM(ByVal dblMassToConvert As Double, ByVal dblCurrentMZ As Double) As Double
+    Public Function MassToPPM(dblMassToConvert As Double, dblCurrentMZ As Double) As Double
         Return mElementAndMassRoutines.MassToPPMInternal(dblMassToConvert, dblCurrentMZ)
     End Function
 
-    Public Function MonoMassToMZ(ByVal dblMonoisotopicMass As Double, ByVal intCharge As Short) As Double
+    Public Function MonoMassToMZ(dblMonoisotopicMass As Double, intCharge As Short) As Double
         Return MonoMassToMZ(dblMonoisotopicMass, intCharge, 0)
     End Function
 
-    Public Function MonoMassToMZ(ByVal dblMonoisotopicMass As Double, ByVal intCharge As Short, ByVal dblChargeCarrierMass As Double) As Double
+    Public Function MonoMassToMZ(dblMonoisotopicMass As Double, intCharge As Short, dblChargeCarrierMass As Double) As Double
         Return mElementAndMassRoutines.MonoMassToMZInternal(dblMonoisotopicMass, intCharge, dblChargeCarrierMass)
     End Function
 
@@ -552,15 +552,15 @@ Public Class MolecularWeightCalculator
         mElementAndMassRoutines.RecomputeAbbreviationMassesInternal()
     End Sub
 
-    Public Function RemoveAbbreviation(ByVal strAbbreviationSymbol As String) As Integer
+    Public Function RemoveAbbreviation(strAbbreviationSymbol As String) As Integer
         RemoveAbbreviation = mElementAndMassRoutines.RemoveAbbreviationInternal(strAbbreviationSymbol)
     End Function
 
-    Public Function RemoveAbbreviationByID(ByVal intAbbreviationID As Integer) As Integer
+    Public Function RemoveAbbreviationByID(intAbbreviationID As Integer) As Integer
         RemoveAbbreviationByID = mElementAndMassRoutines.RemoveAbbreviationByIDInternal(intAbbreviationID)
     End Function
 
-    Public Function RemoveCautionStatement(ByVal strCautionSymbol As String) As Integer
+    Public Function RemoveCautionStatement(strCautionSymbol As String) As Integer
         RemoveCautionStatement = mElementAndMassRoutines.RemoveCautionStatementInternal(strCautionSymbol)
     End Function
 
@@ -572,7 +572,7 @@ Public Class MolecularWeightCalculator
         mElementAndMassRoutines.MemoryLoadCautionStatements()
     End Sub
 
-    Public Sub ResetElement(ByVal intElementID As Short, ByVal eSpecificStatToReset As esElementStatsConstants)
+    Public Sub ResetElement(intElementID As Short, eSpecificStatToReset As esElementStatsConstants)
         mElementAndMassRoutines.MemoryLoadElements(GetElementMode(), intElementID, eSpecificStatToReset)
     End Sub
 
@@ -580,24 +580,24 @@ Public Class MolecularWeightCalculator
         mElementAndMassRoutines.MemoryLoadMessageStatements()
     End Sub
 
-    Public Function SetAbbreviation(ByVal strSymbol As String, ByVal strFormula As String, ByVal sngCharge As Single, _
-           ByVal blnIsAminoAcid As Boolean) As Integer
+    Public Function SetAbbreviation(strSymbol As String, strFormula As String, sngCharge As Single,
+           blnIsAminoAcid As Boolean) As Integer
         Return SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", True)
     End Function
 
-    Public Function SetAbbreviation(ByVal strSymbol As String, ByVal strFormula As String, ByVal sngCharge As Single, _
-            ByVal blnIsAminoAcid As Boolean, _
-            ByVal strOneLetterSymbol As String, _
-            ByVal strComment As String) As Integer
+    Public Function SetAbbreviation(strSymbol As String, strFormula As String, sngCharge As Single,
+            blnIsAminoAcid As Boolean,
+            strOneLetterSymbol As String,
+            strComment As String) As Integer
         Return SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, True)
     End Function
 
 
-    Public Function SetAbbreviation(ByVal strSymbol As String, ByVal strFormula As String, ByVal sngCharge As Single, _
-            ByVal blnIsAminoAcid As Boolean, _
-            ByVal strOneLetterSymbol As String, _
-            ByVal strComment As String, _
-            ByVal blnValidateFormula As Boolean) As Integer
+    Public Function SetAbbreviation(strSymbol As String, strFormula As String, sngCharge As Single,
+            blnIsAminoAcid As Boolean,
+            strOneLetterSymbol As String,
+            strComment As String,
+            blnValidateFormula As Boolean) As Integer
 
         ' Adds a new abbreviation or updates an existing one (based on strSymbol)
         ' If blnValidateFormula = True, then makes sure the formula is valid
@@ -608,17 +608,17 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnValidateFormula)
     End Function
 
-    Public Function SetAbbreviationByID(ByVal intAbbrevID As Integer, ByVal strSymbol As String, ByVal strFormula As String, _
-            ByVal sngCharge As Single, ByVal blnIsAminoAcid As Boolean) As Integer
+    Public Function SetAbbreviationByID(intAbbrevID As Integer, strSymbol As String, strFormula As String,
+            sngCharge As Single, blnIsAminoAcid As Boolean) As Integer
 
         Return SetAbbreviationByID(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", True)
     End Function
 
-    Public Function SetAbbreviationByID(ByVal intAbbrevID As Integer, ByVal strSymbol As String, ByVal strFormula As String, _
-             ByVal sngCharge As Single, ByVal blnIsAminoAcid As Boolean, _
-             ByVal strOneLetterSymbol As String, _
-             ByVal strComment As String, _
-             ByVal blnValidateFormula As Boolean) As Integer
+    Public Function SetAbbreviationByID(intAbbrevID As Integer, strSymbol As String, strFormula As String,
+             sngCharge As Single, blnIsAminoAcid As Boolean,
+             strOneLetterSymbol As String,
+             strComment As String,
+             blnValidateFormula As Boolean) As Integer
 
         ' Adds a new abbreviation or updates an existing one (based on strSymbol)
         ' If blnValidateFormula = True, then makes sure the formula is valid
@@ -629,42 +629,42 @@ Public Class MolecularWeightCalculator
         SetAbbreviationByID = mElementAndMassRoutines.SetAbbreviationByIDInternal(CShort(intAbbrevID), strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnValidateFormula)
     End Function
 
-    Public Function SetCautionStatement(ByVal strNewSymbolCombo As String, ByVal strNewCautionStatement As String) As Integer
+    Public Function SetCautionStatement(strNewSymbolCombo As String, strNewCautionStatement As String) As Integer
         ' Adds a new caution statement or updates an existing one (based on strSymbol)
         ' Returns 0 if successful, otherwise, returns an Error ID
         SetCautionStatement = mElementAndMassRoutines.SetCautionStatementInternal(strNewSymbolCombo, strNewCautionStatement)
     End Function
 
-    Public Sub SetChargeCarrierMass(ByVal dblMass As Double)
+    Public Sub SetChargeCarrierMass(dblMass As Double)
         mElementAndMassRoutines.SetChargeCarrierMassInternal(dblMass)
     End Sub
 
-    Public Function SetElement(ByVal strSymbol As String, ByVal dblMass As Double, _
-             ByVal dblUncertainty As Double, ByVal sngCharge As Single) As Integer
+    Public Function SetElement(strSymbol As String, dblMass As Double,
+             dblUncertainty As Double, sngCharge As Single) As Integer
         Return SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, True)
     End Function
 
-    Public Function SetElement(ByVal strSymbol As String, ByVal dblMass As Double, ByVal dblUncertainty As Double, _
-             ByVal sngCharge As Single, _
-             ByVal blnRecomputeAbbreviationMasses As Boolean) As Integer
+    Public Function SetElement(strSymbol As String, dblMass As Double, dblUncertainty As Double,
+             sngCharge As Single,
+             blnRecomputeAbbreviationMasses As Boolean) As Integer
 
         ' Used to update the values for a single element (based on strSymbol)
         SetElement = mElementAndMassRoutines.SetElementInternal(strSymbol, dblMass, dblUncertainty, sngCharge, blnRecomputeAbbreviationMasses)
     End Function
 
-    Public Function SetElementIsotopes(ByVal strSymbol As String, ByVal intIsotopeCount As Short, ByRef dblIsotopeMassesOneBased() As Double, ByRef sngIsotopeAbundancesOneBased() As Single) As Integer
+    Public Function SetElementIsotopes(strSymbol As String, intIsotopeCount As Short, ByRef dblIsotopeMassesOneBased() As Double, ByRef sngIsotopeAbundancesOneBased() As Single) As Integer
         SetElementIsotopes = mElementAndMassRoutines.SetElementIsotopesInternal(strSymbol, intIsotopeCount, dblIsotopeMassesOneBased, sngIsotopeAbundancesOneBased)
     End Function
 
-    Public Sub SetElementMode(ByVal NewElementMode As MWElementAndMassRoutines.emElementModeConstants)
+    Public Sub SetElementMode(NewElementMode As MWElementAndMassRoutines.emElementModeConstants)
         SetElementMode(NewElementMode, True)
     End Sub
 
-    Public Sub SetElementMode(ByVal NewElementMode As MWElementAndMassRoutines.emElementModeConstants, ByVal blnMemoryLoadElementValues As Boolean)
+    Public Sub SetElementMode(NewElementMode As MWElementAndMassRoutines.emElementModeConstants, blnMemoryLoadElementValues As Boolean)
         mElementAndMassRoutines.SetElementModeInternal(NewElementMode, blnMemoryLoadElementValues)
     End Sub
 
-    Public Function SetMessageStatement(ByVal lngMessageID As Integer, ByVal strNewMessage As String) As Integer
+    Public Function SetMessageStatement(lngMessageID As Integer, strNewMessage As String) As Integer
         ' Used to replace the default message strings with foreign language equivalent ones
         SetMessageStatement = mElementAndMassRoutines.SetMessageStatementInternal(lngMessageID, strNewMessage)
     End Function
@@ -677,20 +677,20 @@ Public Class MolecularWeightCalculator
         Return TextToRTF(strTextToConvert, False, True, False, 0)
     End Function
 
-    Public Function TextToRTF(ByRef strTextToConvert As String, ByVal CalculatorMode As Boolean) As String
+    Public Function TextToRTF(ByRef strTextToConvert As String, CalculatorMode As Boolean) As String
         Return TextToRTF(strTextToConvert, CalculatorMode, True, False, 0)
     End Function
 
-    Public Function TextToRTF(ByRef strTextToConvert As String, ByVal CalculatorMode As Boolean, _
-            ByVal blnHighlightCharFollowingPercentSign As Boolean) As String
+    Public Function TextToRTF(ByRef strTextToConvert As String, CalculatorMode As Boolean,
+            blnHighlightCharFollowingPercentSign As Boolean) As String
         Return TextToRTF(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, False, 0)
     End Function
 
-    Public Function TextToRTF(ByRef strTextToConvert As String, _
-            ByVal CalculatorMode As Boolean, _
-            ByVal blnHighlightCharFollowingPercentSign As Boolean, _
-            ByVal blnOverrideErrorID As Boolean, _
-            ByVal lngErrorIDOverride As Integer) As String
+    Public Function TextToRTF(ByRef strTextToConvert As String,
+            CalculatorMode As Boolean,
+            blnHighlightCharFollowingPercentSign As Boolean,
+            blnOverrideErrorID As Boolean,
+            lngErrorIDOverride As Integer) As String
 
         ' Converts an RTF string for the given text
         ' If blnHighlightCharFollowingPercentSign is true, then changes the character
@@ -716,7 +716,7 @@ Public Class MolecularWeightCalculator
         MyBase.Finalize()
     End Sub
 
-    Private Sub mElementAndMassRoutines_ProgressChanged(ByVal taskDescription As String, ByVal percentComplete As Single) Handles mElementAndMassRoutines.ProgressChanged
+    Private Sub mElementAndMassRoutines_ProgressChanged(taskDescription As String, percentComplete As Single) Handles mElementAndMassRoutines.ProgressChanged
         RaiseEvent ProgressChanged(taskDescription, percentComplete)
     End Sub
 

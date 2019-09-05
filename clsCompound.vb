@@ -39,7 +39,7 @@ Public Class MWCompoundClass
         InitializeClass()
     End Sub
 
-    Public Sub New(ByVal objMWElementAndMassRoutines As MWElementAndMassRoutines)
+    Public Sub New(objMWElementAndMassRoutines As MWElementAndMassRoutines)
         MyBase.New()
         ElementAndMassRoutines = objMWElementAndMassRoutines
         InitializeClass()
@@ -104,7 +104,7 @@ Public Class MWCompoundClass
 
     End Function
 
-    Public Function GetAtomCountForElement(ByVal intElementID As Short) As Double
+    Public Function GetAtomCountForElement(intElementID As Short) As Double
         ' Return the number of atoms of a given element that are present in the formula
         ' Note that the number of atoms is not necessarily an integer (e.g. C5.5)
 
@@ -116,7 +116,7 @@ Public Class MWCompoundClass
 
     End Function
 
-    Public Function GetPercentCompositionForElement(ByVal intElementID As Short) As Double
+    Public Function GetPercentCompositionForElement(intElementID As Short) As Double
         ' Returns the percent composition for element
         ' Returns -1 if an invalid ID
 
@@ -128,11 +128,11 @@ Public Class MWCompoundClass
 
     End Function
 
-    Public Function GetPercentCompositionForElementAsString(ByVal elementId As Short) As String
+    Public Function GetPercentCompositionForElementAsString(elementId As Short) As String
         Return GetPercentCompositionForElementAsString(elementId, True)
     End Function
 
-    Public Function GetPercentCompositionForElementAsString(ByVal elementId As Short, ByVal blnIncludeStandardDeviation As Boolean) As String
+    Public Function GetPercentCompositionForElementAsString(elementId As Short, blnIncludeStandardDeviation As Boolean) As String
         ' Returns the percent composition and standard deviation for element
         ' Returns "" if an invalid ID
         Dim strElementSymbol As String
@@ -216,7 +216,7 @@ Public Class MWCompoundClass
         ValueForX = 1.0#
     End Sub
 
-    Public Function SetFormula(ByVal strNewFormula As String) As Integer
+    Public Function SetFormula(strNewFormula As String) As Integer
         ' Provides an alternate method for setting the formula
         ' Returns ErrorID (0 if no error)
 
@@ -277,7 +277,7 @@ Public Class MWCompoundClass
         Get
             Return mComputationStats.Charge
         End Get
-        Set(ByVal Value As Single)
+        Set(Value As Single)
             mComputationStats.Charge = Value
         End Set
     End Property
@@ -298,7 +298,7 @@ Public Class MWCompoundClass
         Get
             Return mStrFormula
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             mStrFormula = Value
 
             ' Recompute the mass for this formula
@@ -325,7 +325,7 @@ Public Class MWCompoundClass
         End Get
     End Property
 
-    Public ReadOnly Property Mass(ByVal blnRecomputeMass As Boolean) As Double
+    Public ReadOnly Property Mass(blnRecomputeMass As Boolean) As Double
         Get
             If blnRecomputeMass Then UpdateMass()
 
@@ -338,7 +338,7 @@ Public Class MWCompoundClass
             Return Me.MassAndStdDevString(True)
         End Get
     End Property
-    Public ReadOnly Property MassAndStdDevString(ByVal blnRecomputeMass As Boolean) As String
+    Public ReadOnly Property MassAndStdDevString(blnRecomputeMass As Boolean) As String
         Get
             If blnRecomputeMass Then UpdateMass()
 
@@ -359,7 +359,7 @@ Public Class MWCompoundClass
         Get
             Return mValueForX
         End Get
-        Set(ByVal Value As Double)
+        Set(Value As Double)
             If Value >= 0 Then mValueForX = Value
         End Set
     End Property

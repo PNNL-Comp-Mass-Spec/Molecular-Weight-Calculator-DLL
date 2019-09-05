@@ -1223,11 +1223,11 @@ Public Class MWFormulaFinder
 
     <Obsolete("Deprecated")>
     Private Function GetCandidateElements(
-       ByVal percentTolerance As Double,
-       ByVal intRange(,) As Integer,
-       ByVal dblPotentialElementStats(,) As Double,
-       ByVal strPotentialElements() As String,
-       ByVal dblTargetPercents(,) As Double) As Integer
+       percentTolerance As Double,
+       intRange(,) As Integer,
+       dblPotentialElementStats(,) As Double,
+       strPotentialElements() As String,
+       dblTargetPercents(,) As Double) As Integer
 
         Dim potentialElementCount = 0
         Dim customElementCounter = 0
