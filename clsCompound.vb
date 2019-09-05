@@ -74,12 +74,12 @@ Public Class MWCompoundClass
         End If
     End Function
 
-    Public Function ElementPresent(ByRef intElementID As Short) As Boolean
+    Public Function ElementPresent(elementID As Short) As Boolean
         ' Returns True if the element is present
-        If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
-            ElementPresent = mComputationStats.Elements(intElementID).Used
+        If elementID >= 1 And elementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
+            Return mComputationStats.Elements(elementID).Used
         Else
-            ElementPresent = False
+            Return False
         End If
 
     End Function
@@ -126,30 +126,29 @@ Public Class MWCompoundClass
 
     End Function
 
-    Public Function GetPercentCompositionForElementAsString(ByVal intElementID As Short) As String
-        Return GetPercentCompositionForElementAsString(intElementID, True)
-
+    Public Function GetPercentCompositionForElementAsString(ByVal elementId As Short) As String
+        Return GetPercentCompositionForElementAsString(elementId, True)
     End Function
 
-    Public Function GetPercentCompositionForElementAsString(ByVal intElementID As Short, ByVal blnIncludeStandardDeviation As Boolean) As String
+    Public Function GetPercentCompositionForElementAsString(ByVal elementId As Short, ByVal blnIncludeStandardDeviation As Boolean) As String
         ' Returns the percent composition and standard deviation for element
         ' Returns "" if an invalid ID
         Dim strElementSymbol As String
         Dim strPctComposition As String
 
-        If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
+        If elementId >= 1 And elementId <= MWElementAndMassRoutines.ELEMENT_COUNT Then
 
-            With mComputationStats.PercentCompositions(intElementID)
+            With mComputationStats.PercentCompositions(elementId)
 
-                strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(intElementID) & ":"
+                strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) & ":"
                 strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(.PercentComposition, .StdDeviation, blnIncludeStandardDeviation, True)
                 If .PercentComposition < 10 Then
                     strPctComposition = " " & strPctComposition
                 End If
-                GetPercentCompositionForElementAsString = ElementAndMassRoutines.SpacePad(strElementSymbol, 4) & strPctComposition
+                Return ElementAndMassRoutines.SpacePad(strElementSymbol, 4) & strPctComposition
             End With
         Else
-            GetPercentCompositionForElementAsString = ""
+            Return String.Empty
         End If
 
     End Function
