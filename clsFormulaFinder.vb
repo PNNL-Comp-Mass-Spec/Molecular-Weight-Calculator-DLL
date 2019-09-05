@@ -1452,7 +1452,7 @@ Public Class MWFormulaFinder
        searchOptions As clsFormulaFinderOptions,
        ppmMode As Boolean,
        calculationMode As eCalculationMode,
-       sortedElementStats As List(Of clsFormulaFinderCandidateElement),
+       sortedElementStats As IList(Of clsFormulaFinderCandidateElement),
        targetMass As Double,
        massToleranceDa As Double,
        maximumFormulaMass As Double) As List(Of clsFormulaFinderResult)
