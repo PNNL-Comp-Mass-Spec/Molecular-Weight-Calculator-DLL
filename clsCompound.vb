@@ -70,9 +70,9 @@ Public Class MWCompoundClass
         If mErrorDescription = "" Then
             mStrFormula = strResult
             mStrFormattedFormula = strResult
-            ConvertToEmpirical = strResult
+            Return strResult
         Else
-            ConvertToEmpirical = ErrorDescription
+            Return ErrorDescription
         End If
     End Function
 
@@ -97,9 +97,9 @@ Public Class MWCompoundClass
         If mErrorDescription = "" Then
             mStrFormula = strResult
             mStrFormattedFormula = strResult
-            ExpandAbbreviations = strResult
+            Return strResult
         Else
-            ExpandAbbreviations = ErrorDescription
+            Return ErrorDescription
         End If
 
     End Function
@@ -109,9 +109,9 @@ Public Class MWCompoundClass
         ' Note that the number of atoms is not necessarily an integer (e.g. C5.5)
 
         If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
-            GetAtomCountForElement = mComputationStats.Elements(intElementID).Count
+            Return mComputationStats.Elements(intElementID).Count
         Else
-            GetAtomCountForElement = 0
+            Return 0
         End If
 
     End Function
@@ -121,9 +121,9 @@ Public Class MWCompoundClass
         ' Returns -1 if an invalid ID
 
         If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
-            GetPercentCompositionForElement = mComputationStats.PercentCompositions(intElementID).PercentComposition
+            Return mComputationStats.PercentCompositions(intElementID).PercentComposition
         Else
-            GetPercentCompositionForElement = -1
+            Return -1
         End If
 
     End Function
@@ -208,7 +208,7 @@ Public Class MWCompoundClass
             End If
         Next intElementIndex
 
-        GetUsedElementCount = intTotalElements
+        Return intTotalElements
     End Function
 
     Private Sub InitializeClass()
@@ -222,7 +222,7 @@ Public Class MWCompoundClass
 
         Me.Formula = strNewFormula
 
-        SetFormula = Me.ErrorID
+        Return Me.ErrorID
     End Function
 
     Private Sub UpdateErrorAndCaution()
@@ -255,12 +255,12 @@ Public Class MWCompoundClass
             intCharLoc = CShort(InStr(LCase(mStrFormattedFormula), "[x"))
             If intCharLoc > 0 Then
                 If Mid(mStrFormattedFormula, intCharLoc + 1, 1) <> "e" Then
-                    XIsPresentAfterBracket = True
+                    Return True
                 Else
-                    XIsPresentAfterBracket = False
+                    Return False
                 End If
             Else
-                XIsPresentAfterBracket = False
+                Return False
             End If
         End If
 
