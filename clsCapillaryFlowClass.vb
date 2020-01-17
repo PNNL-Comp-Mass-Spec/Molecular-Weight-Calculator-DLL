@@ -95,7 +95,7 @@ Public Class MWCapillaryFlowClass
         ucoAttoMolar
         ucoMgPerML
         ucoUgPerML
-        ucongperml
+        ucoNgPerML
         ucoUgPerUL
         ucoNgPerUL
     End Enum
@@ -137,9 +137,9 @@ Public Class MWCapillaryFlowClass
         acmColumnID
         acmColumnLength
         acmDeadTime
-        acmLinearVelociy
-        acmVolFlowrate
-        acmVolFlowrateUsingDeadTime
+        acmLinearVelocity
+        acmVolFlowRate
+        acmVolFlowRateUsingDeadTime
     End Enum
     ' </EnumStatements>
 
@@ -196,8 +196,8 @@ Public Class MWCapillaryFlowClass
                 Case acmAutoComputeModeConstants.acmColumnID : ComputeColumnID()
                 Case acmAutoComputeModeConstants.acmColumnLength : ComputeColumnLength()
                 Case acmAutoComputeModeConstants.acmDeadTime : ComputeDeadTime()
-                Case acmAutoComputeModeConstants.acmLinearVelociy : ComputeLinearVelocity()
-                Case acmAutoComputeModeConstants.acmVolFlowrateUsingDeadTime : ComputeVolFlowRateUsingDeadTime()
+                Case acmAutoComputeModeConstants.acmLinearVelocity : ComputeLinearVelocity()
+                Case acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime : ComputeVolFlowRateUsingDeadTime()
                 Case Else
                     ' Includes acmVolFlowRate
                     ComputeVolFlowRate()
@@ -239,7 +239,7 @@ Public Class MWCapillaryFlowClass
         End With
 
         ' Compute Dead Time (and Linear Velocity)
-        ' Must send false for RecalculateVolFlowRate since we're finding the backpressure, not volumetric flow rate
+        ' Must send false for RecalculateVolFlowRate since we're finding the back pressure, not volumetric flow rate
         ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, False)
 
         ' Return Back Pressure
@@ -468,7 +468,7 @@ Public Class MWCapillaryFlowClass
     Private Sub ComputeMassRateValues()
 
         With mMassRateParameters
-            .MassFlowRate = .SampleConcentration * .VolumetricFlowRate / 1000 ' Compute mass flowrate in moles/min
+            .MassFlowRate = .SampleConcentration * .VolumetricFlowRate / 1000 ' Compute mass flow rate in moles/min
 
             .MolesInjected = .MassFlowRate * .InjectionTime ' Compute moles injected in moles
         End With
@@ -942,7 +942,7 @@ Public Class MWCapillaryFlowClass
                 Case ucoUnitsConcentrationConstants.ucoAttoMolar : dblFactor = 1 / 1.0E+18
                 Case ucoUnitsConcentrationConstants.ucoMgPerML : dblFactor = 1 / dblSampleMass '1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
                 Case ucoUnitsConcentrationConstants.ucoUgPerML : dblFactor = 1 / (dblSampleMass * 1000.0#) '1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                Case ucoUnitsConcentrationConstants.ucongperml : dblFactor = 1 / (dblSampleMass * 1000000.0#) '1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                Case ucoUnitsConcentrationConstants.ucoNgPerML : dblFactor = 1 / (dblSampleMass * 1000000.0#) '1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
                 Case ucoUnitsConcentrationConstants.ucoUgPerUL : dblFactor = 1 / (dblSampleMass) '1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
                 Case ucoUnitsConcentrationConstants.ucoNgPerUL : dblFactor = 1 / (dblSampleMass * 1000.0#) '1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
                 Case Else : dblFactor = -1
@@ -1362,7 +1362,7 @@ Public Class MWCapillaryFlowClass
     Private Sub InitializeClass()
         Me.SetAutoComputeEnabled(False)
 
-        Me.SetAutoComputeMode(acmAutoComputeModeConstants.acmVolFlowrate)
+        Me.SetAutoComputeMode(acmAutoComputeModeConstants.acmVolFlowRate)
         Me.SetCapillaryType(ctCapillaryTypeConstants.ctPackedCapillary)
         Me.SetBackPressure(3000, uprUnitsPressureConstants.uprPsi)
         Me.SetColumnLength(50, ulnUnitsLengthConstants.ulnCM)

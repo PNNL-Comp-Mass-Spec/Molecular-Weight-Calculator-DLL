@@ -656,12 +656,12 @@ Public Class MolecularWeightCalculator
         SetElementIsotopes = mElementAndMassRoutines.SetElementIsotopesInternal(strSymbol, intIsotopeCount, dblIsotopeMassesOneBased, sngIsotopeAbundancesOneBased)
     End Function
 
-    Public Sub SetElementMode(NewElementMode As MWElementAndMassRoutines.emElementModeConstants)
-        SetElementMode(NewElementMode, True)
+    Public Sub SetElementMode(elementMode As MWElementAndMassRoutines.emElementModeConstants)
+        SetElementMode(elementMode, True)
     End Sub
 
-    Public Sub SetElementMode(NewElementMode As MWElementAndMassRoutines.emElementModeConstants, blnMemoryLoadElementValues As Boolean)
-        mElementAndMassRoutines.SetElementModeInternal(NewElementMode, blnMemoryLoadElementValues)
+    Public Sub SetElementMode(elementMode As MWElementAndMassRoutines.emElementModeConstants, blnMemoryLoadElementValues As Boolean)
+        mElementAndMassRoutines.SetElementModeInternal(elementMode, blnMemoryLoadElementValues)
     End Sub
 
     Public Function SetMessageStatement(lngMessageID As Integer, strNewMessage As String) As Integer

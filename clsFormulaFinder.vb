@@ -336,12 +336,12 @@ Public Class MWFormulaFinder
 
     Private Sub AppendPercentCompositionResult(
        searchResult As clsFormulaFinderResult,
-       elementcount As Integer,
+       elementCount As Integer,
        sortedElementStats As IList(Of clsFormulaFinderCandidateElement),
        targetIndex As Integer,
        percentComposition As Double)
 
-        If elementcount <> 0 AndAlso targetIndex < sortedElementStats.Count Then
+        If elementCount <> 0 AndAlso targetIndex < sortedElementStats.Count Then
             searchResult.PercentComposition.Add(sortedElementStats(targetIndex).Symbol, percentComposition)
         End If
 
@@ -731,7 +731,7 @@ Public Class MWFormulaFinder
 
         ' Verify that the formula does not have too many hydrogens
 
-        ' Counters for elements of interest (hydrogen, carbon, silicon, nitrogen, phosphorus, chlorine, iodine, flourine, bromine, and other)
+        ' Counters for elements of interest (hydrogen, carbon, silicon, nitrogen, phosphorus, chlorine, iodine, florine, bromine, and other)
         Dim udtElementNum As udtElementNumType
 
         ' Determine number of C, Si, N, P, O, S, Cl, I, F, Br and H atoms
@@ -764,12 +764,12 @@ Public Class MWFormulaFinder
             ' Formula is: [#C*2 + 3 - (2 if N or P present)] + [#N + 3 - (1 if C or Si present)] + [#other elements * 4 + 3], where we assume other elements can have a coordination Number of up to 7
             If udtElementNum.C > 0 Or udtElementNum.Si > 0 Then
                 maxH += (udtElementNum.C + udtElementNum.Si) * 2 + 3
-                ' If udtElementNum.N > 0 Or udtElementNum.P > 0 Then maxh = maxh - 2
+                ' If udtElementNum.N > 0 Or udtElementNum.P > 0 Then maxH = maxH - 2
             End If
 
             If udtElementNum.N > 0 Or udtElementNum.P > 0 Then
                 maxH += (udtElementNum.N + udtElementNum.P) + 3
-                ' If udtElementNum.C > 0 Or udtElementNum.Si > 0 Then maxh = maxh - 1
+                ' If udtElementNum.C > 0 Or udtElementNum.Si > 0 Then maxH = maxH - 1
             End If
 
             ' Correction for carbon contribution
@@ -1042,7 +1042,7 @@ Public Class MWFormulaFinder
                 MultipleSearchMath(sortedElementStats.Count, searchOptions, mzSearchChargeMin, mzSearchChargeMax)
 
                 For currentMzCharge = mzSearchChargeMin To mzSearchChargeMax
-                    ' Call the RecursiveMWfinder repeatedly, sending dblTargetWeight * x each time to search for target, target*2, target*3, etc.
+                    ' Call the RecursiveMWFinder repeatedly, sending dblTargetWeight * x each time to search for target, target*2, target*3, etc.
                     RecursiveMWFinder(lstResults, searchOptions, ppmMode, sortedElementStats, 0, lstPotentialElementPointers, 0, targetMass * currentMzCharge, massToleranceDa, 0, currentMzCharge)
                 Next
 
@@ -1497,7 +1497,7 @@ Public Class MWFormulaFinder
                                     For P = lstRanges(6).Min To lstRanges(6).Max
                                         For q = lstRanges(7).Min To lstRanges(7).Max
                                             For r = lstRanges(8).Min To lstRanges(8).Max
-                                                For S = lstRanges(9).Min To lstRanges(9).Max
+                                                For s = lstRanges(9).Min To lstRanges(9).Max
 
                                                     Dim totalMass = j * sortedElementStats(0).Mass
                                                     Dim totalCharge = j * sortedElementStats(0).Charge
@@ -1535,8 +1535,8 @@ Public Class MWFormulaFinder
                                                                                     totalCharge += r * sortedElementStats(8).Charge
 
                                                                                     If potentialElementCount > 9 Then
-                                                                                        totalMass += S * sortedElementStats(9).Mass
-                                                                                        totalCharge += S * sortedElementStats(9).Charge
+                                                                                        totalMass += s * sortedElementStats(9).Mass
+                                                                                        totalCharge += s * sortedElementStats(9).Charge
                                                                                     End If
 
                                                                                 End If
@@ -1577,7 +1577,7 @@ Public Class MWFormulaFinder
                                                                                             Percent(8) = r * sortedElementStats(8).Mass / totalMass * 100
 
                                                                                             If potentialElementCount > 1 Then
-                                                                                                Percent(9) = S * sortedElementStats(9).Mass / totalMass * 100
+                                                                                                Percent(9) = s * sortedElementStats(9).Mass / totalMass * 100
                                                                                             End If
                                                                                         End If
                                                                                     End If
@@ -1606,7 +1606,7 @@ Public Class MWFormulaFinder
                                                                 ' Construct the empirical formula and verify hydrogens
                                                                 Dim blnHOK = ConstructAndVerifyCompound(searchOptions,
                                                                                                         sbEmpiricalFormula,
-                                                                                                        j, k, l, m, N, O, P, q, r, S,
+                                                                                                        j, k, l, m, N, O, P, q, r, s,
                                                                                                         sortedElementStats,
                                                                                                         totalMass, targetMass, massToleranceDa,
                                                                                                         totalCharge, 0,
@@ -1628,7 +1628,7 @@ Public Class MWFormulaFinder
                                                                     AppendPercentCompositionResult(searchResult, P, sortedElementStats, 6, Percent(6))
                                                                     AppendPercentCompositionResult(searchResult, q, sortedElementStats, 7, Percent(7))
                                                                     AppendPercentCompositionResult(searchResult, r, sortedElementStats, 8, Percent(8))
-                                                                    AppendPercentCompositionResult(searchResult, S, sortedElementStats, 9, Percent(9))
+                                                                    AppendPercentCompositionResult(searchResult, s, sortedElementStats, 9, Percent(9))
 
                                                                     lstResults.Add(searchResult)
                                                                 End If
@@ -1654,7 +1654,7 @@ Public Class MWFormulaFinder
                                                                     ' Construct the empirical formula and verify hydrogens
                                                                     Dim blnHOK = ConstructAndVerifyCompound(searchOptions,
                                                                                                             sbEmpiricalFormula,
-                                                                                                            j, k, l, m, N, O, P, q, r, S,
+                                                                                                            j, k, l, m, N, O, P, q, r, s,
                                                                                                             sortedElementStats,
                                                                                                             totalMass, targetMass * intCurrentCharge, massToleranceDa,
                                                                                                             totalCharge, intCurrentCharge,
@@ -1674,7 +1674,7 @@ Public Class MWFormulaFinder
                                                             ' Jump out of loop since weight is too high
                                                             ' Determine which variable is causing the weight to be too high
                                                             ' Incrementing "s" would definitely make the weight too high, so set it to its max (so it will zero and increment "r")
-                                                            S = lstRanges(9).Max
+                                                            s = lstRanges(9).Max
                                                             If (j * lstRanges(0).Min + k * lstRanges(1).Min + l * lstRanges(2).Min + m * lstRanges(3).Min + N * lstRanges(4).Min + O * lstRanges(5).Min + P * lstRanges(6).Min + q * lstRanges(7).Min + (r + 1) * lstRanges(8).Min) > (massToleranceDa + dblMultipleSearchMaxWeight) Then
                                                                 ' Incrementing r would make the weight too high, so set it to its max (so it will zero and increment q)
                                                                 r = lstRanges(8).Max
@@ -1723,10 +1723,10 @@ Public Class MWFormulaFinder
                                                         P = lstRanges(6).Max
                                                         q = lstRanges(7).Max
                                                         r = lstRanges(8).Max
-                                                        S = lstRanges(9).Max
+                                                        s = lstRanges(9).Max
                                                     End If
 
-                                                Next S
+                                                Next s
                                             Next r
                                         Next q
                                     Next P
@@ -1804,7 +1804,7 @@ Public Class MWFormulaFinder
     End Sub
 
     ''' <summary>
-    ''' Recursively serch for a target mass
+    ''' Recursively search for a target mass
     ''' </summary>
     ''' <param name="lstResults"></param>
     ''' <param name="searchOptions"></param>

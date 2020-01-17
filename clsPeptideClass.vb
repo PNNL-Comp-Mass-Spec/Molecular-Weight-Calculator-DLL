@@ -125,7 +125,7 @@ Public Class MWPeptideClass
         End Sub
     End Structure
 
-    Public Structure udtFragmentionSpectrumIntensitiesType
+    Public Structure udtFragmentationSpectrumIntensitiesType
         Public IonType() As Double ' 0-based array
         Public BYIonShoulder As Double ' If > 0 then shoulder ions will be created by B and Y ions
         Public NeutralLoss As Double
@@ -146,7 +146,7 @@ Public Class MWPeptideClass
     End Structure
 
     Public Structure udtFragmentationSpectrumOptionsType
-        Public IntensityOptions As udtFragmentionSpectrumIntensitiesType
+        Public IntensityOptions As udtFragmentationSpectrumIntensitiesType
         Public IonTypeOptions() As udtIonTypeOptionsType
         Public DoubleChargeIonsShow As Boolean
         Public DoubleChargeIonsThreshold As Single
@@ -264,7 +264,7 @@ Public Class MWPeptideClass
         Dim strModSymbolGroup As String
         Dim intModificationID, intModSymbolLengthTotal As Integer
         Dim strTestChar As String
-        Dim intSubpartLength As Integer
+        Dim intSubPartLength As Integer
         Dim blnMatchFound As Boolean
 
         intSequenceStrLength = strPartialSequence.Length
@@ -288,9 +288,9 @@ Public Class MWPeptideClass
             '  modification symbols
 
             blnMatchFound = False
-            For intSubpartLength = strModSymbolGroup.Length To 1 Step -1
+            For intSubPartLength = strModSymbolGroup.Length To 1 Step -1
                 ' See if the modification is already defined
-                intModificationID = GetModificationSymbolID(strModSymbolGroup.Substring(0, intSubpartLength))
+                intModificationID = GetModificationSymbolID(strModSymbolGroup.Substring(0, intSubPartLength))
                 If intModificationID > 0 Then
                     blnMatchFound = True
                     Exit For
@@ -831,39 +831,39 @@ Public Class MWPeptideClass
     End Function
 
     Public Function GetSequence() As String
-        Return GetSequence(blnUse3LetterCode:=True, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
+        Return GetSequence(blnUse3LetterCode:=True, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNAndCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence1LetterCode() As String
-        Return GetSequence(blnUse3LetterCode:=False, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
+        Return GetSequence(blnUse3LetterCode:=False, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNAndCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(blnUse3LetterCode As Boolean) As String
-        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
+        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues:=False, blnSeparateResiduesWithDash:=False, blnIncludeNAndCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(blnUse3LetterCode As Boolean,
                                 blnAddSpaceEvery10Residues As Boolean) As String
-        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash:=False, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
+        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash:=False, blnIncludeNAndCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(blnUse3LetterCode As Boolean,
                                 blnAddSpaceEvery10Residues As Boolean,
                                 blnSeparateResiduesWithDash As Boolean) As String
-        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNandCTerminii:=False, blnIncludeModificationSymbols:=True)
+        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNAndCTerminii:=False, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(blnUse3LetterCode As Boolean,
                                 blnAddSpaceEvery10Residues As Boolean,
                                 blnSeparateResiduesWithDash As Boolean,
-                                blnIncludeNandCTerminii As Boolean) As String
-        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNandCTerminii, blnIncludeModificationSymbols:=True)
+                                blnIncludeNAndCTerminii As Boolean) As String
+        Return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNAndCTerminii, blnIncludeModificationSymbols:=True)
     End Function
 
     Public Function GetSequence(blnUse3LetterCode As Boolean,
                                 blnAddSpaceEvery10Residues As Boolean,
                                 blnSeparateResiduesWithDash As Boolean,
-                                blnIncludeNandCTerminii As Boolean,
+                                blnIncludeNAndCTerminii As Boolean,
                                 blnIncludeModificationSymbols As Boolean) As String
 
         ' Construct a text sequence using Residues() and the N and C Terminus info
@@ -919,7 +919,7 @@ Public Class MWPeptideClass
 
         Next lngIndex
 
-        If blnIncludeNandCTerminii Then
+        If blnIncludeNAndCTerminii Then
             strSequence = mNTerminus.Formula & strDashAdd & strSequence & strDashAdd & mCTerminus.Formula
         End If
 
@@ -1170,12 +1170,12 @@ Public Class MWPeptideClass
     Public Function GetTrypticNameMultipleMatches(strProteinResidues As String,
                                               strPeptideResidues As String,
                                               lngProteinSearchStartLoc As Integer,
-                                              strListDelimeter As String) As String
+                                              strListDelimiter As String) As String
 
         Return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
                                              0, 0, 0, False,
                                              TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, True,
-                                             lngProteinSearchStartLoc, strListDelimeter)
+                                             lngProteinSearchStartLoc, strListDelimiter)
     End Function
 
 
@@ -1236,7 +1236,7 @@ Public Class MWPeptideClass
     ''' <param name="strTerminiiSymbol"></param>
     ''' <param name="blnIgnoreCase"></param>
     ''' <param name="lngProteinSearchStartLoc"></param>
-    ''' <param name="strListDelimeter"></param>
+    ''' <param name="strListDelimiter"></param>
     ''' <returns>The number of matches</returns>
     ''' <remarks></remarks>
     Public Function GetTrypticNameMultipleMatches(strProteinResidues As String,
@@ -1250,7 +1250,7 @@ Public Class MWPeptideClass
                                                   strTerminiiSymbol As String,
                                                   blnIgnoreCase As Boolean,
                                                   lngProteinSearchStartLoc As Integer,
-                                                  strListDelimeter As String) As String
+                                                  strListDelimiter As String) As String
 
         ' Returns the number of matches in lngReturnMatchCount
         ' lngReturnResidueStart contains the residue number of the start of the first match
@@ -1271,7 +1271,7 @@ Public Class MWPeptideClass
 
             If Len(strCurrentName) > 0 Then
                 If strNameList.Length > 0 Then
-                    strNameList &= strListDelimeter
+                    strNameList &= strListDelimiter
                 End If
                 strNameList &= strCurrentName
                 lngCurrentSearchLoc = lngCurrentResidueEnd + 1
@@ -1303,11 +1303,17 @@ Public Class MWPeptideClass
         '   If it matches one of the characters in strExceptionSuffixResidues, then the match is not counted
         ' Note that strResidueFollowingSearchResidues is necessary in case the potential cleavage residue is the final residue in strSearchResidues
         ' We need to know the next residue to determine if it matches an exception residue
+
+        ' ReSharper disable CommentTypo
+
         ' For example, if strSearchResidues =      "IGASGEHIFIIGVDKPNR"
         '  and the protein it is part of is: TNSANFRIGASGEHIFIIGVDKPNRQPDS
         '  and strSearchChars = "KR while strExceptionSuffixResidues  = "P"
         ' Then the K in IGASGEHIFIIGVDKPNR is ignored because the following residue is P,
         '  while the R in IGASGEHIFIIGVDKPNR is OK because strResidueFollowingSearchResidues is Q
+
+        ' ReSharper restore CommentTypo
+
         ' It is the calling function's responsibility to assign the correct residue to strResidueFollowingSearchResidues
         ' If no match is found, but strResidueFollowingSearchResidues is "-", then the cleavage location returned is Len(strSearchResidues) + 1
 
@@ -1461,10 +1467,15 @@ Public Class MWPeptideClass
                                                       blnIgnoreCase As Boolean) As String
 
         ' Returns the desired tryptic peptide from strProteinResidues
+
+        ' ReSharper disable CommentTypo
+
         ' For example, if strProteinResidues = "IGKANRMTFGL" then
         '  when intDesiredPeptideNumber = 1, returns "IGK"
         '  when intDesiredPeptideNumber = 2, returns "ANR"
         '  when intDesiredPeptideNumber = 3, returns "MTFGL"
+
+        ' ReSharper enable CommentTypo
 
         ' Optionally, returns the position of the start and end residues
         '  using lngReturnResidueStart and lngReturnResidueEnd

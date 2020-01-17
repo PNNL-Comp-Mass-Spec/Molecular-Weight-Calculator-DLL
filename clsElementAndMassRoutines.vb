@@ -32,16 +32,16 @@ Public Class MWElementAndMassRoutines
 
 #Region "Constants and Enums"
 
-    Public Const ELEMENT_COUNT As Int16 = 103
-    Public Const MAX_ABBREV_COUNT As Int16 = 500
+    Public Const ELEMENT_COUNT = 103
+    Public Const MAX_ABBREV_COUNT = 500
 
-    Private Const MESSAGE_STATEMENT_DIMCOUNT As Int16 = 1600
-    Private Const MAX_ABBREV_LENGTH As Int16 = 6
-    Private Const MAX_ISOTOPES As Int16 = 11
-    Private Const MAX_CAUTION_STATEMENTS As Int16 = 100
+    Private Const MESSAGE_STATEMENT_DIM_COUNT = 1600
+    Private Const MAX_ABBREV_LENGTH = 6
+    Private Const MAX_ISOTOPES = 11
+    Private Const MAX_CAUTION_STATEMENTS = 100
 
-    Private Const EMPTY_STRINGCHAR As Char = "~"c
-    Private Const RTF_HEIGHT_ADJUSTCHAR As Char = "~"c ' A hidden character to adjust the height of Rtf Text Boxes when using superscripts
+    Private Const EMPTY_STRING_CHAR As Char = "~"c
+    Private Const RTF_HEIGHT_ADJUST_CHAR As Char = "~"c ' A hidden character to adjust the height of Rtf Text Boxes when using superscripts
 
     Public Enum emElementModeConstants
         emAverageMass = 1
@@ -326,7 +326,7 @@ Public Class MWElementAndMassRoutines
             With udtAbbrevSymbolStack
                 .Count += 1S
                 ReDim Preserve .SymbolReferenceStack(.Count - 1)
-                .SymbolReferenceStack(.Count - 1) = SymbolReference
+                .SymbolReferenceStack(.Count - 1) = symbolReference
             End With
         Catch ex As Exception
             GeneralErrorHandler("MWElementAndMassRoutines.AbbrevSymbolStackAdd", 0, ex.Message)
@@ -409,8 +409,8 @@ Public Class MWElementAndMassRoutines
 
     Private Sub CatchParseNumError(adjacentNum As Double, numSizing As Integer, curCharacter As Integer, symbolLength As Integer)
 
-        If AdjacentNum < 0 And numSizing = 0 Then
-            Select Case AdjacentNum
+        If adjacentNum < 0 And numSizing = 0 Then
+            Select Case adjacentNum
                 Case -1
                     ' No number, but no error
                     ' That's ok
@@ -465,10 +465,11 @@ Public Class MWElementAndMassRoutines
                         Case Else
                             ' error
                             eSymbolMatchType = smtSymbolMatchTypeConstants.smtUnknown
-                            SymbolReference = -1
+                            symbolReference = -1
                     End Select
+
                     If eSymbolMatchType <> smtSymbolMatchTypeConstants.smtUnknown Then
-                        SymbolReference = CShort(Val(Mid(MasterSymbolsList(intIndex, 1), 2)))
+                        symbolReference = CShort(Val(Mid(MasterSymbolsList(intIndex, 1), 2)))
                     End If
                     Exit For
                 End If
@@ -641,7 +642,7 @@ Public Class MWElementAndMassRoutines
         Dim AtomTrackHistory() As Integer
 
         Dim IsoCombos(,) As Integer ' 2D array: Holds the # of each isotope for each combination
-        ' For example, Two chlorines, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
+        ' For example, Two chlorine atoms, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
         ' m1  m2  m3
         ' 2   0   0
         ' 1   1   0
@@ -1327,7 +1328,7 @@ Public Class MWElementAndMassRoutines
 
             dblSigma = (dblResolutionMass / intResolution) / Math.Sqrt(5.54)
 
-            ' Set the window range (the xvalue window width range) to calculate the Gaussian representation for each data point
+            ' Set the window range (the xValue window width range) to calculate the Gaussian representation for each data point
             ' The width at the base of a peak is 4 dblSigma
             ' Use a width of 2 * 6 dblSigma
             dblXValWindowRange = 2 * 6 * dblSigma
@@ -1978,7 +1979,7 @@ Public Class MWElementAndMassRoutines
       ByRef AtomTrackHistory() As Integer) As Integer
 
         ' IsoCombos() is a 2D array holding the # of each isotope for each combination
-        ' For example, Two chlorines, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
+        ' For example, Two chlorine atoms, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
         ' m1  m2  m3
         ' 2   0   0
         ' 1   1   0
@@ -2041,8 +2042,8 @@ Public Class MWElementAndMassRoutines
         Dim strErrorFilePath As String
 
         strMessage = "Error in " & strCallingProcedure & ": " & ErrorToString(errorNumber) & " (#" & Trim(CStr(errorNumber)) & ")"
-        If Not strErrorDescriptionAddnl Is Nothing AndAlso strErrorDescriptionAddnl.Length > 0 Then
-            strMessage &= ControlChars.NewLine & strErrorDescriptionAddnl
+        If Not strErrorDescriptionAdditional Is Nothing AndAlso strErrorDescriptionAdditional.Length > 0 Then
+            strMessage &= ControlChars.NewLine & strErrorDescriptionAdditional
         End If
 
 
@@ -2302,7 +2303,7 @@ Public Class MWElementAndMassRoutines
     End Function
 
     Public Function GetElementIsotopesInternal(intElementID As Short, ByRef intIsotopeCount As Short, ByRef dblIsotopeMasses() As Double, ByRef sngIsotopeAbundances() As Single) As Integer
-        Dim intIsotopeindex As Short
+        Dim intIsotopeIndex As Short
 
         If intElementID >= 1 And intElementID <= ELEMENT_COUNT Then
             With ElementStats(intElementID)
@@ -2386,7 +2387,7 @@ Public Class MWElementAndMassRoutines
     End Function
 
     Public Function GetMessageStatementCountInternal() As Integer
-        Return MessageStatmentCount
+        Return MessageStatementCount
     End Function
 
     Public Function GetMessageStatementInternal(messageID As Integer) As String
@@ -2398,7 +2399,7 @@ Public Class MWElementAndMassRoutines
         ' LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
         Dim strMessage As String
 
-        If messageID > 0 And messageID <= MessageStatmentCount Then
+        If messageID > 0 And messageID <= MessageStatementCount Then
             strMessage = MessageStatements(messageID)
 
             ' Append Prefix to certain strings
@@ -2436,7 +2437,7 @@ Public Class MWElementAndMassRoutines
             Return blnFound
 
         Catch ex As Exception
-            GeneralErrorHandler("IsPresentInAbrevSymbolStack", 0, ex.Message)
+            GeneralErrorHandler("IsPresentInAbbrevSymbolStack", ex)
             Return False
         End Try
 
@@ -2601,13 +2602,13 @@ Public Class MWElementAndMassRoutines
 
         Dim strMessage As String
 
-        If MessageStatmentCount = 0 Then MemoryLoadMessageStatements()
+        If MessageStatementCount = 0 Then MemoryLoadMessageStatements()
 
         ' First assume we can't find the message number
         strMessage = "General unspecified error"
 
         ' Now try to find it
-        If messageID < MESSAGE_STATEMENT_DIMCOUNT Then
+        If messageID < MESSAGE_STATEMENT_DIM_COUNT Then
             If Len(MessageStatements(messageID)) > 0 Then
                 strMessage = MessageStatements(messageID)
             End If
@@ -2811,10 +2812,10 @@ Public Class MWElementAndMassRoutines
         CautionStatements(20, 0) = "Ph" : CautionStatements(20, 1) = "Ph means phenyl, PH means phosphorus-hydrogen.  "
         CautionStatements(21, 0) = "Pu" : CautionStatements(21, 1) = "Pu means plutonium; PU means phosphorus-uranium.  "
         CautionStatements(22, 0) = "Py" : CautionStatements(22, 1) = "Py means pyridine; PY means phosphorus-yttrium.  "
-        CautionStatements(23, 0) = "Sb" : CautionStatements(23, 1) = "Sb means antimony; SB means sulfor-boron.  "
+        CautionStatements(23, 0) = "Sb" : CautionStatements(23, 1) = "Sb means antimony; SB means sulfur-boron.  "
         CautionStatements(24, 0) = "Sc" : CautionStatements(24, 1) = "Sc means scandium; SC means sulfur-carbon.  "
         CautionStatements(25, 0) = "Si" : CautionStatements(25, 1) = "Si means silicon; SI means sulfur-iodine.  "
-        CautionStatements(26, 0) = "Sn" : CautionStatements(26, 1) = "Sn means tin; SN means sulfor-nitrogen.  "
+        CautionStatements(26, 0) = "Sn" : CautionStatements(26, 1) = "Sn means tin; SN means sulfur-nitrogen.  "
         CautionStatements(27, 0) = "TI" : CautionStatements(27, 1) = "TI means tritium-iodine, Ti means titanium.  "
         CautionStatements(28, 0) = "Yb" : CautionStatements(28, 1) = "Yb means ytterbium; YB means yttrium-boron.  "
         CautionStatements(29, 0) = "BPY" : CautionStatements(29, 1) = "BPY means boron-phosphorus-yttrium; Bpy means bipyridine.  "
@@ -2874,7 +2875,7 @@ Public Class MWElementAndMassRoutines
         ' For Radioactive elements, the most stable isotope is NOT used;
         ' instead, an average Mol. Weight is used, just like with other elements.
         ' Data obtained from the Perma-Chart Science Series periodic table, 1993.
-        ' Uncertainties from CRC Handoobk of Chemistry and Physics, except for
+        ' Uncertainties from CRC Handbook of Chemistry and Physics, except for
         ' Radioactive elements, where uncertainty was estimated to be .n5 where
         ' intSpecificElementProperty represents the number digits after the decimal point but before the last
         ' number of the molecular weight.
@@ -3376,7 +3377,7 @@ Public Class MWElementAndMassRoutines
     Private Sub MemoryLoadIsotopes()
         ' Stores isotope information in ElementStats()
 
-        Dim intElementIndex, intIsotopeindex As Short
+        Dim intElementIndex, intIsotopeIndex As Short
 
         ' The dblIsoMasses() array holds the mass of each isotope
         ' starting with dblIsoMasses(x,1), dblIsoMasses(x, 2), etc.
@@ -3715,7 +3716,7 @@ Public Class MWElementAndMassRoutines
 
     Public Sub MemoryLoadMessageStatements()
 
-        MessageStatmentCount = 1555
+        MessageStatementCount = 1555
 
         MessageStatements(1) = "Unknown element"
         MessageStatements(2) = "Obsolete msg: Cannot handle more than 4 layers of embedded parentheses"
@@ -3976,7 +3977,7 @@ Public Class MWElementAndMassRoutines
 
         ReDim AbbrevStats(MAX_ABBREV_COUNT)
         ReDim CautionStatements(MAX_CAUTION_STATEMENTS, 2)
-        ReDim MessageStatements(MESSAGE_STATEMENT_DIMCOUNT)
+        ReDim MessageStatements(MESSAGE_STATEMENT_DIM_COUNT)
 
         mProgressStepDescription = String.Empty
         mProgressPercentComplete = 0
@@ -4075,7 +4076,7 @@ Public Class MWElementAndMassRoutines
                     ' Compute the total molecular weight
                     .TotalMass = 0 ' Reset total weight of compound to 0 so we can add to it
                     For intElementIndex = 1 To ELEMENT_COUNT
-                        ' Increase total weight by multipling the count of each element by the element's mass
+                        ' Increase total weight by multiplying the count of each element by the element's mass
                         ' In addition, add in the Isotopic Correction value
                         .TotalMass = .TotalMass + ElementStats(intElementIndex).Mass * .Elements(intElementIndex).Count + .Elements(intElementIndex).IsotopicCorrection
                     Next intElementIndex
@@ -4255,10 +4256,10 @@ Public Class MWElementAndMassRoutines
                         If strChar1 = "]" Then strChar1 = ")"
                     End If
 
-                    If strChar1 = "" Then strChar1 = EMPTY_STRINGCHAR
-                    If strChar2 = "" Then strChar2 = EMPTY_STRINGCHAR
-                    If strChar3 = "" Then strChar3 = EMPTY_STRINGCHAR
-                    If strCharRemain = "" Then strCharRemain = EMPTY_STRINGCHAR
+                    If strChar1 = "" Then strChar1 = EMPTY_STRING_CHAR
+                    If strChar2 = "" Then strChar2 = EMPTY_STRING_CHAR
+                    If strChar3 = "" Then strChar3 = EMPTY_STRING_CHAR
+                    If strCharRemain = "" Then strCharRemain = EMPTY_STRING_CHAR
 
                     strFormulaExcerpt = strChar1 & strChar2 & strChar3 & strCharRemain
 
@@ -4280,7 +4281,7 @@ Public Class MWElementAndMassRoutines
                                     Select Case Mid(strFormula, intParenthClose, 1)
                                         Case "(", "{", "["
                                             ' Another opening parentheses
-                                            ' increment parenthtrack
+                                            ' increment parenthLevel
                                             If Not gComputationOptions.BracketsAsParentheses And Mid(strFormula, intParenthClose, 1) = "[" Then
                                                 ' Do not count the bracket
                                             Else
@@ -4293,7 +4294,7 @@ Public Class MWElementAndMassRoutines
                                                 intParenthLevel = intParenthLevel - 1S
                                                 If intParenthLevel = 0 Then
                                                     dblAdjacentNum = ParseNum(Mid(strFormula, intParenthClose + 1), intNumLength)
-                                                    CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                                                     If dblAdjacentNum < 0 Then
                                                         dblAdjacentNum = 1.0#
@@ -4304,7 +4305,7 @@ Public Class MWElementAndMassRoutines
 
                                                     strSubFormula = Mid(strFormula, intCharIndex + 1, intParenthClose - (intCharIndex + 1))
 
-                                                    ' Note, must pass parenthnum * dblAdjacentNum to preserve previous parentheses stuff
+                                                    ' Note, must pass dblParenthMultiplier * dblAdjacentNum to preserve previous parentheses stuff
                                                     strNewFormula = ParseFormulaRecursive(strSubFormula, udtComputationStats, udtAbbrevSymbolStack, blnExpandAbbreviations, dblStdDevSum, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, CarbonOrSiliconReturnCount, intParenthLevelPrevious + 1S)
 
                                                     ' If expanding abbreviations, then strNewFormula might be longer than strFormula, must add this onto intCharIndex also
@@ -4341,7 +4342,7 @@ Public Class MWElementAndMassRoutines
                         Case 45 ' -
                             ' Used to denote a leading coefficient
                             dblAdjacentNum = ParseNum(strChar2 & strChar3 & strCharRemain, intNumLength)
-                            CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                            CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                             If dblAdjacentNum > 0 Then
                                 intDashPos = intCharIndex + intNumLength
@@ -4365,14 +4366,14 @@ Public Class MWElementAndMassRoutines
                             If intCharIndex = 1 Then
                                 ' Formula starts with a number -- multiply section by number (until next dash)
                                 dblAdjacentNum = ParseNum(strFormulaExcerpt, intNumLength)
-                                CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                                 If dblAdjacentNum >= 0 Then
                                     intDashPos = intCharIndex + intNumLength - 1S
                                     dblDashMultiplier = dblAdjacentNum * dblDashMultiplierPrior
                                     intCharIndex = intCharIndex + intNumLength - 1S
                                 Else
-                                    ' A number less then zero should have been handled by CatchParsenumError above
+                                    ' A number less then zero should have been handled by CatchParseNumError above
                                     ' Make sure defaults are set, though
                                     intDashPos = 0
                                     dblDashMultiplier = dblDashMultiplierPrior
@@ -4391,14 +4392,14 @@ Public Class MWElementAndMassRoutines
                             If UCase(strChar2) = "X" Then
                                 If strChar3 = "e" Then
                                     dblAdjacentNum = ParseNum(strChar2 & strChar3 & strCharRemain, intNumLength)
-                                    CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
                                 Else
                                     dblAdjacentNum = dblValueForX
                                     intNumLength = 1
                                 End If
                             Else
                                 dblAdjacentNum = ParseNum(strChar2 & strChar3 & strCharRemain, intNumLength)
-                                CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                             End If
 
@@ -4421,7 +4422,7 @@ Public Class MWElementAndMassRoutines
                             PrevSymbolReference = 0
                         Case 93 ' ]
                             dblAdjacentNum = ParseNum(strChar2 & strChar3 & strCharRemain, intNumLength)
-                            CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                            CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                             If dblAdjacentNum >= 0 Then
                                 ' Number following bracket
@@ -4458,7 +4459,7 @@ Public Class MWElementAndMassRoutines
                                     End If
                                     ' Look for number after element
                                     dblAdjacentNum = ParseNum(Mid(strFormula, intCharIndex + intSymbolLength), intNumLength)
-                                    CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                                     If dblAdjacentNum < 0 Then
                                         dblAdjacentNum = 1
@@ -4585,7 +4586,7 @@ Public Class MWElementAndMassRoutines
 
                                             ' Look for number after abbrev/amino
                                             dblAdjacentNum = ParseNum(Mid(strFormula, intCharIndex + intSymbolLength), intNumLength)
-                                            CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                                            CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                                             If dblAdjacentNum < 0 Then
                                                 dblAdjacentNum = 1
@@ -4599,7 +4600,7 @@ Public Class MWElementAndMassRoutines
 
                                             ' Compute the charge prior to calling ParseFormulaRecursive
                                             ' During the call to ParseFormulaRecursive, udtComputationStats.Charge will be
-                                            '  modified according to the atoms in the abbreviations's formula
+                                            '  modified according to the atoms in the abbreviation's formula
                                             ' This is not what we want; instead, we want to use the defined charge for the abbreviation
                                             ' We'll use the dblAtomCountToAdd variable here, though instead of an atom count, it's really an abbreviation occurrence count
                                             dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier
@@ -4623,11 +4624,11 @@ Public Class MWElementAndMassRoutines
 
                                                     ' Look for a number after the abbreviation or amino acid
                                                     dblAdjacentNum = ParseNum(Mid(strFormula, intCharIndex + intSymbolLength), intNumLength)
-                                                    CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                                                     If CBool(InStr(strReplace, ">")) Then
                                                         ' The > symbol means take First Part minus the Second Part
-                                                        ' If we are parsing a subformula inside parentheses, or if there are
+                                                        ' If we are parsing a sub formula inside parentheses, or if there are
                                                         '  symbols (elements, abbreviations, or numbers) after the abbreviation, then
                                                         '  we cannot let the > symbol remain in the abbreviation
                                                         ' For example, if Jk = C6H5Cl2>HCl
@@ -4677,7 +4678,7 @@ Public Class MWElementAndMassRoutines
                             PrevSymbolReference = SymbolReference
                         Case 94 ' ^ (caret)
                             dblAdjacentNum = ParseNum(strChar2 & strChar3 & strCharRemain, intNumLength)
-                            CatchParsenumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
+                            CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
 
                             If ErrorParams.ErrorID <> 0 Then
                                 ' Problem, don't go on.
@@ -4739,7 +4740,7 @@ Public Class MWElementAndMassRoutines
 
             With ErrorParams
                 If .ErrorID <> 0 And Len(.ErrorCharacter) = 0 Then
-                    If String.IsNullOrEmpty(strChar1) Then strChar1 = EMPTY_STRINGCHAR
+                    If String.IsNullOrEmpty(strChar1) Then strChar1 = EMPTY_STRING_CHAR
                     .ErrorCharacter = strChar1
                     .ErrorPosition = .ErrorPosition + intCharCountPrior
                 End If
@@ -4800,7 +4801,7 @@ Public Class MWElementAndMassRoutines
         intNumLength = -1
         strFoundNum = String.Empty
 
-        If strWork = "" Then strWork = EMPTY_STRINGCHAR
+        If strWork = "" Then strWork = EMPTY_STRING_CHAR
         If (Asc(Left(strWork, 1)) < 48 Or Asc(Left(strWork, 1)) > 57) And Left(strWork, 1) <> gComputationOptions.DecimalSeparator And Not (Left(strWork, 1) = "-" And blnAllowNegative = True) Then
             intNumLength = 0 ' No number found
             ParseNum = -1
@@ -4876,8 +4877,10 @@ Public Class MWElementAndMassRoutines
         Dim blnSuperFound As Boolean
         Dim errorID As Integer
 
-        ' Converts plain text to formatted rtf text.
+        ' ReSharper disable CommentTypo
+
         ' Rtf string must begin with {{\fonttbl{\f0\fcharset0\fprq2 Times New Roman;}}\pard\plain\fs25
+
         ' and must end with } or {\fs30  }} if superscript was used
 
         ' "{\super 3}C{\sub 6}H{\sub 6}{\fs30  }}"
@@ -4885,7 +4888,11 @@ Public Class MWElementAndMassRoutines
         ' Old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman\fcharset2 Times New Roman;}{\f3\froman " & lblMWT(0).FontName & ";}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f3\fs25 "
         ' old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & lblMWT(0).FontName & ";}{\f3\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f2\fs25 "
         '                                                            f0                               f1                                 f2                          f3                               f4                      cf0 (black)        cf1 (red)          cf3 (white)
+        ' ReSharper disable StringLiteralTypo
         strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & gComputationOptions.RtfFontName & ";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" & Trim(Str(clsNumberConversionRoutines.CShortSafe(gComputationOptions.RtfFontSize * 2.5))) & " "
+        ' ReSharper restore StringLiteralTypo
+
+        ' ReSharper restore CommentTypo
 
         If strWorkText = "" Then
             ' Return a blank RTF string
@@ -4944,10 +4951,10 @@ Public Class MWElementAndMassRoutines
             ElseIf strWorkChar = "_" Then
                 strRTF = strRTF & "{\super}"
                 blnSuperFound = True
-            ElseIf strWorkChar = "+" And Not CalculatorMode Then
+            ElseIf strWorkChar = "+" And Not calculatorMode Then
                 strRTF = strRTF & "{\super +}"
                 blnSuperFound = True
-            ElseIf strWorkChar = EMPTY_STRINGCHAR Then
+            ElseIf strWorkChar = EMPTY_STRING_CHAR Then
                 ' skip it, the tilde sign is used to add additional height to the formula line when isotopes are used
                 ' If it's here from a previous time, we ignore it, adding it at the end if needed (if blnSuperFound = true)
             ElseIf IsNumeric(strWorkChar) Or strWorkChar = gComputationOptions.DecimalSeparator Then
@@ -4955,11 +4962,11 @@ Public Class MWElementAndMassRoutines
                 If intCharIndex = 1 Then
                     ' at beginning of line, so leave it alone. Probably out of place
                     strRTF = strRTF & strWorkChar
-                ElseIf Not CalculatorMode And (Char.IsLetter(CChar(strWorkCharPrev)) Or strWorkCharPrev = ")" Or strWorkCharPrev = "\}" Or strWorkCharPrev = "+" Or strWorkCharPrev = "_" Or Left(Right(strRTF, 6), 3) = "sub") Then
+                ElseIf Not calculatorMode And (Char.IsLetter(CChar(strWorkCharPrev)) Or strWorkCharPrev = ")" Or strWorkCharPrev = "\}" Or strWorkCharPrev = "+" Or strWorkCharPrev = "_" Or Left(Right(strRTF, 6), 3) = "sub") Then
                     ' subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
                     ' But, don't use subscripts in calculator
                     strRTF = strRTF & "{\sub " & strWorkChar & "}"
-                ElseIf Not CalculatorMode And gComputationOptions.BracketsAsParentheses And strWorkCharPrev = "]" Then
+                ElseIf Not calculatorMode And gComputationOptions.BracketsAsParentheses And strWorkCharPrev = "]" Then
                     ' only subscript after closing bracket, ], if brackets are being treated as parentheses
                     strRTF = strRTF & "{\sub " & strWorkChar & "}"
                 ElseIf Left(Right(strRTF, 8), 5) = "super" Then
@@ -4980,10 +4987,10 @@ Public Class MWElementAndMassRoutines
         Next intCharIndex
 
         If blnSuperFound Then
-            ' Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUSTCHAR)
+            ' Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUST_CHAR)
             ' It is used to add additional height to the formula line when isotopes are used
             ' It is colored white so the user does not see it
-            strRTF = strRTF & "{\fs" & Trim(Str(clsNumberConversionRoutines.CShortSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUSTCHAR & "}}"
+            strRTF = strRTF & "{\fs" & Trim(Str(clsNumberConversionRoutines.CShortSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUST_CHAR & "}}"
         Else
             strRTF = strRTF & "}"
         End If
@@ -5117,7 +5124,7 @@ Public Class MWElementAndMassRoutines
        blnIncludePctSign As Boolean) As String
         ' Plan:
         ' Round dblStdDev to 1 final digit.
-        ' Round dblMass to the appropriate place based on stddev.
+        ' Round dblMass to the appropriate place based on StdDev.
 
         ' dblMass is the main number
         ' dblStdDev is the standard deviation
@@ -5294,7 +5301,7 @@ Public Class MWElementAndMassRoutines
         Dim blnAlreadyPresent As Boolean
         Dim abbrevID As Integer
 
-        ' See if the abbreviation is alrady present
+        ' See if the abbreviation is already present
         blnAlreadyPresent = False
         For index = 1 To AbbrevAllCount
             If UCase(AbbrevStats(index).Symbol) = UCase(strSymbol) Then
@@ -5539,7 +5546,7 @@ Public Class MWElementAndMassRoutines
 
     Public Function SetElementIsotopesInternal(strSymbol As String, intIsotopeCount As Short, ByRef dblIsotopeMassesOneBased() As Double, ByRef sngIsotopeAbundancesOneBased() As Single) As Integer
 
-        Dim intIndex, intIsotopeindex As Short
+        Dim intIndex, intIsotopeIndex As Short
         Dim blnFound As Boolean
 
         For intIndex = 1 To ELEMENT_COUNT
@@ -5547,11 +5554,11 @@ Public Class MWElementAndMassRoutines
                 With ElementStats(intIndex)
                     If intIsotopeCount < 0 Then intIsotopeCount = 0
                     .IsotopeCount = intIsotopeCount
-                    For intIsotopeindex = 1 To .IsotopeCount
-                        If intIsotopeindex > MAX_ISOTOPES Then Exit For
-                        .Isotopes(intIsotopeindex).Mass = dblIsotopeMassesOneBased(intIsotopeindex)
-                        .Isotopes(intIsotopeindex).Abundance = sngIsotopeAbundancesOneBased(intIsotopeindex)
-                    Next intIsotopeindex
+                    For intIsotopeIndex = 1 To .IsotopeCount
+                        If intIsotopeIndex > MAX_ISOTOPES Then Exit For
+                        .Isotopes(intIsotopeIndex).Mass = dblIsotopeMassesOneBased(intIsotopeIndex)
+                        .Isotopes(intIsotopeIndex).Abundance = sngIsotopeAbundancesOneBased(intIsotopeIndex)
+                    Next intIsotopeIndex
                 End With
                 blnFound = True
                 Exit For
@@ -5623,7 +5630,7 @@ Public Class MWElementAndMassRoutines
 
         ShellSortSymbolsWork(PointerArray, lowIndex, highIndex)
 
-        ' Reassign MasterSymbolsList array according to pointerarray order
+        ' Reassign MasterSymbolsList array according to PointerArray order
         ' First, copy to a temporary array (I know it eats up memory, but I have no choice)
         For index = lowIndex To highIndex
             SymbolsStore(index, 0) = MasterSymbolsList(index, 0)
@@ -5631,7 +5638,7 @@ Public Class MWElementAndMassRoutines
         Next
 
         ' Now, put them back into the MasterSymbolsList() array in the correct order
-        ' Use pointerarray() for this
+        ' Use PointerArray() for this
         For index = lowIndex To highIndex
             MasterSymbolsList(index, 0) = SymbolsStore(PointerArray(index), 0)
             MasterSymbolsList(index, 1) = SymbolsStore(PointerArray(index), 1)
