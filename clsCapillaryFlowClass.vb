@@ -28,7 +28,8 @@ Public Class MWCapillaryFlowClass
         InitializeClass()
     End Sub
 
-    ' <EnumStatements>
+#Region "Enum Statements"
+
     Public Enum ctCapillaryTypeConstants
         ctOpenTubularCapillary = 0
         ctPackedCapillary
@@ -141,9 +142,11 @@ Public Class MWCapillaryFlowClass
         acmVolFlowRate
         acmVolFlowRateUsingDeadTime
     End Enum
-    ' </EnumStatements>
 
-    ' <UDT's>
+#End Region
+
+#Region "Structures"
+
     Private Structure udtCapillaryFlowParametersType
         Dim CapillaryType As ctCapillaryTypeConstants
         Dim BackPressure As Double ' in dynes/cm^2
@@ -176,7 +179,9 @@ Public Class MWCapillaryFlowClass
         Dim AdditionalTemporalVariance As Double ' in sec^2
         Dim ResultantPeakWidth As Double ' in sec
     End Structure
-    ' </UDT's>
+
+#End Region
+
 
     ' Conversion Factors
     Private Const CM_PER_INCH As Single = 2.54

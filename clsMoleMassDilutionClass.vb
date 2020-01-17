@@ -28,7 +28,8 @@ Public Class MWMoleMassDilutionClass
         InitializeClass()
     End Sub
 
-    ' <EnumStatements>
+#Region "Enums"
+
     Public Enum acdAutoComputeDilutionModeConstants
         acdFindRequiredDilutionVolumes = 0
         acdFindRequiredTotalVolume
@@ -98,9 +99,9 @@ Public Class MWMoleMassDilutionClass
     End Enum
 
 
-    ' </EnumStatements>
+#End Region
 
-    ' <UDT's>
+#Region "Structures"
     Private Structure udtMoleMassQuantityType
         Dim Amount As Double ' In Moles
         Dim Volume As Double ' In L
@@ -116,7 +117,8 @@ Public Class MWMoleMassDilutionClass
         Dim DilutingSolventVolume As Double ' In L
         Dim TotalFinalVolume As Double ' In L
     End Structure
-    ' </UDT's>
+
+#End Region
 
     Private Const POUNDS_PER_KG As Single = 2.20462262
     Private Const GALLONS_PER_L As Single = 0.264172052
