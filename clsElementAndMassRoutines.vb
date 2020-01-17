@@ -1725,8 +1725,8 @@ Public Class MWElementAndMassRoutines
             workingMass = CInt(workingMass + IsoCombos(ComboIndex, IsotopeIndex) * (Math.Round(ThisElementsIsotopes(IsotopeIndex).Mass, 0)))
         Next IsotopeIndex
 
-        '                             (workingMass  - IsoStats(ElementIndex).StartingResultsMass) + 1
-        FindIndexForNominalMass = (CInt(workingMass - AtomCount * Math.Round(ThisElementsIsotopes(1).Mass, 0)) + 1)
+        '         (workingMass  - IsoStats(ElementIndex).StartingResultsMass) + 1
+        Return CInt(workingMass - AtomCount * Math.Round(ThisElementsIsotopes(1).Mass, 0)) + 1
     End Function
 
     ''' <summary>
@@ -5610,9 +5610,9 @@ Public Class MWElementAndMassRoutines
 
         If messageID >= 1 And messageID <= MESSAGE_STATEMENT_DIM_COUNT And Len(strNewMessage) > 0 Then
             MessageStatements(messageID) = strNewMessage
-            SetMessageStatementInternal = 0
+            Return 0
         Else
-            SetMessageStatementInternal = 1
+            Return 1
         End If
     End Function
 

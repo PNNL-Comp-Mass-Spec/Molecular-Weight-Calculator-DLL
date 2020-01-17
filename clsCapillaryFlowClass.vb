@@ -248,7 +248,7 @@ Public Class MWCapillaryFlowClass
         ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, False)
 
         ' Return Back Pressure
-        ComputeBackPressure = ConvertPressure(dblBackPressure, uprUnitsPressureConstants.uprDynesPerSquareCm, eUnits)
+        Return ConvertPressure(dblBackPressure, uprUnitsPressureConstants.uprDynesPerSquareCm, eUnits)
 
     End Function
 
@@ -289,7 +289,7 @@ Public Class MWCapillaryFlowClass
         ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, True)
 
         ' Return Column Length
-        ComputeColumnLength = ConvertLength(dblColumnLength, ulnUnitsLengthConstants.ulnCM, eUnits)
+        Return ConvertLength(dblColumnLength, ulnUnitsLengthConstants.ulnCM, eUnits)
 
     End Function
 
@@ -309,7 +309,7 @@ Public Class MWCapillaryFlowClass
             End If
         End With
 
-        ComputeColumnVolume = ConvertVolume(dblColumnVolume, uvoUnitsVolumeConstants.uvoML, eUnits)
+        Return ConvertVolume(dblColumnVolume, uvoUnitsVolumeConstants.uvoML, eUnits)
 
     End Function
 
@@ -348,7 +348,7 @@ Public Class MWCapillaryFlowClass
         ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, True)
 
         ' Return Column ID
-        ComputeColumnID = ConvertLength(dblRadius * 2.0#, ulnUnitsLengthConstants.ulnCM, eUnits)
+        Return ConvertLength(dblRadius * 2.0#, ulnUnitsLengthConstants.ulnCM, eUnits)
 
     End Function
 
@@ -377,14 +377,14 @@ Public Class MWCapillaryFlowClass
         End With
 
         ' Return Dead Time
-        ComputeDeadTime = ConvertTime(dblDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits)
+        Return ConvertTime(dblDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits)
 
     End Function
 
     Public Function ComputeExtraColumnBroadeningResultantPeakWidth(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds) As Double
         ComputeExtraColumnBroadeningValues()
 
-        ComputeExtraColumnBroadeningResultantPeakWidth = GetExtraColumnBroadeningResultantPeakWidth(eUnits)
+        Return GetExtraColumnBroadeningResultantPeakWidth(eUnits)
     End Function
 
     Private Sub ComputeExtraColumnBroadeningValues()
@@ -442,7 +442,7 @@ Public Class MWCapillaryFlowClass
         End With
 
         ' Return Linear Velocity
-        ComputeLinearVelocity = ConvertLinearVelocity(dblLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
+        Return ConvertLinearVelocity(dblLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
 
     End Function
 
@@ -454,7 +454,7 @@ Public Class MWCapillaryFlowClass
     Public Function ComputeMassFlowRate(Optional eUnits As umfMassFlowRateConstants = umfMassFlowRateConstants.umfFmolPerSec) As Double
 
         ComputeMassRateValues()
-        ComputeMassFlowRate = GetMassFlowRate(eUnits)
+        Return GetMassFlowRate(eUnits)
 
     End Function
 
@@ -466,7 +466,7 @@ Public Class MWCapillaryFlowClass
     Public Function ComputeMassRateMolesInjected(Optional eUnits As umaMolarAmountConstants = umaMolarAmountConstants.umaFemtoMoles) As Double
 
         ComputeMassRateValues()
-        ComputeMassRateMolesInjected = GetMassRateMolesInjected(eUnits)
+        Return GetMassRateMolesInjected(eUnits)
 
     End Function
 
@@ -499,7 +499,7 @@ Public Class MWCapillaryFlowClass
             End If
         End With
 
-        ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff = dblOptimumLinearVelocity
+        Return dblOptimumLinearVelocity
 
     End Function
 
@@ -568,7 +568,7 @@ Public Class MWCapillaryFlowClass
         ' Compute Dead Time (and Linear Velocity)
         ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, False)
 
-        ComputeVolFlowRate = ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
+        Return ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
     End Function
 
     ''' <summary>
@@ -616,7 +616,7 @@ Public Class MWCapillaryFlowClass
         ' Compute Linear Velocity (but not the dead time)
         ComputeLinearVelocity(ulvUnitsLinearVelocityConstants.ulvCmPerSec, False)
 
-        ComputeVolFlowRateUsingDeadTime = ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
+        Return ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
     End Function
 
     ''' <summary>
@@ -669,9 +669,9 @@ Public Class MWCapillaryFlowClass
 
         dblFactor = FactorDiffusionCoeff(eNewUnits)
         If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            ConvertDiffusionCoefficient = -1
+            Return -1
         Else
-            ConvertDiffusionCoefficient = dblValue / dblFactor
+            Return dblValue / dblFactor
         End If
 
     End Function
@@ -715,9 +715,9 @@ Public Class MWCapillaryFlowClass
 
         dblFactor = FactorLinearVelocity(eNewUnits)
         If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            ConvertLinearVelocity = -1
+            Return -1
         Else
-            ConvertLinearVelocity = dblValue / dblFactor
+            Return dblValue / dblFactor
         End If
 
     End Function
@@ -954,7 +954,7 @@ Public Class MWCapillaryFlowClass
             End Select
         End If
 
-        FactorConcentration = dblFactor
+        Return dblFactor
     End Function
 
     ''' <summary>
@@ -965,12 +965,12 @@ Public Class MWCapillaryFlowClass
     Private Function FactorLength(eUnits As ulnUnitsLengthConstants) As Double
 
         Select Case eUnits
-            Case ulnUnitsLengthConstants.ulnM : FactorLength = 100.0#
-            Case ulnUnitsLengthConstants.ulnCM : FactorLength = 1.0#
-            Case ulnUnitsLengthConstants.ulnMM : FactorLength = 1 / 10.0#
-            Case ulnUnitsLengthConstants.ulnMicrons : FactorLength = 1 / 10000.0#
-            Case ulnUnitsLengthConstants.ulnInches : FactorLength = CM_PER_INCH
-            Case Else : FactorLength = -1
+            Case ulnUnitsLengthConstants.ulnM : Return 100.0#
+            Case ulnUnitsLengthConstants.ulnCM : Return 1.0#
+            Case ulnUnitsLengthConstants.ulnMM : Return 1 / 10.0#
+            Case ulnUnitsLengthConstants.ulnMicrons : Return 1 / 10000.0#
+            Case ulnUnitsLengthConstants.ulnInches : Return CM_PER_INCH
+            Case Else : Return -1
         End Select
 
     End Function
@@ -983,13 +983,13 @@ Public Class MWCapillaryFlowClass
     Private Function FactorLinearVelocity(eUnits As ulvUnitsLinearVelocityConstants) As Double
 
         Select Case eUnits
-            Case ulvUnitsLinearVelocityConstants.ulvCmPerHr : FactorLinearVelocity = 1 / 60.0#
-            Case ulvUnitsLinearVelocityConstants.ulvMmPerHr : FactorLinearVelocity = 1 / 60.0# / 10.0#
-            Case ulvUnitsLinearVelocityConstants.ulvCmPerMin : FactorLinearVelocity = 1
-            Case ulvUnitsLinearVelocityConstants.ulvMmPerMin : FactorLinearVelocity = 1 / 10.0#
-            Case ulvUnitsLinearVelocityConstants.ulvCmPerSec : FactorLinearVelocity = 60.0#
-            Case ulvUnitsLinearVelocityConstants.ulvMmPerSec : FactorLinearVelocity = 60.0# / 10.0#
-            Case Else : FactorLinearVelocity = -1
+            Case ulvUnitsLinearVelocityConstants.ulvCmPerHr : Return 1 / 60.0#
+            Case ulvUnitsLinearVelocityConstants.ulvMmPerHr : Return 1 / 60.0# / 10.0#
+            Case ulvUnitsLinearVelocityConstants.ulvCmPerMin : Return 1
+            Case ulvUnitsLinearVelocityConstants.ulvMmPerMin : Return 1 / 10.0#
+            Case ulvUnitsLinearVelocityConstants.ulvCmPerSec : Return 60.0#
+            Case ulvUnitsLinearVelocityConstants.ulvMmPerSec : Return 60.0# / 10.0#
+            Case Else : Return -1
         End Select
 
     End Function
@@ -1002,14 +1002,14 @@ Public Class MWCapillaryFlowClass
     Private Function FactorMassFlowRate(eUnits As umfMassFlowRateConstants) As Double
 
         Select Case eUnits
-            Case umfMassFlowRateConstants.umfPmolPerMin : FactorMassFlowRate = 1 / 1000000000000.0#
-            Case umfMassFlowRateConstants.umfFmolPerMin : FactorMassFlowRate = 1 / 1.0E+15
-            Case umfMassFlowRateConstants.umfAmolPerMin : FactorMassFlowRate = 1 / 1.0E+18
-            Case umfMassFlowRateConstants.umfPmolPerSec : FactorMassFlowRate = 1 / (1000000000000.0# / 60.0#)
-            Case umfMassFlowRateConstants.umfFmolPerSec : FactorMassFlowRate = 1 / (1.0E+15 / 60.0#)
-            Case umfMassFlowRateConstants.umfAmolPerSec : FactorMassFlowRate = 1 / (1.0E+18 / 60.0#)
-            Case umfMassFlowRateConstants.umfMolesPerMin : FactorMassFlowRate = 1.0#
-            Case Else : FactorMassFlowRate = -1
+            Case umfMassFlowRateConstants.umfPmolPerMin : Return 1 / 1000000000000.0#
+            Case umfMassFlowRateConstants.umfFmolPerMin : Return 1 / 1.0E+15
+            Case umfMassFlowRateConstants.umfAmolPerMin : Return 1 / 1.0E+18
+            Case umfMassFlowRateConstants.umfPmolPerSec : Return 1 / (1000000000000.0# / 60.0#)
+            Case umfMassFlowRateConstants.umfFmolPerSec : Return 1 / (1.0E+15 / 60.0#)
+            Case umfMassFlowRateConstants.umfAmolPerSec : Return 1 / (1.0E+18 / 60.0#)
+            Case umfMassFlowRateConstants.umfMolesPerMin : Return 1.0#
+            Case Else : Return -1
         End Select
 
     End Function
@@ -1022,14 +1022,14 @@ Public Class MWCapillaryFlowClass
     Private Function FactorMoles(eUnits As umaMolarAmountConstants) As Double
 
         Select Case eUnits
-            Case umaMolarAmountConstants.umaMoles : FactorMoles = 1.0#
-            Case umaMolarAmountConstants.umaMilliMoles : FactorMoles = 1 / 1000.0#
-            Case umaMolarAmountConstants.umaMicroMoles : FactorMoles = 1 / 1000000.0#
-            Case umaMolarAmountConstants.umaNanoMoles : FactorMoles = 1 / 1000000000.0#
-            Case umaMolarAmountConstants.umaPicoMoles : FactorMoles = 1 / 1000000000000.0#
-            Case umaMolarAmountConstants.umaFemtoMoles : FactorMoles = 1 / 1.0E+15
-            Case umaMolarAmountConstants.umaAttoMoles : FactorMoles = 1 / 1.0E+18
-            Case Else : FactorMoles = -1
+            Case umaMolarAmountConstants.umaMoles : Return 1.0#
+            Case umaMolarAmountConstants.umaMilliMoles : Return 1 / 1000.0#
+            Case umaMolarAmountConstants.umaMicroMoles : Return 1 / 1000000.0#
+            Case umaMolarAmountConstants.umaNanoMoles : Return 1 / 1000000000.0#
+            Case umaMolarAmountConstants.umaPicoMoles : Return 1 / 1000000000000.0#
+            Case umaMolarAmountConstants.umaFemtoMoles : Return 1 / 1.0E+15
+            Case umaMolarAmountConstants.umaAttoMoles : Return 1 / 1.0E+18
+            Case Else : Return -1
         End Select
 
     End Function
@@ -1042,14 +1042,14 @@ Public Class MWCapillaryFlowClass
     Private Function FactorPressure(eUnits As uprUnitsPressureConstants) As Double
 
         Select Case eUnits
-            Case uprUnitsPressureConstants.uprPsi : FactorPressure = 68947.57
-            Case uprUnitsPressureConstants.uprPascals : FactorPressure = 10.0#
-            Case uprUnitsPressureConstants.uprKiloPascals : FactorPressure = 10000.0#
-            Case uprUnitsPressureConstants.uprAtmospheres : FactorPressure = 1013250.0#
-            Case uprUnitsPressureConstants.uprBar : FactorPressure = 1000000.0#
-            Case uprUnitsPressureConstants.uprTorr : FactorPressure = 1333.22
-            Case uprUnitsPressureConstants.uprDynesPerSquareCm : FactorPressure = 1
-            Case Else : FactorPressure = -1
+            Case uprUnitsPressureConstants.uprPsi : Return 68947.57
+            Case uprUnitsPressureConstants.uprPascals : Return 10.0#
+            Case uprUnitsPressureConstants.uprKiloPascals : Return 10000.0#
+            Case uprUnitsPressureConstants.uprAtmospheres : Return 1013250.0#
+            Case uprUnitsPressureConstants.uprBar : Return 1000000.0#
+            Case uprUnitsPressureConstants.uprTorr : Return 1333.22
+            Case uprUnitsPressureConstants.uprDynesPerSquareCm : Return 1
+            Case Else : Return -1
         End Select
 
     End Function
@@ -1062,10 +1062,10 @@ Public Class MWCapillaryFlowClass
     Private Function FactorTime(eUnits As utmUnitsTimeConstants) As Double
 
         Select Case eUnits
-            Case utmUnitsTimeConstants.utmHours : FactorTime = 60.0#
-            Case utmUnitsTimeConstants.utmMinutes : FactorTime = 1.0#
-            Case utmUnitsTimeConstants.utmSeconds : FactorTime = 1 / 60.0#
-            Case Else : FactorTime = -1
+            Case utmUnitsTimeConstants.utmHours : Return 60.0#
+            Case utmUnitsTimeConstants.utmMinutes : Return 1.0#
+            Case utmUnitsTimeConstants.utmSeconds : Return 1 / 60.0#
+            Case Else : Return -1
         End Select
 
     End Function
@@ -1078,10 +1078,10 @@ Public Class MWCapillaryFlowClass
     Private Function FactorDiffusionCoeff(eUnits As udcDiffusionCoefficientConstants) As Double
 
         Select Case eUnits
-            Case udcDiffusionCoefficientConstants.udcCmSquaredPerHr : FactorDiffusionCoeff = 1 / 3600.0#
-            Case udcDiffusionCoefficientConstants.udcCmSquaredPerMin : FactorDiffusionCoeff = 1 / 60.0#
-            Case udcDiffusionCoefficientConstants.udcCmSquaredPerSec : FactorDiffusionCoeff = 1.0#
-            Case Else : FactorDiffusionCoeff = -1
+            Case udcDiffusionCoefficientConstants.udcCmSquaredPerHr : Return 1 / 3600.0#
+            Case udcDiffusionCoefficientConstants.udcCmSquaredPerMin : Return 1 / 60.0#
+            Case udcDiffusionCoefficientConstants.udcCmSquaredPerSec : Return 1.0#
+            Case Else : Return -1
         End Select
 
     End Function
@@ -1094,9 +1094,9 @@ Public Class MWCapillaryFlowClass
     Private Function FactorViscosity(eUnits As uviUnitsViscosityConstants) As Double
 
         Select Case eUnits
-            Case uviUnitsViscosityConstants.uviPoise : FactorViscosity = 1.0#
-            Case uviUnitsViscosityConstants.uviCentiPoise : FactorViscosity = 1 / 100.0#
-            Case Else : FactorViscosity = -1
+            Case uviUnitsViscosityConstants.uviPoise : Return 1.0#
+            Case uviUnitsViscosityConstants.uviCentiPoise : Return 1 / 100.0#
+            Case Else : Return -1
         End Select
 
     End Function
@@ -1125,126 +1125,126 @@ Public Class MWCapillaryFlowClass
     Private Function FactorVolume(eUnits As uvoUnitsVolumeConstants) As Double
 
         Select Case eUnits
-            Case uvoUnitsVolumeConstants.uvoML : FactorVolume = 1.0#
-            Case uvoUnitsVolumeConstants.uvoUL : FactorVolume = 1 / 1000.0#
-            Case uvoUnitsVolumeConstants.uvoNL : FactorVolume = 1 / 1000000.0#
-            Case uvoUnitsVolumeConstants.uvoPL : FactorVolume = 1 / 1000000000.0#
-            Case Else : FactorVolume = -1
+            Case uvoUnitsVolumeConstants.uvoML : Return 1.0#
+            Case uvoUnitsVolumeConstants.uvoUL : Return 1 / 1000.0#
+            Case uvoUnitsVolumeConstants.uvoNL : Return 1 / 1000000.0#
+            Case uvoUnitsVolumeConstants.uvoPL : Return 1 / 1000000000.0#
+            Case Else : Return -1
         End Select
 
     End Function
 
-    ' Get Subs
+    ' Get Methods
     ' Gets the most recently computed value
     ' If mAutoCompute = False, then must manually call a Compute Sub to recompute the value
 
     Public Function GetAutoComputeEnabled() As Boolean
-        GetAutoComputeEnabled = mAutoCompute
+        Return mAutoCompute
     End Function
 
     Public Function GetAutoComputeMode() As acmAutoComputeModeConstants
-        GetAutoComputeMode = mAutoComputeMode
+        Return mAutoComputeMode
     End Function
 
-    Public Function GetBackPressure(Optional ByRef eUnits As uprUnitsPressureConstants = uprUnitsPressureConstants.uprPsi) As Double
-        GetBackPressure = ConvertPressure(mCapillaryFlowParameters.BackPressure, uprUnitsPressureConstants.uprDynesPerSquareCm, eUnits)
+    Public Function GetBackPressure(Optional eUnits As uprUnitsPressureConstants = uprUnitsPressureConstants.uprPsi) As Double
+        Return ConvertPressure(mCapillaryFlowParameters.BackPressure, uprUnitsPressureConstants.uprDynesPerSquareCm, eUnits)
     End Function
 
     Public Function GetCapillaryType() As ctCapillaryTypeConstants
-        GetCapillaryType = mCapillaryFlowParameters.CapillaryType
+        Return mCapillaryFlowParameters.CapillaryType
     End Function
 
-    Public Function GetColumnID(Optional ByRef eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
-        GetColumnID = ConvertLength(mCapillaryFlowParameters.ColumnID, ulnUnitsLengthConstants.ulnCM, eUnits)
+    Public Function GetColumnID(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
+        Return ConvertLength(mCapillaryFlowParameters.ColumnID, ulnUnitsLengthConstants.ulnCM, eUnits)
     End Function
 
-    Public Function GetColumnLength(Optional ByRef eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM) As Double
-        GetColumnLength = ConvertLength(mCapillaryFlowParameters.ColumnLength, ulnUnitsLengthConstants.ulnCM, eUnits)
+    Public Function GetColumnLength(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM) As Double
+        Return ConvertLength(mCapillaryFlowParameters.ColumnLength, ulnUnitsLengthConstants.ulnCM, eUnits)
     End Function
 
-    Public Function GetColumnVolume(Optional ByRef eUnits As uvoUnitsVolumeConstants = uvoUnitsVolumeConstants.uvoUL) As Double
+    Public Function GetColumnVolume(Optional eUnits As uvoUnitsVolumeConstants = uvoUnitsVolumeConstants.uvoUL) As Double
         ' Column volume isn't stored; simply re-compute it
-        GetColumnVolume = ComputeColumnVolume(eUnits)
+        Return ComputeColumnVolume(eUnits)
     End Function
 
-    Public Function GetDeadTime(Optional ByRef eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes) As Double
-        GetDeadTime = ConvertTime(mCapillaryFlowParameters.ColumnDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits)
+    Public Function GetDeadTime(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes) As Double
+        Return ConvertTime(mCapillaryFlowParameters.ColumnDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits)
     End Function
 
     Public Function GetExtraColumnBroadeningAdditionalVarianceInSquareSeconds() As Double
-        GetExtraColumnBroadeningAdditionalVarianceInSquareSeconds = mExtraColumnBroadeningParameters.AdditionalTemporalVariance
+        Return mExtraColumnBroadeningParameters.AdditionalTemporalVariance
     End Function
 
-    Public Function GetExtraColumnBroadeningDiffusionCoefficient(Optional ByRef eUnits As udcDiffusionCoefficientConstants = udcDiffusionCoefficientConstants.udcCmSquaredPerSec) As Double
-        GetExtraColumnBroadeningDiffusionCoefficient = ConvertDiffusionCoefficient(mExtraColumnBroadeningParameters.DiffusionCoefficient, udcDiffusionCoefficientConstants.udcCmSquaredPerSec, eUnits)
+    Public Function GetExtraColumnBroadeningDiffusionCoefficient(Optional eUnits As udcDiffusionCoefficientConstants = udcDiffusionCoefficientConstants.udcCmSquaredPerSec) As Double
+        Return ConvertDiffusionCoefficient(mExtraColumnBroadeningParameters.DiffusionCoefficient, udcDiffusionCoefficientConstants.udcCmSquaredPerSec, eUnits)
     End Function
 
-    Public Function GetExtraColumnBroadeningInitialPeakWidthAtBase(Optional ByRef eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds) As Double
-        GetExtraColumnBroadeningInitialPeakWidthAtBase = ConvertTime(mExtraColumnBroadeningParameters.InitialPeakWidth, utmUnitsTimeConstants.utmSeconds, eUnits)
+    Public Function GetExtraColumnBroadeningInitialPeakWidthAtBase(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds) As Double
+        Return ConvertTime(mExtraColumnBroadeningParameters.InitialPeakWidth, utmUnitsTimeConstants.utmSeconds, eUnits)
     End Function
 
-    Public Function GetExtraColumnBroadeningLinearVelocity(Optional ByRef eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvMmPerMin) As Double
-        GetExtraColumnBroadeningLinearVelocity = ConvertLinearVelocity(mExtraColumnBroadeningParameters.LinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
+    Public Function GetExtraColumnBroadeningLinearVelocity(Optional eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvMmPerMin) As Double
+        Return ConvertLinearVelocity(mExtraColumnBroadeningParameters.LinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
     End Function
 
-    Public Function GetExtraColumnBroadeningOpenTubeID(Optional ByRef eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
-        GetExtraColumnBroadeningOpenTubeID = ConvertLength(mExtraColumnBroadeningParameters.OpenTubeID, ulnUnitsLengthConstants.ulnCM, eUnits)
+    Public Function GetExtraColumnBroadeningOpenTubeID(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
+        Return ConvertLength(mExtraColumnBroadeningParameters.OpenTubeID, ulnUnitsLengthConstants.ulnCM, eUnits)
     End Function
 
-    Public Function GetExtraColumnBroadeningOpenTubeLength(Optional ByRef eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM) As Double
-        GetExtraColumnBroadeningOpenTubeLength = ConvertLength(mExtraColumnBroadeningParameters.OpenTubeLength, ulnUnitsLengthConstants.ulnCM, eUnits)
+    Public Function GetExtraColumnBroadeningOpenTubeLength(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM) As Double
+        Return ConvertLength(mExtraColumnBroadeningParameters.OpenTubeLength, ulnUnitsLengthConstants.ulnCM, eUnits)
     End Function
 
-    Public Function GetExtraColumnBroadeningResultantPeakWidth(Optional ByRef eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds) As Double
-        GetExtraColumnBroadeningResultantPeakWidth = ConvertTime(mExtraColumnBroadeningParameters.ResultantPeakWidth, utmUnitsTimeConstants.utmSeconds, eUnits)
+    Public Function GetExtraColumnBroadeningResultantPeakWidth(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds) As Double
+        Return ConvertTime(mExtraColumnBroadeningParameters.ResultantPeakWidth, utmUnitsTimeConstants.utmSeconds, eUnits)
     End Function
 
     Public Function GetExtraColumnBroadeningTemporalVarianceInSquareSeconds() As Double
-        GetExtraColumnBroadeningTemporalVarianceInSquareSeconds = mExtraColumnBroadeningParameters.TemporalVariance
+        Return mExtraColumnBroadeningParameters.TemporalVariance
     End Function
 
     Public Function GetInterparticlePorosity() As Double
-        GetInterparticlePorosity = mCapillaryFlowParameters.InterparticlePorosity
+        Return mCapillaryFlowParameters.InterparticlePorosity
     End Function
 
-    Public Function GetLinearVelocity(Optional ByRef eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvCmPerSec) As Double
-        GetLinearVelocity = ConvertLinearVelocity(mCapillaryFlowParameters.LinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
+    Public Function GetLinearVelocity(Optional eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvCmPerSec) As Double
+        Return ConvertLinearVelocity(mCapillaryFlowParameters.LinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
     End Function
 
-    Public Function GetMassRateConcentration(Optional ByRef eUnits As ucoUnitsConcentrationConstants = ucoUnitsConcentrationConstants.ucoMicroMolar) As Double
-        GetMassRateConcentration = ConvertConcentration(mMassRateParameters.SampleConcentration, ucoUnitsConcentrationConstants.ucoMolar, eUnits)
+    Public Function GetMassRateConcentration(Optional eUnits As ucoUnitsConcentrationConstants = ucoUnitsConcentrationConstants.ucoMicroMolar) As Double
+        Return ConvertConcentration(mMassRateParameters.SampleConcentration, ucoUnitsConcentrationConstants.ucoMolar, eUnits)
     End Function
 
-    Public Function GetMassRateInjectionTime(Optional ByRef eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes) As Double
-        GetMassRateInjectionTime = ConvertTime(mMassRateParameters.InjectionTime, utmUnitsTimeConstants.utmMinutes, eUnits)
+    Public Function GetMassRateInjectionTime(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes) As Double
+        Return ConvertTime(mMassRateParameters.InjectionTime, utmUnitsTimeConstants.utmMinutes, eUnits)
     End Function
 
-    Public Function GetMassFlowRate(Optional ByRef eUnits As umfMassFlowRateConstants = umfMassFlowRateConstants.umfFmolPerSec) As Double
-        GetMassFlowRate = ConvertMassFlowRate(mMassRateParameters.MassFlowRate, umfMassFlowRateConstants.umfMolesPerMin, eUnits)
+    Public Function GetMassFlowRate(Optional eUnits As umfMassFlowRateConstants = umfMassFlowRateConstants.umfFmolPerSec) As Double
+        Return ConvertMassFlowRate(mMassRateParameters.MassFlowRate, umfMassFlowRateConstants.umfMolesPerMin, eUnits)
     End Function
 
-    Public Function GetMassRateMolesInjected(Optional ByRef eUnits As umaMolarAmountConstants = umaMolarAmountConstants.umaFemtoMoles) As Double
-        GetMassRateMolesInjected = ConvertMoles(mMassRateParameters.MolesInjected, umaMolarAmountConstants.umaMoles, eUnits)
+    Public Function GetMassRateMolesInjected(Optional eUnits As umaMolarAmountConstants = umaMolarAmountConstants.umaFemtoMoles) As Double
+        Return ConvertMoles(mMassRateParameters.MolesInjected, umaMolarAmountConstants.umaMoles, eUnits)
     End Function
 
     Public Function GetMassRateSampleMass() As Double
-        GetMassRateSampleMass = mMassRateParameters.SampleMass
+        Return mMassRateParameters.SampleMass
     End Function
 
-    Public Function GetMassRateVolFlowRate(Optional ByRef eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin) As Double
-        GetMassRateVolFlowRate = ConvertVolFlowRate(mMassRateParameters.VolumetricFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
+    Public Function GetMassRateVolFlowRate(Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin) As Double
+        Return ConvertVolFlowRate(mMassRateParameters.VolumetricFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
     End Function
 
-    Public Function GetParticleDiameter(Optional ByRef eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
-        GetParticleDiameter = ConvertLength(mCapillaryFlowParameters.ParticleDiameter, ulnUnitsLengthConstants.ulnCM, eUnits)
+    Public Function GetParticleDiameter(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
+        Return ConvertLength(mCapillaryFlowParameters.ParticleDiameter, ulnUnitsLengthConstants.ulnCM, eUnits)
     End Function
 
-    Public Function GetSolventViscosity(Optional ByRef eUnits As uviUnitsViscosityConstants = uviUnitsViscosityConstants.uviPoise) As Double
-        GetSolventViscosity = ConvertViscosity(mCapillaryFlowParameters.SolventViscosity, uviUnitsViscosityConstants.uviPoise, eUnits)
+    Public Function GetSolventViscosity(Optional eUnits As uviUnitsViscosityConstants = uviUnitsViscosityConstants.uviPoise) As Double
+        Return ConvertViscosity(mCapillaryFlowParameters.SolventViscosity, uviUnitsViscosityConstants.uviPoise, eUnits)
     End Function
 
-    Public Function GetVolFlowRate(Optional ByRef eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin) As Double
-        GetVolFlowRate = ConvertVolFlowRate(mCapillaryFlowParameters.VolumetricFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
+    Public Function GetVolFlowRate(Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin) As Double
+        Return ConvertVolFlowRate(mCapillaryFlowParameters.VolumetricFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
     End Function
 
 
