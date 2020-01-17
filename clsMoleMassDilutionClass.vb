@@ -161,8 +161,12 @@ Public Class MWMoleMassDilutionClass
         End If
     End Sub
 
-    Public Function ComputeDilutionFinalConcentration(Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
-        ' Computes the Final Concentration, storing in .FinalConcentration, and returning it
+    ''' <summary>
+    ''' Computes the Final Concentration, storing in .FinalConcentration, and returning it
+    ''' </summary>
+    ''' <param name="eUnits"></param>
+    ''' <returns></returns>
+    Public Function ComputeDilutionFinalConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
 
         With mDilutionValues
             If .TotalFinalVolume <> 0 Then
@@ -179,8 +183,12 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-    Public Function ComputeDilutionInitialConcentration(Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
-        ' Computes the Initial Concentration, storing in .InitialConcentration, and returning it
+    ''' <summary>
+    ''' Computes the Initial Concentration, storing in .InitialConcentration, and returning it
+    ''' </summary>
+    ''' <param name="eUnits"></param>
+    ''' <returns></returns>
+    Public Function ComputeDilutionInitialConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
 
         With mDilutionValues
             If .StockSolutionVolume <> 0 Then
@@ -197,11 +205,19 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-    Public Function ComputeDilutionRequiredStockAndDilutingSolventVolumes(Optional ByRef eStockSolutionUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML, Optional ByRef dblNewDilutingSolventVolume As Double = 0, Optional ByRef eDilutingSolventUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
-        ' Computes the required dilution volumes using initial concentration, final concentration
-        '  and total final volume, storing in .StockSolutionVolume and .DilutingSolventVolume,
-        '  and returning .StockSolutionVolume
-        ' In addition, returns the .DilutingSolventVolume using the ByRef parameter dblNewDilutingSolventVolume
+    ''' <summary>
+    ''' Computes the required dilution volumes using initial concentration, final concentration
+    ''' and total final volume, storing in .StockSolutionVolume and .DilutingSolventVolume,
+    ''' and returning .StockSolutionVolume
+    ''' </summary>
+    ''' <param name="eStockSolutionUnits"></param>
+    ''' <param name="dblNewDilutingSolventVolume">Output: diluting solvent volume</param>
+    ''' <param name="eDilutingSolventUnits"></param>
+    ''' <returns></returns>
+    Public Function ComputeDilutionRequiredStockAndDilutingSolventVolumes(
+      Optional eStockSolutionUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML,
+      Optional ByRef dblNewDilutingSolventVolume As Double = 0,
+      Optional eDilutingSolventUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
 
         With mDilutionValues
             If .InitialConcentration <> 0 Then
@@ -224,8 +240,17 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-    Public Function ComputeDilutionTotalVolume(Optional ByRef eTotalVolumeUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML, Optional ByRef dblNewDilutingSolventVolume As Double = 0, Optional ByRef eDilutingSolventUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
-        ' Compute the total volume following the dilution, storing in .TotalFinalVolume, and returning it
+    ''' <summary>
+    ''' Compute the total volume following the dilution, storing in .TotalFinalVolume, and returning it
+    ''' </summary>
+    ''' <param name="eTotalVolumeUnits"></param>
+    ''' <param name="dblNewDilutingSolventVolume">Output: diluting solvent volume</param>
+    ''' <param name="eDilutingSolventUnits"></param>
+    ''' <returns></returns>
+    Public Function ComputeDilutionTotalVolume(
+      Optional eTotalVolumeUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML,
+      Optional ByRef dblNewDilutingSolventVolume As Double = 0,
+      Optional eDilutingSolventUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
 
         With mDilutionValues
             If .InitialConcentration > 0 And .FinalConcentration > 0 Then
@@ -247,21 +272,26 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-    Public Function ComputeQuantityAmount(Optional ByRef eUnits As uamUnitsAmountConstants = uamUnitsAmountConstants.uamMoles) As Double
-        ' Computes .Amount using .Volume and .Concentration, storing the result
-        '  in .Amount and returning it
 
         With mQuantity
             .Amount = .Concentration * .Volume
         End With
+    ''' <summary>
+    ''' Computes mQuantity.Amount using mQuantity.Volume and mQuantity.Concentration, storing the result in mQuantity.Amount
+    ''' </summary>
+    ''' <param name="eUnits"></param>
+    ''' <returns>mQuantity.Amount, with the specified units</returns>
+    Public Function ComputeQuantityAmount(Optional eUnits As uamUnitsAmountConstants = uamUnitsAmountConstants.uamMoles) As Double
 
         Return ConvertAmount(mQuantity.Amount, uamUnitsAmountConstants.uamMoles, eUnits)
     End Function
 
-    Public Function ComputeQuantityConcentration(Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
-        ' Computes .Concentration using .Amount and .Volume, storing the result
-        '  in .Concentration and returning it
-
+    ''' <summary>
+    ''' Computes mQuantity.Concentration using mQuantity.Amount and mQuantity.Volume, storing the result in mQuantity.Concentration
+    ''' </summary>
+    ''' <param name="eUnits"></param>
+    ''' <returns>mQuantity.Concentration, with the specified units</returns>
+    Public Function ComputeQuantityConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
         With mQuantity
             If .Volume <> 0 Then
                 .Concentration = .Amount / .Volume
@@ -273,10 +303,12 @@ Public Class MWMoleMassDilutionClass
         Return ConvertConcentration(mQuantity.Concentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits)
     End Function
 
-    Public Function ComputeQuantityVolume(Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevL) As Double
-        ' Computes .Volume using .Amount and .Concentration, storing the result
-        '  in .Volume and returning it
-
+    ''' <summary>
+    ''' Computes mQuantity.Volume using mQuantity.Amount and mQuantity.Concentration, storing the result in mQuantity.Volume
+    ''' </summary>
+    ''' <param name="eUnits"></param>
+    ''' <returns>mQuantity.Volume, with the specified units</returns>
+    Public Function ComputeQuantityVolume(Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevL) As Double
         With mQuantity
             If .Concentration <> 0 Then
                 .Volume = .Amount / .Concentration
@@ -288,8 +320,14 @@ Public Class MWMoleMassDilutionClass
         Return ConvertVolumeExtended(mQuantity.Volume, uevUnitsExtendedVolumeConstants.uevL, eUnits)
     End Function
 
-    ' This function uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
-    Public Function ConvertAmount(ByRef dblAmountIn As Double, ByRef eCurrentUnits As uamUnitsAmountConstants, ByRef eNewUnits As uamUnitsAmountConstants) As Double
+    ''' <summary>
+    ''' This function uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
+    ''' </summary>
+    ''' <param name="dblAmountIn"></param>
+    ''' <param name="eCurrentUnits"></param>
+    ''' <param name="eNewUnits"></param>
+    ''' <returns></returns>
+    Public Function ConvertAmount(dblAmountIn As Double, eCurrentUnits As uamUnitsAmountConstants, eNewUnits As uamUnitsAmountConstants) As Double
         Dim dblValue, dblFactor As Double
         Dim dblSampleMass, dblSampleDensity As Double
         Dim eCurrentVolumeUnits As uevUnitsExtendedVolumeConstants
@@ -330,8 +368,15 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-    ' Duplicated function, in both MWCapillaryFlowClass and MWMoleMassDilutionClass
-    Public Function ConvertConcentration(ByRef dblConcentrationIn As Double, ByRef eCurrentUnits As ummcUnitsMoleMassConcentrationConstants, ByRef eNewUnits As ummcUnitsMoleMassConcentrationConstants) As Double
+    ''' <summary>
+    ''' Convert concentration
+    ''' </summary>
+    ''' <param name="dblConcentrationIn"></param>
+    ''' <param name="eCurrentUnits"></param>
+    ''' <param name="eNewUnits"></param>
+    ''' <returns></returns>
+    ''' <remarks>Duplicated function, in both MWCapillaryFlowClass and MWMoleMassDilutionClass</remarks>
+    Public Function ConvertConcentration(dblConcentrationIn As Double, eCurrentUnits As ummcUnitsMoleMassConcentrationConstants, eNewUnits As ummcUnitsMoleMassConcentrationConstants) As Double
         Dim dblValue, dblFactor As Double
         Dim dblSampleMass As Double
 
@@ -357,7 +402,7 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-    Public Function ConvertVolumeExtended(ByRef dblVolume As Double, ByRef eCurrentUnits As uevUnitsExtendedVolumeConstants, ByRef eNewUnits As uevUnitsExtendedVolumeConstants) As Double
+    Public Function ConvertVolumeExtended(dblVolume As Double, eCurrentUnits As uevUnitsExtendedVolumeConstants, eNewUnits As uevUnitsExtendedVolumeConstants) As Double
         Dim dblValue, dblFactor As Double
 
         If eCurrentUnits = eNewUnits Then
@@ -380,10 +425,18 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-    ' Multiplication factor for converting from eUnits to Moles
-    ' dblSampleMass is required for mass-based units
-    ' In addition is required for volume-based units
-    Private Function FactorAmount(ByRef eUnits As uamUnitsAmountConstants, Optional ByRef dblSampleMass As Double = -1, Optional ByRef dblSampleDensity As Double = 0) As Double
+    ''' <summary>
+    ''' Multiplication factor for converting from eUnits to Moles
+    ''' </summary>
+    ''' <param name="eUnits"></param>
+    ''' <param name="dblSampleMass">required for mass-based units</param>
+    ''' <param name="dblSampleDensity">required for volume-based units</param>
+    ''' <returns></returns>
+    Private Function FactorAmount(
+      eUnits As uamUnitsAmountConstants,
+      Optional dblSampleMass As Double = -1,
+      Optional dblSampleDensity As Double = 0) As Double
+
         Dim dblFactor As Double
 
         If dblSampleMass = 0 Then
@@ -421,10 +474,14 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-    ' Multiplication factor for converting from eUnits to M
-    ' dblSampleMass is required for mass-based units
-    ' Duplicated function, in both MWCapillaryFlowClass and MWMoleMassDilutionClass
-    Private Function FactorConcentration(ByRef eUnits As ummcUnitsMoleMassConcentrationConstants, Optional ByVal dblSampleMass As Double = 0) As Double
+    ''' <summary>
+    ''' Multiplication factor for converting from eUnits to M
+    ''' </summary>
+    ''' <param name="eUnits"></param>
+    ''' <param name="dblSampleMass">required for mass-based units</param>
+    ''' <returns></returns>
+    ''' <remarks>Duplicated function, in both MWCapillaryFlowClass and MWMoleMassDilutionClass</remarks>
+    Private Function FactorConcentration(eUnits As ummcUnitsMoleMassConcentrationConstants, Optional dblSampleMass As Double = 0) As Double
         Dim dblFactor As Double
 
         If dblSampleMass = 0 Then
@@ -451,9 +508,13 @@ Public Class MWMoleMassDilutionClass
         Return dblFactor
     End Function
 
-    ' Multiplication factor for converting from eUnits to mL
-    ' An extended version of the FactorVolume function in MWCapillaryFlowClass
-    Private Function FactorVolumeExtended(ByRef eUnits As uevUnitsExtendedVolumeConstants) As Double
+    ''' <summary>
+    ''' Multiplication factor for converting from eUnits to mL
+    ''' </summary>
+    ''' <param name="eUnits"></param>
+    ''' <returns></returns>
+    ''' <remarks>An extended version of the FactorVolume function in MWCapillaryFlowClass</remarks>
+    Private Function FactorVolumeExtended(eUnits As uevUnitsExtendedVolumeConstants) As Double
         Dim dblFactor As Double
 
         ' Note: 4 quarts per gallon, 2 pints per quart
@@ -495,36 +556,36 @@ Public Class MWMoleMassDilutionClass
         Return mAutoComputeQuantityMode
     End Function
 
-    Public Function GetDilutionFinalConcentration(Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
+    Public Function GetDilutionFinalConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
         Return ConvertConcentration(mDilutionValues.FinalConcentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits)
     End Function
 
-    Public Function GetDilutionInitialConcentration(Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
+    Public Function GetDilutionInitialConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
         Return ConvertConcentration(mDilutionValues.InitialConcentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits)
     End Function
 
-    Public Function GetDilutionTotalFinalVolume(Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
+    Public Function GetDilutionTotalFinalVolume(Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
         Return ConvertVolumeExtended(mDilutionValues.TotalFinalVolume, uevUnitsExtendedVolumeConstants.uevL, eUnits)
     End Function
 
-    Public Function GetDilutionVolumeDilutingSolvent(Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
+    Public Function GetDilutionVolumeDilutingSolvent(Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
         Return ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, uevUnitsExtendedVolumeConstants.uevL, eUnits)
     End Function
 
-    Public Function GetDilutionVolumeStockSolution(Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
+    Public Function GetDilutionVolumeStockSolution(Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
         Return ConvertVolumeExtended(mDilutionValues.StockSolutionVolume, uevUnitsExtendedVolumeConstants.uevL, eUnits)
     End Function
 
 
-    Public Function GetQuantityAmount(Optional ByRef eUnits As uamUnitsAmountConstants = uamUnitsAmountConstants.uamMoles) As Double
+    Public Function GetQuantityAmount(Optional eUnits As uamUnitsAmountConstants = uamUnitsAmountConstants.uamMoles) As Double
         Return ConvertAmount(mQuantity.Amount, uamUnitsAmountConstants.uamMoles, eUnits)
     End Function
 
-    Public Function GetQuantityConcentration(Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
+    Public Function GetQuantityConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
         Return ConvertConcentration(mQuantity.Concentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits)
     End Function
 
-    Public Function GetQuantityVolume(Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
+    Public Function GetQuantityVolume(Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
         Return ConvertVolumeExtended(mQuantity.Volume, uevUnitsExtendedVolumeConstants.uevL, eUnits)
     End Function
 
@@ -537,72 +598,71 @@ Public Class MWMoleMassDilutionClass
     End Function
 
 
-    ' Set Subs
-    ' If mAutoComputeDilution = False, then must manually call a Compute Sub to recompute the value
-    ' Similarly, if mAutoComputeQuantity = False, then must manually call a Compute Sub to recompute the value
+    ' Set Methods
+    ' If mAutoComputeDilution = False, must manually call a Compute Sub to recompute the value
+    ' Similarly, if mAutoComputeQuantity = False, must manually call a Compute Sub to recompute the value
 
-    Public Sub SetAutoComputeDilutionEnabled(ByRef blnAutoCompute As Boolean)
+    Public Sub SetAutoComputeDilutionEnabled(blnAutoCompute As Boolean)
         mAutoComputeDilution = blnAutoCompute
     End Sub
 
-    Public Sub SetAutoComputeDilutionMode(ByRef eAutoComputeMode As acdAutoComputeDilutionModeConstants)
+    Public Sub SetAutoComputeDilutionMode(eAutoComputeMode As acdAutoComputeDilutionModeConstants)
         If eAutoComputeMode >= acdAutoComputeDilutionModeConstants.acdFindRequiredDilutionVolumes And eAutoComputeMode <= acdAutoComputeDilutionModeConstants.acdFindFinalConcentration Then
             mAutoComputeDilutionMode = eAutoComputeMode
         End If
     End Sub
 
-    Public Sub SetAutoComputeQuantityEnabled(ByRef blnAutoCompute As Boolean)
+    Public Sub SetAutoComputeQuantityEnabled(blnAutoCompute As Boolean)
         mAutoComputeQuantity = blnAutoCompute
     End Sub
 
-    Public Sub SetAutoComputeQuantityMode(ByRef eAutoComputeMode As acqAutoComputeQuantityModeConstants)
+    Public Sub SetAutoComputeQuantityMode(eAutoComputeMode As acqAutoComputeQuantityModeConstants)
         If eAutoComputeMode >= acqAutoComputeQuantityModeConstants.acqFindAmount And eAutoComputeMode <= acqAutoComputeQuantityModeConstants.acqFindConcentration Then
             mAutoComputeQuantityMode = eAutoComputeMode
         End If
     End Sub
 
 
-    Public Sub SetDilutionFinalConcentration(ByRef dblConcentration As Double, Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+    Public Sub SetDilutionFinalConcentration(dblConcentration As Double, Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         mDilutionValues.FinalConcentration = ConvertConcentration(dblConcentration, eUnits, ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         CheckAutoComputeDilution()
     End Sub
 
-    Public Sub SetDilutionInitialConcentration(ByRef dblConcentration As Double, Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+    Public Sub SetDilutionInitialConcentration(dblConcentration As Double, Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         mDilutionValues.InitialConcentration = ConvertConcentration(dblConcentration, eUnits, ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         CheckAutoComputeDilution()
     End Sub
 
-    Public Sub SetDilutionTotalFinalVolume(ByRef dblVolume As Double, Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML)
+    Public Sub SetDilutionTotalFinalVolume(dblVolume As Double, Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML)
         mDilutionValues.TotalFinalVolume = ConvertVolumeExtended(dblVolume, eUnits, uevUnitsExtendedVolumeConstants.uevL)
         CheckAutoComputeDilution()
     End Sub
 
-    Public Sub SetDilutionVolumeDilutingSolvent(ByRef dblVolume As Double, Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML)
+    Public Sub SetDilutionVolumeDilutingSolvent(dblVolume As Double, Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML)
         mDilutionValues.DilutingSolventVolume = ConvertVolumeExtended(dblVolume, eUnits, uevUnitsExtendedVolumeConstants.uevL)
         CheckAutoComputeDilution()
     End Sub
 
-    Public Sub SetDilutionVolumeStockSolution(ByRef dblVolume As Double, Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML)
+    Public Sub SetDilutionVolumeStockSolution(dblVolume As Double, Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML)
         mDilutionValues.StockSolutionVolume = ConvertVolumeExtended(dblVolume, eUnits, uevUnitsExtendedVolumeConstants.uevL)
         CheckAutoComputeDilution()
     End Sub
 
-
-    Public Sub SetQuantityAmount(ByRef dblAmount As Double, Optional ByRef eUnits As uamUnitsAmountConstants = uamUnitsAmountConstants.uamMoles)
+    Public Sub SetQuantityAmount(dblAmount As Double, Optional eUnits As uamUnitsAmountConstants = uamUnitsAmountConstants.uamMoles)
         mQuantity.Amount = ConvertAmount(dblAmount, eUnits, uamUnitsAmountConstants.uamMoles)
         CheckAutoComputeQuantity()
     End Sub
 
-    Public Sub SetQuantityConcentration(ByRef dblConcentration As Double, Optional ByRef eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+    Public Sub SetQuantityConcentration(dblConcentration As Double, Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         mQuantity.Concentration = ConvertConcentration(dblConcentration, eUnits, ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         CheckAutoComputeQuantity()
     End Sub
 
-    Public Sub SetQuantityVolume(ByRef dblVolume As Double, Optional ByRef eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML)
+    Public Sub SetQuantityVolume(dblVolume As Double, Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML)
         mQuantity.Volume = ConvertVolumeExtended(dblVolume, eUnits, uevUnitsExtendedVolumeConstants.uevL)
     End Sub
 
-    Public Sub SetSampleDensity(ByRef dblDensityInGramsPerML As Double)
+    Public Sub SetSampleDensity(dblDensityInGramsPerML As Double)
         If dblDensityInGramsPerML >= 0 Then
             mQuantity.SampleDensity = dblDensityInGramsPerML
         Else
@@ -611,7 +671,7 @@ Public Class MWMoleMassDilutionClass
         CheckAutoComputeQuantity()
     End Sub
 
-    Public Sub SetSampleMass(ByRef dblMassInGramsPerMole As Double)
+    Public Sub SetSampleMass(dblMassInGramsPerMole As Double)
         If dblMassInGramsPerMole >= 0 Then
             mQuantity.SampleMass = dblMassInGramsPerMole
         Else

@@ -253,7 +253,7 @@ Public Class MWPeptideClass
         End If
     End Function
 
-    Private Function CheckForModifications(strPartialSequence As String, intResidueNumber As Integer, Optional ByVal blnAddMissingModificationSymbols As Boolean = False) As Integer
+    Private Function CheckForModifications(strPartialSequence As String, intResidueNumber As Integer, Optional blnAddMissingModificationSymbols As Boolean = False) As Integer
         ' Looks at strPartialSequence to see if it contains 1 or more modifications
         ' If any modification symbols are found, the modification is recorded in .ModificationIDs()
         ' If all or part of the modification symbol is not found in ModificationSymbols(), then a new entry
@@ -376,7 +376,7 @@ Public Class MWPeptideClass
 
     End Function
 
-    Private Function FillResidueStructureUsingSymbol(strSymbol As String, Optional ByVal blnUse3LetterCode As Boolean = True) As udtResidueType
+    Private Function FillResidueStructureUsingSymbol(strSymbol As String, Optional blnUse3LetterCode As Boolean = True) As udtResidueType
         ' Returns a variable of type udtResidueType containing strSymbol as the residue symbol
         ' If strSymbol is a valid amino acid type, then also updates udtResidue with the default information
 
@@ -426,7 +426,7 @@ Public Class MWPeptideClass
     ''' <returns>The number of ions in udtFragSpectrum()</returns>
     ''' <remarks></remarks>
     Public Function GetFragmentationMasses(ByRef udtFragSpectrum() As udtFragmentationSpectrumDataType) As Integer
-        ' Old: Func GetFragmentationMasses(ByVal lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
+        ' Old: Func GetFragmentationMasses(lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
 
         Dim lstFragSpectraData As List(Of udtFragmentationSpectrumDataType)
 
@@ -1294,9 +1294,9 @@ Public Class MWPeptideClass
 
     Private Function GetTrypticNameFindNextCleavageLoc(strSearchResidues As String, strResidueFollowingSearchResidues As String,
                 lngStartChar As Integer,
-                Optional ByVal strSearchChars As String = TRYPTIC_RULE_RESIDUES,
-                Optional ByVal strExceptionSuffixResidues As String = TRYPTIC_EXCEPTION_RESIDUES,
-                Optional ByVal strTerminiiSymbol As String = TERMINII_SYMBOL) As Integer
+                Optional strSearchChars As String = TRYPTIC_RULE_RESIDUES,
+                Optional strExceptionSuffixResidues As String = TRYPTIC_EXCEPTION_RESIDUES,
+                Optional strTerminiiSymbol As String = TERMINII_SYMBOL) As Integer
         ' Finds the location of the next strSearchChar in strSearchResidues (K or R by default)
         ' Assumes strSearchResidues are already upper case
         ' Examines the residue following the matched residue

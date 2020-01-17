@@ -315,7 +315,12 @@ Public Class MWElementAndMassRoutines
 
 #End Region
 
-    Private Sub AbbrevSymbolStackAdd(ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType, ByRef SymbolReference As Short)
+    ''' <summary>
+    ''' Update the abbreviation symbol stack
+    ''' </summary>
+    ''' <param name="udtAbbrevSymbolStack">Symbol stack; updated by this method</param>
+    ''' <param name="symbolReference"></param>
+    Private Sub AbbrevSymbolStackAdd(ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType, symbolReference As Short)
 
         Try
             With udtAbbrevSymbolStack
@@ -341,12 +346,24 @@ Public Class MWElementAndMassRoutines
         mAbortProcessing = True
     End Sub
 
-    Private Sub AddAbbreviationWork(intAbbrevIndex As Short, strSymbol As String,
+    ''' <summary>
+    ''' Add an abbreviation
+    ''' </summary>
+    ''' <param name="intAbbrevIndex"></param>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="strFormula">Input/output; ParseFormulaPublic will standardize the format</param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="blnIsAminoAcid"></param>
+    ''' <param name="strOneLetter"></param>
+    ''' <param name="strComment"></param>
+    ''' <param name="blnInvalidSymbolOrFormula"></param>
+    Private Sub AddAbbreviationWork(
+      intAbbrevIndex As Short, strSymbol As String,
       ByRef strFormula As String, sngCharge As Single,
       blnIsAminoAcid As Boolean,
-      Optional ByVal strOneLetter As String = "",
-      Optional ByVal strComment As String = "",
-      Optional ByVal blnInvalidSymbolOrFormula As Boolean = False)
+      Optional strOneLetter As String = "",
+      Optional strComment As String = "",
+      Optional blnInvalidSymbolOrFormula As Boolean = False)
 
         With AbbrevStats(intAbbrevIndex)
             .InvalidSymbolOrFormula = blnInvalidSymbolOrFormula
@@ -365,14 +382,14 @@ Public Class MWElementAndMassRoutines
         End With
     End Sub
 
-    Private Sub AddToCautionDescription(ByRef strTextToAdd As String)
+    Private Sub AddToCautionDescription(strTextToAdd As String)
         If Len(mStrCautionDescription) > 0 Then
             mStrCautionDescription = mStrCautionDescription
         End If
         mStrCautionDescription = mStrCautionDescription & strTextToAdd
     End Sub
 
-    Private Sub CheckCaution(ByRef strFormulaExcerpt As String)
+    Private Sub CheckCaution(strFormulaExcerpt As String)
         Dim strTest As String
         Dim strNewCaution As String
         Dim intLength As Short
@@ -390,7 +407,7 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Private Sub CatchParsenumError(ByRef AdjacentNum As Double, ByRef numSizing As Integer, ByRef curCharacter As Integer, ByRef symbolLength As Integer)
+    Private Sub CatchParseNumError(adjacentNum As Double, numSizing As Integer, curCharacter As Integer, symbolLength As Integer)
 
         If AdjacentNum < 0 And numSizing = 0 Then
             Select Case AdjacentNum
@@ -411,13 +428,17 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Private Function CheckElemAndAbbrev(ByRef strFormulaExcerpt As String, ByRef SymbolReference As Short) As smtSymbolMatchTypeConstants
-        ' Returns smtElement if matched an element
-        ' Returns smtAbbreviation if matched an abbreviation or amino acid
-        ' Returns smtUnknown if no match
-
-        ' SymbolReference is the index of the matched element or abbreviation in MasterSymbolsList()
-
+    ''' <summary>
+    ''' Examines the formula excerpt to determine if it is an element, abbreviation, amino acid, or unknown
+    ''' </summary>
+    ''' <param name="strFormulaExcerpt"></param>
+    ''' <param name="symbolReference">Output: index of the matched element or abbreviation in MasterSymbolsList()</param>
+    ''' <returns>
+    ''' smtElement if matched an element
+    ''' smtAbbreviation if matched an abbreviation or amino acid
+    ''' smtUnknown if no match
+    ''' </returns>
+    Private Function CheckElemAndAbbrev(strFormulaExcerpt As String, ByRef symbolReference As Short) As smtSymbolMatchTypeConstants
         Dim intIndex As Short
         Dim eSymbolMatchType As smtSymbolMatchTypeConstants
 
@@ -1707,17 +1728,28 @@ Public Class MWElementAndMassRoutines
         FindIndexForNominalMass = (CInt(workingMass - AtomCount * Math.Round(ThisElementsIsotopes(1).Mass, 0)) + 1)
     End Function
 
-    Private Sub ConvoluteMasses(ByRef ConvolutedAbundances() As udtIsoResultsOverallType,
-     ByRef ConvolutedAbundanceStartMass As Integer,
-     ByRef WorkingRow As Integer,
-     ByRef WorkingAbundance As Single,
-     ByRef WorkingMassTotal As Integer,
-     ByRef ElementTrack As Short,
+    ''' <summary>
+    ''' Recursive function to Convolute the Results in IsoStats() and store in ConvolutedAbundances(); 1-based array
+    ''' </summary>
+    ''' <param name="ConvolutedAbundances"></param>
+    ''' <param name="ConvolutedAbundanceStartMass"></param>
+    ''' <param name="WorkingRow"></param>
+    ''' <param name="WorkingAbundance"></param>
+    ''' <param name="WorkingMassTotal"></param>
+    ''' <param name="ElementTrack"></param>
+    ''' <param name="IsoStats"></param>
+    ''' <param name="ElementCount"></param>
+    ''' <param name="Iterations"></param>
+    Private Sub ConvoluteMasses(
+     ByRef ConvolutedAbundances() As udtIsoResultsOverallType,
+     ConvolutedAbundanceStartMass As Integer,
+     WorkingRow As Integer,
+     WorkingAbundance As Single,
+     WorkingMassTotal As Integer,
+     ElementTrack As Short,
      ByRef IsoStats() As udtIsoResultsByElementType,
-     ByRef ElementCount As Short,
+     ElementCount As Short,
      ByRef Iterations As Int64)
-
-        ' Recursive function to Convolute the Results in IsoStats() and store in ConvolutedAbundances(); 1-based array
 
         Dim IndexToStoreResult, RowIndex As Integer
         Dim NewAbundance As Single
@@ -1845,9 +1877,14 @@ Public Class MWElementAndMassRoutines
 
     ''End Function
 
-    Private Function FindCombosPredictIterations(ByRef AtomCount As Integer, ByRef IsotopeCount As Short) As Integer
-        ' Determines the number of Combo results (iterations) for the given
-        ' number of Atoms for an element with the given number of Isotopes
+    ''' <summary>
+    ''' Determines the number of Combo results (iterations) for the given
+    ''' number of Atoms for an element with the given number of Isotopes
+    ''' </summary>
+    ''' <param name="AtomCount"></param>
+    ''' <param name="IsotopeCount"></param>
+    ''' <returns></returns>
+    Private Function FindCombosPredictIterations(AtomCount As Integer, IsotopeCount As Short) As Integer
 
         ' Empirically determined the following results and figured out that the RunningSum()
         '  method correctly predicts the results
@@ -1919,9 +1956,26 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Private Function FindCombosRecurse(ByRef ComboResults(,) As Integer, ByRef AtomCount As Integer, ByRef MaxIsotopeCount As Short, ByRef CurrentIsotopeCount As Short, ByRef CurrentRow As Integer, ByRef CurrentCol As Short, ByRef AtomTrackHistory() As Integer) As Integer
-        ' Recursive function to find all the combinations
-        ' of a number of atoms with the given maximum isotopic count
+    ''' <summary>
+    ''' Recursive function to find all the combinations
+    ''' of a number of atoms with the given maximum isotopic count
+    ''' </summary>
+    ''' <param name="ComboResults"></param>
+    ''' <param name="AtomCount"></param>
+    ''' <param name="MaxIsotopeCount"></param>
+    ''' <param name="CurrentIsotopeCount"></param>
+    ''' <param name="CurrentRow"></param>
+    ''' <param name="CurrentCol"></param>
+    ''' <param name="AtomTrackHistory"></param>
+    ''' <returns></returns>
+    Private Function FindCombosRecurse(
+      ByRef ComboResults(,) As Integer,
+      AtomCount As Integer,
+      MaxIsotopeCount As Short,
+      CurrentIsotopeCount As Short,
+      ByRef CurrentRow As Integer,
+      CurrentCol As Short,
+      ByRef AtomTrackHistory() As Integer) As Integer
 
         ' IsoCombos() is a 2D array holding the # of each isotope for each combination
         ' For example, Two chlorines, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
@@ -1977,11 +2031,12 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Sub GeneralErrorHandler(ByRef strCallingProcedure As String, errorNumber As Integer)
+    Public Sub GeneralErrorHandler(strCallingProcedure As String, errorNumber As Integer)
         GeneralErrorHandler(strCallingProcedure, errorNumber, String.Empty)
     End Sub
 
-    Public Sub GeneralErrorHandler(ByRef strCallingProcedure As String, errorNumber As Integer, strErrorDescriptionAddnl As String)
+
+    Public Sub GeneralErrorHandler(strCallingProcedure As String, errorNumber As Integer, strErrorDescriptionAdditional As String)
         Dim strMessage As String
         Dim strErrorFilePath As String
 
@@ -2171,9 +2226,14 @@ Public Class MWElementAndMassRoutines
         Return -1
     End Function
 
-    Public Function GetCautionStatementInternal(cautionStatementID As Integer, ByRef strSymbolCombo As String, ByRef strCautionStatement As String) As Integer
-        ' Returns the contents of CautionStatements() in the ByRef variables
-        ' Returns 0 if success, 1 if failure
+    ''' <summary>
+    ''' Get a caution statement, by ID
+    ''' </summary>
+    ''' <param name="cautionStatementID"></param>
+    ''' <param name="strSymbolCombo">Output: symbol combo for the caution statement</param>
+    ''' <param name="strCautionStatement">Output: caution statement text</param>
+    ''' <returns>0 if success, 1 if an invalid ID</returns>
+    Public Function GetCautionStatementInternal(cautionStatementID As Integer, <Out> ByRef strSymbolCombo As String, <Out> ByRef strCautionStatement As String) As Integer
 
         If cautionStatementID >= 1 And cautionStatementID <= CautionStatementCount Then
             strSymbolCombo = CautionStatements(cautionStatementID, 0)
@@ -2413,8 +2473,12 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Private Function IsStringAllLetters(ByRef strTest As String) As Boolean
-        ' Tests if all of the characers in strTest are letters
+    ''' <summary>
+    ''' Tests if all of the characters in strTest are letters
+    ''' </summary>
+    ''' <param name="strTest"></param>
+    ''' <returns></returns>
+    Private Function IsStringAllLetters(strTest As String) As Boolean
 
         Dim blnAllLetters As Boolean
         Dim intIndex As Short
@@ -2513,7 +2577,7 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Private Function LookupCautionStatement(ByRef strCompareText As String) As String
+    Private Function LookupCautionStatement(strCompareText As String) As String
         Dim intIndex As Short
 
         For intIndex = 1 To CShort(CautionStatementCount)
@@ -2598,7 +2662,7 @@ Public Class MWElementAndMassRoutines
         Return ConvoluteMassInternal(dblMonoisotopicMass + dblChargeCarrierMass, 1, intCharge, dblChargeCarrierMass)
     End Function
 
-    Public Sub MemoryLoadAll(ByRef eElementMode As emElementModeConstants)
+    Public Sub MemoryLoadAll(eElementMode As emElementModeConstants)
 
         MemoryLoadElements(eElementMode)
 
@@ -2769,20 +2833,24 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Public Sub MemoryLoadElements(ByRef eElementMode As emElementModeConstants)
+    Public Sub MemoryLoadElements(eElementMode As emElementModeConstants)
         MemoryLoadElements(eElementMode, 0S, MolecularWeightCalculator.esElementStatsConstants.esMass)
     End Sub
 
-    Public Sub MemoryLoadElements(ByRef eElementMode As emElementModeConstants,
+    ''' <summary>
+    ''' Load elements
+    ''' </summary>
+    ''' <param name="eElementMode">Element mode: 1 for average weights, 2 for monoisotopic weights, 3 for integer weights</param>
+    ''' <param name="intSpecificElement"></param>
+    ''' <param name="eSpecificStatToReset"></param>
+    ''' <remarks>
+    ''' intSpecificElement and intSpecificElementProperty are zero when updating all of the elements
+    ''' nonzero intSpecificElement and intSpecificElementProperty values will set just that specific value to the default
+    ''' </remarks>
+    Public Sub MemoryLoadElements(
+       eElementMode As emElementModeConstants,
        intSpecificElement As Short,
        eSpecificStatToReset As MolecularWeightCalculator.esElementStatsConstants)
-
-        ' intSpecificElement and intSpecificElementProperty are zero when updating all of the elements
-        ' nonzero intSpecificElement and intSpecificElementProperty values will set just that specific value to the default
-        ' eElementMode = 0 should not occur
-        ' eElementMode = 1 means to use the average elemental weights
-        ' eElementMode = 2 means to use isotopic elemental weights
-        ' eElementMode = 3 means to use integer isotopic weights
 
         Const DEFAULT_CHARGE_CARRIER_MASS_AVG As Double = 1.00739
         Const DEFAULT_CHARGE_CARRIER_MASS_MONOISO As Double = 1.00727649
@@ -3865,7 +3933,7 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Private Sub MwtWinDllErrorHandler(ByRef strSourceForm As String)
+    Private Sub MwtWinDllErrorHandler(strSourceForm As String)
         Dim strMessage As String
         Dim blnShowErrorMessageDialogsSaved As Boolean
 
@@ -4024,27 +4092,37 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Private Function ParseFormulaRecursive(strFormula As String, ByRef udtComputationStats As udtComputationStatsType,
+    ''' <summary>
+    ''' Determine elements in an abbreviation or elements and abbreviations in a formula
+    ''' Stores results in udtComputationStats
+    ''' ErrorParams will hold information on errors that occur
+    ''' </summary>
+    ''' <param name="strFormula"></param>
+    ''' <param name="udtComputationStats"></param>
+    ''' <param name="udtAbbrevSymbolStack"></param>
+    ''' <param name="blnExpandAbbreviations"></param>
+    ''' <param name="dblStdDevSum">Sum of the squares of the standard deviations</param>
+    ''' <param name="dblValueForX"></param>
+    ''' <param name="intCharCountPrior"></param>
+    ''' <param name="dblParenthMultiplier">The value to multiply all values by if inside parentheses</param>
+    ''' <param name="dblDashMultiplierPrior"></param>
+    ''' <param name="dblBracketMultiplierPrior"></param>
+    ''' <param name="CarbonOrSiliconReturnCount">Tracks the number of carbon and silicon atoms found; used when correcting for charge inside parentheses or inside an abbreviation</param>
+    ''' <param name="intParenthLevelPrevious"></param>
+    ''' <returns>Formatted formula</returns>
+    Private Function ParseFormulaRecursive(
+       strFormula As String,
+       ByRef udtComputationStats As udtComputationStatsType,
        ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType,
        blnExpandAbbreviations As Boolean,
        ByRef dblStdDevSum As Double,
-       Optional ByVal dblValueForX As Double = 1.0#,
-       Optional ByVal intCharCountPrior As Integer = 0,
-       Optional ByVal dblParenthMultiplier As Double = 1.0#,
-       Optional ByVal dblDashMultiplierPrior As Double = 1.0#,
-       Optional ByVal dblBracketMultiplierPrior As Double = 1.0#,
+       Optional dblValueForX As Double = 1.0#,
+       Optional intCharCountPrior As Integer = 0,
+       Optional dblParenthMultiplier As Double = 1.0#,
+       Optional dblDashMultiplierPrior As Double = 1.0#,
+       Optional dblBracketMultiplierPrior As Double = 1.0#,
        Optional ByRef CarbonOrSiliconReturnCount As Integer = 0,
-       Optional ByVal intParenthLevelPrevious As Short = 0) As String
-
-        ' Determine elements in an abbreviation or elements and abbreviations in a formula
-        ' Stores results in udtComputationStats
-        ' ErrorParams will hold information on errors that occur
-        ' Returns the formatted formula
-
-        ' blnDisplayMessages indicates whether to display error messages
-        ' dblParenthMultiplier is the value to multiply all values by if inside parentheses
-        ' dblStdDevSum is the sum of the squares of the standard deviations
-        ' CarbonOrSiliconReturnCount records the number of carbon and silicon atoms found; used when correcting for charge inside parentheses or inside an abbreviation
+       Optional intParenthLevelPrevious As Short = 0) As String
 
         ' ( and ) are 40 and 41   - is 45   { and } are 123 and 125
         ' Numbers are 48 to 57    . is 46
@@ -4690,13 +4768,24 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Private Function ParseNum(ByRef strWork As String, ByRef intNumLength As Integer, Optional ByRef blnAllowNegative As Boolean = False) As Double
-        ' Looks for a number and returns it if found
-        ' If an error is found, it returns a negative number for the error code and sets intNumLength = 0
-        '  -1 = No number
-        '  -2 =                                             (unused)
-        '  -3 = No number at all or (more likely) no number after decimal point
-        '  -4 = More than one decimal point
+    ''' <summary>
+    ''' Looks for a number and returns it if found
+    ''' </summary>
+    ''' <param name="strWork">Input/Output</param>
+    ''' <param name="intNumLength">Output: length of the number</param>
+    ''' <param name="blnAllowNegative"></param>
+    ''' <returns>
+    ''' Parsed number if found
+    ''' If not a number, returns a negative number for the error code and sets intNumLength = 0
+    ''' </returns>
+    ''' <remarks>
+    ''' Error codes:
+    '''  -1 = No number
+    '''  -2 =                                             (unused)
+    '''  -3 = No number at all or (more likely) no number after decimal point
+    '''  -4 = More than one decimal point
+    ''' </remarks>
+    Private Function ParseNum(ByRef strWork As String, <Out> ByRef intNumLength As Integer, Optional blnAllowNegative As Boolean = False) As Double
 
         Dim strWorking, strFoundNum As String
         Dim intIndex, intDecPtCount As Short
@@ -4751,24 +4840,36 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function PlainTextToRtfInternal(ByRef strWorkText As String) As String
+    Public Function PlainTextToRtfInternal(strWorkText As String) As String
         Return PlainTextToRtfInternal(strWorkText, False, True, False, 0)
     End Function
 
-    Public Function PlainTextToRtfInternal(ByRef strWorkText As String, CalculatorMode As Boolean) As String
-        Return PlainTextToRtfInternal(strWorkText, CalculatorMode, True, False, 0)
+    Public Function PlainTextToRtfInternal(strWorkText As String, calculatorMode As Boolean) As String
+        Return PlainTextToRtfInternal(strWorkText, calculatorMode, True, False, 0)
     End Function
 
-    Public Function PlainTextToRtfInternal(ByRef strWorkText As String, CalculatorMode As Boolean,
-       blnHighlightCharFollowingPercentSign As Boolean) As String
-        Return PlainTextToRtfInternal(strWorkText, CalculatorMode, blnHighlightCharFollowingPercentSign, False, 0)
+    Public Function PlainTextToRtfInternal(
+      strWorkText As String,
+      calculatorMode As Boolean,
+      blnHighlightCharFollowingPercentSign As Boolean) As String
+        Return PlainTextToRtfInternal(strWorkText, calculatorMode, blnHighlightCharFollowingPercentSign, False, 0)
     End Function
 
-    Public Function PlainTextToRtfInternal(ByRef strWorkText As String,
-    ByRef CalculatorMode As Boolean,
-    ByRef blnHighlightCharFollowingPercentSign As Boolean,
-    ByRef blnOverrideErrorID As Boolean,
-    ByRef errorIDOverride As Integer) As String
+    ''' <summary>
+    ''' Converts plain text to formatted rtf text
+    ''' </summary>
+    ''' <param name="strWorkText"></param>
+    ''' <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
+    ''' <param name="blnHighlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
+    ''' <param name="blnOverrideErrorID"></param>
+    ''' <param name="errorIDOverride"></param>
+    ''' <returns></returns>
+    Public Function PlainTextToRtfInternal(
+      strWorkText As String,
+      calculatorMode As Boolean,
+      blnHighlightCharFollowingPercentSign As Boolean,
+      blnOverrideErrorID As Boolean,
+      errorIDOverride As Integer) As String
 
         Dim strWorkCharPrev, strWorkChar, strRTF As String
         Dim intCharIndex, intCharIndex2 As Integer
@@ -5339,9 +5440,13 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function SetCautionStatementInternal(ByRef strSymbolCombo As String, ByRef strNewCautionStatement As String) As Integer
-        ' Adds a new caution statement or updates an existing one (based on strSymbolCombo)
-        ' Returns 0 if successful, otherwise, returns an Error ID
+    ''' <summary>
+    ''' Adds a new caution statement or updates an existing one (based on strSymbolCombo)
+    ''' </summary>
+    ''' <param name="strSymbolCombo"></param>
+    ''' <param name="strNewCautionStatement"></param>
+    ''' <returns>0 if successful, otherwise, returns an Error ID</returns>
+    Public Function SetCautionStatementInternal(strSymbolCombo As String, strNewCautionStatement As String) As Integer
 
         Dim blnAlreadyPresent As Boolean
         Dim intIndex As Integer
@@ -5488,10 +5593,15 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Public Function SetMessageStatementInternal(ByRef messageID As Integer, ByRef strNewMessage As String) As Integer
-        ' Used to replace the default message strings with foreign language equivalent ones
-        ' Returns 0 if success; 1 if failure
-        If messageID >= 1 And messageID <= MESSAGE_STATEMENT_DIMCOUNT And Len(strNewMessage) > 0 Then
+    ''' <summary>
+    ''' Used to replace the default message strings with foreign language equivalent ones
+    ''' </summary>
+    ''' <param name="messageID"></param>
+    ''' <param name="strNewMessage"></param>
+    ''' <returns>0 if success; 1 if failure</returns>
+    Public Function SetMessageStatementInternal(messageID As Integer, strNewMessage As String) As Integer
+
+        If messageID >= 1 And messageID <= MESSAGE_STATEMENT_DIM_COUNT And Len(strNewMessage) > 0 Then
             MessageStatements(messageID) = strNewMessage
             SetMessageStatementInternal = 0
         Else
@@ -5499,7 +5609,7 @@ Public Class MWElementAndMassRoutines
         End If
     End Function
 
-    Private Sub ShellSortSymbols(ByRef lowIndex As Integer, ByRef highIndex As Integer)
+    Private Sub ShellSortSymbols(lowIndex As Integer, highIndex As Integer)
 
         Dim PointerArray() As Integer
         ReDim PointerArray(highIndex)
@@ -5529,8 +5639,14 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
+    ''' <summary>
+    ''' Sort the list using a shell sort
+    ''' </summary>
+    ''' <param name="PointerArray"></param>
+    ''' <param name="lowIndex"></param>
+    ''' <param name="highIndex"></param>
     Private Sub ShellSortSymbolsWork(ByRef PointerArray() As Integer, lowIndex As Integer, highIndex As Integer)
-        ' Sort the list using a shell sort
+
         Dim itemCount As Integer
         Dim incrementAmount As Integer
 
@@ -5578,7 +5694,7 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Public Sub SetShowErrorMessageDialogs(ByRef blnValue As Boolean)
+    Public Sub SetShowErrorMessageDialogs(blnValue As Boolean)
         mShowErrorMessageDialogs = blnValue
     End Sub
 
@@ -5628,8 +5744,13 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Public Function SpacePad(ByRef strWork As String, ByRef intLength As Short) As String
-        ' Adds spaces to strWork until the length = intLength
+    ''' <summary>
+    ''' Adds spaces to strWork until the length is intLength
+    ''' </summary>
+    ''' <param name="strWork"></param>
+    ''' <param name="intLength"></param>
+    ''' <returns></returns>
+    Public Function SpacePad(strWork As String, intLength As Short) As String
 
         Do While Len(strWork) < intLength
             strWork = strWork & " "
@@ -5639,7 +5760,7 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Private Function SpacePadFront(ByRef strWork As String, ByRef intLength As Short) As String
+    Private Function SpacePadFront(strWork As String, intLength As Short) As String
 
         Do While Len(strWork) < intLength
             strWork = " " & strWork
