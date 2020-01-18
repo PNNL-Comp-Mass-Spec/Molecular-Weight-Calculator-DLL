@@ -775,30 +775,31 @@ Public Class MolecularWeightCalculator
         mElementAndMassRoutines.SortAbbreviationsInternal()
     End Sub
 
-    Public Function TextToRTF(ByRef strTextToConvert As String) As String
+    Public Function TextToRTF(strTextToConvert As String) As String
         Return TextToRTF(strTextToConvert, False, True, False, 0)
     End Function
 
-    Public Function TextToRTF(ByRef strTextToConvert As String, CalculatorMode As Boolean) As String
+    Public Function TextToRTF(strTextToConvert As String, CalculatorMode As Boolean) As String
         Return TextToRTF(strTextToConvert, CalculatorMode, True, False, 0)
     End Function
 
-    Public Function TextToRTF(ByRef strTextToConvert As String, CalculatorMode As Boolean,
+    Public Function TextToRTF(strTextToConvert As String, CalculatorMode As Boolean,
             blnHighlightCharFollowingPercentSign As Boolean) As String
         Return TextToRTF(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, False, 0)
     End Function
 
-    Public Function TextToRTF(ByRef strTextToConvert As String,
-            CalculatorMode As Boolean,
-            blnHighlightCharFollowingPercentSign As Boolean,
-            blnOverrideErrorID As Boolean,
-            lngErrorIDOverride As Integer) As String
 
         ' Converts an RTF string for the given text
         ' If blnHighlightCharFollowingPercentSign is true, then changes the character
         '  following a percent sign to red (and removes the percent sign)
 
         ' When blnCalculatorMode = True, then does not superscript + signs and numbers following + signs
+    Public Function TextToRTF(
+      strTextToConvert As String,
+      CalculatorMode As Boolean,
+      blnHighlightCharFollowingPercentSign As Boolean,
+      blnOverrideErrorID As Boolean,
+      errorIDOverride As Integer) As String
         Return mElementAndMassRoutines.PlainTextToRtfInternal(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, blnOverrideErrorID, errorIDOverride)
     End Function
 
