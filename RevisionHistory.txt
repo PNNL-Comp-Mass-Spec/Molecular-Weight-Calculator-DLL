@@ -1,5 +1,18 @@
 MwtWinDll.NET Change Log
 
+Version 3.6.7321; January 17, 2020
+	- Fix bug in clsMwtWin.vb
+		- Load defaults (and call MemoryLoadAll) prior to instantiating the peptide class
+	- Remove unnecessary ByRef keywords
+		- This is a breaking change for any C# code using the DLL
+	- Add method comments
+
+Version 3.5.6327; April 28, 2017
+	- Build with Appveyor
+
+Version 3.5.6039; July 14, 2016
+	- Add a unit test project
+
 Version 3.5.5795; November 13, 2015
 	- Validated formula finder thorough and bounded modes against the VB6 results
 
