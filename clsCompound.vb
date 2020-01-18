@@ -277,7 +277,7 @@ Public Class MWCompoundClass
         Get
             Return mComputationStats.Charge
         End Get
-        Set(Value As Single)
+        Set
             mComputationStats.Charge = Value
         End Set
     End Property
@@ -298,7 +298,7 @@ Public Class MWCompoundClass
         Get
             Return mStrFormula
         End Get
-        Set(Value As String)
+        Set
             mStrFormula = Value
 
             ' Recompute the mass for this formula
@@ -359,7 +359,7 @@ Public Class MWCompoundClass
         Get
             Return mValueForX
         End Get
-        Set(Value As Double)
+        Set
             If Value >= 0 Then mValueForX = Value
         End Set
     End Property

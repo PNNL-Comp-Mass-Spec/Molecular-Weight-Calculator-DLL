@@ -114,16 +114,16 @@ Public Class MWFormulaFinder
         Get
             Return mMaximumHits
         End Get
-        Set(value As Integer)
-            If value < 1 Then
-                value = 1
+        Set
+            If Value < 1 Then
+                Value = 1
             End If
 
-            If value > MAXIMUM_ALLOWED_RESULTS_TO_FIND Then
-                value = MAXIMUM_ALLOWED_RESULTS_TO_FIND
+            If Value > MAXIMUM_ALLOWED_RESULTS_TO_FIND Then
+                Value = MAXIMUM_ALLOWED_RESULTS_TO_FIND
             End If
 
-            mMaximumHits = value
+            mMaximumHits = Value
         End Set
     End Property
 
@@ -752,7 +752,7 @@ Public Class MWFormulaFinder
             End Select
         Next
 
-        Dim maxH As Integer = 0
+        Dim maxH = 0
 
         ' Compute maximum number of hydrogens
         If udtElementNum.Si = 0 AndAlso udtElementNum.C = 0 AndAlso udtElementNum.N = 0 AndAlso
@@ -953,7 +953,7 @@ Public Class MWFormulaFinder
             Exit Sub
         End If
 
-        Const NUM_POINTERS As Integer = 3
+        Const NUM_POINTERS = 3
 
         ' Calculate lngMaxRecursiveCount based on a combination function
         Dim maxRecursiveCount = Combinatorial(NUM_POINTERS + potentialElementCount, potentialElementCount - 1) - Combinatorial(potentialElementCount + NUM_POINTERS - 2, NUM_POINTERS - 1)

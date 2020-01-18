@@ -87,7 +87,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode
         End Get
-        Set(Value As arAbbrevRecognitionModeConstants)
+        Set
             If Value >= arAbbrevRecognitionModeConstants.arNormalOnly And Value <= arAbbrevRecognitionModeConstants.arNoAbbreviations Then
                 mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode = Value
                 mElementAndMassRoutines.ConstructMasterSymbolsList()
@@ -116,34 +116,31 @@ Public Class MolecularWeightCalculator
         End Get
     End Property
 
-
     Public Property BracketsTreatedAsParentheses() As Boolean
         Get
             Return mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses
         End Get
-        Set(Value As Boolean)
+        Set
             mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses = Value
         End Set
     End Property
-
 
     Public Property CaseConversionMode() As MWElementAndMassRoutines.ccCaseConversionConstants
         Get
             Return mElementAndMassRoutines.gComputationOptions.CaseConversion
         End Get
-        Set(Value As MWElementAndMassRoutines.ccCaseConversionConstants)
+        Set
             If Value >= MWElementAndMassRoutines.ccCaseConversionConstants.ccConvertCaseUp And Value <= MWElementAndMassRoutines.ccCaseConversionConstants.ccSmartCase Then
                 mElementAndMassRoutines.gComputationOptions.CaseConversion = Value
             End If
         End Set
     End Property
 
-
     Public Property DecimalSeparator() As Char
         Get
             Return mElementAndMassRoutines.gComputationOptions.DecimalSeparator
         End Get
-        Set(Value As Char)
+        Set
             mElementAndMassRoutines.gComputationOptions.DecimalSeparator = Value
         End Set
     End Property
@@ -183,8 +180,8 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.LogFolderPath
         End Get
-        Set(value As String)
-            mElementAndMassRoutines.LogFolderPath = value
+        Set
+            mElementAndMassRoutines.LogFolderPath = Value
         End Set
     End Property
 
@@ -192,8 +189,8 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.LogMessagesToFile
         End Get
-        Set(value As Boolean)
-            mElementAndMassRoutines.LogMessagesToFile = value
+        Set
+            mElementAndMassRoutines.LogMessagesToFile = Value
         End Set
     End Property
 
@@ -215,7 +212,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.RtfFontName
         End Get
-        Set(Value As String)
+        Set
             If Len(Value) > 0 Then
                 mElementAndMassRoutines.gComputationOptions.RtfFontName = Value
             End If
@@ -227,7 +224,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.RtfFontSize
         End Get
-        Set(Value As Short)
+        Set
             If Value > 0 Then
                 mElementAndMassRoutines.gComputationOptions.RtfFontSize = Value
             End If
@@ -239,7 +236,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.ShowErrorMessageDialogs()
         End Get
-        Set(Value As Boolean)
+        Set
             mElementAndMassRoutines.SetShowErrorMessageDialogs(Value)
         End Set
     End Property
@@ -249,7 +246,7 @@ Public Class MolecularWeightCalculator
         Get
             Return mElementAndMassRoutines.gComputationOptions.StdDevMode
         End Get
-        Set(Value As MWElementAndMassRoutines.smStdDevModeConstants)
+        Set
             If Value >= MWElementAndMassRoutines.smStdDevModeConstants.smShort And Value <= MWElementAndMassRoutines.smStdDevModeConstants.smDecimal Then
                 mElementAndMassRoutines.gComputationOptions.StdDevMode = Value
             End If

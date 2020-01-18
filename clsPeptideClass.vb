@@ -382,7 +382,7 @@ Public Class MWPeptideClass
 
         Dim strSymbol3Letter As String
         Dim lngAbbrevID As Integer
-        Dim udtResidue As udtResidueType = New udtResidueType
+        Dim udtResidue = New udtResidueType
 
         ' Initialize the UDTs
         udtResidue.Initialize()
@@ -640,7 +640,7 @@ Public Class MWPeptideClass
             ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.GetFragmentationSpectrumOptions", ex)
         End Try
 
-        Dim udtDefaultOptions As udtFragmentationSpectrumOptionsType = New udtFragmentationSpectrumOptionsType
+        Dim udtDefaultOptions = New udtFragmentationSpectrumOptionsType
         udtDefaultOptions.Initialize()
 
         Return udtDefaultOptions
@@ -657,7 +657,7 @@ Public Class MWPeptideClass
     End Function
 
     Private Function GetInternalResidues(lngCurrentResidueIndex As Integer, eIonType As itIonTypeConstants) As String
-        Dim blnPhosphorylated As Boolean = False
+        Dim blnPhosphorylated = False
         Return GetInternalResidues(lngCurrentResidueIndex, eIonType, blnPhosphorylated)
     End Function
 

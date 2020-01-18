@@ -23,7 +23,7 @@
         Get
             Return mFindCharge
         End Get
-        Set(value As Boolean)
+        Set
             mFindCharge = value
 
             If mFindCharge = False Then
@@ -45,8 +45,8 @@
         Get
             Return mLimitChargeRange
         End Get
-        Set(value As Boolean)
-            mLimitChargeRange = value
+        Set
+            mLimitChargeRange = Value
             If mLimitChargeRange Then
                 FindCharge = True
             Else
@@ -75,8 +75,8 @@
         Get
             Return mFindTargetMZ
         End Get
-        Set(value As Boolean)
-            mFindTargetMZ = value
+        Set
+            mFindTargetMZ = Value
             If (mFindTargetMZ) Then
                 FindCharge = True
                 LimitChargeRange = True

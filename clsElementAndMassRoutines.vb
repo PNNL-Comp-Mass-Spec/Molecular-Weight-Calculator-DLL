@@ -249,49 +249,49 @@ Public Class MWElementAndMassRoutines
 
 #Region "Interface Functions"
 
-    Public Property AbortProcessing() As Boolean
+    Public Property AbortProcessing As Boolean
         Get
             Return mAbortProcessing
         End Get
-        Set(Value As Boolean)
+        Set
             mAbortProcessing = Value
         End Set
     End Property
 
-    Public Property ElementModeInternal() As emElementModeConstants
+    Public Property ElementModeInternal As emElementModeConstants
         Get
             Return mCurrentElementMode
         End Get
-        Set(value As emElementModeConstants)
-            SetElementModeInternal(value)
+        Set
+            SetElementModeInternal(Value)
         End Set
     End Property
 
-    Public ReadOnly Property LogFilePath() As String
+    Public ReadOnly Property LogFilePath As String
         Get
             Return mLogFilePath
         End Get
     End Property
 
-    Public Property LogFolderPath() As String
+    Public Property LogFolderPath As String
         Get
             Return mLogFolderPath
         End Get
-        Set(value As String)
-            mLogFolderPath = value
+        Set
+            mLogFolderPath = Value
         End Set
     End Property
 
-    Public Property LogMessagesToFile() As Boolean
+    Public Property LogMessagesToFile As Boolean
         Get
             Return mLogMessagesToFile
         End Get
-        Set(value As Boolean)
-            mLogMessagesToFile = value
+        Set
+            mLogMessagesToFile = Value
         End Set
     End Property
 
-    Public Overridable ReadOnly Property ProgressStepDescription() As String
+    Public Overridable ReadOnly Property ProgressStepDescription As String
         Get
             Return mProgressStepDescription
         End Get
@@ -304,12 +304,12 @@ Public Class MWElementAndMassRoutines
         End Get
     End Property
 
-    Public Property ShowErrorMessageDialogs() As Boolean
+    Public Property ShowErrorMessageDialogs As Boolean
         Get
             Return mShowErrorMessageDialogs
         End Get
-        Set(value As Boolean)
-            mShowErrorMessageDialogs = value
+        Set
+            mShowErrorMessageDialogs = Value
         End Set
     End Property
 
@@ -633,8 +633,8 @@ Public Class MWElementAndMassRoutines
         Dim PredictedConvIterations As Int64
         Dim PredictedTotalComboCalcs, CompletedComboCalcs As Integer
 
-        Const MIN_ABUNDANCE_TO_KEEP As Double = 0.000001
-        Const CUTOFF_FOR_RATIO_METHOD As Double = 0.00001
+        Const MIN_ABUNDANCE_TO_KEEP = 0.000001
+        Const CUTOFF_FOR_RATIO_METHOD = 0.00001
 
         ' AbundDenom  and  AbundSuffix are only needed if using the easily-overflowed factorial method
         Dim AbundDenom, AbundSuffix As Double
@@ -1272,7 +1272,7 @@ Public Class MWElementAndMassRoutines
         ' The original data in the arrays will be replaced with Gaussian peaks in place of each "stick"
         ' Note: Assumes dblXVals() is sorted in the x direction
 
-        Const MAX_DATA_POINTS As Integer = 1000000
+        Const MAX_DATA_POINTS = 1000000
         Const MASS_PRECISION As Short = 7
 
         Dim intDataIndex As Integer, intMidPointIndex As Integer
@@ -1401,7 +1401,7 @@ Public Class MWElementAndMassRoutines
                     '        Use intDataIndex, .YVal, and DeltaX
                     dblXOffSet = (intMidPointIndex - intDataIndex) * DeltaX
 
-                    Dim udtNewPoint As udtXYDataType = New udtXYDataType()
+                    Dim udtNewPoint = New udtXYDataType()
 
                     udtNewPoint.X = udtThisDataPoint.X - dblXOffSet
                     udtNewPoint.Y = udtThisDataPoint.Y * Math.Exp(-(dblXOffSet) ^ 2 / (2 * dblSigma ^ 2))
@@ -1477,7 +1477,7 @@ Public Class MWElementAndMassRoutines
                         dblRangeWork = dblMinimalXValSpacing
                     End If
 
-                    Dim udtNewDataPoint As udtXYDataType = New udtXYDataType
+                    Dim udtNewDataPoint = New udtXYDataType
 
 
                     udtNewDataPoint.X = lstXYSummation(intSummationIndex).X + dblRangeWork
@@ -1641,7 +1641,7 @@ Public Class MWElementAndMassRoutines
     ''' <remarks></remarks>
     Public Function ConvertFormulaToEmpirical(strFormula As String) As String
 
-        Dim udtComputationStats As udtComputationStatsType = New udtComputationStatsType
+        Dim udtComputationStats = New udtComputationStatsType
         udtComputationStats.Initialize()
 
         Dim strEmpiricalFormula As String
@@ -1704,7 +1704,7 @@ Public Class MWElementAndMassRoutines
     ''' <remarks></remarks>
     Public Function ExpandAbbreviationsInFormula(strFormula As String) As String
 
-        Dim udtComputationStats As udtComputationStatsType = New udtComputationStatsType
+        Dim udtComputationStats = New udtComputationStatsType
         udtComputationStats.Initialize()
 
         ' Call ExpandAbbreviationsInFormula to compute the formula's mass
@@ -2856,8 +2856,8 @@ Public Class MWElementAndMassRoutines
        intSpecificElement As Short,
        eSpecificStatToReset As MolecularWeightCalculator.esElementStatsConstants)
 
-        Const DEFAULT_CHARGE_CARRIER_MASS_AVG As Double = 1.00739
-        Const DEFAULT_CHARGE_CARRIER_MASS_MONOISO As Double = 1.00727649
+        Const DEFAULT_CHARGE_CARRIER_MASS_AVG = 1.00739
+        Const DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649
 
         ' This array stores the element names
         Dim strElementNames() As String
@@ -3974,7 +3974,7 @@ Public Class MWElementAndMassRoutines
 
         ReDim ElementAlph(ELEMENT_COUNT)
         ReDim ElementStats(ELEMENT_COUNT)
-        For i As Integer = 0 To ELEMENT_COUNT - 1
+        For i = 0 To ELEMENT_COUNT - 1
             ElementStats(i).Initialize()
         Next
 
@@ -4144,10 +4144,10 @@ Public Class MWElementAndMassRoutines
         Dim blnMatchFound As Boolean
         Dim strNewFormulaRightHalf As String
 
-        Dim udtComputationStatsRightHalf As udtComputationStatsType = New udtComputationStatsType
+        Dim udtComputationStatsRightHalf = New udtComputationStatsType
         udtComputationStatsRightHalf.Initialize()
 
-        Dim udtAbbrevSymbolStackRightHalf As udtAbbrevSymbolStackType = New udtAbbrevSymbolStackType
+        Dim udtAbbrevSymbolStackRightHalf = New udtAbbrevSymbolStackType
 
         Dim dblStdDevSumRightHalf As Double
         Dim dblCaretVal, dblAdjacentNum, dblCaretValDifference As Double
