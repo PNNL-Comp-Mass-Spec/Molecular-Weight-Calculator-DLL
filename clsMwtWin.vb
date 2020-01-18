@@ -30,7 +30,7 @@ Public Class MolecularWeightCalculator
     ' this computer software.
 
 
-    Private Const PROGRAM_DATE As String = "July 14,2016"
+    Private Const PROGRAM_DATE As String = "January 17, 2020"
 
     ''' <summary>
     ''' Constructor, assumes the elements are using average masses

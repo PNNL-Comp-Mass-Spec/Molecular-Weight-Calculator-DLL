@@ -5,11 +5,11 @@ Imports System.Runtime.CompilerServices
 ' set of attributes. Change these attribute values to modify the information
 ' associated with an assembly
 
-<Assembly: AssemblyTitle("Molecular Weight Calculator - VB.NET Dll Version")> 
-<Assembly: AssemblyDescription("Written by Matthew Monroe for the Department of Energy (at PNNL); matthew.monroe@pnnl.gov or matt@alchemistmatt.com")> 
-<Assembly: AssemblyCompany("Pacific Northwest National Laboratory")> 
-<Assembly: AssemblyProduct("Molecular Weight Calculator - VB.NET Dll Version")> 
-<Assembly: AssemblyCopyright("Licensed under the Apache License, Version 2.0")> 
+<Assembly: AssemblyTitle("Molecular Weight Calculator - VB.NET Dll Version")>
+<Assembly: AssemblyDescription("Written by Matthew Monroe for the Department of Energy (at PNNL); matthew.monroe@pnnl.gov or proteomics@pnnl.gov")>
+<Assembly: AssemblyCompany("Pacific Northwest National Laboratory")>
+<Assembly: AssemblyProduct("Molecular Weight Calculator - VB.NET Dll Version")>
+<Assembly: AssemblyCopyright("Licensed under the Apache License, Version 2.0")>
 <Assembly: AssemblyTrademark("")>
 <Assembly: AssemblyCulture("")>
 
@@ -24,6 +24,6 @@ Imports System.Runtime.CompilerServices
 ' by using the '*' as shown below
 
 
-<Assembly: AssemblyVersion("3.5.*")> 
+<Assembly: AssemblyVersion("3.6.*")>
 
 
