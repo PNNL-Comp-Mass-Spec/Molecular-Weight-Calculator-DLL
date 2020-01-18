@@ -362,7 +362,7 @@ Public Class MWFormulaFinder
        searchOptions As clsFormulaFinderOptions,
        ppmMode As Boolean,
        calculationMode As eCalculationMode,
-       sortedElementStats As List(Of clsFormulaFinderCandidateElement)) As List(Of clsFormulaFinderResult)
+       sortedElementStats As IList(Of clsFormulaFinderCandidateElement)) As List(Of clsFormulaFinderResult)
 
         Dim lstResults As List(Of clsFormulaFinderResult)
 
@@ -1221,7 +1221,7 @@ Public Class MWFormulaFinder
        percentTolerance As Double,
        intRange(,) As Integer,
        dblPotentialElementStats(,) As Double,
-       strPotentialElements() As String,
+       strPotentialElements As IList(Of String),
        dblTargetPercents(,) As Double) As Integer
 
         Dim potentialElementCount = 0
@@ -1756,7 +1756,7 @@ Public Class MWFormulaFinder
        calculationMode As eCalculationMode,
        potentialElementCount As Integer,
        dblPotentialElementStats(,) As Double,
-       strPotentialElements() As String,
+       strPotentialElements As IList(Of String),
        dblTargetPercents(,) As Double)
 
         ' Reorder dblPotentialElementStats pointer array in order from heaviest to lightest element
@@ -1816,9 +1816,9 @@ Public Class MWFormulaFinder
        lstResults As ICollection(Of clsFormulaFinderResult),
        searchOptions As clsFormulaFinderOptions,
        ppmMode As Boolean,
-       sortedElementStats As List(Of clsFormulaFinderCandidateElement),
+       sortedElementStats As IList(Of clsFormulaFinderCandidateElement),
        intStartIndex As Integer,
-       lstPotentialElementPointers As List(Of Integer),
+       lstPotentialElementPointers As IReadOnlyCollection(Of Integer),
        dblPotentialMassTotal As Double,
        targetMass As Double,
        massToleranceDa As Double,
