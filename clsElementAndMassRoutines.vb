@@ -373,8 +373,11 @@ Public Class MWElementAndMassRoutines
         End Get
     End Property
 
-    ' ProgressPercentComplete ranges from 0 to 100, but can contain decimal percentage values
-    Public ReadOnly Property ProgressPercentComplete() As Single
+    ''' <summary>
+    ''' Percent complete; ranges from 0 to 100, but can contain decimal percentage values
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property ProgressPercentComplete As Single
         Get
             Return CType(Math.Round(mProgressPercentComplete, 2), Single)
         End Get

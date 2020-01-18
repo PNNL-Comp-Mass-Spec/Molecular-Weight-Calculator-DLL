@@ -483,6 +483,15 @@ Public Class MolecularWeightCalculator
 
     End Function
 
+    ''' <summary>
+    ''' Get an abbreviation, by ID
+    ''' </summary>
+    ''' <param name="intAbbreviationID"></param>
+    ''' <param name="strSymbol">Output: symbol</param>
+    ''' <param name="strFormula">Output: empirical formula</param>
+    ''' <param name="sngCharge">Output: charge</param>
+    ''' <param name="blnIsAminoAcid">Output: true if an amino acid</param>
+    ''' <returns> 0 if success, 1 if failure</returns>
     Public Function GetAbbreviation(intAbbreviationID As Integer, ByRef strSymbol As String,
             ByRef strFormula As String, ByRef sngCharge As Single,
             ByRef blnIsAminoAcid As Boolean) As Integer
@@ -490,6 +499,17 @@ Public Class MolecularWeightCalculator
         Return GetAbbreviation(intAbbreviationID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", False)
     End Function
 
+    ''' <summary>
+    ''' Get an abbreviation, by ID
+    ''' </summary>
+    ''' <param name="intAbbreviationID"></param>
+    ''' <param name="strSymbol">Output: symbol</param>
+    ''' <param name="strFormula">Output: empirical formula</param>
+    ''' <param name="sngCharge">Output: charge</param>
+    ''' <param name="blnIsAminoAcid">Output: true if an amino acid</param>
+    ''' <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
+    ''' <param name="strComment">Output: comment</param>
+    ''' <returns> 0 if success, 1 if failure</returns>
     Public Function GetAbbreviation(intAbbreviationID As Integer, ByRef strSymbol As String,
            ByRef strFormula As String, ByRef sngCharge As Single,
            ByRef blnIsAminoAcid As Boolean,
@@ -499,6 +519,18 @@ Public Class MolecularWeightCalculator
         Return GetAbbreviation(intAbbreviationID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, False)
     End Function
 
+    ''' <summary>
+    ''' Get an abbreviation, by ID
+    ''' </summary>
+    ''' <param name="intAbbreviationID"></param>
+    ''' <param name="strSymbol">Output: symbol</param>
+    ''' <param name="strFormula">Output: empirical formula</param>
+    ''' <param name="sngCharge">Output: charge</param>
+    ''' <param name="blnIsAminoAcid">Output: true if an amino acid</param>
+    ''' <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
+    ''' <param name="strComment">Output: comment</param>
+    ''' <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
+    ''' <returns> 0 if success, 1 if failure</returns>
     Public Function GetAbbreviation(intAbbreviationID As Integer, ByRef strSymbol As String,
             ByRef strFormula As String, ByRef sngCharge As Single,
             ByRef blnIsAminoAcid As Boolean,
@@ -506,13 +538,16 @@ Public Class MolecularWeightCalculator
             ByRef strComment As String,
             ByRef blnInvalidSymbolOrFormula As Boolean) As Integer
 
-        ' Returns 0 if success, 1 if failure
         Return mElementAndMassRoutines.GetAbbreviationInternal(
             intAbbreviationID, strSymbol, strFormula,
             sngCharge, blnIsAminoAcid, strOneLetterSymbol,
             strComment, blnInvalidSymbolOrFormula)
     End Function
 
+    ''' <summary>
+    ''' Get the number of abbreviations in memory
+    ''' </summary>
+    ''' <returns></returns>
     Public Function GetAbbreviationCount() As Integer
         Return mElementAndMassRoutines.GetAbbreviationCountInternal()
     End Function
@@ -521,8 +556,12 @@ Public Class MolecularWeightCalculator
         Return MWElementAndMassRoutines.MAX_ABBREV_COUNT
     End Function
 
+    ''' <summary>
+    ''' Get the abbreviation ID for the given abbreviation symbol
+    ''' </summary>
+    ''' <param name="strSymbol"></param>
+    ''' <returns>ID if found, otherwise 0</returns>
     Public Function GetAbbreviationID(strSymbol As String) As Integer
-        ' Returns 0 if not found, the ID if found
         Return mElementAndMassRoutines.GetAbbreviationIDInternal(strSymbol)
     End Function
 
@@ -533,19 +572,31 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbolToFind, bln1LetterTo3Letter)
     End Function
 
+    ''' <summary>
+    ''' Get caution statement information
+    ''' </summary>
+    ''' <param name="intCautionStatementID"></param>
+    ''' <param name="strSymbolCombo">Output: symbol combo for the caution statement</param>
+    ''' <param name="strCautionStatement">Output: caution statement text</param>
+    ''' <returns>0 if success, 1 if an invalid ID</returns>
     Public Function GetCautionStatement(intCautionStatementID As Integer, ByRef strSymbolCombo As String, ByRef strCautionStatement As String) As Integer
-        ' Returns the contents of CautionStatements() in the ByRef variables
-        ' Returns 0 if success, 1 if failure
         Return mElementAndMassRoutines.GetCautionStatementInternal(intCautionStatementID, strSymbolCombo, strCautionStatement)
     End Function
 
+    ''' <summary>
+    ''' Get the number of Caution Statements in memory
+    ''' </summary>
+    ''' <returns></returns>
     Public Function GetCautionStatementCount() As Integer
-        ' Returns the number of Caution Statements in memory
         Return mElementAndMassRoutines.GetCautionStatementCountInternal()
     End Function
 
+    ''' <summary>
+    ''' Get the caution statement ID for the given symbol combo
+    ''' </summary>
+    ''' <param name="strSymbolCombo"></param>
+    ''' <returns>Statement ID if found, otherwise -1</returns>
     Public Function GetCautionStatementID(strSymbolCombo As String) As Integer
-        ' Returns -1 if not found, the ID if found
         Return mElementAndMassRoutines.GetCautionStatementIDInternal(strSymbolCombo)
     End Function
 
@@ -553,51 +604,98 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.GetChargeCarrierMassInternal()
     End Function
 
+    ''' <summary>
+    ''' Returns the settings for the element with intElementID in the ByRef variables
+    ''' </summary>
+    ''' <param name="intElementID"></param>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="dblMass"></param>
+    ''' <param name="dblUncertainty"></param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="intIsotopeCount"></param>
+    ''' <returns>0 if success, 1 if failure</returns>
     Public Function GetElement(intElementID As Short, ByRef strSymbol As String, ByRef dblMass As Double, ByRef dblUncertainty As Double, ByRef sngCharge As Single, ByRef intIsotopeCount As Short) As Integer
-        ' Returns the settings for the element with intElementID in the ByRef variables
-        ' Returns 0 if success, 1 if failure
         Return mElementAndMassRoutines.GetElementInternal(intElementID, strSymbol, dblMass, dblUncertainty, sngCharge, intIsotopeCount)
     End Function
 
+    ''' <summary>
+    ''' Returns the number of elements in memory
+    ''' </summary>
+    ''' <returns></returns>
     Public Function GetElementCount() As Integer
-        ' Returns the number of elements in memory
         Return mElementAndMassRoutines.GetElementCountInternal()
     End Function
 
+    ''' <summary>
+    ''' Get the element ID for the given symbol
+    ''' </summary>
+    ''' <param name="strSymbol"></param>
+    ''' <returns>ID if found, otherwise 0</returns>
     Public Function GetElementID(strSymbol As String) As Integer
-        ' Returns 0 if not found, the ID if found
         Return mElementAndMassRoutines.GetElementIDInternal(strSymbol)
     End Function
 
+    ''' <summary>
+    ''' Returns the isotope masses and abundances for the element with intElementID
+    ''' </summary>
+    ''' <param name="intElementID"></param>
+    ''' <param name="intIsotopeCount"></param>
+    ''' <param name="dblIsotopeMasses"></param>
+    ''' <param name="sngIsotopeAbundances"></param>
+    ''' <returns>0 if a valid ID, 1 if invalid</returns>
     Public Function GetElementIsotopes(intElementID As Short, ByRef intIsotopeCount As Short, ByRef dblIsotopeMasses() As Double, ByRef sngIsotopeAbundances() As Single) As Integer
-        ' Returns the Isotope masses for the element with intElementID
         Return mElementAndMassRoutines.GetElementIsotopesInternal(intElementID, intIsotopeCount, dblIsotopeMasses, sngIsotopeAbundances)
     End Function
 
+    ''' <summary>
+    ''' Get the current element mode
+    ''' </summary>
+    ''' <returns>
+    ''' emAverageMass  = 1
+    ''' emIsotopicMass = 2
+    ''' emIntegerMass  = 3
+    ''' </returns>
     Public Function GetElementMode() As MWElementAndMassRoutines.emElementModeConstants
-        ' Returns the element mode:
-        '    emAverageMass  = 1
-        '    emIsotopicMass = 2
-        '    emIntegerMass  = 3
         Return mElementAndMassRoutines.GetElementModeInternal()
     End Function
 
+    ''' <summary>
+    ''' Return the element symbol for the given element ID
+    ''' </summary>
+    ''' <param name="intElementID"></param>
+    ''' <returns></returns>
+    ''' <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
     Public Function GetElementSymbol(intElementID As Short) As String
-        ' Returns the symbol for the given element ID
         Return mElementAndMassRoutines.GetElementSymbolInternal(intElementID)
     End Function
 
+    ''' <summary>
+    ''' Returns a single bit of information about a single element
+    ''' </summary>
+    ''' <param name="intElementID">Element ID</param>
+    ''' <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
+    ''' <returns></returns>
+    ''' <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
     Public Function GetElementStat(intElementID As Short, eElementStat As esElementStatsConstants) As Double
-        ' Returns a single bit of information about a single element
         Return mElementAndMassRoutines.GetElementStatInternal(intElementID, eElementStat)
     End Function
 
-    Public Function GetMessageStatement(intMessageID As Integer) As String
-        Return GetMessageStatement(intMessageID, String.Empty)
+    ''' <summary>
+    ''' Get message text using message ID
+    ''' </summary>
+    ''' <param name="messageID"></param>
+    ''' <returns></returns>
+    Public Function GetMessageStatement(messageID As Integer) As String
+        Return GetMessageStatement(messageID, String.Empty)
     End Function
 
-    Public Function GetMessageStatement(intMessageID As Integer, strAppendText As String) As String
-        ' Returns the message for lngMessageID
+    ''' <summary>
+    ''' Get message text using message ID
+    ''' </summary>
+    ''' <param name="messageID"></param>
+    ''' <param name="strAppendText"></param>
+    ''' <returns></returns>
+    Public Function GetMessageStatement(messageID As Integer, strAppendText As String) As String
         Return mElementAndMassRoutines.GetMessageStatementInternal(messageID, strAppendText)
     End Function
 
@@ -605,8 +703,16 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.GetMessageStatementCountInternal()
     End Function
 
+    ''' <summary>
+    ''' Returns True if the first letter of strTestChar is a ModSymbol
+    ''' </summary>
+    ''' <param name="strSymbol"></param>
+    ''' <returns></returns>
+    ''' <remarks>
+    ''' Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
+    ''' Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
+    ''' </remarks>
     Public Function IsModSymbol(strSymbol As String) As Boolean
-        ' Returns True if strSymbol starts with a ModSymbol
         Return mElementAndMassRoutines.IsModSymbolInternal(strSymbol)
     End Function
 
@@ -647,10 +753,14 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.MonoMassToMZInternal(dblMonoisotopicMass, intCharge, dblChargeCarrierMass)
     End Function
 
+    ''' <summary>
+    ''' Recomputes the Mass for all of the loaded abbreviations
+    ''' </summary>
+    ''' <remarks>
+    ''' Useful if we just finished setting lots of element masses, and
+    ''' had blnRecomputeAbbreviationMasses = False when calling .SetElement()
+    ''' </remarks>
     Public Sub RecomputeAbbreviationMasses()
-        ' Use this sub to manually recompute the masses of the abbreviations
-        ' Useful if we just finished setting lots of element masses, and
-        '  had blnRecomputeAbbreviationMasses = False when calling .SetElement()
         mElementAndMassRoutines.RecomputeAbbreviationMassesInternal()
     End Sub
 
@@ -694,46 +804,71 @@ Public Class MolecularWeightCalculator
         Return SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, True)
     End Function
 
-
-    Public Function SetAbbreviation(strSymbol As String, strFormula As String, sngCharge As Single,
-            blnIsAminoAcid As Boolean,
-            strOneLetterSymbol As String,
-            strComment As String,
-            blnValidateFormula As Boolean) As Integer
-
-        ' Adds a new abbreviation or updates an existing one (based on strSymbol)
-        ' If blnValidateFormula = True, then makes sure the formula is valid
-        ' It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
-        '  since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
-        '  defined, then the parsing of the first abbreviation will fail
-        ' Returns 0 if successful, otherwise, returns an Error ID
+    ''' <summary>
+    ''' Adds a new abbreviation or updates an existing one (based on strSymbol)
+    ''' </summary>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="strFormula"></param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="blnIsAminoAcid"></param>
+    ''' <param name="strOneLetterSymbol"></param>
+    ''' <param name="strComment"></param>
+    ''' <param name="blnValidateFormula">If true, make sure the formula is valid</param>
+    ''' <returns>0 if successful, otherwise an error ID</returns>
+    ''' <remarks>
+    ''' It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
+    '''  since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
+    '''  defined, then the parsing of the first abbreviation will fail
+    ''' </remarks>
+    Public Function SetAbbreviation(
+      strSymbol As String, strFormula As String, sngCharge As Single,
+      blnIsAminoAcid As Boolean,
+      strOneLetterSymbol As String,
+      strComment As String,
+      blnValidateFormula As Boolean) As Integer
         Return mElementAndMassRoutines.SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnValidateFormula)
     End Function
 
-    Public Function SetAbbreviationByID(intAbbrevID As Integer, strSymbol As String, strFormula As String,
-            sngCharge As Single, blnIsAminoAcid As Boolean) As Integer
+    Public Function SetAbbreviationByID(
+      intAbbrevID As Integer, strSymbol As String, strFormula As String,
+      sngCharge As Single, blnIsAminoAcid As Boolean) As Integer
 
         Return SetAbbreviationByID(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", True)
     End Function
 
-    Public Function SetAbbreviationByID(intAbbrevID As Integer, strSymbol As String, strFormula As String,
-             sngCharge As Single, blnIsAminoAcid As Boolean,
-             strOneLetterSymbol As String,
-             strComment As String,
-             blnValidateFormula As Boolean) As Integer
-
-        ' Adds a new abbreviation or updates an existing one (based on strSymbol)
-        ' If blnValidateFormula = True, then makes sure the formula is valid
-        ' It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
-        '  since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
-        '  defined, then the parsing of the first abbreviation will fail
-        ' Returns 0 if successful, otherwise, returns an Error ID
+    ''' <summary>
+    ''' Adds a new abbreviation or updates an existing one (based on intAbbrevID)
+    ''' </summary>
+    ''' <param name="intAbbrevID">If intAbbrevID is less than 1, adds as a new abbreviation</param>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="strFormula"></param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="blnIsAminoAcid"></param>
+    ''' <param name="strOneLetterSymbol"></param>
+    ''' <param name="strComment"></param>
+    ''' <param name="blnValidateFormula">If true, make sure the formula is valid</param>
+    ''' <returns>0 if successful, otherwise an error ID</returns>
+    ''' <remarks>
+    ''' It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
+    '''  since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
+    '''  defined, then the parsing of the first abbreviation will fail
+    ''' </remarks>
+    Public Function SetAbbreviationByID(
+      intAbbrevID As Integer, strSymbol As String, strFormula As String,
+      sngCharge As Single, blnIsAminoAcid As Boolean,
+      strOneLetterSymbol As String,
+      strComment As String,
+      blnValidateFormula As Boolean) As Integer
         Return mElementAndMassRoutines.SetAbbreviationByIDInternal(CShort(intAbbrevID), strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnValidateFormula)
     End Function
 
-    Public Function SetCautionStatement(strNewSymbolCombo As String, strNewCautionStatement As String) As Integer
-        ' Adds a new caution statement or updates an existing one (based on strSymbol)
-        ' Returns 0 if successful, otherwise, returns an Error ID
+    ''' <summary>
+    ''' Adds a new caution statement or updates an existing one (based on strSymbolCombo)
+    ''' </summary>
+    ''' <param name="strSymbolCombo"></param>
+    ''' <param name="strNewCautionStatement"></param>
+    ''' <returns>0 if successful, otherwise, returns an Error ID</returns>
+    Public Function SetCautionStatement(strSymbolCombo As String, strNewCautionStatement As String) As Integer
         Return mElementAndMassRoutines.SetCautionStatementInternal(strSymbolCombo, strNewCautionStatement)
     End Function
 
@@ -746,11 +881,19 @@ Public Class MolecularWeightCalculator
         Return SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, True)
     End Function
 
+    ''' <summary>
+    ''' Update the values for a single element (based on strSymbol)
+    ''' </summary>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="dblMass"></param>
+    ''' <param name="dblUncertainty"></param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="blnRecomputeAbbreviationMasses">Set to False if updating several elements</param>
+    ''' <returns></returns>
     Public Function SetElement(strSymbol As String, dblMass As Double, dblUncertainty As Double,
              sngCharge As Single,
              blnRecomputeAbbreviationMasses As Boolean) As Integer
 
-        ' Used to update the values for a single element (based on strSymbol)
         Return mElementAndMassRoutines.SetElementInternal(strSymbol, dblMass, dblUncertainty, sngCharge, blnRecomputeAbbreviationMasses)
     End Function
 
@@ -766,8 +909,13 @@ Public Class MolecularWeightCalculator
         mElementAndMassRoutines.SetElementModeInternal(elementMode, blnMemoryLoadElementValues)
     End Sub
 
-    Public Function SetMessageStatement(lngMessageID As Integer, strNewMessage As String) As Integer
-        ' Used to replace the default message strings with foreign language equivalent ones
+    ''' <summary>
+    ''' Used to replace the default message strings with foreign language equivalent ones
+    ''' </summary>
+    ''' <param name="messageID"></param>
+    ''' <param name="strNewMessage"></param>
+    ''' <returns>0 if success; 1 if failure</returns>
+    Public Function SetMessageStatement(messageID As Integer, strNewMessage As String) As Integer
         Return mElementAndMassRoutines.SetMessageStatementInternal(messageID, strNewMessage)
     End Function
 
@@ -788,12 +936,15 @@ Public Class MolecularWeightCalculator
         Return TextToRTF(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, False, 0)
     End Function
 
-
-        ' Converts an RTF string for the given text
-        ' If blnHighlightCharFollowingPercentSign is true, then changes the character
-        '  following a percent sign to red (and removes the percent sign)
-
-        ' When blnCalculatorMode = True, then does not superscript + signs and numbers following + signs
+    ''' <summary>
+    ''' Converts plain text to formatted rtf text
+    ''' </summary>
+    ''' <param name="strTextToConvert"></param>
+    ''' <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
+    ''' <param name="blnHighlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
+    ''' <param name="blnOverrideErrorID"></param>
+    ''' <param name="errorIDOverride"></param>
+    ''' <returns></returns>
     Public Function TextToRTF(
       strTextToConvert As String,
       CalculatorMode As Boolean,
@@ -803,10 +954,12 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.PlainTextToRtfInternal(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, blnOverrideErrorID, errorIDOverride)
     End Function
 
+    ''' <summary>
+    ''' Checks the formula of all abbreviations to make sure it's valid
+    ''' Marks any abbreviations as Invalid if a problem is found or a circular reference exists
+    ''' </summary>
+    ''' <returns>Count of the number of invalid abbreviations found</returns>
     Public Function ValidateAllAbbreviations() As Integer
-        ' Checks the formula of all abbreviations to make sure it's valid
-        ' Marks any abbreviations as Invalid if a problem is found or a circular reference exists
-        ' Returns a count of the number of invalid abbreviations found
         Return mElementAndMassRoutines.ValidateAllAbbreviationsInternal()
     End Function
 
