@@ -39,12 +39,15 @@ Public Class MolecularWeightCalculator
 
         mElementAndMassRoutines = New MWElementAndMassRoutines()
 
+        ' LoadDefaults calls mElementAndMassRoutines.MemoryLoadAll, which is required prior to instantiating the Peptide class.
+        ' We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
+        If Not mDataInitialized Then LoadDefaults()
+
         Compound = New MWCompoundClass(mElementAndMassRoutines)
         Peptide = New MWPeptideClass(mElementAndMassRoutines)
         FormulaFinder = New MWFormulaFinder(mElementAndMassRoutines)
 
         CapFlow = New MWCapillaryFlowClass
-        If Not mDataInitialized Then LoadDefaults()
 
     End Sub
 
