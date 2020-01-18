@@ -469,7 +469,7 @@ Public Class MWElementAndMassRoutines
         If Len(mStrCautionDescription) > 0 Then
             mStrCautionDescription = mStrCautionDescription
         End If
-        mStrCautionDescription = mStrCautionDescription & strTextToAdd
+        mStrCautionDescription &= strTextToAdd
     End Sub
 
     Private Sub CheckCaution(strFormulaExcerpt As String)
@@ -576,7 +576,7 @@ Public Class MWElementAndMassRoutines
         Dim udtComputationStats = New udtComputationStatsType
         udtComputationStats.Initialize()
 
-        Dim dblMass = ParseFormulaPublic(strFormula, udtComputationStats, False)
+        ParseFormulaPublic(strFormula, udtComputationStats, False)
 
         If ErrorParams.ErrorID = 0 Then
             Return udtComputationStats.TotalMass
@@ -3171,7 +3171,7 @@ Public Class MWElementAndMassRoutines
         strElementNames(103) = "Lr" : dblElemVals(103, 3) = 3
 
         ' Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights
-        If eElementMode = 2 Or eElementMode = 3 Then
+        If eElementMode = emElementModeConstants.emIsotopicMass Or eElementMode = emElementModeConstants.emIntegerMass Then
             For intIndex = 1 To ELEMENT_COUNT
                 dblElemVals(intIndex, 2) = 0
             Next intIndex
@@ -5094,7 +5094,7 @@ Public Class MWElementAndMassRoutines
 
         ' ReSharper restore CommentTypo
 
-        If strWorkText = "" Then
+        If strWorkText = String.Empty Then
             ' Return a blank RTF string
             Return strRTF & "}"
         End If
@@ -6008,7 +6008,7 @@ Public Class MWElementAndMassRoutines
     Public Function SpacePad(strWork As String, intLength As Short) As String
 
         Do While Len(strWork) < intLength
-            strWork = strWork & " "
+            strWork &= " "
         Loop
 
         Return strWork
