@@ -151,13 +151,45 @@ Public Class MWElementAndMassRoutines
     End Structure
 
     Public Structure udtAbbrevStatsType
-        Public Symbol As String ' The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
-        Public Formula As String ' Cannot contain other abbreviations
-        Public Mass As Double ' Computed mass for quick reference
+        ''' <summary>
+        ''' The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
+        ''' </summary>
+        Public Symbol As String
+
+        ''' <summary>
+        ''' Empirical formula
+        ''' Cannot contain other abbreviations
+        ''' </summary>
+        Public Formula As String
+
+        ''' <summary>
+        ''' Computed mass for quick reference
+        ''' </summary>
+        Public Mass As Double
+
+        ''' <summary>
+        ''' Charge state
+        ''' </summary>
         Public Charge As Single
-        Public IsAminoAcid As Boolean ' True if an amino acid
-        Public OneLetterSymbol As String ' Only used for amino acids
-        Public Comment As String ' Description of the abbreviation
+
+        ''' <summary>
+        ''' True if an amino acid
+        ''' </summary>
+        Public IsAminoAcid As Boolean
+
+        ''' <summary>
+        ''' One letter symbol (only used for amino acids)
+        ''' </summary>
+        Public OneLetterSymbol As String
+
+        ''' <summary>
+        ''' Description of the abbreviation
+        ''' </summary>
+        Public Comment As String
+
+        ''' <summary>
+        ''' True if this abbreviation has an invalid symbol or formula
+        ''' </summary>
         Public InvalidSymbolOrFormula As Boolean
 
         Public Overrides Function ToString() As String
@@ -205,26 +237,54 @@ Public Class MWElementAndMassRoutines
 
     Public gComputationOptions As udtOptionsType
 
-    Private ElementAlph() As String ' Stores the elements in alphabetical order; used for constructing empirical formulas; 1 to ELEMENT_COUNT
+    ''' <summary>
+    ''' Stores the elements in alphabetical order
+    ''' Used for constructing empirical formulas
+    ''' 1 to ELEMENT_COUNT
+    ''' </summary>
+    Private ElementAlph() As String
 
-    Private ElementStats() As udtElementStatsType ' 1 to ELEMENT_COUNT
+    ''' <summary>
+    ''' Element stats
+    ''' 1 to ELEMENT_COUNT
+    ''' </summary>
+    Private ElementStats() As udtElementStatsType
 
-    ' No number for array size since we dynamically allocate memory for it
-    Private MasterSymbolsList(,) As String ' Stores the element symbols, abbreviations, & amino acids in order of longest symbol length to shortest length, non-alphabetized, for use in symbol matching when parsing a formula; 1 To MasterSymbolsListCount
+    ''' <summary>
+    ''' Stores the element symbols, abbreviations, and amino acids in order of longest symbol length to shortest length, non-alphabetized,
+    '''  for use in symbol matching when parsing a formula
+    ''' 1 To MasterSymbolsListCount
+    ''' </summary>
+    ''' <remarks>No number for array size since we dynamically allocate memory for it</remarks>
+    Private MasterSymbolsList(,) As String
     Private MasterSymbolsListCount As Short
 
-    Private AbbrevStats() As udtAbbrevStatsType ' Includes both abbreviations and amino acids; 1-based array
+    ''' <summary>
+    '''  Includes both abbreviations and amino acids; 1-based array
+    ''' </summary>
+    Private AbbrevStats() As udtAbbrevStatsType
     Private AbbrevAllCount As Short
 
-    Private CautionStatements(,) As String  ' CautionStatements(x,0) holds the symbol combo to look for, CautionStatements(x, 1) holds the caution statement; 1-based array
+    ''' <summary>
+    ''' CautionStatements(x,0) holds the symbol combo to look for
+    ''' CautionStatements(x, 1) holds the caution statement; 1-based array
+    ''' </summary>
+    Private CautionStatements(,) As String
     Private CautionStatementCount As Integer
 
-    Private MessageStatements() As String ' Holds error messages; 1-based array
-    Private MessageStatmentCount As Integer
+    ''' <summary>
+    ''' Error messages; 1-based array
+    ''' </summary>
+    Private MessageStatements() As String
+    Private MessageStatementCount As Integer
 
     Private ErrorParams As udtErrorDescriptionType
 
-    Private mChargeCarrierMass As Double ' 1.00727649 for monoisotopic mass or 1.00739 for average mass
+    ''' <summary>
+    ''' Charge carrier mass
+    ''' 1.00727649 for monoisotopic mass or 1.00739 for average mass
+    ''' </summary>
+    Private mChargeCarrierMass As Double
 
     Private mCurrentElementMode As emElementModeConstants
     Private mStrCautionDescription As String
@@ -236,14 +296,30 @@ Public Class MWElementAndMassRoutines
     Protected mLogMessagesToFile As Boolean
     Protected mLogFilePath As String
     Protected mLogFile As IO.StreamWriter
-    Protected mLogFolderPath As String          ' If blank, then mOutputFolderPath will be used; if mOutputFolderPath is also blank, then the log is created in the same folder as the executing assembly
+
+    ''' <summary>
+    ''' Log file folder
+    ''' If blank, mOutputFolderPath will be used
+    ''' If mOutputFolderPath is also blank,  the log is created in the same folder as the executing assembly
+    ''' </summary>
+    Protected mLogFolderPath As String
 
     Public Event ProgressReset()
-    Public Event ProgressChanged(taskDescription As String, percentComplete As Single)     ' PercentComplete ranges from 0 to 100, but can contain decimal percentage values
+
+    ''' <summary>
+    ''' Progress changed event
+    ''' </summary>
+    ''' <param name="taskDescription"></param>
+    ''' <param name="percentComplete">Ranges from 0 to 100, but can contain decimal percentage values</param>
+    Public Event ProgressChanged(taskDescription As String, percentComplete As Single)
     Public Event ProgressComplete()
 
     Protected mProgressStepDescription As String
-    Protected mProgressPercentComplete As Single        ' Ranges from 0 to 100, but can contain decimal percentage values
+
+    ''' <summary>
+    ''' Ranges from 0 to 100, but can contain decimal percentage values
+    ''' </summary>
+    Protected mProgressPercentComplete As Single
 
 #End Region
 
@@ -334,6 +410,10 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
+    ''' <summary>
+    ''' Update the abbreviation symbol stack
+    ''' </summary>
+    ''' <param name="udtAbbrevSymbolStack">Symbol stack; updated by this method</param>
     Private Sub AbbrevSymbolStackAddRemoveMostRecent(ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType)
         With udtAbbrevSymbolStack
             If .Count > 0 Then
@@ -485,7 +565,7 @@ Public Class MWElementAndMassRoutines
     ''' <summary>
     '''  Compute the weight of a formula (or abbreviation)
     ''' </summary>
-    ''' <param name="strFormula"></param>
+    ''' <param name="strFormula">Input/output: updated by ParseFormulaPublic</param>
     ''' <returns>The formula mass, or -1 if an error occurs</returns>
     ''' <remarks>Error information is stored in ErrorParams</remarks>
     Public Function ComputeFormulaWeight(ByRef strFormula As String) As Double
@@ -506,18 +586,19 @@ Public Class MWElementAndMassRoutines
     ''' Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
     ''' M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
     ''' </summary>
-    ''' <param name="strFormulaIn">The properly formatted formula to parse</param>
+    ''' <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
     ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    ''' <param name="strResults">Table of results</param>
+    ''' <param name="strResults">Output: Table of results</param>
     ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
     ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
     ''' <returns>0 if success, -1 if an error</returns>
     ''' <remarks></remarks>
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String,
-       intChargeState As Short,
-       ByRef strResults As String,
-       ByRef ConvolutedMSData2DOneBased(,) As Double,
-       ByRef ConvolutedMSDataCount As Integer) As Short
+    Public Function ComputeIsotopicAbundances(
+      ByRef strFormulaIn As String,
+      intChargeState As Short,
+      ByRef strResults As String,
+      ByRef ConvolutedMSData2DOneBased(,) As Double,
+      ByRef ConvolutedMSDataCount As Integer) As Short
 
         Dim blnUseFactorials As Boolean = False
         Dim blnAddProtonChargeCarrier As Boolean = True
@@ -536,15 +617,16 @@ Public Class MWElementAndMassRoutines
     ''' Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
     ''' M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
     ''' </summary>
-    ''' <param name="strFormulaIn">The properly formatted formula to parse</param>
+    ''' <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
     ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    ''' <param name="strResults">Table of results</param>
+    ''' <param name="strResults">Output: Table of results</param>
     ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
     ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
     ''' <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
     ''' <returns>0 if success, -1 if an error</returns>
     ''' <remarks></remarks>
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String,
+    Public Function ComputeIsotopicAbundances(
+      ByRef strFormulaIn As String,
       intChargeState As Short,
       ByRef strResults As String,
       ByRef ConvolutedMSData2DOneBased(,) As Double,
@@ -564,12 +646,11 @@ Public Class MWElementAndMassRoutines
     End Function
 
     ''' <summary>
-    ''' Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
-    ''' M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
+    ''' Computes the Isotopic Distribution for a formula
     ''' </summary>
-    ''' <param name="strFormulaIn">The properly formatted formula to parse</param>
+    ''' <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
     ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    ''' <param name="strResults">Table of results</param>
+    ''' <param name="strResults">Output: Table of results</param>
     ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
     ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
     ''' <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
@@ -579,8 +660,13 @@ Public Class MWElementAndMassRoutines
     ''' <param name="blnUseFactorials">Set to true to use Factorial math, which is typically slower; default is False</param>
     ''' <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
     ''' <returns>0 if success, -1 if an error</returns>
-    ''' <remarks></remarks>
-    Public Function ComputeIsotopicAbundancesInternal(ByRef strFormulaIn As String,
+    ''' <remarks>
+    ''' Returns uncharged mass values if intChargeState=0,
+    ''' Returns M+H values if intChargeState=1
+    ''' Returns convoluted m/z if intChargeState is > 1
+    ''' </remarks>
+    Public Function ComputeIsotopicAbundancesInternal(
+      ByRef strFormulaIn As String,
       intChargeState As Short,
       ByRef strResults As String,
       ByRef ConvolutedMSData2DOneBased(,) As Double,
@@ -591,13 +677,6 @@ Public Class MWElementAndMassRoutines
       strHeaderIntensity As String,
       blnUseFactorials As Boolean,
       blnAddProtonChargeCarrier As Boolean) As Short
-
-        ' Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
-        '  M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
-        ' If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton
-        ' Updates strFormulaIn to the properly formatted formula
-        ' Returns the results in strResults
-        ' Returns 0 if success, or -1 if an error
 
         Dim strFormula, strModifiedFormula As String
         Dim dblWorkingFormulaMass As Double
@@ -1215,6 +1294,10 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
+    ''' <summary>
+    ''' Compute percent composition of the elements defined in udtComputationStats
+    ''' </summary>
+    ''' <param name="udtComputationStats">Input/output</param>
     Public Sub ComputePercentComposition(ByRef udtComputationStats As udtComputationStatsType)
 
         Dim intElementIndex As Short
@@ -1718,7 +1801,12 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Private Function FindIndexForNominalMass(ByRef IsoCombos(,) As Integer, ByRef ComboIndex As Integer, ByRef IsotopeCount As Short, ByRef AtomCount As Integer, ByRef ThisElementsIsotopes() As udtIsotopeInfoType) As Integer
+    Private Function FindIndexForNominalMass(
+      ByRef IsoCombos(,) As Integer,
+      ComboIndex As Integer,
+      IsotopeCount As Short,
+      AtomCount As Integer,
+      ByRef ThisElementsIsotopes() As udtIsotopeInfoType) As Integer
 
         Dim workingMass = 0
         For IsotopeIndex = 1 To IsotopeCount
@@ -2078,7 +2166,6 @@ Public Class MWElementAndMassRoutines
     ''' Get the number of abbreviations in memory
     ''' </summary>
     ''' <returns></returns>
-    ''' <remarks></remarks>
     Public Function GetAbbreviationCountInternal() As Integer
         Return AbbrevAllCount
     End Function
@@ -2087,8 +2174,7 @@ Public Class MWElementAndMassRoutines
     ''' Get the abbreviation ID for the given abbreviation symbol
     ''' </summary>
     ''' <param name="strSymbol"></param>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
+    ''' <returns>ID if found, otherwise 0</returns>
     Public Function GetAbbreviationIDInternal(strSymbol As String) As Integer
         Return GetAbbreviationIDInternal(strSymbol, False)
     End Function
@@ -2098,10 +2184,8 @@ Public Class MWElementAndMassRoutines
     ''' </summary>
     ''' <param name="strSymbol"></param>
     ''' <param name="blnAminoAcidsOnly"></param>
-    ''' <returns>ID if a match, otherwise 0</returns>
-    ''' <remarks></remarks>
+    ''' <returns>ID if found, otherwise 0</returns>
     Public Function GetAbbreviationIDInternal(strSymbol As String, blnAminoAcidsOnly As Boolean) As Integer
-        ' Returns 0 if not found, the ID if found
 
         For index = 1 To AbbrevAllCount
             If LCase(AbbrevStats(index).Symbol) = LCase(strSymbol) Then
@@ -2126,6 +2210,18 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
+    ''' <summary>
+    ''' Get an abbreviation, by ID
+    ''' </summary>
+    ''' <param name="abbreviationID"></param>
+    ''' <param name="strSymbol">Output: symbol</param>
+    ''' <param name="strFormula">Output: empirical formula</param>
+    ''' <param name="sngCharge">Output: charge</param>
+    ''' <param name="blnIsAminoAcid">Output: true if an amino acid</param>
+    ''' <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
+    ''' <param name="strComment">Output: comment</param>
+    ''' <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
+    ''' <returns> 0 if success, 1 if failure</returns>
     Public Function GetAbbreviationInternal(
       abbreviationID As Integer,
       <Out> ByRef strSymbol As String,
@@ -2135,9 +2231,6 @@ Public Class MWElementAndMassRoutines
       <Out> ByRef strOneLetterSymbol As String,
       <Out> ByRef strComment As String,
       <Out> ByRef blnInvalidSymbolOrFormula As Boolean) As Integer
-
-        ' Returns the contents of AbbrevStats() in the ByRef variables
-        ' Returns 0 if success, 1 if failure
 
         If abbreviationID >= 1 And abbreviationID <= AbbrevAllCount Then
             With AbbrevStats(abbreviationID)
@@ -2216,8 +2309,12 @@ Public Class MWElementAndMassRoutines
         GetCautionStatementCountInternal = CautionStatementCount
     End Function
 
+    ''' <summary>
+    ''' Get the caution statement ID for the given symbol combo
+    ''' </summary>
+    ''' <param name="strSymbolCombo"></param>
+    ''' <returns>Statement ID if found, otherwise -1</returns>
     Public Function GetCautionStatementIDInternal(strSymbolCombo As String) As Integer
-        ' Returns -1 if not found, the ID if found
 
         Dim intIndex As Short
 
@@ -2244,6 +2341,8 @@ Public Class MWElementAndMassRoutines
             strCautionStatement = CautionStatements(cautionStatementID, 1)
             Return 0
         Else
+            strSymbolCombo = String.Empty
+            strCautionStatement = String.Empty
             Return 1
         End If
     End Function
@@ -2260,16 +2359,23 @@ Public Class MWElementAndMassRoutines
         Return ELEMENT_COUNT
     End Function
 
+    ''' <summary>
+    ''' Returns the settings for the element with intElementID in the ByRef variables
+    ''' </summary>
+    ''' <param name="intElementID"></param>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="dblMass"></param>
+    ''' <param name="dblUncertainty"></param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="intIsotopeCount"></param>
+    ''' <returns>0 if success, 1 if failure</returns>
     Public Function GetElementInternal(
-       intElementID As Int16,
+       intElementID As Short,
        <Out> ByRef strSymbol As String,
        <Out> ByRef dblMass As Double,
        <Out> ByRef dblUncertainty As Double,
        <Out> ByRef sngCharge As Single,
        <Out> ByRef intIsotopeCount As Short) As Integer
-
-        ' Returns the contents of ElementStats() in the ByRef variables
-        ' Returns 0 if success, 1 if failure
 
         If intElementID >= 1 And intElementID <= ELEMENT_COUNT Then
             strSymbol = ElementAlph(intElementID)
@@ -2292,8 +2398,13 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function GetElementIDInternal(strSymbol As String) As Int16
-        ' Returns 0 if not found, the ID if found
+    ''' <summary>
+    ''' Get the element ID for the given symbol
+    ''' </summary>
+    ''' <param name="strSymbol"></param>
+    ''' <returns>ID if found, otherwise 0</returns>
+    Public Function GetElementIDInternal(strSymbol As String) As Short
+
         Dim intIndex As Short
 
         For intIndex = 1 To ELEMENT_COUNT
@@ -2305,6 +2416,14 @@ Public Class MWElementAndMassRoutines
         Return 0
     End Function
 
+    ''' <summary>
+    ''' Returns the isotope masses and abundances for the element with intElementID
+    ''' </summary>
+    ''' <param name="intElementID"></param>
+    ''' <param name="intIsotopeCount"></param>
+    ''' <param name="dblIsotopeMasses"></param>
+    ''' <param name="sngIsotopeAbundances"></param>
+    ''' <returns>0 if a valid ID, 1 if invalid</returns>
     Public Function GetElementIsotopesInternal(intElementID As Short, ByRef intIsotopeCount As Short, ByRef dblIsotopeMasses() As Double, ByRef sngIsotopeAbundances() As Single) As Integer
         Dim intIsotopeIndex As Short
 
@@ -2322,6 +2441,14 @@ Public Class MWElementAndMassRoutines
         End If
     End Function
 
+    ''' <summary>
+    ''' Get the current element mode
+    ''' </summary>
+    ''' <returns>
+    ''' emAverageMass  = 1
+    ''' emIsotopicMass = 2
+    ''' emIntegerMass  = 3
+    ''' </returns>
     Public Function GetElementModeInternal() As emElementModeConstants
         Return mCurrentElementMode
     End Function
@@ -2348,9 +2475,14 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
+    ''' <summary>
+    ''' Returns a single bit of information about a single element
+    ''' </summary>
+    ''' <param name="intElementID">Element ID</param>
+    ''' <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
+    ''' <returns></returns>
+    ''' <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
     Public Function GetElementStatInternal(intElementID As Short, eElementStat As MolecularWeightCalculator.esElementStatsConstants) As Double
-        ' Returns a single bit of information about a single element
-        ' Since a value may be negavite, simply returns 0 if an error
 
         If intElementID >= 1 And intElementID <= ELEMENT_COUNT Then
             Select Case eElementStat
@@ -2397,9 +2529,18 @@ Public Class MWElementAndMassRoutines
         Return GetMessageStatementInternal(messageID, String.Empty)
     End Function
 
+    ''' <summary>
+    ''' Get message text using message ID
+    ''' </summary>
+    ''' <param name="messageID"></param>
+    ''' <param name="strAppendText"></param>
+    ''' <returns></returns>
+    ''' <remarks>
+    ''' GetMessageStringInternal simply returns the message for messageID
+    ''' LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
+    ''' </remarks>
     Public Function GetMessageStatementInternal(messageID As Integer, strAppendText As String) As String
-        ' GetMessageStringInternal simply returns the message for messageID
-        ' LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
+
         Dim strMessage As String
 
         If messageID > 0 And messageID <= MessageStatementCount Then
@@ -2419,9 +2560,14 @@ Public Class MWElementAndMassRoutines
         End If
     End Function
 
-    Private Function IsPresentInAbbrevSymbolStack(ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType, ByRef SymbolReference As Short) As Boolean
-        ' Checks for presence of SymbolReference in udtAbbrevSymbolStack
-        ' If found, returns true
+    ''' <summary>
+    ''' Checks for presence of SymbolReference in udtAbbrevSymbolStack
+    ''' If found, returns true
+    ''' </summary>
+    ''' <param name="udtAbbrevSymbolStack"></param>
+    ''' <param name="SymbolReference"></param>
+    ''' <returns></returns>
+    Private Function IsPresentInAbbrevSymbolStack(ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType, SymbolReference As Short) As Boolean
 
         Dim intIndex As Short
         Dim blnFound As Boolean
@@ -2446,10 +2592,16 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
+    ''' <summary>
+    ''' Returns True if the first letter of strTestChar is a ModSymbol
+    ''' </summary>
+    ''' <param name="strTestChar"></param>
+    ''' <returns></returns>
+    ''' <remarks>
+    ''' Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
+    ''' Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
+    ''' </remarks>
     Public Function IsModSymbolInternal(strTestChar As String) As Boolean
-        ' Returns True if the first letter of strTestChar is a ModSymbol
-        ' Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
-        ' Valid Mod Symbols are ! # $ % & ' * + ? ^ ` ~
 
         Dim chFirstChar As Char
         Dim blnIsModSymbol As Boolean
@@ -2598,10 +2750,14 @@ Public Class MWElementAndMassRoutines
         Return LookupMessage(messageID, String.Empty)
     End Function
 
+    ''' <summary>
+    ''' Looks up the message for messageID
+    ''' Also appends any data in strAppendText to the message
+    ''' </summary>
+    ''' <param name="messageID"></param>
+    ''' <param name="strAppendText"></param>
+    ''' <returns>The complete message</returns>
     Friend Function LookupMessage(messageID As Integer, strAppendText As String) As String
-        ' Looks up the message for messageID
-        ' Also appends any data in strAppendText to the message
-        ' Returns the complete message
 
         Dim strMessage As String
 
@@ -2643,9 +2799,13 @@ Public Class MWElementAndMassRoutines
         LookupMessage = strMessage
     End Function
 
+    ''' <summary>
+    ''' Converts dblMassToConvert to ppm, based on the value of dblCurrentMZ
+    ''' </summary>
+    ''' <param name="dblMassToConvert"></param>
+    ''' <param name="dblCurrentMZ"></param>
+    ''' <returns></returns>
     Public Function MassToPPMInternal(dblMassToConvert As Double, dblCurrentMZ As Double) As Double
-        ' Converts dblMassToConvert to ppm, based on the value of dblCurrentMZ
-
         If dblCurrentMZ > 0 Then
             Return dblMassToConvert * 1000000.0# / dblCurrentMZ
         Else
@@ -2657,10 +2817,19 @@ Public Class MWElementAndMassRoutines
         Return MonoMassToMZInternal(dblMonoisotopicMass, intCharge, 0)
     End Function
 
-    Public Function MonoMassToMZInternal(dblMonoisotopicMass As Double, intCharge As Short,
-     dblChargeCarrierMass As Double) As Double
-        ' If dblChargeCarrierMass is 0, then uses mChargeCarrierMass
-        If Math.Abs(dblChargeCarrierMass - 0) < Single.Epsilon Then dblChargeCarrierMass = mChargeCarrierMass
+    ''' <summary>
+    ''' Convert monoisotopic mass to m/z
+    ''' </summary>
+    ''' <param name="dblMonoisotopicMass"></param>
+    ''' <param name="intCharge"></param>
+    ''' <param name="dblChargeCarrierMass">If this is 0, uses mChargeCarrierMass</param>
+    ''' <returns></returns>
+    Public Function MonoMassToMZInternal(
+      dblMonoisotopicMass As Double,
+      intCharge As Short,
+      dblChargeCarrierMass As Double) As Double
+
+        If Math.Abs(dblChargeCarrierMass) < Single.Epsilon Then dblChargeCarrierMass = mChargeCarrierMass
 
         ' Call ConvoluteMass to convert to the desired charge state
         Return ConvoluteMassInternal(dblMonoisotopicMass + dblChargeCarrierMass, 1, intCharge, dblChargeCarrierMass)
@@ -2787,8 +2956,10 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    ' Use objMwtWin.ClearCautionStatements and objMwtWin.AddCautionStatement to
-    '  set these based on language
+    ''' <summary>
+    ''' Define the caution statements
+    ''' </summary>
+    ''' <remarks>Use objMwtWin.ClearCautionStatements and objMwtWin.AddCautionStatement to set these based on language</remarks>
     Public Sub MemoryLoadCautionStatements()
 
         CautionStatementCount = 41
@@ -3377,8 +3548,10 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
+    ''' <summary>
+    ''' Stores isotope information in ElementStats()
+    ''' </summary>
     Private Sub MemoryLoadIsotopes()
-        ' Stores isotope information in ElementStats()
 
         Dim intElementIndex, intIsotopeIndex As Short
 
@@ -4021,28 +4194,49 @@ Public Class MWElementAndMassRoutines
 
     End Sub
 
-    Public Function ParseFormulaPublic(ByRef strFormula As String,
+    ''' <summary>
+    ''' Determines the molecular weight and elemental composition of strFormula
+    ''' </summary>
+    ''' <param name="strFormula">Input/output: formula to parse</param>
+    ''' <param name="udtComputationStats">Output: additional information about the formula</param>
+    ''' <returns>Computed molecular weight if no error; otherwise -1</returns>
+    Public Function ParseFormulaPublic(
+      ByRef strFormula As String,
       ByRef udtComputationStats As udtComputationStatsType) As Double
         Return ParseFormulaPublic(strFormula, udtComputationStats, False, 1)
     End Function
 
-    Public Function ParseFormulaPublic(ByRef strFormula As String,
+    ''' <summary>
+    ''' Determines the molecular weight and elemental composition of strFormula
+    ''' </summary>
+    ''' <param name="strFormula">Input/output: formula to parse</param>
+    ''' <param name="udtComputationStats">Output: additional information about the formula</param>
+    ''' <param name="blnExpandAbbreviations"></param>
+    ''' <returns>Computed molecular weight if no error; otherwise -1</returns>
+    Public Function ParseFormulaPublic(
+      ByRef strFormula As String,
       ByRef udtComputationStats As udtComputationStatsType,
-      ByRef blnExpandAbbreviations As Boolean) As Double
+      blnExpandAbbreviations As Boolean) As Double
         Return ParseFormulaPublic(strFormula, udtComputationStats, blnExpandAbbreviations, 1)
     End Function
 
+    ''' <summary>
+    ''' Determines the molecular weight and elemental composition of strFormula
+    ''' </summary>
+    ''' <param name="strFormula">Input/output: formula to parse</param>
+    ''' <param name="udtComputationStats">Output: additional information about the formula</param>
+    ''' <param name="blnExpandAbbreviations"></param>
+    ''' <param name="dblValueForX"></param>
+    ''' <returns>Computed molecular weight if no error; otherwise -1</returns>
+    ''' <remarks>
+    ''' ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
+    ''' Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
+    ''' </remarks>
     Public Function ParseFormulaPublic(
       ByRef strFormula As String,
       ByRef udtComputationStats As udtComputationStatsType,
       blnExpandAbbreviations As Boolean,
       ByRef dblValueForX As Double) As Double
-
-        ' Determines the molecular weight and elemental composition of strFormula
-        ' Returns the computed molecular weight if no error; otherwise, returns -1
-        ' ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
-        ' Returns other useful information in udtComputationStats()
-        ' Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
 
         Dim intElementIndex As Short
         Dim dblStdDevSum As Double
@@ -5002,8 +5196,10 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
+    ''' <summary>
+    ''' Recomputes the Mass for all of the loaded abbreviations
+    ''' </summary>
     Public Sub RecomputeAbbreviationMassesInternal()
-        ' Recomputes the Mass for all of the loaded abbreviations
 
         For index = 1 To AbbrevAllCount
             With AbbrevStats(index)
@@ -5021,9 +5217,12 @@ Public Class MWElementAndMassRoutines
         ConstructMasterSymbolsList()
     End Sub
 
+    ''' <summary>
+    ''' Look for the abbreviation and remove it
+    ''' </summary>
+    ''' <param name="strAbbreviationSymbol"></param>
+    ''' <returns>0 if found and removed; 1 if error</returns>
     Public Function RemoveAbbreviationInternal(strAbbreviationSymbol As String) As Integer
-        ' Look for the abbreviation and remove it
-        ' Returns 0 if found and removed; 1 if error
 
         Dim blnRemoved As Boolean
 
@@ -5043,9 +5242,12 @@ Public Class MWElementAndMassRoutines
         End If
     End Function
 
+    ''' <summary>
+    ''' Remove the abbreviation at index abbreviationID
+    ''' </summary>
+    ''' <param name="abbreviationID"></param>
+    ''' <returns>0 if found and removed; 1 if error</returns>
     Public Function RemoveAbbreviationByIDInternal(abbreviationID As Integer) As Integer
-        ' Remove the abbreviation at index abbreviationID
-        ' Returns 0 if found and removed; 1 if error
 
         Dim blnRemoved As Boolean
 
@@ -5067,9 +5269,12 @@ Public Class MWElementAndMassRoutines
         End If
     End Function
 
+    ''' <summary>
+    ''' Look for the caution statement and remove it
+    ''' </summary>
+    ''' <param name="strCautionSymbol"></param>
+    ''' <returns>0 if found and removed; 1 if error</returns>
     Public Function RemoveCautionStatementInternal(strCautionSymbol As String) As Integer
-        ' Look for the abbreviation
-        ' Returns 0 if found and removed; 1 if error
 
         Dim intIndex, intIndexRemove As Short
         Dim blnRemoved As Boolean
@@ -5292,14 +5497,29 @@ Public Class MWElementAndMassRoutines
         Return SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, True)
     End Function
 
-    Public Function SetAbbreviationInternal(strSymbol As String, strFormula As String,
-     sngCharge As Single, blnIsAminoAcid As Boolean,
-     strOneLetterSymbol As String,
-     strComment As String,
-     blnValidateFormula As Boolean) As Integer
+    ''' <summary>
+    ''' Adds a new abbreviation or updates an existing one (based on strSymbol)
+    ''' </summary>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="strFormula"></param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="blnIsAminoAcid"></param>
+    ''' <param name="strOneLetterSymbol"></param>
+    ''' <param name="strComment"></param>
+    ''' <param name="blnValidateFormula">If true, make sure the formula is valid</param>
+    ''' <returns>0 if successful, otherwise an error ID</returns>
+    ''' <remarks>
+    ''' It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
+    '''  since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
+    '''  defined, then the parsing of the first abbreviation will fail
+    ''' </remarks>
+    Public Function SetAbbreviationInternal(
+      strSymbol As String, strFormula As String,
+      sngCharge As Single, blnIsAminoAcid As Boolean,
+      strOneLetterSymbol As String,
+      strComment As String,
+      blnValidateFormula As Boolean) As Integer
 
-        ' Adds a new abbreviation or updates an existing one (based on strSymbol)
-        ' Returns 0 if successful, otherwise, returns an error ID
 
         Dim blnAlreadyPresent As Boolean
         Dim abbrevID As Integer
@@ -5360,21 +5580,30 @@ Public Class MWElementAndMassRoutines
 
     End Function
 
-    Public Function SetAbbreviationByIDInternal(intAbbrevID As Short, strSymbol As String,
+    ''' <summary>
+    ''' Adds a new abbreviation or updates an existing one (based on intAbbrevID)
+    ''' </summary>
+    ''' <param name="intAbbrevID">If intAbbrevID is less than 1, adds as a new abbreviation</param>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="strFormula"></param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="blnIsAminoAcid"></param>
+    ''' <param name="strOneLetterSymbol"></param>
+    ''' <param name="strComment"></param>
+    ''' <param name="blnValidateFormula"></param>
+    ''' <returns>0 if successful, otherwise an error ID</returns>
+    Public Function SetAbbreviationByIDInternal(
+      intAbbrevID As Short, strSymbol As String,
       strFormula As String, sngCharge As Single,
       blnIsAminoAcid As Boolean,
       strOneLetterSymbol As String,
       strComment As String,
       blnValidateFormula As Boolean) As Integer
 
-        ' Adds a new abbreviation or updates an existing one (based on intAbbrevID)
-        ' If intAbbrevID < 1 then adds as a new abbreviation
-        ' Returns 0 if successful, otherwise, returns an error ID
-
-        Dim udtComputationStats As udtComputationStatsType = New udtComputationStatsType
+        Dim udtComputationStats = New udtComputationStatsType
         udtComputationStats.Initialize()
 
-        Dim udtAbbrevSymbolStack As udtAbbrevSymbolStackType = New udtAbbrevSymbolStackType
+        Dim udtAbbrevSymbolStack = New udtAbbrevSymbolStackType
         Dim blnInvalidSymbolOrFormula As Boolean
         Dim eSymbolMatchType As smtSymbolMatchTypeConstants
         Dim intSymbolReference As Short
@@ -5517,12 +5746,18 @@ Public Class MWElementAndMassRoutines
         Return SetElementInternal(strSymbol, dblMass, dblUncertainty, sngCharge, True)
     End Function
 
+    ''' <summary>
+    ''' Update the values for a single element (based on strSymbol)
+    ''' </summary>
+    ''' <param name="strSymbol"></param>
+    ''' <param name="dblMass"></param>
+    ''' <param name="dblUncertainty"></param>
+    ''' <param name="sngCharge"></param>
+    ''' <param name="blnRecomputeAbbreviationMasses">Set to False if updating several elements</param>
+    ''' <returns></returns>
     Public Function SetElementInternal(strSymbol As String, dblMass As Double,
       dblUncertainty As Double, sngCharge As Single,
       blnRecomputeAbbreviationMasses As Boolean) As Integer
-
-        ' Used to update the values for a single element (based on strSymbol)
-        ' Set blnRecomputeAbbreviationMasses to False if updating several elements
 
         Dim intIndex As Short
         Dim blnFound As Boolean
@@ -5579,10 +5814,17 @@ Public Class MWElementAndMassRoutines
         SetElementModeInternal(NewElementMode, True)
     End Sub
 
+    ''' <summary>
+    ''' Set the element mode
+    ''' </summary>
+    ''' <param name="NewElementMode"></param>
+    ''' <param name="blnMemoryLoadElementValues"></param>
+    ''' <remarks>
+    ''' The only time you would want blnMemoryLoadElementValues to be False is if you're
+    ''' manually setting element weight values, but want to let the software know that
+    ''' they're average, isotopic, or integer values
+    ''' </remarks>
     Public Sub SetElementModeInternal(NewElementMode As emElementModeConstants, blnMemoryLoadElementValues As Boolean)
-        ' The only time you would want blnMemoryLoadElementValues to be False is if you're
-        '  manually setting element weight values, but want to let the software know that
-        '  they're average, isotopic, or integer values
 
         Try
             If NewElementMode >= emElementModeConstants.emAverageMass And NewElementMode <= emElementModeConstants.emIntegerMass Then
@@ -5835,10 +6077,12 @@ Public Class MWElementAndMassRoutines
         RaiseEvent ProgressComplete()
     End Sub
 
+    ''' <summary>
+    ''' Checks the formula of all abbreviations to make sure it's valid
+    ''' Marks any abbreviations as Invalid if a problem is found or a circular reference exists
+    ''' </summary>
+    ''' <returns>Count of the number of invalid abbreviations found</returns>
     Public Function ValidateAllAbbreviationsInternal() As Integer
-        ' Checks the formula of all abbreviations to make sure it's valid
-        ' Marks any abbreviations as Invalid if a problem is found or a circular reference exists
-        ' Returns a count of the number of invalid abbreviations found
 
         Dim intAbbrevIndex As Short
         Dim intInvalidAbbreviationCount As Short

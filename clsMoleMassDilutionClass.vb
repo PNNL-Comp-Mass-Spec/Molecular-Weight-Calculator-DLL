@@ -132,9 +132,11 @@ Public Class MWMoleMassDilutionClass
     Private mAutoComputeQuantity As Boolean ' When true, automatically compute quantities whenever any value changes
     Private mAutoComputeQuantityMode As acqAutoComputeQuantityModeConstants ' The value to compute when mAutoComputeQuantity is true
 
+    ''' <summary>
+    ''' Checks if AutoCompute Dilution is enabled
+    ''' If yes, calls the appropriate function
+    ''' </summary>
     Private Sub CheckAutoComputeDilution()
-        ' Checks if AutoCompute Dilution is enabled
-        ' If yes, calls the appropriate function
 
         If mAutoComputeDilution Then
             Select Case mAutoComputeDilutionMode
@@ -148,9 +150,11 @@ Public Class MWMoleMassDilutionClass
         End If
     End Sub
 
+    ''' <summary>
+    ''' Checks if AutoCompute Quantity is enabled
+    ''' If yes, calls the appropriate function
+    ''' </summary>
     Private Sub CheckAutoComputeQuantity()
-        ' Checks if AutoCompute Quantity is enabled
-        ' If yes, calls the appropriate function
 
         If mAutoComputeQuantity Then
             Select Case mAutoComputeQuantityMode
@@ -537,10 +541,10 @@ Public Class MWMoleMassDilutionClass
     End Function
 
 
-    ' Get Subs
-    ' Gets the most recently computed value
-    ' If mAutoComputeDilution = False, then must manually call a Compute Sub to recompute the value
-    ' Similarly, if mAutoComputeQuantity = False, then must manually call a Compute Sub to recompute the value
+    ' Get Methods
+    ' These retrieve the most recently computed value
+    ' If mAutoComputeDilution = False, must manually call a Compute Sub to recompute the value
+    ' Similarly, if mAutoComputeQuantity = False, must manually call a Compute Sub to recompute the value
 
     Public Function GetAutoComputeDilutionEnabled() As Boolean
         Return mAutoComputeDilution

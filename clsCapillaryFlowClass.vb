@@ -149,35 +149,123 @@ Public Class MWCapillaryFlowClass
 
     Private Structure udtCapillaryFlowParametersType
         Dim CapillaryType As ctCapillaryTypeConstants
-        Dim BackPressure As Double ' in dynes/cm^2
-        Dim ColumnLength As Double ' in cm
-        Dim ColumnID As Double ' in cm
-        Dim SolventViscosity As Double ' in poise
-        Dim ParticleDiameter As Double ' in cm
-        Dim VolumetricFlowRate As Double ' in mL/min
-        Dim LinearVelocity As Double ' cm/min
-        Dim ColumnDeadTime As Double ' in min
+
+        ''' <summary>
+        ''' Units: dynes/cm^2
+        ''' </summary>
+        Dim BackPressure As Double
+
+        ''' <summary>
+        ''' Units: cm
+        ''' </summary>
+        Dim ColumnLength As Double
+
+        ''' <summary>
+        ''' Units: cm
+        ''' </summary>
+        Dim ColumnID As Double
+
+        ''' <summary>
+        ''' Units: poise
+        ''' </summary>
+        Dim SolventViscosity As Double
+
+        ''' <summary>
+        ''' Units: cm
+        ''' </summary>
+        Dim ParticleDiameter As Double
+
+        ''' <summary>
+        ''' Units: mL/min
+        ''' </summary>
+        Dim VolumetricFlowRate As Double
+
+        ''' <summary>
+        ''' Units: cm/min
+        ''' </summary>
+        Dim LinearVelocity As Double
+
+        ''' <summary>
+        ''' Units: min
+        ''' </summary>
+        Dim ColumnDeadTime As Double
+
         Dim InterparticlePorosity As Double
     End Structure
 
     Private Structure udtMassRateParametersType
-        Dim SampleConcentration As Double ' in Molar
-        Dim SampleMass As Double ' in g/mole
-        Dim VolumetricFlowRate As Double ' in mL/min
-        Dim InjectionTime As Double ' in min
-        Dim MassFlowRate As Double ' in Moles/min
-        Dim MolesInjected As Double ' in moles
+        ''' <summary>
+        ''' Units: Molar
+        ''' </summary>
+        Dim SampleConcentration As Double
+
+        ''' <summary>
+        ''' Units: g/mole
+        ''' </summary>
+        Dim SampleMass As Double
+
+        ''' <summary>
+        ''' Units: mL/min
+        ''' </summary>
+        Dim VolumetricFlowRate As Double
+
+        ''' <summary>
+        ''' Units: min
+        ''' </summary>
+        Dim InjectionTime As Double
+
+        ''' <summary>
+        ''' Units: Moles/min
+        ''' </summary>
+        Dim MassFlowRate As Double
+
+        ''' <summary>
+        ''' Units: moles
+        ''' </summary>
+        Dim MolesInjected As Double
     End Structure
 
     Private Structure udtExtraColumnBroadeningParametersType
-        Dim LinearVelocity As Double ' in cm/min
-        Dim DiffusionCoefficient As Double ' in cm^2/sec
-        Dim OpenTubeLength As Double ' in cm
-        Dim OpenTubeID As Double ' in cm
-        Dim InitialPeakWidth As Double ' in sec
-        Dim TemporalVariance As Double ' in sec^2
-        Dim AdditionalTemporalVariance As Double ' in sec^2
-        Dim ResultantPeakWidth As Double ' in sec
+
+        ''' <summary>
+        ''' Units: cm/min
+        ''' </summary>
+        Dim LinearVelocity As Double
+
+        ''' <summary>
+        ''' Units: cm^2/sec
+        ''' </summary>
+        Dim DiffusionCoefficient As Double
+
+        ''' <summary>
+        ''' Units: cm
+        ''' </summary>
+        Dim OpenTubeLength As Double
+
+        ''' <summary>
+        ''' Units: cm
+        ''' </summary>
+        Dim OpenTubeID As Double
+
+        ''' <summary>
+        ''' Units: sec
+        ''' </summary>
+        Dim InitialPeakWidth As Double
+
+        ''' <summary>
+        ''' Units: sec^2
+        ''' </summary>
+        Dim TemporalVariance As Double
+
+        ''' <summary>
+        ''' Units: sec^2
+        ''' </summary>
+        Dim AdditionalTemporalVariance As Double
+
+        ''' <summary>
+        ''' Units: sec
+        ''' </summary>
+        Dim ResultantPeakWidth As Double
     End Structure
 
 #End Region
@@ -191,8 +279,15 @@ Public Class MWCapillaryFlowClass
     Private mMassRateParameters As udtMassRateParametersType
     Private mExtraColumnBroadeningParameters As udtExtraColumnBroadeningParametersType
 
-    Private mAutoCompute As Boolean ' When true, automatically compute results whenever any value changes
-    Private mAutoComputeMode As acmAutoComputeModeConstants ' The value to compute when mAutoCompute is true
+    ''' <summary>
+    ''' When true, automatically compute results whenever any value changes
+    ''' </summary>
+    Private mAutoCompute As Boolean
+
+    ''' <summary>
+    ''' The value to compute when mAutoCompute is true
+    ''' </summary>
+    Private mAutoComputeMode As acmAutoComputeModeConstants
 
     Private Sub CheckAutoCompute()
         If mAutoCompute Then

@@ -32,6 +32,9 @@ Public Class MolecularWeightCalculator
 
     Private Const PROGRAM_DATE As String = "July 14,2016"
 
+    ''' <summary>
+    ''' Constructor, assumes the elements are using average masses
+    ''' </summary>
     Public Sub New()
 
         mElementAndMassRoutines = New MWElementAndMassRoutines()
@@ -45,6 +48,10 @@ Public Class MolecularWeightCalculator
 
     End Sub
 
+    ''' <summary>
+    ''' Constructor where the element mode can be defined
+    ''' </summary>
+    ''' <param name="elementMode">Mass mode for elements (average, monoisotopic, or integer)</param>
     Public Sub New(elementMode As MWElementAndMassRoutines.emElementModeConstants)
         Me.New()
         Me.SetElementMode(elementMode)
@@ -200,7 +207,10 @@ Public Class MolecularWeightCalculator
         End Get
     End Property
 
-    ' ProgressPercentComplete ranges from 0 to 100, but can contain decimal percentage values
+    ''' <summary>
+    ''' Percent complete: ranges from 0 to 100, but can contain decimal percentage values
+    ''' </summary>
+    ''' <returns></returns>
     Public ReadOnly Property ProgressPercentComplete() As Single
         Get
             Return mElementAndMassRoutines.ProgressPercentComplete
@@ -258,6 +268,11 @@ Public Class MolecularWeightCalculator
         mElementAndMassRoutines.ResetErrorParamsInternal()
     End Sub
 
+    ''' <summary>
+    ''' Compute the mass of a formula
+    ''' </summary>
+    ''' <param name="strFormula"></param>
+    ''' <returns>Mass of the formula</returns>
     Public Function ComputeMass(strFormula As String) As Double
 
         ' Simply assigning strFormula to .Formula will update the Mass
@@ -266,7 +281,23 @@ Public Class MolecularWeightCalculator
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
+
+    ''' <summary>
+    ''' Computes the Isotopic Distribution for a formula
+    ''' </summary>
+    ''' <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+    ''' <param name="strResults">Output: Table of results</param>
+    ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+    ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+    ''' <returns>0 if success, -1 if an error</returns>
+    ''' <remarks>
+    ''' Returns uncharged mass values if intChargeState=0,
+    ''' Returns M+H values if intChargeState=1
+    ''' Returns convoluted m/z if intChargeState is > 1
+    ''' </remarks>
+    Public Function ComputeIsotopicAbundances(
+      ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
       ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer) As Short
 
         Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount,
@@ -274,7 +305,24 @@ Public Class MolecularWeightCalculator
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
+
+    ''' <summary>
+    ''' Computes the Isotopic Distribution for a formula
+    ''' </summary>
+    ''' <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+    ''' <param name="strResults">Output: Table of results</param>
+    ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+    ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+    ''' <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
+    ''' <returns>0 if success, -1 if an error</returns>
+    ''' <remarks>
+    ''' Returns uncharged mass values if intChargeState=0,
+    ''' Returns M+H values if intChargeState=1
+    ''' Returns convoluted m/z if intChargeState is > 1
+    ''' </remarks>
+    Public Function ComputeIsotopicAbundances(
+      ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
       ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer, blnAddProtonChargeCarrier As Boolean) As Short
 
         Return ComputeIsotopicAbundances(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount,
@@ -282,37 +330,89 @@ Public Class MolecularWeightCalculator
 
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
-                                              ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer,
-                                              strHeaderIsotopicAbundances As String,
-                                              strHeaderMass As String,
-                                              strHeaderFraction As String,
-                                              strHeaderIntensity As String) As Short
+    ''' <summary>
+    ''' Computes the Isotopic Distribution for a formula
+    ''' </summary>
+    ''' <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+    ''' <param name="strResults">Output: Table of results</param>
+    ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+    ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+    ''' <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
+    ''' <param name="strHeaderMassToCharge">Header to use in strResults</param>
+    ''' <param name="strHeaderFraction">Header to use in strResults</param>
+    ''' <param name="strHeaderIntensity">Header to use in strResults</param>
+    ''' <returns>0 if success, -1 if an error</returns>
+    ''' <remarks>
+    ''' Returns uncharged mass values if intChargeState=0,
+    ''' Returns M+H values if intChargeState=1
+    ''' Returns convoluted m/z if intChargeState is > 1
+    ''' </remarks>
+    Public Function ComputeIsotopicAbundances(
+      ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
+      ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer,
+      strHeaderIsotopicAbundances As String,
+      strHeaderMassToCharge As String,
+      strHeaderFraction As String,
+      strHeaderIntensity As String) As Short
 
-        ' Computes the Isotopic Distribution for a formula
-        ' Returns 0 if success, or -1 if an error
-        Dim blnAddProtonChargeCarrier As Boolean = True
-        Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
+        Dim blnAddProtonChargeCarrier = True
+        Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMassToCharge, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
     End Function
 
-    Public Function ComputeIsotopicAbundances(ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
-               ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer,
-               strHeaderIsotopicAbundances As String,
-               strHeaderMass As String,
-               strHeaderFraction As String,
-               strHeaderIntensity As String,
-               blnAddProtonChargeCarrier As Boolean) As Short
+    ''' <summary>
+    ''' Computes the Isotopic Distribution for a formula
+    ''' </summary>
+    ''' <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+    ''' <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+    ''' <param name="strResults">Output: Table of results</param>
+    ''' <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+    ''' <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+    ''' <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
+    ''' <param name="strHeaderMassToCharge">Header to use in strResults</param>
+    ''' <param name="strHeaderFraction">Header to use in strResults</param>
+    ''' <param name="strHeaderIntensity">Header to use in strResults</param>
+    ''' <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
+    ''' <returns>0 if success, -1 if an error</returns>
+    ''' <remarks>
+    ''' Returns uncharged mass values if intChargeState=0,
+    ''' Returns M+H values if intChargeState=1
+    ''' Returns convoluted m/z if intChargeState is > 1
+    ''' </remarks>
+    Public Function ComputeIsotopicAbundances(
+      ByRef strFormulaIn As String, intChargeState As Short, ByRef strResults As String,
+      ByRef ConvolutedMSData2DOneBased(,) As Double, ByRef ConvolutedMSDataCount As Integer,
+      strHeaderIsotopicAbundances As String,
+      strHeaderMassToCharge As String,
+      strHeaderFraction As String,
+      strHeaderIntensity As String,
+      blnAddProtonChargeCarrier As Boolean) As Short
 
-        ' Computes the Isotopic Distribution for a formula
-        ' Returns 0 if success, or -1 if an error
-        Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMass, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
+        Return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(strFormulaIn, intChargeState, strResults, ConvolutedMSData2DOneBased, ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMassToCharge, strHeaderFraction, strHeaderIntensity, False, blnAddProtonChargeCarrier)
     End Function
 
+    ''' <summary>
+    ''' Convert the centroided data (stick data) in XYVals to a Gaussian representation
+    ''' </summary>
+    ''' <param name="XYVals">XY data, as key-value pairs</param>
+    ''' <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
+    ''' <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
+    ''' <returns>Gaussian spectrum data</returns>
+    ''' <remarks></remarks>
     Public Function ConvertStickDataToGaussian2DArray(XYVals As List(Of KeyValuePair(Of Double, Double)), intResolution As Integer, dblResolutionMass As Double) As List(Of KeyValuePair(Of Double, Double))
         Dim intQualityFactor As Integer = 50
         Return ConvertStickDataToGaussian2DArray(XYVals, intResolution, dblResolutionMass, intQualityFactor)
     End Function
 
+    ''' <summary>
+    ''' Convert the centroided data (stick data) in XYVals to a Gaussian representation
+    ''' </summary>
+    ''' <param name="XYVals">XY data, as key-value pairs</param>
+    ''' <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
+    ''' <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
+    ''' <param name="intQualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
+    ''' <returns>Gaussian spectrum data</returns>
+    ''' <remarks></remarks>
     Public Function ConvertStickDataToGaussian2DArray(XYVals As List(Of KeyValuePair(Of Double, Double)), intResolution As Integer, dblResolutionMass As Double, intQualityFactor As Integer) As List(Of KeyValuePair(Of Double, Double))
         Return mElementAndMassRoutines.ConvertStickDataToGaussian2DArray(XYVals, intResolution, dblResolutionMass, intQualityFactor)
     End Function
@@ -353,6 +453,10 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.ConvoluteMassInternal(dblMassMZ, intCurrentCharge, intDesiredCharge, dblChargeCarrierMass)
     End Function
 
+    ''' <summary>
+    ''' Determine the decimal point symbol (period or comma)
+    ''' </summary>
+    ''' <returns></returns>
     Friend Shared Function DetermineDecimalPoint() As Char
         Dim strTestNumber As String
         Dim sglConversionResult As Double
