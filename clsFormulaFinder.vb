@@ -60,8 +60,6 @@ Public Class MWFormulaFinder
 #Region "Member Variables"
 
     Private mAbortProcessing As Boolean
-    Private mCalculating As Boolean
-    Private mErrorMessage As String
 
     ''' <summary>
     ''' Keys are element symbols, abbreviations, or even simply a mass value
@@ -75,7 +73,6 @@ Public Class MWFormulaFinder
     Private mMaximumHits As Integer
 
     Private mRecursiveCount As Integer
-    Private mRecursiveFunctionCallCount As Integer
     Private mMaxRecursiveCount As Integer
 
     ''' <summary>
@@ -314,7 +311,6 @@ Public Class MWFormulaFinder
         mCandidateElements.Add("N", GetDefaultCandidateElementTolerance(10))
         mCandidateElements.Add("O", GetDefaultCandidateElementTolerance(10))
 
-        mErrorMessage = String.Empty
         mAbortProcessing = False
 
         MaximumHits = DEFAULT_RESULTS_TO_FIND
@@ -946,7 +942,6 @@ Public Class MWFormulaFinder
 
         ' Estimate the number of operations that will be performed
         mRecursiveCount = 0
-        mRecursiveFunctionCallCount = 0
 
         If potentialElementCount = 1 Then
             mMaxRecursiveCount = 1
@@ -2058,7 +2053,6 @@ Public Class MWFormulaFinder
     End Sub
 
     Protected Sub ReportError(strErrorMessage As String)
-        mErrorMessage = strErrorMessage
         If EchoMessagesToConsole Then Console.WriteLine(strErrorMessage)
 
         RaiseEvent ErrorEvent(strErrorMessage)
