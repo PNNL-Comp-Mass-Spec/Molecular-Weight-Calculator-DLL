@@ -175,7 +175,7 @@ Public Class MWMoleMassDilutionClass
     Public Function ComputeDilutionFinalConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
 
         With mDilutionValues
-            If .TotalFinalVolume <> 0 Then
+            If Math.Abs(.TotalFinalVolume) > Single.Epsilon Then
                 .FinalConcentration = .InitialConcentration * .StockSolutionVolume / .TotalFinalVolume
             Else
                 .TotalFinalVolume = 0
@@ -197,7 +197,7 @@ Public Class MWMoleMassDilutionClass
     Public Function ComputeDilutionInitialConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
 
         With mDilutionValues
-            If .StockSolutionVolume <> 0 Then
+            If Math.Abs(.StockSolutionVolume) > Single.Epsilon Then
                 .InitialConcentration = .FinalConcentration * .TotalFinalVolume / .StockSolutionVolume
             Else
                 .InitialConcentration = 0
@@ -226,7 +226,7 @@ Public Class MWMoleMassDilutionClass
       Optional eDilutingSolventUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
 
         With mDilutionValues
-            If .InitialConcentration <> 0 Then
+            If Math.Abs(.InitialConcentration) > Single.Epsilon Then
                 .StockSolutionVolume = .FinalConcentration * .TotalFinalVolume / .InitialConcentration
             Else
                 .StockSolutionVolume = 0
@@ -278,16 +278,13 @@ Public Class MWMoleMassDilutionClass
 
     End Function
 
-
-        With mQuantity
-            .Amount = .Concentration * .Volume
-        End With
     ''' <summary>
     ''' Computes mQuantity.Amount using mQuantity.Volume and mQuantity.Concentration, storing the result in mQuantity.Amount
     ''' </summary>
     ''' <param name="eUnits"></param>
     ''' <returns>mQuantity.Amount, with the specified units</returns>
     Public Function ComputeQuantityAmount(Optional eUnits As uamUnitsAmountConstants = uamUnitsAmountConstants.uamMoles) As Double
+        mQuantity.Amount = mQuantity.Concentration * mQuantity.Volume
 
         Return ConvertAmount(mQuantity.Amount, uamUnitsAmountConstants.uamMoles, eUnits)
     End Function
@@ -299,7 +296,7 @@ Public Class MWMoleMassDilutionClass
     ''' <returns>mQuantity.Concentration, with the specified units</returns>
     Public Function ComputeQuantityConcentration(Optional eUnits As ummcUnitsMoleMassConcentrationConstants = ummcUnitsMoleMassConcentrationConstants.ummcMolar) As Double
         With mQuantity
-            If .Volume <> 0 Then
+            If Math.Abs(.Volume) > Single.Epsilon Then
                 .Concentration = .Amount / .Volume
             Else
                 .Concentration = 0
@@ -316,7 +313,7 @@ Public Class MWMoleMassDilutionClass
     ''' <returns>mQuantity.Volume, with the specified units</returns>
     Public Function ComputeQuantityVolume(Optional eUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevL) As Double
         With mQuantity
-            If .Concentration <> 0 Then
+            If Math.Abs(.Concentration) > Single.Epsilon Then
                 .Volume = .Amount / .Concentration
             Else
                 .Volume = 0
@@ -358,14 +355,14 @@ Public Class MWMoleMassDilutionClass
             dblSampleDensity = mQuantity.SampleDensity
 
             dblFactor = FactorAmount(eCurrentUnits, dblSampleMass, dblSampleDensity)
-            If dblFactor = -1 Then
+            If dblFactor < 0 Then
                 Return -1
             Else
                 dblValue = dblAmountIn * dblFactor
             End If
 
             dblFactor = FactorAmount(eNewUnits, dblSampleMass, dblSampleDensity)
-            If dblFactor = -1 Or dblFactor = 0 Then
+            If dblFactor <= 0 Then
                 Return -1
             Else
                 Return dblValue / dblFactor
@@ -393,14 +390,14 @@ Public Class MWMoleMassDilutionClass
         dblSampleMass = mQuantity.SampleMass
 
         dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass)
-        If dblFactor = -1 Then
+        If dblFactor < 0 Then
             Return -1
         Else
             dblValue = dblConcentrationIn * dblFactor
         End If
 
         dblFactor = FactorConcentration(eNewUnits, dblSampleMass)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If dblFactor <= 0 Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -416,14 +413,14 @@ Public Class MWMoleMassDilutionClass
         End If
 
         dblFactor = FactorVolumeExtended(eCurrentUnits)
-        If dblFactor = -1 Then
+        If dblFactor < 0 Then
             Return -1
         Else
             dblValue = dblVolume * dblFactor
         End If
 
         dblFactor = FactorVolumeExtended(eNewUnits)
-        If dblFactor = -1 Or dblFactor = 0 Then
+        If dblFactor <= 0 Then
             Return -1
         Else
             Return dblValue / dblFactor
@@ -445,7 +442,7 @@ Public Class MWMoleMassDilutionClass
 
         Dim dblFactor As Double
 
-        If dblSampleMass = 0 Then
+        If Math.Abs(dblSampleMass) < Single.Epsilon Then
             dblFactor = -1
         Else
             ' Determine the Amount multiplication dblFactor
@@ -490,7 +487,7 @@ Public Class MWMoleMassDilutionClass
     Private Function FactorConcentration(eUnits As ummcUnitsMoleMassConcentrationConstants, Optional dblSampleMass As Double = 0) As Double
         Dim dblFactor As Double
 
-        If dblSampleMass = 0 Then
+        If Math.Abs(dblSampleMass) < Single.Epsilon Then
             dblFactor = -1
         Else
             Select Case eUnits
