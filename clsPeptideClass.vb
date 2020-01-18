@@ -637,7 +637,7 @@ Public Class MWPeptideClass
         Try
             Return mFragSpectrumOptions
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.GetFragmentationSpectrumOptions", Err.Number)
+            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.GetFragmentationSpectrumOptions", ex)
         End Try
 
         Dim udtDefaultOptions As udtFragmentationSpectrumOptionsType = New udtFragmentationSpectrumOptionsType
@@ -2020,7 +2020,7 @@ Public Class MWPeptideClass
             SetModificationSymbol("~", 442.225, False, "ICAT D0 [C20H34N4O5S]")
             SetModificationSymbol("`", 450.274, False, "ICAT D8 [C20H26D8N4O5S]")
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.SetDefaultModificationSymbols", Err.Number)
+            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.SetDefaultModificationSymbols", ex)
         End Try
 
     End Sub
@@ -2072,7 +2072,7 @@ Public Class MWPeptideClass
 
             SetDefaultModificationSymbols()
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.SetDefaultOptions", Err.Number)
+            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.SetDefaultOptions", ex)
         End Try
 
     End Sub
@@ -2802,7 +2802,7 @@ Public Class MWPeptideClass
 
             ElementAndMassRoutines.SetElementModeInternal(eElementModeSaved)
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.UpdateStandardMasses", Err.Number)
+            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.UpdateStandardMasses", ex)
         End Try
 
     End Sub
@@ -2822,7 +2822,7 @@ Public Class MWPeptideClass
 
             SetDefaultOptions()
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.Class_Initialize", Err.Number)
+            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.Class_Initialize", ex)
         End Try
 
     End Sub

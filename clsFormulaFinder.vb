@@ -599,7 +599,7 @@ Public Class MWFormulaFinder
             Return valid
 
         Catch ex As Exception
-            mElementAndMassRoutines.GeneralErrorHandler("ConstructAndVerifyCompound", 0, ex.Message)
+            mElementAndMassRoutines.GeneralErrorHandler("ConstructAndVerifyCompound", ex)
             correctedCharge = totalCharge
             Return False
         End Try
@@ -666,7 +666,7 @@ Public Class MWFormulaFinder
             Return valid
 
         Catch ex As Exception
-            mElementAndMassRoutines.GeneralErrorHandler("ConstructAndVerifyCompoundRecursive", 0, ex.Message)
+            mElementAndMassRoutines.GeneralErrorHandler("ConstructAndVerifyCompoundRecursive", ex)
             empiricalResultSymbols = New Dictionary(Of String, Integer)
             correctedCharge = totalCharge
             Return False
@@ -1400,7 +1400,7 @@ Public Class MWFormulaFinder
             Return searchResult
 
         Catch ex As Exception
-            mElementAndMassRoutines.GeneralErrorHandler("GetSearchResult", 0, ex.Message)
+            mElementAndMassRoutines.GeneralErrorHandler("GetSearchResult", ex)
             Return New clsFormulaFinderResult(String.Empty, New Dictionary(Of String, Integer))
         End Try
 
@@ -1749,7 +1749,7 @@ Public Class MWFormulaFinder
             Next j
 
         Catch ex As Exception
-            mElementAndMassRoutines.GeneralErrorHandler("OldFormulaFinder", 0, ex.Message)
+            mElementAndMassRoutines.GeneralErrorHandler("OldFormulaFinder", ex)
         End Try
 
         Return lstResults
@@ -1925,7 +1925,7 @@ Public Class MWFormulaFinder
             Next intCurrentIndex
 
         Catch ex As Exception
-            mElementAndMassRoutines.GeneralErrorHandler("RecursiveMWFinder", 0, ex.Message)
+            mElementAndMassRoutines.GeneralErrorHandler("RecursiveMWFinder", ex)
             mAbortProcessing = True
         End Try
 
@@ -2051,7 +2051,7 @@ Public Class MWFormulaFinder
 
 
         Catch ex As Exception
-            mElementAndMassRoutines.GeneralErrorHandler("RecursivePCompFinder", 0, ex.Message)
+            mElementAndMassRoutines.GeneralErrorHandler("RecursivePCompFinder", ex)
             mAbortProcessing = True
         End Try
 

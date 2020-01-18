@@ -329,7 +329,7 @@ Public Class MWElementAndMassRoutines
                 .SymbolReferenceStack(.Count - 1) = symbolReference
             End With
         Catch ex As Exception
-            GeneralErrorHandler("MWElementAndMassRoutines.AbbrevSymbolStackAdd", 0, ex.Message)
+            GeneralErrorHandler("MWElementAndMassRoutines.AbbrevSymbolStackAdd", ex)
         End Try
 
     End Sub
@@ -1498,7 +1498,7 @@ Public Class MWElementAndMassRoutines
             Next
 
         Catch ex As Exception
-            GeneralErrorHandler("ConvertStickDataToGaussian", 0, ex.Message)
+            GeneralErrorHandler("ConvertStickDataToGaussian", ex)
         End Try
 
         Return lstGaussianData
@@ -2036,6 +2036,9 @@ Public Class MWElementAndMassRoutines
         GeneralErrorHandler(strCallingProcedure, errorNumber, String.Empty)
     End Sub
 
+    Public Sub GeneralErrorHandler(strCallingProcedure As String, ex As Exception)
+        GeneralErrorHandler(strCallingProcedure, 0, ex.Message)
+    End Sub
 
     Public Sub GeneralErrorHandler(strCallingProcedure As String, errorNumber As Integer, strErrorDescriptionAdditional As String)
         Dim strMessage As String
@@ -4087,7 +4090,7 @@ Public Class MWElementAndMassRoutines
             End If
 
         Catch ex As Exception
-            GeneralErrorHandler("MWElementAndMassRoutines.ParseFormulaPublic", 0, ex.Message)
+            GeneralErrorHandler("MWElementAndMassRoutines.ParseFormulaPublic", ex)
             Return -1
         End Try
 
@@ -5595,7 +5598,7 @@ Public Class MWElementAndMassRoutines
                 End If
             End If
         Catch ex As Exception
-            GeneralErrorHandler("MWElementAndMassRoutines.SetElementModeInternal", 0, ex.Message)
+            GeneralErrorHandler("MWElementAndMassRoutines.SetElementModeInternal", ex)
         End Try
 
     End Sub
