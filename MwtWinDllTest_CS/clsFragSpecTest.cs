@@ -11,9 +11,7 @@ namespace MwtWinDllTestCS
 
     class clsFragSpecTest
     {
-
-        MolecularWeightCalculator mMwtWin;
-
+        readonly MolecularWeightCalculator mMwtWin;
 
         public clsFragSpecTest() {
             mMwtWin = new MolecularWeightCalculator();
@@ -57,7 +55,8 @@ namespace MwtWinDllTestCS
             mMwtWin.Peptide.SetModificationSymbol("!", 57.02146, false, "Carbamidomethylation");
             mMwtWin.Peptide.SetModificationSymbol("+", 10.0, false, "Heavy Arg");
 
-            string strNewSeq = "C!ETQNPVSAR+";
+            // ReSharper disable once StringLiteralTypo
+            var newSeq = "C!ETQNPVSAR+";
 
             // Obtain the fragmentation spectrum for a peptide
 
@@ -89,10 +88,9 @@ namespace MwtWinDllTestCS
 
             Console.WriteLine();
 
-            short intSuccess = 0;
-            string strResults = null;
+            string results = null;
             double[,] ConvolutedMSData2D = null;
-            int ConvolutedMSDataCount = 0;
+            var ConvolutedMSDataCount = 0;
 
             // Compute the Isotopic distribution for the peptide
             // Need to first convert to an empirical formula
@@ -103,19 +101,18 @@ namespace MwtWinDllTestCS
             mMwtWin.Compound.SetFormula(seq3Letter);
 
             // Now convert to an empirical formula
-            string s = mMwtWin.Compound.ConvertToEmpirical();
+            var s = mMwtWin.Compound.ConvertToEmpirical();
 
-            bool blnAddProtonChargeCarrier = true;
-            short intChargeState = 1;
-            Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState);
-            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, intChargeState, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount);
-            Console.WriteLine(strResults);
+            short chargeState = 1;
+            Console.WriteLine("Isotopic abundance test with Charge=" + chargeState);
+            mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, ref results, ref ConvolutedMSData2D, ref ConvolutedMSDataCount);
+            Console.WriteLine(results);
 
-            blnAddProtonChargeCarrier = false;
-            intChargeState = 1;
-            Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
-            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref s, intChargeState, ref strResults, ref ConvolutedMSData2D, ref ConvolutedMSDataCount, blnAddProtonChargeCarrier);
-            Console.WriteLine(strResults);
+            const bool addProtonChargeCarrier = false;
+            chargeState = 1;
+            Console.WriteLine("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
+            mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, ref results, ref ConvolutedMSData2D, ref ConvolutedMSDataCount, addProtonChargeCarrier);
+            Console.WriteLine(results);
 
         }
 

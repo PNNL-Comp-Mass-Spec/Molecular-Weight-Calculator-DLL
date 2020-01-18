@@ -10,50 +10,13 @@ namespace MwtWinDllTestCS
 
     class Program
     {
-        static void Main(string[] args) {
+        static void Main(string[] args)
+        {
 
             // Instantiate the Molecular Weight Calculator
             var mwtWin = new MolecularWeightCalculator();
 
-            // Set the element mode (average, monoisotopic, or integer)
-            mwtWin.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emAverageMass);
-
-            // Can simply compute the mass of a formula using ComputeMass
-            var testFormula = "C6H6";
-            var formulaMass = mwtWin.ComputeMass(testFormula);
-
-            Console.WriteLine("Mass of " + testFormula + " is " + formulaMass);
-            Console.WriteLine();
-
-            // If we want to do more complex operations, need to fill mMwtWin.Compound with valid info
-            // Then, can read out values from it
-            mwtWin.Compound.SetFormula("Cl2PhH4OH");
-
-            if (mwtWin.Compound.ErrorDescription.Length > 0) {
-                    Console.WriteLine("Error: " + mwtWin.Compound.ErrorDescription);
-            }
-            else {
-                 Console.WriteLine("Formula:           " + mwtWin.Compound.FormulaCapitalized);
-                 Console.WriteLine("Expand Abbrev:     " + mwtWin.Compound.ExpandAbbreviations());
-                 Console.WriteLine("Empirical Formula: " + mwtWin.Compound.ConvertToEmpirical());
-                 // Console.WriteLine("FormulaRTF: " + mwtWin.Compound.FormulaRTF);
-                 Console.WriteLine();
-                 Console.WriteLine("Mass:              " + mwtWin.Compound.Mass);
-                 Console.WriteLine("Mass with StDev:   " + mwtWin.Compound.MassAndStdDevString);
-                 Console.WriteLine();
-
-                 mwtWin.Compound.SetFormula("Cl2PhH4OH");
-                 Console.WriteLine("Formula:            " + mwtWin.Compound.FormulaCapitalized);
-                 Console.WriteLine("CautionDescription: " + mwtWin.Compound.CautionDescription);
-                 Console.WriteLine();
-
-                 testFormula = "^13c2c4h6fe";
-
-                 mwtWin.Compound.SetFormula(testFormula);
-                 Console.WriteLine(testFormula + " auto-capitalizes to " + mwtWin.Compound.FormulaCapitalized);
-                 Console.WriteLine("Mass: " + mwtWin.Compound.Mass);
-
-            }
+            TestMwtWinFeatures(mwtWin, MWElementAndMassRoutines.emElementModeConstants.emAverageMass);
 
             Console.WriteLine();
             Console.WriteLine("Percent composition");
@@ -65,12 +28,106 @@ namespace MwtWinDllTestCS
             }
 
             Console.WriteLine();
+            TestMwtWinFeatures(mwtWin, MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass);
+
+            Console.WriteLine();
             Console.WriteLine();
 
-            var objFragTest = new clsFragSpecTest(ref mwtWin);
-            objFragTest.TestAccessFunctions();
+            var fragTest = new clsFragSpecTest(ref mwtWin);
+            fragTest.TestAccessFunctions();
 
+            Console.WriteLine();
         }
 
+        private static void TestMwtWinFeatures(
+            MolecularWeightCalculator mwtWin,
+            MWElementAndMassRoutines.emElementModeConstants elementMode)
+        {
+            string elementModeDescription;
+
+            switch (elementMode)
+            {
+                case MWElementAndMassRoutines.emElementModeConstants.emAverageMass:
+                    elementModeDescription = "Average";
+                    break;
+
+                case MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass:
+                    elementModeDescription = "Monoisotopic";
+                    break;
+
+                case MWElementAndMassRoutines.emElementModeConstants.emIntegerMass:
+                    elementModeDescription = "Integer";
+                    break;
+
+                default:
+                    elementModeDescription = "Unknown";
+                    break;
+
+            }
+
+            // Set the element mode (average, monoisotopic, or integer)
+            mwtWin.SetElementMode(elementMode);
+
+            // Can simply compute the mass of a formula using ComputeMass
+            var testFormula = "C6H6";
+            var formulaMass = mwtWin.ComputeMass(testFormula);
+
+            Console.WriteLine("{0} mass of {1} is {2}", elementModeDescription, testFormula, formulaMass);
+            Console.WriteLine();
+
+            // If we want to do more complex operations, need to fill mMwtWin.Compound with valid info
+            // Then, can read out values from it
+            mwtWin.Compound.SetFormula("Cl2PhH4OH");
+
+            if (mwtWin.Compound.ErrorDescription.Length > 0)
+            {
+                Console.WriteLine("Error: " + mwtWin.Compound.ErrorDescription);
+            }
+            else
+            {
+                Console.WriteLine("Formula:           " + mwtWin.Compound.FormulaCapitalized);
+                Console.WriteLine("Expand Abbrev:     " + mwtWin.Compound.ExpandAbbreviations());
+                Console.WriteLine("Empirical Formula: " + mwtWin.Compound.ConvertToEmpirical());
+                // Console.WriteLine("FormulaRTF: " + mwtWin.Compound.FormulaRTF);
+                Console.WriteLine();
+                Console.WriteLine("{0,-18} {1}", elementModeDescription + " Mass:", mwtWin.Compound.Mass);
+                Console.WriteLine("Mass with StDev:   " + mwtWin.Compound.MassAndStdDevString);
+                Console.WriteLine();
+
+                mwtWin.Compound.SetFormula("Cl2PhH4OH");
+                Console.WriteLine("Formula:            " + mwtWin.Compound.FormulaCapitalized);
+                Console.WriteLine("CautionDescription: " + mwtWin.Compound.CautionDescription);
+                Console.WriteLine();
+
+                // ReSharper disable once StringLiteralTypo
+                mwtWin.Peptide.SetSequence1LetterSymbol("FEQDGENYTGTIDGNMGAYAR");
+
+                var oneLetterSequence = mwtWin.Peptide.GetSequence(false);
+                var threeLetterSequence = mwtWin.Peptide.GetSequence(true);
+
+                var unchargedMass = mwtWin.Peptide.GetPeptideMass();
+                var twoPlusMz = mwtWin.ConvoluteMass(unchargedMass, 0, 2);
+                var threePlusMz = mwtWin.ConvoluteMass(twoPlusMz, 2, 3);
+
+                Console.WriteLine("Peptide:            " + oneLetterSequence);
+                Console.WriteLine("3 letter notation:  " + threeLetterSequence);
+                Console.WriteLine("{0,-18}  {1}", elementModeDescription + " Mass:", unchargedMass);
+                Console.WriteLine("m/z for 2+ ion:     " + twoPlusMz);
+                Console.WriteLine("m/z for 3+ ion:     " + threePlusMz);
+
+                mwtWin.Compound.SetFormula(threeLetterSequence);
+                Console.WriteLine("Empirical Formula:  " + mwtWin.Compound.ConvertToEmpirical());
+
+                Console.WriteLine();
+
+                testFormula = "^13c2c4h6fe";
+
+                mwtWin.Compound.SetFormula(testFormula);
+                Console.WriteLine(testFormula + " auto-capitalizes to " + mwtWin.Compound.FormulaCapitalized);
+                Console.WriteLine("{0,-18}  {1}", elementModeDescription + " Mass:", mwtWin.Compound.Mass);
+
+            }
+
+        }
     }
 }
