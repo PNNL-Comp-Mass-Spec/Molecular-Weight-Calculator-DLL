@@ -111,6 +111,7 @@
     <Compile Include="frmTextbrowser.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="modMwtWinDllTest.vb">
       <SubType>Code</SubType>
     </Compile>
