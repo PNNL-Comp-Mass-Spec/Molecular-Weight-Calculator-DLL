@@ -800,9 +800,9 @@ Public Class MWElementAndMassRoutines
                             If intIndex > 1 Then
                                 strModifiedFormula = Left(strFormula, intIndex - 1)
                             End If
-                            strModifiedFormula = strModifiedFormula & strDeuteriumEquiv
+                            strModifiedFormula &= strDeuteriumEquiv
                             If intIndex < Len(strFormula) Then
-                                strModifiedFormula = strModifiedFormula & Mid(strFormula, intIndex + 1)
+                                strModifiedFormula &= Mid(strFormula, intIndex + 1)
                             End If
                             strFormula = strModifiedFormula
                             intIndex = 0
@@ -835,7 +835,7 @@ Public Class MWElementAndMassRoutines
                 With udtComputationStats.Elements(intElementIndex)
                     If .IsotopeCount > 0 Then
                         blnExplicitIsotopesPresent = True
-                        ExplicitIsotopeCount = ExplicitIsotopeCount + .IsotopeCount
+                        ExplicitIsotopeCount += .IsotopeCount
                         For IsotopeIndex = 1 To .IsotopeCount
                             .Count = .Count - .Isotopes(IsotopeIndex).Count
                         Next IsotopeIndex
@@ -852,7 +852,7 @@ Public Class MWElementAndMassRoutines
             Next intElementIndex
 
             If blnExplicitIsotopesPresent Then
-                intElementCount = intElementCount + ExplicitIsotopeCount
+                intElementCount += ExplicitIsotopeCount
             End If
 
             If intElementCount = 0 Or Math.Abs(dblWorkingFormulaMass) < Single.Epsilon Then
@@ -990,7 +990,7 @@ Public Class MWElementAndMassRoutines
                 Else
                     dblFractionalAbundanceSaved = 0
                     For ComboIndex = 1 To CombosFound
-                        CompletedComboCalcs = CompletedComboCalcs + 1
+                        CompletedComboCalcs += 1
 
                         sngPercentComplete = CompletedComboCalcs / CSng(PredictedTotalComboCalcs) * 100
                         If CompletedComboCalcs Mod 10 = 0 Then
@@ -1014,8 +1014,8 @@ Public Class MWElementAndMassRoutines
                                 For IsotopeIndex = 1 To IsotopeCount
                                     IsotopeCountInThisCombo = IsoCombos(ComboIndex, IsotopeIndex)
                                     If IsotopeCountInThisCombo > 0 Then
-                                        AbundDenom = AbundDenom * Factorial(CShort(IsotopeCountInThisCombo))
-                                        AbundSuffix = AbundSuffix * .Isotopes(IsotopeIndex).Abundance ^ IsotopeCountInThisCombo
+                                        AbundDenom *= Factorial(CShort(IsotopeCountInThisCombo))
+                                        AbundSuffix *= .Isotopes(IsotopeIndex).Abundance ^ IsotopeCountInThisCombo
                                     End If
                                 Next IsotopeIndex
                             End With
@@ -1031,7 +1031,7 @@ Public Class MWElementAndMassRoutines
 
                                 dblLogSigma = 0
                                 For sigma = 1 To AtomCount
-                                    dblLogSigma = dblLogSigma + Math.Log(CDbl(sigma))
+                                    dblLogSigma += Math.Log(CDbl(sigma))
                                 Next sigma
 
                                 dblSumI = 0
@@ -1039,9 +1039,9 @@ Public Class MWElementAndMassRoutines
                                     If IsoCombos(ComboIndex, IsotopeIndex) > 0 Then
                                         dblWorkingSum = 0
                                         For SubIndex = 1 To IsoCombos(ComboIndex, IsotopeIndex)
-                                            dblWorkingSum = dblWorkingSum + Math.Log(CDbl(SubIndex))
+                                            dblWorkingSum += Math.Log(CDbl(SubIndex))
                                         Next SubIndex
-                                        dblSumI = dblSumI + dblWorkingSum
+                                        dblSumI += dblWorkingSum
                                     End If
                                 Next IsotopeIndex
 
@@ -1049,7 +1049,7 @@ Public Class MWElementAndMassRoutines
                                     dblSumF = 0
                                     For IsotopeIndex = 1 To IsotopeCount
                                         If .Isotopes(IsotopeIndex).Abundance > 0 Then
-                                            dblSumF = dblSumF + IsoCombos(ComboIndex, IsotopeIndex) * Math.Log(CDbl(.Isotopes(IsotopeIndex).Abundance))
+                                            dblSumF += IsoCombos(ComboIndex, IsotopeIndex) * Math.Log(CDbl(.Isotopes(IsotopeIndex).Abundance))
                                         End If
                                     Next IsotopeIndex
                                 End With
@@ -1076,7 +1076,7 @@ Public Class MWElementAndMassRoutines
                                     If intM > intMPrime Then
                                         dblLogSigma = 0
                                         For SubIndex = CInt(intMPrime) + 1 To CInt(intM)
-                                            dblLogSigma = dblLogSigma + Math.Log(SubIndex)
+                                            dblLogSigma += Math.Log(SubIndex)
                                         Next SubIndex
 
                                         With ElementStats(MasterElementIndex)
@@ -1085,7 +1085,7 @@ Public Class MWElementAndMassRoutines
                                     ElseIf intM < intMPrime Then
                                         dblLogSigma = 0
                                         For SubIndex = CInt(intM) + 1 To CInt(intMPrime)
-                                            dblLogSigma = dblLogSigma + Math.Log(SubIndex)
+                                            dblLogSigma += Math.Log(SubIndex)
                                         Next SubIndex
 
                                         With ElementStats(MasterElementIndex)
@@ -1099,7 +1099,7 @@ Public Class MWElementAndMassRoutines
                                     End If
 
                                     dblRho = Math.Exp(dblLogRho)
-                                    dblRatioOfFreqs = dblRatioOfFreqs * dblRho
+                                    dblRatioOfFreqs *= dblRho
 
                                 Next IsotopeIndex
 
@@ -1155,7 +1155,7 @@ Public Class MWElementAndMassRoutines
                 With IsoStats(intElementIndex)
                     rowIndex = .ResultsCount
                     Do While .MassAbundances(rowIndex) < MIN_ABUNDANCE_TO_KEEP
-                        rowIndex = rowIndex - 1
+                        rowIndex -= 1
                         If rowIndex = 1 Then Exit Do
                     Loop
                     .ResultsCount = rowIndex
@@ -1192,9 +1192,9 @@ Public Class MWElementAndMassRoutines
             For intElementIndex = 1 To intElementCount
                 With IsoStats(intElementIndex)
                     If .boolExplicitIsotope Then
-                        dblExactBaseIsoMass = dblExactBaseIsoMass + .AtomCount * .ExplicitMass
+                        dblExactBaseIsoMass += .AtomCount * .ExplicitMass
                     Else
-                        dblExactBaseIsoMass = dblExactBaseIsoMass + .AtomCount * ElementStats(.ElementIndex).Isotopes(1).Mass
+                        dblExactBaseIsoMass += .AtomCount * ElementStats(.ElementIndex).Isotopes(1).Mass
                     End If
                 End With
             Next intElementIndex
@@ -1260,19 +1260,19 @@ Public Class MWElementAndMassRoutines
             ' first value greater than MIN_ABUNDANCE_TO_KEEP
             rowIndex = 1
             Do While ConvolutedMSData2DOneBased(rowIndex, 1) < MIN_ABUNDANCE_TO_KEEP
-                rowIndex = rowIndex + 1
+                rowIndex += 1
                 If rowIndex = ConvolutedMSDataCount Then Exit Do
             Loop
 
             ' If rowIndex > 1 then remove rows from beginning since value is less than MIN_ABUNDANCE_TO_KEEP
             If rowIndex > 1 And rowIndex < ConvolutedMSDataCount Then
-                rowIndex = rowIndex - 1
+                rowIndex -= 1
                 ' Remove rows from the start of ConvolutedMSData2DOneBased() since 0 mass
                 For massIndex = rowIndex + 1 To ConvolutedMSDataCount
                     ConvolutedMSData2DOneBased(massIndex - rowIndex, 0) = ConvolutedMSData2DOneBased(massIndex, 0)
                     ConvolutedMSData2DOneBased(massIndex - rowIndex, 1) = ConvolutedMSData2DOneBased(massIndex, 1)
                 Next massIndex
-                ConvolutedMSDataCount = ConvolutedMSDataCount - rowIndex
+                ConvolutedMSDataCount -= rowIndex
             End If
 
             ' Write to strOutput
@@ -1558,7 +1558,7 @@ Public Class MWElementAndMassRoutines
                     ' Choose the appropriate new .XVal
                     dblRangeWork = lstXYSummation(intSummationIndex + 1).X - lstXYSummation(intSummationIndex).X
                     If dblRangeWork < dblMinimalXValSpacing * 2 Then
-                        dblRangeWork = dblRangeWork / 2
+                        dblRangeWork /= 2
                     Else
                         dblRangeWork = dblMinimalXValSpacing
                     End If
@@ -1766,7 +1766,7 @@ Public Class MWElementAndMassRoutines
                 With mComputationStatsSaved
                     Dim dblThisElementCount = .Elements(intElementIndexToUse).Count
                     If Math.Abs(dblThisElementCount - 1.0#) < Single.Epsilon Then
-                        strEmpiricalFormula = strEmpiricalFormula & ElementStats(intElementIndexToUse).Symbol
+                        strEmpiricalFormula &= ElementStats(intElementIndexToUse).Symbol
                     ElseIf dblThisElementCount > 0 Then
                         strEmpiricalFormula = strEmpiricalFormula & ElementStats(intElementIndexToUse).Symbol & Trim(CStr(dblThisElementCount))
                     End If
@@ -2093,7 +2093,7 @@ Public Class MWElementAndMassRoutines
             ComboResults(CurrentRow, CurrentCol) = AtomTrack
 
             Do While AtomTrack > 0
-                CurrentRow = CurrentRow + 1
+                CurrentRow += 1
 
                 ' Went to a new row; if CurrentCol > 1 then need to assign previous values to previous columns
                 If (CurrentCol > 1) Then
@@ -2102,7 +2102,7 @@ Public Class MWElementAndMassRoutines
                     Next ColIndex
                 End If
 
-                AtomTrack = AtomTrack - 1
+                AtomTrack -= 1
                 ComboResults(CurrentRow, CurrentCol) = AtomTrack
 
                 If CurrentCol < MaxIsotopeCount Then
@@ -2783,7 +2783,7 @@ Public Class MWElementAndMassRoutines
         End Select
 
         ' Now append strAppendText
-        strMessage = strMessage & strAppendText
+        strMessage &= strAppendText
 
         ' messageID's 1 and 18 may need to have an addendum added
         If messageID = 1 Then
@@ -2898,7 +2898,7 @@ Public Class MWElementAndMassRoutines
         AddAbbreviationWork(28, "Xxx", "C6H12N2O", 0, True, "X", "Unknown")
 
         Const NormalAbbrevCount As Short = 16
-        AbbrevAllCount = AbbrevAllCount + NormalAbbrevCount
+        AbbrevAllCount += NormalAbbrevCount
         For intIndex = AminoAbbrevCount + 1 To AbbrevAllCount
             AbbrevStats(intIndex).IsAminoAcid = False
         Next intIndex
@@ -3884,7 +3884,7 @@ Public Class MWElementAndMassRoutines
                 Do While dblIsoMasses(intElementIndex, intIsotopeindex) > 0
                     .Isotopes(intIsotopeindex).Abundance = sngIsoAbun(intElementIndex, intIsotopeindex)
                     .Isotopes(intIsotopeindex).Mass = dblIsoMasses(intElementIndex, intIsotopeindex)
-                    intIsotopeindex = intIsotopeindex + 1S
+                    intIsotopeindex += 1S
                     If intIsotopeindex > MAX_ISOTOPES Then Exit Do
                 Loop
                 .IsotopeCount = intIsotopeindex - 1S
@@ -4403,7 +4403,7 @@ Public Class MWElementAndMassRoutines
 
                         Exit Do
                     End If
-                    intCharIndex = intCharIndex + 1S
+                    intCharIndex += 1S
                 Loop While intCharIndex <= Len(strFormula)
 
                 If blnMatchFound Then
@@ -4436,7 +4436,7 @@ Public Class MWElementAndMassRoutines
                     Next intElementIndex
 
                     ' Adjust the overall charge
-                    udtComputationStats.Charge = udtComputationStats.Charge - udtComputationStatsRightHalf.Charge
+                    udtComputationStats.Charge -= udtComputationStatsRightHalf.Charge
                 End If
             Else
 
@@ -4484,13 +4484,13 @@ Public Class MWElementAndMassRoutines
                                             If Not gComputationOptions.BracketsAsParentheses And Mid(strFormula, intParenthClose, 1) = "[" Then
                                                 ' Do not count the bracket
                                             Else
-                                                intParenthLevel = intParenthLevel + 1S
+                                                intParenthLevel += 1S
                                             End If
                                         Case ")", "}", "]"
                                             If Not gComputationOptions.BracketsAsParentheses And Mid(strFormula, intParenthClose, 1) = "]" Then
                                                 ' Do not count the bracket
                                             Else
-                                                intParenthLevel = intParenthLevel - 1S
+                                                intParenthLevel -= 1S
                                                 If intParenthLevel = 0 Then
                                                     dblAdjacentNum = ParseNum(Mid(strFormula, intParenthClose + 1), intNumLength)
                                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength)
@@ -4546,7 +4546,7 @@ Public Class MWElementAndMassRoutines
                             If dblAdjacentNum > 0 Then
                                 intDashPos = intCharIndex + intNumLength
                                 dblDashMultiplier = dblAdjacentNum * dblDashMultiplierPrior
-                                intCharIndex = intCharIndex + intNumLength
+                                intCharIndex += intNumLength
                             Else
                                 If Math.Abs(dblAdjacentNum) < Single.Epsilon Then
                                     ' Cannot have 0 after a dash
@@ -4614,7 +4614,7 @@ Public Class MWElementAndMassRoutines
                                         ' Coefficient for bracketed section.
                                         blnInsideBrackets = True
                                         dblBracketMultiplier = dblAdjacentNum * dblBracketMultiplierPrior ' Take times dblBracketMultiplierPrior in case it wasn't 1 to start with
-                                        intCharIndex = intCharIndex + intNumLength
+                                        intCharIndex += intNumLength
                                     End If
                                 End If
                             End If
@@ -4676,7 +4676,7 @@ Public Class MWElementAndMassRoutines
                                             With udtComputationStats.Elements(SymbolReference)
                                                 .Count = .Count + dblAtomCountToAdd
                                                 .Used = True ' Element is present tag
-                                                dblStdDevSum = dblStdDevSum + dblAtomCountToAdd * ((ElementStats(SymbolReference).Uncertainty) ^ 2)
+                                                dblStdDevSum += dblAtomCountToAdd * ((ElementStats(SymbolReference).Uncertainty) ^ 2)
                                             End With
 
                                             With udtComputationStats
@@ -4752,7 +4752,7 @@ Public Class MWElementAndMassRoutines
                                         If gComputationOptions.CaseConversion = ccCaseConversionConstants.ccConvertCaseUp Then
                                             strFormula = Left(strFormula, intCharIndex - 1) & UCase(Mid(strFormula, intCharIndex, 1)) & Mid(strFormula, intCharIndex + 1)
                                         End If
-                                        intCharIndex = intCharIndex + intAddonCount
+                                        intCharIndex += intAddonCount
                                     End If
 
                                 Case smtSymbolMatchTypeConstants.smtAbbreviation
@@ -4863,7 +4863,7 @@ Public Class MWElementAndMassRoutines
                                             End If
                                         End If
                                     End If
-                                    intCharIndex = intCharIndex + intAddonCount
+                                    intCharIndex += intAddonCount
                                 Case Else
                                     ' Element not Found
                                     If UCase(strChar1) = "X" Then
@@ -4888,7 +4888,7 @@ Public Class MWElementAndMassRoutines
                                     If (intCharAsc >= 65 And intCharAsc <= 90) Or (intCharAsc >= 97 And intCharAsc <= 122) Then ' Uppercase A to Z and lowercase a to z
                                         blnCaretPresent = True
                                         dblCaretVal = dblAdjacentNum
-                                        intCharIndex = intCharIndex + intNumLength
+                                        intCharIndex += intNumLength
                                     Else
                                         ' No letter after isotopic mass
                                         ErrorParams.ErrorID = 22 : ErrorParams.ErrorPosition = intCharIndex + intNumLength + 1S
@@ -4926,7 +4926,7 @@ Public Class MWElementAndMassRoutines
                         intCharIndex = Len(strFormula)
                     End If
 
-                    intCharIndex = intCharIndex + 1S
+                    intCharIndex += 1S
                 Loop While intCharIndex <= Len(strFormula)
             End If
 
@@ -4947,7 +4947,7 @@ Public Class MWElementAndMassRoutines
 
             If LoneCarbonOrSilicon > 1 Then
                 ' Correct Charge for number of C and Si
-                udtComputationStats.Charge = udtComputationStats.Charge - CInt(LoneCarbonOrSilicon - 1) * 2
+                udtComputationStats.Charge -= CInt(LoneCarbonOrSilicon - 1) * 2
 
                 CarbonOrSiliconReturnCount = LoneCarbonOrSilicon
             Else
@@ -5023,7 +5023,7 @@ Public Class MWElementAndMassRoutines
                 ' Check for more than one decimal point (. or ,)
                 intDecPtCount = 0
                 For intIndex = 1 To CShort(Len(strFoundNum))
-                    If Mid(strFoundNum, intIndex, 1) = gComputationOptions.DecimalSeparator Then intDecPtCount = intDecPtCount + 1S
+                    If Mid(strFoundNum, intIndex, 1) = gComputationOptions.DecimalSeparator Then intDecPtCount += 1S
                 Next intIndex
                 If intDecPtCount > 1 Then
                     ' more than one intDecPtCount
@@ -5145,13 +5145,13 @@ Public Class MWElementAndMassRoutines
                     intCharIndex += 1
                 End If
             ElseIf strWorkChar = "^" Then
-                strRTF = strRTF & "{\super ^}"
+                strRTF &= "{\super ^}"
                 blnSuperFound = True
             ElseIf strWorkChar = "_" Then
-                strRTF = strRTF & "{\super}"
+                strRTF &= "{\super}"
                 blnSuperFound = True
             ElseIf strWorkChar = "+" And Not calculatorMode Then
-                strRTF = strRTF & "{\super +}"
+                strRTF &= "{\super +}"
                 blnSuperFound = True
             ElseIf strWorkChar = EMPTY_STRING_CHAR Then
                 ' skip it, the tilde sign is used to add additional height to the formula line when isotopes are used
@@ -5160,7 +5160,7 @@ Public Class MWElementAndMassRoutines
                 ' Number or period, so super or subscript it if needed
                 If intCharIndex = 1 Then
                     ' at beginning of line, so leave it alone. Probably out of place
-                    strRTF = strRTF & strWorkChar
+                    strRTF &= strWorkChar
                 ElseIf Not calculatorMode And (Char.IsLetter(CChar(strWorkCharPrev)) Or strWorkCharPrev = ")" Or strWorkCharPrev = "\}" Or strWorkCharPrev = "+" Or strWorkCharPrev = "_" Or Left(Right(strRTF, 6), 3) = "sub") Then
                     ' subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
                     ' But, don't use subscripts in calculator
@@ -5173,14 +5173,14 @@ Public Class MWElementAndMassRoutines
                     strRTF = strRTF & "{\super " & strWorkChar & "}"
                     blnSuperFound = True
                 Else
-                    strRTF = strRTF & strWorkChar
+                    strRTF &= strWorkChar
                 End If
             ElseIf strWorkChar = " " Then
                 ' Ignore it
             Else
                 ' Handle curly brackets
                 If strWorkChar = "{" Or strWorkChar = "}" Then strWorkChar = "\" & strWorkChar
-                strRTF = strRTF & strWorkChar
+                strRTF &= strWorkChar
             End If
             strWorkCharPrev = strWorkChar
         Next intCharIndex
@@ -5191,7 +5191,7 @@ Public Class MWElementAndMassRoutines
             ' It is colored white so the user does not see it
             strRTF = strRTF & "{\fs" & Trim(Str(clsNumberConversionRoutines.CShortSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUST_CHAR & "}}"
         Else
-            strRTF = strRTF & "}"
+            strRTF &= "}"
         End If
 
         PlainTextToRtfInternal = strRTF
@@ -5257,7 +5257,7 @@ Public Class MWElementAndMassRoutines
             For indexRemove = abbreviationID To AbbrevAllCount - 1
                 AbbrevStats(indexRemove) = AbbrevStats(indexRemove + 1)
             Next indexRemove
-            AbbrevAllCount = AbbrevAllCount - 1S
+            AbbrevAllCount -= 1S
             ConstructMasterSymbolsList()
             blnRemoved = True
         Else
@@ -5287,7 +5287,7 @@ Public Class MWElementAndMassRoutines
                     CautionStatements(intIndexRemove, 0) = CautionStatements(intIndexRemove + 1, 0)
                     CautionStatements(intIndexRemove, 1) = CautionStatements(intIndexRemove + 1, 1)
                 Next intIndexRemove
-                CautionStatementCount = CautionStatementCount - 1
+                CautionStatementCount -= 1
                 blnRemoved = True
             End If
         Next intIndex
@@ -5631,7 +5631,7 @@ Public Class MWElementAndMassRoutines
                     ' If intAbbrevID is < 1 or larger than AbbrevAllCount, then define it
                     If intAbbrevID < 1 Or intAbbrevID > AbbrevAllCount + 1 Then
                         If AbbrevAllCount < MAX_ABBREV_COUNT Then
-                            AbbrevAllCount = AbbrevAllCount + 1S
+                            AbbrevAllCount += 1S
                             intAbbrevID = AbbrevAllCount
                         Else
                             ' Too many abbreviations
@@ -5709,7 +5709,7 @@ Public Class MWElementAndMassRoutines
                     ' Caution statements is a 0-based array
                     If Not blnAlreadyPresent Then
                         If CautionStatementCount < MAX_CAUTION_STATEMENTS Then
-                            CautionStatementCount = CautionStatementCount + 1
+                            CautionStatementCount += 1
                             intIndex = CautionStatementCount
                         Else
                             ' Too many caution statements
@@ -5921,8 +5921,8 @@ Public Class MWElementAndMassRoutines
             Do While incrementAmount < itemCount
                 incrementAmount = 3 * incrementAmount + 1
             Loop
-            incrementAmount = incrementAmount \ 3
-            incrementAmount = incrementAmount \ 3
+            incrementAmount \= 3
+            incrementAmount \= 3
         End If
 
         Do While incrementAmount > 0
@@ -5943,7 +5943,7 @@ Public Class MWElementAndMassRoutines
                 Next indexCompare
                 PointerArray(indexCompare + incrementAmount) = pointerSwap
             Next index
-            incrementAmount = incrementAmount \ 3
+            incrementAmount \= 3
         Loop
 
     End Sub
@@ -5975,8 +5975,8 @@ Public Class MWElementAndMassRoutines
             Do While incrementAmount < itemCount
                 incrementAmount = 3 * incrementAmount + 1
             Loop
-            incrementAmount = incrementAmount \ 3
-            incrementAmount = incrementAmount \ 3
+            incrementAmount \= 3
+            incrementAmount \= 3
         End If
 
         Do While incrementAmount > 0
@@ -5990,7 +5990,7 @@ Public Class MWElementAndMassRoutines
                 Next indexCompare
                 AbbrevStats(indexCompare + incrementAmount) = udtCompare
             Next index
-            incrementAmount = incrementAmount \ 3
+            incrementAmount \= 3
         Loop
 
         ' Need to re-construct the master symbols list
@@ -6093,7 +6093,7 @@ Public Class MWElementAndMassRoutines
             With AbbrevStats(intAbbrevIndex)
                 SetAbbreviationByIDInternal(intAbbrevIndex, .Symbol, .Formula, .Charge, .IsAminoAcid, .OneLetterSymbol, .Comment, True)
                 If .InvalidSymbolOrFormula Then
-                    intInvalidAbbreviationCount = intInvalidAbbreviationCount + 1S
+                    intInvalidAbbreviationCount += 1S
                 End If
             End With
         Next intAbbrevIndex

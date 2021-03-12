@@ -251,17 +251,17 @@ Public Class frmTextbrowser
 
     Private Sub mnuEditFontSizeDecrease_Click(sender As System.Object, e As System.EventArgs) Handles mnuEditFontSizeDecrease.Click
         If Me.TextFontSize > 14 Then
-            Me.TextFontSize = Me.TextFontSize - 2
+            Me.TextFontSize -= 2
         Else
-            Me.TextFontSize = Me.TextFontSize - 1
+            Me.TextFontSize -= 1
         End If
     End Sub
 
     Private Sub mnuEditFontSizeIncrease_Click(sender As System.Object, e As System.EventArgs) Handles mnuEditFontSizeIncrease.Click
         If Me.TextFontSize >= 14 Then
-            Me.TextFontSize = Me.TextFontSize + 2
+            Me.TextFontSize += 2
         Else
-            Me.TextFontSize = Me.TextFontSize + 1
+            Me.TextFontSize += 1
         End If
     End Sub
 

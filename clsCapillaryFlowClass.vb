@@ -400,7 +400,7 @@ Public Class MWCapillaryFlowClass
             dblColumnVolume = .ColumnLength * PI * dblRadius ^ 2 ' In mL
 
             If .CapillaryType = ctCapillaryTypeConstants.ctPackedCapillary Then
-                dblColumnVolume = dblColumnVolume * .InterparticlePorosity
+                dblColumnVolume *= .InterparticlePorosity
             End If
         End With
 
@@ -527,7 +527,7 @@ Public Class MWCapillaryFlowClass
 
                 ' Divide Linear Velocity by epsilon if a packed capillary
                 If .CapillaryType = ctCapillaryTypeConstants.ctPackedCapillary And Math.Abs(.InterparticlePorosity) > Single.Epsilon Then
-                    dblLinearVelocity = dblLinearVelocity / .InterparticlePorosity
+                    dblLinearVelocity /= .InterparticlePorosity
                 End If
             Else
                 dblLinearVelocity = 0
@@ -652,7 +652,7 @@ Public Class MWCapillaryFlowClass
                 End If
 
                 ' Convert dblVolFlowRate to mL/min
-                dblVolFlowRate = dblVolFlowRate * 60
+                dblVolFlowRate *= 60
             Else
                 dblVolFlowRate = 0
             End If
@@ -692,7 +692,7 @@ Public Class MWCapillaryFlowClass
 
                 If .CapillaryType = ctCapillaryTypeConstants.ctPackedCapillary Then
                     ' Packed Capillary
-                    dblVolFlowRate = dblVolFlowRate * .InterparticlePorosity
+                    dblVolFlowRate *= .InterparticlePorosity
                 End If
 
                 ' Store the new value
@@ -913,7 +913,7 @@ Public Class MWCapillaryFlowClass
         Select Case eNewUnits
             Case utpUnitsTemperatureConstants.utpCelsius
                 ' C = K - 273
-                dblValue = dblValue - 273
+                dblValue -= 273
             Case utpUnitsTemperatureConstants.utpFahrenheit
                 ' Convert to Fahrenheit: C = K - 273 and F = (9/5)C + 32
                 dblValue = 9.0# / 5.0# * (dblValue - 273) + 32

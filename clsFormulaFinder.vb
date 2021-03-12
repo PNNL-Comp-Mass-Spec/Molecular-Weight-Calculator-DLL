@@ -733,18 +733,18 @@ Public Class MWFormulaFinder
         ' Determine number of C, Si, N, P, O, S, Cl, I, F, Br and H atoms
         For Each item In empiricalResultSymbols
             Select Case item.Key
-                Case "C" : udtElementNum.C = udtElementNum.C + item.Value
-                Case "Si" : udtElementNum.Si = udtElementNum.Si + item.Value
-                Case "N" : udtElementNum.N = udtElementNum.N + item.Value
-                Case "P" : udtElementNum.P = udtElementNum.P + item.Value
-                Case "O" : udtElementNum.O = udtElementNum.O + item.Value
-                Case "S" : udtElementNum.S = udtElementNum.S + item.Value
-                Case "Cl" : udtElementNum.Cl = udtElementNum.Cl + item.Value
-                Case "I" : udtElementNum.I = udtElementNum.I + item.Value
-                Case "F" : udtElementNum.F = udtElementNum.F + item.Value
-                Case "Br" : udtElementNum.Br = udtElementNum.Br + item.Value
-                Case "H" : udtElementNum.H = udtElementNum.H + item.Value
-                Case Else : udtElementNum.Other = udtElementNum.Other + item.Value
+                Case "C" : udtElementNum.C += item.Value
+                Case "Si" : udtElementNum.Si += item.Value
+                Case "N" : udtElementNum.N += item.Value
+                Case "P" : udtElementNum.P += item.Value
+                Case "O" : udtElementNum.O += item.Value
+                Case "S" : udtElementNum.S += item.Value
+                Case "Cl" : udtElementNum.Cl += item.Value
+                Case "I" : udtElementNum.I += item.Value
+                Case "F" : udtElementNum.F += item.Value
+                Case "Br" : udtElementNum.Br += item.Value
+                Case "H" : udtElementNum.H += item.Value
+                Case Else : udtElementNum.Other += item.Value
             End Select
         Next
 
@@ -776,7 +776,7 @@ Public Class MWFormulaFinder
 
             ' Combine the above two commented out if's to obtain:
             If (udtElementNum.N > 0 Or udtElementNum.P > 0) And (udtElementNum.C > 0 Or udtElementNum.Si > 0) Then
-                maxH = maxH - 3
+                maxH -= 3
             End If
 
             If udtElementNum.Other > 0 Then maxH += udtElementNum.Other * 4 + 3
@@ -960,7 +960,7 @@ Public Class MWFormulaFinder
 
         If multipleSearchMax > 0 Then
             ' Correct lngMaxRecursiveCount for searching for m/z values
-            mMaxRecursiveCount = mMaxRecursiveCount * multipleSearchMax
+            mMaxRecursiveCount *= multipleSearchMax
         End If
 
     End Sub

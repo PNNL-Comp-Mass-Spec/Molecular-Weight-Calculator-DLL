@@ -204,7 +204,7 @@ Public Class MWCompoundClass
         For intElementIndex = 1 To MWElementAndMassRoutines.ELEMENT_COUNT
             ' Increment .TotalElements if element is present
             If mComputationStats.Elements(intElementIndex).Used Then
-                intTotalElements = intTotalElements + 1S
+                intTotalElements += 1S
             End If
         Next intElementIndex
 

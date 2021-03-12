@@ -551,8 +551,8 @@ Public Class MWPeptideClass
                                         End If
 
                                         If intChargeIndex > 1 Then
-                                            strIonSymbol = strIonSymbol & New String("+"c, intChargeIndex)
-                                            strIonSymbolGeneric = strIonSymbolGeneric & New String("+"c, intChargeIndex)
+                                            strIonSymbol &= New String("+"c, intChargeIndex)
+                                            strIonSymbolGeneric &= New String("+"c, intChargeIndex)
                                         End If
 
 
@@ -775,7 +775,7 @@ Public Class MWPeptideClass
         lngResidueCount = 0
         For lngResidueIndex = 0 To ResidueCount - 1
             If Residues(lngResidueIndex).Symbol = strSearchResidue3Letter Then
-                lngResidueCount = lngResidueCount + 1
+                lngResidueCount += 1
             End If
 
         Next lngResidueIndex
@@ -885,18 +885,18 @@ Public Class MWPeptideClass
             With Residues(lngIndex)
                 strSymbol3Letter = .Symbol
                 If blnUse3LetterCode Then
-                    strSequence = strSequence & strSymbol3Letter
+                    strSequence &= strSymbol3Letter
                 Else
                     strSymbol1Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol3Letter, False)
                     If strSymbol1Letter = String.Empty Then strSymbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER
-                    strSequence = strSequence & strSymbol1Letter
+                    strSequence &= strSymbol1Letter
                 End If
 
                 If blnIncludeModificationSymbols Then
                     For intModIndex = 1 To .ModificationIDCount
                         lngError = GetModificationSymbol(.ModificationIDs(intModIndex), strModSymbol, dblModMass, blnIndicatesPhosphorylation, strModSymbolComment)
                         If lngError = 0 Then
-                            strSequence = strSequence & strModSymbol
+                            strSequence &= strModSymbol
                         Else
                             Console.WriteLine("GetModificationSymbol returned error code " & lngError & " in GetSequence")
                         End If
@@ -908,12 +908,12 @@ Public Class MWPeptideClass
             If lngIndex <> ResidueCount Then
                 If blnAddSpaceEvery10Residues Then
                     If lngIndex Mod 10 = 0 Then
-                        strSequence = strSequence & " "
+                        strSequence &= " "
                     Else
-                        strSequence = strSequence & strDashAdd
+                        strSequence &= strDashAdd
                     End If
                 Else
-                    strSequence = strSequence & strDashAdd
+                    strSequence &= strDashAdd
                 End If
             End If
 
@@ -1108,10 +1108,10 @@ Public Class MWPeptideClass
                     Do
                         lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResiduesBeforeStartLoc, strResidueFollowingSearchResidues, lngRuleResidueLoc + 1, strRuleResidues, strExceptionResidues, strTerminiiSymbol)
                         If lngRuleResidueLoc > 0 Then
-                            intTrypticResidueNumber = intTrypticResidueNumber + 1S
+                            intTrypticResidueNumber += 1S
                         End If
                     Loop While lngRuleResidueLoc > 0 And lngRuleResidueLoc + 1 < intStartLoc
-                    intTrypticResidueNumber = intTrypticResidueNumber + 1S
+                    intTrypticResidueNumber += 1S
                 End If
 
                 ' Determine number of K or R residues in strPeptideResidues
@@ -1121,7 +1121,7 @@ Public Class MWPeptideClass
                 Do
                     lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strPeptideResidues, strSuffix, lngRuleResidueLoc + 1, strRuleResidues, strExceptionResidues, strTerminiiSymbol)
                     If lngRuleResidueLoc > 0 Then
-                        intRuleResidueMatchCount = intRuleResidueMatchCount + 1S
+                        intRuleResidueMatchCount += 1S
                     End If
                 Loop While lngRuleResidueLoc > 0 And lngRuleResidueLoc < lngPeptideResiduesLength
 
@@ -1275,7 +1275,7 @@ Public Class MWPeptideClass
                 End If
                 strNameList &= strCurrentName
                 lngCurrentSearchLoc = lngCurrentResidueEnd + 1
-                lngReturnMatchCount = lngReturnMatchCount + 1
+                lngReturnMatchCount += 1
 
                 If lngReturnMatchCount = 1 Then
                     lngReturnResidueStart = lngCurrentResidueStart
@@ -1502,7 +1502,7 @@ Public Class MWPeptideClass
         Do
             lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResidues, strTerminiiSymbol, lngStartLoc, strRuleResidues, strExceptionResidues, strTerminiiSymbol)
             If lngRuleResidueLoc > 0 Then
-                intCurrentTrypticPeptideNumber = intCurrentTrypticPeptideNumber + 1S
+                intCurrentTrypticPeptideNumber += 1S
                 lngPrevStartLoc = lngStartLoc
                 lngStartLoc = lngRuleResidueLoc + 1
 
@@ -1672,7 +1672,7 @@ Public Class MWPeptideClass
                 If intEndToCheck = 0 Then
                     strTestResidue = strPrefix
                     If strPrefix = strTerminiiSymbol Then
-                        intRuleMatchCount = intRuleMatchCount + 1S
+                        intRuleMatchCount += 1S
                         blnSkipThisEnd = True
                     Else
                         ' See if strSequenceStart matches one of the exception residues
@@ -1689,7 +1689,7 @@ Public Class MWPeptideClass
                 Else
                     strTestResidue = strSequenceEnd
                     If strSuffix = strTerminiiSymbol Then
-                        intRuleMatchCount = intRuleMatchCount + 1S
+                        intRuleMatchCount += 1S
                         blnSkipThisEnd = True
                     Else
                         ' Make sure strSuffix does not match strExceptionSuffixResidues
@@ -1702,7 +1702,7 @@ Public Class MWPeptideClass
 
                 If Not blnSkipThisEnd Then
                     If CheckSequenceAgainstCleavageRuleMatchTestResidue(strTestResidue, strRuleResidues) Then
-                        intRuleMatchCount = intRuleMatchCount + 1S
+                        intRuleMatchCount += 1S
                     End If
                 End If
             Next intEndToCheck
@@ -1872,7 +1872,7 @@ Public Class MWPeptideClass
             For lngIndex = lngModificationID To ModificationSymbolCount - 1
                 ModificationSymbols(lngIndex) = ModificationSymbols(lngIndex + 1)
             Next lngIndex
-            ModificationSymbolCount = ModificationSymbolCount - 1
+            ModificationSymbolCount -= 1
             blnRemoved = True
         Else
             blnRemoved = False
@@ -2114,7 +2114,7 @@ Public Class MWPeptideClass
 
                 If lngIndexToUse = 0 Then
                     ' Need to add the modification
-                    ModificationSymbolCount = ModificationSymbolCount + 1
+                    ModificationSymbolCount += 1
                     lngIndexToUse = ModificationSymbolCount
                     ReserveMemoryForModifications(ModificationSymbolCount, True)
                 End If
@@ -2228,7 +2228,7 @@ Public Class MWPeptideClass
         End If
 
         If lngResidueNumber > ResidueCount Then
-            ResidueCount = ResidueCount + 1
+            ResidueCount += 1
             ReserveMemoryForResidues(ResidueCount, True)
             lngIndexToUse = ResidueCount
         Else
@@ -2556,12 +2556,12 @@ Public Class MWPeptideClass
                             ' Look at following character(s), and record any modification symbols present
                             lngModSymbolLength = CheckForModifications(Mid(strSequence, lngIndex + 3), ResidueCount, blnAddMissingModificationSymbols)
 
-                            lngIndex = lngIndex + 3
-                            lngIndex = lngIndex + lngModSymbolLength
+                            lngIndex += 3
+                            lngIndex += lngModSymbolLength
 
                         Else
                             ' First letter is a character, but next two are not; ignore it
-                            lngIndex = lngIndex + 1
+                            lngIndex += 1
                         End If
                     Else
                         ' If . or - or space, then ignore it
@@ -2572,7 +2572,7 @@ Public Class MWPeptideClass
                         Else
                             ' Ignore it
                         End If
-                        lngIndex = lngIndex + 1
+                        lngIndex += 1
                     End If
                 Loop
             End If
@@ -2646,8 +2646,8 @@ Public Class MWPeptideClass
             Do While lngIncrement < lngCount
                 lngIncrement = 3 * lngIncrement + 1
             Loop
-            lngIncrement = lngIncrement \ 3
-            lngIncrement = lngIncrement \ 3
+            lngIncrement \= 3
+            lngIncrement \= 3
         End If
 
         Do While lngIncrement > 0
@@ -2661,7 +2661,7 @@ Public Class MWPeptideClass
                 Next lngIndexCompare
                 PointerArray(lngIndexCompare + lngIncrement) = lngPointerSwap
             Next lngIndex
-            lngIncrement = lngIncrement \ 3
+            lngIncrement \= 3
         Loop
 
     End Sub
@@ -2684,7 +2684,7 @@ Public Class MWPeptideClass
             ' However, we need to subtract out dblHydrogenMass, and not dblChargeCarrierMass since the current
             '  formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier
             blnProtonatedNTerminus = True
-            dblRunningTotal = dblRunningTotal - dblHydrogenMass
+            dblRunningTotal -= dblHydrogenMass
         End If
 
         For lngIndex = 1 To ResidueCount
@@ -2694,7 +2694,7 @@ Public Class MWPeptideClass
                 lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(.Symbol, True)
 
                 If lngAbbrevID > 0 Then
-                    lngValidResidueCount = lngValidResidueCount + 1
+                    lngValidResidueCount += 1
                     .Mass = ElementAndMassRoutines.GetAbbreviationMass(lngAbbrevID)
 
                     blnPhosphorylationMassAdded = False
@@ -2720,7 +2720,7 @@ Public Class MWPeptideClass
                         End If
                     End If
 
-                    dblRunningTotal = dblRunningTotal + .MassWithMods
+                    dblRunningTotal += .MassWithMods
 
                     .IonMass(itIonTypeConstants.itAIon) = dblRunningTotal - dblImmoniumMassDifference - dblChargeCarrierMass
                     .IonMass(itIonTypeConstants.itBIon) = dblRunningTotal
@@ -2735,9 +2735,9 @@ Public Class MWPeptideClass
             End With
         Next lngIndex
 
-        dblRunningTotal = dblRunningTotal + mCTerminus.Mass
+        dblRunningTotal += mCTerminus.Mass
         If blnProtonatedNTerminus Then
-            dblRunningTotal = dblRunningTotal + dblChargeCarrierMass
+            dblRunningTotal += dblChargeCarrierMass
         End If
 
         If lngValidResidueCount > 0 Then
@@ -2752,7 +2752,7 @@ Public Class MWPeptideClass
         For lngIndex = ResidueCount To 1 Step -1
             With Residues(lngIndex)
                 If .IonMass(itIonTypeConstants.itAIon) > 0 Then
-                    dblRunningTotal = dblRunningTotal + .MassWithMods
+                    dblRunningTotal += .MassWithMods
                     .IonMass(itIonTypeConstants.itYIon) = dblRunningTotal + dblChargeCarrierMass
                     If lngIndex = 1 Then
                         ' Add the N-terminus mass to highest y ion

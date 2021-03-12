@@ -1269,7 +1269,7 @@ Friend Class frmMwtWinDllTest
         Do
             strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, CShort(lngIndex), lngResidueStart, lngResidueEnd)
             objResults.AppendText("Tryptic fragment " & Trim(CStr(lngIndex)) & ": " & strPeptideFragMwtWin)
-            lngIndex = lngIndex + 1
+            lngIndex += 1
         Loop While Len(strPeptideFragMwtWin) > 0
 
 
@@ -1282,7 +1282,7 @@ Friend Class frmMwtWinDllTest
             strProtein = ""
             For lngResidueRand = 1 To lngProteinLengthRand
                 strNewResidue = Mid(POSSIBLE_RESIDUES, CInt(Int(Len(POSSIBLE_RESIDUES)) * Rnd() + 1), 1)
-                strProtein = strProtein & strNewResidue
+                strProtein &= strNewResidue
             Next lngResidueRand
 
             objResults.AppendText("Iteration: " & lngMultipleIteration & " = " & strProtein)
@@ -1304,9 +1304,9 @@ Friend Class frmMwtWinDllTest
                     strPeptideResidues = Mid(strProtein, lngResidueStart, lngResidueEnd)
                     strPeptideNameMwtWin(lngMwtWinResultCount) = mMwtWin.Peptide.GetTrypticName(strProtein, strPeptideResidues, 0, 0, True)
 
-                    lngMwtWinResultCount = lngMwtWinResultCount + 1
+                    lngMwtWinResultCount += 1
                     If lngMwtWinResultCount > lngMwtWinDimCount Then
-                        lngMwtWinDimCount = lngMwtWinDimCount + DIM_CHUNK
+                        lngMwtWinDimCount += DIM_CHUNK
                         ReDim Preserve strPeptideNameMwtWin(lngMwtWinDimCount)
                     End If
 
