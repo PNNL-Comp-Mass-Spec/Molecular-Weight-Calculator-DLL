@@ -593,8 +593,9 @@ Friend Class frmMwtWinDllTest
     End Sub
 
     Private Sub InitializeControls()
-        mMwtWin = New MwtWinDll.MolecularWeightCalculator
-        mMwtWin.ShowErrorDialogs = True
+        mMwtWin = New MwtWinDll.MolecularWeightCalculator With {
+            .ShowErrorDialogs = True
+        }
 
         lblDLLVersion.Text = "DLL Info: " & mMwtWin.AppDate & ", Version " & mMwtWin.AppVersion
         PopulateComboBoxes()
@@ -1009,12 +1010,12 @@ Friend Class frmMwtWinDllTest
         ' Abbreviations are supported, for example Serine
         oMwtWin.FormulaFinder.AddCandidateElement("Ser")
 
-        Dim searchOptions = New clsFormulaFinderOptions()
-
-        searchOptions.LimitChargeRange = False
-        searchOptions.ChargeMin = 1
-        searchOptions.ChargeMax = 1
-        searchOptions.FindTargetMZ = False
+        Dim searchOptions = New clsFormulaFinderOptions With {
+            .LimitChargeRange = False,
+            .ChargeMin = 1,
+            .ChargeMax = 1,
+            .FindTargetMZ = False
+        }
 
         cmdTestFormulaFinder.Enabled = False
         Windows.Forms.Application.DoEvents()
@@ -1123,7 +1124,7 @@ Friend Class frmMwtWinDllTest
             massColumnName = "DeltaMass"
         End If
 
-        ' Add coluns to the table
+        ' Add columns to the table
         Dim cFormula As New DataColumn("Formula", GetType(String))
         Dim cMass As New DataColumn("Mass", GetType(Double))
         Dim cDeltaMass As New DataColumn(massColumnName, GetType(Double))
