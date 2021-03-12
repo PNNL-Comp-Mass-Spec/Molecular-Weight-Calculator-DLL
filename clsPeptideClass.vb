@@ -85,14 +85,14 @@ Public Class MWPeptideClass
         itZIon = 4
     End Enum
 
-    Private Structure udtModificationSymbolType
+    Private Class udtModificationSymbolType
         Public Symbol As String ' Symbol used for modification in formula; may be 1 or more characters; for example: + ++ * ** etc.
         Public ModificationMass As Double ' Normally positive, but could be negative
         Public IndicatesPhosphorylation As Boolean ' When true, then this symbol means a residue is phosphorylated
         Public Comment As String
-    End Structure
+    End Class
 
-    Private Structure udtResidueType
+    Private Class udtResidueType
         Public Symbol As String ' 3 letter symbol
         Public Mass As Double ' The mass of the residue alone (excluding any modification)
         Public MassWithMods As Double ' The mass of the residue, including phosphorylation or any modification
@@ -111,22 +111,22 @@ Public Class MWPeptideClass
                 ReDim ModificationIDs(MAX_MODIFICATIONS)
             End If
         End Sub
-    End Structure
+    End Class
 
-    Private Structure udtTerminusType
+    Private Class udtTerminusType
         Public Formula As String
         Public Mass As Double
-        Public PrecedingResidue As udtResidueType ' If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
-        Public FollowingResidue As udtResidueType ' If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
+        Public PrecedingResidue As New udtResidueType ' If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
+        Public FollowingResidue As New udtResidueType ' If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
 
         ' Note: "Initialize" must be called to initialize instances of this structure
         Public Sub Initialize()
             PrecedingResidue.Initialize()
             FollowingResidue.Initialize()
         End Sub
-    End Structure
+    End Class
 
-    Public Structure udtFragmentationSpectrumIntensitiesType
+    Public Class udtFragmentationSpectrumIntensitiesType
         Public IonType() As Double ' 0-based array
         Public BYIonShoulder As Double ' If > 0 then shoulder ions will be created by B and Y ions
         Public NeutralLoss As Double
@@ -135,19 +135,19 @@ Public Class MWPeptideClass
         Public Sub Initialize()
             ReDim IonType(ION_TYPE_MAX)
         End Sub
-    End Structure
+    End Class
 
     ' Note: A ions can have ammonia and phosphate loss, but not water loss, so this is set to false by default
     '       The graphical version of MwtWin does not allow this to be overridden, but a programmer could do so via a call to this Dll
-    Public Structure udtIonTypeOptionsType
+    Public Class udtIonTypeOptionsType
         Public ShowIon As Boolean
         Public NeutralLossWater As Boolean
         Public NeutralLossAmmonia As Boolean
         Public NeutralLossPhosphate As Boolean
-    End Structure
+    End Class
 
-    Public Structure udtFragmentationSpectrumOptionsType
-        Public IntensityOptions As udtFragmentationSpectrumIntensitiesType
+    Public Class udtFragmentationSpectrumOptionsType
+        Public IntensityOptions As New udtFragmentationSpectrumIntensitiesType
         Public IonTypeOptions() As udtIonTypeOptionsType
         Public DoubleChargeIonsShow As Boolean
         Public DoubleChargeIonsThreshold As Single
@@ -159,9 +159,9 @@ Public Class MWPeptideClass
             IntensityOptions.Initialize()
             ReDim IonTypeOptions(ION_TYPE_MAX)
         End Sub
-    End Structure
+    End Class
 
-    Public Structure udtFragmentationSpectrumDataType
+    Public Class udtFragmentationSpectrumDataType
         Public Mass As Double
         Public Intensity As Double
         Public Symbol As String ' The symbol, with the residue number (e.g. y1, y2, b3-H2O, Shoulder-y1, etc.)
@@ -172,10 +172,10 @@ Public Class MWPeptideClass
         Public IonType As itIonTypeConstants
         Public IsShoulderIon As Boolean ' B and Y ions can have Shoulder ions at +-1
 
-        Public Overloads Function ToString() As String
+        Public Overrides Function ToString() As String
             Return Symbol & ", " & Mass.ToString("0.00")
         End Function
-    End Structure
+    End Class
 
     ' Note: A peptide goes from N to C, eg. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
     ' Residue 1 would be Gly, Residue 2 would be Leu, Residue 3 would be Tyr
@@ -190,17 +190,17 @@ Public Class MWPeptideClass
     Private ModificationSymbolCountDimmed As Integer
 
     ' ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
-    Private mNTerminus As udtTerminusType ' Formula on the N-Terminus
+    Private mNTerminus As New udtTerminusType ' Formula on the N-Terminus
 
     ' ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
-    Private mCTerminus As udtTerminusType ' Formula on the C-Terminus
+    Private mCTerminus As New udtTerminusType ' Formula on the C-Terminus
     Private mTotalMass As Double
 
     Private mWaterLossSymbol As String ' -H2O
     Private mAmmoniaLossSymbol As String ' -NH3
     Private mPhosphoLossSymbol As String ' -H3PO4
 
-    Private mFragSpectrumOptions As udtFragmentationSpectrumOptionsType
+    Private mFragSpectrumOptions As New udtFragmentationSpectrumOptionsType
 
     Private dblHOHMass As Double
     Private dblNH3Mass As Double

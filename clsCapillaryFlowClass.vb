@@ -145,128 +145,128 @@ Public Class MWCapillaryFlowClass
 
 #End Region
 
-#Region "Structures"
+#Region "Data classes"
 
-    Private Structure udtCapillaryFlowParametersType
-        Dim CapillaryType As ctCapillaryTypeConstants
+    Private Class udtCapillaryFlowParametersType
+        Public CapillaryType As ctCapillaryTypeConstants
 
         ''' <summary>
         ''' Units: dynes/cm^2
         ''' </summary>
-        Dim BackPressure As Double
+        Public BackPressure As Double
 
         ''' <summary>
         ''' Units: cm
         ''' </summary>
-        Dim ColumnLength As Double
+        Public ColumnLength As Double
 
         ''' <summary>
         ''' Units: cm
         ''' </summary>
-        Dim ColumnID As Double
+        Public ColumnID As Double
 
         ''' <summary>
         ''' Units: poise
         ''' </summary>
-        Dim SolventViscosity As Double
+        Public SolventViscosity As Double
 
         ''' <summary>
         ''' Units: cm
         ''' </summary>
-        Dim ParticleDiameter As Double
+        Public ParticleDiameter As Double
 
         ''' <summary>
         ''' Units: mL/min
         ''' </summary>
-        Dim VolumetricFlowRate As Double
+        Public VolumetricFlowRate As Double
 
         ''' <summary>
         ''' Units: cm/min
         ''' </summary>
-        Dim LinearVelocity As Double
+        Public LinearVelocity As Double
 
         ''' <summary>
         ''' Units: min
         ''' </summary>
-        Dim ColumnDeadTime As Double
+        Public ColumnDeadTime As Double
 
-        Dim InterparticlePorosity As Double
-    End Structure
+        Public InterparticlePorosity As Double
+    End Class
 
-    Private Structure udtMassRateParametersType
+    Private Class udtMassRateParametersType
         ''' <summary>
         ''' Units: Molar
         ''' </summary>
-        Dim SampleConcentration As Double
+        Public SampleConcentration As Double
 
         ''' <summary>
         ''' Units: g/mole
         ''' </summary>
-        Dim SampleMass As Double
+        Public SampleMass As Double
 
         ''' <summary>
         ''' Units: mL/min
         ''' </summary>
-        Dim VolumetricFlowRate As Double
+        Public VolumetricFlowRate As Double
 
         ''' <summary>
         ''' Units: min
         ''' </summary>
-        Dim InjectionTime As Double
+        Public InjectionTime As Double
 
         ''' <summary>
         ''' Units: Moles/min
         ''' </summary>
-        Dim MassFlowRate As Double
+        Public MassFlowRate As Double
 
         ''' <summary>
         ''' Units: moles
         ''' </summary>
-        Dim MolesInjected As Double
-    End Structure
+        Public MolesInjected As Double
+    End Class
 
-    Private Structure udtExtraColumnBroadeningParametersType
+    Private Class udtExtraColumnBroadeningParametersType
 
         ''' <summary>
         ''' Units: cm/min
         ''' </summary>
-        Dim LinearVelocity As Double
+        Public LinearVelocity As Double
 
         ''' <summary>
         ''' Units: cm^2/sec
         ''' </summary>
-        Dim DiffusionCoefficient As Double
+        Public DiffusionCoefficient As Double
 
         ''' <summary>
         ''' Units: cm
         ''' </summary>
-        Dim OpenTubeLength As Double
+        Public OpenTubeLength As Double
 
         ''' <summary>
         ''' Units: cm
         ''' </summary>
-        Dim OpenTubeID As Double
+        Public OpenTubeID As Double
 
         ''' <summary>
         ''' Units: sec
         ''' </summary>
-        Dim InitialPeakWidth As Double
+        Public InitialPeakWidth As Double
 
         ''' <summary>
         ''' Units: sec^2
         ''' </summary>
-        Dim TemporalVariance As Double
+        Public TemporalVariance As Double
 
         ''' <summary>
         ''' Units: sec^2
         ''' </summary>
-        Dim AdditionalTemporalVariance As Double
+        Public AdditionalTemporalVariance As Double
 
         ''' <summary>
         ''' Units: sec
         ''' </summary>
-        Dim ResultantPeakWidth As Double
-    End Structure
+        Public ResultantPeakWidth As Double
+    End Class
 
 #End Region
 
@@ -275,9 +275,9 @@ Public Class MWCapillaryFlowClass
     Private Const CM_PER_INCH As Single = 2.54
     Private Const PI As Double = 3.14159265359
 
-    Private mCapillaryFlowParameters As udtCapillaryFlowParametersType
-    Private mMassRateParameters As udtMassRateParametersType
-    Private mExtraColumnBroadeningParameters As udtExtraColumnBroadeningParametersType
+    Private mCapillaryFlowParameters As New udtCapillaryFlowParametersType
+    Private mMassRateParameters As New udtMassRateParametersType
+    Private mExtraColumnBroadeningParameters As New udtExtraColumnBroadeningParametersType
 
     ''' <summary>
     ''' When true, automatically compute results whenever any value changes

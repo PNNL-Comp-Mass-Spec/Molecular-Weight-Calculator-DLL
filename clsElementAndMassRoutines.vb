@@ -75,9 +75,9 @@ Public Class MWElementAndMassRoutines
 
 #End Region
 
-#Region "Structures"
+#Region "Data classes"
 
-    Public Structure udtOptionsType
+    Public Class udtOptionsType
         Public AbbrevRecognitionMode As MolecularWeightCalculator.arAbbrevRecognitionModeConstants
         Public BracketsAsParentheses As Boolean
         Public CaseConversion As ccCaseConversionConstants
@@ -85,31 +85,31 @@ Public Class MWElementAndMassRoutines
         Public RtfFontName As String
         Public RtfFontSize As Short
         Public StdDevMode As smStdDevModeConstants ' Can be 0, 1, or 2 (see smStdDevModeConstants)
-    End Structure
+    End Class
 
-    Public Structure usrIsotopicAtomInfoType
+    Public Class usrIsotopicAtomInfoType
         Public Count As Double ' Can have non-integer counts of atoms, eg. ^13C5.5
         Public Mass As Double
-    End Structure
+    End Class
 
-    Public Structure udtElementUseStatsType
+    Public Class udtElementUseStatsType
         Public Used As Boolean
         Public Count As Double ' Can have non-integer counts of atoms, eg. C5.5
         Public IsotopicCorrection As Double
         Public IsotopeCount As Short ' Number of specific isotopes defined
         Public Isotopes() As usrIsotopicAtomInfoType
-    End Structure
+    End Class
 
-    Public Structure udtPctCompType
+    Public Class udtPctCompType
         Public PercentComposition As Double
         Public StdDeviation As Double
 
         Public Overrides Function ToString() As String
             Return PercentComposition.ToString("0.0000")
         End Function
-    End Structure
+    End Class
 
-    Public Structure udtComputationStatsType
+    Public Class udtComputationStatsType
         Public Elements() As udtElementUseStatsType        ' 1-based array, ranging from 1 to ELEMENT_COUNT
         Public TotalMass As Double
         Public PercentCompositions() As udtPctCompType     ' 1-based array, ranging from 1 to ELEMENT_COUNT
@@ -121,18 +121,18 @@ Public Class MWElementAndMassRoutines
             ReDim Elements(ELEMENT_COUNT)
             ReDim PercentCompositions(ELEMENT_COUNT)
         End Sub
-    End Structure
+    End Class
 
-    Public Structure udtIsotopeInfoType
+    Public Class udtIsotopeInfoType
         Public Mass As Double
         Public Abundance As Single
 
         Public Overrides Function ToString() As String
             Return Mass.ToString("0.0000")
         End Function
-    End Structure
+    End Class
 
-    Public Structure udtElementStatsType
+    Public Class udtElementStatsType
         Public Symbol As String
         Public Mass As Double
         Public Uncertainty As Double
@@ -148,9 +148,9 @@ Public Class MWElementAndMassRoutines
         Public Overrides Function ToString() As String
             Return Symbol & ": " & Mass.ToString("0.0000")
         End Function
-    End Structure
+    End Class
 
-    Public Structure udtAbbrevStatsType
+    Public Class udtAbbrevStatsType
         ''' <summary>
         ''' The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
         ''' </summary>
@@ -195,9 +195,9 @@ Public Class MWElementAndMassRoutines
         Public Overrides Function ToString() As String
             Return Symbol & ": " & Formula
         End Function
-    End Structure
+    End Class
 
-    Private Structure udtErrorDescriptionType
+    Private Class udtErrorDescriptionType
         Public ErrorID As Integer ' Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
         Public ErrorPosition As Integer
         Public ErrorCharacter As String
@@ -205,9 +205,9 @@ Public Class MWElementAndMassRoutines
         Public Overrides Function ToString() As String
             Return "ErrorID " & ErrorID & " at " & ErrorPosition & ": " & ErrorCharacter
         End Function
-    End Structure
+    End Class
 
-    Private Structure udtIsoResultsByElementType
+    Private Class udtIsoResultsByElementType
         Public ElementIndex As Short ' Index of element in ElementStats() array; look in ElementStats() to get information on its isotopes
         Public boolExplicitIsotope As Boolean ' True if an explicitly defined isotope
         Public ExplicitMass As Double
@@ -215,27 +215,27 @@ Public Class MWElementAndMassRoutines
         Public ResultsCount As Integer ' Number of masses in MassAbundances
         Public StartingResultsMass As Integer ' Starting mass of the results for this element
         Public MassAbundances() As Single ' Abundance of each mass, starting with StartingResultsMass
-    End Structure
+    End Class
 
-    Private Structure udtIsoResultsOverallType
+    Private Class udtIsoResultsOverallType
         Public Abundance As Single
         Public Multiplicity As Integer
-    End Structure
+    End Class
 
-    Private Structure udtAbbrevSymbolStackType
+    Private Class udtAbbrevSymbolStackType
         Public Count As Short
         Public SymbolReferenceStack() As Short ' 0-based array
-    End Structure
+    End Class
 
-    Private Structure udtXYDataType
+    Private Class udtXYDataType
         Public X As Double
         Public Y As Double
-    End Structure
+    End Class
 #End Region
 
 #Region "Classwide Variables"
 
-    Public gComputationOptions As udtOptionsType
+    Public gComputationOptions As New udtOptionsType
 
     ''' <summary>
     ''' Stores the elements in alphabetical order
@@ -278,7 +278,7 @@ Public Class MWElementAndMassRoutines
     Private MessageStatements() As String
     Private MessageStatementCount As Integer
 
-    Private ErrorParams As udtErrorDescriptionType
+    Private ErrorParams As New udtErrorDescriptionType
 
     ''' <summary>
     ''' Charge carrier mass
@@ -288,7 +288,7 @@ Public Class MWElementAndMassRoutines
 
     Private mCurrentElementMode As emElementModeConstants
     Private mStrCautionDescription As String
-    Private mComputationStatsSaved As udtComputationStatsType
+    Private mComputationStatsSaved As New udtComputationStatsType
 
     Private mShowErrorMessageDialogs As Boolean
     Protected mAbortProcessing As Boolean
@@ -1375,7 +1375,7 @@ Public Class MWElementAndMassRoutines
 
         Dim lstDataToAdd As List(Of udtXYDataType)
         Dim intDataToAddCount As Integer, blnAppendNewData As Boolean
-        Dim udtThisDataPoint As udtXYDataType
+        Dim udtThisDataPoint As New udtXYDataType
 
         Dim lstGaussianData = New List(Of KeyValuePair(Of Double, Double))
 

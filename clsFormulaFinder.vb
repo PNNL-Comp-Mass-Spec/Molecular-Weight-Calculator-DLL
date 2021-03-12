@@ -24,13 +24,13 @@ Public Class MWFormulaFinder
     ''' Target percent composition values must be between 0 and 100; they are only used when calling FindMatchesByPercentComposition
     ''' MinimumCount and MaximumCount are only used when the search mode is Bounded; they are ignored for Thorough search
     ''' </remarks>
-    Public Structure udtCandidateElementTolerances
+    Public Class udtCandidateElementTolerances
         Public TargetPercentComposition As Double
         Public MinimumCount As Integer
         Public MaximumCount As Integer
-    End Structure
+    End Class
 
-    Private Structure udtElementNumType
+    Private Class udtElementNumType
         Public H As Integer
         Public C As Integer
         Public Si As Integer
@@ -43,12 +43,12 @@ Public Class MWFormulaFinder
         Public F As Integer
         Public Br As Integer
         Public Other As Integer
-    End Structure
+    End Class
 
-    Private Structure udtBoundedSearchRangeType
+    Private Class udtBoundedSearchRangeType
         Public Min As Integer
         Public Max As Integer
-    End Structure
+    End Class
 
     Private Enum eCalculationMode
         MatchMolecularWeight = 0
@@ -728,7 +728,7 @@ Public Class MWFormulaFinder
         ' Verify that the formula does not have too many hydrogens
 
         ' Counters for elements of interest (hydrogen, carbon, silicon, nitrogen, phosphorus, chlorine, iodine, florine, bromine, and other)
-        Dim udtElementNum As udtElementNumType
+        Dim udtElementNum As New udtElementNumType
 
         ' Determine number of C, Si, N, P, O, S, Cl, I, F, Br and H atoms
         For Each item In empiricalResultSymbols

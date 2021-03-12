@@ -101,30 +101,30 @@ Public Class MWMoleMassDilutionClass
 
 #End Region
 
-#Region "Structures"
-    Private Structure udtMoleMassQuantityType
-        Dim Amount As Double ' In Moles
-        Dim Volume As Double ' In L
-        Dim Concentration As Double ' In Molar
-        Dim SampleMass As Double ' In g
-        Dim SampleDensity As Double ' In g/mL
-    End Structure
+#Region "Data classes"
+    Private Class udtMoleMassQuantityType
+        Public Amount As Double ' In Moles
+        Public Volume As Double ' In L
+        Public Concentration As Double ' In Molar
+        Public SampleMass As Double ' In g
+        Public SampleDensity As Double ' In g/mL
+    End Class
 
-    Private Structure udtMoleMassDilutionValuesType
-        Dim InitialConcentration As Double ' In Molar
-        Dim StockSolutionVolume As Double ' In L
-        Dim FinalConcentration As Double ' In Molar
-        Dim DilutingSolventVolume As Double ' In L
-        Dim TotalFinalVolume As Double ' In L
-    End Structure
+    Private Class udtMoleMassDilutionValuesType
+        Public InitialConcentration As Double ' In Molar
+        Public StockSolutionVolume As Double ' In L
+        Public FinalConcentration As Double ' In Molar
+        Public DilutingSolventVolume As Double ' In L
+        Public TotalFinalVolume As Double ' In L
+    End Class
 
 #End Region
 
     Private Const POUNDS_PER_KG As Single = 2.20462262
     Private Const GALLONS_PER_L As Single = 0.264172052
 
-    Private mQuantity As udtMoleMassQuantityType
-    Private mDilutionValues As udtMoleMassDilutionValuesType
+    Private mQuantity As New udtMoleMassQuantityType
+    Private mDilutionValues As New udtMoleMassDilutionValuesType
 
     Private mAutoComputeDilution As Boolean ' When true, automatically compute dilution results whenever any value changes
     Private mAutoComputeDilutionMode As acdAutoComputeDilutionModeConstants ' The value to compute when mAutoComputeDilution is true
