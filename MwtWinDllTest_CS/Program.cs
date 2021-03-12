@@ -43,26 +43,13 @@ namespace MwtWinDllTestCS
             MolecularWeightCalculator mwtWin,
             MWElementAndMassRoutines.emElementModeConstants elementMode)
         {
-            string elementModeDescription;
-
-            switch (elementMode)
+            var elementModeDescription = elementMode switch
             {
-                case MWElementAndMassRoutines.emElementModeConstants.emAverageMass:
-                    elementModeDescription = "Average";
-                    break;
-
-                case MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass:
-                    elementModeDescription = "Monoisotopic";
-                    break;
-
-                case MWElementAndMassRoutines.emElementModeConstants.emIntegerMass:
-                    elementModeDescription = "Integer";
-                    break;
-
-                default:
-                    elementModeDescription = "Unknown";
-                  break;
-            }
+                MWElementAndMassRoutines.emElementModeConstants.emAverageMass => "Average",
+                MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass => "Monoisotopic",
+                MWElementAndMassRoutines.emElementModeConstants.emIntegerMass => "Integer",
+                _ => "Unknown",
+            };
 
             // Set the element mode (average, monoisotopic, or integer)
             mwtWin.SetElementMode(elementMode);
