@@ -21,11 +21,12 @@ Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monro
 VB6 ActiveX Dll version written by Matthew Monroe in 2002 \
 Ported to VB.NET by Nikša Blonder and Matthew Monroe in 2005 \
 
-E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com \
-Website: http://omics.pnl.gov/ or http://www.sysbio.org/resources/staff/
+E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov \
+Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/ \
+Source code: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL
 
 ## License
 
-Licensed under the Apache License, Version 2.0; you may not use this file except 
+Licensed under the Apache License, Version 2.0; you may not use this program except 
 in compliance with the License.  You may obtain a copy of the License at 
 http://www.apache.org/licenses/LICENSE-2.0
