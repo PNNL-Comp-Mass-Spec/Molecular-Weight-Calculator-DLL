@@ -152,7 +152,7 @@ namespace MwtWinDll
                     case acdAutoComputeDilutionModeConstants.acdFindRequiredTotalVolume:
                         {
                             double argdblNewDilutingSolventVolume = 0d;
-                            this.ComputeDilutionTotalVolume(dblNewDilutingSolventVolume: ref argdblNewDilutingSolventVolume);
+                            this.ComputeDilutionTotalVolume(out argdblNewDilutingSolventVolume);
                             break;
                         }
 
@@ -172,7 +172,7 @@ namespace MwtWinDll
                         {
                             double argdblNewDilutingSolventVolume1 = 0d;
                             // Includes acdFindRequiredDilutionVolumes
-                            this.ComputeDilutionRequiredStockAndDilutingSolventVolumes(dblNewDilutingSolventVolume: ref argdblNewDilutingSolventVolume1);
+                            this.ComputeDilutionRequiredStockAndDilutingSolventVolumes(out argdblNewDilutingSolventVolume1);
                             break;
                         }
                 }
@@ -1053,7 +1053,7 @@ namespace MwtWinDll
             // Recompute
             ComputeQuantityAmount();
             double argdblNewDilutingSolventVolume = 0d;
-            this.ComputeDilutionRequiredStockAndDilutingSolventVolumes(dblNewDilutingSolventVolume: ref argdblNewDilutingSolventVolume);
+            this.ComputeDilutionRequiredStockAndDilutingSolventVolumes(out argdblNewDilutingSolventVolume);
             SetAutoComputeDilutionEnabled(true);
             SetAutoComputeQuantityEnabled(true);
         }

@@ -351,7 +351,7 @@ namespace MwtWinDll
 
 
         /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
     /// <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
@@ -399,11 +399,11 @@ namespace MwtWinDll
             // Precedence order for sbCodeString
             // C1_ C2_ C3_ C4_ C5_ C6_ C7_ C8_ C9_  a   z    1,  2,  3...
             // 1   2   3   4   5   6   7   8   9   10  35   36  37  38
-            // 
+            //
             // Custom elements are converted to Chr(1), Chr(2), etc.
             // Letters are converted to Chr(10) through Chr(35)
             // Number are converted to Chr(36) through Chr(255)
-            // 
+            //
             // 220 = Chr(0) + Chr(220+35) = Chr(0) + Chr(255)
 
             // 221 = Chr(CInt(Math.Floor(221+34/255))) + Chr((221 + 34) Mod 255 + 1)
@@ -484,7 +484,7 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="totalMass"></param>
     /// <param name="totalCharge"></param>
@@ -1179,11 +1179,9 @@ namespace MwtWinDll
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
                     short elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
-                    string argstrSymbol = item.Key;
                     double argdblUncertainty = 0d;
                     short argintIsotopeCount = 0;
-                    mElementAndMassRoutines.GetElementInternal(elementID, out argstrSymbol, out dblMass, out argdblUncertainty, out sngCharge, out argintIsotopeCount);
-                    item.Key = argstrSymbol;
+                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out argdblUncertainty, out sngCharge, out argintIsotopeCount);
                     candidateElement.Mass = dblMass;
                     candidateElement.Charge = sngCharge;
                 }
@@ -1265,11 +1263,9 @@ namespace MwtWinDll
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
                     short elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
-                    string argstrSymbol = item.Key;
                     double argdblUncertainty = 0d;
                     short argintIsotopeCount = 0;
-                    mElementAndMassRoutines.GetElementInternal(elementID, out argstrSymbol, out dblMass, out argdblUncertainty, out sngCharge, out argintIsotopeCount);
-                    item.Key = argstrSymbol;
+                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out argdblUncertainty, out sngCharge, out argintIsotopeCount);
                     dblPotentialElementStats[potentialElementCount, 0] = dblMass;
                     dblPotentialElementStats[potentialElementCount, 1] = sngCharge;
                     strPotentialElements[potentialElementCount] = item.Key;
@@ -1434,7 +1430,7 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="potentialElementCount"></param>
     /// <param name="searchOptions"></param>

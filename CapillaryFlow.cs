@@ -343,7 +343,7 @@ namespace MwtWinDll
                     case acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime:
                         {
                             double argdblNewBackPressure = 0d;
-                            this.ComputeVolFlowRateUsingDeadTime(dblNewBackPressure: ref argdblNewBackPressure);
+                            this.ComputeVolFlowRateUsingDeadTime(out argdblNewBackPressure);
                             break;
                         }
 
@@ -749,6 +749,7 @@ namespace MwtWinDll
     /// <returns></returns>
         public double ComputeVolFlowRateUsingDeadTime([Optional, DefaultParameterValue(0d)] out double dblNewBackPressure, ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin, uprUnitsPressureConstants ePressureUnits = uprUnitsPressureConstants.uprPsi)
         {
+            dblNewBackPressure = 0;
             double dblVolFlowRate, dblRadius;
             {
                 var withBlock = mCapillaryFlowParameters;

@@ -19,11 +19,11 @@ namespace MwtWinDllTest
     // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
     // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
     // -------------------------------------------------------------------------------
-    // 
+    //
     // Licensed under the Apache License, Version 2.0; you may not use this file except
     // in compliance with the License.  You may obtain a copy of the License at
     // http://www.apache.org/licenses/LICENSE-2.0
-    // 
+    //
     // Notice: This computer software was prepared by Battelle Memorial Institute,
     // hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
     // Department of Energy (DOE).  All rights in the computer software are reserved
@@ -407,9 +407,9 @@ namespace MwtWinDllTest
             cboFormulaFinderTestMode = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgDataGrid).BeginInit();
             SuspendLayout();
-            // 
+            //
             // cmdTestGetTrypticName
-            // 
+            //
             _cmdTestGetTrypticName.BackColor = SystemColors.Control;
             _cmdTestGetTrypticName.Cursor = Cursors.Default;
             _cmdTestGetTrypticName.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -421,9 +421,9 @@ namespace MwtWinDllTest
             _cmdTestGetTrypticName.TabIndex = 19;
             _cmdTestGetTrypticName.Text = "Test Get Tryptic Name";
             _cmdTestGetTrypticName.UseVisualStyleBackColor = false;
-            // 
+            //
             // cmdExpandAbbreviations
-            // 
+            //
             _cmdExpandAbbreviations.BackColor = SystemColors.Control;
             _cmdExpandAbbreviations.Cursor = Cursors.Default;
             _cmdExpandAbbreviations.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -435,9 +435,9 @@ namespace MwtWinDllTest
             _cmdExpandAbbreviations.TabIndex = 4;
             _cmdExpandAbbreviations.Text = "Expand Abbreviations";
             _cmdExpandAbbreviations.UseVisualStyleBackColor = false;
-            // 
+            //
             // cmdTestFunctions
-            // 
+            //
             _cmdTestFunctions.BackColor = SystemColors.Control;
             _cmdTestFunctions.Cursor = Cursors.Default;
             _cmdTestFunctions.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -449,9 +449,9 @@ namespace MwtWinDllTest
             _cmdTestFunctions.TabIndex = 6;
             _cmdTestFunctions.Text = "Test Functions";
             _cmdTestFunctions.UseVisualStyleBackColor = false;
-            // 
+            //
             // cboStdDevMode
-            // 
+            //
             _cboStdDevMode.BackColor = SystemColors.Window;
             _cboStdDevMode.Cursor = Cursors.Default;
             _cboStdDevMode.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -462,9 +462,9 @@ namespace MwtWinDllTest
             _cboStdDevMode.RightToLeft = RightToLeft.No;
             _cboStdDevMode.Size = new Size(174, 24);
             _cboStdDevMode.TabIndex = 3;
-            // 
+            //
             // cboWeightMode
-            // 
+            //
             _cboWeightMode.BackColor = SystemColors.Window;
             _cboWeightMode.Cursor = Cursors.Default;
             _cboWeightMode.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -475,9 +475,9 @@ namespace MwtWinDllTest
             _cboWeightMode.RightToLeft = RightToLeft.No;
             _cboWeightMode.Size = new Size(174, 24);
             _cboWeightMode.TabIndex = 2;
-            // 
+            //
             // cmdConvertToEmpirical
-            // 
+            //
             _cmdConvertToEmpirical.BackColor = SystemColors.Control;
             _cmdConvertToEmpirical.Cursor = Cursors.Default;
             _cmdConvertToEmpirical.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -489,9 +489,9 @@ namespace MwtWinDllTest
             _cmdConvertToEmpirical.TabIndex = 5;
             _cmdConvertToEmpirical.Text = "Convert to &Empirical";
             _cmdConvertToEmpirical.UseVisualStyleBackColor = false;
-            // 
+            //
             // cmdFindMass
-            // 
+            //
             _cmdFindMass.BackColor = SystemColors.Control;
             _cmdFindMass.Cursor = Cursors.Default;
             _cmdFindMass.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -503,9 +503,9 @@ namespace MwtWinDllTest
             _cmdFindMass.TabIndex = 8;
             _cmdFindMass.Text = "&Calculate";
             _cmdFindMass.UseVisualStyleBackColor = false;
-            // 
+            //
             // txtFormula
-            // 
+            //
             txtFormula.AcceptsReturn = true;
             txtFormula.BackColor = SystemColors.Window;
             txtFormula.Cursor = Cursors.IBeam;
@@ -518,9 +518,9 @@ namespace MwtWinDllTest
             txtFormula.Size = new Size(155, 23);
             txtFormula.TabIndex = 0;
             txtFormula.Text = "Cl2PhH4OH";
-            // 
+            //
             // cmdClose
-            // 
+            //
             _cmdClose.BackColor = SystemColors.Control;
             _cmdClose.Cursor = Cursors.Default;
             _cmdClose.DialogResult = DialogResult.Cancel;
@@ -533,9 +533,9 @@ namespace MwtWinDllTest
             _cmdClose.TabIndex = 9;
             _cmdClose.Text = "Cl&ose";
             _cmdClose.UseVisualStyleBackColor = false;
-            // 
+            //
             // lblStdDevMode
-            // 
+            //
             lblStdDevMode.BackColor = SystemColors.Control;
             lblStdDevMode.Cursor = Cursors.Default;
             lblStdDevMode.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -546,9 +546,9 @@ namespace MwtWinDllTest
             lblStdDevMode.Size = new Size(87, 39);
             lblStdDevMode.TabIndex = 18;
             lblStdDevMode.Text = "Std Dev Mode";
-            // 
+            //
             // lblWeightMode
-            // 
+            //
             lblWeightMode.BackColor = SystemColors.Control;
             lblWeightMode.Cursor = Cursors.Default;
             lblWeightMode.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -559,9 +559,9 @@ namespace MwtWinDllTest
             lblWeightMode.Size = new Size(87, 21);
             lblWeightMode.TabIndex = 17;
             lblWeightMode.Text = "Weight Mode";
-            // 
+            //
             // lblStatusLabel
-            // 
+            //
             lblStatusLabel.BackColor = SystemColors.Control;
             lblStatusLabel.Cursor = Cursors.Default;
             lblStatusLabel.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -572,9 +572,9 @@ namespace MwtWinDllTest
             lblStatusLabel.Size = new Size(87, 21);
             lblStatusLabel.TabIndex = 16;
             lblStatusLabel.Text = "Status:";
-            // 
+            //
             // lblMassAndStdDevLabel
-            // 
+            //
             lblMassAndStdDevLabel.BackColor = SystemColors.Control;
             lblMassAndStdDevLabel.Cursor = Cursors.Default;
             lblMassAndStdDevLabel.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -585,9 +585,9 @@ namespace MwtWinDllTest
             lblMassAndStdDevLabel.Size = new Size(106, 49);
             lblMassAndStdDevLabel.TabIndex = 15;
             lblMassAndStdDevLabel.Text = "Mass and StdDev:";
-            // 
+            //
             // lblMassAndStdDev
-            // 
+            //
             lblMassAndStdDev.BackColor = SystemColors.Control;
             lblMassAndStdDev.Cursor = Cursors.Default;
             lblMassAndStdDev.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -598,9 +598,9 @@ namespace MwtWinDllTest
             lblMassAndStdDev.Size = new Size(251, 21);
             lblMassAndStdDev.TabIndex = 14;
             lblMassAndStdDev.Text = "0";
-            // 
+            //
             // lblStatus
-            // 
+            //
             lblStatus.BackColor = SystemColors.Control;
             lblStatus.Cursor = Cursors.Default;
             lblStatus.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -610,9 +610,9 @@ namespace MwtWinDllTest
             lblStatus.RightToLeft = RightToLeft.No;
             lblStatus.Size = new Size(270, 41);
             lblStatus.TabIndex = 13;
-            // 
+            //
             // lblMass
-            // 
+            //
             lblMass.BackColor = SystemColors.Control;
             lblMass.Cursor = Cursors.Default;
             lblMass.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -623,9 +623,9 @@ namespace MwtWinDllTest
             lblMass.Size = new Size(155, 21);
             lblMass.TabIndex = 12;
             lblMass.Text = "0";
-            // 
+            //
             // lblMassLabel
-            // 
+            //
             lblMassLabel.BackColor = SystemColors.Control;
             lblMassLabel.Cursor = Cursors.Default;
             lblMassLabel.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -636,9 +636,9 @@ namespace MwtWinDllTest
             lblMassLabel.Size = new Size(87, 21);
             lblMassLabel.TabIndex = 11;
             lblMassLabel.Text = "Mass:";
-            // 
+            //
             // lblFormula
-            // 
+            //
             lblFormula.BackColor = SystemColors.Control;
             lblFormula.Cursor = Cursors.Default;
             lblFormula.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -649,9 +649,9 @@ namespace MwtWinDllTest
             lblFormula.Size = new Size(106, 21);
             lblFormula.TabIndex = 10;
             lblFormula.Text = "Formula:";
-            // 
+            //
             // dgDataGrid
-            // 
+            //
             dgDataGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
             dgDataGrid.DataMember = "";
@@ -660,26 +660,26 @@ namespace MwtWinDllTest
             dgDataGrid.Name = "dgDataGrid";
             dgDataGrid.Size = new Size(540, 396);
             dgDataGrid.TabIndex = 20;
-            // 
+            //
             // rtfFormula
-            // 
+            //
             _rtfFormula.Location = new Point(125, 108);
             _rtfFormula.Name = "_rtfFormula";
             _rtfFormula.ReadOnly = true;
             _rtfFormula.Size = new Size(278, 59);
             _rtfFormula.TabIndex = 21;
             _rtfFormula.Text = "";
-            // 
+            //
             // chkShowRTFSource
-            // 
+            //
             _chkShowRTFSource.Location = new Point(10, 465);
             _chkShowRTFSource.Name = "_chkShowRTFSource";
             _chkShowRTFSource.Size = new Size(105, 30);
             _chkShowRTFSource.TabIndex = 22;
             _chkShowRTFSource.Text = "Show RTF Source";
-            // 
+            //
             // txtRTFSource
-            // 
+            //
             txtRTFSource.AcceptsReturn = true;
             txtRTFSource.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             txtRTFSource.BackColor = SystemColors.Window;
@@ -695,9 +695,9 @@ namespace MwtWinDllTest
             txtRTFSource.Size = new Size(288, 52);
             txtRTFSource.TabIndex = 23;
             txtRTFSource.Visible = false;
-            // 
+            //
             // lblDLLVersion
-            // 
+            //
             lblDLLVersion.BackColor = SystemColors.Control;
             lblDLLVersion.Cursor = Cursors.Default;
             lblDLLVersion.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -708,9 +708,9 @@ namespace MwtWinDllTest
             lblDLLVersion.Size = new Size(403, 19);
             lblDLLVersion.TabIndex = 24;
             lblDLLVersion.Text = "DLL Version";
-            // 
+            //
             // lblProgress
-            // 
+            //
             lblProgress.BackColor = SystemColors.Control;
             lblProgress.Cursor = Cursors.Default;
             lblProgress.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -720,9 +720,9 @@ namespace MwtWinDllTest
             lblProgress.RightToLeft = RightToLeft.No;
             lblProgress.Size = new Size(270, 48);
             lblProgress.TabIndex = 25;
-            // 
+            //
             // cmdTestFormulaFinder
-            // 
+            //
             _cmdTestFormulaFinder.BackColor = SystemColors.Control;
             _cmdTestFormulaFinder.Cursor = Cursors.Default;
             _cmdTestFormulaFinder.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
@@ -734,9 +734,9 @@ namespace MwtWinDllTest
             _cmdTestFormulaFinder.TabIndex = 26;
             _cmdTestFormulaFinder.Text = "Test Formula Finder";
             _cmdTestFormulaFinder.UseVisualStyleBackColor = false;
-            // 
+            //
             // cboFormulaFinderTestMode
-            // 
+            //
             cboFormulaFinderTestMode.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cboFormulaFinderTestMode.BackColor = SystemColors.Window;
             cboFormulaFinderTestMode.Cursor = Cursors.Default;
@@ -748,9 +748,9 @@ namespace MwtWinDllTest
             cboFormulaFinderTestMode.RightToLeft = RightToLeft.No;
             cboFormulaFinderTestMode.Size = new Size(239, 24);
             cboFormulaFinderTestMode.TabIndex = 27;
-            // 
+            //
             // frmMwtWinDllTest
-            // 
+            //
             AcceptButton = _cmdFindMass;
             AutoScaleBaseSize = new Size(6, 16);
             BackColor = SystemColors.Control;
@@ -1750,30 +1750,10 @@ namespace MwtWinDllTest
             txtRTFSource.Visible = chkShowRTFSource.Checked;
         }
 
+        private DateTime dtLastUpdate = DateTime.MinValue;
+
         private void mMwtWin_ProgressChanged(string taskDescription, float percentComplete)
         {
-            ;
-#error Cannot convert LocalDeclarationStatementSyntax - see comment for details
-            /* Cannot convert LocalDeclarationStatementSyntax, System.NotSupportedException: StaticKeyword not supported!
-               at ICSharpCode.CodeConverter.CSharp.SyntaxKindExtensions.ConvertToken(SyntaxKind t, TokenContext context)
-               at ICSharpCode.CodeConverter.CSharp.CommonConversions.ConvertModifier(SyntaxToken m, TokenContext context)
-               at ICSharpCode.CodeConverter.CSharp.CommonConversions.<ConvertModifiersCore>d__43.MoveNext()
-               at System.Linq.Enumerable.<ConcatIterator>d__59`1.MoveNext()
-               at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
-               at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
-               at System.Linq.OrderedEnumerable`1.<GetEnumerator>d__1.MoveNext()
-               at Microsoft.CodeAnalysis.SyntaxTokenList.CreateNode(IEnumerable`1 tokens)
-               at ICSharpCode.CodeConverter.CSharp.CommonConversions.ConvertModifiers(SyntaxNode node, IReadOnlyCollection`1 modifiers, TokenContext context, Boolean isVariableOrConst, SyntaxKind[] extraCsModifierKinds)
-               at ICSharpCode.CodeConverter.CSharp.MethodBodyExecutableStatementVisitor.<VisitLocalDeclarationStatement>d__31.MoveNext()
-            --- End of stack trace from previous location where exception was thrown ---
-               at ICSharpCode.CodeConverter.CSharp.HoistedNodeStateVisitor.<AddLocalVariablesAsync>d__6.MoveNext()
-            --- End of stack trace from previous location where exception was thrown ---
-               at ICSharpCode.CodeConverter.CSharp.CommentConvertingMethodBodyVisitor.<DefaultVisitInnerAsync>d__3.MoveNext()
-
-            Input:
-                    Static dtLastUpdate As Global.System.DateTime
-
-             */
             lblProgress.Text = mMwtWin.ProgressStepDescription + "; " + percentComplete.ToString("0.0") + "% complete";
             if (DateTime.UtcNow.Subtract(dtLastUpdate).TotalMilliseconds > 100d)
             {
