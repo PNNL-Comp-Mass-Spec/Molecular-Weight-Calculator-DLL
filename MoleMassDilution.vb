@@ -1,8 +1,8 @@
 Option Strict On
 
-Public Class MWMoleMassDilutionClass
+Public Class MoleMassDilution
 
-    ' Molecular Weight Calculator routines with ActiveX Class interfaces: MWMoleMassDilutionClass
+    ' Molecular Weight Calculator routines with ActiveX Class interfaces: MoleMassDilution
 
     ' -------------------------------------------------------------------------------
     ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2002
@@ -378,7 +378,7 @@ Public Class MWMoleMassDilutionClass
     ''' <param name="eCurrentUnits"></param>
     ''' <param name="eNewUnits"></param>
     ''' <returns></returns>
-    ''' <remarks>Duplicated function, in both MWCapillaryFlowClass and MWMoleMassDilutionClass</remarks>
+    ''' <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
     Public Function ConvertConcentration(dblConcentrationIn As Double, eCurrentUnits As ummcUnitsMoleMassConcentrationConstants, eNewUnits As ummcUnitsMoleMassConcentrationConstants) As Double
         Dim dblValue, dblFactor As Double
         Dim dblSampleMass As Double
@@ -483,7 +483,7 @@ Public Class MWMoleMassDilutionClass
     ''' <param name="eUnits"></param>
     ''' <param name="dblSampleMass">required for mass-based units</param>
     ''' <returns></returns>
-    ''' <remarks>Duplicated function, in both MWCapillaryFlowClass and MWMoleMassDilutionClass</remarks>
+    ''' <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
     Private Function FactorConcentration(eUnits As ummcUnitsMoleMassConcentrationConstants, Optional dblSampleMass As Double = 0) As Double
         Dim dblFactor As Double
 
@@ -516,7 +516,7 @@ Public Class MWMoleMassDilutionClass
     ''' </summary>
     ''' <param name="eUnits"></param>
     ''' <returns></returns>
-    ''' <remarks>An extended version of the FactorVolume function in MWCapillaryFlowClass</remarks>
+    ''' <remarks>An extended version of the FactorVolume function in CapillaryFlow</remarks>
     Private Function FactorVolumeExtended(eUnits As uevUnitsExtendedVolumeConstants) As Double
         Dim dblFactor As Double
 

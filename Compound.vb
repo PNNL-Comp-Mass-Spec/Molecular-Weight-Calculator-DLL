@@ -2,9 +2,9 @@ Option Strict On
 
 Imports System.Collections.Generic
 
-Public Class MWCompoundClass
+Public Class Compound
 
-    ' Molecular Weight Calculator routines with ActiveX Class interfaces: MWCompoundClass
+    ' Molecular Weight Calculator routines with ActiveX Class interfaces: Compound
 
     ' The compound class can be used to represent a compound
     ' Use the Formula Property to enter the compound's formula
@@ -35,13 +35,13 @@ Public Class MWCompoundClass
 
     Public Sub New()
         MyBase.New()
-        ElementAndMassRoutines = New MWElementAndMassRoutines
+        ElementAndMassRoutines = New ElementAndMassTools
         InitializeClass()
     End Sub
 
-    Public Sub New(objMWElementAndMassRoutines As MWElementAndMassRoutines)
+    Public Sub New(objElementAndMassTools As ElementAndMassTools)
         MyBase.New()
-        ElementAndMassRoutines = objMWElementAndMassRoutines
+        ElementAndMassRoutines = objElementAndMassTools
         InitializeClass()
     End Sub
 
@@ -56,9 +56,9 @@ Public Class MWCompoundClass
     Private mErrorDescription As String
     Private mErrorID As Integer
 
-    Private mComputationStats As MWElementAndMassRoutines.udtComputationStatsType
+    Private mComputationStats As ElementAndMassTools.udtComputationStatsType
 
-    Private ReadOnly ElementAndMassRoutines As MWElementAndMassRoutines
+    Private ReadOnly ElementAndMassRoutines As ElementAndMassTools
 
     Public Function ConvertToEmpirical() As String
         ' Converts mStrFormula to its empirical formula and returns the result
@@ -78,7 +78,7 @@ Public Class MWCompoundClass
 
     Public Function ElementPresent(elementID As Short) As Boolean
         ' Returns True if the element is present
-        If elementID >= 1 And elementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
+        If elementID >= 1 And elementID <= ElementAndMassTools.ELEMENT_COUNT Then
             Return mComputationStats.Elements(elementID).Used
         Else
             Return False
@@ -108,7 +108,7 @@ Public Class MWCompoundClass
         ' Return the number of atoms of a given element that are present in the formula
         ' Note that the number of atoms is not necessarily an integer (e.g. C5.5)
 
-        If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
+        If intElementID >= 1 And intElementID <= ElementAndMassTools.ELEMENT_COUNT Then
             Return mComputationStats.Elements(intElementID).Count
         Else
             Return 0
@@ -120,7 +120,7 @@ Public Class MWCompoundClass
         ' Returns the percent composition for element
         ' Returns -1 if an invalid ID
 
-        If intElementID >= 1 And intElementID <= MWElementAndMassRoutines.ELEMENT_COUNT Then
+        If intElementID >= 1 And intElementID <= ElementAndMassTools.ELEMENT_COUNT Then
             Return mComputationStats.PercentCompositions(intElementID).PercentComposition
         Else
             Return -1
@@ -138,7 +138,7 @@ Public Class MWCompoundClass
         Dim strElementSymbol As String
         Dim strPctComposition As String
 
-        If elementId >= 1 And elementId <= MWElementAndMassRoutines.ELEMENT_COUNT Then
+        If elementId >= 1 And elementId <= ElementAndMassTools.ELEMENT_COUNT Then
 
             With mComputationStats.PercentCompositions(elementId)
 
@@ -171,7 +171,7 @@ Public Class MWCompoundClass
 
             ElementAndMassRoutines.ComputePercentComposition(mComputationStats)
 
-            For elementId As Short = 1 To MWElementAndMassRoutines.ELEMENT_COUNT
+            For elementId As Short = 1 To ElementAndMassTools.ELEMENT_COUNT
                 If mComputationStats.PercentCompositions(elementId).PercentComposition > 0 Then
                     Dim percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(
                         mComputationStats.PercentCompositions(elementId).PercentComposition,
@@ -201,7 +201,7 @@ Public Class MWCompoundClass
 
         ' Determine # of elements in formula
         intTotalElements = 0
-        For intElementIndex = 1 To MWElementAndMassRoutines.ELEMENT_COUNT
+        For intElementIndex = 1 To ElementAndMassTools.ELEMENT_COUNT
             ' Increment .TotalElements if element is present
             If mComputationStats.Elements(intElementIndex).Used Then
                 intTotalElements += 1S

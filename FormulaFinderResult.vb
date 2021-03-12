@@ -1,6 +1,6 @@
 ﻿Imports System.Collections.Generic
 
-Public Class clsFormulaFinderResult
+Public Class FormulaFinderResult
 
     Public ReadOnly EmpiricalFormula As String
 

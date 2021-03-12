@@ -1,4 +1,4 @@
-﻿Friend Class clsFormulaFinderCandidateElement
+﻿Friend Class FormulaFinderCandidateElement
 
     Public Property Mass As Double
     Public Property Charge As Double

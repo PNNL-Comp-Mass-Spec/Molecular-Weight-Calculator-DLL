@@ -601,7 +601,7 @@ Friend Class frmMwtWinDllTest
         PopulateComboBoxes()
     End Sub
 
-    Private Sub MakeDataSet(lngIonCount As Integer, udtFragSpectrum() As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType)
+    Private Sub MakeDataSet(lngIonCount As Integer, udtFragSpectrum() As MwtWinDll.Peptide.udtFragmentationSpectrumDataType)
         ' Create a DataSet.
         myDataSet = New DataSet("myDataSet")
 
@@ -776,7 +776,7 @@ Friend Class frmMwtWinDllTest
             ' Test m/z conversion
             ' Switch to isotopic masses
 
-            .SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
+            .SetElementMode(MwtWinDll.ElementAndMassTools.emElementModeConstants.emIsotopicMass)
 
             .Compound.SetFormula("C19H36O5NH4")
             dblMass = .Compound.Mass
@@ -798,48 +798,48 @@ Friend Class frmMwtWinDllTest
             ' Test Capillary flow functions
             With .CapFlow
                 .SetAutoComputeEnabled(False)
-                .SetBackPressure(2000, MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi)
-                .SetColumnLength(40, MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnCM)
-                .SetColumnID(50, MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons)
-                .SetSolventViscosity(0.0089, MwtWinDll.MWCapillaryFlowClass.uviUnitsViscosityConstants.uviPoise)
+                .SetBackPressure(2000, MwtWinDll.CapillaryFlow.uprUnitsPressureConstants.uprPsi)
+                .SetColumnLength(40, MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnCM)
+                .SetColumnID(50, MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons)
+                .SetSolventViscosity(0.0089, MwtWinDll.CapillaryFlow.uviUnitsViscosityConstants.uviPoise)
                 .SetInterparticlePorosity(0.33)
-                .SetParticleDiameter(2, MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons)
+                .SetParticleDiameter(2, MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons)
                 .SetAutoComputeEnabled(True)
 
                 objResults.AppendText("")
                 objResults.AppendText("Check capillary flow calcs")
-                objResults.AppendText("Linear Velocity: " & .ComputeLinearVelocity(MwtWinDll.MWCapillaryFlowClass.ulvUnitsLinearVelocityConstants.ulvCmPerSec))
-                objResults.AppendText("Vol flow rate:   " & .ComputeVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin) & "  (newly computed)")
+                objResults.AppendText("Linear Velocity: " & .ComputeLinearVelocity(MwtWinDll.CapillaryFlow.ulvUnitsLinearVelocityConstants.ulvCmPerSec))
+                objResults.AppendText("Vol flow rate:   " & .ComputeVolFlowRate(MwtWinDll.CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin) & "  (newly computed)")
 
                 objResults.AppendText("Vol flow rate:   " & .GetVolFlowRate)
-                objResults.AppendText("Back pressure:   " & .ComputeBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi))
-                objResults.AppendText("Column Length:   " & .ComputeColumnLength(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnCM))
-                objResults.AppendText("Column ID:       " & .ComputeColumnID(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons))
-                objResults.AppendText("Column Volume:   " & .ComputeColumnVolume(MwtWinDll.MWCapillaryFlowClass.uvoUnitsVolumeConstants.uvoNL))
-                objResults.AppendText("Dead time:       " & .ComputeDeadTime(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmSeconds))
+                objResults.AppendText("Back pressure:   " & .ComputeBackPressure(MwtWinDll.CapillaryFlow.uprUnitsPressureConstants.uprPsi))
+                objResults.AppendText("Column Length:   " & .ComputeColumnLength(MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnCM))
+                objResults.AppendText("Column ID:       " & .ComputeColumnID(MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons))
+                objResults.AppendText("Column Volume:   " & .ComputeColumnVolume(MwtWinDll.CapillaryFlow.uvoUnitsVolumeConstants.uvoNL))
+                objResults.AppendText("Dead time:       " & .ComputeDeadTime(MwtWinDll.CapillaryFlow.utmUnitsTimeConstants.utmSeconds))
 
                 objResults.AppendText("")
 
                 objResults.AppendText("Repeat Computations, but in a different order (should give same results)")
-                objResults.AppendText("Vol flow rate:   " & .ComputeVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin))
-                objResults.AppendText("Column ID:       " & .ComputeColumnID(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons))
-                objResults.AppendText("Back pressure:   " & .ComputeBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi))
-                objResults.AppendText("Column Length:   " & .ComputeColumnLength(MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnCM))
+                objResults.AppendText("Vol flow rate:   " & .ComputeVolFlowRate(MwtWinDll.CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin))
+                objResults.AppendText("Column ID:       " & .ComputeColumnID(MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons))
+                objResults.AppendText("Back pressure:   " & .ComputeBackPressure(MwtWinDll.CapillaryFlow.uprUnitsPressureConstants.uprPsi))
+                objResults.AppendText("Column Length:   " & .ComputeColumnLength(MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnCM))
 
                 objResults.AppendText("")
 
-                objResults.AppendText("Old Dead time: " & .GetDeadTime(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmMinutes))
+                objResults.AppendText("Old Dead time: " & .GetDeadTime(MwtWinDll.CapillaryFlow.utmUnitsTimeConstants.utmMinutes))
 
-                .SetAutoComputeMode(MwtWinDll.MWCapillaryFlowClass.acmAutoComputeModeConstants.acmVolFlowrateUsingDeadTime)
+                .SetAutoComputeMode(MwtWinDll.CapillaryFlow.acmAutoComputeModeConstants.acmVolFlowrateUsingDeadTime)
 
-                .SetDeadTime(25, MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmMinutes)
+                .SetDeadTime(25, MwtWinDll.CapillaryFlow.utmUnitsTimeConstants.utmMinutes)
                 objResults.AppendText("Dead time is now 25.0 minutes")
 
-                objResults.AppendText("Vol flow rate: " & .GetVolFlowRate(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin) & " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)")
+                objResults.AppendText("Vol flow rate: " & .GetVolFlowRate(MwtWinDll.CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin) & " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)")
 
                 ' Confirm that auto-compute worked
 
-                objResults.AppendText("Vol flow rate: " & .ComputeVolFlowRateUsingDeadTime(MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin, dblNewPressure, MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi) & "  (confirmation of computed volumetric flow rate)")
+                objResults.AppendText("Vol flow rate: " & .ComputeVolFlowRateUsingDeadTime(MwtWinDll.CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin, dblNewPressure, MwtWinDll.CapillaryFlow.uprUnitsPressureConstants.uprPsi) & "  (confirmation of computed volumetric flow rate)")
                 objResults.AppendText("New pressure: " & dblNewPressure)
 
                 objResults.AppendText("")
@@ -850,48 +850,48 @@ Friend Class frmMwtWinDllTest
                 .SetBackPressure(2000)
                 objResults.AppendText("Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure")
                 objResults.AppendText("  was automatically changed back to pressure needed to give vol flow rate matching dead time")
-                objResults.AppendText("Pressure is now: " & .GetBackPressure(MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi) & " psi (thus, not 2000 as one might expect)")
+                objResults.AppendText("Pressure is now: " & .GetBackPressure(MwtWinDll.CapillaryFlow.uprUnitsPressureConstants.uprPsi) & " psi (thus, not 2000 as one might expect)")
 
-                .SetAutoComputeMode(MwtWinDll.MWCapillaryFlowClass.acmAutoComputeModeConstants.acmVolFlowrate)
+                .SetAutoComputeMode(MwtWinDll.CapillaryFlow.acmAutoComputeModeConstants.acmVolFlowrate)
                 objResults.AppendText("Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.")
 
-                .SetBackPressure(2000, MwtWinDll.MWCapillaryFlowClass.uprUnitsPressureConstants.uprPsi)
+                .SetBackPressure(2000, MwtWinDll.CapillaryFlow.uprUnitsPressureConstants.uprPsi)
 
                 ' Calling GetVolFlowRate will get the new computed vol flow rate (since auto-compute is on)
                 objResults.AppendText("Vol flow rate: " & .GetVolFlowRate)
 
                 .SetMassRateSampleMass(1000)
-                .SetMassRateConcentration(1, MwtWinDll.MWCapillaryFlowClass.ucoUnitsConcentrationConstants.ucoMicroMolar)
-                .SetMassRateVolFlowRate(600, MwtWinDll.MWCapillaryFlowClass.ufrUnitsFlowRateConstants.ufrNLPerMin)
-                .SetMassRateInjectionTime(5, MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmMinutes)
+                .SetMassRateConcentration(1, MwtWinDll.CapillaryFlow.ucoUnitsConcentrationConstants.ucoMicroMolar)
+                .SetMassRateVolFlowRate(600, MwtWinDll.CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin)
+                .SetMassRateInjectionTime(5, MwtWinDll.CapillaryFlow.utmUnitsTimeConstants.utmMinutes)
 
-                objResults.AppendText("Mass flow rate: " & .GetMassFlowRate(MwtWinDll.MWCapillaryFlowClass.umfMassFlowRateConstants.umfFmolPerSec) & " fmol/sec")
-                objResults.AppendText("Moles injected: " & .GetMassRateMolesInjected(MwtWinDll.MWCapillaryFlowClass.umaMolarAmountConstants.umaFemtoMoles) & " fmoles")
+                objResults.AppendText("Mass flow rate: " & .GetMassFlowRate(MwtWinDll.CapillaryFlow.umfMassFlowRateConstants.umfFmolPerSec) & " fmol/sec")
+                objResults.AppendText("Moles injected: " & .GetMassRateMolesInjected(MwtWinDll.CapillaryFlow.umaMolarAmountConstants.umaFemtoMoles) & " fmoles")
 
                 .SetMassRateSampleMass(1234)
-                .SetMassRateConcentration(1, MwtWinDll.MWCapillaryFlowClass.ucoUnitsConcentrationConstants.ucongperml)
+                .SetMassRateConcentration(1, MwtWinDll.CapillaryFlow.ucoUnitsConcentrationConstants.ucongperml)
 
                 objResults.AppendText("Computing mass flow rate for compound weighing 1234 g/mol and at 1 ng/mL concentration")
-                objResults.AppendText("Mass flow rate: " & .GetMassFlowRate(MwtWinDll.MWCapillaryFlowClass.umfMassFlowRateConstants.umfAmolPerMin) & " amol/min")
-                objResults.AppendText("Moles injected: " & .GetMassRateMolesInjected(MwtWinDll.MWCapillaryFlowClass.umaMolarAmountConstants.umaFemtoMoles) & " fmoles")
+                objResults.AppendText("Mass flow rate: " & .GetMassFlowRate(MwtWinDll.CapillaryFlow.umfMassFlowRateConstants.umfAmolPerMin) & " amol/min")
+                objResults.AppendText("Moles injected: " & .GetMassRateMolesInjected(MwtWinDll.CapillaryFlow.umaMolarAmountConstants.umaFemtoMoles) & " fmoles")
 
-                .SetExtraColumnBroadeningLinearVelocity(4, MwtWinDll.MWCapillaryFlowClass.ulvUnitsLinearVelocityConstants.ulvCmPerMin)
-                .SetExtraColumnBroadeningDiffusionCoefficient(0.0003, MwtWinDll.MWCapillaryFlowClass.udcDiffusionCoefficientConstants.udcCmSquaredPerMin)
-                .SetExtraColumnBroadeningOpenTubeLength(5, MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnCM)
-                .SetExtraColumnBroadeningOpenTubeID(250, MwtWinDll.MWCapillaryFlowClass.ulnUnitsLengthConstants.ulnMicrons)
-                .SetExtraColumnBroadeningInitialPeakWidthAtBase(30, MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmSeconds)
+                .SetExtraColumnBroadeningLinearVelocity(4, MwtWinDll.CapillaryFlow.ulvUnitsLinearVelocityConstants.ulvCmPerMin)
+                .SetExtraColumnBroadeningDiffusionCoefficient(0.0003, MwtWinDll.CapillaryFlow.udcDiffusionCoefficientConstants.udcCmSquaredPerMin)
+                .SetExtraColumnBroadeningOpenTubeLength(5, MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnCM)
+                .SetExtraColumnBroadeningOpenTubeID(250, MwtWinDll.CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons)
+                .SetExtraColumnBroadeningInitialPeakWidthAtBase(30, MwtWinDll.CapillaryFlow.utmUnitsTimeConstants.utmSeconds)
 
                 objResults.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)")
-                objResults.AppendText(.GetExtraColumnBroadeningResultantPeakWidth(MwtWinDll.MWCapillaryFlowClass.utmUnitsTimeConstants.utmSeconds).ToString)
+                objResults.AppendText(.GetExtraColumnBroadeningResultantPeakWidth(MwtWinDll.CapillaryFlow.utmUnitsTimeConstants.utmSeconds).ToString)
 
             End With
         End With
 
 
-        Dim udtFragSpectrumOptions As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType = New MwtWinDll.MWPeptideClass.udtFragmentationSpectrumOptionsType
+        Dim udtFragSpectrumOptions As MwtWinDll.Peptide.udtFragmentationSpectrumOptionsType = New MwtWinDll.Peptide.udtFragmentationSpectrumOptionsType
         udtFragSpectrumOptions.Initialize()
 
-        Dim udtFragSpectrum() As MwtWinDll.MWPeptideClass.udtFragmentationSpectrumDataType = Nothing
+        Dim udtFragSpectrum() As MwtWinDll.Peptide.udtFragmentationSpectrumDataType = Nothing
         Dim lngIonCount As Integer
         Dim strNewSeq As String
 
@@ -902,8 +902,8 @@ Friend Class frmMwtWinDllTest
             '.SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
 
             ' Can change the terminii to various standard groups
-            .SetNTerminusGroup(MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgCarbamyl)
-            .SetCTerminusGroup(MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgAmide)
+            .SetNTerminusGroup(MwtWinDll.Peptide.ntgNTerminusGroupConstants.ntgCarbamyl)
+            .SetCTerminusGroup(MwtWinDll.Peptide.ctgCTerminusGroupConstants.ctgAmide)
 
             ' Can change the terminii to any desired elements
             .SetNTerminus("C2OH3") ' Acetyl group
@@ -919,13 +919,13 @@ Friend Class frmMwtWinDllTest
             objResults.AppendText(strNewSeq)
             .SetSequence(strNewSeq)
 
-            .SetSequence("K.TQPLE*VK.-", MwtWinDll.MWPeptideClass.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode:=False)
+            .SetSequence("K.TQPLE*VK.-", MwtWinDll.Peptide.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, MwtWinDll.Peptide.ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode:=False)
 
             objResults.AppendText(.GetSequence(True, False, True, False))
             objResults.AppendText(.GetSequence(False, True, False, False))
             objResults.AppendText(.GetSequence(True, False, True, True))
 
-            .SetCTerminusGroup(MwtWinDll.MWPeptideClass.ctgCTerminusGroupConstants.ctgNone)
+            .SetCTerminusGroup(MwtWinDll.Peptide.ctgCTerminusGroupConstants.ctgNone)
             objResults.AppendText(.GetSequence(True, False, True, True))
 
             udtFragSpectrumOptions = .GetFragmentationSpectrumOptions()
@@ -937,7 +937,7 @@ Friend Class frmMwtWinDllTest
             udtFragSpectrumOptions.TripleChargeIonsShow = True
             udtFragSpectrumOptions.TripleChargeIonsThreshold = 400
 
-            udtFragSpectrumOptions.IonTypeOptions(MwtWinDll.MWPeptideClass.itIonTypeConstants.itAIon).ShowIon = True
+            udtFragSpectrumOptions.IonTypeOptions(MwtWinDll.Peptide.itIonTypeConstants.itAIon).ShowIon = True
 
             .SetFragmentationSpectrumOptions(udtFragSpectrumOptions)
 
@@ -998,7 +998,7 @@ Friend Class frmMwtWinDllTest
 
         Dim oMwtWin = New MolecularWeightCalculator()
 
-        oMwtWin.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
+        oMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass)
 
         oMwtWin.FormulaFinder.CandidateElements.Clear()
 
@@ -1010,7 +1010,7 @@ Friend Class frmMwtWinDllTest
         ' Abbreviations are supported, for example Serine
         oMwtWin.FormulaFinder.AddCandidateElement("Ser")
 
-        Dim searchOptions = New clsFormulaFinderOptions With {
+        Dim searchOptions = New FormulaFinderOptions With {
             .LimitChargeRange = False,
             .ChargeMin = 1,
             .ChargeMax = 1,
@@ -1039,7 +1039,7 @@ Friend Class frmMwtWinDllTest
         End If
     End Sub
 
-    Private Sub FormulaFinderTest1(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest1(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
 
         ' Search for 200 Da, +/- 0.05 Da
         Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMass(200, 0.05, searchOptions)
@@ -1047,7 +1047,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest2(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest2(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
 
         ' Search for 200 Da, +/- 250 ppm
         Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
@@ -1055,7 +1055,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest3(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest3(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
 
         searchOptions.LimitChargeRange = True
         searchOptions.ChargeMin = -4
@@ -1067,7 +1067,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest4(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest4(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
 
         searchOptions.LimitChargeRange = True
         searchOptions.ChargeMin = -4
@@ -1080,7 +1080,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest5(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest5(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
 
         oMwtWin.FormulaFinder.CandidateElements.Clear()
 
@@ -1095,9 +1095,9 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest6(oMwtWin As MolecularWeightCalculator, searchOptions As clsFormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest6(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
 
-        searchOptions.SearchMode = clsFormulaFinderOptions.eSearchMode.Bounded
+        searchOptions.SearchMode = FormulaFinderOptions.eSearchMode.Bounded
 
         ' Search for 200 Da, +/- 250 ppm
         Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
@@ -1107,8 +1107,8 @@ Friend Class frmMwtWinDllTest
 
     Private Sub ShowFormulaFinderResults(
       currentTask As String,
-      searchOptions As clsFormulaFinderOptions,
-      lstResults As List(Of clsFormulaFinderResult),
+      searchOptions As FormulaFinderOptions,
+      lstResults As List(Of FormulaFinderResult),
       Optional deltaMassIsPPM As Boolean = False,
       Optional percentCompositionSearch As Boolean = False)
 
@@ -1374,7 +1374,7 @@ Friend Class frmMwtWinDllTest
         Me.Cursor = System.Windows.Forms.Cursors.Default
     End Sub
 
-    Private Sub UpdateResultsForCompound(ByRef objCompound As MwtWinDll.MWCompoundClass)
+    Private Sub UpdateResultsForCompound(ByRef objCompound As MwtWinDll.Compound)
         With objCompound
             If .ErrorDescription = "" Then
                 txtFormula.Text = .FormulaCapitalized
@@ -1389,11 +1389,11 @@ Friend Class frmMwtWinDllTest
     Private Sub cboStdDevMode_SelectedIndexChanged(eventSender As System.Object, eventArgs As System.EventArgs) Handles cboStdDevMode.SelectedIndexChanged
         Select Case cboStdDevMode.SelectedIndex
             Case 1
-                mMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smScientific
+                mMwtWin.StdDevMode = MwtWinDll.ElementAndMassTools.smStdDevModeConstants.smScientific
             Case 2
-                mMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smDecimal
+                mMwtWin.StdDevMode = MwtWinDll.ElementAndMassTools.smStdDevModeConstants.smDecimal
             Case Else
-                mMwtWin.StdDevMode = MwtWinDll.MWElementAndMassRoutines.smStdDevModeConstants.smShort
+                mMwtWin.StdDevMode = MwtWinDll.ElementAndMassTools.smStdDevModeConstants.smShort
         End Select
 
     End Sub
@@ -1401,11 +1401,11 @@ Friend Class frmMwtWinDllTest
     Private Sub cboWeightMode_SelectedIndexChanged(eventSender As System.Object, eventArgs As System.EventArgs) Handles cboWeightMode.SelectedIndexChanged
         Select Case cboWeightMode.SelectedIndex
             Case 1
-                mMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
+                mMwtWin.SetElementMode(MwtWinDll.ElementAndMassTools.emElementModeConstants.emIsotopicMass)
             Case 2
-                mMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emIntegerMass)
+                mMwtWin.SetElementMode(MwtWinDll.ElementAndMassTools.emElementModeConstants.emIntegerMass)
             Case Else
-                mMwtWin.SetElementMode(MwtWinDll.MWElementAndMassRoutines.emElementModeConstants.emAverageMass)
+                mMwtWin.SetElementMode(MwtWinDll.ElementAndMassTools.emElementModeConstants.emAverageMass)
         End Select
 
     End Sub

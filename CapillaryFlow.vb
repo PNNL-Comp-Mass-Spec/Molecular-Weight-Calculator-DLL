@@ -1,8 +1,8 @@
 Option Strict On
 
-Public Class MWCapillaryFlowClass
+Public Class CapillaryFlow
 
-    ' Molecular Weight Calculator routines with ActiveX Class interfaces: MWCapillaryFlowClass
+    ' Molecular Weight Calculator routines with ActiveX Class interfaces: CapillaryFlow
 
     ' -------------------------------------------------------------------------------
     ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
@@ -721,7 +721,7 @@ Public Class MWCapillaryFlowClass
     ''' <param name="eCurrentUnits"></param>
     ''' <param name="eNewUnits"></param>
     ''' <returns></returns>
-    ''' <remarks>Duplicated function, in both MWCapillaryFlowClass and MWMoleMassDilutionClass</remarks>
+    ''' <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
     Public Function ConvertConcentration(dblConcentrationIn As Double, eCurrentUnits As ucoUnitsConcentrationConstants, eNewUnits As ucoUnitsConcentrationConstants) As Double
         Dim dblValue, dblFactor As Double
         Dim dblSampleMass As Double
@@ -1025,7 +1025,7 @@ Public Class MWCapillaryFlowClass
     ''' <param name="eUnits"></param>
     ''' <param name="dblSampleMass"></param>
     ''' <returns></returns>
-    ''' <remarks>Duplicated function, in both MWCapillaryFlowClass and MWMoleMassDilutionClass</remarks>
+    ''' <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
     Private Function FactorConcentration(eUnits As ucoUnitsConcentrationConstants, Optional dblSampleMass As Double = 0) As Double
         Dim dblFactor As Double
 

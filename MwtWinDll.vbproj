@@ -110,29 +110,29 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CapillaryFlowClass.vb">
+    <Compile Include="CapillaryFlow.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Compound.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ElementAndMassRoutines.vb">
+    <Compile Include="ElementAndMassTools.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FormulaFinder.vb" />
     <Compile Include="FormulaFinderCandidateElement.vb" />
     <Compile Include="FormulaFinderOptions.vb" />
     <Compile Include="FormulaFinderResult.vb" />
-    <Compile Include="MoleMassDilutionClass.vb">
+    <Compile Include="MoleMassDilution.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MwtWin.vb">
+    <Compile Include="MolecularWeightCalculator.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NumberConversionRoutines.vb">
+    <Compile Include="NumberConverter.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PeptideClass.vb">
+    <Compile Include="Peptide.vb">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

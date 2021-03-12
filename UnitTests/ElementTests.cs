@@ -25,8 +25,8 @@ namespace UnitTests
         [OneTimeSetUp]
         public void Setup()
         {
-            mMwtWinAvg = new MolecularWeightCalculator(MWElementAndMassRoutines.emElementModeConstants.emAverageMass);
-            mMwtWinIso = new MolecularWeightCalculator(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass);
+            mMwtWinAvg = new MolecularWeightCalculator(ElementAndMassTools.emElementModeConstants.emAverageMass);
+            mMwtWinIso = new MolecularWeightCalculator(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
         }
 
         [Test]

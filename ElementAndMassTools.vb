@@ -3,9 +3,9 @@ Option Strict On
 Imports System.Collections.Generic
 Imports System.Runtime.InteropServices
 
-Public Class MWElementAndMassRoutines
+Public Class ElementAndMassTools
 
-    ' Molecular Weight Calculator routines with ActiveX Class interfaces: MWElementAndMassRoutines
+    ' Molecular Weight Calculator routines with ActiveX Class interfaces: ElementAndMassTools
 
     ' -------------------------------------------------------------------------------
     ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2003
@@ -408,7 +408,7 @@ Public Class MWElementAndMassRoutines
                 .SymbolReferenceStack(.Count - 1) = symbolReference
             End With
         Catch ex As Exception
-            GeneralErrorHandler("MWElementAndMassRoutines.AbbrevSymbolStackAdd", ex)
+            GeneralErrorHandler("ElementAndMassTools.AbbrevSymbolStackAdd", ex)
         End Try
 
     End Sub
@@ -4286,7 +4286,7 @@ Public Class MWElementAndMassRoutines
             End If
 
         Catch ex As Exception
-            GeneralErrorHandler("MWElementAndMassRoutines.ParseFormulaPublic", ex)
+            GeneralErrorHandler("ElementAndMassTools.ParseFormulaPublic", ex)
             Return -1
         End Try
 
@@ -4578,7 +4578,7 @@ Public Class MWElementAndMassRoutines
                                     dblDashMultiplier = dblDashMultiplierPrior
                                 End If
                             Else
-                                If clsNumberConversionRoutines.CDblSafe(Mid(strFormula, intCharIndex - 1, 1)) > 0 Then
+                                If NumberConverter.CDblSafe(Mid(strFormula, intCharIndex - 1, 1)) > 0 Then
                                     ' Number too large
                                     ErrorParams.ErrorID = 7 : ErrorParams.ErrorPosition = intCharIndex
                                 Else
@@ -4703,8 +4703,8 @@ Public Class MWElementAndMassRoutines
                                         Else
                                             ' blnCaretPresent = True
                                             ' Check to make sure isotopic mass is reasonable
-                                            dblIsoDifferenceTop = clsNumberConversionRoutines.CIntSafe(0.63 * SymbolReference + 6)
-                                            dblIsoDifferenceBottom = clsNumberConversionRoutines.CIntSafe(0.008 * SymbolReference ^ 2 - 0.4 * SymbolReference - 6)
+                                            dblIsoDifferenceTop = NumberConverter.CIntSafe(0.63 * SymbolReference + 6)
+                                            dblIsoDifferenceBottom = NumberConverter.CIntSafe(0.008 * SymbolReference ^ 2 - 0.4 * SymbolReference - 6)
                                             dblCaretValDifference = dblCaretVal - SymbolReference * 2
 
                                             If dblCaretValDifference >= dblIsoDifferenceTop Then
@@ -5035,7 +5035,7 @@ Public Class MWElementAndMassRoutines
             End If
 
             If intNumLength < 0 Then intNumLength = CShort(Len(strFoundNum))
-            ParseNum = clsNumberConversionRoutines.CDblSafe(strFoundNum)
+            ParseNum = NumberConverter.CDblSafe(strFoundNum)
         End If
 
     End Function
@@ -5088,7 +5088,7 @@ Public Class MWElementAndMassRoutines
         ' old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & lblMWT(0).FontName & ";}{\f3\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f2\fs25 "
         '                                                            f0                               f1                                 f2                          f3                               f4                      cf0 (black)        cf1 (red)          cf3 (white)
         ' ReSharper disable StringLiteralTypo
-        strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & gComputationOptions.RtfFontName & ";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" & Trim(Str(clsNumberConversionRoutines.CShortSafe(gComputationOptions.RtfFontSize * 2.5))) & " "
+        strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & gComputationOptions.RtfFontName & ";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" & Trim(Str(NumberConverter.CShortSafe(gComputationOptions.RtfFontSize * 2.5))) & " "
         ' ReSharper restore StringLiteralTypo
 
         ' ReSharper restore CommentTypo
@@ -5189,7 +5189,7 @@ Public Class MWElementAndMassRoutines
             ' Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUST_CHAR)
             ' It is used to add additional height to the formula line when isotopes are used
             ' It is colored white so the user does not see it
-            strRTF = strRTF & "{\fs" & Trim(Str(clsNumberConversionRoutines.CShortSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUST_CHAR & "}}"
+            strRTF = strRTF & "{\fs" & Trim(Str(NumberConverter.CShortSafe(gComputationOptions.RtfFontSize * 3))) & "\cf2 " & RTF_HEIGHT_ADJUST_CHAR & "}}"
         Else
             strRTF &= "}"
         End If
@@ -5373,7 +5373,7 @@ Public Class MWElementAndMassRoutines
                 strWork = dblStdDev.ToString("0E+000")
                 strStdDevShort = Left(strWork, 1)
 
-                intExponentValue = clsNumberConversionRoutines.CShortSafe(Right(strWork, 4))
+                intExponentValue = NumberConverter.CShortSafe(Right(strWork, 4))
                 dblWork = dblMass / 10 ^ intExponentValue
                 dblWork = Math.Round(dblWork, 0)
                 dblRoundedMain = dblWork * 10 ^ intExponentValue
@@ -5422,9 +5422,9 @@ Public Class MWElementAndMassRoutines
         ' Round to nearest 1, 2, or 5 (or multiple of 10 thereof)
         ' First, find the exponent of dblThisNum
         strWork = dblThisNum.ToString("0E+000")
-        intExponentValue = clsNumberConversionRoutines.CIntSafe(Right(strWork, 4))
+        intExponentValue = NumberConverter.CIntSafe(Right(strWork, 4))
         dblWork = dblThisNum / 10 ^ intExponentValue
-        dblWork = clsNumberConversionRoutines.CIntSafe(dblWork)
+        dblWork = NumberConverter.CIntSafe(dblWork)
 
         ' dblWork should now be between 0 and 9
         Select Case dblWork
@@ -5450,7 +5450,7 @@ Public Class MWElementAndMassRoutines
 
         ' Find the exponent of MultipleValue
         strWork = MultipleValue.ToString("0E+000")
-        intExponentValue = clsNumberConversionRoutines.CIntSafe(Right(strWork, 4))
+        intExponentValue = NumberConverter.CIntSafe(Right(strWork, 4))
 
         intLoopCount = 0
         Do While (dblValueToRound / MultipleValue).ToString.Trim() <> Math.Round(dblValueToRound / MultipleValue, 0).ToString.Trim()
@@ -5842,7 +5842,7 @@ Public Class MWElementAndMassRoutines
                 End If
             End If
         Catch ex As Exception
-            GeneralErrorHandler("MWElementAndMassRoutines.SetElementModeInternal", ex)
+            GeneralErrorHandler("ElementAndMassTools.SetElementModeInternal", ex)
         End Try
 
     End Sub

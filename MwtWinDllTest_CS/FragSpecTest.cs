@@ -9,23 +9,23 @@ namespace MwtWinDllTestCS
      * Written by Matthew Monroe for PNNL in 2010
      */
 
-    internal class clsFragSpecTest
+    internal class FragSpecTest
     {
         private readonly MolecularWeightCalculator mMwtWin;
 
-        public clsFragSpecTest() {
+        public FragSpecTest() {
             mMwtWin = new MolecularWeightCalculator();
         }
 
-        public clsFragSpecTest(ref MolecularWeightCalculator mwtWin) {
+        public FragSpecTest(ref MolecularWeightCalculator mwtWin) {
             mMwtWin = mwtWin;
         }
 
         public void TestAccessFunctions() {
             // Set the element mode (average, monoisotopic, or integer)
-            mMwtWin.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass);
+            mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
 
-            MWPeptideClass.udtFragmentationSpectrumOptionsType fragSpectrumOptions = default;
+            Peptide.udtFragmentationSpectrumOptionsType fragSpectrumOptions = default;
             fragSpectrumOptions.Initialize();
 
             // Initialize fragSpectrumOptions with the defaults
@@ -37,16 +37,16 @@ namespace MwtWinDllTestCS
             fragSpectrumOptions.DoubleChargeIonsThreshold = 400;
             fragSpectrumOptions.TripleChargeIonsThreshold = 400;
 
-            fragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itAIon].ShowIon = false;
-            fragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itBIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itAIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itBIon].ShowIon = false;
 
-            fragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itYIon].ShowIon = true;
-            fragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossAmmonia = false;
-            fragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossPhosphate = false;
-            fragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itYIon].NeutralLossWater = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itYIon].ShowIon = true;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itYIon].NeutralLossAmmonia = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itYIon].NeutralLossPhosphate = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itYIon].NeutralLossWater = false;
 
-            fragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itCIon].ShowIon = false;
-            fragSpectrumOptions.IonTypeOptions[(int)MWPeptideClass.itIonTypeConstants.itZIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itCIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itZIon].ShowIon = false;
 
             fragSpectrumOptions.IntensityOptions.BYIonShoulder = 0;
 
@@ -66,7 +66,7 @@ namespace MwtWinDllTestCS
             mMwtWin.Peptide.SetFragmentationSpectrumOptions(fragSpectrumOptions);
 
             // Get the fragmentation masses
-            MWPeptideClass.udtFragmentationSpectrumDataType[] fragSpectrum = null;
+            Peptide.udtFragmentationSpectrumDataType[] fragSpectrum = null;
             mMwtWin.Peptide.GetFragmentationMasses(ref fragSpectrum);
 
             // Print the results to the console

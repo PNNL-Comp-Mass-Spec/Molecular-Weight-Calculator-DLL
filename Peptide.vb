@@ -3,9 +3,9 @@ Option Strict On
 Imports System.Collections.Generic
 Imports System.Runtime.InteropServices
 
-Public Class MWPeptideClass
+Public Class Peptide
 
-    ' Molecular Weight Calculator routines with ActiveX Class interfaces: MWPeptideClass
+    ' Molecular Weight Calculator routines with ActiveX Class interfaces: Peptide
 
     ' -------------------------------------------------------------------------------
     ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2004
@@ -28,13 +28,13 @@ Public Class MWPeptideClass
 
     Public Sub New()
         MyBase.New()
-        ElementAndMassRoutines = New MWElementAndMassRoutines
+        ElementAndMassRoutines = New ElementAndMassTools
         InitializeClass()
     End Sub
 
-    Public Sub New(objMWElementAndMassRoutines As MWElementAndMassRoutines)
+    Public Sub New(objElementAndMassTools As ElementAndMassTools)
         MyBase.New()
-        ElementAndMassRoutines = objMWElementAndMassRoutines
+        ElementAndMassRoutines = objElementAndMassTools
         InitializeClass()
     End Sub
 
@@ -58,7 +58,7 @@ Public Class MWPeptideClass
 
     Private Const SHOULDER_ION_PREFIX As String = "Shoulder-"
 
-    Private ReadOnly ElementAndMassRoutines As MWElementAndMassRoutines
+    Private ReadOnly ElementAndMassRoutines As ElementAndMassTools
 
     Public Enum ctgCTerminusGroupConstants
         ctgHydroxyl = 0
@@ -638,7 +638,7 @@ Public Class MWPeptideClass
         Try
             Return mFragSpectrumOptions
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.GetFragmentationSpectrumOptions", ex)
+            ElementAndMassRoutines.GeneralErrorHandler("Peptide.GetFragmentationSpectrumOptions", ex)
         End Try
 
         Dim udtDefaultOptions = New udtFragmentationSpectrumOptionsType
@@ -2021,7 +2021,7 @@ Public Class MWPeptideClass
             SetModificationSymbol("~", 442.225, False, "ICAT D0 [C20H34N4O5S]")
             SetModificationSymbol("`", 450.274, False, "ICAT D8 [C20H26D8N4O5S]")
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.SetDefaultModificationSymbols", ex)
+            ElementAndMassRoutines.GeneralErrorHandler("Peptide.SetDefaultModificationSymbols", ex)
         End Try
 
     End Sub
@@ -2073,7 +2073,7 @@ Public Class MWPeptideClass
 
             SetDefaultModificationSymbols()
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.SetDefaultOptions", ex)
+            ElementAndMassRoutines.GeneralErrorHandler("Peptide.SetDefaultOptions", ex)
         End Try
 
     End Sub
@@ -2776,12 +2776,12 @@ Public Class MWPeptideClass
     End Sub
 
     Public Sub UpdateStandardMasses()
-        Dim eElementModeSaved As MWElementAndMassRoutines.emElementModeConstants
+        Dim eElementModeSaved As ElementAndMassTools.emElementModeConstants
 
         Try
             eElementModeSaved = ElementAndMassRoutines.GetElementModeInternal()
 
-            ElementAndMassRoutines.SetElementModeInternal(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass)
+            ElementAndMassRoutines.SetElementModeInternal(ElementAndMassTools.emElementModeConstants.emIsotopicMass)
 
             dblChargeCarrierMass = ElementAndMassRoutines.GetChargeCarrierMassInternal()
 
@@ -2803,7 +2803,7 @@ Public Class MWPeptideClass
 
             ElementAndMassRoutines.SetElementModeInternal(eElementModeSaved)
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.UpdateStandardMasses", ex)
+            ElementAndMassRoutines.GeneralErrorHandler("Peptide.UpdateStandardMasses", ex)
         End Try
 
     End Sub
@@ -2823,7 +2823,7 @@ Public Class MWPeptideClass
 
             SetDefaultOptions()
         Catch ex As Exception
-            ElementAndMassRoutines.GeneralErrorHandler("MWPeptideClass.Class_Initialize", ex)
+            ElementAndMassRoutines.GeneralErrorHandler("Peptide.Class_Initialize", ex)
         End Try
 
     End Sub

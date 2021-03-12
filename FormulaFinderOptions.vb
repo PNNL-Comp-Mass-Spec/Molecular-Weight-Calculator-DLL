@@ -1,4 +1,4 @@
-﻿Public Class clsFormulaFinderOptions
+﻿Public Class FormulaFinderOptions
 
 #Region "Constants and Enums"
     Public Enum eSearchMode

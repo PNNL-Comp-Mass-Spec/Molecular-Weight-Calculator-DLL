@@ -38,17 +38,17 @@ Public Class MolecularWeightCalculator
     ''' </summary>
     Public Sub New()
 
-        mElementAndMassRoutines = New MWElementAndMassRoutines()
+        mElementAndMassRoutines = New ElementAndMassTools()
 
         ' LoadDefaults calls mElementAndMassRoutines.MemoryLoadAll, which is required prior to instantiating the Peptide class.
         ' We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
         If Not mDataInitialized Then LoadDefaults()
 
-        Compound = New MWCompoundClass(mElementAndMassRoutines)
-        Peptide = New MWPeptideClass(mElementAndMassRoutines)
-        FormulaFinder = New MWFormulaFinder(mElementAndMassRoutines)
+        Compound = New Compound(mElementAndMassRoutines)
+        Peptide = New Peptide(mElementAndMassRoutines)
+        FormulaFinder = New FormulaFinder(mElementAndMassRoutines)
 
-        CapFlow = New MWCapillaryFlowClass
+        CapFlow = New CapillaryFlow
 
     End Sub
 
@@ -56,7 +56,7 @@ Public Class MolecularWeightCalculator
     ''' Constructor where the element mode can be defined
     ''' </summary>
     ''' <param name="elementMode">Mass mode for elements (average, monoisotopic, or integer)</param>
-    Public Sub New(elementMode As MWElementAndMassRoutines.emElementModeConstants)
+    Public Sub New(elementMode As ElementAndMassTools.emElementModeConstants)
         Me.New()
         Me.SetElementMode(elementMode)
     End Sub
@@ -80,12 +80,12 @@ Public Class MolecularWeightCalculator
 #Region "Classwide Variables"
     Private mDataInitialized As Boolean
 
-    Public Compound As MWCompoundClass
-    Public Peptide As MWPeptideClass
-    Public FormulaFinder As MWFormulaFinder
-    Public CapFlow As MWCapillaryFlowClass
+    Public Compound As Compound
+    Public Peptide As Peptide
+    Public FormulaFinder As FormulaFinder
+    Public CapFlow As CapillaryFlow
 
-    Private WithEvents mElementAndMassRoutines As MWElementAndMassRoutines
+    Private WithEvents mElementAndMassRoutines As ElementAndMassTools
 
     Public Event ProgressReset()
     Public Event ProgressChanged(taskDescription As String, percentComplete As Single)     ' PercentComplete ranges from 0 to 100, but can contain decimal percentage values
@@ -136,12 +136,12 @@ Public Class MolecularWeightCalculator
         End Set
     End Property
 
-    Public Property CaseConversionMode() As MWElementAndMassRoutines.ccCaseConversionConstants
+    Public Property CaseConversionMode() As ElementAndMassTools.ccCaseConversionConstants
         Get
             Return mElementAndMassRoutines.gComputationOptions.CaseConversion
         End Get
         Set
-            If Value >= MWElementAndMassRoutines.ccCaseConversionConstants.ccConvertCaseUp And Value <= MWElementAndMassRoutines.ccCaseConversionConstants.ccSmartCase Then
+            If Value >= ElementAndMassTools.ccCaseConversionConstants.ccConvertCaseUp And Value <= ElementAndMassTools.ccCaseConversionConstants.ccSmartCase Then
                 mElementAndMassRoutines.gComputationOptions.CaseConversion = Value
             End If
         End Set
@@ -256,12 +256,12 @@ Public Class MolecularWeightCalculator
     End Property
 
 
-    Public Property StdDevMode() As MWElementAndMassRoutines.smStdDevModeConstants
+    Public Property StdDevMode() As ElementAndMassTools.smStdDevModeConstants
         Get
             Return mElementAndMassRoutines.gComputationOptions.StdDevMode
         End Get
         Set
-            If Value >= MWElementAndMassRoutines.smStdDevModeConstants.smShort And Value <= MWElementAndMassRoutines.smStdDevModeConstants.smDecimal Then
+            If Value >= ElementAndMassTools.smStdDevModeConstants.smShort And Value <= ElementAndMassTools.smStdDevModeConstants.smDecimal Then
                 mElementAndMassRoutines.gComputationOptions.StdDevMode = Value
             End If
         End Set
@@ -557,7 +557,7 @@ Public Class MolecularWeightCalculator
     End Function
 
     Public Function GetAbbreviationCountMax() As Integer
-        Return MWElementAndMassRoutines.MAX_ABBREV_COUNT
+        Return ElementAndMassTools.MAX_ABBREV_COUNT
     End Function
 
     ''' <summary>
@@ -659,7 +659,7 @@ Public Class MolecularWeightCalculator
     ''' emIsotopicMass = 2
     ''' emIntegerMass  = 3
     ''' </returns>
-    Public Function GetElementMode() As MWElementAndMassRoutines.emElementModeConstants
+    Public Function GetElementMode() As ElementAndMassTools.emElementModeConstants
         Return mElementAndMassRoutines.GetElementModeInternal()
     End Function
 
@@ -721,16 +721,16 @@ Public Class MolecularWeightCalculator
     End Function
 
     Private Sub LoadDefaults()
-        mElementAndMassRoutines.MemoryLoadAll(MWElementAndMassRoutines.emElementModeConstants.emAverageMass)
+        mElementAndMassRoutines.MemoryLoadAll(ElementAndMassTools.emElementModeConstants.emAverageMass)
 
-        Me.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emAverageMass)
+        Me.SetElementMode(ElementAndMassTools.emElementModeConstants.emAverageMass)
         Me.AbbreviationRecognitionMode = arAbbrevRecognitionModeConstants.arNormalPlusAminoAcids
         Me.BracketsTreatedAsParentheses = True
-        Me.CaseConversionMode = MWElementAndMassRoutines.ccCaseConversionConstants.ccConvertCaseUp
+        Me.CaseConversionMode = ElementAndMassTools.ccCaseConversionConstants.ccConvertCaseUp
         Me.DecimalSeparator = "."c
         Me.RtfFontName = "Arial"
         Me.RtfFontSize = 10
-        Me.StdDevMode = MWElementAndMassRoutines.smStdDevModeConstants.smDecimal
+        Me.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smDecimal
 
         mElementAndMassRoutines.gComputationOptions.DecimalSeparator = DetermineDecimalPoint()
 
@@ -905,11 +905,11 @@ Public Class MolecularWeightCalculator
         Return mElementAndMassRoutines.SetElementIsotopesInternal(strSymbol, intIsotopeCount, dblIsotopeMassesOneBased, sngIsotopeAbundancesOneBased)
     End Function
 
-    Public Sub SetElementMode(elementMode As MWElementAndMassRoutines.emElementModeConstants)
+    Public Sub SetElementMode(elementMode As ElementAndMassTools.emElementModeConstants)
         SetElementMode(elementMode, True)
     End Sub
 
-    Public Sub SetElementMode(elementMode As MWElementAndMassRoutines.emElementModeConstants, blnMemoryLoadElementValues As Boolean)
+    Public Sub SetElementMode(elementMode As ElementAndMassTools.emElementModeConstants, blnMemoryLoadElementValues As Boolean)
         mElementAndMassRoutines.SetElementModeInternal(elementMode, blnMemoryLoadElementValues)
     End Sub
 

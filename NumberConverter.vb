@@ -1,6 +1,6 @@
 Option Strict On
 
-Class clsNumberConversionRoutines
+Class NumberConverter
 
     Public Shared Function CDblSafe(strWork As String) As Double
         Dim dblValue As Double = 0
