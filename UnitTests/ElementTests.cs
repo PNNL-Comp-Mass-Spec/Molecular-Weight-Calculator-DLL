@@ -38,7 +38,6 @@ namespace UnitTests
         [TestCase("BrCH2(CH2)7CH2Br>CH8", 306.12144000, 304.04011160)]
         public void ComputeMass(string formula, double expectedAvgMass, double expectedMonoMass)
         {
-
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
             var resultDaIso = mMwtWinIso.ComputeMass(formula);
 

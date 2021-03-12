@@ -482,7 +482,7 @@ Public Class MWElementAndMassRoutines
 
             strTest = strFormulaExcerpt.Substring(0, intLength)
             strNewCaution = LookupCautionStatement(strTest)
-            If Not strNewCaution Is Nothing AndAlso strNewCaution.Length > 0 Then
+            If strNewCaution IsNot Nothing AndAlso strNewCaution.Length > 0 Then
                 AddToCautionDescription(strNewCaution)
                 Exit For
             End If
@@ -496,7 +496,7 @@ Public Class MWElementAndMassRoutines
             Select Case adjacentNum
                 Case -1
                     ' No number, but no error
-                    ' That's ok
+                    ' That's OK
                 Case -3
                     ' Error: No number after decimal point
                     ErrorParams.ErrorID = 12 : ErrorParams.ErrorPosition = curCharacter + symbolLength
@@ -1487,10 +1487,10 @@ Public Class MWElementAndMassRoutines
                     '        Use intDataIndex, .YVal, and DeltaX
                     dblXOffSet = (intMidPointIndex - intDataIndex) * DeltaX
 
-                    Dim udtNewPoint = New udtXYDataType()
-
-                    udtNewPoint.X = udtThisDataPoint.X - dblXOffSet
-                    udtNewPoint.Y = udtThisDataPoint.Y * Math.Exp(-(dblXOffSet) ^ 2 / (2 * dblSigma ^ 2))
+                    Dim udtNewPoint = New udtXYDataType With {
+                        .X = udtThisDataPoint.X - dblXOffSet,
+                        .Y = udtThisDataPoint.Y * Math.Exp(-(dblXOffSet) ^ 2 / (2 * dblSigma ^ 2))
+                    }
 
                     lstDataToAdd.Add(udtNewPoint)
                 Next intDataIndex
@@ -1563,13 +1563,11 @@ Public Class MWElementAndMassRoutines
                         dblRangeWork = dblMinimalXValSpacing
                     End If
 
-                    Dim udtNewDataPoint = New udtXYDataType
-
-
-                    udtNewDataPoint.X = lstXYSummation(intSummationIndex).X + dblRangeWork
-
                     ' The new .YVal is the average of that at intSummationIndex and that at intSummationIndex + 1
-                    udtNewDataPoint.Y = (lstXYSummation(intSummationIndex).Y + lstXYSummation(intSummationIndex + 1).Y) / 2
+                    Dim udtNewDataPoint = New udtXYDataType With {
+                        .X = lstXYSummation(intSummationIndex).X + dblRangeWork,
+                        .Y = (lstXYSummation(intSummationIndex).Y + lstXYSummation(intSummationIndex + 1).Y) / 2
+                    }
 
                     lstXYSummation.Insert(intSummationIndex + 1, udtNewDataPoint)
 
@@ -2136,7 +2134,7 @@ Public Class MWElementAndMassRoutines
         Dim strErrorFilePath As String
 
         strMessage = "Error in " & strCallingProcedure & ": " & ErrorToString(errorNumber) & " (#" & Trim(CStr(errorNumber)) & ")"
-        If Not strErrorDescriptionAdditional Is Nothing AndAlso strErrorDescriptionAdditional.Length > 0 Then
+        If strErrorDescriptionAdditional IsNot Nothing AndAlso strErrorDescriptionAdditional.Length > 0 Then
             strMessage &= ControlChars.NewLine & strErrorDescriptionAdditional
         End If
 
@@ -2433,10 +2431,10 @@ Public Class MWElementAndMassRoutines
         If intElementID >= 1 And intElementID <= ELEMENT_COUNT Then
             With ElementStats(intElementID)
                 intIsotopeCount = .IsotopeCount
-                For intIsotopeindex = 1 To .IsotopeCount
-                    dblIsotopeMasses(intIsotopeindex) = .Isotopes(intIsotopeindex).Mass
-                    sngIsotopeAbundances(intIsotopeindex) = .Isotopes(intIsotopeindex).Abundance
-                Next intIsotopeindex
+                For intIsotopeIndex = 1 To .IsotopeCount
+                    dblIsotopeMasses(intIsotopeIndex) = .Isotopes(intIsotopeIndex).Mass
+                    sngIsotopeAbundances(intIsotopeIndex) = .Isotopes(intIsotopeIndex).Abundance
+                Next intIsotopeIndex
             End With
             Return 0
         Else
@@ -2698,8 +2696,9 @@ Public Class MWElementAndMassRoutines
 
                 Dim blnOpeningExistingFile = IO.File.Exists(mLogFilePath)
 
-                mLogFile = New IO.StreamWriter(New IO.FileStream(mLogFilePath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))
-                mLogFile.AutoFlush = True
+                mLogFile = New IO.StreamWriter(New IO.FileStream(mLogFilePath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read)) With {
+                    .AutoFlush = True
+                }
 
                 If Not blnOpeningExistingFile Then
                     mLogFile.WriteLine("Date" & ControlChars.Tab &

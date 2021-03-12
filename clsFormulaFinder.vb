@@ -96,7 +96,7 @@ Public Class MWFormulaFinder
             Return mCandidateElements
         End Get
         Set(value As Dictionary(Of String, udtCandidateElementTolerances))
-            If Not value Is Nothing Then
+            If value IsNot Nothing Then
                 mCandidateElements = value
 
                 ValidateBoundedSearchValues()
@@ -1137,10 +1137,10 @@ Public Class MWFormulaFinder
 
         For Each item In mCandidateElements
 
-            Dim candidateElement = New clsFormulaFinderCandidateElement(item.Key)
-
-            candidateElement.CountMinimum = item.Value.MinimumCount
-            candidateElement.CountMaximum = item.Value.MaximumCount
+            Dim candidateElement = New clsFormulaFinderCandidateElement(item.Key) With {
+                .CountMinimum = item.Value.MinimumCount,
+                .CountMaximum = item.Value.MaximumCount
+            }
 
             If mElementAndMassRoutines.IsValidElementSymbol(item.Key) Then
                 Dim elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key)
@@ -1321,25 +1321,21 @@ Public Class MWFormulaFinder
     End Function
 
     Private Function GetDefaultCandidateElementTolerance(minimumCount As Integer, maximumCount As Integer) As udtCandidateElementTolerances
-
-        Dim udtElementTolerances = New udtCandidateElementTolerances
-
-        udtElementTolerances.MinimumCount = minimumCount    ' Only used with the Bounded search mode
-        udtElementTolerances.MaximumCount = maximumCount    ' Only used with the Bounded search mode
-
-        udtElementTolerances.TargetPercentComposition = 0   ' Only used when searching for percent compositions
+        Dim udtElementTolerances = New udtCandidateElementTolerances With {
+            .MinimumCount = minimumCount,    ' Only used with the Bounded search mode
+            .MaximumCount = maximumCount,    ' Only used with the Bounded search mode
+            .TargetPercentComposition = 0   ' Only used when searching for percent compositions
+            }
 
         Return udtElementTolerances
     End Function
 
     Private Function GetDefaultCandidateElementTolerance(targetPercentComposition As Double) As udtCandidateElementTolerances
-
-        Dim udtElementTolerances = New udtCandidateElementTolerances
-
-        udtElementTolerances.MinimumCount = 0               ' Only used with the Bounded search mode
-        udtElementTolerances.MaximumCount = 10              ' Only used with the Bounded search mode
-
-        udtElementTolerances.TargetPercentComposition = targetPercentComposition   ' Only used when searching for percent compositions
+        Dim udtElementTolerances = New udtCandidateElementTolerances With {
+            .MinimumCount = 0,               ' Only used with the Bounded search mode
+            .MaximumCount = 10,              ' Only used with the Bounded search mode
+            .TargetPercentComposition = targetPercentComposition   ' Only used when searching for percent compositions
+            }
 
         Return udtElementTolerances
 
@@ -1467,16 +1463,18 @@ Public Class MWFormulaFinder
             Dim lstRanges = New List(Of udtBoundedSearchRangeType)
 
             For elementIndex = 0 To sortedElementStats.Count - 1
-                Dim udtBoundedSearchRange = New udtBoundedSearchRangeType
-                udtBoundedSearchRange.Min = sortedElementStats(elementIndex).CountMinimum
-                udtBoundedSearchRange.Max = sortedElementStats(elementIndex).CountMaximum
+                Dim udtBoundedSearchRange = New udtBoundedSearchRangeType With {
+                    .Min = sortedElementStats(elementIndex).CountMinimum,
+                    .Max = sortedElementStats(elementIndex).CountMaximum
+                }
                 lstRanges.Add(udtBoundedSearchRange)
             Next
 
             While lstRanges.Count < MAX_MATCHING_ELEMENTS
-                Dim udtBoundedSearchRange = New udtBoundedSearchRangeType
-                udtBoundedSearchRange.Min = 0
-                udtBoundedSearchRange.Max = 0
+                Dim udtBoundedSearchRange = New udtBoundedSearchRangeType With {
+                    .Min = 0,
+                    .Max = 0
+                }
                 lstRanges.Add(udtBoundedSearchRange)
             End While
 
@@ -1854,10 +1852,11 @@ Public Class MWFormulaFinder
                     ' Uncomment to add a breakpoint when a certain empirical formula is encountered
                     If lstPotentialElementPointers.Count >= 3 Then
                         Dim empiricalResultSymbols = ConvertElementPointersToElementStats(sortedElementStats, lstPotentialElementPointers)
-                        Dim debugCompound = New Dictionary(Of String, Integer)
-                        debugCompound.Add("C", 7)
-                        debugCompound.Add("H", 4)
-                        debugCompound.Add("O", 7)
+                        Dim debugCompound = New Dictionary(Of String, Integer) From {
+                            {"C", 7},
+                            {"H", 4},
+                            {"O", 7}
+                        }
 
                         If EmpiricalFormulaHasElementCounts(empiricalResultSymbols, debugCompound) Then
                             Console.WriteLine("Debug: Check this formula")

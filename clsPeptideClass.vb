@@ -1912,7 +1912,7 @@ Public Class MWPeptideClass
 
         If lngNewResidueCount > ResidueCountDimmed Then
             ResidueCountDimmed = lngNewResidueCount + RESIDUE_DIM_CHUNK
-            If blnPreserveContents And Not Residues Is Nothing Then
+            If blnPreserveContents And Residues IsNot Nothing Then
                 intOldIndexEnd = Residues.Length - 1
                 ReDim Preserve Residues(ResidueCountDimmed)
                 For intIndex = intOldIndexEnd + 1 To ResidueCountDimmed

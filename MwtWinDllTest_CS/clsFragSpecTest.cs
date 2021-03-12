@@ -9,9 +9,9 @@ namespace MwtWinDllTestCS
      * Written by Matthew Monroe for PNNL in 2010
      */
 
-    class clsFragSpecTest
+    internal class clsFragSpecTest
     {
-        readonly MolecularWeightCalculator mMwtWin;
+        private readonly MolecularWeightCalculator mMwtWin;
 
         public clsFragSpecTest() {
             mMwtWin = new MolecularWeightCalculator();
@@ -22,7 +22,6 @@ namespace MwtWinDllTestCS
         }
 
         public void TestAccessFunctions() {
-
             // Set the element mode (average, monoisotopic, or integer)
             mMwtWin.SetElementMode(MWElementAndMassRoutines.emElementModeConstants.emIsotopicMass);
 
@@ -56,7 +55,7 @@ namespace MwtWinDllTestCS
             mMwtWin.Peptide.SetModificationSymbol("+", 10.0, false, "Heavy Arg");
 
             // ReSharper disable once StringLiteralTypo
-            var newSeq = "C!ETQNPVSAR+";
+            const string newSeq = "C!ETQNPVSAR+";
 
             // Obtain the fragmentation spectrum for a peptide
 
@@ -113,8 +112,6 @@ namespace MwtWinDllTestCS
             Console.WriteLine("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
             mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, ref results, ref ConvolutedMSData2D, ref ConvolutedMSDataCount, addProtonChargeCarrier);
             Console.WriteLine(results);
-
         }
-
     }
 }

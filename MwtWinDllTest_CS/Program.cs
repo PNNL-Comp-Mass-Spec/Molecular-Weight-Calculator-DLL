@@ -3,16 +3,16 @@ using MwtWinDll;
 
 namespace MwtWinDllTestCS
 {
-    /*
-     * This is a very simple C# application that shows how to use MwtWinDll.dll
-     * Written by Matthew Monroe for PNNL in 2010
-     */
-
-    class Program
+    /// <summary>
+    /// This is a very simple C# application that shows how to use MwtWinDll.dll
+    /// </summary>
+    /// <remarks>
+    /// Written by Matthew Monroe for PNNL in 2010
+    /// </remarks>
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-
             // Instantiate the Molecular Weight Calculator
             var mwtWin = new MolecularWeightCalculator();
 
@@ -61,8 +61,7 @@ namespace MwtWinDllTestCS
 
                 default:
                     elementModeDescription = "Unknown";
-                    break;
-
+                  break;
             }
 
             // Set the element mode (average, monoisotopic, or integer)
@@ -125,9 +124,7 @@ namespace MwtWinDllTestCS
                 mwtWin.Compound.SetFormula(testFormula);
                 Console.WriteLine(testFormula + " auto-capitalizes to " + mwtWin.Compound.FormulaCapitalized);
                 Console.WriteLine("{0,-18}  {1}", elementModeDescription + " Mass:", mwtWin.Compound.Mass);
-
-            }
-
+           }
         }
     }
 }
