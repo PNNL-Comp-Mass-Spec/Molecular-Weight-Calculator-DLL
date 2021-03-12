@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="clsFragSpecTest.cs">
+    <Compile Include="FragSpecTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Program.cs" />
