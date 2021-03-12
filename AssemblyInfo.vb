@@ -1,3 +1,4 @@
+Imports System.Runtime.InteropServices
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
 
@@ -25,5 +26,4 @@ Imports System.Runtime.CompilerServices
 
 
 <Assembly: AssemblyVersion("3.6.*")>
-
-
+<Assembly: ComVisible(True)>

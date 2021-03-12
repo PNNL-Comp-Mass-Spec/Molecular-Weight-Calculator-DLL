@@ -1,6 +1,7 @@
 Option Strict On
 
 Imports System.Collections.Generic
+Imports System.Runtime.InteropServices
 
 Public Class MWPeptideClass
 
