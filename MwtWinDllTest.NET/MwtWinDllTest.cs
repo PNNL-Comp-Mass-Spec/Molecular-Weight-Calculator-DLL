@@ -591,21 +591,19 @@ namespace MwtWinDllTest
 
             // If we want to do more complex operations, need to fill mMwtWin.Compound with valid info
             // Then, can read out values from it
+            var compound = mMwtWin.Compound;
+            compound.Formula = txtFormula.Text;
+            if (string.IsNullOrEmpty(compound.ErrorDescription))
             {
-                var withBlock = mMwtWin.Compound;
-                withBlock.Formula = txtFormula.Text;
-                if (string.IsNullOrEmpty(withBlock.ErrorDescription))
-                {
-                    lblMass.Text = withBlock.Mass.ToString();
-                    lblStatus.Text = withBlock.CautionDescription;
-                    txtFormula.Text = withBlock.FormulaCapitalized;
-                    rtfFormula.Rtf = withBlock.FormulaRTF;
-                    lblMassAndStdDev.Text = withBlock.MassAndStdDevString;
-                }
-                else
-                {
-                    lblStatus.Text = withBlock.ErrorDescription;
-                }
+                lblMass.Text = compound.Mass.ToString();
+                lblStatus.Text = compound.CautionDescription;
+                txtFormula.Text = compound.FormulaCapitalized;
+                rtfFormula.Rtf = compound.FormulaRTF;
+                lblMassAndStdDev.Text = compound.MassAndStdDevString;
+            }
+            else
+            {
+                lblStatus.Text = compound.ErrorDescription;
             }
         }
 
@@ -688,35 +686,26 @@ namespace MwtWinDllTest
 
         private void PopulateComboBoxes()
         {
-            {
-                var withBlock = cboWeightMode;
-                withBlock.Items.Clear();
-                withBlock.Items.Add("Average mass");
-                withBlock.Items.Add("Isotopic mass");
-                withBlock.Items.Add("Integer mass");
-                withBlock.SelectedIndex = 0;
-            }
+            cboWeightMode.Items.Clear();
+            cboWeightMode.Items.Add("Average mass");
+            cboWeightMode.Items.Add("Isotopic mass");
+            cboWeightMode.Items.Add("Integer mass");
+            cboWeightMode.SelectedIndex = 0;
 
-            {
-                var withBlock1 = cboStdDevMode;
-                withBlock1.Items.Clear();
-                withBlock1.Items.Add("Short");
-                withBlock1.Items.Add("Scientific");
-                withBlock1.Items.Add("Decimal");
-                withBlock1.SelectedIndex = 0;
-            }
+            cboStdDevMode.Items.Clear();
+            cboStdDevMode.Items.Add("Short");
+            cboStdDevMode.Items.Add("Scientific");
+            cboStdDevMode.Items.Add("Decimal");
+            cboStdDevMode.SelectedIndex = 0;
 
-            {
-                var withBlock2 = cboFormulaFinderTestMode;
-                withBlock2.Items.Clear();
-                withBlock2.Items.Add("Match 200 Da, +/- 0.05 Da");
-                withBlock2.Items.Add("Match 200 Da, +/- 250 ppm");
-                withBlock2.Items.Add("Match 200 Da, +/- 250 ppm, limit charge range");
-                withBlock2.Items.Add("Match 100 m/z, +/- 250 ppm");
-                withBlock2.Items.Add("Match percent composition values");
-                withBlock2.Items.Add("Match 200 Da, +/- 250 ppm, Bounded search");
-                withBlock2.SelectedIndex = 0;
-            }
+            cboFormulaFinderTestMode.Items.Clear();
+            cboFormulaFinderTestMode.Items.Add("Match 200 Da, +/- 0.05 Da");
+            cboFormulaFinderTestMode.Items.Add("Match 200 Da, +/- 250 ppm");
+            cboFormulaFinderTestMode.Items.Add("Match 200 Da, +/- 250 ppm, limit charge range");
+            cboFormulaFinderTestMode.Items.Add("Match 100 m/z, +/- 250 ppm");
+            cboFormulaFinderTestMode.Items.Add("Match percent composition values");
+            cboFormulaFinderTestMode.Items.Add("Match 200 Da, +/- 250 ppm, Bounded search");
+            cboFormulaFinderTestMode.SelectedIndex = 0;
         }
 
         public void TestAccessFunctions()
@@ -741,189 +730,183 @@ namespace MwtWinDllTest
             lblProgress.Text = string.Empty;
             objResults.Show();
             objResults.SetText = string.Empty;
+
+            // Test Abbreviations
+            lngItemCount = mMwtWin.GetAbbreviationCount();
+            for (int intIndex = 1, loopTo = lngItemCount; intIndex <= loopTo; intIndex++)
             {
-                var withBlock = mMwtWin;
-                // Test Abbreviations
-                lngItemCount = withBlock.GetAbbreviationCount();
-                for (int intIndex = 1, loopTo = lngItemCount; intIndex <= loopTo; intIndex++)
-                {
-                    intResult = withBlock.GetAbbreviation(intIndex, ref strSymbol, ref strFormula, ref sngCharge, ref blnIsAminoAcid, ref strOneLetterSymbol, ref strComment);
-                    Debug.Assert(intResult == 0, "");
-                    Debug.Assert(withBlock.GetAbbreviationID(strSymbol) == intIndex, "");
-                    intResult = withBlock.SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment);
-                    Debug.Assert(intResult == 0, "");
-                }
-
-                // Test Caution statements
-                lngItemCount = withBlock.GetCautionStatementCount();
-                for (int intIndex = 1, loopTo1 = lngItemCount; intIndex <= loopTo1; intIndex++)
-                {
-                    intResult = withBlock.GetCautionStatement(intIndex, ref strSymbol, ref strStatement);
-                    Debug.Assert(intResult == 0, "");
-                    Debug.Assert(withBlock.GetCautionStatementID(strSymbol) == intIndex, "");
-                    intResult = withBlock.SetCautionStatement(strSymbol, strStatement);
-                    Debug.Assert(intResult == 0, "");
-                }
-
-                // Test Element access
-                lngItemCount = withBlock.GetElementCount();
-                for (int intIndex = 1, loopTo2 = lngItemCount; intIndex <= loopTo2; intIndex++)
-                {
-                    intResult = withBlock.GetElement((short)intIndex, ref strSymbol, ref dblMass, ref dblUncertainty, ref sngCharge, ref intIsotopeCount);
-                    Debug.Assert(intResult == 0, "");
-                    Debug.Assert(withBlock.GetElementID(strSymbol) == intIndex, "");
-                    intResult = withBlock.SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, false);
-                    Debug.Assert(intResult == 0, "");
-                    dblIsotopeMasses = new double[intIsotopeCount + 1 + 1];
-                    sngIsotopeAbundances = new float[intIsotopeCount + 1 + 1];
-                    intResult = withBlock.GetElementIsotopes((short)intIndex, ref intIsotopeCount2, ref dblIsotopeMasses, ref sngIsotopeAbundances);
-                    Debug.Assert(intIsotopeCount == intIsotopeCount2, "");
-                    Debug.Assert(intResult == 0, "");
-                    intResult = withBlock.SetElementIsotopes(strSymbol, intIsotopeCount, ref dblIsotopeMasses, ref sngIsotopeAbundances);
-                    Debug.Assert(intResult == 0, "");
-                }
-
-                // Test Message Statements access
-                lngItemCount = withBlock.GetMessageStatementCount();
-                var loopTo3 = lngItemCount;
-                for (lngIndex = 1; lngIndex <= loopTo3; lngIndex++)
-                {
-                    strStatement = withBlock.GetMessageStatement(lngIndex);
-                    intResult = withBlock.SetMessageStatement(lngIndex, strStatement);
-                }
-
-                // Test m/z conversion
-                // Switch to isotopic masses
-
-                withBlock.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
-                withBlock.Compound.SetFormula("C19H36O5NH4");
-                dblMass = withBlock.Compound.Mass;
-                objResults.AppendText("Mass of " + withBlock.Compound.FormulaCapitalized + ": " + dblMass);
-                for (short intCharge = 1; intCharge <= 4; intCharge++)
-                    objResults.AppendText("  m/z of " + intCharge.ToString() + "+: " + withBlock.ConvoluteMass(dblMass, 0, intCharge));
-                objResults.AppendText("");
-                withBlock.Compound.SetFormula("C19H36O5NH3");
-                dblMass = withBlock.Compound.Mass;
-                objResults.AppendText("m/z values if we first lose a hydrogen before adding a proton");
-                for (short intCharge = 1; intCharge <= 4; intCharge++)
-                    objResults.AppendText("  m/z of " + intCharge.ToString() + "+: " + withBlock.ConvoluteMass(dblMass, 0, intCharge));
-
-                // Test Capillary flow functions
-                {
-                    var withBlock1 = withBlock.CapFlow;
-                    withBlock1.SetAutoComputeEnabled(false);
-                    withBlock1.SetBackPressure(2000d, CapillaryFlow.uprUnitsPressureConstants.uprPsi);
-                    withBlock1.SetColumnLength(40d, CapillaryFlow.ulnUnitsLengthConstants.ulnCM);
-                    withBlock1.SetColumnID(50d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
-                    withBlock1.SetSolventViscosity(0.0089d, CapillaryFlow.uviUnitsViscosityConstants.uviPoise);
-                    withBlock1.SetInterparticlePorosity(0.33d);
-                    withBlock1.SetParticleDiameter(2d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
-                    withBlock1.SetAutoComputeEnabled(true);
-                    objResults.AppendText("");
-                    objResults.AppendText("Check capillary flow calcs");
-                    objResults.AppendText("Linear Velocity: " + withBlock1.ComputeLinearVelocity(CapillaryFlow.ulvUnitsLinearVelocityConstants.ulvCmPerSec));
-                    objResults.AppendText("Vol flow rate:   " + withBlock1.ComputeVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin) + "  (newly computed)");
-                    objResults.AppendText("Vol flow rate:   " + withBlock1.GetVolFlowRate());
-                    objResults.AppendText("Back pressure:   " + withBlock1.ComputeBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi));
-                    objResults.AppendText("Column Length:   " + withBlock1.ComputeColumnLength(CapillaryFlow.ulnUnitsLengthConstants.ulnCM));
-                    objResults.AppendText("Column ID:       " + withBlock1.ComputeColumnID(CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons));
-                    objResults.AppendText("Column Volume:   " + withBlock1.ComputeColumnVolume(CapillaryFlow.uvoUnitsVolumeConstants.uvoNL));
-                    objResults.AppendText("Dead time:       " + withBlock1.ComputeDeadTime(CapillaryFlow.utmUnitsTimeConstants.utmSeconds));
-                    objResults.AppendText("");
-                    objResults.AppendText("Repeat Computations, but in a different order (should give same results)");
-                    objResults.AppendText("Vol flow rate:   " + withBlock1.ComputeVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin));
-                    objResults.AppendText("Column ID:       " + withBlock1.ComputeColumnID(CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons));
-                    objResults.AppendText("Back pressure:   " + withBlock1.ComputeBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi));
-                    objResults.AppendText("Column Length:   " + withBlock1.ComputeColumnLength(CapillaryFlow.ulnUnitsLengthConstants.ulnCM));
-                    objResults.AppendText("");
-                    objResults.AppendText("Old Dead time: " + withBlock1.GetDeadTime(CapillaryFlow.utmUnitsTimeConstants.utmMinutes));
-                    withBlock1.SetAutoComputeMode(CapillaryFlow.acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime);
-                    withBlock1.SetDeadTime(25d, CapillaryFlow.utmUnitsTimeConstants.utmMinutes);
-                    objResults.AppendText("Dead time is now 25.0 minutes");
-                    objResults.AppendText("Vol flow rate: " + withBlock1.GetVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin) + " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)");
-
-                    // Confirm that auto-compute worked
-
-                    objResults.AppendText("Vol flow rate: " + withBlock1.ComputeVolFlowRateUsingDeadTime(out dblNewPressure, CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin, CapillaryFlow.uprUnitsPressureConstants.uprPsi) + "  (confirmation of computed volumetric flow rate)");
-                    objResults.AppendText("New pressure: " + dblNewPressure);
-                    objResults.AppendText("");
-
-                    // Can set a new back pressure, but since auto-compute is on, and the
-                    // auto-compute mode is acmVolFlowRateUsingDeadTime, the pressure will get changed back to
-                    // the pressure needed to give a vol flow rate matching the dead time
-                    withBlock1.SetBackPressure(2000d);
-                    objResults.AppendText("Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure");
-                    objResults.AppendText("  was automatically changed back to pressure needed to give vol flow rate matching dead time");
-                    objResults.AppendText("Pressure is now: " + withBlock1.GetBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi) + " psi (thus, not 2000 as one might expect)");
-                    withBlock1.SetAutoComputeMode(CapillaryFlow.acmAutoComputeModeConstants.acmVolFlowRate);
-                    objResults.AppendText("Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.");
-                    withBlock1.SetBackPressure(2000d, CapillaryFlow.uprUnitsPressureConstants.uprPsi);
-
-                    // Calling GetVolFlowRate will get the new computed vol flow rate (since auto-compute is on)
-                    objResults.AppendText("Vol flow rate: " + withBlock1.GetVolFlowRate());
-                    withBlock1.SetMassRateSampleMass(1000d);
-                    withBlock1.SetMassRateConcentration(1d, CapillaryFlow.ucoUnitsConcentrationConstants.ucoMicroMolar);
-                    withBlock1.SetMassRateVolFlowRate(600d, CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin);
-                    withBlock1.SetMassRateInjectionTime(5d, CapillaryFlow.utmUnitsTimeConstants.utmMinutes);
-                    objResults.AppendText("Mass flow rate: " + withBlock1.GetMassFlowRate(CapillaryFlow.umfMassFlowRateConstants.umfFmolPerSec) + " fmol/sec");
-                    objResults.AppendText("Moles injected: " + withBlock1.GetMassRateMolesInjected(CapillaryFlow.umaMolarAmountConstants.umaFemtoMoles) + " fmoles");
-                    withBlock1.SetMassRateSampleMass(1234d);
-                    withBlock1.SetMassRateConcentration(1d, CapillaryFlow.ucoUnitsConcentrationConstants.ucoNgPerML);
-                    objResults.AppendText("Computing mass flow rate for compound weighing 1234 g/mol and at 1 ng/mL concentration");
-                    objResults.AppendText("Mass flow rate: " + withBlock1.GetMassFlowRate(CapillaryFlow.umfMassFlowRateConstants.umfAmolPerMin) + " amol/min");
-                    objResults.AppendText("Moles injected: " + withBlock1.GetMassRateMolesInjected(CapillaryFlow.umaMolarAmountConstants.umaFemtoMoles) + " fmoles");
-                    withBlock1.SetExtraColumnBroadeningLinearVelocity(4d, CapillaryFlow.ulvUnitsLinearVelocityConstants.ulvCmPerMin);
-                    withBlock1.SetExtraColumnBroadeningDiffusionCoefficient(0.0003d, CapillaryFlow.udcDiffusionCoefficientConstants.udcCmSquaredPerMin);
-                    withBlock1.SetExtraColumnBroadeningOpenTubeLength(5d, CapillaryFlow.ulnUnitsLengthConstants.ulnCM);
-                    withBlock1.SetExtraColumnBroadeningOpenTubeID(250d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
-                    withBlock1.SetExtraColumnBroadeningInitialPeakWidthAtBase(30d, CapillaryFlow.utmUnitsTimeConstants.utmSeconds);
-                    objResults.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
-                    objResults.AppendText(withBlock1.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.utmUnitsTimeConstants.utmSeconds).ToString());
-                }
+                intResult = mMwtWin.GetAbbreviation(intIndex, ref strSymbol, ref strFormula, ref sngCharge, ref blnIsAminoAcid, ref strOneLetterSymbol, ref strComment);
+                Debug.Assert(intResult == 0, "");
+                Debug.Assert(mMwtWin.GetAbbreviationID(strSymbol) == intIndex, "");
+                intResult = mMwtWin.SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment);
+                Debug.Assert(intResult == 0, "");
             }
+
+            // Test Caution statements
+            lngItemCount = mMwtWin.GetCautionStatementCount();
+            for (int intIndex = 1, loopTo1 = lngItemCount; intIndex <= loopTo1; intIndex++)
+            {
+                intResult = mMwtWin.GetCautionStatement(intIndex, ref strSymbol, ref strStatement);
+                Debug.Assert(intResult == 0, "");
+                Debug.Assert(mMwtWin.GetCautionStatementID(strSymbol) == intIndex, "");
+                intResult = mMwtWin.SetCautionStatement(strSymbol, strStatement);
+                Debug.Assert(intResult == 0, "");
+            }
+
+            // Test Element access
+            lngItemCount = mMwtWin.GetElementCount();
+            for (int intIndex = 1, loopTo2 = lngItemCount; intIndex <= loopTo2; intIndex++)
+            {
+                intResult = mMwtWin.GetElement((short)intIndex, ref strSymbol, ref dblMass, ref dblUncertainty, ref sngCharge, ref intIsotopeCount);
+                Debug.Assert(intResult == 0, "");
+                Debug.Assert(mMwtWin.GetElementID(strSymbol) == intIndex, "");
+                intResult = mMwtWin.SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, false);
+                Debug.Assert(intResult == 0, "");
+                dblIsotopeMasses = new double[intIsotopeCount + 1 + 1];
+                sngIsotopeAbundances = new float[intIsotopeCount + 1 + 1];
+                intResult = mMwtWin.GetElementIsotopes((short)intIndex, ref intIsotopeCount2, ref dblIsotopeMasses, ref sngIsotopeAbundances);
+                Debug.Assert(intIsotopeCount == intIsotopeCount2, "");
+                Debug.Assert(intResult == 0, "");
+                intResult = mMwtWin.SetElementIsotopes(strSymbol, intIsotopeCount, ref dblIsotopeMasses, ref sngIsotopeAbundances);
+                Debug.Assert(intResult == 0, "");
+            }
+
+            // Test Message Statements access
+            lngItemCount = mMwtWin.GetMessageStatementCount();
+            var loopTo3 = lngItemCount;
+            for (lngIndex = 1; lngIndex <= loopTo3; lngIndex++)
+            {
+                strStatement = mMwtWin.GetMessageStatement(lngIndex);
+                intResult = mMwtWin.SetMessageStatement(lngIndex, strStatement);
+            }
+
+            // Test m/z conversion
+            // Switch to isotopic masses
+
+            mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+            mMwtWin.Compound.SetFormula("C19H36O5NH4");
+            dblMass = mMwtWin.Compound.Mass;
+            objResults.AppendText("Mass of " + mMwtWin.Compound.FormulaCapitalized + ": " + dblMass);
+            for (short intCharge = 1; intCharge <= 4; intCharge++)
+                objResults.AppendText("  m/z of " + intCharge.ToString() + "+: " + mMwtWin.ConvoluteMass(dblMass, 0, intCharge));
+            objResults.AppendText("");
+            mMwtWin.Compound.SetFormula("C19H36O5NH3");
+            dblMass = mMwtWin.Compound.Mass;
+            objResults.AppendText("m/z values if we first lose a hydrogen before adding a proton");
+            for (short intCharge = 1; intCharge <= 4; intCharge++)
+                objResults.AppendText("  m/z of " + intCharge.ToString() + "+: " + mMwtWin.ConvoluteMass(dblMass, 0, intCharge));
+
+            // Test Capillary flow functions
+            var capFlow = mMwtWin.CapFlow;
+            capFlow.SetAutoComputeEnabled(false);
+            capFlow.SetBackPressure(2000d, CapillaryFlow.uprUnitsPressureConstants.uprPsi);
+            capFlow.SetColumnLength(40d, CapillaryFlow.ulnUnitsLengthConstants.ulnCM);
+            capFlow.SetColumnID(50d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
+            capFlow.SetSolventViscosity(0.0089d, CapillaryFlow.uviUnitsViscosityConstants.uviPoise);
+            capFlow.SetInterparticlePorosity(0.33d);
+            capFlow.SetParticleDiameter(2d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
+            capFlow.SetAutoComputeEnabled(true);
+            objResults.AppendText("");
+            objResults.AppendText("Check capillary flow calcs");
+            objResults.AppendText("Linear Velocity: " + capFlow.ComputeLinearVelocity(CapillaryFlow.ulvUnitsLinearVelocityConstants.ulvCmPerSec));
+            objResults.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin) + "  (newly computed)");
+            objResults.AppendText("Vol flow rate:   " + capFlow.GetVolFlowRate());
+            objResults.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi));
+            objResults.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.ulnUnitsLengthConstants.ulnCM));
+            objResults.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons));
+            objResults.AppendText("Column Volume:   " + capFlow.ComputeColumnVolume(CapillaryFlow.uvoUnitsVolumeConstants.uvoNL));
+            objResults.AppendText("Dead time:       " + capFlow.ComputeDeadTime(CapillaryFlow.utmUnitsTimeConstants.utmSeconds));
+            objResults.AppendText("");
+            objResults.AppendText("Repeat Computations, but in a different order (should give same results)");
+            objResults.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin));
+            objResults.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons));
+            objResults.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi));
+            objResults.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.ulnUnitsLengthConstants.ulnCM));
+            objResults.AppendText("");
+            objResults.AppendText("Old Dead time: " + capFlow.GetDeadTime(CapillaryFlow.utmUnitsTimeConstants.utmMinutes));
+            capFlow.SetAutoComputeMode(CapillaryFlow.acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime);
+            capFlow.SetDeadTime(25d, CapillaryFlow.utmUnitsTimeConstants.utmMinutes);
+            objResults.AppendText("Dead time is now 25.0 minutes");
+            objResults.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin) + " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)");
+
+            // Confirm that auto-compute worked
+
+            objResults.AppendText("Vol flow rate: " + capFlow.ComputeVolFlowRateUsingDeadTime(out dblNewPressure, CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin, CapillaryFlow.uprUnitsPressureConstants.uprPsi) + "  (confirmation of computed volumetric flow rate)");
+            objResults.AppendText("New pressure: " + dblNewPressure);
+            objResults.AppendText("");
+
+            // Can set a new back pressure, but since auto-compute is on, and the
+            // auto-compute mode is acmVolFlowRateUsingDeadTime, the pressure will get changed back to
+            // the pressure needed to give a vol flow rate matching the dead time
+            capFlow.SetBackPressure(2000d);
+            objResults.AppendText("Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure");
+            objResults.AppendText("  was automatically changed back to pressure needed to give vol flow rate matching dead time");
+            objResults.AppendText("Pressure is now: " + capFlow.GetBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi) + " psi (thus, not 2000 as one might expect)");
+            capFlow.SetAutoComputeMode(CapillaryFlow.acmAutoComputeModeConstants.acmVolFlowRate);
+            objResults.AppendText("Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.");
+            capFlow.SetBackPressure(2000d, CapillaryFlow.uprUnitsPressureConstants.uprPsi);
+
+            // Calling GetVolFlowRate will get the new computed vol flow rate (since auto-compute is on)
+            objResults.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate());
+            capFlow.SetMassRateSampleMass(1000d);
+            capFlow.SetMassRateConcentration(1d, CapillaryFlow.ucoUnitsConcentrationConstants.ucoMicroMolar);
+            capFlow.SetMassRateVolFlowRate(600d, CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin);
+            capFlow.SetMassRateInjectionTime(5d, CapillaryFlow.utmUnitsTimeConstants.utmMinutes);
+            objResults.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.umfMassFlowRateConstants.umfFmolPerSec) + " fmol/sec");
+            objResults.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.umaMolarAmountConstants.umaFemtoMoles) + " fmoles");
+            capFlow.SetMassRateSampleMass(1234d);
+            capFlow.SetMassRateConcentration(1d, CapillaryFlow.ucoUnitsConcentrationConstants.ucoNgPerML);
+            objResults.AppendText("Computing mass flow rate for compound weighing 1234 g/mol and at 1 ng/mL concentration");
+            objResults.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.umfMassFlowRateConstants.umfAmolPerMin) + " amol/min");
+            objResults.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.umaMolarAmountConstants.umaFemtoMoles) + " fmoles");
+            capFlow.SetExtraColumnBroadeningLinearVelocity(4d, CapillaryFlow.ulvUnitsLinearVelocityConstants.ulvCmPerMin);
+            capFlow.SetExtraColumnBroadeningDiffusionCoefficient(0.0003d, CapillaryFlow.udcDiffusionCoefficientConstants.udcCmSquaredPerMin);
+            capFlow.SetExtraColumnBroadeningOpenTubeLength(5d, CapillaryFlow.ulnUnitsLengthConstants.ulnCM);
+            capFlow.SetExtraColumnBroadeningOpenTubeID(250d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
+            capFlow.SetExtraColumnBroadeningInitialPeakWidthAtBase(30d, CapillaryFlow.utmUnitsTimeConstants.utmSeconds);
+            objResults.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
+            objResults.AppendText(capFlow.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.utmUnitsTimeConstants.utmSeconds).ToString());
 
             var udtFragSpectrumOptions = new Peptide.udtFragmentationSpectrumOptionsType();
             udtFragSpectrumOptions.Initialize();
             Peptide.udtFragmentationSpectrumDataType[] udtFragSpectrum = null;
             int lngIonCount;
             string strNewSeq;
-            {
-                var withBlock2 = mMwtWin.Peptide;
-                withBlock2.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G");
-                // .SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
+            var peptide = mMwtWin.Peptide;
+            peptide.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G");
+            // .SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
 
-                // Can change the terminii to various standard groups
-                withBlock2.SetNTerminusGroup(Peptide.ntgNTerminusGroupConstants.ntgCarbamyl);
-                withBlock2.SetCTerminusGroup(Peptide.ctgCTerminusGroupConstants.ctgAmide);
+            // Can change the terminii to various standard groups
+            peptide.SetNTerminusGroup(Peptide.ntgNTerminusGroupConstants.ntgCarbamyl);
+            peptide.SetCTerminusGroup(Peptide.ctgCTerminusGroupConstants.ctgAmide);
 
-                // Can change the terminii to any desired elements
-                withBlock2.SetNTerminus("C2OH3"); // Acetyl group
-                withBlock2.SetCTerminus("NH2"); // Amide group
+            // Can change the terminii to any desired elements
+            peptide.SetNTerminus("C2OH3"); // Acetyl group
+            peptide.SetCTerminus("NH2"); // Amide group
 
-                // Can mark third residue, Tyr, as phorphorylated
-                withBlock2.SetResidue(3, "Tyr", true, true);
+            // Can mark third residue, Tyr, as phorphorylated
+            peptide.SetResidue(3, "Tyr", true, true);
 
-                // Can define that the * modification equals 15
-                withBlock2.SetModificationSymbol("*", 15d, false, "");
-                strNewSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys";
-                objResults.AppendText(strNewSeq);
-                withBlock2.SetSequence(strNewSeq);
-                withBlock2.SetSequence("K.TQPLE*VK.-", Peptide.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, Peptide.ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode: false);
-                objResults.AppendText(withBlock2.GetSequence(true, false, true, false));
-                objResults.AppendText(withBlock2.GetSequence(false, true, false, false));
-                objResults.AppendText(withBlock2.GetSequence(true, false, true, true));
-                withBlock2.SetCTerminusGroup(Peptide.ctgCTerminusGroupConstants.ctgNone);
-                objResults.AppendText(withBlock2.GetSequence(true, false, true, true));
-                udtFragSpectrumOptions = withBlock2.GetFragmentationSpectrumOptions();
-                udtFragSpectrumOptions.DoubleChargeIonsShow = true;
-                udtFragSpectrumOptions.DoubleChargeIonsThreshold = 300f;
-                udtFragSpectrumOptions.IntensityOptions.BYIonShoulder = 0d;
-                udtFragSpectrumOptions.TripleChargeIonsShow = true;
-                udtFragSpectrumOptions.TripleChargeIonsThreshold = 400f;
-                udtFragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itAIon].ShowIon = true;
-                withBlock2.SetFragmentationSpectrumOptions(udtFragSpectrumOptions);
-                lngIonCount = withBlock2.GetFragmentationMasses(ref udtFragSpectrum);
-            }
+            // Can define that the * modification equals 15
+            peptide.SetModificationSymbol("*", 15d, false, "");
+            strNewSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys";
+            objResults.AppendText(strNewSeq);
+            peptide.SetSequence(strNewSeq);
+            peptide.SetSequence("K.TQPLE*VK.-", Peptide.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, Peptide.ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode: false);
+            objResults.AppendText(peptide.GetSequence(true, false, true, false));
+            objResults.AppendText(peptide.GetSequence(false, true, false, false));
+            objResults.AppendText(peptide.GetSequence(true, false, true, true));
+            peptide.SetCTerminusGroup(Peptide.ctgCTerminusGroupConstants.ctgNone);
+            objResults.AppendText(peptide.GetSequence(true, false, true, true));
+            udtFragSpectrumOptions = peptide.GetFragmentationSpectrumOptions();
+            udtFragSpectrumOptions.DoubleChargeIonsShow = true;
+            udtFragSpectrumOptions.DoubleChargeIonsThreshold = 300f;
+            udtFragSpectrumOptions.IntensityOptions.BYIonShoulder = 0d;
+            udtFragSpectrumOptions.TripleChargeIonsShow = true;
+            udtFragSpectrumOptions.TripleChargeIonsThreshold = 400f;
+            udtFragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itAIon].ShowIon = true;
+            peptide.SetFragmentationSpectrumOptions(udtFragSpectrumOptions);
+            lngIonCount = peptide.GetFragmentationMasses(ref udtFragSpectrum);
 
             MakeDataSet(lngIonCount, udtFragSpectrum);
             dgDataGrid.SetDataBinding(myDataSet, "DataTable1");
@@ -932,41 +915,38 @@ namespace MwtWinDllTest
             string strResults = string.Empty;
             double[,] ConvolutedMSData2DOneBased;
             var ConvolutedMSDataCount = default(int);
+            // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
+            short intChargeState = 1;
+            bool blnAddProtonChargeCarrier = true;
+            objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState);
+            ConvolutedMSData2DOneBased = new double[1, 2];
+            string argstrFormulaIn = "C1255H43O2Cl";
+            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount);
+            objResults.AppendText(strResults);
+            objResults.AppendText("Convert isotopic distribution to gaussian");
+            var lstXYVals = new List<KeyValuePair<double, double>>();
+            for (int intIndex = 1, loopTo4 = ConvolutedMSDataCount; intIndex <= loopTo4; intIndex++)
+                lstXYVals.Add(new KeyValuePair<double, double>(ConvolutedMSData2DOneBased[intIndex, 0], ConvolutedMSData2DOneBased[intIndex, 1]));
+            int intResolution = 2000;
+            double dblResolutionMass = 1000d;
+            int intQualityFactor = 50;
+            var lstGaussianData = mMwtWin.ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor);
+            var sbResults = new StringBuilder();
+            sbResults.AppendLine("m/z" + ControlChars.Tab + "Intensity");
+            for (int intIndex = 0, loopTo5 = lstGaussianData.Count - 1; intIndex <= loopTo5; intIndex++)
             {
-                var withBlock3 = mMwtWin;
-                // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
-                short intChargeState = 1;
-                bool blnAddProtonChargeCarrier = true;
-                objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState);
-                ConvolutedMSData2DOneBased = new double[1, 2];
-                string argstrFormulaIn = "C1255H43O2Cl";
-                intSuccess = withBlock3.ComputeIsotopicAbundances(ref argstrFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount);
-                objResults.AppendText(strResults);
-                objResults.AppendText("Convert isotopic distribution to gaussian");
-                var lstXYVals = new List<KeyValuePair<double, double>>();
-                for (int intIndex = 1, loopTo4 = ConvolutedMSDataCount; intIndex <= loopTo4; intIndex++)
-                    lstXYVals.Add(new KeyValuePair<double, double>(ConvolutedMSData2DOneBased[intIndex, 0], ConvolutedMSData2DOneBased[intIndex, 1]));
-                int intResolution = 2000;
-                double dblResolutionMass = 1000d;
-                int intQualityFactor = 50;
-                var lstGaussianData = withBlock3.ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor);
-                var sbResults = new StringBuilder();
-                sbResults.AppendLine("m/z" + ControlChars.Tab + "Intensity");
-                for (int intIndex = 0, loopTo5 = lstGaussianData.Count - 1; intIndex <= loopTo5; intIndex++)
+                if (lstGaussianData[intIndex].Key >= 15175d && lstGaussianData[intIndex].Key < 15193d)
                 {
-                    if (lstGaussianData[intIndex].Key >= 15175d && lstGaussianData[intIndex].Key < 15193d)
-                    {
-                        sbResults.AppendLine(lstGaussianData[intIndex].Key.ToString("0.000") + ControlChars.Tab + lstGaussianData[intIndex].Value.ToString("0.000"));
-                    }
+                    sbResults.AppendLine(lstGaussianData[intIndex].Key.ToString("0.000") + ControlChars.Tab + lstGaussianData[intIndex].Value.ToString("0.000"));
                 }
-
-                objResults.AppendText(sbResults.ToString());
-                blnAddProtonChargeCarrier = false;
-                objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
-                string argstrFormulaIn1 = "C1255H43O2Cl";
-                intSuccess = withBlock3.ComputeIsotopicAbundances(ref argstrFormulaIn1, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, blnAddProtonChargeCarrier);
-                objResults.AppendText(strResults);
             }
+
+            objResults.AppendText(sbResults.ToString());
+            blnAddProtonChargeCarrier = false;
+            objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
+            string argstrFormulaIn1 = "C1255H43O2Cl";
+            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn1, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, blnAddProtonChargeCarrier);
+            objResults.AppendText(strResults);
         }
 
         public void TestFormulaFinder()
@@ -1394,11 +1374,8 @@ namespace MwtWinDllTest
         private void cmdConvertToEmpirical_Click(object eventSender, EventArgs eventArgs)
         {
             lblProgress.Text = string.Empty;
-            {
-                var withBlock = mMwtWin.Compound;
-                withBlock.Formula = txtFormula.Text;
-                withBlock.ConvertToEmpirical();
-            }
+            mMwtWin.Compound.Formula = txtFormula.Text;
+            mMwtWin.Compound.ConvertToEmpirical();
 
             UpdateResultsForCompound(ref mMwtWin.Compound);
         }
@@ -1406,11 +1383,8 @@ namespace MwtWinDllTest
         private void cmdExpandAbbreviations_Click(object eventSender, EventArgs eventArgs)
         {
             lblProgress.Text = string.Empty;
-            {
-                var withBlock = mMwtWin.Compound;
-                withBlock.Formula = txtFormula.Text;
-                withBlock.ExpandAbbreviations();
-            }
+            mMwtWin.Compound.Formula = txtFormula.Text;
+            mMwtWin.Compound.ExpandAbbreviations();
 
             UpdateResultsForCompound(ref mMwtWin.Compound);
         }

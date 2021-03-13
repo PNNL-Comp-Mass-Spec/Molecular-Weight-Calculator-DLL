@@ -349,34 +349,31 @@ namespace MwtWinDll
         public double ComputeBackPressure(uprUnitsPressureConstants eUnits = uprUnitsPressureConstants.uprPsi)
         {
             double dblBackPressure, dblRadius;
+            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            if (Math.Abs(dblRadius) > float.Epsilon)
             {
-                var withBlock = mCapillaryFlowParameters;
-                dblRadius = withBlock.ColumnID / 2.0d;
-                if (Math.Abs(dblRadius) > float.Epsilon)
+                if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
                 {
-                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
-                    {
-                        // Open tubular capillary
-                        dblBackPressure = withBlock.VolumetricFlowRate * 8d * withBlock.SolventViscosity * withBlock.ColumnLength / (Math.Pow(dblRadius, 4d) * PI * 60d); // Pressure in dynes/cm^2
-                    }
-                    // Packed capillary
-                    else if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon && Math.Abs(withBlock.InterparticlePorosity) > float.Epsilon)
-                    {
-                        // Flow rate in mL/sec
-                        dblBackPressure = withBlock.VolumetricFlowRate * 180d * withBlock.SolventViscosity * withBlock.ColumnLength * Math.Pow(1d - withBlock.InterparticlePorosity, 2d) / (Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * 60d) / withBlock.InterparticlePorosity;
-                    }
-                    else
-                    {
-                        dblBackPressure = 0d;
-                    }
+                    // Open tubular capillary
+                    dblBackPressure = mCapillaryFlowParameters.VolumetricFlowRate * 8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength / (Math.Pow(dblRadius, 4d) * PI * 60d); // Pressure in dynes/cm^2
+                }
+                // Packed capillary
+                else if (Math.Abs(mCapillaryFlowParameters.ParticleDiameter) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.InterparticlePorosity) > float.Epsilon)
+                {
+                    // Flow rate in mL/sec
+                    dblBackPressure = mCapillaryFlowParameters.VolumetricFlowRate * 180d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength * Math.Pow(1d - mCapillaryFlowParameters.InterparticlePorosity, 2d) / (Math.Pow(mCapillaryFlowParameters.ParticleDiameter, 2d) * Math.Pow(mCapillaryFlowParameters.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * 60d) / mCapillaryFlowParameters.InterparticlePorosity;
                 }
                 else
                 {
                     dblBackPressure = 0d;
                 }
-
-                withBlock.BackPressure = dblBackPressure;
             }
+            else
+            {
+                dblBackPressure = 0d;
+            }
+
+            mCapillaryFlowParameters.BackPressure = dblBackPressure;
 
             // Compute Dead Time (and Linear Velocity)
             // Must send false for RecalculateVolFlowRate since we're finding the back pressure, not volumetric flow rate
@@ -394,34 +391,31 @@ namespace MwtWinDll
         public double ComputeColumnLength(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
         {
             double dblColumnLength, dblRadius;
+            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.VolumetricFlowRate) > float.Epsilon)
             {
-                var withBlock = mCapillaryFlowParameters;
-                dblRadius = withBlock.ColumnID / 2.0d;
-                if (Math.Abs(withBlock.SolventViscosity) > float.Epsilon && Math.Abs(withBlock.VolumetricFlowRate) > float.Epsilon)
+                if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
                 {
-                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
-                    {
-                        // Open tubular capillary
-                        dblColumnLength = withBlock.BackPressure * Math.Pow(dblRadius, 4d) * PI * 60d / (8d * withBlock.SolventViscosity * withBlock.VolumetricFlowRate); // Column length in cm
-                    }
-                    // Packed capillary
-                    else if (Math.Abs(withBlock.InterparticlePorosity - 1d) > float.Epsilon)
-                    {
-                        // Flow rate in mL/sec
-                        dblColumnLength = withBlock.BackPressure * Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * 60d * withBlock.InterparticlePorosity / (180d * withBlock.SolventViscosity * withBlock.VolumetricFlowRate * Math.Pow(1d - withBlock.InterparticlePorosity, 2d));
-                    }
-                    else
-                    {
-                        dblColumnLength = 0d;
-                    }
+                    // Open tubular capillary
+                    dblColumnLength = mCapillaryFlowParameters.BackPressure * Math.Pow(dblRadius, 4d) * PI * 60d / (8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.VolumetricFlowRate); // Column length in cm
+                }
+                // Packed capillary
+                else if (Math.Abs(mCapillaryFlowParameters.InterparticlePorosity - 1d) > float.Epsilon)
+                {
+                    // Flow rate in mL/sec
+                    dblColumnLength = mCapillaryFlowParameters.BackPressure * Math.Pow(mCapillaryFlowParameters.ParticleDiameter, 2d) * Math.Pow(mCapillaryFlowParameters.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * 60d * mCapillaryFlowParameters.InterparticlePorosity / (180d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.VolumetricFlowRate * Math.Pow(1d - mCapillaryFlowParameters.InterparticlePorosity, 2d));
                 }
                 else
                 {
                     dblColumnLength = 0d;
                 }
-
-                withBlock.ColumnLength = dblColumnLength;
             }
+            else
+            {
+                dblColumnLength = 0d;
+            }
+
+            mCapillaryFlowParameters.ColumnLength = dblColumnLength;
 
             // Compute Dead Time (and Linear Velocity)
             ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, true);
@@ -435,14 +429,11 @@ namespace MwtWinDll
             // Computes the column volume and returns it (does not store it)
 
             double dblColumnVolume, dblRadius;
+            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            dblColumnVolume = mCapillaryFlowParameters.ColumnLength * PI * Math.Pow(dblRadius, 2d); // In mL
+            if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
             {
-                var withBlock = mCapillaryFlowParameters;
-                dblRadius = withBlock.ColumnID / 2.0d;
-                dblColumnVolume = withBlock.ColumnLength * PI * Math.Pow(dblRadius, 2d); // In mL
-                if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
-                {
-                    dblColumnVolume *= withBlock.InterparticlePorosity;
-                }
+                dblColumnVolume *= mCapillaryFlowParameters.InterparticlePorosity;
             }
 
             return ConvertVolume(dblColumnVolume, uvoUnitsVolumeConstants.uvoML, eUnits);
@@ -456,33 +447,30 @@ namespace MwtWinDll
         public double ComputeColumnID(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
         {
             double dblRadius;
+            if (Math.Abs(mCapillaryFlowParameters.BackPressure) > float.Epsilon)
             {
-                var withBlock = mCapillaryFlowParameters;
-                if (Math.Abs(withBlock.BackPressure) > float.Epsilon)
+                if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
                 {
-                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
-                    {
-                        // Open tubular capillary
-                        dblRadius = Math.Pow(withBlock.VolumetricFlowRate * 8d * withBlock.SolventViscosity * withBlock.ColumnLength / (withBlock.BackPressure * PI * 60d), 0.25d);
-                    }
-                    // Packed capillary
-                    else if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon && Math.Abs(withBlock.InterparticlePorosity - 1d) > float.Epsilon)
-                    {
-                        // Flow rate in mL/sec
-                        dblRadius = Math.Pow(withBlock.VolumetricFlowRate * 180d * withBlock.SolventViscosity * withBlock.ColumnLength * Math.Pow(1d - withBlock.InterparticlePorosity, 2d) / (withBlock.BackPressure * Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * 60d) / withBlock.InterparticlePorosity, 0.5d);
-                    }
-                    else
-                    {
-                        dblRadius = 0d;
-                    }
+                    // Open tubular capillary
+                    dblRadius = Math.Pow(mCapillaryFlowParameters.VolumetricFlowRate * 8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength / (mCapillaryFlowParameters.BackPressure * PI * 60d), 0.25d);
+                }
+                // Packed capillary
+                else if (Math.Abs(mCapillaryFlowParameters.ParticleDiameter) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.InterparticlePorosity - 1d) > float.Epsilon)
+                {
+                    // Flow rate in mL/sec
+                    dblRadius = Math.Pow(mCapillaryFlowParameters.VolumetricFlowRate * 180d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength * Math.Pow(1d - mCapillaryFlowParameters.InterparticlePorosity, 2d) / (mCapillaryFlowParameters.BackPressure * Math.Pow(mCapillaryFlowParameters.ParticleDiameter, 2d) * Math.Pow(mCapillaryFlowParameters.InterparticlePorosity, 2d) * PI * 60d) / mCapillaryFlowParameters.InterparticlePorosity, 0.5d);
                 }
                 else
                 {
                     dblRadius = 0d;
                 }
-
-                withBlock.ColumnID = dblRadius * 2.0d;
             }
+            else
+            {
+                dblRadius = 0d;
+            }
+
+            mCapillaryFlowParameters.ColumnID = dblRadius * 2.0d;
 
             // Compute Dead Time (and Linear Velocity)
             ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, true);
@@ -503,19 +491,17 @@ namespace MwtWinDll
 
             // Dead time is dependent on Linear Velocity, so compute
             ComputeLinearVelocity(ulvUnitsLinearVelocityConstants.ulvCmPerSec, blnRecalculateVolFlowRate);
-            {
-                var withBlock = mCapillaryFlowParameters;
-                if (Math.Abs(withBlock.LinearVelocity) > float.Epsilon)
-                {
-                    dblDeadTime = withBlock.ColumnLength / withBlock.LinearVelocity; // Dead time in minutes
-                }
-                else
-                {
-                    dblDeadTime = 0d;
-                }
 
-                withBlock.ColumnDeadTime = dblDeadTime;
+            if (Math.Abs(mCapillaryFlowParameters.LinearVelocity) > float.Epsilon)
+            {
+                dblDeadTime = mCapillaryFlowParameters.ColumnLength / mCapillaryFlowParameters.LinearVelocity; // Dead time in minutes
             }
+            else
+            {
+                dblDeadTime = 0d;
+            }
+
+            mCapillaryFlowParameters.ColumnDeadTime = dblDeadTime;
 
             // Return Dead Time
             return ConvertTime(dblDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits);
@@ -531,28 +517,25 @@ namespace MwtWinDll
         {
             double dblInitialPeakVariance;
             double dblSumOfVariances;
+            if (Math.Abs(mExtraColumnBroadeningParameters.LinearVelocity) > float.Epsilon && Math.Abs(mExtraColumnBroadeningParameters.DiffusionCoefficient) > float.Epsilon)
             {
-                var withBlock = mExtraColumnBroadeningParameters;
-                if (Math.Abs(withBlock.LinearVelocity) > float.Epsilon && Math.Abs(withBlock.DiffusionCoefficient) > float.Epsilon)
-                {
-                    withBlock.TemporalVariance = Math.Pow(withBlock.OpenTubeID, 2d) * withBlock.OpenTubeLength / (96d * withBlock.DiffusionCoefficient * withBlock.LinearVelocity / 60d); // in sec^2
-                }
-                else
-                {
-                    withBlock.TemporalVariance = 0d;
-                }
+                mExtraColumnBroadeningParameters.TemporalVariance = Math.Pow(mExtraColumnBroadeningParameters.OpenTubeID, 2d) * mExtraColumnBroadeningParameters.OpenTubeLength / (96d * mExtraColumnBroadeningParameters.DiffusionCoefficient * mExtraColumnBroadeningParameters.LinearVelocity / 60d); // in sec^2
+            }
+            else
+            {
+                mExtraColumnBroadeningParameters.TemporalVariance = 0d;
+            }
 
-                dblInitialPeakVariance = Math.Pow(withBlock.InitialPeakWidth / 4d, 2d);
-                dblSumOfVariances = dblInitialPeakVariance + withBlock.TemporalVariance + withBlock.AdditionalTemporalVariance;
-                if (dblSumOfVariances >= 0d)
-                {
-                    // ResultantPeakWidth at the base = 4 sigma  and  sigma = Sqr(Total_Variance)
-                    withBlock.ResultantPeakWidth = 4d * Math.Sqrt(dblSumOfVariances);
-                }
-                else
-                {
-                    withBlock.ResultantPeakWidth = 0d;
-                }
+            dblInitialPeakVariance = Math.Pow(mExtraColumnBroadeningParameters.InitialPeakWidth / 4d, 2d);
+            dblSumOfVariances = dblInitialPeakVariance + mExtraColumnBroadeningParameters.TemporalVariance + mExtraColumnBroadeningParameters.AdditionalTemporalVariance;
+            if (dblSumOfVariances >= 0d)
+            {
+                // ResultantPeakWidth at the base = 4 sigma  and  sigma = Sqr(Total_Variance)
+                mExtraColumnBroadeningParameters.ResultantPeakWidth = 4d * Math.Sqrt(dblSumOfVariances);
+            }
+            else
+            {
+                mExtraColumnBroadeningParameters.ResultantPeakWidth = 0d;
             }
         }
 
@@ -570,26 +553,23 @@ namespace MwtWinDll
                 ComputeVolFlowRate(ufrUnitsFlowRateConstants.ufrMLPerMin);
             }
 
+            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            if (Math.Abs(dblRadius) > float.Epsilon)
             {
-                var withBlock = mCapillaryFlowParameters;
-                dblRadius = withBlock.ColumnID / 2.0d;
-                if (Math.Abs(dblRadius) > float.Epsilon)
-                {
-                    dblLinearVelocity = withBlock.VolumetricFlowRate / (PI * Math.Pow(dblRadius, 2d)); // Units in cm/min
+                dblLinearVelocity = mCapillaryFlowParameters.VolumetricFlowRate / (PI * Math.Pow(dblRadius, 2d)); // Units in cm/min
 
-                    // Divide Linear Velocity by epsilon if a packed capillary
-                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary && Math.Abs(withBlock.InterparticlePorosity) > float.Epsilon)
-                    {
-                        dblLinearVelocity /= withBlock.InterparticlePorosity;
-                    }
-                }
-                else
+                // Divide Linear Velocity by epsilon if a packed capillary
+                if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary && Math.Abs(mCapillaryFlowParameters.InterparticlePorosity) > float.Epsilon)
                 {
-                    dblLinearVelocity = 0d;
+                    dblLinearVelocity /= mCapillaryFlowParameters.InterparticlePorosity;
                 }
-
-                withBlock.LinearVelocity = dblLinearVelocity;
             }
+            else
+            {
+                dblLinearVelocity = 0d;
+            }
+
+            mCapillaryFlowParameters.LinearVelocity = dblLinearVelocity;
 
             // Return Linear Velocity
             return ConvertLinearVelocity(dblLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits);
@@ -619,11 +599,8 @@ namespace MwtWinDll
 
         private void ComputeMassRateValues()
         {
-            {
-                var withBlock = mMassRateParameters;
-                withBlock.MassFlowRate = withBlock.SampleConcentration * withBlock.VolumetricFlowRate / 1000d; // Compute mass flow rate in moles/min
-                withBlock.MolesInjected = withBlock.MassFlowRate * withBlock.InjectionTime; // Compute moles injected in moles
-            }
+            mMassRateParameters.MassFlowRate = mMassRateParameters.SampleConcentration * mMassRateParameters.VolumetricFlowRate / 1000d; // Compute mass flow rate in moles/min
+            mMassRateParameters.MolesInjected = mMassRateParameters.MassFlowRate * mMassRateParameters.InjectionTime; // Compute moles injected in moles
         }
 
         /// <summary>
@@ -636,13 +613,10 @@ namespace MwtWinDll
         public double ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec)
         {
             var dblOptimumLinearVelocity = default(double);
+            if (Math.Abs(mCapillaryFlowParameters.ParticleDiameter) > float.Epsilon)
             {
-                var withBlock = mCapillaryFlowParameters;
-                if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon)
-                {
-                    dblOptimumLinearVelocity = 3d * mExtraColumnBroadeningParameters.DiffusionCoefficient / withBlock.ParticleDiameter;
-                    dblOptimumLinearVelocity = ConvertLinearVelocity(dblOptimumLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerSec, eUnits);
-                }
+                dblOptimumLinearVelocity = 3d * mExtraColumnBroadeningParameters.DiffusionCoefficient / mCapillaryFlowParameters.ParticleDiameter;
+                dblOptimumLinearVelocity = ConvertLinearVelocity(dblOptimumLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerSec, eUnits);
             }
 
             return dblOptimumLinearVelocity;
@@ -686,37 +660,34 @@ namespace MwtWinDll
         public double ComputeVolFlowRate(ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
         {
             double dblVolFlowRate, dblRadius;
+            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.ColumnLength) > float.Epsilon)
             {
-                var withBlock = mCapillaryFlowParameters;
-                dblRadius = withBlock.ColumnID / 2.0d;
-                if (Math.Abs(withBlock.SolventViscosity) > float.Epsilon && Math.Abs(withBlock.ColumnLength) > float.Epsilon)
+                if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
                 {
-                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
-                    {
-                        // Open tubular capillary
-                        dblVolFlowRate = withBlock.BackPressure * Math.Pow(dblRadius, 4d) * PI / (8d * withBlock.SolventViscosity * withBlock.ColumnLength); // Flow rate in mL/sec
-                    }
-                    // Packed capillary
-                    else if (Math.Abs(withBlock.InterparticlePorosity - 1d) > float.Epsilon)
-                    {
-                        // Flow rate in mL/sec
-                        dblVolFlowRate = withBlock.BackPressure * Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * withBlock.InterparticlePorosity / (180d * withBlock.SolventViscosity * withBlock.ColumnLength * Math.Pow(1d - withBlock.InterparticlePorosity, 2d));
-                    }
-                    else
-                    {
-                        dblVolFlowRate = 0d;
-                    }
-
-                    // Convert dblVolFlowRate to mL/min
-                    dblVolFlowRate *= 60d;
+                    // Open tubular capillary
+                    dblVolFlowRate = mCapillaryFlowParameters.BackPressure * Math.Pow(dblRadius, 4d) * PI / (8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength); // Flow rate in mL/sec
+                }
+                // Packed capillary
+                else if (Math.Abs(mCapillaryFlowParameters.InterparticlePorosity - 1d) > float.Epsilon)
+                {
+                    // Flow rate in mL/sec
+                    dblVolFlowRate = mCapillaryFlowParameters.BackPressure * Math.Pow(mCapillaryFlowParameters.ParticleDiameter, 2d) * Math.Pow(mCapillaryFlowParameters.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * mCapillaryFlowParameters.InterparticlePorosity / (180d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength * Math.Pow(1d - mCapillaryFlowParameters.InterparticlePorosity, 2d));
                 }
                 else
                 {
                     dblVolFlowRate = 0d;
                 }
 
-                withBlock.VolumetricFlowRate = dblVolFlowRate;
+                // Convert dblVolFlowRate to mL/min
+                dblVolFlowRate *= 60d;
             }
+            else
+            {
+                dblVolFlowRate = 0d;
+            }
+
+            mCapillaryFlowParameters.VolumetricFlowRate = dblVolFlowRate;
 
             // Compute Dead Time (and Linear Velocity)
             ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, false);
@@ -735,32 +706,30 @@ namespace MwtWinDll
         {
             dblNewBackPressure = 0;
             double dblVolFlowRate, dblRadius;
+
+            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+
+            // First find vol flow rate that gives observed dead time
+            if (Math.Abs(mCapillaryFlowParameters.ColumnDeadTime) > float.Epsilon)
             {
-                var withBlock = mCapillaryFlowParameters;
-                dblRadius = withBlock.ColumnID / 2.0d;
-
-                // First find vol flow rate that gives observed dead time
-                if (Math.Abs(withBlock.ColumnDeadTime) > float.Epsilon)
+                dblVolFlowRate = mCapillaryFlowParameters.ColumnLength * (PI * Math.Pow(dblRadius, 2d)) / mCapillaryFlowParameters.ColumnDeadTime; // Vol flow rate in mL/sec
+                if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
                 {
-                    dblVolFlowRate = withBlock.ColumnLength * (PI * Math.Pow(dblRadius, 2d)) / withBlock.ColumnDeadTime; // Vol flow rate in mL/sec
-                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
-                    {
-                        // Packed Capillary
-                        dblVolFlowRate *= withBlock.InterparticlePorosity;
-                    }
-
-                    // Store the new value
-                    withBlock.VolumetricFlowRate = dblVolFlowRate;
-
-                    // Now find pressure that gives computed dblVolFlowRate
-                    // The ComputeBackPressure sub will store the new pressure
-                    dblNewBackPressure = ComputeBackPressure(ePressureUnits);
+                    // Packed Capillary
+                    dblVolFlowRate *= mCapillaryFlowParameters.InterparticlePorosity;
                 }
-                else
-                {
-                    dblVolFlowRate = 0d;
-                    withBlock.VolumetricFlowRate = 0d;
-                }
+
+                // Store the new value
+                mCapillaryFlowParameters.VolumetricFlowRate = dblVolFlowRate;
+
+                // Now find pressure that gives computed dblVolFlowRate
+                // The ComputeBackPressure sub will store the new pressure
+                dblNewBackPressure = ComputeBackPressure(ePressureUnits);
+            }
+            else
+            {
+                dblVolFlowRate = 0d;
+                mCapillaryFlowParameters.VolumetricFlowRate = 0d;
             }
 
             // Compute Linear Velocity (but not the dead time)

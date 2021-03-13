@@ -238,18 +238,16 @@ namespace MwtWinDll
                     Array.Resize(ref FragSpectrumWork, Information.UBound(FragSpectrumWork) + 10 + 1);
                 }
 
-                {
-                    var withBlock = FragSpectrumWork[lngIonCount];
-                    withBlock.Mass = sngMass;
-                    withBlock.Intensity = sngIntensity;
-                    withBlock.Symbol = strIonSymbol;
-                    withBlock.SymbolGeneric = strIonSymbolGeneric;
-                    withBlock.SourceResidueNumber = lngSourceResidue;
-                    withBlock.SourceResidueSymbol3Letter = strSourceResidueSymbol3Letter;
-                    withBlock.Charge = intCharge;
-                    withBlock.IonType = eIonType;
-                    withBlock.IsShoulderIon = blnIsShoulderIon;
-                }
+                var fragIon = FragSpectrumWork[lngIonCount];
+                fragIon.Mass = sngMass;
+                fragIon.Intensity = sngIntensity;
+                fragIon.Symbol = strIonSymbol;
+                fragIon.SymbolGeneric = strIonSymbolGeneric;
+                fragIon.SourceResidueNumber = lngSourceResidue;
+                fragIon.SourceResidueSymbol3Letter = strSourceResidueSymbol3Letter;
+                fragIon.Charge = intCharge;
+                fragIon.IonType = eIonType;
+                fragIon.IsShoulderIon = blnIsShoulderIon;
 
                 lngIonCount += 1;
             }
@@ -345,16 +343,14 @@ namespace MwtWinDll
                 if (blnMatchFound)
                 {
                     // Record the modification for this residue
+                    var residue = Residues[intResidueNumber];
+                    if (residue.ModificationIDCount < MAX_MODIFICATIONS)
                     {
-                        var withBlock = Residues[intResidueNumber];
-                        if (withBlock.ModificationIDCount < MAX_MODIFICATIONS)
+                        residue.ModificationIDCount = (short)(residue.ModificationIDCount + 1);
+                        residue.ModificationIDs[residue.ModificationIDCount] = intModificationID;
+                        if (ModificationSymbols[intModificationID].IndicatesPhosphorylation)
                         {
-                            withBlock.ModificationIDCount = (short)(withBlock.ModificationIDCount + 1);
-                            withBlock.ModificationIDs[withBlock.ModificationIDCount] = intModificationID;
-                            if (ModificationSymbols[intModificationID].IndicatesPhosphorylation)
-                            {
-                                withBlock.Phosphorylated = true;
-                            }
+                            residue.Phosphorylated = true;
                         }
                     }
 
@@ -384,40 +380,37 @@ namespace MwtWinDll
             itIonTypeConstants eIonIndex;
             short intIonCount;
             intIonCount = 0;
+            for (eIonIndex = 0; eIonIndex <= ION_TYPE_MAX; eIonIndex++)
             {
-                var withBlock = mFragSpectrumOptions;
-                for (eIonIndex = 0; eIonIndex <= ION_TYPE_MAX; eIonIndex++)
+                if (mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex].ShowIon)
                 {
-                    if (withBlock.IonTypeOptions[(int)eIonIndex].ShowIon)
+                    intIonCount = (short)(intIonCount + 1);
+                    if (Math.Abs(mFragSpectrumOptions.IntensityOptions.BYIonShoulder) > 0d)
                     {
-                        intIonCount = (short)(intIonCount + 1);
-                        if (Math.Abs(withBlock.IntensityOptions.BYIonShoulder) > 0d)
+                        if ((eIonIndex == itIonTypeConstants.itBIon || eIonIndex == itIonTypeConstants.itYIon || eIonIndex == itIonTypeConstants.itCIon) || eIonIndex == itIonTypeConstants.itZIon)
                         {
-                            if ((eIonIndex == itIonTypeConstants.itBIon || eIonIndex == itIonTypeConstants.itYIon || eIonIndex == itIonTypeConstants.itCIon) || eIonIndex == itIonTypeConstants.itZIon)
-                            {
-                                intIonCount = (short)(intIonCount + 2);
-                            }
+                            intIonCount = (short)(intIonCount + 2);
                         }
-
-                        if (withBlock.IonTypeOptions[(int)eIonIndex].NeutralLossAmmonia)
-                            intIonCount = (short)(intIonCount + 1);
-                        if (withBlock.IonTypeOptions[(int)eIonIndex].NeutralLossPhosphate)
-                            intIonCount = (short)(intIonCount + 1);
-                        if (withBlock.IonTypeOptions[(int)eIonIndex].NeutralLossWater)
-                            intIonCount = (short)(intIonCount + 1);
                     }
-                }
 
-                // Double Charge ions could be created for all ions, so simply double intIonCount
-                if (withBlock.DoubleChargeIonsShow)
-                {
-                    intIonCount = (short)(intIonCount * 2);
+                    if (mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex].NeutralLossAmmonia)
+                        intIonCount = (short)(intIonCount + 1);
+                    if (mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex].NeutralLossPhosphate)
+                        intIonCount = (short)(intIonCount + 1);
+                    if (mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex].NeutralLossWater)
+                        intIonCount = (short)(intIonCount + 1);
                 }
+            }
 
-                if (withBlock.TripleChargeIonsShow)
-                {
-                    intIonCount = (short)(intIonCount * 2);
-                }
+            // Double Charge ions could be created for all ions, so simply double intIonCount
+            if (mFragSpectrumOptions.DoubleChargeIonsShow)
+            {
+                intIonCount = (short)(intIonCount * 2);
+            }
+
+            if (mFragSpectrumOptions.TripleChargeIonsShow)
+            {
+                intIonCount = (short)(intIonCount * 2);
             }
 
             ComputeMaxIonsPerResidueRet = intIonCount;
@@ -528,23 +521,20 @@ namespace MwtWinDll
             sngChargeThreshold = new float[4];
 
             // Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
+            for (eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
+                sngIonIntensities[(int)eIonType] = (float)mFragSpectrumOptions.IntensityOptions.IonType[(int)eIonType];
+            sngIonShoulderIntensity = (float)mFragSpectrumOptions.IntensityOptions.BYIonShoulder;
+            sngNeutralLossIntensity = (float)mFragSpectrumOptions.IntensityOptions.NeutralLoss;
+            if (MAX_CHARGE >= 2)
             {
-                var withBlock = mFragSpectrumOptions;
-                for (eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
-                    sngIonIntensities[(int)eIonType] = (float)withBlock.IntensityOptions.IonType[(int)eIonType];
-                sngIonShoulderIntensity = (float)withBlock.IntensityOptions.BYIonShoulder;
-                sngNeutralLossIntensity = (float)withBlock.IntensityOptions.NeutralLoss;
-                if (MAX_CHARGE >= 2)
-                {
-                    blnShowCharge[2] = withBlock.DoubleChargeIonsShow;
-                    sngChargeThreshold[2] = withBlock.DoubleChargeIonsThreshold;
-                }
+                blnShowCharge[2] = mFragSpectrumOptions.DoubleChargeIonsShow;
+                sngChargeThreshold[2] = mFragSpectrumOptions.DoubleChargeIonsThreshold;
+            }
 
-                if (MAX_CHARGE >= 3)
-                {
-                    blnShowCharge[3] = withBlock.TripleChargeIonsShow;
-                    sngChargeThreshold[3] = withBlock.TripleChargeIonsThreshold;
-                }
+            if (MAX_CHARGE >= 3)
+            {
+                blnShowCharge[3] = mFragSpectrumOptions.TripleChargeIonsShow;
+                sngChargeThreshold[3] = mFragSpectrumOptions.TripleChargeIonsThreshold;
             }
 
             // Populate sngIonMassesZeroBased() and sngIonIntensitiesZeroBased()
@@ -560,112 +550,110 @@ namespace MwtWinDll
             var loopTo = ResidueCount;
             for (lngResidueIndex = 1; lngResidueIndex <= loopTo; lngResidueIndex++)
             {
+                var residue = Residues[lngResidueIndex];
+                for (eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
                 {
-                    var withBlock1 = Residues[lngResidueIndex];
-                    for (eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
+                    if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].ShowIon)
                     {
-                        if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].ShowIon)
+                        if ((lngResidueIndex == 1 || lngResidueIndex == ResidueCount) && (eIonType == itIonTypeConstants.itAIon || eIonType == itIonTypeConstants.itBIon || eIonType == itIonTypeConstants.itCIon))
                         {
-                            if ((lngResidueIndex == 1 || lngResidueIndex == ResidueCount) && (eIonType == itIonTypeConstants.itAIon || eIonType == itIonTypeConstants.itBIon || eIonType == itIonTypeConstants.itCIon))
-                            {
-                            }
-                            // Don't include a, b, or c ions in the output masses for this residue
-                            else
-                            {
+                        }
+                        // Don't include a, b, or c ions in the output masses for this residue
+                        else
+                        {
 
-                                // Ion is used
-                                sngBaseMass = (float)withBlock1.IonMass[(int)eIonType]; // Already in the H+ state
-                                sngIntensity = sngIonIntensities[(int)eIonType];
+                            // Ion is used
+                            sngBaseMass = (float)residue.IonMass[(int)eIonType]; // Already in the H+ state
+                            sngIntensity = sngIonIntensities[(int)eIonType];
 
-                                // Get the list of residues preceding or following this residue
-                                // Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() functions below
-                                strResidues = GetInternalResidues(lngResidueIndex, eIonType, ref blnPhosphorylated);
-                                for (intChargeIndex = 1; intChargeIndex <= MAX_CHARGE; intChargeIndex++)
+                            // Get the list of residues preceding or following this residue
+                            // Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() functions below
+                            strResidues = GetInternalResidues(lngResidueIndex, eIonType, ref blnPhosphorylated);
+                            for (intChargeIndex = 1; intChargeIndex <= MAX_CHARGE; intChargeIndex++)
+                            {
+                                if (intChargeIndex == 1 || intChargeIndex > 1 && blnShowCharge[intChargeIndex])
                                 {
-                                    if (intChargeIndex == 1 || intChargeIndex > 1 && blnShowCharge[intChargeIndex])
+                                    if (intChargeIndex == 1)
                                     {
-                                        if (intChargeIndex == 1)
+                                        sngConvolutedMass = sngBaseMass;
+                                    }
+                                    else
+                                    {
+                                        // Compute mass at higher charge
+                                        sngConvolutedMass = (float)ElementAndMassRoutines.ConvoluteMassInternal(sngBaseMass, 1, intChargeIndex, dblChargeCarrierMass);
+                                    }
+
+                                    if (intChargeIndex > 1 && sngBaseMass < sngChargeThreshold[intChargeIndex])
+                                    {
+                                    }
+                                    // BaseMass is below threshold, do not add to Predicted Spectrum
+                                    else
+                                    {
+                                        // Add ion to Predicted Spectrum
+
+                                        // Y and Z Ions are numbered in decreasing order: y5, y4, y3, y2, y1
+                                        // A, B, and C ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
+                                        strIonSymbolGeneric = LookupIonTypeString(eIonType);
+                                        if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
                                         {
-                                            sngConvolutedMass = sngBaseMass;
+                                            strIonSymbol = strIonSymbolGeneric + Strings.Trim(Conversion.Str(ResidueCount - lngResidueIndex + 1));
                                         }
                                         else
                                         {
-                                            // Compute mass at higher charge
-                                            sngConvolutedMass = (float)ElementAndMassRoutines.ConvoluteMassInternal(sngBaseMass, 1, intChargeIndex, dblChargeCarrierMass);
+                                            strIonSymbol = strIonSymbolGeneric + Strings.Trim(Conversion.Str(lngResidueIndex));
                                         }
 
-                                        if (intChargeIndex > 1 && sngBaseMass < sngChargeThreshold[intChargeIndex])
+                                        if (intChargeIndex > 1)
                                         {
+                                            strIonSymbol += new string('+', intChargeIndex);
+                                            strIonSymbolGeneric += new string('+', intChargeIndex);
                                         }
-                                        // BaseMass is below threshold, do not add to Predicted Spectrum
-                                        else
+
+                                        AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngConvolutedMass, sngIntensity, strIonSymbol, strIonSymbolGeneric, lngResidueIndex, residue.Symbol, intChargeIndex, eIonType, false);
+
+                                        // Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
+                                        // Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
+                                        if (Math.Abs(sngIonShoulderIntensity) > 0f && (eIonType == itIonTypeConstants.itBIon || eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itCIon || eIonType == itIonTypeConstants.itZIon))
                                         {
-                                            // Add ion to Predicted Spectrum
-
-                                            // Y and Z Ions are numbered in decreasing order: y5, y4, y3, y2, y1
-                                            // A, B, and C ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
-                                            strIonSymbolGeneric = LookupIonTypeString(eIonType);
-                                            if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
+                                            for (intShoulderIndex = -1; intShoulderIndex <= 1; intShoulderIndex += 2)
                                             {
-                                                strIonSymbol = strIonSymbolGeneric + Strings.Trim(Conversion.Str(ResidueCount - lngResidueIndex + 1));
+                                                sngObservedMass = (float)(sngConvolutedMass + intShoulderIndex * (1d / intChargeIndex));
+                                                AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngIonShoulderIntensity, SHOULDER_ION_PREFIX + strIonSymbol, SHOULDER_ION_PREFIX + strIonSymbolGeneric, lngResidueIndex, residue.Symbol, intChargeIndex, eIonType, true);
                                             }
-                                            else
+                                        }
+
+                                        // Apply neutral loss modifications
+                                        if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].NeutralLossWater)
+                                        {
+                                            // Loss of water only affects Ser, Thr, Asp, or Glu (S, T, E, or D)
+                                            // See if the residues up to this point contain any of these residues
+                                            if (strResidues.Contains("Ser") || strResidues.Contains("Thr") || strResidues.Contains("Glue") || strResidues.Contains("Asp"))
                                             {
-                                                strIonSymbol = strIonSymbolGeneric + Strings.Trim(Conversion.Str(lngResidueIndex));
+                                                sngObservedMass = (float)(sngConvolutedMass - dblHOHMass / intChargeIndex);
+                                                AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol + mWaterLossSymbol, strIonSymbolGeneric + mWaterLossSymbol, lngResidueIndex, residue.Symbol, intChargeIndex, eIonType, false);
                                             }
+                                        }
 
-                                            if (intChargeIndex > 1)
+                                        if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].NeutralLossAmmonia)
+                                        {
+                                            // Loss of Ammonia only affects Arg, Lys, Gln, or Asn (R, K, Q, or N)
+                                            // See if the residues up to this point contain any of these residues
+                                            if (strResidues.Contains("Arg") || strResidues.Contains("Lys") || strResidues.Contains("Gln") || strResidues.Contains("Asn"))
                                             {
-                                                strIonSymbol += new string('+', intChargeIndex);
-                                                strIonSymbolGeneric += new string('+', intChargeIndex);
+                                                sngObservedMass = (float)(sngConvolutedMass - dblNH3Mass / intChargeIndex);
+                                                AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol + mAmmoniaLossSymbol, strIonSymbolGeneric + mAmmoniaLossSymbol, lngResidueIndex, residue.Symbol, intChargeIndex, eIonType, false);
                                             }
+                                        }
 
-                                            AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngConvolutedMass, sngIntensity, strIonSymbol, strIonSymbolGeneric, lngResidueIndex, withBlock1.Symbol, intChargeIndex, eIonType, false);
-
-                                            // Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
-                                            // Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
-                                            if (Math.Abs(sngIonShoulderIntensity) > 0f && (eIonType == itIonTypeConstants.itBIon || eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itCIon || eIonType == itIonTypeConstants.itZIon))
+                                        if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].NeutralLossPhosphate)
+                                        {
+                                            // Loss of phosphate only affects phosphorylated residues
+                                            // Technically, only Ser, Thr, or Tyr (S, T, or Y) can be phosphorylated, but if the user marks other residues as phosphorylated, we'll allow that
+                                            // See if the residues up to this point contain phosphorylated residues
+                                            if (blnPhosphorylated)
                                             {
-                                                for (intShoulderIndex = -1; intShoulderIndex <= 1; intShoulderIndex += 2)
-                                                {
-                                                    sngObservedMass = (float)(sngConvolutedMass + intShoulderIndex * (1d / intChargeIndex));
-                                                    AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngIonShoulderIntensity, SHOULDER_ION_PREFIX + strIonSymbol, SHOULDER_ION_PREFIX + strIonSymbolGeneric, lngResidueIndex, withBlock1.Symbol, intChargeIndex, eIonType, true);
-                                                }
-                                            }
-
-                                            // Apply neutral loss modifications
-                                            if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].NeutralLossWater)
-                                            {
-                                                // Loss of water only affects Ser, Thr, Asp, or Glu (S, T, E, or D)
-                                                // See if the residues up to this point contain any of these residues
-                                                if (strResidues.Contains("Ser") || strResidues.Contains("Thr") || strResidues.Contains("Glue") || strResidues.Contains("Asp"))
-                                                {
-                                                    sngObservedMass = (float)(sngConvolutedMass - dblHOHMass / intChargeIndex);
-                                                    AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol + mWaterLossSymbol, strIonSymbolGeneric + mWaterLossSymbol, lngResidueIndex, withBlock1.Symbol, intChargeIndex, eIonType, false);
-                                                }
-                                            }
-
-                                            if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].NeutralLossAmmonia)
-                                            {
-                                                // Loss of Ammonia only affects Arg, Lys, Gln, or Asn (R, K, Q, or N)
-                                                // See if the residues up to this point contain any of these residues
-                                                if (strResidues.Contains("Arg") || strResidues.Contains("Lys") || strResidues.Contains("Gln") || strResidues.Contains("Asn"))
-                                                {
-                                                    sngObservedMass = (float)(sngConvolutedMass - dblNH3Mass / intChargeIndex);
-                                                    AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol + mAmmoniaLossSymbol, strIonSymbolGeneric + mAmmoniaLossSymbol, lngResidueIndex, withBlock1.Symbol, intChargeIndex, eIonType, false);
-                                                }
-                                            }
-
-                                            if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].NeutralLossPhosphate)
-                                            {
-                                                // Loss of phosphate only affects phosphorylated residues
-                                                // Technically, only Ser, Thr, or Tyr (S, T, or Y) can be phosphorylated, but if the user marks other residues as phosphorylated, we'll allow that
-                                                // See if the residues up to this point contain phosphorylated residues
-                                                if (blnPhosphorylated)
-                                                {
-                                                    sngObservedMass = (float)(sngConvolutedMass - dblH3PO4Mass / intChargeIndex);
-                                                    AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol + mPhosphoLossSymbol, strIonSymbolGeneric + mPhosphoLossSymbol, lngResidueIndex, withBlock1.Symbol, intChargeIndex, eIonType, false);
-                                                }
+                                                sngObservedMass = (float)(sngConvolutedMass - dblH3PO4Mass / intChargeIndex);
+                                                AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol + mPhosphoLossSymbol, strIonSymbolGeneric + mPhosphoLossSymbol, lngResidueIndex, residue.Symbol, intChargeIndex, eIonType, false);
                                             }
                                         }
                                     }
@@ -747,12 +735,9 @@ namespace MwtWinDll
                 var loopTo = ResidueCount;
                 for (lngResidueIndex = lngCurrentResidueIndex; lngResidueIndex <= loopTo; lngResidueIndex++)
                 {
-                    {
-                        var withBlock = Residues[lngResidueIndex];
-                        strInternalResidues = strInternalResidues + withBlock.Symbol + " ";
-                        if (withBlock.Phosphorylated)
-                            blnPhosphorylated = true;
-                    }
+                    strInternalResidues = strInternalResidues + Residues[lngResidueIndex].Symbol + " ";
+                    if (Residues[lngResidueIndex].Phosphorylated)
+                        blnPhosphorylated = true;
                 }
             }
             else
@@ -760,12 +745,9 @@ namespace MwtWinDll
                 var loopTo1 = lngCurrentResidueIndex;
                 for (lngResidueIndex = 1; lngResidueIndex <= loopTo1; lngResidueIndex++)
                 {
-                    {
-                        var withBlock1 = Residues[lngResidueIndex];
-                        strInternalResidues = strInternalResidues + withBlock1.Symbol + " ";
-                        if (withBlock1.Phosphorylated)
-                            blnPhosphorylated = true;
-                    }
+                    strInternalResidues = strInternalResidues + Residues[lngResidueIndex].Symbol + " ";
+                    if (Residues[lngResidueIndex].Phosphorylated)
+                        blnPhosphorylated = true;
                 }
             }
 
@@ -779,13 +761,11 @@ namespace MwtWinDll
 
             if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
             {
-                {
-                    var withBlock = ModificationSymbols[lngModificationID];
-                    strModSymbol = withBlock.Symbol;
-                    dblModificationMass = withBlock.ModificationMass;
-                    blnIndicatesPhosphorylation = withBlock.IndicatesPhosphorylation;
-                    strComment = withBlock.Comment;
-                }
+                var mod = ModificationSymbols[lngModificationID];
+                strModSymbol = mod.Symbol;
+                dblModificationMass = mod.ModificationMass;
+                blnIndicatesPhosphorylation = mod.IndicatesPhosphorylation;
+                strComment = mod.Comment;
 
                 return 0;
             }
@@ -831,13 +811,11 @@ namespace MwtWinDll
             // Returns 0 if success, 1 if failure
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
-                {
-                    var withBlock = Residues[lngResidueNumber];
-                    strSymbol = withBlock.Symbol;
-                    dblMass = withBlock.Mass;
-                    blnIsModified = withBlock.ModificationIDCount > 0;
-                    intModificationCount = withBlock.ModificationIDCount;
-                }
+                var residue = Residues[lngResidueNumber];
+                strSymbol = residue.Symbol;
+                dblMass = residue.Mass;
+                blnIsModified = residue.ModificationIDCount > 0;
+                intModificationCount = residue.ModificationIDCount;
 
                 return 0;
             }
@@ -889,24 +867,23 @@ namespace MwtWinDll
             short intIndex;
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
+                var residue = Residues[lngResidueNumber];
+
+                // Need to use this in case the calling program is sending an array with fixed dimensions
+                try
                 {
-                    var withBlock = Residues[lngResidueNumber];
-
-                    // Need to use this in case the calling program is sending an array with fixed dimensions
-                    try
-                    {
-                        lngModificationIDsOneBased = new int[(withBlock.ModificationIDCount + 1)];
-                    }
-                    catch (Exception ex)
-                    {
-                        // Ignore errors
-                    }
-
-                    var loopTo = withBlock.ModificationIDCount;
-                    for (intIndex = 1; intIndex <= loopTo; intIndex++)
-                        lngModificationIDsOneBased[intIndex] = withBlock.ModificationIDs[intIndex];
-                    return withBlock.ModificationIDCount;
+                    lngModificationIDsOneBased = new int[(residue.ModificationIDCount + 1)];
                 }
+                catch (Exception ex)
+                {
+                    // Ignore errors
+                }
+
+                var loopTo = residue.ModificationIDCount;
+                for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                    lngModificationIDsOneBased[intIndex] = residue.ModificationIDs[intIndex];
+
+                return residue.ModificationIDCount;
             }
             else
             {
@@ -921,10 +898,7 @@ namespace MwtWinDll
             string strSymbol;
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
-                {
-                    var withBlock = Residues[lngResidueNumber];
-                    strSymbol = withBlock.Symbol;
-                }
+                strSymbol = Residues[lngResidueNumber].Symbol;
 
                 if (!blnUse3LetterCode)
                     strSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, false);
@@ -969,7 +943,6 @@ namespace MwtWinDll
 
         public string GetSequence(bool blnUse3LetterCode, bool blnAddSpaceEvery10Residues, bool blnSeparateResiduesWithDash, bool blnIncludeNAndCTerminii, bool blnIncludeModificationSymbols)
         {
-
             // Construct a text sequence using Residues() and the N and C Terminus info
 
             string strSymbol3Letter, strSequence, strSymbol1Letter;
@@ -989,35 +962,33 @@ namespace MwtWinDll
             var loopTo = ResidueCount;
             for (lngIndex = 1; lngIndex <= loopTo; lngIndex++)
             {
+                var residue = Residues[lngIndex];
+                strSymbol3Letter = residue.Symbol;
+                if (blnUse3LetterCode)
                 {
-                    var withBlock = Residues[lngIndex];
-                    strSymbol3Letter = withBlock.Symbol;
-                    if (blnUse3LetterCode)
-                    {
-                        strSequence += strSymbol3Letter;
-                    }
-                    else
-                    {
-                        strSymbol1Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol3Letter, false);
-                        if ((strSymbol1Letter ?? "") == (string.Empty ?? ""))
-                            strSymbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER;
-                        strSequence += strSymbol1Letter;
-                    }
+                    strSequence += strSymbol3Letter;
+                }
+                else
+                {
+                    strSymbol1Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol3Letter, false);
+                    if ((strSymbol1Letter ?? "") == (string.Empty ?? ""))
+                        strSymbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER;
+                    strSequence += strSymbol1Letter;
+                }
 
-                    if (blnIncludeModificationSymbols)
+                if (blnIncludeModificationSymbols)
+                {
+                    var loopTo1 = residue.ModificationIDCount;
+                    for (intModIndex = 1; intModIndex <= loopTo1; intModIndex++)
                     {
-                        var loopTo1 = withBlock.ModificationIDCount;
-                        for (intModIndex = 1; intModIndex <= loopTo1; intModIndex++)
+                        lngError = GetModificationSymbol(residue.ModificationIDs[intModIndex], ref strModSymbol, ref dblModMass, ref blnIndicatesPhosphorylation, ref strModSymbolComment);
+                        if (lngError == 0)
                         {
-                            lngError = GetModificationSymbol(withBlock.ModificationIDs[intModIndex], ref strModSymbol, ref dblModMass, ref blnIndicatesPhosphorylation, ref strModSymbolComment);
-                            if (lngError == 0)
-                            {
-                                strSequence += strModSymbol;
-                            }
-                            else
-                            {
-                                Console.WriteLine("GetModificationSymbol returned error code " + lngError + " in GetSequence");
-                            }
+                            strSequence += strModSymbol;
+                        }
+                        else
+                        {
+                            Console.WriteLine("GetModificationSymbol returned error code " + lngError + " in GetSequence");
                         }
                     }
                 }
@@ -2093,23 +2064,20 @@ namespace MwtWinDll
             // Free Acid = OH
             // Amide = NH2
 
+            mCTerminus.Formula = strFormula;
+            mCTerminus.Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref mCTerminus.Formula);
+            if (mCTerminus.Mass < 0d)
             {
-                var withBlock = mCTerminus;
-                withBlock.Formula = strFormula;
-                withBlock.Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref withBlock.Formula);
-                if (withBlock.Mass < 0d)
-                {
-                    withBlock.Mass = 0d;
-                    SetCTerminusRet = 1;
-                }
-                else
-                {
-                    SetCTerminusRet = 0;
-                }
-
-                withBlock.PrecedingResidue = FillResidueStructureUsingSymbol(string.Empty);
-                withBlock.FollowingResidue = FillResidueStructureUsingSymbol(strFollowingResidue, blnUse3LetterCode);
+                mCTerminus.Mass = 0d;
+                SetCTerminusRet = 1;
             }
+            else
+            {
+                SetCTerminusRet = 0;
+            }
+
+            mCTerminus.PrecedingResidue = FillResidueStructureUsingSymbol(string.Empty);
+            mCTerminus.FollowingResidue = FillResidueStructureUsingSymbol(strFollowingResidue, blnUse3LetterCode);
 
             UpdateResidueMasses();
             return SetCTerminusRet;
@@ -2182,44 +2150,35 @@ namespace MwtWinDll
             itIonTypeConstants eIonIndex;
             try
             {
+                var intensityOptions = mFragSpectrumOptions.IntensityOptions;
+                intensityOptions.IonType[(int)itIonTypeConstants.itAIon] = DEFAULT_A_ION_INTENSITY;
+                intensityOptions.IonType[(int)itIonTypeConstants.itBIon] = DEFAULT_BYCZ_ION_INTENSITY;
+                intensityOptions.IonType[(int)itIonTypeConstants.itYIon] = DEFAULT_BYCZ_ION_INTENSITY;
+                intensityOptions.IonType[(int)itIonTypeConstants.itCIon] = DEFAULT_BYCZ_ION_INTENSITY;
+                intensityOptions.IonType[(int)itIonTypeConstants.itZIon] = DEFAULT_BYCZ_ION_INTENSITY;
+                intensityOptions.BYIonShoulder = DEFAULT_B_Y_ION_SHOULDER_INTENSITY;
+                intensityOptions.NeutralLoss = DEFAULT_NEUTRAL_LOSS_ION_INTENSITY;
+
+                // A ions can have ammonia and phosphate loss, but not water loss
+                var aIonOption = mFragSpectrumOptions.IonTypeOptions[(int)itIonTypeConstants.itAIon];
+                aIonOption.ShowIon = true;
+                aIonOption.NeutralLossAmmonia = true;
+                aIonOption.NeutralLossPhosphate = true;
+                aIonOption.NeutralLossWater = false;
+
+                for (eIonIndex = itIonTypeConstants.itBIon; eIonIndex <= itIonTypeConstants.itZIon; eIonIndex++)
                 {
-                    var withBlock = mFragSpectrumOptions;
-                    {
-                        var withBlock1 = withBlock.IntensityOptions;
-                        withBlock1.IonType[(int)itIonTypeConstants.itAIon] = DEFAULT_A_ION_INTENSITY;
-                        withBlock1.IonType[(int)itIonTypeConstants.itBIon] = DEFAULT_BYCZ_ION_INTENSITY;
-                        withBlock1.IonType[(int)itIonTypeConstants.itYIon] = DEFAULT_BYCZ_ION_INTENSITY;
-                        withBlock1.IonType[(int)itIonTypeConstants.itCIon] = DEFAULT_BYCZ_ION_INTENSITY;
-                        withBlock1.IonType[(int)itIonTypeConstants.itZIon] = DEFAULT_BYCZ_ION_INTENSITY;
-                        withBlock1.BYIonShoulder = DEFAULT_B_Y_ION_SHOULDER_INTENSITY;
-                        withBlock1.NeutralLoss = DEFAULT_NEUTRAL_LOSS_ION_INTENSITY;
-                    }
-
-                    // A ions can have ammonia and phosphate loss, but not water loss
-                    {
-                        var withBlock2 = withBlock.IonTypeOptions[(int)itIonTypeConstants.itAIon];
-                        withBlock2.ShowIon = true;
-                        withBlock2.NeutralLossAmmonia = true;
-                        withBlock2.NeutralLossPhosphate = true;
-                        withBlock2.NeutralLossWater = false;
-                    }
-
-                    for (eIonIndex = itIonTypeConstants.itBIon; eIonIndex <= itIonTypeConstants.itZIon; eIonIndex++)
-                    {
-                        {
-                            var withBlock3 = withBlock.IonTypeOptions[(int)eIonIndex];
-                            withBlock3.ShowIon = true;
-                            withBlock3.NeutralLossAmmonia = true;
-                            withBlock3.NeutralLossPhosphate = true;
-                            withBlock3.NeutralLossWater = true;
-                        }
-                    }
-
-                    withBlock.DoubleChargeIonsShow = true;
-                    withBlock.DoubleChargeIonsThreshold = DEFAULT_DOUBLE_CHARGE_MZ_THRESHOLD;
-                    withBlock.TripleChargeIonsShow = false;
-                    withBlock.TripleChargeIonsThreshold = DEFAULT_TRIPLE_CHARGE_MZ_THRESHOLD;
+                    var ionOption = mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex];
+                    ionOption.ShowIon = true;
+                    ionOption.NeutralLossAmmonia = true;
+                    ionOption.NeutralLossPhosphate = true;
+                    ionOption.NeutralLossWater = true;
                 }
+
+                mFragSpectrumOptions.DoubleChargeIonsShow = true;
+                mFragSpectrumOptions.DoubleChargeIonsThreshold = DEFAULT_DOUBLE_CHARGE_MZ_THRESHOLD;
+                mFragSpectrumOptions.TripleChargeIonsShow = false;
+                mFragSpectrumOptions.TripleChargeIonsThreshold = DEFAULT_TRIPLE_CHARGE_MZ_THRESHOLD;
 
                 SetSymbolWaterLoss("-H2O");
                 SetSymbolAmmoniaLoss("-NH3");
@@ -2286,13 +2245,11 @@ namespace MwtWinDll
                         ReserveMemoryForModifications(ModificationSymbolCount, true);
                     }
 
-                    {
-                        var withBlock = ModificationSymbols[lngIndexToUse];
-                        withBlock.Symbol = strModSymbol;
-                        withBlock.ModificationMass = dblModificationMass;
-                        withBlock.IndicatesPhosphorylation = blnIndicatesPhosphorylation;
-                        withBlock.Comment = strComment;
-                    }
+                    var mod = ModificationSymbols[lngIndexToUse];
+                    mod.Symbol = strModSymbol;
+                    mod.ModificationMass = dblModificationMass;
+                    mod.IndicatesPhosphorylation = blnIndicatesPhosphorylation;
+                    mod.Comment = strComment;
                 }
             }
 
@@ -2322,23 +2279,20 @@ namespace MwtWinDll
             // Carbamyl = CONH2
             // PTC = C7H6NS
 
+            mNTerminus.Formula = strFormula;
+            mNTerminus.Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref mNTerminus.Formula);
+            if (mNTerminus.Mass < 0d)
             {
-                var withBlock = mNTerminus;
-                withBlock.Formula = strFormula;
-                withBlock.Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref withBlock.Formula);
-                if (withBlock.Mass < 0d)
-                {
-                    withBlock.Mass = 0d;
-                    SetNTerminusRet = 1;
-                }
-                else
-                {
-                    SetNTerminusRet = 0;
-                }
-
-                withBlock.PrecedingResidue = FillResidueStructureUsingSymbol(strPrecedingResidue, blnUse3LetterCode);
-                withBlock.FollowingResidue = FillResidueStructureUsingSymbol(string.Empty);
+                mNTerminus.Mass = 0d;
+                SetNTerminusRet = 1;
             }
+            else
+            {
+                SetNTerminusRet = 0;
+            }
+
+            mNTerminus.PrecedingResidue = FillResidueStructureUsingSymbol(strPrecedingResidue, blnUse3LetterCode);
+            mNTerminus.FollowingResidue = FillResidueStructureUsingSymbol(string.Empty);
 
             UpdateResidueMasses();
             return SetNTerminusRet;
@@ -2426,39 +2380,37 @@ namespace MwtWinDll
                 lngIndexToUse = lngResidueNumber;
             }
 
+            var residue = Residues[lngIndexToUse];
+            if (blnIs3LetterCode)
             {
-                var withBlock = Residues[lngIndexToUse];
-                if (blnIs3LetterCode)
-                {
-                    str3LetterSymbol = strSymbol;
-                }
-                else
-                {
-                    str3LetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, true);
-                }
-
-                if (Strings.Len(str3LetterSymbol) == 0)
-                {
-                    withBlock.Symbol = UNKNOWN_SYMBOL;
-                }
-                else
-                {
-                    withBlock.Symbol = str3LetterSymbol;
-                }
-
-                withBlock.Phosphorylated = blnPhosphorylated;
-                if (blnPhosphorylated)
-                {
-                    // Only Ser, Thr, or Tyr should be phosphorylated
-                    // However, if the user sets other residues as phosphorylated, we'll allow that
-                    if (!(withBlock.Symbol == "Ser" || withBlock.Symbol == "Thr" || withBlock.Symbol == "Tyr"))
-                    {
-                        Console.WriteLine("Residue '" + withBlock.Symbol + "' is marked as being phosphorylated; this is unexpected");
-                    }
-                }
-
-                withBlock.ModificationIDCount = 0;
+                str3LetterSymbol = strSymbol;
             }
+            else
+            {
+                str3LetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, true);
+            }
+
+            if (Strings.Len(str3LetterSymbol) == 0)
+            {
+                residue.Symbol = UNKNOWN_SYMBOL;
+            }
+            else
+            {
+                residue.Symbol = str3LetterSymbol;
+            }
+
+            residue.Phosphorylated = blnPhosphorylated;
+            if (blnPhosphorylated)
+            {
+                // Only Ser, Thr, or Tyr should be phosphorylated
+                // However, if the user sets other residues as phosphorylated, we'll allow that
+                if (!(residue.Symbol == "Ser" || residue.Symbol == "Thr" || residue.Symbol == "Tyr"))
+                {
+                    Console.WriteLine("Residue '" + residue.Symbol + "' is marked as being phosphorylated; this is unexpected");
+                }
+            }
+
+            residue.ModificationIDCount = 0;
 
             UpdateResidueMasses();
             SetResidueRet = lngIndexToUse;
@@ -2477,31 +2429,29 @@ namespace MwtWinDll
             int lngNewModID;
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount && intModificationCount >= 0)
             {
+                var residue = Residues[lngResidueNumber];
+                if (intModificationCount > MAX_MODIFICATIONS)
                 {
-                    var withBlock = Residues[lngResidueNumber];
-                    if (intModificationCount > MAX_MODIFICATIONS)
-                    {
-                        intModificationCount = MAX_MODIFICATIONS;
-                    }
+                    intModificationCount = MAX_MODIFICATIONS;
+                }
 
-                    withBlock.ModificationIDCount = 0;
-                    withBlock.Phosphorylated = false;
-                    var loopTo = intModificationCount;
-                    for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                residue.ModificationIDCount = 0;
+                residue.Phosphorylated = false;
+                var loopTo = intModificationCount;
+                for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                {
+                    lngNewModID = lngModificationIDsOneBased[intIndex];
+                    if (lngNewModID >= 1 && lngNewModID <= ModificationSymbolCount)
                     {
-                        lngNewModID = lngModificationIDsOneBased[intIndex];
-                        if (lngNewModID >= 1 && lngNewModID <= ModificationSymbolCount)
+                        residue.ModificationIDs[residue.ModificationIDCount] = lngNewModID;
+
+                        // Check for phosphorylation
+                        if (ModificationSymbols[lngNewModID].IndicatesPhosphorylation)
                         {
-                            withBlock.ModificationIDs[withBlock.ModificationIDCount] = lngNewModID;
-
-                            // Check for phosphorylation
-                            if (ModificationSymbols[lngNewModID].IndicatesPhosphorylation)
-                            {
-                                withBlock.Phosphorylated = true;
-                            }
-
-                            withBlock.ModificationIDCount = (short)(withBlock.ModificationIDCount + 1);
+                            residue.Phosphorylated = true;
                         }
+
+                        residue.ModificationIDCount = (short)(residue.ModificationIDCount + 1);
                     }
                 }
 
@@ -2788,12 +2738,11 @@ namespace MwtWinDll
 
             ResidueCount += 1;
             ReserveMemoryForResidues(ResidueCount, true);
-            {
-                var withBlock = Residues[ResidueCount];
-                withBlock.Symbol = str3LetterSymbol;
-                withBlock.Phosphorylated = false;
-                withBlock.ModificationIDCount = 0;
-            }
+
+            var residue = Residues[ResidueCount];
+            residue.Symbol = str3LetterSymbol;
+            residue.Phosphorylated = false;
+            residue.ModificationIDCount = 0;
         }
 
         public void SetSymbolAmmoniaLoss(string strNewSymbol)
@@ -2895,58 +2844,56 @@ namespace MwtWinDll
             var loopTo = ResidueCount;
             for (lngIndex = 1; lngIndex <= loopTo; lngIndex++)
             {
+                var residue = Residues[lngIndex];
+                residue.Initialize();
+                lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(residue.Symbol, true);
+                if (lngAbbrevID > 0)
                 {
-                    var withBlock = Residues[lngIndex];
-                    withBlock.Initialize();
-                    lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(withBlock.Symbol, true);
-                    if (lngAbbrevID > 0)
-                    {
-                        lngValidResidueCount += 1;
-                        withBlock.Mass = ElementAndMassRoutines.GetAbbreviationMass(lngAbbrevID);
-                        blnPhosphorylationMassAdded = false;
+                    lngValidResidueCount += 1;
+                    residue.Mass = ElementAndMassRoutines.GetAbbreviationMass(lngAbbrevID);
+                    blnPhosphorylationMassAdded = false;
 
-                        // Compute the mass, including the modifications
-                        withBlock.MassWithMods = withBlock.Mass;
-                        var loopTo1 = withBlock.ModificationIDCount;
-                        for (intModIndex = 1; intModIndex <= loopTo1; intModIndex++)
+                    // Compute the mass, including the modifications
+                    residue.MassWithMods = residue.Mass;
+                    var loopTo1 = residue.ModificationIDCount;
+                    for (intModIndex = 1; intModIndex <= loopTo1; intModIndex++)
+                    {
+                        if (residue.ModificationIDs[intModIndex] <= ModificationSymbolCount)
                         {
-                            if (withBlock.ModificationIDs[intModIndex] <= ModificationSymbolCount)
+                            residue.MassWithMods = residue.MassWithMods + ModificationSymbols[residue.ModificationIDs[intModIndex]].ModificationMass;
+                            if (ModificationSymbols[residue.ModificationIDs[intModIndex]].IndicatesPhosphorylation)
                             {
-                                withBlock.MassWithMods = withBlock.MassWithMods + ModificationSymbols[withBlock.ModificationIDs[intModIndex]].ModificationMass;
-                                if (ModificationSymbols[withBlock.ModificationIDs[intModIndex]].IndicatesPhosphorylation)
-                                {
-                                    blnPhosphorylationMassAdded = true;
-                                }
-                            }
-                            else
-                            {
-                                // Invalid ModificationID
-                                Console.WriteLine("Invalid ModificationID: " + withBlock.ModificationIDs[intModIndex]);
+                                blnPhosphorylationMassAdded = true;
                             }
                         }
-
-                        if (withBlock.Phosphorylated)
+                        else
                         {
-                            // Only add a mass if none of the .ModificationIDs has .IndicatesPhosphorylation = True
-                            if (!blnPhosphorylationMassAdded)
-                            {
-                                withBlock.MassWithMods = withBlock.MassWithMods + dblPhosphorylationMass;
-                            }
+                            // Invalid ModificationID
+                            Console.WriteLine("Invalid ModificationID: " + residue.ModificationIDs[intModIndex]);
                         }
-
-                        dblRunningTotal += withBlock.MassWithMods;
-                        withBlock.IonMass[(int)itIonTypeConstants.itAIon] = dblRunningTotal - dblImmoniumMassDifference - dblChargeCarrierMass;
-                        withBlock.IonMass[(int)itIonTypeConstants.itBIon] = dblRunningTotal;
-
-                        // Add NH3 (ammonia) to the B ion mass to get the C ion mass
-                        withBlock.IonMass[(int)itIonTypeConstants.itCIon] = withBlock.IonMass[(int)itIonTypeConstants.itBIon] + dblNH3Mass;
                     }
-                    else
+
+                    if (residue.Phosphorylated)
                     {
-                        withBlock.Mass = 0d;
-                        withBlock.MassWithMods = 0d;
-                        Array.Clear(withBlock.IonMass, 0, withBlock.IonMass.Length);
+                        // Only add a mass if none of the .ModificationIDs has .IndicatesPhosphorylation = True
+                        if (!blnPhosphorylationMassAdded)
+                        {
+                            residue.MassWithMods = residue.MassWithMods + dblPhosphorylationMass;
+                        }
                     }
+
+                    dblRunningTotal += residue.MassWithMods;
+                    residue.IonMass[(int)itIonTypeConstants.itAIon] = dblRunningTotal - dblImmoniumMassDifference - dblChargeCarrierMass;
+                    residue.IonMass[(int)itIonTypeConstants.itBIon] = dblRunningTotal;
+
+                    // Add NH3 (ammonia) to the B ion mass to get the C ion mass
+                    residue.IonMass[(int)itIonTypeConstants.itCIon] = residue.IonMass[(int)itIonTypeConstants.itBIon] + dblNH3Mass;
+                }
+                else
+                {
+                    residue.Mass = 0d;
+                    residue.MassWithMods = 0d;
+                    Array.Clear(residue.IonMass, 0, residue.IonMass.Length);
                 }
             }
 
@@ -2969,29 +2916,27 @@ namespace MwtWinDll
             dblRunningTotal = mCTerminus.Mass + dblChargeCarrierMass;
             for (lngIndex = ResidueCount; lngIndex >= 1; lngIndex -= 1)
             {
+                var residue = Residues[lngIndex];
+                if (residue.IonMass[(int)itIonTypeConstants.itAIon] > 0d)
                 {
-                    var withBlock1 = Residues[lngIndex];
-                    if (withBlock1.IonMass[(int)itIonTypeConstants.itAIon] > 0d)
+                    dblRunningTotal += residue.MassWithMods;
+                    residue.IonMass[(int)itIonTypeConstants.itYIon] = dblRunningTotal + dblChargeCarrierMass;
+                    if (lngIndex == 1)
                     {
-                        dblRunningTotal += withBlock1.MassWithMods;
-                        withBlock1.IonMass[(int)itIonTypeConstants.itYIon] = dblRunningTotal + dblChargeCarrierMass;
-                        if (lngIndex == 1)
+                        // Add the N-terminus mass to highest y ion
+                        residue.IonMass[(int)itIonTypeConstants.itYIon] = residue.IonMass[(int)itIonTypeConstants.itYIon] + mNTerminus.Mass - dblChargeCarrierMass;
+                        if (blnProtonatedNTerminus)
                         {
-                            // Add the N-terminus mass to highest y ion
-                            withBlock1.IonMass[(int)itIonTypeConstants.itYIon] = withBlock1.IonMass[(int)itIonTypeConstants.itYIon] + mNTerminus.Mass - dblChargeCarrierMass;
-                            if (blnProtonatedNTerminus)
-                            {
-                                // ntgHydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
-                                // we need to subtract it out here
-                                // However, we need to subtract out dblHydrogenMass, and not dblChargeCarrierMass since the current
-                                // formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier
-                                withBlock1.IonMass[(int)itIonTypeConstants.itYIon] = withBlock1.IonMass[(int)itIonTypeConstants.itYIon] - dblHydrogenMass;
-                            }
+                            // ntgHydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
+                            // we need to subtract it out here
+                            // However, we need to subtract out dblHydrogenMass, and not dblChargeCarrierMass since the current
+                            // formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier
+                            residue.IonMass[(int)itIonTypeConstants.itYIon] = residue.IonMass[(int)itIonTypeConstants.itYIon] - dblHydrogenMass;
                         }
-
-                        // Subtract NH2 (amide) from the Y ion mass to get the Z ion mass
-                        withBlock1.IonMass[(int)itIonTypeConstants.itZIon] = withBlock1.IonMass[(int)itIonTypeConstants.itYIon] - (dblNH3Mass - dblHydrogenMass);
                     }
+
+                    // Subtract NH2 (amide) from the Y ion mass to get the Z ion mass
+                    residue.IonMass[(int)itIonTypeConstants.itZIon] = residue.IonMass[(int)itIonTypeConstants.itYIon] - (dblNH3Mass - dblHydrogenMass);
                 }
             }
         }

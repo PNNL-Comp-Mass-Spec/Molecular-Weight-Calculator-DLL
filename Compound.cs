@@ -153,17 +153,15 @@ namespace MwtWinDll
             string strPctComposition;
             if (elementId >= 1 && elementId <= ElementAndMassTools.ELEMENT_COUNT)
             {
+                var compStats = mComputationStats.PercentCompositions[elementId];
+                strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) + ":";
+                strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(compStats.PercentComposition, compStats.StdDeviation, blnIncludeStandardDeviation, true);
+                if (compStats.PercentComposition < 10d)
                 {
-                    var withBlock = mComputationStats.PercentCompositions[elementId];
-                    strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) + ":";
-                    strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(withBlock.PercentComposition, withBlock.StdDeviation, blnIncludeStandardDeviation, true);
-                    if (withBlock.PercentComposition < 10d)
-                    {
-                        strPctComposition = " " + strPctComposition;
-                    }
-
-                    return ElementAndMassRoutines.SpacePad(strElementSymbol, 4) + strPctComposition;
+                    strPctComposition = " " + strPctComposition;
                 }
+
+                return ElementAndMassRoutines.SpacePad(strElementSymbol, 4) + strPctComposition;
             }
             else
             {
@@ -390,10 +388,8 @@ namespace MwtWinDll
             string MassAndStdDevStringRet = default;
             if (blnRecomputeMass)
                 UpdateMass();
-            {
-                var withBlock = mComputationStats;
-                MassAndStdDevStringRet = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(withBlock.TotalMass, withBlock.StandardDeviation);
-            }
+
+            MassAndStdDevStringRet = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(mComputationStats.TotalMass, mComputationStats.StandardDeviation);
 
             return MassAndStdDevStringRet;
         }

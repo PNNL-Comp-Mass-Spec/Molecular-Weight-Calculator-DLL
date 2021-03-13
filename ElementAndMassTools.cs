@@ -502,24 +502,22 @@ namespace MwtWinDll
         /// <param name="blnInvalidSymbolOrFormula"></param>
         private void AddAbbreviationWork(short intAbbrevIndex, string strSymbol, ref string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetter = "", string strComment = "", bool blnInvalidSymbolOrFormula = false)
         {
+            var stats = AbbrevStats[intAbbrevIndex];
+            stats.InvalidSymbolOrFormula = blnInvalidSymbolOrFormula;
+            stats.Symbol = strSymbol;
+            stats.Formula = strFormula;
+            stats.Mass = ComputeFormulaWeight(ref strFormula);
+            if (stats.Mass < 0d)
             {
-                var withBlock = AbbrevStats[intAbbrevIndex];
-                withBlock.InvalidSymbolOrFormula = blnInvalidSymbolOrFormula;
-                withBlock.Symbol = strSymbol;
-                withBlock.Formula = strFormula;
-                withBlock.Mass = ComputeFormulaWeight(ref strFormula);
-                if (withBlock.Mass < 0d)
-                {
-                    // Error occurred computing mass for abbreviation
-                    withBlock.Mass = 0d;
-                    withBlock.InvalidSymbolOrFormula = true;
-                }
-
-                withBlock.Charge = sngCharge;
-                withBlock.OneLetterSymbol = Strings.UCase(strOneLetter);
-                withBlock.IsAminoAcid = blnIsAminoAcid;
-                withBlock.Comment = strComment;
+                // Error occurred computing mass for abbreviation
+                stats.Mass = 0d;
+                stats.InvalidSymbolOrFormula = true;
             }
+
+            stats.Charge = sngCharge;
+            stats.OneLetterSymbol = Strings.UCase(strOneLetter);
+            stats.IsAminoAcid = blnIsAminoAcid;
+            stats.Comment = strComment;
         }
 
         private void AddToCautionDescription(string strTextToAdd)
@@ -882,16 +880,14 @@ namespace MwtWinDll
                 // Remove occurrences of explicitly defined isotopes from the formula
                 for (intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
                 {
+                    var element = udtComputationStats.Elements[intElementIndex];
+                    if (element.IsotopeCount > 0)
                     {
-                        var withBlock = udtComputationStats.Elements[intElementIndex];
-                        if (withBlock.IsotopeCount > 0)
-                        {
-                            blnExplicitIsotopesPresent = true;
-                            ExplicitIsotopeCount += withBlock.IsotopeCount;
-                            var loopTo = withBlock.IsotopeCount;
-                            for (IsotopeIndex = 1; IsotopeIndex <= loopTo; IsotopeIndex++)
-                                withBlock.Count = withBlock.Count - withBlock.Isotopes[IsotopeIndex].Count;
-                        }
+                        blnExplicitIsotopesPresent = true;
+                        ExplicitIsotopeCount += element.IsotopeCount;
+                        var loopTo = element.IsotopeCount;
+                        for (IsotopeIndex = 1; IsotopeIndex <= loopTo; IsotopeIndex++)
+                            element.Count = element.Count - element.Isotopes[IsotopeIndex].Count;
                     }
                 }
 
@@ -937,11 +933,9 @@ namespace MwtWinDll
                             IsoStats[intElementCount].ElementIndex = intElementIndex;
                             IsoStats[intElementCount].AtomCount = (int)Math.Round(udtComputationStats.Elements[intElementIndex].Count); // Note: Ignoring .Elements(intElementIndex).IsotopicCorrection
                             IsoStats[intElementCount].ExplicitMass = ElementStats[intElementIndex].Mass;
-                            {
-                                var withBlock1 = ElementStats[intElementIndex];
-                                MinWeight = (int)Math.Round(MinWeight + IsoStats[intElementCount].AtomCount * Math.Round(withBlock1.Isotopes[1].Mass, 0));
-                                MaxWeight = (int)Math.Round(MaxWeight + IsoStats[intElementCount].AtomCount * Math.Round(withBlock1.Isotopes[withBlock1.IsotopeCount].Mass, 0));
-                            }
+                            var stats = ElementStats[intElementIndex];
+                            MinWeight = (int)Math.Round(MinWeight + IsoStats[intElementCount].AtomCount * Math.Round(stats.Isotopes[1].Mass, 0));
+                            MaxWeight = (int)Math.Round(MaxWeight + IsoStats[intElementCount].AtomCount * Math.Round(stats.Isotopes[stats.IsotopeCount].Mass, 0));
                         }
                     }
                 }
@@ -951,24 +945,20 @@ namespace MwtWinDll
                     // Add the isotopes, pretending they are unique elements
                     for (intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
                     {
+                        var element = udtComputationStats.Elements[intElementIndex];
+                        if (element.IsotopeCount > 0)
                         {
-                            var withBlock2 = udtComputationStats.Elements[intElementIndex];
-                            if (withBlock2.IsotopeCount > 0)
+                            var loopTo1 = element.IsotopeCount;
+                            for (IsotopeIndex = 1; IsotopeIndex <= loopTo1; IsotopeIndex++)
                             {
-                                var loopTo1 = withBlock2.IsotopeCount;
-                                for (IsotopeIndex = 1; IsotopeIndex <= loopTo1; IsotopeIndex++)
-                                {
-                                    intElementCount = (short)(intElementCount + 1);
-                                    IsoStats[intElementCount].boolExplicitIsotope = true;
-                                    IsoStats[intElementCount].ElementIndex = intElementIndex;
-                                    IsoStats[intElementCount].AtomCount = (int)Math.Round(withBlock2.Isotopes[IsotopeIndex].Count);
-                                    IsoStats[intElementCount].ExplicitMass = withBlock2.Isotopes[IsotopeIndex].Mass;
-                                    {
-                                        var withBlock3 = IsoStats[intElementCount];
-                                        MinWeight = (int)Math.Round(MinWeight + withBlock3.AtomCount * withBlock3.ExplicitMass);
-                                        MaxWeight = (int)Math.Round(MaxWeight + withBlock3.AtomCount * withBlock3.ExplicitMass);
-                                    }
-                                }
+                                intElementCount = (short)(intElementCount + 1);
+                                IsoStats[intElementCount].boolExplicitIsotope = true;
+                                IsoStats[intElementCount].ElementIndex = intElementIndex;
+                                IsoStats[intElementCount].AtomCount = (int)Math.Round(element.Isotopes[IsotopeIndex].Count);
+                                IsoStats[intElementCount].ExplicitMass = element.Isotopes[IsotopeIndex].Mass;
+                                var stats = IsoStats[intElementCount];
+                                MinWeight = (int)Math.Round(MinWeight + stats.AtomCount * stats.ExplicitMass);
+                                MaxWeight = (int)Math.Round(MaxWeight + stats.AtomCount * stats.ExplicitMass);
                             }
                         }
                     }
@@ -1011,12 +1001,10 @@ namespace MwtWinDll
                     }
                     else
                     {
-                        {
-                            var withBlock4 = ElementStats[MasterElementIndex];
-                            IsotopeCount = withBlock4.IsotopeCount;
-                            IsotopeStartingMass = (short)Math.Round(Math.Round(withBlock4.Isotopes[1].Mass, 0));
-                            IsotopeEndingMass = (short)Math.Round(Math.Round(withBlock4.Isotopes[IsotopeCount].Mass, 0));
-                        }
+                        var stats = ElementStats[MasterElementIndex];
+                        IsotopeCount = stats.IsotopeCount;
+                        IsotopeStartingMass = (short)Math.Round(Math.Round(stats.Isotopes[1].Mass, 0));
+                        IsotopeEndingMass = (short)Math.Round(Math.Round(stats.Isotopes[IsotopeCount].Mass, 0));
                     }
 
                     PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount);
@@ -1084,17 +1072,15 @@ namespace MwtWinDll
                                 blnRigorousMethodUsed = true;
                                 AbundDenom = 1d;
                                 AbundSuffix = 1d;
+                                var stats = ElementStats[MasterElementIndex];
+                                var loopTo5 = IsotopeCount;
+                                for (IsotopeIndex = 1; IsotopeIndex <= loopTo5; IsotopeIndex++)
                                 {
-                                    var withBlock5 = ElementStats[MasterElementIndex];
-                                    var loopTo5 = IsotopeCount;
-                                    for (IsotopeIndex = 1; IsotopeIndex <= loopTo5; IsotopeIndex++)
+                                    IsotopeCountInThisCombo = IsoCombos[ComboIndex, IsotopeIndex];
+                                    if (IsotopeCountInThisCombo > 0)
                                     {
-                                        IsotopeCountInThisCombo = IsoCombos[ComboIndex, IsotopeIndex];
-                                        if (IsotopeCountInThisCombo > 0)
-                                        {
-                                            AbundDenom *= Factorial((short)IsotopeCountInThisCombo);
-                                            AbundSuffix *= Math.Pow(withBlock5.Isotopes[IsotopeIndex].Abundance, IsotopeCountInThisCombo);
-                                        }
+                                        AbundDenom *= Factorial((short)IsotopeCountInThisCombo);
+                                        AbundSuffix *= Math.Pow(stats.Isotopes[IsotopeIndex].Abundance, IsotopeCountInThisCombo);
                                     }
                                 }
 
@@ -1127,16 +1113,14 @@ namespace MwtWinDll
                                         }
                                     }
 
+                                    var stats = ElementStats[MasterElementIndex];
+                                    dblSumF = 0d;
+                                    var loopTo9 = IsotopeCount;
+                                    for (IsotopeIndex = 1; IsotopeIndex <= loopTo9; IsotopeIndex++)
                                     {
-                                        var withBlock6 = ElementStats[MasterElementIndex];
-                                        dblSumF = 0d;
-                                        var loopTo9 = IsotopeCount;
-                                        for (IsotopeIndex = 1; IsotopeIndex <= loopTo9; IsotopeIndex++)
+                                        if (stats.Isotopes[IsotopeIndex].Abundance > 0f)
                                         {
-                                            if (withBlock6.Isotopes[IsotopeIndex].Abundance > 0f)
-                                            {
-                                                dblSumF += IsoCombos[ComboIndex, IsotopeIndex] * Math.Log(withBlock6.Isotopes[IsotopeIndex].Abundance);
-                                            }
+                                            dblSumF += IsoCombos[ComboIndex, IsotopeIndex] * Math.Log(stats.Isotopes[IsotopeIndex].Abundance);
                                         }
                                     }
 
@@ -1165,10 +1149,8 @@ namespace MwtWinDll
                                             var loopTo11 = (int)Math.Round(intM);
                                             for (SubIndex = (int)Math.Round(intMPrime) + 1; SubIndex <= loopTo11; SubIndex++)
                                                 dblLogSigma += Math.Log(SubIndex);
-                                            {
-                                                var withBlock7 = ElementStats[MasterElementIndex];
-                                                dblLogRho = dblLogSigma - (intM - intMPrime) * Math.Log(withBlock7.Isotopes[IsotopeIndex].Abundance);
-                                            }
+
+                                            dblLogRho = dblLogSigma - (intM - intMPrime) * Math.Log(ElementStats[MasterElementIndex].Isotopes[IsotopeIndex].Abundance);
                                         }
                                         else if (intM < intMPrime)
                                         {
@@ -1176,12 +1158,11 @@ namespace MwtWinDll
                                             var loopTo12 = (int)Math.Round(intMPrime);
                                             for (SubIndex = (int)Math.Round(intM) + 1; SubIndex <= loopTo12; SubIndex++)
                                                 dblLogSigma += Math.Log(SubIndex);
+
+                                            var stats = ElementStats[MasterElementIndex];
+                                            if (stats.Isotopes[IsotopeIndex].Abundance > 0f)
                                             {
-                                                var withBlock8 = ElementStats[MasterElementIndex];
-                                                if (withBlock8.Isotopes[IsotopeIndex].Abundance > 0f)
-                                                {
-                                                    dblLogRho = (intMPrime - intM) * Math.Log(withBlock8.Isotopes[IsotopeIndex].Abundance) - dblLogSigma;
-                                                }
+                                                dblLogRho = (intMPrime - intM) * Math.Log(stats.Isotopes[IsotopeIndex].Abundance) - dblLogSigma;
                                             }
                                         }
                                         else
@@ -1206,10 +1187,7 @@ namespace MwtWinDll
                                 IndexToStoreAbundance = FindIndexForNominalMass(ref IsoCombos, ComboIndex, IsotopeCount, AtomCount, ref ElementStats[MasterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances() at location IndexToStoreAbundance
-                                {
-                                    var withBlock9 = IsoStats[intElementIndex];
-                                    withBlock9.MassAbundances[IndexToStoreAbundance] = (float)(withBlock9.MassAbundances[IndexToStoreAbundance] + dblThisComboFractionalAbundance);
-                                }
+                                IsoStats[intElementIndex].MassAbundances[IndexToStoreAbundance] = (float)(IsoStats[intElementIndex].MassAbundances[IndexToStoreAbundance] + dblThisComboFractionalAbundance);
                             }
 
                             if (blnRatioMethodUsed)
@@ -1218,10 +1196,7 @@ namespace MwtWinDll
                                 IndexToStoreAbundance = FindIndexForNominalMass(ref IsoCombos, ComboIndex + 1, IsotopeCount, AtomCount, ref ElementStats[MasterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances() at location IndexToStoreAbundance
-                                {
-                                    var withBlock10 = IsoStats[intElementIndex];
-                                    withBlock10.MassAbundances[IndexToStoreAbundance] = (float)(withBlock10.MassAbundances[IndexToStoreAbundance] + dblNextComboFractionalAbundance);
-                                }
+                                IsoStats[intElementIndex].MassAbundances[IndexToStoreAbundance] = (float)(IsoStats[intElementIndex].MassAbundances[IndexToStoreAbundance] + dblNextComboFractionalAbundance);
                             }
 
                             if (blnRatioMethodUsed && ComboIndex + 1 == CombosFound)
@@ -1249,18 +1224,16 @@ namespace MwtWinDll
                 var loopTo13 = intElementCount;
                 for (intElementIndex = 1; intElementIndex <= loopTo13; intElementIndex++)
                 {
+                    var stats = IsoStats[intElementIndex];
+                    rowIndex = stats.ResultsCount;
+                    while (stats.MassAbundances[rowIndex] < MIN_ABUNDANCE_TO_KEEP)
                     {
-                        var withBlock11 = IsoStats[intElementIndex];
-                        rowIndex = withBlock11.ResultsCount;
-                        while (withBlock11.MassAbundances[rowIndex] < MIN_ABUNDANCE_TO_KEEP)
-                        {
-                            rowIndex -= 1;
-                            if (rowIndex == 1)
-                                break;
-                        }
-
-                        withBlock11.ResultsCount = rowIndex;
+                        rowIndex -= 1;
+                        if (rowIndex == 1)
+                            break;
                     }
+
+                    stats.ResultsCount = rowIndex;
                 }
 
                 // Examine IsoStats() to predict the number of ConvolutionIterations
@@ -1293,16 +1266,14 @@ namespace MwtWinDll
                 var loopTo16 = intElementCount;
                 for (intElementIndex = 1; intElementIndex <= loopTo16; intElementIndex++)
                 {
+                    var stats = IsoStats[intElementIndex];
+                    if (stats.boolExplicitIsotope)
                     {
-                        var withBlock12 = IsoStats[intElementIndex];
-                        if (withBlock12.boolExplicitIsotope)
-                        {
-                            dblExactBaseIsoMass += withBlock12.AtomCount * withBlock12.ExplicitMass;
-                        }
-                        else
-                        {
-                            dblExactBaseIsoMass += withBlock12.AtomCount * ElementStats[withBlock12.ElementIndex].Isotopes[1].Mass;
-                        }
+                        dblExactBaseIsoMass += stats.AtomCount * stats.ExplicitMass;
+                    }
+                    else
+                    {
+                        dblExactBaseIsoMass += stats.AtomCount * ElementStats[stats.ElementIndex].Isotopes[1].Mass;
                     }
                 }
 
@@ -1361,20 +1332,18 @@ namespace MwtWinDll
                 var loopTo18 = ConvolutedMSDataCount;
                 for (massIndex = 1; massIndex <= loopTo18; massIndex++)
                 {
+                    var mass = ConvolutedAbundances[massIndex];
+                    ConvolutedMSData2DOneBased[massIndex, 0] = ConvolutedAbundanceStartMass + massIndex - 1 + dblMassDefect;
+                    ConvolutedMSData2DOneBased[massIndex, 1] = mass.Abundance / dblMaxAbundance * 100d;
+                    if (intChargeState >= 1)
                     {
-                        var withBlock13 = ConvolutedAbundances[massIndex];
-                        ConvolutedMSData2DOneBased[massIndex, 0] = ConvolutedAbundanceStartMass + massIndex - 1 + dblMassDefect;
-                        ConvolutedMSData2DOneBased[massIndex, 1] = withBlock13.Abundance / dblMaxAbundance * 100d;
-                        if (intChargeState >= 1)
+                        if (blnAddProtonChargeCarrier)
                         {
-                            if (blnAddProtonChargeCarrier)
-                            {
-                                ConvolutedMSData2DOneBased[massIndex, 0] = ConvoluteMassInternal(ConvolutedMSData2DOneBased[massIndex, 0], 0, intChargeState);
-                            }
-                            else
-                            {
-                                ConvolutedMSData2DOneBased[massIndex, 0] = ConvolutedMSData2DOneBased[massIndex, 0] / intChargeState;
-                            }
+                            ConvolutedMSData2DOneBased[massIndex, 0] = ConvoluteMassInternal(ConvolutedMSData2DOneBased[massIndex, 0], 0, intChargeState);
+                        }
+                        else
+                        {
+                            ConvolutedMSData2DOneBased[massIndex, 0] = ConvolutedMSData2DOneBased[massIndex, 0] / intChargeState;
                         }
                     }
                 }
@@ -1797,18 +1766,16 @@ namespace MwtWinDll
                 var loopTo = AbbrevAllCount;
                 for (intIndex = 1; intIndex <= loopTo; intIndex++)
                 {
+                    var stats = AbbrevStats[intIndex];
+                    // If blnIncludeAmino = False then do not include amino acids
+                    if (blnIncludeAmino || !blnIncludeAmino && !stats.IsAminoAcid)
                     {
-                        var withBlock = AbbrevStats[intIndex];
-                        // If blnIncludeAmino = False then do not include amino acids
-                        if (blnIncludeAmino || !blnIncludeAmino && !withBlock.IsAminoAcid)
+                        // Do not include if the formula is invalid
+                        if (!stats.InvalidSymbolOrFormula)
                         {
-                            // Do not include if the formula is invalid
-                            if (!withBlock.InvalidSymbolOrFormula)
-                            {
-                                MasterSymbolsListCount = (short)(MasterSymbolsListCount + 1);
-                                MasterSymbolsList[MasterSymbolsListCount, 0] = withBlock.Symbol;
-                                MasterSymbolsList[MasterSymbolsListCount, 1] = "A" + Strings.Trim(Conversion.Str(intIndex));
-                            }
+                            MasterSymbolsListCount = (short)(MasterSymbolsListCount + 1);
+                            MasterSymbolsList[MasterSymbolsListCount, 0] = stats.Symbol;
+                            MasterSymbolsList[MasterSymbolsListCount, 1] = "A" + Strings.Trim(Conversion.Str(intIndex));
                         }
                     }
                 }
@@ -1964,17 +1931,14 @@ namespace MwtWinDll
                     }
 
                     // Only display the element if it's in the formula
+                    double dblThisElementCount = mComputationStatsSaved.Elements[intElementIndexToUse].Count;
+                    if (Math.Abs(dblThisElementCount - 1.0d) < float.Epsilon)
                     {
-                        var withBlock = mComputationStatsSaved;
-                        double dblThisElementCount = withBlock.Elements[intElementIndexToUse].Count;
-                        if (Math.Abs(dblThisElementCount - 1.0d) < float.Epsilon)
-                        {
-                            strEmpiricalFormula += ElementStats[intElementIndexToUse].Symbol;
-                        }
-                        else if (dblThisElementCount > 0d)
-                        {
-                            strEmpiricalFormula = strEmpiricalFormula + ElementStats[intElementIndexToUse].Symbol + Strings.Trim(dblThisElementCount.ToString());
-                        }
+                        strEmpiricalFormula += ElementStats[intElementIndexToUse].Symbol;
+                    }
+                    else if (dblThisElementCount > 0d)
+                    {
+                        strEmpiricalFormula = strEmpiricalFormula + ElementStats[intElementIndexToUse].Symbol + Strings.Trim(dblThisElementCount.ToString());
                     }
                 }
 
@@ -2049,13 +2013,11 @@ namespace MwtWinDll
             if (ElementTrack >= ElementCount)
             {
                 IndexToStoreResult = NewMassTotal - ConvolutedAbundanceStartMass + 1;
+                var result = ConvolutedAbundances[IndexToStoreResult];
+                if (NewAbundance > 0f)
                 {
-                    var withBlock = ConvolutedAbundances[IndexToStoreResult];
-                    if (NewAbundance > 0f)
-                    {
-                        withBlock.Abundance = withBlock.Abundance + NewAbundance;
-                        withBlock.Multiplicity = withBlock.Multiplicity + 1;
-                    }
+                    result.Abundance = result.Abundance + NewAbundance;
+                    result.Multiplicity = result.Multiplicity + 1;
                 }
             }
             else
@@ -2443,16 +2405,14 @@ namespace MwtWinDll
         {
             if (abbreviationID >= 1 && abbreviationID <= AbbrevAllCount)
             {
-                {
-                    var withBlock = AbbrevStats[abbreviationID];
-                    strSymbol = withBlock.Symbol;
-                    strFormula = withBlock.Formula;
-                    sngCharge = withBlock.Charge;
-                    blnIsAminoAcid = withBlock.IsAminoAcid;
-                    strOneLetterSymbol = withBlock.OneLetterSymbol;
-                    strComment = withBlock.Comment;
-                    blnInvalidSymbolOrFormula = withBlock.InvalidSymbolOrFormula;
-                }
+                var stats = AbbrevStats[abbreviationID];
+                strSymbol = stats.Symbol;
+                strFormula = stats.Formula;
+                sngCharge = stats.Charge;
+                blnIsAminoAcid = stats.IsAminoAcid;
+                strOneLetterSymbol = stats.OneLetterSymbol;
+                strComment = stats.Comment;
+                blnInvalidSymbolOrFormula = stats.InvalidSymbolOrFormula;
 
                 return 0;
             }
@@ -2609,14 +2569,12 @@ namespace MwtWinDll
             if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
                 strSymbol = ElementAlph[intElementID];
-                {
-                    var withBlock = ElementStats[intElementID];
-                    strSymbol = withBlock.Symbol;
-                    dblMass = withBlock.Mass;
-                    dblUncertainty = withBlock.Uncertainty;
-                    sngCharge = withBlock.Charge;
-                    intIsotopeCount = withBlock.IsotopeCount;
-                }
+                var stats = ElementStats[intElementID];
+                strSymbol = stats.Symbol;
+                dblMass = stats.Mass;
+                dblUncertainty = stats.Uncertainty;
+                sngCharge = stats.Charge;
+                intIsotopeCount = stats.IsotopeCount;
 
                 return 0;
             }
@@ -2663,15 +2621,13 @@ namespace MwtWinDll
             short intIsotopeIndex;
             if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
+                var stats = ElementStats[intElementID];
+                intIsotopeCount = stats.IsotopeCount;
+                var loopTo = stats.IsotopeCount;
+                for (intIsotopeIndex = 1; intIsotopeIndex <= loopTo; intIsotopeIndex++)
                 {
-                    var withBlock = ElementStats[intElementID];
-                    intIsotopeCount = withBlock.IsotopeCount;
-                    var loopTo = withBlock.IsotopeCount;
-                    for (intIsotopeIndex = 1; intIsotopeIndex <= loopTo; intIsotopeIndex++)
-                    {
-                        dblIsotopeMasses[intIsotopeIndex] = withBlock.Isotopes[intIsotopeIndex].Mass;
-                        sngIsotopeAbundances[intIsotopeIndex] = withBlock.Isotopes[intIsotopeIndex].Abundance;
-                    }
+                    dblIsotopeMasses[intIsotopeIndex] = stats.Isotopes[intIsotopeIndex].Mass;
+                    sngIsotopeAbundances[intIsotopeIndex] = stats.Isotopes[intIsotopeIndex].Abundance;
                 }
 
                 return 0;
@@ -4117,14 +4073,12 @@ namespace MwtWinDll
                 // Updating all the elements
                 for (intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
                 {
-                    {
-                        var withBlock = ElementStats[intElementIndex];
-                        withBlock.Symbol = strElementNames[intElementIndex];
-                        withBlock.Mass = dblElemVals[intElementIndex, 1];
-                        withBlock.Uncertainty = dblElemVals[intElementIndex, 2];
-                        withBlock.Charge = (float)dblElemVals[intElementIndex, 3];
-                        ElementAlph[intElementIndex] = withBlock.Symbol;
-                    }
+                    var stats = ElementStats[intElementIndex];
+                    stats.Symbol = strElementNames[intElementIndex];
+                    stats.Mass = dblElemVals[intElementIndex, 1];
+                    stats.Uncertainty = dblElemVals[intElementIndex, 2];
+                    stats.Charge = (float)dblElemVals[intElementIndex, 3];
+                    ElementAlph[intElementIndex] = stats.Symbol;
                 }
 
                 // Alphabetize ElementAlph() array via bubble sort
@@ -4145,23 +4099,21 @@ namespace MwtWinDll
             }
             else if (intSpecificElement >= 1 && intSpecificElement <= ELEMENT_COUNT)
             {
+                var stats = ElementStats[intSpecificElement];
+                switch (eSpecificStatToReset)
                 {
-                    var withBlock1 = ElementStats[intSpecificElement];
-                    switch (eSpecificStatToReset)
-                    {
-                        case MolecularWeightTool.esElementStatsConstants.esMass:
-                            withBlock1.Mass = dblElemVals[intSpecificElement, 1];
-                            break;
-                        case MolecularWeightTool.esElementStatsConstants.esUncertainty:
-                            withBlock1.Uncertainty = dblElemVals[intSpecificElement, 2];
-                            break;
-                        case MolecularWeightTool.esElementStatsConstants.esCharge:
-                            withBlock1.Charge = (float)dblElemVals[intSpecificElement, 3];
-                            break;
-                        default:
-                            break;
-                            // Ignore it
-                    }
+                    case MolecularWeightTool.esElementStatsConstants.esMass:
+                        stats.Mass = dblElemVals[intSpecificElement, 1];
+                        break;
+                    case MolecularWeightTool.esElementStatsConstants.esUncertainty:
+                        stats.Uncertainty = dblElemVals[intSpecificElement, 2];
+                        break;
+                    case MolecularWeightTool.esElementStatsConstants.esCharge:
+                        stats.Charge = (float)dblElemVals[intSpecificElement, 3];
+                        break;
+                    default:
+                        break;
+                        // Ignore it
                 }
             }
         }
@@ -4802,20 +4754,18 @@ namespace MwtWinDll
             // the size of this subroutine
             for (intElementIndex = 1; intElementIndex <= ELEMENT_COUNT - 1; intElementIndex++)
             {
+                var stats = ElementStats[intElementIndex];
+                intIsotopeIndex = 1;
+                while (dblIsoMasses[intElementIndex, intIsotopeIndex] > 0d)
                 {
-                    var withBlock = ElementStats[intElementIndex];
-                    intIsotopeIndex = 1;
-                    while (dblIsoMasses[intElementIndex, intIsotopeIndex] > 0d)
-                    {
-                        withBlock.Isotopes[intIsotopeIndex].Abundance = sngIsoAbun[intElementIndex, intIsotopeIndex];
-                        withBlock.Isotopes[intIsotopeIndex].Mass = dblIsoMasses[intElementIndex, intIsotopeIndex];
-                        intIsotopeIndex = (short)(intIsotopeIndex + 1);
-                        if (intIsotopeIndex > MAX_ISOTOPES)
-                            break;
-                    }
-
-                    withBlock.IsotopeCount = (short)(intIsotopeIndex - 1);
+                    stats.Isotopes[intIsotopeIndex].Abundance = sngIsoAbun[intElementIndex, intIsotopeIndex];
+                    stats.Isotopes[intIsotopeIndex].Mass = dblIsoMasses[intElementIndex, intIsotopeIndex];
+                    intIsotopeIndex = (short)(intIsotopeIndex + 1);
+                    if (intIsotopeIndex > MAX_ISOTOPES)
+                        break;
                 }
+
+                stats.IsotopeCount = (short)(intIsotopeIndex - 1);
             }
         }
 
@@ -5100,14 +5050,12 @@ namespace MwtWinDll
             udtComputationStats.TotalMass = 0.0d;
             for (intElementIndex = 0; intElementIndex <= ELEMENT_COUNT - 1; intElementIndex++)
             {
-                {
-                    var withBlock = udtComputationStats.Elements[intElementIndex];
-                    withBlock.Used = false; // whether element is present
-                    withBlock.Count = 0d; // # of each element
-                    withBlock.IsotopicCorrection = 0d; // isotopic correction
-                    withBlock.IsotopeCount = 0; // Count of the number of atoms defined as specific isotopes
-                    withBlock.Isotopes = new usrIsotopicAtomInfoType[3]; // Default to have room for 2 explicitly defined isotopes
-                }
+                var element = udtComputationStats.Elements[intElementIndex];
+                element.Used = false; // whether element is present
+                element.Count = 0d; // # of each element
+                element.IsotopicCorrection = 0d; // isotopic correction
+                element.IsotopeCount = 0; // Count of the number of atoms defined as specific isotopes
+                element.Isotopes = new usrIsotopicAtomInfoType[3]; // Default to have room for 2 explicitly defined isotopes
             }
         }
 
@@ -5308,30 +5256,28 @@ namespace MwtWinDll
                         // If any atom counts become < 0 then, then raise an error
                         for (intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
                         {
+                            var element = udtComputationStats.Elements[intElementIndex];
+                            if (ElementStats[intElementIndex].Mass * element.Count + element.IsotopicCorrection >= ElementStats[intElementIndex].Mass * udtComputationStatsRightHalf.Elements[intElementIndex].Count + udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection)
                             {
-                                var withBlock = udtComputationStats.Elements[intElementIndex];
-                                if (ElementStats[intElementIndex].Mass * withBlock.Count + withBlock.IsotopicCorrection >= ElementStats[intElementIndex].Mass * udtComputationStatsRightHalf.Elements[intElementIndex].Count + udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection)
+                                element.Count -= -udtComputationStatsRightHalf.Elements[intElementIndex].Count;
+                                if (element.Count < 0d)
                                 {
-                                    withBlock.Count -= -udtComputationStatsRightHalf.Elements[intElementIndex].Count;
-                                    if (withBlock.Count < 0d)
-                                    {
-                                        // This shouldn't happen
-                                        Console.WriteLine(".Count is less than 0 in ParseFormulaRecursive; this shouldn't happen");
-                                        withBlock.Count = 0d;
-                                    }
+                                    // This shouldn't happen
+                                    Console.WriteLine(".Count is less than 0 in ParseFormulaRecursive; this shouldn't happen");
+                                    element.Count = 0d;
+                                }
 
-                                    if (Math.Abs(udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection) > float.Epsilon)
-                                    {
-                                        // This assertion is here simply because I want to check the code
-                                        withBlock.IsotopicCorrection = withBlock.IsotopicCorrection - udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection;
-                                    }
-                                }
-                                else
+                                if (Math.Abs(udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection) > float.Epsilon)
                                 {
-                                    // Invalid Formula; raise error
-                                    ErrorParams.ErrorID = 30;
-                                    ErrorParams.ErrorPosition = intCharIndex;
+                                    // This assertion is here simply because I want to check the code
+                                    element.IsotopicCorrection = element.IsotopicCorrection - udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection;
                                 }
+                            }
+                            else
+                            {
+                                // Invalid Formula; raise error
+                                ErrorParams.ErrorID = 30;
+                                ErrorParams.ErrorPosition = intCharIndex;
                             }
 
                             if (ErrorParams.ErrorID != 0)
@@ -5675,40 +5621,36 @@ namespace MwtWinDll
                                             if (!blnCaretPresent)
                                             {
                                                 dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
-                                                {
-                                                    var withBlock1 = udtComputationStats.Elements[SymbolReference];
-                                                    withBlock1.Count = withBlock1.Count + dblAtomCountToAdd;
-                                                    withBlock1.Used = true; // Element is present tag
-                                                    dblStdDevSum += dblAtomCountToAdd * Math.Pow(ElementStats[SymbolReference].Uncertainty, 2d);
-                                                }
+                                                var element = udtComputationStats.Elements[SymbolReference];
+                                                element.Count = element.Count + dblAtomCountToAdd;
+                                                element.Used = true; // Element is present tag
+                                                dblStdDevSum += dblAtomCountToAdd * Math.Pow(ElementStats[SymbolReference].Uncertainty, 2d);
 
+                                                var compStats = udtComputationStats;
+                                                // Compute charge
+                                                if (SymbolReference == 1)
                                                 {
-                                                    var withBlock2 = udtComputationStats;
-                                                    // Compute charge
-                                                    if (SymbolReference == 1)
+                                                    // Dealing with hydrogen
+                                                    switch (PrevSymbolReference)
                                                     {
-                                                        // Dealing with hydrogen
-                                                        switch (PrevSymbolReference)
-                                                        {
-                                                            case 1:
-                                                            case var case3 when 3 <= case3 && case3 <= 6:
-                                                            case var case4 when 11 <= case4 && case4 <= 14:
-                                                            case var case5 when 19 <= case5 && case5 <= 32:
-                                                            case var case6 when 37 <= case6 && case6 <= 50:
-                                                            case var case7 when 55 <= case7 && case7 <= 82:
-                                                            case var case8 when 87 <= case8 && case8 <= 109:
-                                                                // Hydrogen is -1 with metals (non-halides)
-                                                                withBlock2.Charge = (float)(withBlock2.Charge + dblAtomCountToAdd * -1);
-                                                                break;
-                                                            default:
-                                                                withBlock2.Charge = (float)(withBlock2.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
-                                                                break;
-                                                        }
+                                                        case 1:
+                                                        case var case3 when 3 <= case3 && case3 <= 6:
+                                                        case var case4 when 11 <= case4 && case4 <= 14:
+                                                        case var case5 when 19 <= case5 && case5 <= 32:
+                                                        case var case6 when 37 <= case6 && case6 <= 50:
+                                                        case var case7 when 55 <= case7 && case7 <= 82:
+                                                        case var case8 when 87 <= case8 && case8 <= 109:
+                                                            // Hydrogen is -1 with metals (non-halides)
+                                                            compStats.Charge = (float)(compStats.Charge + dblAtomCountToAdd * -1);
+                                                            break;
+                                                        default:
+                                                            compStats.Charge = (float)(compStats.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
+                                                            break;
                                                     }
-                                                    else
-                                                    {
-                                                        withBlock2.Charge = (float)(withBlock2.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
-                                                    }
+                                                }
+                                                else
+                                                {
+                                                    compStats.Charge = (float)(compStats.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
                                                 }
 
                                                 if (SymbolReference == 6 || SymbolReference == 14)
@@ -5743,33 +5685,29 @@ namespace MwtWinDll
 
                                                 // Put in isotopic correction factor
                                                 dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
+                                                var element = udtComputationStats.Elements[SymbolReference];
+                                                // Increment element counting bin
+                                                element.Count = element.Count + dblAtomCountToAdd;
+
+                                                // Store information in .Isotopes()
+                                                // Increment the isotope counting bin
+                                                element.IsotopeCount = (short)(element.IsotopeCount + 1);
+                                                if (Information.UBound(element.Isotopes) < element.IsotopeCount)
                                                 {
-                                                    var withBlock3 = udtComputationStats.Elements[SymbolReference];
-                                                    // Increment element counting bin
-                                                    withBlock3.Count = withBlock3.Count + dblAtomCountToAdd;
-
-                                                    // Store information in .Isotopes()
-                                                    // Increment the isotope counting bin
-                                                    withBlock3.IsotopeCount = (short)(withBlock3.IsotopeCount + 1);
-                                                    if (Information.UBound(withBlock3.Isotopes) < withBlock3.IsotopeCount)
-                                                    {
-                                                        Array.Resize(ref withBlock3.Isotopes, Information.UBound(withBlock3.Isotopes) + 2 + 1);
-                                                    }
-
-                                                    {
-                                                        var withBlock4 = withBlock3.Isotopes[withBlock3.IsotopeCount];
-                                                        withBlock4.Count = withBlock4.Count + dblAtomCountToAdd;
-                                                        withBlock4.Mass = dblCaretVal;
-                                                    }
-
-                                                    // Add correction amount to udtComputationStats.elements(SymbolReference).IsotopicCorrection
-                                                    withBlock3.IsotopicCorrection = withBlock3.IsotopicCorrection + (dblCaretVal * dblAtomCountToAdd - ElementStats[SymbolReference].Mass * dblAtomCountToAdd);
-
-                                                    // Set bit that element is present
-                                                    withBlock3.Used = true;
-
-                                                    // Assume no error in caret value, no need to change dblStdDevSum
+                                                    Array.Resize(ref element.Isotopes, Information.UBound(element.Isotopes) + 2 + 1);
                                                 }
+
+                                                var isotope = element.Isotopes[element.IsotopeCount];
+                                                isotope.Count = isotope.Count + dblAtomCountToAdd;
+                                                isotope.Mass = dblCaretVal;
+
+                                                // Add correction amount to udtComputationStats.elements(SymbolReference).IsotopicCorrection
+                                                element.IsotopicCorrection = element.IsotopicCorrection + (dblCaretVal * dblAtomCountToAdd - ElementStats[SymbolReference].Mass * dblAtomCountToAdd);
+
+                                                // Set bit that element is present
+                                                element.Used = true;
+
+                                                // Assume no error in caret value, no need to change dblStdDevSum
 
                                                 // Reset blnCaretPresent
                                                 blnCaretPresent = false;
@@ -6029,15 +5967,12 @@ namespace MwtWinDll
                     }
                 }
 
+                if (ErrorParams.ErrorID != 0 && Strings.Len(ErrorParams.ErrorCharacter) == 0)
                 {
-                    var withBlock5 = ErrorParams;
-                    if (withBlock5.ErrorID != 0 && Strings.Len(withBlock5.ErrorCharacter) == 0)
-                    {
-                        if (string.IsNullOrEmpty(strChar1))
-                            strChar1 = Conversions.ToString(EMPTY_STRING_CHAR);
-                        withBlock5.ErrorCharacter = strChar1;
-                        withBlock5.ErrorPosition = withBlock5.ErrorPosition + intCharCountPrior;
-                    }
+                    if (string.IsNullOrEmpty(strChar1))
+                        strChar1 = Conversions.ToString(EMPTY_STRING_CHAR);
+                    ErrorParams.ErrorCharacter = strChar1;
+                    ErrorParams.ErrorPosition = ErrorParams.ErrorPosition + intCharCountPrior;
                 }
 
                 if (LoneCarbonOrSilicon > 1)
@@ -6372,10 +6307,7 @@ namespace MwtWinDll
         {
             for (int index = 1, loopTo = AbbrevAllCount; index <= loopTo; index++)
             {
-                {
-                    var withBlock = AbbrevStats[index];
-                    withBlock.Mass = ComputeFormulaWeight(ref withBlock.Formula);
-                }
+                AbbrevStats[index].Mass = ComputeFormulaWeight(ref AbbrevStats[index].Formula);
             }
         }
 
@@ -6487,12 +6419,9 @@ namespace MwtWinDll
 
         public void ResetErrorParamsInternal()
         {
-            {
-                var withBlock = ErrorParams;
-                withBlock.ErrorCharacter = "";
-                withBlock.ErrorID = 0;
-                withBlock.ErrorPosition = 0;
-            }
+            ErrorParams.ErrorCharacter = "";
+            ErrorParams.ErrorID = 0;
+            ErrorParams.ErrorPosition = 0;
         }
 
         protected void ResetProgress()
@@ -6977,12 +6906,10 @@ namespace MwtWinDll
             {
                 if ((Strings.LCase(strSymbol) ?? "") == (Strings.LCase(ElementStats[intIndex].Symbol) ?? ""))
                 {
-                    {
-                        var withBlock = ElementStats[intIndex];
-                        withBlock.Mass = dblMass;
-                        withBlock.Uncertainty = dblUncertainty;
-                        withBlock.Charge = sngCharge;
-                    }
+                    var stats = ElementStats[intIndex];
+                    stats.Mass = dblMass;
+                    stats.Uncertainty = dblUncertainty;
+                    stats.Charge = sngCharge;
 
                     blnFound = true;
                     break;
@@ -7009,19 +6936,17 @@ namespace MwtWinDll
             {
                 if ((Strings.LCase(strSymbol) ?? "") == (Strings.LCase(ElementStats[intIndex].Symbol) ?? ""))
                 {
+                    var stats = ElementStats[intIndex];
+                    if (intIsotopeCount < 0)
+                        intIsotopeCount = 0;
+                    stats.IsotopeCount = intIsotopeCount;
+                    var loopTo = stats.IsotopeCount;
+                    for (intIsotopeIndex = 1; intIsotopeIndex <= loopTo; intIsotopeIndex++)
                     {
-                        var withBlock = ElementStats[intIndex];
-                        if (intIsotopeCount < 0)
-                            intIsotopeCount = 0;
-                        withBlock.IsotopeCount = intIsotopeCount;
-                        var loopTo = withBlock.IsotopeCount;
-                        for (intIsotopeIndex = 1; intIsotopeIndex <= loopTo; intIsotopeIndex++)
-                        {
-                            if (intIsotopeIndex > MAX_ISOTOPES)
-                                break;
-                            withBlock.Isotopes[intIsotopeIndex].Mass = dblIsotopeMassesOneBased[intIsotopeIndex];
-                            withBlock.Isotopes[intIsotopeIndex].Abundance = sngIsotopeAbundancesOneBased[intIsotopeIndex];
-                        }
+                        if (intIsotopeIndex > MAX_ISOTOPES)
+                            break;
+                        stats.Isotopes[intIsotopeIndex].Mass = dblIsotopeMassesOneBased[intIsotopeIndex];
+                        stats.Isotopes[intIsotopeIndex].Abundance = sngIsotopeAbundancesOneBased[intIsotopeIndex];
                     }
 
                     blnFound = true;
@@ -7347,13 +7272,11 @@ namespace MwtWinDll
             var loopTo = AbbrevAllCount;
             for (intAbbrevIndex = 1; intAbbrevIndex <= loopTo; intAbbrevIndex++)
             {
+                var stats = AbbrevStats[intAbbrevIndex];
+                SetAbbreviationByIDInternal(intAbbrevIndex, stats.Symbol, stats.Formula, stats.Charge, stats.IsAminoAcid, stats.OneLetterSymbol, stats.Comment, true);
+                if (stats.InvalidSymbolOrFormula)
                 {
-                    var withBlock = AbbrevStats[intAbbrevIndex];
-                    SetAbbreviationByIDInternal(intAbbrevIndex, withBlock.Symbol, withBlock.Formula, withBlock.Charge, withBlock.IsAminoAcid, withBlock.OneLetterSymbol, withBlock.Comment, true);
-                    if (withBlock.InvalidSymbolOrFormula)
-                    {
-                        intInvalidAbbreviationCount = (short)(intInvalidAbbreviationCount + 1);
-                    }
+                    intInvalidAbbreviationCount = (short)(intInvalidAbbreviationCount + 1);
                 }
             }
 

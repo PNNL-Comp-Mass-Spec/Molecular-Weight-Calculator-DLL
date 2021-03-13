@@ -204,21 +204,18 @@ namespace MwtWinDll
         /// <returns></returns>
         public double ComputeDilutionFinalConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         {
+            if (Math.Abs(mDilutionValues.TotalFinalVolume) > float.Epsilon)
             {
-                var withBlock = mDilutionValues;
-                if (Math.Abs(withBlock.TotalFinalVolume) > float.Epsilon)
-                {
-                    withBlock.FinalConcentration = withBlock.InitialConcentration * withBlock.StockSolutionVolume / withBlock.TotalFinalVolume;
-                }
-                else
-                {
-                    withBlock.TotalFinalVolume = 0d;
-                }
-
-                withBlock.DilutingSolventVolume = withBlock.TotalFinalVolume - withBlock.StockSolutionVolume;
-                if (withBlock.DilutingSolventVolume < 0d)
-                    withBlock.DilutingSolventVolume = -1;
+                mDilutionValues.FinalConcentration = mDilutionValues.InitialConcentration * mDilutionValues.StockSolutionVolume / mDilutionValues.TotalFinalVolume;
             }
+            else
+            {
+                mDilutionValues.TotalFinalVolume = 0d;
+            }
+
+            mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
+            if (mDilutionValues.DilutingSolventVolume < 0d)
+                mDilutionValues.DilutingSolventVolume = -1;
 
             return ConvertConcentration(mDilutionValues.FinalConcentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
         }
@@ -230,21 +227,18 @@ namespace MwtWinDll
         /// <returns></returns>
         public double ComputeDilutionInitialConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         {
+            if (Math.Abs(mDilutionValues.StockSolutionVolume) > float.Epsilon)
             {
-                var withBlock = mDilutionValues;
-                if (Math.Abs(withBlock.StockSolutionVolume) > float.Epsilon)
-                {
-                    withBlock.InitialConcentration = withBlock.FinalConcentration * withBlock.TotalFinalVolume / withBlock.StockSolutionVolume;
-                }
-                else
-                {
-                    withBlock.InitialConcentration = 0d;
-                }
-
-                withBlock.DilutingSolventVolume = withBlock.TotalFinalVolume - withBlock.StockSolutionVolume;
-                if (withBlock.DilutingSolventVolume < 0d)
-                    withBlock.DilutingSolventVolume = -1;
+                mDilutionValues.InitialConcentration = mDilutionValues.FinalConcentration * mDilutionValues.TotalFinalVolume / mDilutionValues.StockSolutionVolume;
             }
+            else
+            {
+                mDilutionValues.InitialConcentration = 0d;
+            }
+
+            mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
+            if (mDilutionValues.DilutingSolventVolume < 0d)
+                mDilutionValues.DilutingSolventVolume = -1;
 
             return ConvertConcentration(mDilutionValues.InitialConcentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
         }
@@ -260,23 +254,20 @@ namespace MwtWinDll
         /// <returns></returns>
         public double ComputeDilutionRequiredStockAndDilutingSolventVolumes([Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume, uevUnitsExtendedVolumeConstants eStockSolutionUnits = uevUnitsExtendedVolumeConstants.uevML, uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
         {
+            if (Math.Abs(mDilutionValues.InitialConcentration) > float.Epsilon)
             {
-                var withBlock = mDilutionValues;
-                if (Math.Abs(withBlock.InitialConcentration) > float.Epsilon)
-                {
-                    withBlock.StockSolutionVolume = withBlock.FinalConcentration * withBlock.TotalFinalVolume / withBlock.InitialConcentration;
-                }
-                else
-                {
-                    withBlock.StockSolutionVolume = 0d;
-                }
+                mDilutionValues.StockSolutionVolume = mDilutionValues.FinalConcentration * mDilutionValues.TotalFinalVolume / mDilutionValues.InitialConcentration;
+            }
+            else
+            {
+                mDilutionValues.StockSolutionVolume = 0d;
+            }
 
-                withBlock.DilutingSolventVolume = withBlock.TotalFinalVolume - withBlock.StockSolutionVolume;
-                if (withBlock.DilutingSolventVolume < 0d)
-                {
-                    withBlock.DilutingSolventVolume = -1;
-                    withBlock.StockSolutionVolume = -1;
-                }
+            mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
+            if (mDilutionValues.DilutingSolventVolume < 0d)
+            {
+                mDilutionValues.DilutingSolventVolume = -1;
+                mDilutionValues.StockSolutionVolume = -1;
             }
 
             dblNewDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, uevUnitsExtendedVolumeConstants.uevL, eDilutingSolventUnits);
@@ -292,25 +283,22 @@ namespace MwtWinDll
         /// <returns></returns>
         public double ComputeDilutionTotalVolume([Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume, uevUnitsExtendedVolumeConstants eTotalVolumeUnits = uevUnitsExtendedVolumeConstants.uevML, uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
         {
+            if (mDilutionValues.InitialConcentration > 0d && mDilutionValues.FinalConcentration > 0d)
             {
-                var withBlock = mDilutionValues;
-                if (withBlock.InitialConcentration > 0d && withBlock.FinalConcentration > 0d)
+                mDilutionValues.TotalFinalVolume = mDilutionValues.InitialConcentration * mDilutionValues.StockSolutionVolume / mDilutionValues.FinalConcentration;
+                if (mDilutionValues.TotalFinalVolume < 0d)
                 {
-                    withBlock.TotalFinalVolume = withBlock.InitialConcentration * withBlock.StockSolutionVolume / withBlock.FinalConcentration;
-                    if (withBlock.TotalFinalVolume < 0d)
-                    {
-                        withBlock.TotalFinalVolume = 0d;
-                    }
+                    mDilutionValues.TotalFinalVolume = 0d;
                 }
-                else
-                {
-                    withBlock.TotalFinalVolume = 0d;
-                }
-
-                withBlock.DilutingSolventVolume = withBlock.TotalFinalVolume - withBlock.StockSolutionVolume;
-                if (withBlock.DilutingSolventVolume < 0d)
-                    withBlock.DilutingSolventVolume = -1;
             }
+            else
+            {
+                mDilutionValues.TotalFinalVolume = 0d;
+            }
+
+            mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
+            if (mDilutionValues.DilutingSolventVolume < 0d)
+                mDilutionValues.DilutingSolventVolume = -1;
 
             dblNewDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, uevUnitsExtendedVolumeConstants.uevL, eDilutingSolventUnits);
             return ConvertVolumeExtended(mDilutionValues.TotalFinalVolume, uevUnitsExtendedVolumeConstants.uevL, eTotalVolumeUnits);
@@ -334,16 +322,13 @@ namespace MwtWinDll
         /// <returns>mQuantity.Concentration, with the specified units</returns>
         public double ComputeQuantityConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         {
+            if (Math.Abs(mQuantity.Volume) > float.Epsilon)
             {
-                var withBlock = mQuantity;
-                if (Math.Abs(withBlock.Volume) > float.Epsilon)
-                {
-                    withBlock.Concentration = withBlock.Amount / withBlock.Volume;
-                }
-                else
-                {
-                    withBlock.Concentration = 0d;
-                }
+                mQuantity.Concentration = mQuantity.Amount / mQuantity.Volume;
+            }
+            else
+            {
+                mQuantity.Concentration = 0d;
             }
 
             return ConvertConcentration(mQuantity.Concentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
@@ -356,16 +341,13 @@ namespace MwtWinDll
         /// <returns>mQuantity.Volume, with the specified units</returns>
         public double ComputeQuantityVolume(uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevL)
         {
+            if (Math.Abs(mQuantity.Concentration) > float.Epsilon)
             {
-                var withBlock = mQuantity;
-                if (Math.Abs(withBlock.Concentration) > float.Epsilon)
-                {
-                    withBlock.Volume = withBlock.Amount / withBlock.Concentration;
-                }
-                else
-                {
-                    withBlock.Volume = 0d;
-                }
+                mQuantity.Volume = mQuantity.Amount / mQuantity.Concentration;
+            }
+            else
+            {
+                mQuantity.Volume = 0d;
             }
 
             return ConvertVolumeExtended(mQuantity.Volume, uevUnitsExtendedVolumeConstants.uevL, eUnits);
