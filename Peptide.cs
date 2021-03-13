@@ -394,7 +394,7 @@ namespace MwtWinDll
                         intIonCount = (short)(intIonCount + 1);
                         if (Math.Abs(withBlock.IntensityOptions.BYIonShoulder) > 0d)
                         {
-                            if ((eIonIndex == itIonTypeConstants.itBIon || eIonIndex == itIonTypeConstants.itYIon || eIonIndex == itIonTypeConstants.itCIon) | eIonIndex == itIonTypeConstants.itZIon)
+                            if ((eIonIndex == itIonTypeConstants.itBIon || eIonIndex == itIonTypeConstants.itYIon || eIonIndex == itIonTypeConstants.itCIon) || eIonIndex == itIonTypeConstants.itZIon)
                             {
                                 intIonCount = (short)(intIonCount + 2);
                             }
@@ -583,7 +583,7 @@ namespace MwtWinDll
                                 strResidues = GetInternalResidues(lngResidueIndex, eIonType, ref blnPhosphorylated);
                                 for (intChargeIndex = 1; intChargeIndex <= MAX_CHARGE; intChargeIndex++)
                                 {
-                                    if (intChargeIndex == 1 | intChargeIndex > 1 & blnShowCharge[intChargeIndex])
+                                    if (intChargeIndex == 1 || intChargeIndex > 1 && blnShowCharge[intChargeIndex])
                                     {
                                         if (intChargeIndex == 1)
                                         {
@@ -595,7 +595,7 @@ namespace MwtWinDll
                                             sngConvolutedMass = (float)ElementAndMassRoutines.ConvoluteMassInternal(sngBaseMass, 1, intChargeIndex, dblChargeCarrierMass);
                                         }
 
-                                        if (intChargeIndex > 1 & sngBaseMass < sngChargeThreshold[intChargeIndex])
+                                        if (intChargeIndex > 1 && sngBaseMass < sngChargeThreshold[intChargeIndex])
                                         {
                                         }
                                         // BaseMass is below threshold, do not add to Predicted Spectrum
@@ -639,7 +639,7 @@ namespace MwtWinDll
                                             {
                                                 // Loss of water only affects Ser, Thr, Asp, or Glu (S, T, E, or D)
                                                 // See if the residues up to this point contain any of these residues
-                                                if (strResidues.Contains("Ser") | strResidues.Contains("Thr") | strResidues.Contains("Glue") | strResidues.Contains("Asp"))
+                                                if (strResidues.Contains("Ser") || strResidues.Contains("Thr") || strResidues.Contains("Glue") || strResidues.Contains("Asp"))
                                                 {
                                                     sngObservedMass = (float)(sngConvolutedMass - dblHOHMass / intChargeIndex);
                                                     AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol + mWaterLossSymbol, strIonSymbolGeneric + mWaterLossSymbol, lngResidueIndex, withBlock1.Symbol, intChargeIndex, eIonType, false);
@@ -650,7 +650,7 @@ namespace MwtWinDll
                                             {
                                                 // Loss of Ammonia only affects Arg, Lys, Gln, or Asn (R, K, Q, or N)
                                                 // See if the residues up to this point contain any of these residues
-                                                if (strResidues.Contains("Arg") | strResidues.Contains("Lys") | strResidues.Contains("Gln") | strResidues.Contains("Asn"))
+                                                if (strResidues.Contains("Arg") || strResidues.Contains("Lys") || strResidues.Contains("Gln") || strResidues.Contains("Asn"))
                                                 {
                                                     sngObservedMass = (float)(sngConvolutedMass - dblNH3Mass / intChargeIndex);
                                                     AppendDataToFragSpectrum(ref lngIonCount, ref FragSpectrumWork, sngObservedMass, sngNeutralLossIntensity, strIonSymbol + mAmmoniaLossSymbol, strIonSymbolGeneric + mAmmoniaLossSymbol, lngResidueIndex, withBlock1.Symbol, intChargeIndex, eIonType, false);
@@ -778,7 +778,7 @@ namespace MwtWinDll
             // Returns information on the modification with lngModificationID
             // Returns 0 if success, 1 if failure
 
-            if (lngModificationID >= 1 & lngModificationID <= ModificationSymbolCount)
+            if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
             {
                 {
                     var withBlock = ModificationSymbols[lngModificationID];
@@ -830,7 +830,7 @@ namespace MwtWinDll
         public int GetResidue(int lngResidueNumber, ref string strSymbol, ref double dblMass, ref bool blnIsModified, ref short intModificationCount)
         {
             // Returns 0 if success, 1 if failure
-            if (lngResidueNumber >= 1 & lngResidueNumber <= ResidueCount)
+            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
                 {
                     var withBlock = Residues[lngResidueNumber];
@@ -888,7 +888,7 @@ namespace MwtWinDll
             // ReDims lngModificationIDsOneBased() to hold the values
 
             short intIndex;
-            if (lngResidueNumber >= 1 & lngResidueNumber <= ResidueCount)
+            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
                 {
                     var withBlock = Residues[lngResidueNumber];
@@ -920,7 +920,7 @@ namespace MwtWinDll
             // Returns the symbol at the given residue number, or string.empty if an invalid residue number
 
             string strSymbol;
-            if (lngResidueNumber >= 1 & lngResidueNumber <= ResidueCount)
+            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
                 {
                     var withBlock = Residues[lngResidueNumber];
@@ -1173,7 +1173,7 @@ namespace MwtWinDll
             }
 
             lngPeptideResiduesLength = Strings.Len(strPeptideResidues);
-            if (intStartLoc > 0 & Strings.Len(strProteinResidues) > 0 & lngPeptideResiduesLength > 0)
+            if (intStartLoc > 0 && Strings.Len(strProteinResidues) > 0 && lngPeptideResiduesLength > 0)
             {
                 intEndLoc = intStartLoc + lngPeptideResiduesLength - 1;
 
@@ -1221,7 +1221,7 @@ namespace MwtWinDll
                                 intTrypticResidueNumber = (short)(intTrypticResidueNumber + 1);
                             }
                         }
-                        while (lngRuleResidueLoc > 0 & lngRuleResidueLoc + 1 < intStartLoc);
+                        while (lngRuleResidueLoc > 0 && lngRuleResidueLoc + 1 < intStartLoc);
                         intTrypticResidueNumber = (short)(intTrypticResidueNumber + 1);
                     }
 
@@ -1237,7 +1237,7 @@ namespace MwtWinDll
                             intRuleResidueMatchCount = (short)(intRuleResidueMatchCount + 1);
                         }
                     }
-                    while (lngRuleResidueLoc > 0 & lngRuleResidueLoc < lngPeptideResiduesLength);
+                    while (lngRuleResidueLoc > 0 && lngRuleResidueLoc < lngPeptideResiduesLength);
                     strTrypticName = "t" + Strings.Trim(Conversion.Str(intTrypticResidueNumber));
                     if (intRuleResidueMatchCount > 1)
                     {
@@ -1466,7 +1466,7 @@ namespace MwtWinDll
                 }
             }
 
-            if (lngMinCharLoc < 0 & (strResidueFollowingSearchResidues ?? "") == (strTerminiiSymbol ?? ""))
+            if (lngMinCharLoc < 0 && (strResidueFollowingSearchResidues ?? "") == (strTerminiiSymbol ?? ""))
             {
                 lngMinCharLoc = strSearchResidues.Length + 1;
             }
@@ -1599,7 +1599,7 @@ namespace MwtWinDll
                 }
             }
             while (intCurrentTrypticPeptideNumber < intDesiredPeptideNumber);
-            if (intCurrentTrypticPeptideNumber > 0 & lngPrevStartLoc > 0)
+            if (intCurrentTrypticPeptideNumber > 0 && lngPrevStartLoc > 0)
             {
                 if (lngPrevStartLoc > Strings.Len(strProteinResidues))
                 {
@@ -1730,7 +1730,7 @@ namespace MwtWinDll
             {
                 // Peptide database rules
                 // See if prefix and suffix are "" or are strTerminiiSymbol
-                if ((strPrefix ?? "") == (strTerminiiSymbol ?? "") & (strSuffix ?? "") == (strTerminiiSymbol ?? "") || (strPrefix ?? "") == (string.Empty ?? "") & (strSuffix ?? "") == (string.Empty ?? ""))
+                if ((strPrefix ?? "") == (strTerminiiSymbol ?? "") && (strSuffix ?? "") == (strTerminiiSymbol ?? "") || (strPrefix ?? "") == (string.Empty ?? "") && (strSuffix ?? "") == (string.Empty ?? ""))
                 {
                     intRuleMatchCount = 2;
                     blnMatchesCleavageRule = true;
@@ -1802,7 +1802,7 @@ namespace MwtWinDll
                 {
                     blnMatchesCleavageRule = true;
                 }
-                else if (intRuleMatchCount >= 1 & blnAllowPartialCleavage)
+                else if (intRuleMatchCount >= 1 && blnAllowPartialCleavage)
                 {
                     blnMatchesCleavageRule = true;
                 }
@@ -2005,7 +2005,7 @@ namespace MwtWinDll
 
             int lngIndex;
             bool blnRemoved;
-            if (lngModificationID >= 1 & lngModificationID <= ModificationSymbolCount)
+            if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
             {
                 var loopTo = ModificationSymbolCount - 1;
                 for (lngIndex = lngModificationID; lngIndex <= loopTo; lngIndex++)
@@ -2033,7 +2033,7 @@ namespace MwtWinDll
             // Returns 0 if found and removed; 1 if error
 
             int lngIndex;
-            if (lngResidueNumber >= 1 & lngResidueNumber <= ResidueCount)
+            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
                 var loopTo = ResidueCount - 1;
                 for (lngIndex = lngResidueNumber; lngIndex <= loopTo; lngIndex++)
@@ -2057,7 +2057,7 @@ namespace MwtWinDll
             if (lngNewResidueCount > ResidueCountDimmed)
             {
                 ResidueCountDimmed = lngNewResidueCount + RESIDUE_DIM_CHUNK;
-                if (blnPreserveContents & Residues is object)
+                if (blnPreserveContents && Residues is object)
                 {
                     intOldIndexEnd = Residues.Length - 1;
                     Array.Resize(ref Residues, ResidueCountDimmed + 1);
@@ -2527,7 +2527,7 @@ namespace MwtWinDll
 
             short intIndex;
             int lngNewModID;
-            if (lngResidueNumber >= 1 & lngResidueNumber <= ResidueCount & intModificationCount >= 0)
+            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount && intModificationCount >= 0)
             {
                 {
                     var withBlock = Residues[lngResidueNumber];
@@ -2542,7 +2542,7 @@ namespace MwtWinDll
                     for (intIndex = 1; intIndex <= loopTo; intIndex++)
                     {
                         lngNewModID = lngModificationIDsOneBased[intIndex];
-                        if (lngNewModID >= 1 & lngNewModID <= ModificationSymbolCount)
+                        if (lngNewModID >= 1 && lngNewModID <= ModificationSymbolCount)
                         {
                             withBlock.ModificationIDs[withBlock.ModificationIDCount] = lngNewModID;
 
@@ -2696,7 +2696,7 @@ namespace MwtWinDll
                     {
                         // First look if sequence is in the form A.BCDEFG.Z or -.BCDEFG.Z or A.BCDEFG.-
                         // If so, then need to strip out the preceding A and Z residues since they aren't really part of the sequence
-                        if (lngSequenceStrLength > 1 & strSequence.Contains("."))
+                        if (lngSequenceStrLength > 1 && strSequence.Contains("."))
                         {
                             if (Strings.Mid(strSequence, 2, 1) == ".")
                             {
@@ -2746,7 +2746,7 @@ namespace MwtWinDll
                         // If . or - or space, then ignore it
                         // If a number, ignore it
                         // If anything else, then should have been skipped, or should be skipped
-                        else if (str1LetterSymbol == "." | str1LetterSymbol == "-" | str1LetterSymbol == " ")
+                        else if (str1LetterSymbol == "." || str1LetterSymbol == "-" || str1LetterSymbol == " ")
                         {
                         }
                         // All is fine; we can skip this
@@ -2775,7 +2775,7 @@ namespace MwtWinDll
                         strFirstChar = Strings.Mid(strSequence, lngIndex, 1);
                         if (char.IsLetter(Conversions.ToChar(strFirstChar)))
                         {
-                            if (char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 1, 1))) & char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 2, 1))))
+                            if (char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 1, 1))) && char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 2, 1))))
                             {
                                 str3LetterSymbol = Strings.UCase(strFirstChar) + Strings.LCase(Strings.Mid(strSequence, lngIndex + 1, 2));
                                 if (ElementAndMassRoutines.GetAbbreviationIDInternal(str3LetterSymbol, true) == 0)
@@ -2803,7 +2803,7 @@ namespace MwtWinDll
                             // If . or - or space, then ignore it
                             // If a number, ignore it
                             // If anything else, then should have been skipped or should be skipped
-                            if (strFirstChar == "." | strFirstChar == "-" | strFirstChar == " ")
+                            if (strFirstChar == "." || strFirstChar == "-" || strFirstChar == " ")
                             {
                             }
                             // All is fine; we can skip this

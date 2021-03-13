@@ -379,7 +379,7 @@ namespace MwtWinDll
                         dblBackPressure = withBlock.VolumetricFlowRate * 8d * withBlock.SolventViscosity * withBlock.ColumnLength / (Math.Pow(dblRadius, 4d) * PI * 60d); // Pressure in dynes/cm^2
                     }
                     // Packed capillary
-                    else if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon & Math.Abs(withBlock.InterparticlePorosity) > float.Epsilon)
+                    else if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon && Math.Abs(withBlock.InterparticlePorosity) > float.Epsilon)
                     {
                         // Flow rate in mL/sec
                         dblBackPressure = withBlock.VolumetricFlowRate * 180d * withBlock.SolventViscosity * withBlock.ColumnLength * Math.Pow(1d - withBlock.InterparticlePorosity, 2d) / (Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * 60d) / withBlock.InterparticlePorosity;
@@ -416,7 +416,7 @@ namespace MwtWinDll
             {
                 var withBlock = mCapillaryFlowParameters;
                 dblRadius = withBlock.ColumnID / 2.0d;
-                if (Math.Abs(withBlock.SolventViscosity) > float.Epsilon & Math.Abs(withBlock.VolumetricFlowRate) > float.Epsilon)
+                if (Math.Abs(withBlock.SolventViscosity) > float.Epsilon && Math.Abs(withBlock.VolumetricFlowRate) > float.Epsilon)
                 {
                     if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
                     {
@@ -485,7 +485,7 @@ namespace MwtWinDll
                         dblRadius = Math.Pow(withBlock.VolumetricFlowRate * 8d * withBlock.SolventViscosity * withBlock.ColumnLength / (withBlock.BackPressure * PI * 60d), 0.25d);
                     }
                     // Packed capillary
-                    else if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon & Math.Abs(withBlock.InterparticlePorosity - 1d) > float.Epsilon)
+                    else if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon && Math.Abs(withBlock.InterparticlePorosity - 1d) > float.Epsilon)
                     {
                         // Flow rate in mL/sec
                         dblRadius = Math.Pow(withBlock.VolumetricFlowRate * 180d * withBlock.SolventViscosity * withBlock.ColumnLength * Math.Pow(1d - withBlock.InterparticlePorosity, 2d) / (withBlock.BackPressure * Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * 60d) / withBlock.InterparticlePorosity, 0.5d);
@@ -552,7 +552,7 @@ namespace MwtWinDll
             double dblSumOfVariances;
             {
                 var withBlock = mExtraColumnBroadeningParameters;
-                if (Math.Abs(withBlock.LinearVelocity) > float.Epsilon & Math.Abs(withBlock.DiffusionCoefficient) > float.Epsilon)
+                if (Math.Abs(withBlock.LinearVelocity) > float.Epsilon && Math.Abs(withBlock.DiffusionCoefficient) > float.Epsilon)
                 {
                     withBlock.TemporalVariance = Math.Pow(withBlock.OpenTubeID, 2d) * withBlock.OpenTubeLength / (96d * withBlock.DiffusionCoefficient * withBlock.LinearVelocity / 60d); // in sec^2
                 }
@@ -597,7 +597,7 @@ namespace MwtWinDll
                     dblLinearVelocity = withBlock.VolumetricFlowRate / (PI * Math.Pow(dblRadius, 2d)); // Units in cm/min
 
                     // Divide Linear Velocity by epsilon if a packed capillary
-                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary & Math.Abs(withBlock.InterparticlePorosity) > float.Epsilon)
+                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary && Math.Abs(withBlock.InterparticlePorosity) > float.Epsilon)
                     {
                         dblLinearVelocity /= withBlock.InterparticlePorosity;
                     }
@@ -708,7 +708,7 @@ namespace MwtWinDll
             {
                 var withBlock = mCapillaryFlowParameters;
                 dblRadius = withBlock.ColumnID / 2.0d;
-                if (Math.Abs(withBlock.SolventViscosity) > float.Epsilon & Math.Abs(withBlock.ColumnLength) > float.Epsilon)
+                if (Math.Abs(withBlock.SolventViscosity) > float.Epsilon && Math.Abs(withBlock.ColumnLength) > float.Epsilon)
                 {
                     if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
                     {
@@ -816,7 +816,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorConcentration(eNewUnits, dblSampleMass);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -845,7 +845,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorDiffusionCoeff(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -874,7 +874,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorLength(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -903,7 +903,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorLinearVelocity(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -932,7 +932,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorMassFlowRate(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -961,7 +961,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorMoles(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -990,7 +990,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorPressure(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -1084,7 +1084,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorTime(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -1113,7 +1113,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorViscosity(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -1142,7 +1142,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorVolFlowRate(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -1171,7 +1171,7 @@ namespace MwtWinDll
             }
 
             dblFactor = FactorVolume(eNewUnits);
-            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
@@ -1836,7 +1836,7 @@ namespace MwtWinDll
 
         public void SetAutoComputeMode(acmAutoComputeModeConstants eAutoComputeMode)
         {
-            if (eAutoComputeMode >= acmAutoComputeModeConstants.acmBackPressure & eAutoComputeMode <= acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime)
+            if (eAutoComputeMode >= acmAutoComputeModeConstants.acmBackPressure && eAutoComputeMode <= acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime)
             {
                 mAutoComputeMode = eAutoComputeMode;
             }
@@ -1850,7 +1850,7 @@ namespace MwtWinDll
 
         public void SetCapillaryType(ctCapillaryTypeConstants eCapillaryType)
         {
-            if (eCapillaryType >= ctCapillaryTypeConstants.ctOpenTubularCapillary & eCapillaryType <= ctCapillaryTypeConstants.ctPackedCapillary)
+            if (eCapillaryType >= ctCapillaryTypeConstants.ctOpenTubularCapillary && eCapillaryType <= ctCapillaryTypeConstants.ctPackedCapillary)
             {
                 mCapillaryFlowParameters.CapillaryType = eCapillaryType;
             }
@@ -1914,7 +1914,7 @@ namespace MwtWinDll
 
         public void SetInterparticlePorosity(double dblPorosity)
         {
-            if (dblPorosity >= 0d & dblPorosity <= 1d)
+            if (dblPorosity >= 0d && dblPorosity <= 1d)
             {
                 mCapillaryFlowParameters.InterparticlePorosity = dblPorosity;
             }

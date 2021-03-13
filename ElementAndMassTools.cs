@@ -549,7 +549,7 @@ namespace MwtWinDll
 
         private void CatchParseNumError(double adjacentNum, int numSizing, int curCharacter, int symbolLength)
         {
-            if (adjacentNum < 0d & numSizing == 0)
+            if (adjacentNum < 0d && numSizing == 0)
             {
                 switch (adjacentNum)
                 {
@@ -845,7 +845,7 @@ namespace MwtWinDll
                             else
                             {
                                 intAsciiOfNext = Strings.Asc(Strings.Mid(strFormula, intIndex + 1, 1));
-                                if (intAsciiOfNext < 97 | intAsciiOfNext > 122)
+                                if (intAsciiOfNext < 97 || intAsciiOfNext > 122)
                                 {
                                     blnReplaceDeuterium = true;
                                 }
@@ -924,7 +924,7 @@ namespace MwtWinDll
                     intElementCount += ExplicitIsotopeCount;
                 }
 
-                if (intElementCount == 0 | Math.Abs(dblWorkingFormulaMass) < float.Epsilon)
+                if (intElementCount == 0 || Math.Abs(dblWorkingFormulaMass) < float.Epsilon)
                 {
                     // No elements or no weight
                     return -1;
@@ -1161,7 +1161,7 @@ namespace MwtWinDll
 
                                 // Use dblThisComboFractionalAbundance to predict
                                 // the Fractional Abundance of the Next Combo
-                                if (ComboIndex < CombosFound & dblFractionalAbundanceSaved >= CUTOFF_FOR_RATIO_METHOD)
+                                if (ComboIndex < CombosFound && dblFractionalAbundanceSaved >= CUTOFF_FOR_RATIO_METHOD)
                                 {
                                     // #######
                                     // Third method, determines the ratio of this combo's abundance and the next combo's abundance
@@ -1238,7 +1238,7 @@ namespace MwtWinDll
                                 }
                             }
 
-                            if (blnRatioMethodUsed & ComboIndex + 1 == CombosFound)
+                            if (blnRatioMethodUsed && ComboIndex + 1 == CombosFound)
                             {
                                 // No need to compute the last combo since we just did it
                                 break;
@@ -1404,7 +1404,7 @@ namespace MwtWinDll
                 }
 
                 // If rowIndex > 1 then remove rows from beginning since value is less than MIN_ABUNDANCE_TO_KEEP
-                if (rowIndex > 1 & rowIndex < ConvolutedMSDataCount)
+                if (rowIndex > 1 && rowIndex < ConvolutedMSDataCount)
                 {
                     rowIndex -= 1;
                     // Remove rows from the start of ConvolutedMSData2DOneBased() since 0 mass
@@ -1426,7 +1426,7 @@ namespace MwtWinDll
                     strOutput = strOutput + (ConvolutedMSData2DOneBased[massIndex, 1] * dblMaxAbundance / 100d).ToString("0.0000000") + Constants.vbTab;
                     strOutput = strOutput + SpacePadFront(ConvolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + ControlChars.NewLine;
                     // 'ToDo: Fix Multiplicity
-                    // 'strOutput = strOutput & ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") & ControlChars.NewLine
+                    // 'strOutput = strOutput + ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + ControlChars.NewLine
                 }
 
                 strResults = strOutput;
@@ -1476,7 +1476,7 @@ namespace MwtWinDll
                         dblStdDeviation = dblPercentComp * Math.Sqrt(Math.Pow(udtComputationStats.StandardDeviation / udtComputationStats.TotalMass, 2d));
                     }
 
-                    if (Math.Abs(dblElementTotalMass - udtComputationStats.TotalMass) < float.Epsilon & Math.Abs(dblPercentComp - 100d) < float.Epsilon)
+                    if (Math.Abs(dblElementTotalMass - udtComputationStats.TotalMass) < float.Epsilon && Math.Abs(dblPercentComp - 100d) < float.Epsilon)
                     {
                         dblStdDeviation = 0d;
                     }
@@ -1552,7 +1552,7 @@ namespace MwtWinDll
                     dblXValRange = 1d;
                 if (intResolution < 1)
                     intResolution = 1;
-                if (intQualityFactor < 1 | intQualityFactor > 75)
+                if (intQualityFactor < 1 || intQualityFactor > 75)
                     intQualityFactor = 50;
 
                 // Compute DeltaX using .intResolution and .intResolutionMass
@@ -1814,7 +1814,7 @@ namespace MwtWinDll
                     {
                         var withBlock = AbbrevStats[intIndex];
                         // If blnIncludeAmino = False then do not include amino acids
-                        if (blnIncludeAmino | !blnIncludeAmino & !withBlock.IsAminoAcid)
+                        if (blnIncludeAmino || !blnIncludeAmino && !withBlock.IsAminoAcid)
                         {
                             // Do not include if the formula is invalid
                             if (!withBlock.InvalidSymbolOrFormula)
@@ -1960,7 +1960,7 @@ namespace MwtWinDll
                     else
                     {
                         // Then do the rest alphabetically
-                        if (ElementAlph[intElementIndex] == "C" | ElementAlph[intElementIndex] == "H")
+                        if (ElementAlph[intElementIndex] == "C" || ElementAlph[intElementIndex] == "H")
                         {
                             // Increment intElementIndex when we encounter carbon or hydrogen
                             intElementIndex = (short)(intElementIndex + 1);
@@ -2231,7 +2231,7 @@ namespace MwtWinDll
             RunningSum = new int[AtomCount + 1];
             try
             {
-                if (AtomCount == 1 | IsotopeCount == 1)
+                if (AtomCount == 1 || IsotopeCount == 1)
                 {
                     PredictedCombos = IsotopeCount;
                 }
@@ -2301,7 +2301,7 @@ namespace MwtWinDll
             short ColIndex;
             int AtomTrack;
             short intNewColumn;
-            if (CurrentIsotopeCount == 1 | AtomCount == 0)
+            if (CurrentIsotopeCount == 1 || AtomCount == 0)
             {
                 // End recursion
                 ComboResults[CurrentRow, CurrentCol] = AtomCount;
@@ -2423,7 +2423,7 @@ namespace MwtWinDll
             {
                 if ((Strings.LCase(AbbrevStats[index].Symbol) ?? "") == (Strings.LCase(strSymbol) ?? ""))
                 {
-                    if (!blnAminoAcidsOnly | blnAminoAcidsOnly & AbbrevStats[index].IsAminoAcid)
+                    if (!blnAminoAcidsOnly || blnAminoAcidsOnly && AbbrevStats[index].IsAminoAcid)
                     {
                         return index;
                     }
@@ -2455,7 +2455,7 @@ namespace MwtWinDll
         /// <returns> 0 if success, 1 if failure</returns>
         public int GetAbbreviationInternal(int abbreviationID, out string strSymbol, out string strFormula, out float sngCharge, out bool blnIsAminoAcid, out string strOneLetterSymbol, out string strComment, out bool blnInvalidSymbolOrFormula)
         {
-            if (abbreviationID >= 1 & abbreviationID <= AbbrevAllCount)
+            if (abbreviationID >= 1 && abbreviationID <= AbbrevAllCount)
             {
                 {
                     var withBlock = AbbrevStats[abbreviationID];
@@ -2492,7 +2492,7 @@ namespace MwtWinDll
             // Rather, it uses the .Mass member of AbbrevStats
             // This requires that .Mass be updated if the abbreviation is changed, if an element is changed, or if the element mode is changed
 
-            if (abbreviationID >= 1 & abbreviationID <= AbbrevAllCount)
+            if (abbreviationID >= 1 && abbreviationID <= AbbrevAllCount)
             {
                 return AbbrevStats[abbreviationID].Mass;
             }
@@ -2579,7 +2579,7 @@ namespace MwtWinDll
         /// <returns>0 if success, 1 if an invalid ID</returns>
         public int GetCautionStatementInternal(int cautionStatementID, out string strSymbolCombo, out string strCautionStatement)
         {
-            if (cautionStatementID >= 1 & cautionStatementID <= CautionStatementCount)
+            if (cautionStatementID >= 1 && cautionStatementID <= CautionStatementCount)
             {
                 strSymbolCombo = CautionStatements[cautionStatementID, 0];
                 strCautionStatement = CautionStatements[cautionStatementID, 1];
@@ -2620,7 +2620,7 @@ namespace MwtWinDll
         /// <returns>0 if success, 1 if failure</returns>
         public int GetElementInternal(short intElementID, out string strSymbol, out double dblMass, out double dblUncertainty, out float sngCharge, out short intIsotopeCount)
         {
-            if (intElementID >= 1 & intElementID <= ELEMENT_COUNT)
+            if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
                 strSymbol = ElementAlph[intElementID];
                 {
@@ -2675,7 +2675,7 @@ namespace MwtWinDll
         public int GetElementIsotopesInternal(short intElementID, ref short intIsotopeCount, ref double[] dblIsotopeMasses, ref float[] sngIsotopeAbundances)
         {
             short intIsotopeIndex;
-            if (intElementID >= 1 & intElementID <= ELEMENT_COUNT)
+            if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
                 {
                     var withBlock = ElementStats[intElementID];
@@ -2717,7 +2717,7 @@ namespace MwtWinDll
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         public string GetElementSymbolInternal(short intElementID)
         {
-            if (intElementID >= 1 & intElementID <= ELEMENT_COUNT)
+            if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
                 return ElementStats[intElementID].Symbol;
             }
@@ -2741,7 +2741,7 @@ namespace MwtWinDll
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         public double GetElementStatInternal(short intElementID, MolecularWeightTool.esElementStatsConstants eElementStat)
         {
-            if (intElementID >= 1 & intElementID <= ELEMENT_COUNT)
+            if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
                 switch (eElementStat)
                 {
@@ -2822,7 +2822,7 @@ namespace MwtWinDll
         public string GetMessageStatementInternal(int messageID, string strAppendText)
         {
             string strMessage;
-            if (messageID > 0 & messageID <= MessageStatementCount)
+            if (messageID > 0 && messageID <= MessageStatementCount)
             {
                 strMessage = MessageStatements[messageID];
 
@@ -3721,7 +3721,7 @@ namespace MwtWinDll
             dblElemVals[103, 3] = 3d;
 
             // Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights
-            if (eElementMode == emElementModeConstants.emIsotopicMass | eElementMode == emElementModeConstants.emIntegerMass)
+            if (eElementMode == emElementModeConstants.emIsotopicMass || eElementMode == emElementModeConstants.emIntegerMass)
             {
                 for (intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
                     dblElemVals[intIndex, 2] = 0d;
@@ -4202,7 +4202,7 @@ namespace MwtWinDll
                     }
                 }
             }
-            else if (intSpecificElement >= 1 & intSpecificElement <= ELEMENT_COUNT)
+            else if (intSpecificElement >= 1 && intSpecificElement <= ELEMENT_COUNT)
             {
                 {
                     var withBlock1 = ElementStats[intSpecificElement];
@@ -5452,7 +5452,7 @@ namespace MwtWinDll
                             case 123: // (    Record its position
                                 {
                                     // See if a number is present just after the opening parenthesis
-                                    if (Information.IsNumeric(strChar2) | strChar2 == ".")
+                                    if (Information.IsNumeric(strChar2) || strChar2 == ".")
                                     {
                                         // Misplaced number
                                         ErrorParams.ErrorID = 14;
@@ -5474,7 +5474,7 @@ namespace MwtWinDll
                                                     {
                                                         // Another opening parentheses
                                                         // increment parenthLevel
-                                                        if (!gComputationOptions.BracketsAsParentheses & Strings.Mid(strFormula, intParenthClose, 1) == "[")
+                                                        if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "[")
                                                         {
                                                         }
                                                         // Do not count the bracket
@@ -5490,7 +5490,7 @@ namespace MwtWinDll
                                                 case "}":
                                                 case "]":
                                                     {
-                                                        if (!gComputationOptions.BracketsAsParentheses & Strings.Mid(strFormula, intParenthClose, 1) == "]")
+                                                        if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "]")
                                                         {
                                                         }
                                                         // Do not count the bracket
@@ -5528,7 +5528,7 @@ namespace MwtWinDll
                                                                 if (CarbonOrSiliconReturnCount > 0)
                                                                 {
                                                                     udtComputationStats.Charge = (float)(udtComputationStats.Charge - 2d * dblAdjacentNum);
-                                                                    if (dblAdjacentNum > 1d & CarbonOrSiliconReturnCount > 1)
+                                                                    if (dblAdjacentNum > 1d && CarbonOrSiliconReturnCount > 1)
                                                                     {
                                                                         udtComputationStats.Charge = (float)(udtComputationStats.Charge - 2d * (dblAdjacentNum - 1d) * (CarbonOrSiliconReturnCount - 1));
                                                                     }
@@ -5544,7 +5544,7 @@ namespace MwtWinDll
                                         }
                                     }
 
-                                    if (intParenthLevel > 0 & ErrorParams.ErrorID == 0)
+                                    if (intParenthLevel > 0 && ErrorParams.ErrorID == 0)
                                     {
                                         // Missing closing parenthesis
                                         ErrorParams.ErrorID = 3;
@@ -5804,7 +5804,7 @@ namespace MwtWinDll
                                                             }
                                                         }
 
-                                                        if (SymbolReference == 6 | SymbolReference == 14)
+                                                        if (SymbolReference == 6 || SymbolReference == 14)
                                                         {
                                                             // Sum up number lone C and Si (not in abbreviations)
                                                             LoneCarbonOrSilicon = (int)Math.Round(LoneCarbonOrSilicon + dblAdjacentNum);
@@ -5896,7 +5896,7 @@ namespace MwtWinDll
                                                 else if (blnCaretPresent)
                                                 {
                                                     // Cannot have isotopic mass for an abbreviation, including deuterium
-                                                    if (Strings.UCase(strChar1) == "D" & strChar2 != "y")
+                                                    if (Strings.UCase(strChar1) == "D" && strChar2 != "y")
                                                     {
                                                         // Isotopic mass used for Deuterium
                                                         ErrorParams.ErrorID = 26;
@@ -5975,7 +5975,7 @@ namespace MwtWinDll
                                                                 // However, this will generate an error because (C6H5Cl2>HCl)2 gets split
                                                                 // to (C6H5Cl2 and HCl)2 which will both generate an error
                                                                 // The only option is to convert the abbreviation to its empirical formula
-                                                                if (intParenthLevelPrevious > 0 | intParenthLevel > 0 | intCharIndex + intSymbolLength <= Strings.Len(strFormula))
+                                                                if (intParenthLevelPrevious > 0 || intParenthLevel > 0 || intCharIndex + intSymbolLength <= Strings.Len(strFormula))
                                                                 {
                                                                     strReplace = ConvertFormulaToEmpirical(strReplace);
                                                                 }
@@ -6051,7 +6051,7 @@ namespace MwtWinDll
                                             intCharAsc = 0;
                                         if (dblAdjacentNum >= 0d)
                                         {
-                                            if (intCharAsc >= 65 & intCharAsc <= 90 | intCharAsc >= 97 & intCharAsc <= 122) // Uppercase A to Z and lowercase a to z
+                                            if (intCharAsc >= 65 && intCharAsc <= 90 || intCharAsc >= 97 && intCharAsc <= 122) // Uppercase A to Z and lowercase a to z
                                             {
                                                 blnCaretPresent = true;
                                                 dblCaretVal = dblAdjacentNum;
@@ -6134,7 +6134,7 @@ namespace MwtWinDll
 
                 {
                     var withBlock5 = ErrorParams;
-                    if (withBlock5.ErrorID != 0 & Strings.Len(withBlock5.ErrorCharacter) == 0)
+                    if (withBlock5.ErrorID != 0 && Strings.Len(withBlock5.ErrorCharacter) == 0)
                     {
                         if (string.IsNullOrEmpty(strChar1))
                             strChar1 = Conversions.ToString(EMPTY_STRING_CHAR);
@@ -6201,7 +6201,7 @@ namespace MwtWinDll
             strFoundNum = string.Empty;
             if (string.IsNullOrEmpty(strWork))
                 strWork = Conversions.ToString(EMPTY_STRING_CHAR);
-            if ((Strings.Asc(Strings.Left(strWork, 1)) < 48 | Strings.Asc(Strings.Left(strWork, 1)) > 57) & Strings.Left(strWork, 1) != Conversions.ToString(gComputationOptions.DecimalSeparator) & !(Strings.Left(strWork, 1) == "-" & blnAllowNegative == true))
+            if ((Strings.Asc(Strings.Left(strWork, 1)) < 48 || Strings.Asc(Strings.Left(strWork, 1)) > 57) && Strings.Left(strWork, 1) != Conversions.ToString(gComputationOptions.DecimalSeparator) && !(Strings.Left(strWork, 1) == "-" && blnAllowNegative == true))
             {
                 intNumLength = 0; // No number found
                 ParseNumRet = -1;
@@ -6213,7 +6213,7 @@ namespace MwtWinDll
                 for (intIndex = 1; intIndex <= loopTo; intIndex++)
                 {
                     strWorking = Strings.Mid(strWork, intIndex, 1);
-                    if (Information.IsNumeric(strWorking) | strWorking == Conversions.ToString(gComputationOptions.DecimalSeparator) | blnAllowNegative == true & strWorking == "-")
+                    if (Information.IsNumeric(strWorking) || strWorking == Conversions.ToString(gComputationOptions.DecimalSeparator) || blnAllowNegative == true && strWorking == "-")
                     {
                         strFoundNum += strWorking;
                     }
@@ -6223,7 +6223,7 @@ namespace MwtWinDll
                     }
                 }
 
-                if (Strings.Len(strFoundNum) == 0 | strFoundNum == Conversions.ToString(gComputationOptions.DecimalSeparator))
+                if (Strings.Len(strFoundNum) == 0 || strFoundNum == Conversions.ToString(gComputationOptions.DecimalSeparator))
                 {
                     // No number at all or (more likely) no number after decimal point
                     strFoundNum = (-3).ToString();
@@ -6299,9 +6299,9 @@ namespace MwtWinDll
             // and must end with } or {\fs30  }} if superscript was used
 
             // "{\super 3}C{\sub 6}H{\sub 6}{\fs30  }}"
-            // strRTF = "{{\fonttbl{\f0\fcharset0\fprq2 " & rtfFormula(0).font & ";}}\pard\plain\fs25 "
-            // Old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman\fcharset2 Times New Roman;}{\f3\froman " & lblMWT(0).FontName & ";}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f3\fs25 "
-            // old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " & lblMWT(0).FontName & ";}{\f3\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f2\fs25 "
+            // strRTF = "{{\fonttbl{\f0\fcharset0\fprq2 " + rtfFormula(0).font + ";}}\pard\plain\fs25 ";
+            // Old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman\fcharset2 Times New Roman;}{\f3\froman " + lblMWT[0].FontName + ";}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f3\fs25 ";
+            // old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " + lblMWT[0].FontName + ";}{\f3\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f2\fs25 ";
             // f0                               f1                                 f2                          f3                               f4                      cf0 (black)        cf1 (red)          cf3 (white)
             // ReSharper disable StringLiteralTypo
             strRTF = @"{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " + gComputationOptions.RtfFontName + @";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" + Strings.Trim(Conversion.Str(NumberConverter.CShortSafe(gComputationOptions.RtfFontSize * 2.5d))) + " ";
@@ -6321,14 +6321,14 @@ namespace MwtWinDll
             for (intCharIndex = 1; intCharIndex <= loopTo; intCharIndex++)
             {
                 strWorkChar = Strings.Mid(strWorkText, intCharIndex, 1);
-                if (strWorkChar == "%" & blnHighlightCharFollowingPercentSign)
+                if (strWorkChar == "%" && blnHighlightCharFollowingPercentSign)
                 {
                     // An error was found and marked by a % sign
                     // Highlight the character at the % sign, and remove the % sign
                     if (intCharIndex == Strings.Len(strWorkText))
                     {
                         // At end of line
-                        if (blnOverrideErrorID & errorIDOverride != 0)
+                        if (blnOverrideErrorID && errorIDOverride != 0)
                         {
                             errorID = errorIDOverride;
                         }
@@ -6387,7 +6387,7 @@ namespace MwtWinDll
                         // Highlight next character and skip % sign
                         strWorkChar = Strings.Mid(strWorkText, intCharIndex + 1, 1);
                         // Handle curly brackets
-                        if (strWorkChar == "{" | strWorkChar == "}")
+                        if (strWorkChar == "{" || strWorkChar == "}")
                             strWorkChar = @"\" + strWorkChar;
                         strRTF = strRTF + @"{\cf1 " + strWorkChar + "}";
                         intCharIndex += 1;
@@ -6403,7 +6403,7 @@ namespace MwtWinDll
                     strRTF += @"{\super}";
                     blnSuperFound = true;
                 }
-                else if (strWorkChar == "+" & !calculatorMode)
+                else if (strWorkChar == "+" && !calculatorMode)
                 {
                     strRTF += @"{\super +}";
                     blnSuperFound = true;
@@ -6413,7 +6413,7 @@ namespace MwtWinDll
                 }
                 // skip it, the tilde sign is used to add additional height to the formula line when isotopes are used
                 // If it's here from a previous time, we ignore it, adding it at the end if needed (if blnSuperFound = true)
-                else if (Information.IsNumeric(strWorkChar) | strWorkChar == Conversions.ToString(gComputationOptions.DecimalSeparator))
+                else if (Information.IsNumeric(strWorkChar) || strWorkChar == Conversions.ToString(gComputationOptions.DecimalSeparator))
                 {
                     // Number or period, so super or subscript it if needed
                     if (intCharIndex == 1)
@@ -6421,13 +6421,13 @@ namespace MwtWinDll
                         // at beginning of line, so leave it alone. Probably out of place
                         strRTF += strWorkChar;
                     }
-                    else if (!calculatorMode & (char.IsLetter(Conversions.ToChar(strWorkCharPrev)) | strWorkCharPrev == ")" | strWorkCharPrev == @"\}" | strWorkCharPrev == "+" | strWorkCharPrev == "_" | Strings.Left(Strings.Right(strRTF, 6), 3) == "sub"))
+                    else if (!calculatorMode && (char.IsLetter(Conversions.ToChar(strWorkCharPrev)) || strWorkCharPrev == ")" || strWorkCharPrev == @"\}" || strWorkCharPrev == "+" || strWorkCharPrev == "_" || Strings.Left(Strings.Right(strRTF, 6), 3) == "sub"))
                     {
                         // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
                         // But, don't use subscripts in calculator
                         strRTF = strRTF + @"{\sub " + strWorkChar + "}";
                     }
-                    else if (!calculatorMode & gComputationOptions.BracketsAsParentheses & strWorkCharPrev == "]")
+                    else if (!calculatorMode && gComputationOptions.BracketsAsParentheses && strWorkCharPrev == "]")
                     {
                         // only subscript after closing bracket, ], if brackets are being treated as parentheses
                         strRTF = strRTF + @"{\sub " + strWorkChar + "}";
@@ -6450,7 +6450,7 @@ namespace MwtWinDll
                 else
                 {
                     // Handle curly brackets
-                    if (strWorkChar == "{" | strWorkChar == "}")
+                    if (strWorkChar == "{" || strWorkChar == "}")
                         strWorkChar = @"\" + strWorkChar;
                     strRTF += strWorkChar;
                 }
@@ -6535,7 +6535,7 @@ namespace MwtWinDll
         public int RemoveAbbreviationByIDInternal(int abbreviationID)
         {
             bool blnRemoved;
-            if (abbreviationID >= 1 & abbreviationID <= AbbrevAllCount)
+            if (abbreviationID >= 1 && abbreviationID <= AbbrevAllCount)
             {
                 for (int indexRemove = abbreviationID, loopTo = AbbrevAllCount - 1; indexRemove <= loopTo; indexRemove++)
                     AbbrevStats[indexRemove] = AbbrevStats[indexRemove + 1];
@@ -6933,7 +6933,7 @@ namespace MwtWinDll
                     strSymbol = Strings.UCase(Strings.Left(strSymbol, 1)) + Strings.LCase(Strings.Mid(strSymbol, 2));
 
                     // If intAbbrevID is < 1 or larger than AbbrevAllCount, then define it
-                    if (intAbbrevID < 1 | intAbbrevID > AbbrevAllCount + 1)
+                    if (intAbbrevID < 1 || intAbbrevID > AbbrevAllCount + 1)
                     {
                         if (AbbrevAllCount < MAX_ABBREV_COUNT)
                         {
@@ -6960,7 +6960,7 @@ namespace MwtWinDll
                             }
                         }
 
-                        if (!blnInvalidSymbolOrFormula & blnValidateFormula)
+                        if (!blnInvalidSymbolOrFormula && blnValidateFormula)
                         {
                             // Make sure the abbreviation's formula is valid
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
@@ -7006,7 +7006,7 @@ namespace MwtWinDll
             var blnAlreadyPresent = default(bool);
             int intIndex;
             ResetErrorParamsInternal();
-            if (Strings.Len(strSymbolCombo) >= 1 & Strings.Len(strSymbolCombo) <= MAX_ABBREV_LENGTH)
+            if (Strings.Len(strSymbolCombo) >= 1 && Strings.Len(strSymbolCombo) <= MAX_ABBREV_LENGTH)
             {
                 // Make sure all the characters in strSymbolCombo are letters
                 if (IsStringAllLetters(strSymbolCombo))
@@ -7175,9 +7175,9 @@ namespace MwtWinDll
         {
             try
             {
-                if (NewElementMode >= emElementModeConstants.emAverageMass & NewElementMode <= emElementModeConstants.emIntegerMass)
+                if (NewElementMode >= emElementModeConstants.emAverageMass && NewElementMode <= emElementModeConstants.emIntegerMass)
                 {
-                    if (NewElementMode != mCurrentElementMode | blnMemoryLoadElementValues)
+                    if (NewElementMode != mCurrentElementMode || blnMemoryLoadElementValues)
                     {
                         mCurrentElementMode = NewElementMode;
                         if (blnMemoryLoadElementValues)
@@ -7204,7 +7204,7 @@ namespace MwtWinDll
         /// <returns>0 if success; 1 if failure</returns>
         public int SetMessageStatementInternal(int messageID, string strNewMessage)
         {
-            if (messageID >= 1 & messageID <= MESSAGE_STATEMENT_DIM_COUNT & Strings.Len(strNewMessage) > 0)
+            if (messageID >= 1 && messageID <= MESSAGE_STATEMENT_DIM_COUNT && Strings.Len(strNewMessage) > 0)
             {
                 MessageStatements[messageID] = strNewMessage;
                 return 0;

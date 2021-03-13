@@ -20,7 +20,7 @@ namespace MwtWinDll
 
         public static short CShortSafe(double dblWork)
         {
-            if (dblWork <= 32767d & dblWork >= -32767)
+            if (dblWork <= 32767d && dblWork >= -32767)
             {
                 return (short)Math.Round(dblWork);
             }
@@ -53,7 +53,7 @@ namespace MwtWinDll
 
         public static int CIntSafe(double dblWork)
         {
-            if (dblWork <= int.MaxValue & dblWork >= int.MinValue)
+            if (dblWork <= int.MaxValue && dblWork >= int.MinValue)
             {
                 return (int)Math.Round(dblWork);
             }

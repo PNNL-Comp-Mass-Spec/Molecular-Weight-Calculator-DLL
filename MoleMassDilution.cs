@@ -310,7 +310,7 @@ namespace MwtWinDll
         {
             {
                 var withBlock = mDilutionValues;
-                if (withBlock.InitialConcentration > 0d & withBlock.FinalConcentration > 0d)
+                if (withBlock.InitialConcentration > 0d && withBlock.FinalConcentration > 0d)
                 {
                     withBlock.TotalFinalVolume = withBlock.InitialConcentration * withBlock.StockSolutionVolume / withBlock.FinalConcentration;
                     if (withBlock.TotalFinalVolume < 0d)
@@ -406,7 +406,7 @@ namespace MwtWinDll
                 return dblAmountIn;
             }
 
-            if (eCurrentUnits >= AMOUNT_UNITS_VOLUME_INDEX_START & eCurrentUnits <= AMOUNT_UNITS_LIST_INDEX_MAX & eNewUnits >= AMOUNT_UNITS_VOLUME_INDEX_START & eNewUnits <= AMOUNT_UNITS_LIST_INDEX_MAX)
+            if (eCurrentUnits >= AMOUNT_UNITS_VOLUME_INDEX_START && eCurrentUnits <= AMOUNT_UNITS_LIST_INDEX_MAX && eNewUnits >= AMOUNT_UNITS_VOLUME_INDEX_START && eNewUnits <= AMOUNT_UNITS_LIST_INDEX_MAX)
             {
                 // Converting from one volume unit to another volume unit
                 // No need to explicitly specify mass or density
@@ -943,7 +943,7 @@ namespace MwtWinDll
 
         public void SetAutoComputeDilutionMode(acdAutoComputeDilutionModeConstants eAutoComputeMode)
         {
-            if (eAutoComputeMode >= acdAutoComputeDilutionModeConstants.acdFindRequiredDilutionVolumes & eAutoComputeMode <= acdAutoComputeDilutionModeConstants.acdFindFinalConcentration)
+            if (eAutoComputeMode >= acdAutoComputeDilutionModeConstants.acdFindRequiredDilutionVolumes && eAutoComputeMode <= acdAutoComputeDilutionModeConstants.acdFindFinalConcentration)
             {
                 mAutoComputeDilutionMode = eAutoComputeMode;
             }
@@ -956,7 +956,7 @@ namespace MwtWinDll
 
         public void SetAutoComputeQuantityMode(acqAutoComputeQuantityModeConstants eAutoComputeMode)
         {
-            if (eAutoComputeMode >= acqAutoComputeQuantityModeConstants.acqFindAmount & eAutoComputeMode <= acqAutoComputeQuantityModeConstants.acqFindConcentration)
+            if (eAutoComputeMode >= acqAutoComputeQuantityModeConstants.acqFindAmount && eAutoComputeMode <= acqAutoComputeQuantityModeConstants.acqFindConcentration)
             {
                 mAutoComputeQuantityMode = eAutoComputeMode;
             }

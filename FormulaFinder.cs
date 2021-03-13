@@ -521,7 +521,7 @@ namespace MwtWinDll
             }
 
             dblOriginalMtoZ = targetMass / intMultipleMtoZCharge;
-            if (dblMtoZ < dblOriginalMtoZ - massToleranceDa | dblMtoZ > dblOriginalMtoZ + massToleranceDa)
+            if (dblMtoZ < dblOriginalMtoZ - massToleranceDa || dblMtoZ > dblOriginalMtoZ + massToleranceDa)
             {
                 // dblMtoZ is not within tolerance of dblOriginalMtoZ, so don't report the result
                 return false;
@@ -532,7 +532,7 @@ namespace MwtWinDll
 
         private double Combinatorial(int a, int b)
         {
-            if (a > 170 | b > 170)
+            if (a > 170 || b > 170)
             {
                 Console.WriteLine("Cannot compute factorial of a number over 170.  Thus, cannot compute the combination.");
                 return -1;
@@ -637,7 +637,7 @@ namespace MwtWinDll
                 // Uncomment to debug
                 // Dim computedMass = mElementAndMassRoutines.ComputeFormulaWeight(sbEmpiricalFormula.ToString())
                 // If Math.Abs(computedMass - totalMass) > massToleranceDa Then
-                // Console.WriteLine("Wrong result: " & sbEmpiricalFormula.ToString())
+                // Console.WriteLine("Wrong result: " + sbEmpiricalFormula.ToString())
                 // End If
 
                 return valid;
@@ -686,7 +686,7 @@ namespace MwtWinDll
             }
 
             var query = from item in empiricalResultSymbols
-                        where item.Key != "C" & item.Key != "H"
+                        where item.Key != "C" && item.Key != "H"
                         orderby item.Key
                         select item;
             foreach (var result in query)
@@ -696,7 +696,7 @@ namespace MwtWinDll
                     sbEmpiricalFormula.Append(result.Value);
             }
 
-            if (!searchOptions.VerifyHydrogens & !searchOptions.FindTargetMZ)
+            if (!searchOptions.VerifyHydrogens && !searchOptions.FindTargetMZ)
             {
                 return true;
             }
@@ -796,13 +796,13 @@ namespace MwtWinDll
             else
             {
                 // Formula is: [#C*2 + 3 - (2 if N or P present)] + [#N + 3 - (1 if C or Si present)] + [#other elements * 4 + 3], where we assume other elements can have a coordination Number of up to 7
-                if (udtElementNum.C > 0 | udtElementNum.Si > 0)
+                if (udtElementNum.C > 0 || udtElementNum.Si > 0)
                 {
                     maxH += (udtElementNum.C + udtElementNum.Si) * 2 + 3;
                     // If udtElementNum.N > 0 Or udtElementNum.P > 0 Then maxH = maxH - 2
                 }
 
-                if (udtElementNum.N > 0 | udtElementNum.P > 0)
+                if (udtElementNum.N > 0 || udtElementNum.P > 0)
                 {
                     maxH += udtElementNum.N + udtElementNum.P + 3;
                     // If udtElementNum.C > 0 Or udtElementNum.Si > 0 Then maxH = maxH - 1
@@ -815,7 +815,7 @@ namespace MwtWinDll
                 // If (udtElementNum.N > 0 Or udtElementNum.P > 0) And (udtElementNum.C > 0 Or udtElementNum.Si > 0) Then udtElementNum.H = udtElementNum.H - 1
 
                 // Combine the above two commented out if's to obtain:
-                if ((udtElementNum.N > 0 | udtElementNum.P > 0) & (udtElementNum.C > 0 | udtElementNum.Si > 0))
+                if ((udtElementNum.N > 0 || udtElementNum.P > 0) && (udtElementNum.C > 0 || udtElementNum.Si > 0))
                 {
                     maxH -= 3;
                 }
@@ -897,7 +897,7 @@ namespace MwtWinDll
             double correctedCharge = totalCharge;
             if (udtElementNum.C + udtElementNum.Si >= 1)
             {
-                if (udtElementNum.H > 0 & Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, MolecularWeightTool.esElementStatsConstants.esCharge) - 1d) < float.Epsilon)
+                if (udtElementNum.H > 0 && Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, MolecularWeightTool.esElementStatsConstants.esCharge) - 1d) < float.Epsilon)
                 {
                     // Since carbon or silicon are present, assume the hydrogens should be negative
                     // Subtract udtElementNum.H * 2 since hydrogen is assigned a +1 charge if ElementStats(1).Charge = 1
@@ -911,10 +911,10 @@ namespace MwtWinDll
                 }
             }
 
-            if (udtElementNum.N + udtElementNum.P > 0 & udtElementNum.C > 0)
+            if (udtElementNum.N + udtElementNum.P > 0 && udtElementNum.C > 0)
             {
                 // Assume 2 hydrogens around each Nitrogen or Phosphorus, thus add back +2 for each H
-                // First, decrease udtElementNumber of halogens by udtElementNumber of hydrogens & halogens taken up by the carbons
+                // First, decrease udtElementNumber of halogens by udtElementNumber of hydrogens && halogens taken up by the carbons
                 // Determine # of H taken up by all the carbons in a compound without N or P, then add back 1 H for each N and P
                 int intNumHalogens = udtElementNum.H + udtElementNum.F + udtElementNum.Cl + udtElementNum.Br + udtElementNum.I;
                 intNumHalogens = intNumHalogens - (udtElementNum.C * 2 + 2) + udtElementNum.N + udtElementNum.P;
@@ -1573,7 +1573,7 @@ namespace MwtWinDll
                                                         if (calculationMode == eCalculationMode.MatchPercentComposition)
                                                         {
                                                             // Matching Percent Compositions
-                                                            if (totalMass > 0d & totalMass <= maximumFormulaMass)
+                                                            if (totalMass > 0d && totalMass <= maximumFormulaMass)
                                                             {
                                                                 Percent[0] = j * sortedElementStats[0].Mass / totalMass * 100d;
                                                                 if (potentialElementCount > 1)
@@ -1841,7 +1841,7 @@ namespace MwtWinDll
             try
             {
                 var lstNewPotentialElementPointers = new List<int>(lstPotentialElementPointers.Count + 1);
-                if (mAbortProcessing | lstResults.Count >= mMaximumHits)
+                if (mAbortProcessing || lstResults.Count >= mMaximumHits)
                 {
                     return;
                 }
@@ -1944,7 +1944,7 @@ namespace MwtWinDll
             {
                 var lstNewPotentialElementPointers = new List<int>(lstPotentialElementPointers.Count + 1);
                 var dblPotentialPercents = new double[sortedElementStats.Count + 1];
-                if (mAbortProcessing | lstResults.Count >= mMaximumHits)
+                if (mAbortProcessing || lstResults.Count >= mMaximumHits)
                 {
                     return;
                 }
@@ -2088,7 +2088,7 @@ namespace MwtWinDll
             foreach (var elementSymbol in mCandidateElements.Keys)
             {
                 var udtElementTolerances = mCandidateElements[elementSymbol];
-                if (udtElementTolerances.TargetPercentComposition < 0d | udtElementTolerances.TargetPercentComposition > 100d)
+                if (udtElementTolerances.TargetPercentComposition < 0d || udtElementTolerances.TargetPercentComposition > 100d)
                 {
                     if (udtElementTolerances.TargetPercentComposition < 0d)
                         udtElementTolerances.TargetPercentComposition = 0d;

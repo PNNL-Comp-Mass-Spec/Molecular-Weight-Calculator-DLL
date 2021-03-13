@@ -82,7 +82,7 @@ namespace MwtWinDll
         public bool ElementPresent(short elementID)
         {
             // Returns True if the element is present
-            if (elementID >= 1 & elementID <= ElementAndMassTools.ELEMENT_COUNT)
+            if (elementID >= 1 && elementID <= ElementAndMassTools.ELEMENT_COUNT)
             {
                 return mComputationStats.Elements[elementID].Used;
             }
@@ -116,7 +116,7 @@ namespace MwtWinDll
             // Return the number of atoms of a given element that are present in the formula
             // Note that the number of atoms is not necessarily an integer (e.g. C5.5)
 
-            if (intElementID >= 1 & intElementID <= ElementAndMassTools.ELEMENT_COUNT)
+            if (intElementID >= 1 && intElementID <= ElementAndMassTools.ELEMENT_COUNT)
             {
                 return mComputationStats.Elements[intElementID].Count;
             }
@@ -131,7 +131,7 @@ namespace MwtWinDll
             // Returns the percent composition for element
             // Returns -1 if an invalid ID
 
-            if (intElementID >= 1 & intElementID <= ElementAndMassTools.ELEMENT_COUNT)
+            if (intElementID >= 1 && intElementID <= ElementAndMassTools.ELEMENT_COUNT)
             {
                 return mComputationStats.PercentCompositions[intElementID].PercentComposition;
             }
@@ -152,7 +152,7 @@ namespace MwtWinDll
             // Returns "" if an invalid ID
             string strElementSymbol;
             string strPctComposition;
-            if (elementId >= 1 & elementId <= ElementAndMassTools.ELEMENT_COUNT)
+            if (elementId >= 1 && elementId <= ElementAndMassTools.ELEMENT_COUNT)
             {
                 {
                     var withBlock = mComputationStats.PercentCompositions[elementId];
