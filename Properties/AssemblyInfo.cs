@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Molecular Weight Calculator - VB.NET Dll Version")]
+[assembly: AssemblyTitle("Molecular Weight Calculator - .NET Dll Version")]
 [assembly: AssemblyDescription("Written by Matthew Monroe for the Department of Energy (at PNNL); matthew.monroe@pnnl.gov or proteomics@pnnl.gov")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Pacific Northwest National Laboratory")]
-[assembly: AssemblyProduct("Molecular Weight Calculator - VB.NET Dll Version")]
+[assembly: AssemblyProduct("Molecular Weight Calculator - .NET Dll Version")]
 [assembly: AssemblyCopyright("Licensed under the Apache License, Version 2.0")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

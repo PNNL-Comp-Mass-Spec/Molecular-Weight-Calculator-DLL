@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{78332537-7ECC-4B74-8AA9-BA66AB296AF0}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MwtWinDll</RootNamespace>
-    <AssemblyName>MwtWinDll</AssemblyName>
+    <RootNamespace>MolecularWeightCalculator</RootNamespace>
+    <AssemblyName>MolecularWeightCalculator</AssemblyName>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\MwtWinDll.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\MolecularWeightCalculator.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>

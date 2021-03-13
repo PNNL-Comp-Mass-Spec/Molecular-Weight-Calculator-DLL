@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualBasic;
 
-namespace MwtWinDll
+namespace MolecularWeightCalculator
 {
     public class Compound
     {

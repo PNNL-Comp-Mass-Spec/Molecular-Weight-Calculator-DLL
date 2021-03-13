@@ -1,4 +1,4 @@
-﻿namespace MwtWinDll
+﻿namespace MolecularWeightCalculator
 {
     public class FormulaFinderOptions
     {

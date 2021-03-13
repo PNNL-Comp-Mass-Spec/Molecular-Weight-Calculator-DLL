@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace MwtWinDll
+namespace MolecularWeightCalculator
 {
     public class CapillaryFlow
     {

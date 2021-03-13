@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace MwtWinDll
+namespace MolecularWeightCalculator
 {
     class NumberConverter
     {

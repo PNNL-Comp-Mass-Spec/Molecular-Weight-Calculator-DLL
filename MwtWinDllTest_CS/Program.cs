@@ -1,5 +1,5 @@
 ﻿using System;
-using MwtWinDll;
+using MolecularWeightCalculator;
 
 namespace MwtWinDllTestCS
 {

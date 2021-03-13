@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace MwtWinDll
+namespace MolecularWeightCalculator
 {
     public class FormulaFinder
     {

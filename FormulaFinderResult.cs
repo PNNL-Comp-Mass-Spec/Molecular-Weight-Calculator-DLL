@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MwtWinDll
+namespace MolecularWeightCalculator
 {
     public class FormulaFinderResult
     {

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace MwtWinDll
+namespace MolecularWeightCalculator
 {
     public class MoleMassDilution
     {
