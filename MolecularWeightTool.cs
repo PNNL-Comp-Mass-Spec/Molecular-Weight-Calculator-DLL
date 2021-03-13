@@ -527,9 +527,6 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         internal static char DetermineDecimalPoint()
         {
-            string strTestNumber;
-            double sglConversionResult;
-
             // In VB6, the Trim(Str(Cdbl(...))) statement causes an error when the
             // user's computer is configured for using , for decimal points but not . for the
             // thousand's separator (instead, perhaps, using a space for thousands)
@@ -538,8 +535,8 @@ namespace MolecularWeightCalculator
             try
             {
                 // Determine what locale we're in (. or , for decimal point)
-                strTestNumber = "5,500";
-                sglConversionResult = Conversions.ToDouble(strTestNumber);
+                var strTestNumber = "5,500";
+                var sglConversionResult = Conversions.ToDouble(strTestNumber);
                 if (Math.Abs(sglConversionResult - 5.5d) < float.Epsilon)
                 {
                     // Use comma as Decimal point

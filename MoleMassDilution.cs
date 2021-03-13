@@ -370,11 +370,6 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public double ConvertAmount(double dblAmountIn, uamUnitsAmountConstants eCurrentUnits, uamUnitsAmountConstants eNewUnits)
         {
-            double dblValue, dblFactor;
-            double dblSampleMass, dblSampleDensity;
-            uevUnitsExtendedVolumeConstants eCurrentVolumeUnits;
-            uevUnitsExtendedVolumeConstants eNewVolumeUnits;
-
             if (eCurrentUnits == eNewUnits)
             {
                 // No conversion, simply return dblAmountIn
@@ -386,17 +381,18 @@ namespace MolecularWeightCalculator
                 // Converting from one volume unit to another volume unit
                 // No need to explicitly specify mass or density
 
-                eCurrentVolumeUnits = (uevUnitsExtendedVolumeConstants)Conversions.ToInteger((int)eCurrentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
-                eNewVolumeUnits = (uevUnitsExtendedVolumeConstants)Conversions.ToInteger((int)eNewUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+                var eCurrentVolumeUnits = (uevUnitsExtendedVolumeConstants)Conversions.ToInteger((int)eCurrentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+                var eNewVolumeUnits = (uevUnitsExtendedVolumeConstants)Conversions.ToInteger((int)eNewUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
 
                 return ConvertVolumeExtended(dblAmountIn, eCurrentVolumeUnits, eNewVolumeUnits);
             }
             else
             {
-                dblSampleMass = mQuantity.SampleMass;
-                dblSampleDensity = mQuantity.SampleDensity;
+                var dblSampleMass = mQuantity.SampleMass;
+                var dblSampleDensity = mQuantity.SampleDensity;
 
-                dblFactor = FactorAmount(eCurrentUnits, dblSampleMass, dblSampleDensity);
+                var dblFactor = FactorAmount(eCurrentUnits, dblSampleMass, dblSampleDensity);
+                double dblValue;
                 if (dblFactor < 0d)
                 {
                     return -1;
@@ -428,17 +424,16 @@ namespace MolecularWeightCalculator
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public double ConvertConcentration(double dblConcentrationIn, ummcUnitsMoleMassConcentrationConstants eCurrentUnits, ummcUnitsMoleMassConcentrationConstants eNewUnits)
         {
-            double dblValue, dblFactor;
-            double dblSampleMass;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblConcentrationIn;
             }
 
-            dblSampleMass = mQuantity.SampleMass;
+            var dblSampleMass = mQuantity.SampleMass;
 
-            dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass);
+            var dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass);
             if (dblFactor < 0d)
             {
                 return -1;
@@ -461,14 +456,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertVolumeExtended(double dblVolume, uevUnitsExtendedVolumeConstants eCurrentUnits, uevUnitsExtendedVolumeConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblVolume;
             }
 
-            dblFactor = FactorVolumeExtended(eCurrentUnits);
+            var dblFactor = FactorVolumeExtended(eCurrentUnits);
             if (dblFactor < 0d)
             {
                 return -1;

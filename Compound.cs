@@ -65,9 +65,7 @@ namespace MolecularWeightCalculator
         public string ConvertToEmpirical()
         {
             // Converts mStrFormula to its empirical formula and returns the result
-            string strResult;
-
-            strResult = ElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula);
+            var strResult = ElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula);
             UpdateErrorAndCaution();
 
             if (string.IsNullOrEmpty(mErrorDescription))
@@ -98,10 +96,7 @@ namespace MolecularWeightCalculator
         public string ExpandAbbreviations()
         {
             // Expands abbreviations in mStrFormula and returns the result
-
-            string strResult;
-
-            strResult = ElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula);
+            var strResult = ElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula);
             UpdateErrorAndCaution();
 
             if (string.IsNullOrEmpty(mErrorDescription))
@@ -155,14 +150,12 @@ namespace MolecularWeightCalculator
         {
             // Returns the percent composition and standard deviation for element
             // Returns "" if an invalid ID
-            string strElementSymbol;
-            string strPctComposition;
 
             if (elementId >= 1 && elementId <= ElementAndMassTools.ELEMENT_COUNT)
             {
                 var compStats = mComputationStats.PercentCompositions[elementId];
-                strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) + ":";
-                strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(compStats.PercentComposition, compStats.StdDeviation, blnIncludeStandardDeviation, true);
+                var strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) + ":";
+                var strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(compStats.PercentComposition, compStats.StdDeviation, blnIncludeStandardDeviation, true);
                 if (compStats.PercentComposition < 10d)
                 {
                     strPctComposition = " " + strPctComposition;
@@ -222,12 +215,9 @@ namespace MolecularWeightCalculator
         {
             // Returns the number of unique elements present in mStrFormula
 
-            short intTotalElements;
-            short intElementIndex;
-
             // Determine # of elements in formula
-            intTotalElements = 0;
-            for (intElementIndex = 1; intElementIndex <= ElementAndMassTools.ELEMENT_COUNT; intElementIndex++)
+            short intTotalElements = 0;
+            for (int intElementIndex = 1; intElementIndex <= ElementAndMassTools.ELEMENT_COUNT; intElementIndex++)
             {
                 // Increment .TotalElements if element is present
                 if (mComputationStats.Elements[intElementIndex].Used)
@@ -279,7 +269,6 @@ namespace MolecularWeightCalculator
         public bool XIsPresentAfterBracket()
         {
             bool XIsPresentAfterBracketRet = default;
-            short intCharLoc;
 
             if (ElementAndMassRoutines.gComputationOptions.BracketsAsParentheses)
             {
@@ -288,7 +277,7 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                intCharLoc = (short)Strings.InStr(Strings.LCase(mStrFormattedFormula), "[x");
+                var intCharLoc = (short)Strings.InStr(Strings.LCase(mStrFormattedFormula), "[x");
                 if (intCharLoc > 0)
                 {
                     if (Strings.Mid(mStrFormattedFormula, intCharLoc + 1, 1) != "e")

@@ -346,9 +346,9 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public double ComputeBackPressure(uprUnitsPressureConstants eUnits = uprUnitsPressureConstants.uprPsi)
         {
-            double dblBackPressure, dblRadius;
+            double dblBackPressure;
 
-            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
 
             if (Math.Abs(dblRadius) > float.Epsilon)
             {
@@ -390,9 +390,9 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public double ComputeColumnLength(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
         {
-            double dblColumnLength, dblRadius;
+            double dblColumnLength;
 
-            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
 
             if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.VolumetricFlowRate) > float.Epsilon)
             {
@@ -430,11 +430,9 @@ namespace MolecularWeightCalculator
         {
             // Computes the column volume and returns it (does not store it)
 
-            double dblColumnVolume, dblRadius;
+            var dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
 
-            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
-
-            dblColumnVolume = mCapillaryFlowParameters.ColumnLength * PI * Math.Pow(dblRadius, 2d); // In mL
+            var dblColumnVolume = mCapillaryFlowParameters.ColumnLength * PI * Math.Pow(dblRadius, 2d);
 
             if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
             {
@@ -522,9 +520,6 @@ namespace MolecularWeightCalculator
 
         private void ComputeExtraColumnBroadeningValues()
         {
-            double dblInitialPeakVariance;
-            double dblSumOfVariances;
-
             if (Math.Abs(mExtraColumnBroadeningParameters.LinearVelocity) > float.Epsilon && Math.Abs(mExtraColumnBroadeningParameters.DiffusionCoefficient) > float.Epsilon)
             {
                 mExtraColumnBroadeningParameters.TemporalVariance = Math.Pow(mExtraColumnBroadeningParameters.OpenTubeID, 2d) * mExtraColumnBroadeningParameters.OpenTubeLength / (96d * mExtraColumnBroadeningParameters.DiffusionCoefficient * mExtraColumnBroadeningParameters.LinearVelocity / 60d); // in sec^2
@@ -534,9 +529,9 @@ namespace MolecularWeightCalculator
                 mExtraColumnBroadeningParameters.TemporalVariance = 0d;
             }
 
-            dblInitialPeakVariance = Math.Pow(mExtraColumnBroadeningParameters.InitialPeakWidth / 4d, 2d);
+            var dblInitialPeakVariance = Math.Pow(mExtraColumnBroadeningParameters.InitialPeakWidth / 4d, 2d);
 
-            dblSumOfVariances = dblInitialPeakVariance + mExtraColumnBroadeningParameters.TemporalVariance + mExtraColumnBroadeningParameters.AdditionalTemporalVariance;
+            var dblSumOfVariances = dblInitialPeakVariance + mExtraColumnBroadeningParameters.TemporalVariance + mExtraColumnBroadeningParameters.AdditionalTemporalVariance;
 
             if (dblSumOfVariances >= 0d)
             {
@@ -557,14 +552,14 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public double ComputeLinearVelocity(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec, bool blnRecalculateVolFlowRate = true)
         {
-            double dblLinearVelocity, dblRadius;
+            double dblLinearVelocity;
 
             if (blnRecalculateVolFlowRate)
             {
                 ComputeVolFlowRate(ufrUnitsFlowRateConstants.ufrMLPerMin);
             }
 
-            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
             if (Math.Abs(dblRadius) > float.Epsilon)
             {
                 dblLinearVelocity = mCapillaryFlowParameters.VolumetricFlowRate / (PI * Math.Pow(dblRadius, 2d)); // Units in cm/min
@@ -637,20 +632,18 @@ namespace MolecularWeightCalculator
 
         public double ComputeMeCNViscosity(double dblPercentAcetonitrile, double dblTemperature, utpUnitsTemperatureConstants eTemperatureUnits = utpUnitsTemperatureConstants.utpCelsius, uviUnitsViscosityConstants eViscosityUnits = uviUnitsViscosityConstants.uviPoise)
         {
-            double dblPhi; // Fraction Acetonitrile
-            double dblKelvin;
-            double dblViscosityInCentiPoise;
             try
             {
-                dblPhi = dblPercentAcetonitrile / 100.0d;
+                var dblPhi = dblPercentAcetonitrile / 100.0d; // Fraction Acetonitrile
                 if (dblPhi < 0d)
                     dblPhi = 0d;
 
                 if (dblPhi > 100d)
                     dblPhi = 100d;
 
-                dblKelvin = ConvertTemperature(dblTemperature, eTemperatureUnits, utpUnitsTemperatureConstants.utpKelvin);
+                var dblKelvin = ConvertTemperature(dblTemperature, eTemperatureUnits, utpUnitsTemperatureConstants.utpKelvin);
 
+                double dblViscosityInCentiPoise;
                 if (dblKelvin > 0d)
                 {
                     dblViscosityInCentiPoise = Math.Exp(dblPhi * (-3.476d + 726d / dblKelvin) + (1d - dblPhi) * (-5.414d + 1566d / dblKelvin) + dblPhi * (1d - dblPhi) * (-1.762d + 929d / dblKelvin));
@@ -675,9 +668,9 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public double ComputeVolFlowRate(ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
         {
-            double dblVolFlowRate, dblRadius;
+            double dblVolFlowRate;
 
-            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
 
             if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.ColumnLength) > float.Epsilon)
             {
@@ -727,9 +720,9 @@ namespace MolecularWeightCalculator
             uprUnitsPressureConstants ePressureUnits = uprUnitsPressureConstants.uprPsi)
         {
             dblNewBackPressure = 0;
-            double dblVolFlowRate, dblRadius;
+            double dblVolFlowRate;
 
-            dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
 
             // First find vol flow rate that gives observed dead time
             if (Math.Abs(mCapillaryFlowParameters.ColumnDeadTime) > float.Epsilon)
@@ -771,17 +764,16 @@ namespace MolecularWeightCalculator
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public double ConvertConcentration(double dblConcentrationIn, ucoUnitsConcentrationConstants eCurrentUnits, ucoUnitsConcentrationConstants eNewUnits)
         {
-            double dblValue, dblFactor;
-            double dblSampleMass;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblConcentrationIn;
             }
 
-            dblSampleMass = mMassRateParameters.SampleMass;
+            var dblSampleMass = mMassRateParameters.SampleMass;
 
-            dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass);
+            var dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -804,14 +796,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertDiffusionCoefficient(double dblDiffusionCoefficientIn, udcDiffusionCoefficientConstants eCurrentUnits, udcDiffusionCoefficientConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblDiffusionCoefficientIn;
             }
 
-            dblFactor = FactorDiffusionCoeff(eCurrentUnits);
+            var dblFactor = FactorDiffusionCoeff(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -834,14 +826,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertLength(double dblLengthIn, ulnUnitsLengthConstants eCurrentUnits, ulnUnitsLengthConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblLengthIn;
             }
 
-            dblFactor = FactorLength(eCurrentUnits);
+            var dblFactor = FactorLength(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -864,14 +856,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertLinearVelocity(double dblLinearVelocityIn, ulvUnitsLinearVelocityConstants eCurrentUnits, ulvUnitsLinearVelocityConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblLinearVelocityIn;
             }
 
-            dblFactor = FactorLinearVelocity(eCurrentUnits);
+            var dblFactor = FactorLinearVelocity(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -894,14 +886,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertMassFlowRate(double dblMassFlowRateIn, umfMassFlowRateConstants eCurrentUnits, umfMassFlowRateConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblMassFlowRateIn;
             }
 
-            dblFactor = FactorMassFlowRate(eCurrentUnits);
+            var dblFactor = FactorMassFlowRate(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -924,14 +916,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertMoles(double dblMolesIn, umaMolarAmountConstants eCurrentUnits, umaMolarAmountConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblMolesIn;
             }
 
-            dblFactor = FactorMoles(eCurrentUnits);
+            var dblFactor = FactorMoles(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -954,14 +946,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertPressure(double dblPressureIn, uprUnitsPressureConstants eCurrentUnits, uprUnitsPressureConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblPressureIn;
             }
 
-            dblFactor = FactorPressure(eCurrentUnits);
+            var dblFactor = FactorPressure(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -1033,14 +1025,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertTime(double dblTimeIn, utmUnitsTimeConstants eCurrentUnits, utmUnitsTimeConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblTimeIn;
             }
 
-            dblFactor = FactorTime(eCurrentUnits);
+            var dblFactor = FactorTime(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -1063,14 +1055,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertViscosity(double dblViscosityIn, uviUnitsViscosityConstants eCurrentUnits, uviUnitsViscosityConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblViscosityIn;
             }
 
-            dblFactor = FactorViscosity(eCurrentUnits);
+            var dblFactor = FactorViscosity(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -1093,14 +1085,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertVolFlowRate(double dblVolFlowRateIn, ufrUnitsFlowRateConstants eCurrentUnits, ufrUnitsFlowRateConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblVolFlowRateIn;
             }
 
-            dblFactor = FactorVolFlowRate(eCurrentUnits);
+            var dblFactor = FactorVolFlowRate(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;
@@ -1123,14 +1115,14 @@ namespace MolecularWeightCalculator
 
         public double ConvertVolume(double dblVolume, uvoUnitsVolumeConstants eCurrentUnits, uvoUnitsVolumeConstants eNewUnits)
         {
-            double dblValue, dblFactor;
+            double dblValue;
 
             if (eCurrentUnits == eNewUnits)
             {
                 return dblVolume;
             }
 
-            dblFactor = FactorVolume(eCurrentUnits);
+            var dblFactor = FactorVolume(eCurrentUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
                 return -1;

@@ -529,7 +529,6 @@ namespace MwtWinDllTest
         {
             // If intDecimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
             var TextCol = new DataGridTextBoxColumn();
-            int i;
 
             TextCol.MappingName = strMappingName;
             TextCol.HeaderText = strHeaderText;
@@ -542,6 +541,7 @@ namespace MwtWinDllTest
             else if (intDecimalPlaces >= 0)
             {
                 TextCol.Format = "0.";
+                int i;
                 for (i = 0; i < intDecimalPlaces; i++)
                     TextCol.Format += "0";
             }
@@ -645,15 +645,13 @@ namespace MwtWinDllTest
             // Add the table to the DataSet.
             myDataSet.Tables.Add(tDataTable);
 
-            // Populates the table.
-            DataRow newRow;
-
             // Append rows to the table.
             int lngIndex;
 
             for (lngIndex = 0; lngIndex < lngIonCount; lngIndex++)
             {
-                newRow = tDataTable.NewRow();
+                // Populates the table.
+                var newRow = tDataTable.NewRow();
                 newRow["Mass"] = udtFragSpectrum[lngIndex].Mass;
                 newRow["Intensity"] = udtFragSpectrum[lngIndex].Intensity;
                 newRow["Symbol"] = udtFragSpectrum[lngIndex].Symbol;
@@ -721,20 +719,15 @@ namespace MwtWinDllTest
         {
             int intResult;
             int lngIndex;
-            int lngItemCount;
             string strSymbol = string.Empty;
             string strFormula = string.Empty;
             var sngCharge = default(float);
-            var blnIsAminoAcid = default(bool);
             string strOneLetterSymbol = string.Empty;
             string strComment = string.Empty;
             string strStatement = string.Empty;
             var dblMass = default(double);
             var dblUncertainty = default(double);
             short intIsotopeCount = default, intIsotopeCount2 = default;
-            double[] dblIsotopeMasses;
-            float[] sngIsotopeAbundances;
-            double dblNewPressure;
 
             var objResults = new frmTextbrowser();
 
@@ -744,10 +737,10 @@ namespace MwtWinDllTest
             objResults.SetText = string.Empty;
 
             // Test Abbreviations
-            lngItemCount = mMwtWin.GetAbbreviationCount();
+            var lngItemCount = mMwtWin.GetAbbreviationCount();
             for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
-                intResult = mMwtWin.GetAbbreviation(intIndex, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out strOneLetterSymbol, out strComment);
+                intResult = mMwtWin.GetAbbreviation(intIndex, out strSymbol, out strFormula, out sngCharge, out var blnIsAminoAcid, out strOneLetterSymbol, out strComment);
                 Debug.Assert(intResult == 0, "");
                 Debug.Assert(mMwtWin.GetAbbreviationID(strSymbol) == intIndex, "");
 
@@ -778,8 +771,8 @@ namespace MwtWinDllTest
                 intResult = mMwtWin.SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, false);
                 Debug.Assert(intResult == 0, "");
 
-                dblIsotopeMasses = new double[intIsotopeCount + 1 + 1];
-                sngIsotopeAbundances = new float[intIsotopeCount + 1 + 1];
+                var dblIsotopeMasses = new double[intIsotopeCount + 1 + 1];
+                var sngIsotopeAbundances = new float[intIsotopeCount + 1 + 1];
 
                 intResult = mMwtWin.GetElementIsotopes((short)intIndex, ref intIsotopeCount2, ref dblIsotopeMasses, ref sngIsotopeAbundances);
                 Debug.Assert(intIsotopeCount == intIsotopeCount2, "");
@@ -861,7 +854,7 @@ namespace MwtWinDllTest
 
             // Confirm that auto-compute worked
 
-            objResults.AppendText("Vol flow rate: " + capFlow.ComputeVolFlowRateUsingDeadTime(out dblNewPressure, CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin, CapillaryFlow.uprUnitsPressureConstants.uprPsi) + "  (confirmation of computed volumetric flow rate)");
+            objResults.AppendText("Vol flow rate: " + capFlow.ComputeVolFlowRateUsingDeadTime(out var dblNewPressure, CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin, CapillaryFlow.uprUnitsPressureConstants.uprPsi) + "  (confirmation of computed volumetric flow rate)");
             objResults.AppendText("New pressure: " + dblNewPressure);
 
             objResults.AppendText("");
@@ -910,8 +903,6 @@ namespace MwtWinDllTest
             udtFragSpectrumOptions.Initialize();
 
             Peptide.udtFragmentationSpectrumDataType[] udtFragSpectrum = null;
-            int lngIonCount;
-            string strNewSeq;
 
             var peptide = mMwtWin.Peptide;
             peptide.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G");
@@ -931,7 +922,7 @@ namespace MwtWinDllTest
             // Can define that the * modification equals 15
             peptide.SetModificationSymbol("*", 15d, false, "");
 
-            strNewSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys";
+            var strNewSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys";
             objResults.AppendText(strNewSeq);
             peptide.SetSequence(strNewSeq);
 
@@ -957,7 +948,7 @@ namespace MwtWinDllTest
 
             peptide.SetFragmentationSpectrumOptions(udtFragSpectrumOptions);
 
-            lngIonCount = peptide.GetFragmentationMasses(ref udtFragSpectrum);
+            var lngIonCount = peptide.GetFragmentationMasses(ref udtFragSpectrum);
 
             MakeDataSet(lngIonCount, udtFragSpectrum);
             dgDataGrid.SetDataBinding(myDataSet, "DataTable1");
@@ -966,7 +957,6 @@ namespace MwtWinDllTest
 
             short intSuccess;
             string strResults = string.Empty;
-            double[,] ConvolutedMSData2DOneBased;
             var ConvolutedMSDataCount = default(int);
 
             // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
@@ -974,7 +964,7 @@ namespace MwtWinDllTest
             bool blnAddProtonChargeCarrier = true;
             objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState);
 
-            ConvolutedMSData2DOneBased = new double[1, 2];
+            var ConvolutedMSData2DOneBased = new double[1, 2];
             string argstrFormulaIn = "C1255H43O2Cl";
             intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount);
             objResults.AppendText(strResults);
@@ -1162,16 +1152,14 @@ namespace MwtWinDllTest
             }
 
             // Add the table to the DataSet.
-            myDataSet.Tables.Add(tDataTable);
-
-            // Populates the table.
-            DataRow newRow;
+            myDataSet.Tables.Add(tDataTable);;
 
             var sbPercentCompInfo = new StringBuilder();
 
             foreach (var result in lstResults)
             {
-                newRow = tDataTable.NewRow();
+                // Populates the table.
+                var newRow = tDataTable.NewRow();
                 newRow["Formula"] = result.EmpiricalFormula;
                 newRow["Mass"] = Math.Round(result.Mass, 4);
 
@@ -1222,19 +1210,10 @@ namespace MwtWinDllTest
 
             int lngMultipleIteration;
 
-            string strProtein, strPeptideResidues;
             int lngResidueStart = default, lngResidueEnd = default;
-            string[] strPeptideNameMwtWin;
-            string strPeptideName;
 
-            int lngMwtWinResultCount;
-            int lngMwtWinDimCount;
             int lngIndex;
-            float lngResidueRand, lngProteinLengthRand;
-            string strNewResidue;
 
-            int lngStartTime, lngStopTime;
-            int lngMwtWinWorkTime;
             string strPeptideFragMwtWin;
             var lngMatchCount = default(int);
 
@@ -1242,8 +1221,8 @@ namespace MwtWinDllTest
 
             lblProgress.Text = string.Empty;
 
-            lngMwtWinDimCount = DIM_CHUNK;
-            strPeptideNameMwtWin = new string[lngMwtWinDimCount + 1];
+            int lngMwtWinDimCount = DIM_CHUNK;
+            var strPeptideNameMwtWin = new string[lngMwtWinDimCount + 1];
 
             Cursor = Cursors.WaitCursor;
 
@@ -1265,7 +1244,7 @@ namespace MwtWinDllTest
             //strProtein = "MGNISFLTGGNPSSPQSIAESIYQLENTSVVFLSAWQRTTPDFQRAARASQEAMLHLDHIVNEIMRNRDQLQADGTYTGSQLEGLLNISRAVSVSPVTRAEQDDLANYGPGNGVLPSAGSSISMEKLLNKIKHRRTNSANFRIGASGEHIFIIGVDKPNRQPDSIVEFIVGDFCQHCSDIAALI"
 
             // Bigger protein
-            strProtein = "MMKANVTKKTLNEGLGLLERVIPSRSSNPLLTALKVETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVRNLGGELVELELSGQELSVRSGGSDFKLQTGDIEAYPPLSFPAQADVSLDGGELSRAFSSVRYAASNEAFQAVFRGIKLEHHGESARVVASDGYRVAIRDFPASGDGKNLIIPARSVDELIRVLKDGEARFTYGDGMLTVTTDRVKMNLKLLDGDFPDYERVIPKDIKLQVTLPATALKEAVNRVAVLADKNANNRVEFLVSEGTLRLAAEGDYGRAQDTLSVTQGGTEQAMSLAFNARHVLDALGPIDGDAELLFSGSTSPAIFRARRWGRRVYGGHGHAARLRGLLRPLRGMSALAHHPESSPPLEPRPEFA";
+            var strProtein = "MMKANVTKKTLNEGLGLLERVIPSRSSNPLLTALKVETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVRNLGGELVELELSGQELSVRSGGSDFKLQTGDIEAYPPLSFPAQADVSLDGGELSRAFSSVRYAASNEAFQAVFRGIKLEHHGESARVVASDGYRVAIRDFPASGDGKNLIIPARSVDELIRVLKDGEARFTYGDGMLTVTTDRVKMNLKLLDGDFPDYERVIPKDIKLQVTLPATALKEAVNRVAVLADKNANNRVEFLVSEGTLRLAAEGDYGRAQDTLSVTQGGTEQAMSLAFNARHVLDALGPIDGDAELLFSGSTSPAIFRARRWGRRVYGGHGHAARLRGLLRPLRGMSALAHHPESSPPLEPRPEFA";
 
             objResults.AppendText("Testing GetTrypticNameMultipleMatches() function");
             objResults.AppendText("MatchList for NL: " + mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, "NL", lngMatchCount));
@@ -1284,7 +1263,7 @@ namespace MwtWinDllTest
                 {
                     // Make sure lngResidueStart and lngResidueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
-                    strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, Strings.Mid(strProtein, lngResidueStart, lngResidueEnd - lngResidueStart + 1));
+                    var strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, Strings.Mid(strProtein, lngResidueStart, lngResidueEnd - lngResidueStart + 1));
                     Debug.Assert(Strings.InStr(strPeptideName, "t" + Strings.Trim(Conversion.Str(lngIndex))) > 0, "");
                 }
             }
@@ -1307,20 +1286,21 @@ namespace MwtWinDllTest
             for (lngMultipleIteration = 1; lngMultipleIteration <= ITERATIONS_TO_RUN; lngMultipleIteration++)
             {
                 // Generate random protein
-                lngProteinLengthRand = Conversion.Int((MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) * VBMath.Rnd() + MIN_PROTEIN_LENGTH);
+                var lngProteinLengthRand = Conversion.Int((MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) * VBMath.Rnd() + MIN_PROTEIN_LENGTH);
 
                 strProtein = "";
+                float lngResidueRand;
                 for (lngResidueRand = 1f; lngResidueRand <= lngProteinLengthRand; lngResidueRand++)
                 {
-                    strNewResidue = Strings.Mid(POSSIBLE_RESIDUES, (int)Math.Round(Conversion.Int(Strings.Len(POSSIBLE_RESIDUES)) * VBMath.Rnd() + 1f), 1);
+                    var strNewResidue = Strings.Mid(POSSIBLE_RESIDUES, (int)Math.Round(Conversion.Int(Strings.Len(POSSIBLE_RESIDUES)) * VBMath.Rnd() + 1f), 1);
                     strProtein += strNewResidue;
                 }
 
                 objResults.AppendText("Iteration: " + lngMultipleIteration + " = " + strProtein);
 
-                lngMwtWinResultCount = 0;
+                var lngMwtWinResultCount = 0;
                 Debug.Write("Starting residue is ");
-                lngStartTime = modMwtWinDllTest.GetTickCount();
+                var lngStartTime = modMwtWinDllTest.GetTickCount();
                 for (lngResidueStart = 0; lngResidueStart < strProtein.Length; lngResidueStart++)
                 {
                     if (lngResidueStart % 10 == 0)
@@ -1336,7 +1316,7 @@ namespace MwtWinDllTest
                             break;
                         }
 
-                        strPeptideResidues = Strings.Mid(strProtein, lngResidueStart, lngResidueEnd);
+                        var strPeptideResidues = Strings.Mid(strProtein, lngResidueStart, lngResidueEnd);
                         strPeptideNameMwtWin[lngMwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(strProtein, strPeptideResidues, out _, out _, true);
 
                         lngMwtWinResultCount += 1;
@@ -1348,8 +1328,8 @@ namespace MwtWinDllTest
                     }
                 }
 
-                lngStopTime = modMwtWinDllTest.GetTickCount();
-                lngMwtWinWorkTime = lngStopTime - lngStartTime;
+                var lngStopTime = modMwtWinDllTest.GetTickCount();
+                var lngMwtWinWorkTime = lngStopTime - lngStartTime;
                 Console.WriteLine("");
                 Console.WriteLine("MwtWin time (" + lngMwtWinResultCount + " peptides) = " + lngMwtWinWorkTime + " msec");
 

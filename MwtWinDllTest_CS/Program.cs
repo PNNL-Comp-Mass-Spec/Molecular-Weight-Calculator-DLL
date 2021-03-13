@@ -111,7 +111,7 @@ namespace MwtWinDllTestCS
                 mwtWin.Compound.SetFormula(testFormula);
                 Console.WriteLine(testFormula + " auto-capitalizes to " + mwtWin.Compound.FormulaCapitalized);
                 Console.WriteLine("{0,-18}  {1}", elementModeDescription + " Mass:", mwtWin.Compound.Mass);
-           }
+            }
         }
     }
 }

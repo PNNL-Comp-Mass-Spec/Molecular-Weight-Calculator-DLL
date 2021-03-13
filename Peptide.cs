@@ -289,21 +289,14 @@ namespace MolecularWeightCalculator
             // is added to ModificationSymbols()
             // Returns the total length of all modifications found
 
-            int intCompareIndex, intSequenceStrLength;
-            string strModSymbolGroup;
-            int intModificationID = default, intModSymbolLengthTotal;
-            string strTestChar;
-            int intSubPartLength;
-            bool blnMatchFound;
-
-            intSequenceStrLength = strPartialSequence.Length;
+            var intSequenceStrLength = strPartialSequence.Length;
 
             // Find the entire group of potential modification symbols
-            strModSymbolGroup = string.Empty;
-            intCompareIndex = 0;
+            var strModSymbolGroup = string.Empty;
+            var intCompareIndex = 0;
             while (intCompareIndex < intSequenceStrLength)
             {
-                strTestChar = strPartialSequence.Substring(intCompareIndex, 1);
+                var strTestChar = strPartialSequence.Substring(intCompareIndex, 1);
                 if (ElementAndMassRoutines.IsModSymbolInternal(strTestChar))
                 {
                     strModSymbolGroup += strTestChar;
@@ -316,13 +309,15 @@ namespace MolecularWeightCalculator
                 intCompareIndex += 1;
             }
 
-            intModSymbolLengthTotal = strModSymbolGroup.Length;
+            var intModSymbolLengthTotal = strModSymbolGroup.Length;
             while (strModSymbolGroup.Length > 0)
             {
                 // Step through strModSymbolGroup to see if all of it or parts of it match any of the defined
                 // modification symbols
 
-                blnMatchFound = false;
+                int intModificationID = default;
+                var blnMatchFound = false;
+                int intSubPartLength;
                 for (intSubPartLength = strModSymbolGroup.Length; intSubPartLength >= 1; intSubPartLength -= 1)
                 {
                     // See if the modification is already defined
@@ -389,9 +384,8 @@ namespace MolecularWeightCalculator
             // all of the potential neutral losses
 
             itIonTypeConstants eIonIndex;
-            short intIonCount;
 
-            intIonCount = 0;
+            short intIonCount = 0;
 
             for (eIonIndex = 0; eIonIndex <= ION_TYPE_MAX; eIonIndex++)
             {
@@ -436,13 +430,12 @@ namespace MolecularWeightCalculator
             // Returns a variable of type udtResidueType containing strSymbol as the residue symbol
             // If strSymbol is a valid amino acid type, then also updates udtResidue with the default information
 
-            string strSymbol3Letter;
             int lngAbbrevID;
             var udtResidue = new udtResidueType();
 
             // Initialize the UDTs
             udtResidue.Initialize();
-            strSymbol3Letter = string.Empty;
+            var strSymbol3Letter = string.Empty;
 
             if (strSymbol.Length > 0)
             {
@@ -493,9 +486,7 @@ namespace MolecularWeightCalculator
         {
             // Old: Func GetFragmentationMasses(lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
 
-            List<udtFragmentationSpectrumDataType> lstFragSpectraData;
-
-            lstFragSpectraData = GetFragmentationMasses();
+            var lstFragSpectraData = GetFragmentationMasses();
 
             if (lstFragSpectraData.Count == 0)
             {
@@ -516,25 +507,11 @@ namespace MolecularWeightCalculator
             const int MAX_CHARGE = 3;
 
             int lngResidueIndex;
-            short intChargeIndex, intShoulderIndex;
             itIonTypeConstants eIonType;
             int lngIndex;
-            int lngPredictedIonCount, lngIonCount;
-            float[] sngIonIntensities;
-            sngIonIntensities = new float[5];
-            float sngIonShoulderIntensity, sngNeutralLossIntensity;
+            var sngIonIntensities = new float[5];
 
-            bool[] blnShowCharge;
-            float[] sngChargeThreshold;
-
-            float sngConvolutedMass, sngBaseMass, sngObservedMass;
-            string strResidues;
             var blnPhosphorylated = default(bool);
-            float sngIntensity;
-            string strIonSymbol, strIonSymbolGeneric;
-            udtFragmentationSpectrumDataType[] FragSpectrumWork;
-
-            int[] PointerArray;
 
             if (ResidueCount == 0)
             {
@@ -542,15 +519,15 @@ namespace MolecularWeightCalculator
                 return new List<udtFragmentationSpectrumDataType>();
             }
 
-            blnShowCharge = new bool[4];
-            sngChargeThreshold = new float[4];
+            var blnShowCharge = new bool[4];
+            var sngChargeThreshold = new float[4];
 
             // Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
             for (eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
                 sngIonIntensities[(int)eIonType] = (float)mFragSpectrumOptions.IntensityOptions.IonType[(int)eIonType];
 
-            sngIonShoulderIntensity = (float)mFragSpectrumOptions.IntensityOptions.BYIonShoulder;
-            sngNeutralLossIntensity = (float)mFragSpectrumOptions.IntensityOptions.NeutralLoss;
+            var sngIonShoulderIntensity = (float)mFragSpectrumOptions.IntensityOptions.BYIonShoulder;
+            var sngNeutralLossIntensity = (float)mFragSpectrumOptions.IntensityOptions.NeutralLoss;
 
             if (MAX_CHARGE >= 2)
             {
@@ -566,16 +543,16 @@ namespace MolecularWeightCalculator
 
             // Populate sngIonMassesZeroBased() and sngIonIntensitiesZeroBased()
             // Put ion descriptions in strIonSymbolsZeroBased
-            lngPredictedIonCount = GetFragmentationSpectrumRequiredDataPoints();
+            var lngPredictedIonCount = GetFragmentationSpectrumRequiredDataPoints();
 
             if (lngPredictedIonCount == 0)
                 lngPredictedIonCount = ResidueCount;
-            FragSpectrumWork = new udtFragmentationSpectrumDataType[lngPredictedIonCount + 1];
+            var FragSpectrumWork = new udtFragmentationSpectrumDataType[lngPredictedIonCount + 1];
 
             // Need to update the residue masses in case the modifications have changed
             UpdateResidueMasses();
 
-            lngIonCount = 0;
+            var lngIonCount = 0;
             for (lngResidueIndex = 1; lngResidueIndex <= ResidueCount; lngResidueIndex++)
             {
                 var residue = Residues[lngResidueIndex];
@@ -591,17 +568,19 @@ namespace MolecularWeightCalculator
                         else
                         {
                             // Ion is used
-                            sngBaseMass = (float)residue.IonMass[(int)eIonType]; // Already in the H+ state
-                            sngIntensity = sngIonIntensities[(int)eIonType];
+                            var sngBaseMass = (float)residue.IonMass[(int)eIonType];
+                            var sngIntensity = sngIonIntensities[(int)eIonType];
 
                             // Get the list of residues preceding or following this residue
                             // Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() functions below
-                            strResidues = GetInternalResidues(lngResidueIndex, eIonType, ref blnPhosphorylated);
+                            var strResidues = GetInternalResidues(lngResidueIndex, eIonType, ref blnPhosphorylated);
 
+                            short intChargeIndex;
                             for (intChargeIndex = 1; intChargeIndex <= MAX_CHARGE; intChargeIndex++)
                             {
                                 if (intChargeIndex == 1 || intChargeIndex > 1 && blnShowCharge[intChargeIndex])
                                 {
+                                    float sngConvolutedMass;
                                     if (intChargeIndex == 1)
                                     {
                                         sngConvolutedMass = sngBaseMass;
@@ -622,7 +601,8 @@ namespace MolecularWeightCalculator
 
                                         // Y and Z Ions are numbered in decreasing order: y5, y4, y3, y2, y1
                                         // A, B, and C ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
-                                        strIonSymbolGeneric = LookupIonTypeString(eIonType);
+                                        var strIonSymbolGeneric = LookupIonTypeString(eIonType);
+                                        string strIonSymbol;
                                         if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
                                         {
                                             strIonSymbol = strIonSymbolGeneric + Strings.Trim(Conversion.Str(ResidueCount - lngResidueIndex + 1));
@@ -642,8 +622,10 @@ namespace MolecularWeightCalculator
 
                                         // Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
                                         // Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
+                                        float sngObservedMass;
                                         if (Math.Abs(sngIonShoulderIntensity) > 0f && (eIonType == itIonTypeConstants.itBIon || eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itCIon || eIonType == itIonTypeConstants.itZIon))
                                         {
+                                            short intShoulderIndex;
                                             for (intShoulderIndex = -1; intShoulderIndex <= 1; intShoulderIndex += 2)
                                             {
                                                 sngObservedMass = (float)(sngConvolutedMass + intShoulderIndex * (1d / intChargeIndex));
@@ -694,7 +676,7 @@ namespace MolecularWeightCalculator
             }
 
             // Sort arrays by mass (using a pointer array to synchronize the arrays)
-            PointerArray = new int[lngIonCount + 1];
+            var PointerArray = new int[lngIonCount + 1];
 
             for (lngIndex = 0; lngIndex < lngIonCount; lngIndex++)
                 PointerArray[lngIndex] = lngIndex;
@@ -759,10 +741,9 @@ namespace MolecularWeightCalculator
             //
             // Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() function
 
-            string strInternalResidues;
             int lngResidueIndex;
 
-            strInternalResidues = string.Empty;
+            var strInternalResidues = string.Empty;
             blnPhosphorylated = false;
             if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
             {
@@ -867,7 +848,6 @@ namespace MolecularWeightCalculator
             // Returns the number of occurrences of the given residue in the loaded sequence
 
             string strSearchResidue3Letter;
-            int lngResidueCount;
             int lngResidueIndex;
 
             if (blnUse3LetterCode)
@@ -879,7 +859,7 @@ namespace MolecularWeightCalculator
                 strSearchResidue3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strResidueSymbol, true);
             }
 
-            lngResidueCount = 0;
+            var lngResidueCount = 0;
             for (lngResidueIndex = 0; lngResidueIndex < ResidueCount; lngResidueIndex++)
             {
                 if ((Residues[lngResidueIndex].Symbol ?? "") == (strSearchResidue3Letter ?? ""))
@@ -896,8 +876,6 @@ namespace MolecularWeightCalculator
             // Returns the number of Modifications
             // ReDims lngModificationIDsOneBased() to hold the values
 
-            short intIndex;
-
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
                 var residue = Residues[lngResidueNumber];
@@ -912,7 +890,7 @@ namespace MolecularWeightCalculator
                     // Ignore errors
                 }
 
-                for (intIndex = 1; intIndex <= residue.ModificationIDCount; intIndex++)
+                for (var intIndex = 1; intIndex <= residue.ModificationIDCount; intIndex++)
                     lngModificationIDsOneBased[intIndex] = residue.ModificationIDs[intIndex];
 
                 return residue.ModificationIDCount;
@@ -988,33 +966,30 @@ namespace MolecularWeightCalculator
         {
             // Construct a text sequence using Residues() and the N and C Terminus info
 
-            string strSymbol3Letter, strSequence, strSymbol1Letter;
             string strDashAdd;
             string strModSymbol = string.Empty;
             string strModSymbolComment = string.Empty;
             var blnIndicatesPhosphorylation = default(bool);
             var dblModMass = default(double);
             int lngIndex;
-            short intModIndex;
-            int lngError;
 
             if (blnSeparateResiduesWithDash)
                 strDashAdd = "-";
             else
                 strDashAdd = string.Empty;
 
-            strSequence = string.Empty;
+            var strSequence = string.Empty;
             for (lngIndex = 1; lngIndex <= ResidueCount; lngIndex++)
             {
                 var residue = Residues[lngIndex];
-                strSymbol3Letter = residue.Symbol;
+                var strSymbol3Letter = residue.Symbol;
                 if (blnUse3LetterCode)
                 {
                     strSequence += strSymbol3Letter;
                 }
                 else
                 {
-                    strSymbol1Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol3Letter, false);
+                    var strSymbol1Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol3Letter, false);
                     if ((strSymbol1Letter ?? "") == (string.Empty ?? ""))
                         strSymbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER;
                     strSequence += strSymbol1Letter;
@@ -1022,9 +997,10 @@ namespace MolecularWeightCalculator
 
                 if (blnIncludeModificationSymbols)
                 {
+                    short intModIndex;
                     for (intModIndex = 1; intModIndex <= residue.ModificationIDCount; intModIndex++)
                     {
-                        lngError = GetModificationSymbol(residue.ModificationIDs[intModIndex], ref strModSymbol, ref dblModMass, ref blnIndicatesPhosphorylation, ref strModSymbolComment);
+                        var lngError = GetModificationSymbol(residue.ModificationIDs[intModIndex], ref strModSymbol, ref dblModMass, ref blnIndicatesPhosphorylation, ref strModSymbolComment);
                         if (lngError == 0)
                         {
                             strSequence += strModSymbol;
@@ -1175,17 +1151,7 @@ namespace MolecularWeightCalculator
             // Then when strPeptideResidues = "KANR", the TrypticName is 3.7
             // Then when strPeptideResidues = "NR", the TrypticName is 5.7
 
-            int intStartLoc, intEndLoc;
-            string strTrypticName;
-            string strPrefix, strSuffix;
-            string strResidueFollowingSearchResidues;
-            bool blnMatchesCleavageRule;
-
-            short intTrypticResidueNumber;
-            short intRuleResidueMatchCount;
-            int lngRuleResidueLoc;
-            string strProteinResiduesBeforeStartLoc;
-            int lngPeptideResiduesLength;
+            int intStartLoc;
 
             if (blnIgnoreCase)
             {
@@ -1206,14 +1172,15 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            lngPeptideResiduesLength = Strings.Len(strPeptideResidues);
+            var lngPeptideResiduesLength = Strings.Len(strPeptideResidues);
 
             if (intStartLoc > 0 && Strings.Len(strProteinResidues) > 0 && lngPeptideResiduesLength > 0)
             {
-                intEndLoc = intStartLoc + lngPeptideResiduesLength - 1;
+                var intEndLoc = intStartLoc + lngPeptideResiduesLength - 1;
 
                 // Determine if the residue is tryptic
                 // Use CheckSequenceAgainstCleavageRule() for this
+                string strPrefix;
                 if (intStartLoc > 1)
                 {
                     strPrefix = Strings.Mid(strProteinResidues, intStartLoc - 1, 1);
@@ -1223,6 +1190,7 @@ namespace MolecularWeightCalculator
                     strPrefix = strTerminiiSymbol;
                 }
 
+                string strSuffix;
                 if (intEndLoc == Strings.Len(strProteinResidues))
                 {
                     strSuffix = strTerminiiSymbol;
@@ -1232,27 +1200,30 @@ namespace MolecularWeightCalculator
                     strSuffix = Strings.Mid(strProteinResidues, intEndLoc + 1, 1);
                 }
 
-                blnMatchesCleavageRule = CheckSequenceAgainstCleavageRule(strPrefix + "." + strPeptideResidues + "." + strSuffix,
-                                                                          strRuleResidues,
-                                                                          strExceptionResidues,
-                                                                          false,
-                                                                          ".",
-                                                                          strTerminiiSymbol,
-                                                                          blnIgnoreCase);
+                var blnMatchesCleavageRule = CheckSequenceAgainstCleavageRule(strPrefix + "." + strPeptideResidues + "." + strSuffix,
+                    strRuleResidues,
+                    strExceptionResidues,
+                    false,
+                    ".",
+                    strTerminiiSymbol,
+                    blnIgnoreCase);
 
+                string strTrypticName;
                 if (blnMatchesCleavageRule)
                 {
                     // Construct strTrypticName
 
                     // Determine which tryptic residue strPeptideResidues is
+                    short intTrypticResidueNumber;
+                    int lngRuleResidueLoc;
                     if (intStartLoc == 1)
                     {
                         intTrypticResidueNumber = 1;
                     }
                     else
                     {
-                        strProteinResiduesBeforeStartLoc = Strings.Left(strProteinResidues, intStartLoc - 1);
-                        strResidueFollowingSearchResidues = Strings.Left(strPeptideResidues, 1);
+                        var strProteinResiduesBeforeStartLoc = Strings.Left(strProteinResidues, intStartLoc - 1);
+                        var strResidueFollowingSearchResidues = Strings.Left(strPeptideResidues, 1);
                         intTrypticResidueNumber = 0;
                         lngRuleResidueLoc = 0;
                         do
@@ -1269,7 +1240,7 @@ namespace MolecularWeightCalculator
 
                     // Determine number of K or R residues in strPeptideResidues
                     // Ignore K or R residues followed by Proline
-                    intRuleResidueMatchCount = 0;
+                    short intRuleResidueMatchCount = 0;
                     lngRuleResidueLoc = 0;
                     do
                     {
@@ -1413,19 +1384,15 @@ namespace MolecularWeightCalculator
 
             // See GetTrypticName for additional information
 
-            string strNameList, strCurrentName;
-            int lngCurrentSearchLoc;
-            int lngCurrentResidueStart = default, lngCurrentResidueEnd = default;
-
-            lngCurrentSearchLoc = lngProteinSearchStartLoc;
+            var lngCurrentSearchLoc = lngProteinSearchStartLoc;
             lngReturnMatchCount = 0;
             lngReturnResidueStart = 0;
             lngReturnResidueEnd = 0;
-            strNameList = string.Empty;
+            var strNameList = string.Empty;
 
             do
             {
-                strCurrentName = GetTrypticName(strProteinResidues, strPeptideResidues, out lngCurrentResidueStart, out lngCurrentResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, blnIgnoreCase, lngCurrentSearchLoc);
+                var strCurrentName = GetTrypticName(strProteinResidues, strPeptideResidues, out var lngCurrentResidueStart, out var lngCurrentResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, blnIgnoreCase, lngCurrentSearchLoc);
 
                 if (Strings.Len(strCurrentName) > 0)
                 {
@@ -1484,18 +1451,13 @@ namespace MolecularWeightCalculator
             // If no match is found, but strResidueFollowingSearchResidues is "-", then the cleavage location returned is Len(strSearchResidues) + 1
 
             short intCharLocInSearchChars;
-            int lngCharLoc, lngMinCharLoc;
-            short intExceptionSuffixResidueCount;
-            short intCharLocInExceptionChars;
-            string strResidueFollowingCleavageResidue;
-            int lngExceptionCharLocInSearchResidues, lngCharLocViaRecursiveSearch;
 
-            intExceptionSuffixResidueCount = (short)Strings.Len(strExceptionSuffixResidues);
+            var intExceptionSuffixResidueCount = (short)Strings.Len(strExceptionSuffixResidues);
 
-            lngMinCharLoc = -1;
+            var lngMinCharLoc = -1;
             for (intCharLocInSearchChars = 0; intCharLocInSearchChars < strSearchChars.Length; intCharLocInSearchChars++)
             {
-                lngCharLoc = Strings.InStr(Strings.Mid(strSearchResidues, lngStartChar), Strings.Mid(strSearchChars, intCharLocInSearchChars, 1));
+                var lngCharLoc = Strings.InStr(Strings.Mid(strSearchResidues, lngStartChar), Strings.Mid(strSearchChars, intCharLocInSearchChars, 1));
 
                 if (lngCharLoc > 0)
                 {
@@ -1504,6 +1466,8 @@ namespace MolecularWeightCalculator
                     if (intExceptionSuffixResidueCount > 0)
                     {
                         // Make sure strSuffixResidue does not match strExceptionSuffixResidues
+                        int lngExceptionCharLocInSearchResidues;
+                        string strResidueFollowingCleavageResidue;
                         if (lngCharLoc < Strings.Len(strSearchResidues))
                         {
                             lngExceptionCharLocInSearchResidues = lngCharLoc + 1;
@@ -1516,6 +1480,7 @@ namespace MolecularWeightCalculator
                             strResidueFollowingCleavageResidue = strResidueFollowingSearchResidues;
                         }
 
+                        short intCharLocInExceptionChars;
                         for (intCharLocInExceptionChars = 1; intCharLocInExceptionChars <= intExceptionSuffixResidueCount; intCharLocInExceptionChars++)
                         {
                             if ((strResidueFollowingCleavageResidue ?? "") == (Strings.Mid(strExceptionSuffixResidues, intCharLocInExceptionChars, 1) ?? ""))
@@ -1525,7 +1490,7 @@ namespace MolecularWeightCalculator
                                 if (lngExceptionCharLocInSearchResidues < Strings.Len(strSearchResidues))
                                 {
                                     // Recursively call this function to find the next cleavage position, using an updated lngStartChar position
-                                    lngCharLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(strSearchResidues, strResidueFollowingSearchResidues, lngExceptionCharLocInSearchResidues, strSearchChars, strExceptionSuffixResidues, strTerminiiSymbol);
+                                    var lngCharLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(strSearchResidues, strResidueFollowingSearchResidues, lngExceptionCharLocInSearchResidues, strSearchChars, strExceptionSuffixResidues, strTerminiiSymbol);
 
                                     if (lngCharLocViaRecursiveSearch > 0)
                                     {
@@ -1596,22 +1561,19 @@ namespace MolecularWeightCalculator
 
             // Returns the position of the start and end residues using lngReturnResidueStart and lngReturnResidueEnd
 
-            int lngRuleResidueLoc;
-            int lngProteinResiduesLength;
-
             lngReturnResidueStart = 1;
             lngReturnResidueEnd = 1;
 
             if (lngSearchStartLoc < 1)
                 lngSearchStartLoc = 1;
 
-            lngProteinResiduesLength = Strings.Len(strProteinResidues);
+            var lngProteinResiduesLength = Strings.Len(strProteinResidues);
             if (lngSearchStartLoc > lngProteinResiduesLength)
             {
                 return string.Empty;
             }
 
-            lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResidues, strTerminiiSymbol, lngSearchStartLoc, strRuleResidues, strExceptionResidues, strTerminiiSymbol);
+            var lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResidues, strTerminiiSymbol, lngSearchStartLoc, strRuleResidues, strExceptionResidues, strTerminiiSymbol);
             if (lngRuleResidueLoc > 0)
             {
                 lngReturnResidueStart = lngSearchStartLoc;
@@ -1674,10 +1636,8 @@ namespace MolecularWeightCalculator
             // Optionally, returns the position of the start and end residues
             // using lngReturnResidueStart and lngReturnResidueEnd
 
-            int lngStartLoc, lngRuleResidueLoc;
+            int lngRuleResidueLoc;
             var lngPrevStartLoc = default(int);
-            int lngProteinResiduesLength;
-            short intCurrentTrypticPeptideNumber;
 
             string strMatchingFragment;
 
@@ -1694,10 +1654,10 @@ namespace MolecularWeightCalculator
                 strProteinResidues = Strings.UCase(strProteinResidues);
             }
 
-            lngProteinResiduesLength = Strings.Len(strProteinResidues);
+            var lngProteinResiduesLength = Strings.Len(strProteinResidues);
 
-            lngStartLoc = 1;
-            intCurrentTrypticPeptideNumber = 0;
+            var lngStartLoc = 1;
+            short intCurrentTrypticPeptideNumber = 0;
             do
             {
                 lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResidues, strTerminiiSymbol, lngStartLoc, strRuleResidues, strExceptionResidues, strTerminiiSymbol);
@@ -1813,15 +1773,12 @@ namespace MolecularWeightCalculator
             // Finally, if strSequence = "R.IGASGEHIFIIGVDKPNR.Q" then blnMatchesCleavageRule = True since K is ignored, but the final R.Q is valid
 
             string strSequenceStart, strSequenceEnd;
-            string strPrefix, strSuffix;
-            bool blnMatchesCleavageRule = default, blnSkipThisEnd;
-            string strTestResidue;
-            short intEndToCheck;
+            bool blnMatchesCleavageRule = default;
 
             // Need to reset this to zero since passed ByRef
             intRuleMatchCount = 0;
-            strPrefix = string.Empty;
-            strSuffix = string.Empty;
+            var strPrefix = string.Empty;
+            var strSuffix = string.Empty;
 
             // First, make sure the sequence is in the form A.BCDEFG.H or A.BCDEFG or BCDEFG.H
             // If it isn't, then we can't check it (we'll return true)
@@ -1893,9 +1850,11 @@ namespace MolecularWeightCalculator
 
                 // Test each character in strRuleResidues against both strPrefix and strSequenceEnd
                 // Make sure strSuffix does not match strExceptionSuffixResidues
+                short intEndToCheck;
                 for (intEndToCheck = 0; intEndToCheck <= 1; intEndToCheck++)
                 {
-                    blnSkipThisEnd = false;
+                    var blnSkipThisEnd = false;
+                    string strTestResidue;
                     if (intEndToCheck == 0)
                     {
                         strTestResidue = strPrefix;
@@ -1960,11 +1919,9 @@ namespace MolecularWeightCalculator
             // Checks to see if strTestResidue matches one of the residues in strRuleResidues
             // Used to test by Rule Residues and Exception Residues
 
-            string strCompareResidue;
-
             for (int intCharIndex = 0; intCharIndex < strRuleResidues.Length; intCharIndex++)
             {
-                strCompareResidue = strRuleResidues.Substring(intCharIndex, 1).Trim();
+                var strCompareResidue = strRuleResidues.Substring(intCharIndex, 1).Trim();
                 if (strCompareResidue.Length > 0)
                 {
                     if ((strTestResidue ?? "") == (strCompareResidue ?? ""))
@@ -2040,7 +1997,6 @@ namespace MolecularWeightCalculator
         private void RemoveLeadingH(ref string strWorkingSequence)
         {
             // Returns True if a leading H is removed
-            int lngAbbrevID;
 
             if (strWorkingSequence.Length >= 4 && strWorkingSequence.ToUpper().StartsWith("H"))
             {
@@ -2054,7 +2010,7 @@ namespace MolecularWeightCalculator
                 else if (char.IsLetter(strWorkingSequence[1]) && char.IsLetter(strWorkingSequence[2]) && char.IsLetter(strWorkingSequence[3]))
                 {
                     // Formula starts with 4 characters and the first is H, see if the first 3 characters are a valid amino acid code
-                    lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strWorkingSequence.Substring(0, 3), true);
+                    var lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strWorkingSequence.Substring(0, 3), true);
 
                     if (lngAbbrevID <= 0)
                     {
@@ -2071,12 +2027,9 @@ namespace MolecularWeightCalculator
         {
             bool RemoveTrailingOHRet = default;
             // Returns True if a trailing OH is removed
-            int lngAbbrevID;
-            bool blnOHRemoved;
-            int lngStringLength;
 
-            blnOHRemoved = false;
-            lngStringLength = Strings.Len(strWorkingSequence);
+            var blnOHRemoved = false;
+            var lngStringLength = Strings.Len(strWorkingSequence);
             if (strWorkingSequence.Length >= 5 && strWorkingSequence.ToUpper().EndsWith("OH"))
             {
                 // If previous character is not a character, then remove the OH
@@ -2089,7 +2042,7 @@ namespace MolecularWeightCalculator
                 else if (char.IsLetter(Conversions.ToChar(Strings.Mid(strWorkingSequence, lngStringLength - 2, 1))))
                 {
                     // Formula ends with 3 characters and the last two are OH, see if the last 3 characters are a valid amino acid code
-                    lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(Strings.Mid(strWorkingSequence, lngStringLength - 2, 3), true);
+                    var lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(Strings.Mid(strWorkingSequence, lngStringLength - 2, 3), true);
 
                     if (lngAbbrevID <= 0)
                     {
@@ -2136,13 +2089,12 @@ namespace MolecularWeightCalculator
         public int RemoveModificationByID(int lngModificationID)
         {
             // Returns 0 if found and removed; 1 if error
-
-            int lngIndex;
+            
             bool blnRemoved;
 
             if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
             {
-                for (lngIndex = lngModificationID; lngIndex < ModificationSymbolCount; lngIndex++)
+                for (var lngIndex = lngModificationID; lngIndex < ModificationSymbolCount; lngIndex++)
                     ModificationSymbols[lngIndex] = ModificationSymbols[lngIndex + 1];
 
                 ModificationSymbolCount -= 1;
@@ -2167,10 +2119,9 @@ namespace MolecularWeightCalculator
         {
             // Returns 0 if found and removed; 1 if error
 
-            int lngIndex;
-
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
+                int lngIndex;
                 for (lngIndex = lngResidueNumber; lngIndex < ResidueCount; lngIndex++)
                     Residues[lngIndex] = Residues[lngIndex + 1];
 
@@ -2188,15 +2139,13 @@ namespace MolecularWeightCalculator
             // Only reserves the memory if necessary
             // Thus, do not use this sub to clear Residues()
 
-            int intIndex;
-            int intOldIndexEnd;
-
             if (lngNewResidueCount > ResidueCountDimmed)
             {
                 ResidueCountDimmed = lngNewResidueCount + RESIDUE_DIM_CHUNK;
+                int intIndex;
                 if (blnPreserveContents && Residues != null)
                 {
-                    intOldIndexEnd = Residues.Length - 1;
+                    var intOldIndexEnd = Residues.Length - 1;
                     Array.Resize(ref Residues, ResidueCountDimmed + 1);
                     for (intIndex = intOldIndexEnd + 1; intIndex <= ResidueCountDimmed; intIndex++)
                         Residues[intIndex].Initialize(true);
@@ -2330,8 +2279,6 @@ namespace MolecularWeightCalculator
 
         public void SetDefaultOptions()
         {
-            itIonTypeConstants eIonIndex;
-
             try
             {
                 var intensityOptions = mFragSpectrumOptions.IntensityOptions;
@@ -2350,6 +2297,7 @@ namespace MolecularWeightCalculator
                 aIonOption.NeutralLossPhosphate = true;
                 aIonOption.NeutralLossWater = false;
 
+                itIonTypeConstants eIonIndex;
                 for (eIonIndex = itIonTypeConstants.itBIon; eIonIndex <= itIonTypeConstants.itZIon; eIonIndex++)
                 {
                     var ionOption = mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex];
@@ -2400,10 +2348,7 @@ namespace MolecularWeightCalculator
             // Adds a new modification or updates an existing one (based on strModSymbol)
             // Returns 0 if successful, otherwise, returns -1
 
-            string strTestChar;
-            int lngIndexToUse, lngIndex, lngErrorID;
-
-            lngErrorID = 0;
+            var lngErrorID = 0;
             if (Strings.Len(strModSymbol) < 1)
             {
                 lngErrorID = -1;
@@ -2411,9 +2356,10 @@ namespace MolecularWeightCalculator
             else
             {
                 // Make sure strModSymbol contains no letters, numbers, spaces, dashes, or periods
+                int lngIndex;
                 for (lngIndex = 0; lngIndex < strModSymbol.Length; lngIndex++)
                 {
-                    strTestChar = Strings.Mid(strModSymbol, lngIndex, 1);
+                    var strTestChar = Strings.Mid(strModSymbol, lngIndex, 1);
                     if (!ElementAndMassRoutines.IsModSymbolInternal(strTestChar))
                     {
                         lngErrorID = -1;
@@ -2423,7 +2369,7 @@ namespace MolecularWeightCalculator
                 if (lngErrorID == 0)
                 {
                     // See if the modification is alrady present
-                    lngIndexToUse = GetModificationSymbolID(strModSymbol);
+                    var lngIndexToUse = GetModificationSymbolID(strModSymbol);
 
                     if (lngIndexToUse == 0)
                     {
@@ -2623,9 +2569,6 @@ namespace MolecularWeightCalculator
 
             // Returns 0 if modifications set; returns 1 if an error
 
-            short intIndex;
-            int lngNewModID;
-
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount && intModificationCount >= 0)
             {
                 var residue = Residues[lngResidueNumber];
@@ -2636,9 +2579,10 @@ namespace MolecularWeightCalculator
 
                 residue.ModificationIDCount = 0;
                 residue.Phosphorylated = false;
+                short intIndex;
                 for (intIndex = 1; intIndex <= intModificationCount; intIndex++)
                 {
-                    lngNewModID = lngModificationIDsOneBased[intIndex];
+                    var lngNewModID = lngModificationIDsOneBased[intIndex];
                     if (lngNewModID >= 1 && lngNewModID <= ModificationSymbolCount)
                     {
                         residue.ModificationIDs[residue.ModificationIDCount] = lngNewModID;
@@ -2805,14 +2749,11 @@ namespace MolecularWeightCalculator
             bool bln3LetterCheckForPrefixHandSuffixOH,
             bool blnAddMissingModificationSymbols)
         {
-            int lngIndex, lngSequenceStrLength, lngModSymbolLength;
-            string str3LetterSymbol, str1LetterSymbol, strFirstChar;
-
             try
             {
                 strSequence = Strings.Trim(strSequence);
 
-                lngSequenceStrLength = Strings.Len(strSequence);
+                var lngSequenceStrLength = Strings.Len(strSequence);
                 if (lngSequenceStrLength == 0)
                 {
                     return AssureNonZero(0);
@@ -2822,6 +2763,9 @@ namespace MolecularWeightCalculator
                 ResidueCount = 0;
                 ReserveMemoryForResidues(ResidueCount, false);
 
+                string str3LetterSymbol;
+                int lngModSymbolLength;
+                int lngIndex;
                 if (!blnIs3LetterCode)
                 {
                     // Sequence is 1 letter codes
@@ -2861,7 +2805,7 @@ namespace MolecularWeightCalculator
 
                     for (lngIndex = 0; lngIndex < lngSequenceStrLength; lngIndex++)
                     {
-                        str1LetterSymbol = Strings.Mid(strSequence, lngIndex, 1);
+                        var str1LetterSymbol = Strings.Mid(strSequence, lngIndex, 1);
                         if (char.IsLetter(Conversions.ToChar(str1LetterSymbol)))
                         {
                             // Character found
@@ -2909,7 +2853,7 @@ namespace MolecularWeightCalculator
 
                     while (lngIndex <= lngSequenceStrLength - 2)
                     {
-                        strFirstChar = Strings.Mid(strSequence, lngIndex, 1);
+                        var strFirstChar = Strings.Mid(strSequence, lngIndex, 1);
                         if (char.IsLetter(Conversions.ToChar(strFirstChar)))
                         {
                             if (char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 1, 1))) && char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 2, 1))))
@@ -3015,17 +2959,12 @@ namespace MolecularWeightCalculator
         private void ShellSortFragSpectrum(ref udtFragmentationSpectrumDataType[] FragSpectrumWork, ref int[] PointerArray, int lngLowIndex, int lngHighIndex)
         {
             // Sort the list using a shell sort
-            int lngCount;
-            int lngIncrement;
-            int lngIndex;
-            int lngIndexCompare;
-            int lngPointerSwap;
 
             // Sort PointerArray[lngLowIndex..lngHighIndex] by comparing FragSpectrumWork(PointerArray(x)).Mass
 
             // Compute largest increment
-            lngCount = lngHighIndex - lngLowIndex + 1;
-            lngIncrement = 1;
+            var lngCount = lngHighIndex - lngLowIndex + 1;
+            var lngIncrement = 1;
             if (lngCount < 14)
             {
                 lngIncrement = 1;
@@ -3042,9 +2981,11 @@ namespace MolecularWeightCalculator
             while (lngIncrement > 0)
             {
                 // Sort by insertion in increments of lngIncrement
+                int lngIndex;
                 for (lngIndex = lngLowIndex + lngIncrement; lngIndex <= lngHighIndex; lngIndex++)
                 {
-                    lngPointerSwap = PointerArray[lngIndex];
+                    var lngPointerSwap = PointerArray[lngIndex];
+                    int lngIndexCompare;
                     for (lngIndexCompare = lngIndex - lngIncrement; lngIndexCompare >= lngLowIndex; lngIndexCompare += -lngIncrement)
                     {
                         // Use <= to sort ascending; Use > to sort descending
@@ -3062,18 +3003,15 @@ namespace MolecularWeightCalculator
 
         private void UpdateResidueMasses()
         {
-            int lngIndex, lngAbbrevID;
+            int lngIndex;
             var lngValidResidueCount = default(int);
-            short intModIndex;
-            double dblRunningTotal;
-            bool blnPhosphorylationMassAdded;
             var blnProtonatedNTerminus = default(bool);
 
             if (mDelayUpdateResidueMass)
                 return;
 
             // The N-terminus ions are the basis for the running total
-            dblRunningTotal = mNTerminus.Mass;
+            var dblRunningTotal = mNTerminus.Mass;
             if (Strings.UCase(mNTerminus.Formula) == "HH")
             {
                 // ntgHydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
@@ -3089,17 +3027,18 @@ namespace MolecularWeightCalculator
                 var residue = Residues[lngIndex];
                 residue.Initialize();
 
-                lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(residue.Symbol, true);
+                var lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(residue.Symbol, true);
 
                 if (lngAbbrevID > 0)
                 {
                     lngValidResidueCount += 1;
                     residue.Mass = ElementAndMassRoutines.GetAbbreviationMass(lngAbbrevID);
 
-                    blnPhosphorylationMassAdded = false;
+                    var blnPhosphorylationMassAdded = false;
 
                     // Compute the mass, including the modifications
                     residue.MassWithMods = residue.Mass;
+                    short intModIndex;
                     for (intModIndex = 1; intModIndex <= residue.ModificationIDCount; intModIndex++)
                     {
                         if (residue.ModificationIDs[intModIndex] <= ModificationSymbolCount)
@@ -3189,11 +3128,9 @@ namespace MolecularWeightCalculator
 
         public void UpdateStandardMasses()
         {
-            ElementAndMassTools.emElementModeConstants eElementModeSaved;
-
             try
             {
-                eElementModeSaved = ElementAndMassRoutines.GetElementModeInternal();
+                var eElementModeSaved = ElementAndMassRoutines.GetElementModeInternal();
 
                 ElementAndMassRoutines.SetElementModeInternal(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
 

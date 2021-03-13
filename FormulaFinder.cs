@@ -446,7 +446,6 @@ namespace MolecularWeightCalculator
 
             int charIndex = 0;
             int formulaLength = empiricalFormula.Length;
-            int parsedValue;
 
             sbCodeString.Clear();
 
@@ -454,6 +453,7 @@ namespace MolecularWeightCalculator
             {
                 char strCurrentLetter = char.ToUpper(empiricalFormula[charIndex]);
 
+                int parsedValue;
                 if (char.IsLetter(strCurrentLetter))
                 {
                     sbCodeString.Append('\0');
@@ -541,7 +541,6 @@ namespace MolecularWeightCalculator
             int intMultipleMtoZCharge)
         {
             double dblMtoZ;
-            double dblOriginalMtoZ;
 
             // The original target is the target m/z; assure this compound has that m/z
             if (Math.Abs(totalCharge) > 0.5d)
@@ -558,7 +557,7 @@ namespace MolecularWeightCalculator
                 return false;
             }
 
-            dblOriginalMtoZ = targetMass / intMultipleMtoZCharge;
+            var dblOriginalMtoZ = targetMass / intMultipleMtoZCharge;
             if (dblMtoZ < dblOriginalMtoZ - massToleranceDa || dblMtoZ > dblOriginalMtoZ + massToleranceDa)
             {
                 // dblMtoZ is not within tolerance of dblOriginalMtoZ, so don't report the result
@@ -1037,10 +1036,9 @@ namespace MolecularWeightCalculator
             IDictionary<string, int> empiricalResultSymbols,
             Dictionary<string, int> targetCountStats)
         {
-            int empiricalElementCount;
-
             foreach (var targetElement in targetCountStats)
             {
+                int empiricalElementCount;
                 if (!empiricalResultSymbols.TryGetValue(targetElement.Key, out empiricalElementCount))
                 {
                     return false;
@@ -1268,8 +1266,6 @@ namespace MolecularWeightCalculator
             var candidateElementsStats = new List<FormulaFinderCandidateElement>();
 
             int customElementCounter = 0;
-            double dblMass;
-            float sngCharge;
 
             foreach (var item in mCandidateElements)
             {
@@ -1279,6 +1275,8 @@ namespace MolecularWeightCalculator
                     CountMaximum = item.Value.MaximumCount
                 };
 
+                float sngCharge;
+                double dblMass;
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
                     short elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
@@ -1369,14 +1367,14 @@ namespace MolecularWeightCalculator
         {
             int potentialElementCount = 0;
             int customElementCounter = 0;
-            double dblMass;
-            float sngCharge;
 
             foreach (var item in mCandidateElements)
             {
                 intRange[potentialElementCount, 0] = item.Value.MinimumCount;
                 intRange[potentialElementCount, 1] = item.Value.MaximumCount;
 
+                float sngCharge;
+                double dblMass;
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
                     short elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
