@@ -105,34 +105,34 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.vb">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="frmTextbrowser.vb">
+    <Compile Include="frmTextbrowser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GlobalSuppressions.vb" />
-    <Compile Include="modMwtWinDllTest.vb">
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="modMwtWinDllTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MwtWinDllTest.vb">
+    <Compile Include="MwtWinDllTest.cs">
       <SubType>Form</SubType>
     </Compile>
     <EmbeddedResource Include="frmTextbrowser.resx">
-      <DependentUpon>frmTextbrowser.vb</DependentUpon>
+      <DependentUpon>frmTextbrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MwtWinDllTest.resX">
-      <DependentUpon>MwtWinDllTest.vb</DependentUpon>
+    <EmbeddedResource Include="MwtWinDllTest.resx">
+      <DependentUpon>MwtWinDllTest.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MwtWinDll.vbproj">
+    <ProjectReference Include="..\MwtWinDll.csproj">
       <Project>{78332537-7ecc-4b74-8aa9-ba66ab296af0}</Project>
       <Name>MwtWinDll</Name>
     </ProjectReference>

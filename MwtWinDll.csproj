@@ -107,32 +107,32 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.vb">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CapillaryFlow.vb">
+    <Compile Include="CapillaryFlow.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Compound.vb">
+    <Compile Include="Compound.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ElementAndMassTools.vb">
+    <Compile Include="ElementAndMassTools.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FormulaFinder.vb" />
-    <Compile Include="FormulaFinderCandidateElement.vb" />
-    <Compile Include="FormulaFinderOptions.vb" />
-    <Compile Include="FormulaFinderResult.vb" />
-    <Compile Include="MoleMassDilution.vb">
+    <Compile Include="FormulaFinder.cs" />
+    <Compile Include="FormulaFinderCandidateElement.cs" />
+    <Compile Include="FormulaFinderOptions.cs" />
+    <Compile Include="FormulaFinderResult.cs" />
+    <Compile Include="MoleMassDilution.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MolecularWeightTool.vb">
+    <Compile Include="MolecularWeightTool.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NumberConverter.vb">
+    <Compile Include="NumberConverter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Peptide.vb">
+    <Compile Include="Peptide.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
