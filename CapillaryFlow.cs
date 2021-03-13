@@ -5,7 +5,6 @@ namespace MwtWinDll
 {
     public class CapillaryFlow
     {
-
         // Molecular Weight Calculator routines with ActiveX Class interfaces: CapillaryFlow
 
         // -------------------------------------------------------------------------------
@@ -32,7 +31,8 @@ namespace MwtWinDll
             InitializeClass();
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Enum Statements"
+
         public enum ctCapillaryTypeConstants
         {
             ctOpenTubularCapillary = 0,
@@ -160,8 +160,10 @@ namespace MwtWinDll
             acmVolFlowRateUsingDeadTime
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Data classes"
+
         private class udtCapillaryFlowParametersType
         {
             public ctCapillaryTypeConstants CapillaryType;
@@ -285,11 +287,12 @@ namespace MwtWinDll
             public double ResultantPeakWidth;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
 
         // Conversion Factors
         private const float CM_PER_INCH = 2.54f;
         private const double PI = 3.14159265359d;
+
         private udtCapillaryFlowParametersType mCapillaryFlowParameters = new udtCapillaryFlowParametersType();
         private udtMassRateParametersType mMassRateParameters = new udtMassRateParametersType();
         private udtExtraColumnBroadeningParametersType mExtraColumnBroadeningParameters = new udtExtraColumnBroadeningParametersType();

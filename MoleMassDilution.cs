@@ -6,7 +6,6 @@ namespace MwtWinDll
 {
     public class MoleMassDilution
     {
-
         // Molecular Weight Calculator routines with ActiveX Class interfaces: MoleMassDilution
 
         // -------------------------------------------------------------------------------
@@ -33,7 +32,8 @@ namespace MwtWinDll
             InitializeClass();
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Enums"
+
         public enum acdAutoComputeDilutionModeConstants
         {
             acdFindRequiredDilutionVolumes = 0,
@@ -109,8 +109,9 @@ namespace MwtWinDll
         }
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Data classes"
         private class udtMoleMassQuantityType
         {
             public double Amount; // In Moles
@@ -129,7 +130,8 @@ namespace MwtWinDll
             public double TotalFinalVolume; // In L
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
+
         private const float POUNDS_PER_KG = 2.20462262f;
         private const float GALLONS_PER_L = 0.264172052f;
         private udtMoleMassQuantityType mQuantity = new udtMoleMassQuantityType();

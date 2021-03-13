@@ -309,7 +309,6 @@ namespace MwtWinDll
             {
                 return mComputationStats.Charge;
             }
-
             set
             {
                 mComputationStats.Charge = value;
@@ -338,7 +337,6 @@ namespace MwtWinDll
             {
                 return mStrFormula;
             }
-
             set
             {
                 mStrFormula = value;
@@ -415,7 +413,6 @@ namespace MwtWinDll
             {
                 return mValueForX;
             }
-
             set
             {
                 if (value >= 0d)

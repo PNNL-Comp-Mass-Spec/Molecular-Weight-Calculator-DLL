@@ -1,22 +1,23 @@
-﻿
-namespace MwtWinDll
+﻿namespace MwtWinDll
 {
     public class FormulaFinderOptions
     {
-
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Constants and Enums"
         public enum eSearchMode
         {
             Thorough = 0,
             Bounded = 1
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Member Variables"
         private bool mFindCharge;
         private bool mLimitChargeRange;
         private bool mFindTargetMZ;
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Properties"
+
         /// <summary>
     /// When true, compute the overall charge of each compound
     /// </summary>
@@ -27,7 +28,6 @@ namespace MwtWinDll
             {
                 return mFindCharge;
             }
-
             set
             {
                 mFindCharge = value;
@@ -52,7 +52,6 @@ namespace MwtWinDll
             {
                 return mLimitChargeRange;
             }
-
             set
             {
                 mLimitChargeRange = value;
@@ -89,7 +88,6 @@ namespace MwtWinDll
             {
                 return mFindTargetMZ;
             }
-
             set
             {
                 mFindTargetMZ = value;
@@ -104,7 +102,8 @@ namespace MwtWinDll
         public eSearchMode SearchMode { get; set; }
         public bool VerifyHydrogens { get; set; }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
+
         /// <summary>
     /// Constructor
     /// </summary>

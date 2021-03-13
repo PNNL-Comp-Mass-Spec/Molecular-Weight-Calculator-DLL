@@ -35,7 +35,7 @@ namespace MwtWinDllTest
 
     internal class frmMwtWinDllTest : Form
     {
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Windows Form Designer generated code"
         public frmMwtWinDllTest()
         {
             // This call is required by the Windows Form Designer.
@@ -518,7 +518,8 @@ namespace MwtWinDllTest
             ResumeLayout(false);
             PerformLayout();
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
+
         private MolecularWeightTool mMwtWin;
         private DataView mMDIDListDataView;
         private DataSet myDataSet;

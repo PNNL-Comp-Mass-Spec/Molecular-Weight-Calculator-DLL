@@ -8,7 +8,6 @@ namespace MwtWinDll
 {
     public class MolecularWeightTool
     {
-
         // Molecular Weight Calculator routines with ActiveX Class interfaces
         // Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002
         //
@@ -66,7 +65,8 @@ namespace MwtWinDll
             SetElementMode(elementMode);
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Constants and Enums"
+
         public enum arAbbrevRecognitionModeConstants
         {
             arNormalOnly = 0,
@@ -81,8 +81,9 @@ namespace MwtWinDll
             esCharge = 2
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Classwide Variables"
         private bool mDataInitialized;
         public Compound Compound;
         public Peptide Peptide;
@@ -103,15 +104,15 @@ namespace MwtWinDll
 
         public delegate void ProgressCompleteEventHandler();
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Interface Functions"
         public arAbbrevRecognitionModeConstants AbbreviationRecognitionMode
         {
             get
             {
                 return mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode;
             }
-
             set
             {
                 if (value >= arAbbrevRecognitionModeConstants.arNormalOnly & value <= arAbbrevRecognitionModeConstants.arNoAbbreviations)
@@ -154,7 +155,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses;
             }
-
             set
             {
                 mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses = value;
@@ -167,7 +167,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.gComputationOptions.CaseConversion;
             }
-
             set
             {
                 if (value >= ElementAndMassTools.ccCaseConversionConstants.ccConvertCaseUp & value <= ElementAndMassTools.ccCaseConversionConstants.ccSmartCase)
@@ -183,7 +182,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.gComputationOptions.DecimalSeparator;
             }
-
             set
             {
                 mElementAndMassRoutines.gComputationOptions.DecimalSeparator = value;
@@ -236,7 +234,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.LogFolderPath;
             }
-
             set
             {
                 mElementAndMassRoutines.LogFolderPath = value;
@@ -249,7 +246,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.LogMessagesToFile;
             }
-
             set
             {
                 mElementAndMassRoutines.LogMessagesToFile = value;
@@ -282,7 +278,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.gComputationOptions.RtfFontName;
             }
-
             set
             {
                 if (Strings.Len(value) > 0)
@@ -298,7 +293,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.gComputationOptions.RtfFontSize;
             }
-
             set
             {
                 if (value > 0)
@@ -314,7 +308,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.ShowErrorMessageDialogs;
             }
-
             set
             {
                 mElementAndMassRoutines.SetShowErrorMessageDialogs(value);
@@ -327,7 +320,6 @@ namespace MwtWinDll
             {
                 return mElementAndMassRoutines.gComputationOptions.StdDevMode;
             }
-
             set
             {
                 if (value >= ElementAndMassTools.smStdDevModeConstants.smShort & value <= ElementAndMassTools.smStdDevModeConstants.smDecimal)
@@ -336,7 +328,8 @@ namespace MwtWinDll
                 }
             }
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
+
         public void ClearError()
         {
             mElementAndMassRoutines.ResetErrorParamsInternal();

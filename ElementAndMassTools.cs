@@ -10,7 +10,6 @@ namespace MwtWinDll
 {
     public class ElementAndMassTools
     {
-
         // Molecular Weight Calculator routines with ActiveX Class interfaces: ElementAndMassTools
 
         // -------------------------------------------------------------------------------
@@ -18,11 +17,11 @@ namespace MwtWinDll
         // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
         // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
         // -------------------------------------------------------------------------------
-        // 
+        //
         // Licensed under the Apache License, Version 2.0; you may not use this file except
         // in compliance with the License.  You may obtain a copy of the License at
         // http://www.apache.org/licenses/LICENSE-2.0
-        // 
+        //
         // Notice: This computer software was prepared by Battelle Memorial Institute,
         // hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
         // Department of Energy (DOE).  All rights in the computer software are reserved
@@ -37,13 +36,16 @@ namespace MwtWinDll
             Initialize();
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Constants and Enums"
+
         public const int ELEMENT_COUNT = 103;
         public const int MAX_ABBREV_COUNT = 500;
+
         private const int MESSAGE_STATEMENT_DIM_COUNT = 1600;
         private const int MAX_ABBREV_LENGTH = 6;
         private const int MAX_ISOTOPES = 11;
         private const int MAX_CAUTION_STATEMENTS = 100;
+
         private const char EMPTY_STRING_CHAR = '~';
         private const char RTF_HEIGHT_ADJUST_CHAR = '~'; // A hidden character to adjust the height of Rtf Text Boxes when using superscripts
 
@@ -82,8 +84,10 @@ namespace MwtWinDll
             Warning = 2
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Data classes"
+
         public class udtOptionsType
         {
             public MolecularWeightTool.arAbbrevRecognitionModeConstants AbbrevRecognitionMode;
@@ -258,8 +262,10 @@ namespace MwtWinDll
             public double X;
             public double Y;
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Classwide Variables"
+
         public udtOptionsType gComputationOptions = new udtOptionsType();
 
         /// <summary>
@@ -349,15 +355,16 @@ namespace MwtWinDll
     /// </summary>
         protected float mProgressPercentComplete;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Interface Functions"
+
         public bool AbortProcessing
         {
             get
             {
                 return mAbortProcessing;
             }
-
             set
             {
                 mAbortProcessing = value;
@@ -370,7 +377,6 @@ namespace MwtWinDll
             {
                 return mCurrentElementMode;
             }
-
             set
             {
                 SetElementModeInternal(value);
@@ -391,7 +397,6 @@ namespace MwtWinDll
             {
                 return mLogFolderPath;
             }
-
             set
             {
                 mLogFolderPath = value;
@@ -404,7 +409,6 @@ namespace MwtWinDll
             {
                 return mLogMessagesToFile;
             }
-
             set
             {
                 mLogMessagesToFile = value;
@@ -437,14 +441,14 @@ namespace MwtWinDll
             {
                 return mShowErrorMessageDialogs;
             }
-
             set
             {
                 mShowErrorMessageDialogs = value;
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
+
         /// <summary>
     /// Update the abbreviation symbol stack
     /// </summary>
@@ -1090,7 +1094,7 @@ namespace MwtWinDll
                                 // #######
                                 // Rigorous, slow, easily overflowed method
                                 // #######
-                                // 
+                                //
                                 blnRigorousMethodUsed = true;
                                 AbundDenom = 1d;
                                 AbundSuffix = 1d;
@@ -1117,7 +1121,7 @@ namespace MwtWinDll
                                     // #######
                                     // Equivalent of rigorous method, but uses logarithms
                                     // #######
-                                    // 
+                                    //
                                     blnRigorousMethodUsed = true;
                                     dblLogSigma = 0d;
                                     var loopTo6 = AtomCount;
@@ -1162,7 +1166,7 @@ namespace MwtWinDll
                                     // #######
                                     // Third method, determines the ratio of this combo's abundance and the next combo's abundance
                                     // #######
-                                    // 
+                                    //
                                     dblRatioOfFreqs = 1d;
                                     var loopTo10 = IsotopeCount;
                                     for (IsotopeIndex = 1; IsotopeIndex <= loopTo10; IsotopeIndex++)
@@ -2198,22 +2202,22 @@ namespace MwtWinDll
             // 2             2               3
             // 2             3               4
             // 2             4               5
-            // 
+            //
             // 3             1               3
             // 3             2               6
             // 3             3               10
             // 3             4               15
-            // 
+            //
             // 4             1               4
             // 4             2               10
             // 4             3               20
             // 4             4               35
-            // 
+            //
             // 5             1               5
             // 5             2               15
             // 5             3               35
             // 5             4               70
-            // 
+            //
             // 6             1               6
             // 6             2               21
             // 6             3               56
@@ -3328,9 +3332,9 @@ namespace MwtWinDll
             // ' Note Asx or B is often used for Asp or Asn
             // ' Note Glx or Z is often used for Glu or Gln
             // ' Note X is often used for "unknown"
-            // 
+            //
             // ' Other amino acids without widely agreed upon 1 letter codes
-            // 
+            //
             // FlexGridAddItems .grdAminoAcids, "Aminosuberic Acid", "Asu"     ' A pair of Cys residues bonded by S-S
             // FlexGridAddItems .grdAminoAcids, "Cystine", "Cyn"
             // FlexGridAddItems .grdAminoAcids, "Homocysteine", "Hcy"

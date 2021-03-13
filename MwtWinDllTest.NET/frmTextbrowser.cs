@@ -9,7 +9,6 @@ namespace MwtWinDllTest
 {
     public class frmTextbrowser : Form
     {
-
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
         // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
@@ -29,7 +28,7 @@ namespace MwtWinDllTest
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Windows Form Designer generated code"
         public frmTextbrowser() : base()
         {
 
@@ -171,15 +170,15 @@ namespace MwtWinDllTest
             ResumeLayout(false);
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Processing Options Interface Functions"
         public bool ReadOnlyText
         {
             get
             {
                 return txtData.ReadOnly;
             }
-
             set
             {
                 txtData.ReadOnly = value;
@@ -210,7 +209,6 @@ namespace MwtWinDllTest
             {
                 return txtData.Font.SizeInPoints;
             }
-
             set
             {
                 if (value < 6f)
@@ -232,8 +230,10 @@ namespace MwtWinDllTest
                 }
             }
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Procedures"
+
         public void AppendText(string Value)
         {
             txtData.Text += Value + ControlChars.NewLine;
@@ -270,6 +270,9 @@ namespace MwtWinDllTest
                 return;
             txtData.Paste();
         }
+        #endregion
+
+        #region "Menu Handlers"
 
         private void mnuFileExit_Click(object sender, EventArgs e)
         {
@@ -315,6 +318,6 @@ namespace MwtWinDllTest
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
     }
 }

@@ -9,14 +9,16 @@ namespace MwtWinDll
 {
     public class FormulaFinder
     {
-
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Constants"
         private const int MAX_MATCHING_ELEMENTS = 10;
         public const int DEFAULT_RESULTS_TO_FIND = 1000;
         public const int MAXIMUM_ALLOWED_RESULTS_TO_FIND = 1000000;
+
         public const int MAX_BOUNDED_SEARCH_COUNT = 65565;
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Data classes and Enums"
+
         /// <summary>
     /// Search tolerances for each element
     /// </summary>
@@ -59,8 +61,10 @@ namespace MwtWinDll
             MatchPercentComposition = 1
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Member Variables"
+
         private bool mAbortProcessing;
 
         /// <summary>
@@ -80,8 +84,10 @@ namespace MwtWinDll
     /// <remarks></remarks>
         private double mPercentComplete;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Properties"
+
         /// <summary>
     /// Element symbols to consider when finding empirical formulas
     /// </summary>
@@ -94,7 +100,6 @@ namespace MwtWinDll
             {
                 return mCandidateElements;
             }
-
             set
             {
                 if (value is object)
@@ -114,7 +119,6 @@ namespace MwtWinDll
             {
                 return mMaximumHits;
             }
-
             set
             {
                 if (value < 1)
@@ -143,8 +147,9 @@ namespace MwtWinDll
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #endregion
+
+        #region "Events"
         public event MessageEventEventHandler MessageEvent;
 
         public delegate void MessageEventEventHandler(string strMessage);
@@ -156,7 +161,8 @@ namespace MwtWinDll
         public event WarningEventEventHandler WarningEvent;
 
         public delegate void WarningEventEventHandler(string strWarningMessage);
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
+
         /// <summary>
     /// Constructor
     /// </summary>
@@ -169,7 +175,8 @@ namespace MwtWinDll
             Reset();
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        #region "Public Methods"
+
         /// <summary>
     /// Abort processing
     /// </summary>
@@ -328,7 +335,8 @@ namespace MwtWinDll
             MaximumHits = DEFAULT_RESULTS_TO_FIND;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #endregion
+
         private void AppendToEmpiricalFormula(StringBuilder sbEmpiricalFormula, string elementSymbol, int elementCount)
         {
             if (elementCount != 0)
