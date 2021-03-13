@@ -494,15 +494,16 @@ namespace MwtWinDll
         /// </summary>
         /// <param name="intAbbrevIndex"></param>
         /// <param name="strSymbol"></param>
-        /// <param name="strFormula">Input/output; ParseFormulaPublic will standardize the format</param>
+        /// <param name="strFormula"></param>
         /// <param name="sngCharge"></param>
         /// <param name="blnIsAminoAcid"></param>
         /// <param name="strOneLetter"></param>
         /// <param name="strComment"></param>
         /// <param name="blnInvalidSymbolOrFormula"></param>
-        private void AddAbbreviationWork(
+        /// <returns><paramref name="strFormula"/> with format standardized by ParseFormulaPublic</returns>
+        private string AddAbbreviationWork(
             short intAbbrevIndex,  string strSymbol,
-            ref string strFormula, float sngCharge,
+            string strFormula, float sngCharge,
             bool blnIsAminoAcid,
             string strOneLetter = "",
             string strComment = "",
@@ -524,6 +525,8 @@ namespace MwtWinDll
             stats.OneLetterSymbol = Strings.UCase(strOneLetter);
             stats.IsAminoAcid = blnIsAminoAcid;
             stats.Comment = strComment;
+
+            return strFormula;
         }
 
         private void AddToCautionDescription(string strTextToAdd)
@@ -3290,101 +3293,57 @@ namespace MwtWinDll
             AbbrevAllCount = AminoAbbrevCount;
             for (intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
                 AbbrevStats[intIndex].IsAminoAcid = true;
-            string argstrFormula = "C3H5NO";
 
-            AddAbbreviationWork(1, "Ala", ref argstrFormula, 0f, true, "A", "Alanine");
-            string argstrFormula1 = "C6H12N4O";
-            AddAbbreviationWork(2, "Arg", ref argstrFormula1, 0f, true, "R", "Arginine, (unprotonated NH2)");
-            string argstrFormula2 = "C4H6N2O2";
-            AddAbbreviationWork(3, "Asn", ref argstrFormula2, 0f, true, "N", "Asparagine");
-            string argstrFormula3 = "C4H5NO3";
-            AddAbbreviationWork(4, "Asp", ref argstrFormula3, 0f, true, "D", "Aspartic acid (undissociated COOH)");
-            string argstrFormula4 = "C3H5NOS";
-            AddAbbreviationWork(5, "Cys", ref argstrFormula4, 0f, true, "C", "Cysteine (no disulfide link)");
-            string argstrFormula5 = "C6H7NO5";
-            AddAbbreviationWork(6, "Gla", ref argstrFormula5, 0f, true, "U", "gamma-Carboxyglutamate");
-            string argstrFormula6 = "C5H8N2O2";
-            AddAbbreviationWork(7, "Gln", ref argstrFormula6, 0f, true, "Q", "Glutamine");
-            string argstrFormula7 = "C5H7NO3";
-            AddAbbreviationWork(8, "Glu", ref argstrFormula7, 0f, true, "E", "Glutamic acid (undissociated COOH)");
-            string argstrFormula8 = "C2H3NO";
-            AddAbbreviationWork(9, "Gly", ref argstrFormula8, 0f, true, "G", "Glycine");
-            string argstrFormula9 = "C6H7N3O";
-            AddAbbreviationWork(10, "His", ref argstrFormula9, 0f, true, "H", "Histidine (unprotonated NH)");
-            string argstrFormula10 = "C4H7NO2";
-            AddAbbreviationWork(11, "Hse", ref argstrFormula10, 0f, true, "", "Homoserine");
-            string argstrFormula11 = "C6H12N2O2";
-            AddAbbreviationWork(12, "Hyl", ref argstrFormula11, 0f, true, "", "Hydroxylysine");
-            string argstrFormula12 = "C5H7NO2";
-            AddAbbreviationWork(13, "Hyp", ref argstrFormula12, 0f, true, "", "Hydroxyproline");
-            string argstrFormula13 = "C6H11NO";
-            AddAbbreviationWork(14, "Ile", ref argstrFormula13, 0f, true, "I", "Isoleucine");
-            string argstrFormula14 = "C6H11NO";
-            AddAbbreviationWork(15, "Leu", ref argstrFormula14, 0f, true, "L", "Leucine");
-            string argstrFormula15 = "C6H12N2O";
-            AddAbbreviationWork(16, "Lys", ref argstrFormula15, 0f, true, "K", "Lysine (unprotonated NH2)");
-            string argstrFormula16 = "C5H9NOS";
-            AddAbbreviationWork(17, "Met", ref argstrFormula16, 0f, true, "M", "Methionine");
-            string argstrFormula17 = "C5H10N2O";
-            AddAbbreviationWork(18, "Orn", ref argstrFormula17, 0f, true, "O", "Ornithine");
-            string argstrFormula18 = "C9H9NO";
-            AddAbbreviationWork(19, "Phe", ref argstrFormula18, 0f, true, "F", "Phenylalanine");
-            string argstrFormula19 = "C5H7NO";
-            AddAbbreviationWork(20, "Pro", ref argstrFormula19, 0f, true, "P", "Proline");
-            string argstrFormula20 = "C5H5NO2";
-            AddAbbreviationWork(21, "Pyr", ref argstrFormula20, 0f, true, "", "Pyroglutamic acid");
-            string argstrFormula21 = "C3H5NO";
-            AddAbbreviationWork(22, "Sar", ref argstrFormula21, 0f, true, "", "Sarcosine");
-            string argstrFormula22 = "C3H5NO2";
-            AddAbbreviationWork(23, "Ser", ref argstrFormula22, 0f, true, "S", "Serine");
-            string argstrFormula23 = "C4H7NO2";
-            AddAbbreviationWork(24, "Thr", ref argstrFormula23, 0f, true, "T", "Threonine");
-            string argstrFormula24 = "C11H10N2O";
-            AddAbbreviationWork(25, "Trp", ref argstrFormula24, 0f, true, "W", "Tryptophan");
-            string argstrFormula25 = "C9H9NO2";
-            AddAbbreviationWork(26, "Tyr", ref argstrFormula25, 0f, true, "Y", "Tyrosine");
-            string argstrFormula26 = "C5H9NO";
-            AddAbbreviationWork(27, "Val", ref argstrFormula26, 0f, true, "V", "Valine");
-            string argstrFormula27 = "C6H12N2O";
-            AddAbbreviationWork(28, "Xxx", ref argstrFormula27, 0f, true, "X", "Unknown");
+            AddAbbreviationWork(1, "Ala", "C3H5NO", 0f, true, "A", "Alanine");
+            AddAbbreviationWork(2, "Arg", "C6H12N4O", 0f, true, "R", "Arginine, (unprotonated NH2)");
+            AddAbbreviationWork(3, "Asn", "C4H6N2O2", 0f, true, "N", "Asparagine");
+            AddAbbreviationWork(4, "Asp", "C4H5NO3", 0f, true, "D", "Aspartic acid (undissociated COOH)");
+            AddAbbreviationWork(5, "Cys", "C3H5NOS", 0f, true, "C", "Cysteine (no disulfide link)");
+            AddAbbreviationWork(6, "Gla", "C6H7NO5", 0f, true, "U", "gamma-Carboxyglutamate");
+            AddAbbreviationWork(7, "Gln", "C5H8N2O2", 0f, true, "Q", "Glutamine");
+            AddAbbreviationWork(8, "Glu", "C5H7NO3", 0f, true, "E", "Glutamic acid (undissociated COOH)");
+            AddAbbreviationWork(9, "Gly", "C2H3NO", 0f, true, "G", "Glycine");
+            AddAbbreviationWork(10, "His", "C6H7N3O", 0f, true, "H", "Histidine (unprotonated NH)");
+            AddAbbreviationWork(11, "Hse", "C4H7NO2", 0f, true, "", "Homoserine");
+            AddAbbreviationWork(12, "Hyl", "C6H12N2O2", 0f, true, "", "Hydroxylysine");
+            AddAbbreviationWork(13, "Hyp", "C5H7NO2", 0f, true, "", "Hydroxyproline");
+            AddAbbreviationWork(14, "Ile", "C6H11NO", 0f, true, "I", "Isoleucine");
+            AddAbbreviationWork(15, "Leu", "C6H11NO", 0f, true, "L", "Leucine");
+            AddAbbreviationWork(16, "Lys", "C6H12N2O", 0f, true, "K", "Lysine (unprotonated NH2)");
+            AddAbbreviationWork(17, "Met", "C5H9NOS", 0f, true, "M", "Methionine");
+            AddAbbreviationWork(18, "Orn", "C5H10N2O", 0f, true, "O", "Ornithine");
+            AddAbbreviationWork(19, "Phe", "C9H9NO", 0f, true, "F", "Phenylalanine");
+            AddAbbreviationWork(20, "Pro", "C5H7NO", 0f, true, "P", "Proline");
+            AddAbbreviationWork(21, "Pyr", "C5H5NO2", 0f, true, "", "Pyroglutamic acid");
+            AddAbbreviationWork(22, "Sar", "C3H5NO", 0f, true, "", "Sarcosine");
+            AddAbbreviationWork(23, "Ser", "C3H5NO2", 0f, true, "S", "Serine");
+            AddAbbreviationWork(24, "Thr", "C4H7NO2", 0f, true, "T", "Threonine");
+            AddAbbreviationWork(25, "Trp", "C11H10N2O", 0f, true, "W", "Tryptophan");
+            AddAbbreviationWork(26, "Tyr", "C9H9NO2", 0f, true, "Y", "Tyrosine");
+            AddAbbreviationWork(27, "Val", "C5H9NO", 0f, true, "V", "Valine");
+            AddAbbreviationWork(28, "Xxx", "C6H12N2O", 0f, true, "X", "Unknown");
 
             const short NormalAbbrevCount = 16;
             AbbrevAllCount += NormalAbbrevCount;
             for (intIndex = AminoAbbrevCount + 1; intIndex <= AbbrevAllCount; intIndex++)
                 AbbrevStats[intIndex].IsAminoAcid = false;
-            string argstrFormula28 = "C10H8N2";
 
-            AddAbbreviationWork(AminoAbbrevCount + 1, "Bpy", ref argstrFormula28, 0f, false, "", "Bipyridine");
-            string argstrFormula29 = "C4H9";
-            AddAbbreviationWork(AminoAbbrevCount + 2, "Bu", ref argstrFormula29, 1f, false, "", "Butyl");
-            string argstrFormula30 = "^2.014H";
-            AddAbbreviationWork(AminoAbbrevCount + 3, "D", ref argstrFormula30, 1f, false, "", "Deuterium");
-            string argstrFormula31 = "C2H8N2";
-            AddAbbreviationWork(AminoAbbrevCount + 4, "En", ref argstrFormula31, 0f, false, "", "Ethylenediamine");
-            string argstrFormula32 = "CH3CH2";
-            AddAbbreviationWork(AminoAbbrevCount + 5, "Et", ref argstrFormula32, 1f, false, "", "Ethyl");
-            string argstrFormula33 = "CH3";
-            AddAbbreviationWork(AminoAbbrevCount + 6, "Me", ref argstrFormula33, 1f, false, "", "Methyl");
-            string argstrFormula34 = "CH3SOO";
-            AddAbbreviationWork(AminoAbbrevCount + 7, "Ms", ref argstrFormula34, -1, false, "", "Mesyl");
-            string argstrFormula35 = "C2H3O2";
-            AddAbbreviationWork(AminoAbbrevCount + 8, "Oac", ref argstrFormula35, -1, false, "", "Acetate");
-            string argstrFormula36 = "OSO2CF3";
-            AddAbbreviationWork(AminoAbbrevCount + 9, "Otf", ref argstrFormula36, -1, false, "", "Triflate");
-            string argstrFormula37 = "C2O4";
-            AddAbbreviationWork(AminoAbbrevCount + 10, "Ox", ref argstrFormula37, -2, false, "", "Oxalate");
-            string argstrFormula38 = "C6H5";
-            AddAbbreviationWork(AminoAbbrevCount + 11, "Ph", ref argstrFormula38, 1f, false, "", "Phenyl");
-            string argstrFormula39 = "C12H8N2";
-            AddAbbreviationWork(AminoAbbrevCount + 12, "Phen", ref argstrFormula39, 0f, false, "", "Phenanthroline");
-            string argstrFormula40 = "C5H5N";
-            AddAbbreviationWork(AminoAbbrevCount + 13, "Py", ref argstrFormula40, 0f, false, "", "Pyridine");
-            string argstrFormula41 = "(C4H2N(C6H5C)C4H2N(C6H5C))2";
-            AddAbbreviationWork(AminoAbbrevCount + 14, "Tpp", ref argstrFormula41, 0f, false, "", "Tetraphenylporphyrin");
-            string argstrFormula42 = "CH3C6H4SOO";
-            AddAbbreviationWork(AminoAbbrevCount + 15, "Ts", ref argstrFormula42, -1, false, "", "Tosyl");
-            string argstrFormula43 = "H2NCONH2";
-            AddAbbreviationWork(AminoAbbrevCount + 16, "Urea", ref argstrFormula43, 0f, false, "", "Urea");
+            AddAbbreviationWork(AminoAbbrevCount + 1, "Bpy", "C10H8N2", 0f, false, "", "Bipyridine");
+            AddAbbreviationWork(AminoAbbrevCount + 2, "Bu", "C4H9", 1f, false, "", "Butyl");
+            AddAbbreviationWork(AminoAbbrevCount + 3, "D", "^2.014H", 1f, false, "", "Deuterium");
+            AddAbbreviationWork(AminoAbbrevCount + 4, "En", "C2H8N2", 0f, false, "", "Ethylenediamine");
+            AddAbbreviationWork(AminoAbbrevCount + 5, "Et", "CH3CH2", 1f, false, "", "Ethyl");
+            AddAbbreviationWork(AminoAbbrevCount + 6, "Me", "CH3", 1f, false, "", "Methyl");
+            AddAbbreviationWork(AminoAbbrevCount + 7, "Ms", "CH3SOO", -1, false, "", "Mesyl");
+            AddAbbreviationWork(AminoAbbrevCount + 8, "Oac", "C2H3O2", -1, false, "", "Acetate");
+            AddAbbreviationWork(AminoAbbrevCount + 9, "Otf", "OSO2CF3", -1, false, "", "Triflate");
+            AddAbbreviationWork(AminoAbbrevCount + 10, "Ox", "C2O4", -2, false, "", "Oxalate");
+            AddAbbreviationWork(AminoAbbrevCount + 11, "Ph", "C6H5", 1f, false, "", "Phenyl");
+            AddAbbreviationWork(AminoAbbrevCount + 12, "Phen", "C12H8N2", 0f, false, "", "Phenanthroline");
+            AddAbbreviationWork(AminoAbbrevCount + 13, "Py", "C5H5N", 0f, false, "", "Pyridine");
+            AddAbbreviationWork(AminoAbbrevCount + 14, "Tpp", "(C4H2N(C6H5C)C4H2N(C6H5C))2", 0f, false, "", "Tetraphenylporphyrin");
+            AddAbbreviationWork(AminoAbbrevCount + 15, "Ts", "CH3C6H4SOO", -1, false, "", "Tosyl");
+            AddAbbreviationWork(AminoAbbrevCount + 16, "Urea", "H2NCONH2", 0f, false, "", "Urea");
 
             // Note Asx or B is often used for Asp or Asn
             // Note Glx or Z is often used for Glu or Gln
@@ -7054,7 +7013,7 @@ namespace MwtWinDll
                             }
                         }
 
-                        AddAbbreviationWork(intAbbrevID, strSymbol, ref strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnInvalidSymbolOrFormula);
+                        AddAbbreviationWork(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnInvalidSymbolOrFormula);
 
                         ConstructMasterSymbolsList();
                     }
