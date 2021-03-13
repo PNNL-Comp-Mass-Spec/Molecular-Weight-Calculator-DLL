@@ -155,8 +155,7 @@ namespace MwtWinDll
                 switch (mAutoComputeDilutionMode)
                 {
                     case acdAutoComputeDilutionModeConstants.acdFindRequiredTotalVolume:
-                        double argdblNewDilutingSolventVolume = 0d;
-                        ComputeDilutionTotalVolume(out argdblNewDilutingSolventVolume);
+                        ComputeDilutionTotalVolume(out _);
                         break;
                     case acdAutoComputeDilutionModeConstants.acdFindFinalConcentration:
                         ComputeDilutionFinalConcentration();
@@ -165,9 +164,8 @@ namespace MwtWinDll
                         ComputeDilutionInitialConcentration();
                         break;
                     default:
-                        double argdblNewDilutingSolventVolume1 = 0d;
                         // Includes acdFindRequiredDilutionVolumes
-                        ComputeDilutionRequiredStockAndDilutingSolventVolumes(out argdblNewDilutingSolventVolume1);
+                        ComputeDilutionRequiredStockAndDilutingSolventVolumes(out _);
                         break;
                 }
             }

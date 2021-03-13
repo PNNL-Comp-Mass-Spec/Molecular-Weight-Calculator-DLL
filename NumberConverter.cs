@@ -113,8 +113,7 @@ namespace MwtWinDll
         {
             try
             {
-                double argresult = 0d;
-                return double.TryParse(strValue, out argresult);
+                return double.TryParse(strValue, out _);
             }
             catch (Exception ex)
             {

@@ -2503,10 +2503,7 @@ namespace MwtWinDll
             out float sngCharge,
             out bool blnIsAminoAcid)
         {
-            string argstrOneLetterSymbol = "";
-            string argstrComment = "";
-            bool argblnInvalidSymbolOrFormula = false;
-            return GetAbbreviationInternal(abbreviationID, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out argstrOneLetterSymbol, out argstrComment, out argblnInvalidSymbolOrFormula);
+            return GetAbbreviationInternal(abbreviationID, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out _, out _, out _);
         }
 
         /// <summary>

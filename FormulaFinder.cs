@@ -1283,9 +1283,7 @@ namespace MwtWinDll
                 {
                     short elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
 
-                    double argdblUncertainty = 0d;
-                    short argintIsotopeCount = 0;
-                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out argdblUncertainty, out sngCharge, out argintIsotopeCount);
+                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out _, out sngCharge, out _);
 
                     candidateElement.Mass = dblMass;
                     candidateElement.Charge = sngCharge;
@@ -1383,9 +1381,7 @@ namespace MwtWinDll
                 {
                     short elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
 
-                    double argdblUncertainty = 0d;
-                    short argintIsotopeCount = 0;
-                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out argdblUncertainty, out sngCharge, out argintIsotopeCount);
+                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out _, out sngCharge, out _);
 
                     dblPotentialElementStats[potentialElementCount, 0] = dblMass;
                     dblPotentialElementStats[potentialElementCount, 1] = sngCharge;
