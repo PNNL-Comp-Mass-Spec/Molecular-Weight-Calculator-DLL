@@ -15,8 +15,8 @@ namespace UnitTests
 
         private const double MATCHING_MASS_EPSILON = 0.0000001;
 
-        private MolecularWeightCalculator mMwtWinAvg;
-        private MolecularWeightCalculator mMwtWinIso;
+        private MolecularWeightTool mMwtWinAvg;
+        private MolecularWeightTool mMwtWinIso;
 
         /// <summary>
         /// Instantiate two copies of the Molecular Weight Calculator
@@ -25,8 +25,8 @@ namespace UnitTests
         [OneTimeSetUp]
         public void Setup()
         {
-            mMwtWinAvg = new MolecularWeightCalculator(ElementAndMassTools.emElementModeConstants.emAverageMass);
-            mMwtWinIso = new MolecularWeightCalculator(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+            mMwtWinAvg = new MolecularWeightTool(ElementAndMassTools.emElementModeConstants.emAverageMass);
+            mMwtWinIso = new MolecularWeightTool(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
         }
 
         [Test]

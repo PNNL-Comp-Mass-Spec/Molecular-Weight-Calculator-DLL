@@ -126,7 +126,7 @@
     <Compile Include="MoleMassDilution.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MolecularWeightCalculator.vb">
+    <Compile Include="MolecularWeightTool.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="NumberConverter.vb">

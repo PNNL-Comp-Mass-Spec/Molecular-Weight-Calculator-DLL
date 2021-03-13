@@ -499,7 +499,7 @@ Friend Class frmMwtWinDllTest
     End Sub
 #End Region
 
-    Private WithEvents mMwtWin As MwtWinDll.MolecularWeightCalculator
+    Private WithEvents mMwtWin As MwtWinDll.MolecularWeightTool
     Private mMDIDListDataView As System.Data.DataView
     Private myDataSet As System.Data.DataSet
 
@@ -593,7 +593,7 @@ Friend Class frmMwtWinDllTest
     End Sub
 
     Private Sub InitializeControls()
-        mMwtWin = New MwtWinDll.MolecularWeightCalculator With {
+        mMwtWin = New MwtWinDll.MolecularWeightTool With {
             .ShowErrorDialogs = True
         }
 
@@ -996,7 +996,7 @@ Friend Class frmMwtWinDllTest
 
     Public Sub TestFormulaFinder()
 
-        Dim oMwtWin = New MolecularWeightCalculator()
+        Dim oMwtWin = New MolecularWeightTool()
 
         oMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass)
 
@@ -1039,7 +1039,7 @@ Friend Class frmMwtWinDllTest
         End If
     End Sub
 
-    Private Sub FormulaFinderTest1(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest1(oMwtWin As MolecularWeightTool, searchOptions As FormulaFinderOptions, currentTask As String)
 
         ' Search for 200 Da, +/- 0.05 Da
         Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMass(200, 0.05, searchOptions)
@@ -1047,7 +1047,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest2(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest2(oMwtWin As MolecularWeightTool, searchOptions As FormulaFinderOptions, currentTask As String)
 
         ' Search for 200 Da, +/- 250 ppm
         Dim lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200, 250, searchOptions)
@@ -1055,7 +1055,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest3(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest3(oMwtWin As MolecularWeightTool, searchOptions As FormulaFinderOptions, currentTask As String)
 
         searchOptions.LimitChargeRange = True
         searchOptions.ChargeMin = -4
@@ -1067,7 +1067,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest4(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest4(oMwtWin As MolecularWeightTool, searchOptions As FormulaFinderOptions, currentTask As String)
 
         searchOptions.LimitChargeRange = True
         searchOptions.ChargeMin = -4
@@ -1080,7 +1080,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest5(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest5(oMwtWin As MolecularWeightTool, searchOptions As FormulaFinderOptions, currentTask As String)
 
         oMwtWin.FormulaFinder.CandidateElements.Clear()
 
@@ -1095,7 +1095,7 @@ Friend Class frmMwtWinDllTest
 
     End Sub
 
-    Private Sub FormulaFinderTest6(oMwtWin As MolecularWeightCalculator, searchOptions As FormulaFinderOptions, currentTask As String)
+    Private Sub FormulaFinderTest6(oMwtWin As MolecularWeightTool, searchOptions As FormulaFinderOptions, currentTask As String)
 
         searchOptions.SearchMode = FormulaFinderOptions.eSearchMode.Bounded
 

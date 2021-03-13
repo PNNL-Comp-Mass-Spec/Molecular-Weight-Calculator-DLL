@@ -3,7 +3,7 @@ Option Strict On
 Imports System.Collections.Generic
 Imports System.Runtime.InteropServices
 
-Public Class MolecularWeightCalculator
+Public Class MolecularWeightTool
 
     ' Molecular Weight Calculator routines with ActiveX Class interfaces
     ' Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002

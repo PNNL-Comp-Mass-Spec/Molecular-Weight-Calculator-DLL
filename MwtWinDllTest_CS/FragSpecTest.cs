@@ -11,13 +11,13 @@ namespace MwtWinDllTestCS
 
     internal class FragSpecTest
     {
-        private readonly MolecularWeightCalculator mMwtWin;
+        private readonly MolecularWeightTool mMwtWin;
 
         public FragSpecTest() {
-            mMwtWin = new MolecularWeightCalculator();
+            mMwtWin = new MolecularWeightTool();
         }
 
-        public FragSpecTest(ref MolecularWeightCalculator mwtWin) {
+        public FragSpecTest(ref MolecularWeightTool mwtWin) {
             mMwtWin = mwtWin;
         }
 

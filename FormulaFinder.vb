@@ -3,7 +3,7 @@
 Imports System.Collections.Generic
 Imports System.Runtime.InteropServices
 Imports System.Text
-Imports MwtWinDll.MolecularWeightCalculator
+Imports MwtWinDll.MolecularWeightTool
 
 Public Class FormulaFinder
 

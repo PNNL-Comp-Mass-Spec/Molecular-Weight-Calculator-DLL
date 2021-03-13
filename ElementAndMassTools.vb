@@ -78,7 +78,7 @@ Public Class ElementAndMassTools
 #Region "Data classes"
 
     Public Class udtOptionsType
-        Public AbbrevRecognitionMode As MolecularWeightCalculator.arAbbrevRecognitionModeConstants
+        Public AbbrevRecognitionMode As MolecularWeightTool.arAbbrevRecognitionModeConstants
         Public BracketsAsParentheses As Boolean
         Public CaseConversion As ccCaseConversionConstants
         Public DecimalSeparator As Char
@@ -1610,8 +1610,8 @@ Public Class ElementAndMassTools
         MasterSymbolsListCount = ELEMENT_COUNT
 
         ' Note: AbbrevStats is 1-based
-        If gComputationOptions.AbbrevRecognitionMode <> MolecularWeightCalculator.arAbbrevRecognitionModeConstants.arNoAbbreviations Then
-            If gComputationOptions.AbbrevRecognitionMode = MolecularWeightCalculator.arAbbrevRecognitionModeConstants.arNormalPlusAminoAcids Then
+        If gComputationOptions.AbbrevRecognitionMode <> MolecularWeightTool.arAbbrevRecognitionModeConstants.arNoAbbreviations Then
+            If gComputationOptions.AbbrevRecognitionMode = MolecularWeightTool.arAbbrevRecognitionModeConstants.arNormalPlusAminoAcids Then
                 blnIncludeAmino = True
             Else
                 blnIncludeAmino = False
@@ -2483,15 +2483,15 @@ Public Class ElementAndMassTools
     ''' <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
     ''' <returns></returns>
     ''' <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
-    Public Function GetElementStatInternal(intElementID As Short, eElementStat As MolecularWeightCalculator.esElementStatsConstants) As Double
+    Public Function GetElementStatInternal(intElementID As Short, eElementStat As MolecularWeightTool.esElementStatsConstants) As Double
 
         If intElementID >= 1 And intElementID <= ELEMENT_COUNT Then
             Select Case eElementStat
-                Case MolecularWeightCalculator.esElementStatsConstants.esMass
+                Case MolecularWeightTool.esElementStatsConstants.esMass
                     Return ElementStats(intElementID).Mass
-                Case MolecularWeightCalculator.esElementStatsConstants.esCharge
+                Case MolecularWeightTool.esElementStatsConstants.esCharge
                     Return ElementStats(intElementID).Charge
-                Case MolecularWeightCalculator.esElementStatsConstants.esUncertainty
+                Case MolecularWeightTool.esElementStatsConstants.esUncertainty
                     Return ElementStats(intElementID).Uncertainty
                 Case Else
                     Return 0
@@ -3011,7 +3011,7 @@ Public Class ElementAndMassTools
     End Sub
 
     Public Sub MemoryLoadElements(eElementMode As emElementModeConstants)
-        MemoryLoadElements(eElementMode, 0S, MolecularWeightCalculator.esElementStatsConstants.esMass)
+        MemoryLoadElements(eElementMode, 0S, MolecularWeightTool.esElementStatsConstants.esMass)
     End Sub
 
     ''' <summary>
@@ -3027,7 +3027,7 @@ Public Class ElementAndMassTools
     Public Sub MemoryLoadElements(
        eElementMode As emElementModeConstants,
        intSpecificElement As Short,
-       eSpecificStatToReset As MolecularWeightCalculator.esElementStatsConstants)
+       eSpecificStatToReset As MolecularWeightTool.esElementStatsConstants)
 
         Const DEFAULT_CHARGE_CARRIER_MASS_AVG = 1.00739
         Const DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649
@@ -3535,11 +3535,11 @@ Public Class ElementAndMassTools
             If intSpecificElement >= 1 And intSpecificElement <= ELEMENT_COUNT Then
                 With ElementStats(intSpecificElement)
                     Select Case eSpecificStatToReset
-                        Case MolecularWeightCalculator.esElementStatsConstants.esMass
+                        Case MolecularWeightTool.esElementStatsConstants.esMass
                             .Mass = dblElemVals(intSpecificElement, 1)
-                        Case MolecularWeightCalculator.esElementStatsConstants.esUncertainty
+                        Case MolecularWeightTool.esElementStatsConstants.esUncertainty
                             .Uncertainty = dblElemVals(intSpecificElement, 2)
-                        Case MolecularWeightCalculator.esElementStatsConstants.esCharge
+                        Case MolecularWeightTool.esElementStatsConstants.esCharge
                             .Charge = CSng(dblElemVals(intSpecificElement, 3))
                         Case Else
                             ' Ignore it
@@ -4991,7 +4991,7 @@ Public Class ElementAndMassTools
         Dim intIndex, intDecPtCount As Short
 
         If gComputationOptions.DecimalSeparator = Nothing Then
-            gComputationOptions.DecimalSeparator = MolecularWeightCalculator.DetermineDecimalPoint()
+            gComputationOptions.DecimalSeparator = MolecularWeightTool.DetermineDecimalPoint()
         End If
 
         ' Set intNumLength to -1 for now

@@ -14,7 +14,7 @@ namespace MwtWinDllTestCS
         private static void Main(string[] args)
         {
             // Instantiate the Molecular Weight Calculator
-            var mwtWin = new MolecularWeightCalculator();
+            var mwtWin = new MolecularWeightTool();
 
             TestMwtWinFeatures(mwtWin, ElementAndMassTools.emElementModeConstants.emAverageMass);
 
@@ -40,7 +40,7 @@ namespace MwtWinDllTestCS
         }
 
         private static void TestMwtWinFeatures(
-            MolecularWeightCalculator mwtWin,
+            MolecularWeightTool mwtWin,
             ElementAndMassTools.emElementModeConstants elementMode)
         {
             var elementModeDescription = elementMode switch
