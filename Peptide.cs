@@ -476,11 +476,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    ///
-    /// </summary>
-    /// <param name="udtFragSpectrum"></param>
-    /// <returns>The number of ions in udtFragSpectrum()</returns>
-    /// <remarks></remarks>
+        ///
+        /// </summary>
+        /// <param name="udtFragSpectrum"></param>
+        /// <returns>The number of ions in udtFragSpectrum()</returns>
+        /// <remarks></remarks>
         public int GetFragmentationMasses(ref udtFragmentationSpectrumDataType[] udtFragSpectrum)
         {
             // Old: Func GetFragmentationMasses(lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
@@ -1097,22 +1097,22 @@ namespace MwtWinDll
 
 
         /// <summary>
-    /// Examines strPeptideResidues to see where they exist in strProteinResidues
-    /// Constructs a name string based on their position and based on whether the fragment is truly tryptic
-    /// In addition, returns the position of the first and last residue in lngReturnResidueStart and lngReturnResidueEnd
-    /// </summary>
-    /// <param name="strProteinResidues"></param>
-    /// <param name="strPeptideResidues"></param>
-    /// <param name="lngReturnResidueStart">Output: start peptides of the peptide residues in the protein</param>
-    /// <param name="lngReturnResidueEnd">Output: end peptides of the peptide residues in the protein</param>
-    /// <param name="blnICR2LSCompatible"></param>
-    /// <param name="strRuleResidues"></param>
-    /// <param name="strExceptionResidues"></param>
-    /// <param name="strTerminiiSymbol"></param>
-    /// <param name="blnIgnoreCase"></param>
-    /// <param name="lngProteinSearchStartLoc"></param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Examines strPeptideResidues to see where they exist in strProteinResidues
+        /// Constructs a name string based on their position and based on whether the fragment is truly tryptic
+        /// In addition, returns the position of the first and last residue in lngReturnResidueStart and lngReturnResidueEnd
+        /// </summary>
+        /// <param name="strProteinResidues"></param>
+        /// <param name="strPeptideResidues"></param>
+        /// <param name="lngReturnResidueStart">Output: start peptides of the peptide residues in the protein</param>
+        /// <param name="lngReturnResidueEnd">Output: end peptides of the peptide residues in the protein</param>
+        /// <param name="blnICR2LSCompatible"></param>
+        /// <param name="strRuleResidues"></param>
+        /// <param name="strExceptionResidues"></param>
+        /// <param name="strTerminiiSymbol"></param>
+        /// <param name="blnIgnoreCase"></param>
+        /// <param name="lngProteinSearchStartLoc"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public string GetTrypticName(string strProteinResidues, string strPeptideResidues, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, bool blnICR2LSCompatible, string strRuleResidues, string strExceptionResidues, string strTerminiiSymbol, bool blnIgnoreCase, int lngProteinSearchStartLoc)
         {
 
@@ -1306,23 +1306,23 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Examines strPeptideResidues to see where they exist in strProteinResidues
-    /// Looks for all possible matches, returning them as a comma separated list
-    /// </summary>
-    /// <param name="strProteinResidues"></param>
-    /// <param name="strPeptideResidues"></param>
-    /// <param name="lngReturnMatchCount"></param>
-    /// <param name="lngReturnResidueStart"></param>
-    /// <param name="lngReturnResidueEnd"></param>
-    /// <param name="blnICR2LSCompatible"></param>
-    /// <param name="strRuleResidues"></param>
-    /// <param name="strExceptionResidues"></param>
-    /// <param name="strTerminiiSymbol"></param>
-    /// <param name="blnIgnoreCase"></param>
-    /// <param name="lngProteinSearchStartLoc"></param>
-    /// <param name="strListDelimiter"></param>
-    /// <returns>The number of matches</returns>
-    /// <remarks></remarks>
+        /// Examines strPeptideResidues to see where they exist in strProteinResidues
+        /// Looks for all possible matches, returning them as a comma separated list
+        /// </summary>
+        /// <param name="strProteinResidues"></param>
+        /// <param name="strPeptideResidues"></param>
+        /// <param name="lngReturnMatchCount"></param>
+        /// <param name="lngReturnResidueStart"></param>
+        /// <param name="lngReturnResidueEnd"></param>
+        /// <param name="blnICR2LSCompatible"></param>
+        /// <param name="strRuleResidues"></param>
+        /// <param name="strExceptionResidues"></param>
+        /// <param name="strTerminiiSymbol"></param>
+        /// <param name="blnIgnoreCase"></param>
+        /// <param name="lngProteinSearchStartLoc"></param>
+        /// <param name="strListDelimiter"></param>
+        /// <returns>The number of matches</returns>
+        /// <remarks></remarks>
         public string GetTrypticNameMultipleMatches(string strProteinResidues, string strPeptideResidues, ref int lngReturnMatchCount, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, bool blnICR2LSCompatible, string strRuleResidues, string strExceptionResidues, string strTerminiiSymbol, bool blnIgnoreCase, int lngProteinSearchStartLoc, string strListDelimiter)
         {
 
@@ -2568,110 +2568,110 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Defines the peptide sequence
-    /// </summary>
-    /// <param name="strSequence">Peptide sequence using 3-letter amino acid symbols</param>
-    /// <returns>0 if success or 1 if an error</returns>
-    /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="strSequence">Peptide sequence using 3-letter amino acid symbols</param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence)
         {
             return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
-    /// Defines the peptide sequence
-    /// </summary>
-    /// <param name="strSequence">Peptide sequence using 1-letter amino acid symbols</param>
-    /// <returns>0 if success or 1 if an error</returns>
-    /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="strSequence">Peptide sequence using 1-letter amino acid symbols</param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence1LetterSymbol(string strSequence)
         {
             return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode: false, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
-    /// Defines the peptide sequence
-    /// </summary>
-    /// <param name="strSequence">Peptide sequence</param>
-    /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-    /// <param name="bln1LetterCheckForPrefixAndSuffixResidues"></param>
-    /// <returns>0 if success or 1 if an error</returns>
-    /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="strSequence">Peptide sequence</param>
+        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="bln1LetterCheckForPrefixAndSuffixResidues"></param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence, bool blnIs3LetterCode, bool bln1LetterCheckForPrefixAndSuffixResidues)
         {
             return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
-    /// Defines the peptide sequence
-    /// </summary>
-    /// <param name="strSequence">Peptide sequence using 3-letter amino acid symbols</param>
-    /// <param name="eNTerminus">N-terminus group</param>
-    /// <param name="eCTerminus">C-terminus group</param>
-    /// <returns>0 if success or 1 if an error</returns>
-    /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="strSequence">Peptide sequence using 3-letter amino acid symbols</param>
+        /// <param name="eNTerminus">N-terminus group</param>
+        /// <param name="eCTerminus">C-terminus group</param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus)
         {
             return SetSequence(strSequence, eNTerminus, eCTerminus, blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
-    /// Defines the peptide sequence
-    /// </summary>
-    /// <param name="strSequence">Peptide sequence</param>
-    /// <param name="eNTerminus">N-terminus group</param>
-    /// <param name="eCTerminus">C-terminus group</param>
-    /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-    /// <returns>0 if success or 1 if an error</returns>
-    /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="strSequence">Peptide sequence</param>
+        /// <param name="eNTerminus">N-terminus group</param>
+        /// <param name="eCTerminus">C-terminus group</param>
+        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus, bool blnIs3LetterCode)
         {
             return SetSequence(strSequence, eNTerminus, eCTerminus, blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
-    /// Defines the peptide sequence
-    /// </summary>
-    /// <param name="strSequence">Peptide sequence</param>
-    /// <param name="eNTerminus">N-terminus group</param>
-    /// <param name="eCTerminus">C-terminus group</param>
-    /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-    /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
-    /// <returns>0 if success or 1 if an error</returns>
-    /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="strSequence">Peptide sequence</param>
+        /// <param name="eNTerminus">N-terminus group</param>
+        /// <param name="eCTerminus">C-terminus group</param>
+        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus, bool blnIs3LetterCode, bool bln1LetterCheckForPrefixAndSuffixResidues)
         {
             return SetSequence(strSequence, eNTerminus, eCTerminus, blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
-    /// Defines the peptide sequence
-    /// </summary>
-    /// <param name="strSequence">Peptide sequence</param>
-    /// <param name="eNTerminus">N-terminus group</param>
-    /// <param name="eCTerminus">C-terminus group</param>
-    /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-    /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
-    /// <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
-    /// <returns>0 if success or 1 if an error</returns>
-    /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="strSequence">Peptide sequence</param>
+        /// <param name="eNTerminus">N-terminus group</param>
+        /// <param name="eCTerminus">C-terminus group</param>
+        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+        /// <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus, bool blnIs3LetterCode, bool bln1LetterCheckForPrefixAndSuffixResidues, bool bln3LetterCheckForPrefixHandSuffixOH)
         {
             return SetSequence(strSequence, eNTerminus, eCTerminus, blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
-    /// Defines the peptide sequence
-    /// </summary>
-    /// <param name="strSequence">Peptide sequence</param>
-    /// <param name="eNTerminus">N-terminus group</param>
-    /// <param name="eCTerminus">C-terminus group</param>
-    /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-    /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
-    /// <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
-    /// <param name="blnAddMissingModificationSymbols">Set to True to automatically add missing modification symbols (though the mod masses will be 0)</param>
-    /// <returns>0 if success or 1 if an error</returns>
-    /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="strSequence">Peptide sequence</param>
+        /// <param name="eNTerminus">N-terminus group</param>
+        /// <param name="eCTerminus">C-terminus group</param>
+        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+        /// <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
+        /// <param name="blnAddMissingModificationSymbols">Set to True to automatically add missing modification symbols (though the mod masses will be 0)</param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus, bool blnIs3LetterCode, bool bln1LetterCheckForPrefixAndSuffixResidues, bool bln3LetterCheckForPrefixHandSuffixOH, bool blnAddMissingModificationSymbols)
         {
             int lngIndex, lngSequenceStrLength, lngModSymbolLength;

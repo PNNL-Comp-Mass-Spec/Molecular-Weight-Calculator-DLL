@@ -173,12 +173,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get the percent composition for all elements in an empirical formula
-    /// </summary>
-    /// <returns>
-    /// Dictionary of percent composition values
-    /// Keys are element symbols; values are the percent composition
-    /// </returns>
+        /// Get the percent composition for all elements in an empirical formula
+        /// </summary>
+        /// <returns>
+        /// Dictionary of percent composition values
+        /// Keys are element symbols; values are the percent composition
+        /// </returns>
         public Dictionary<string, string> GetPercentCompositionForAllElements()
         {
             // Returns the percent composition for all elements in strPctCompositionsOneBased

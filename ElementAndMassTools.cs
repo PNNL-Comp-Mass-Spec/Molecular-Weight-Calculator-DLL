@@ -176,44 +176,44 @@ namespace MwtWinDll
         public class udtAbbrevStatsType
         {
             /// <summary>
-        /// The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
-        /// </summary>
+            /// The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
+            /// </summary>
             public string Symbol;
 
             /// <summary>
-        /// Empirical formula
-        /// Cannot contain other abbreviations
-        /// </summary>
+            /// Empirical formula
+            /// Cannot contain other abbreviations
+            /// </summary>
             public string Formula;
 
             /// <summary>
-        /// Computed mass for quick reference
-        /// </summary>
+            /// Computed mass for quick reference
+            /// </summary>
             public double Mass;
 
             /// <summary>
-        /// Charge state
-        /// </summary>
+            /// Charge state
+            /// </summary>
             public float Charge;
 
             /// <summary>
-        /// True if an amino acid
-        /// </summary>
+            /// True if an amino acid
+            /// </summary>
             public bool IsAminoAcid;
 
             /// <summary>
-        /// One letter symbol (only used for amino acids)
-        /// </summary>
+            /// One letter symbol (only used for amino acids)
+            /// </summary>
             public string OneLetterSymbol;
 
             /// <summary>
-        /// Description of the abbreviation
-        /// </summary>
+            /// Description of the abbreviation
+            /// </summary>
             public string Comment;
 
             /// <summary>
-        /// True if this abbreviation has an invalid symbol or formula
-        /// </summary>
+            /// True if this abbreviation has an invalid symbol or formula
+            /// </summary>
             public bool InvalidSymbolOrFormula;
 
             public override string ToString()
@@ -269,51 +269,51 @@ namespace MwtWinDll
         public udtOptionsType gComputationOptions = new udtOptionsType();
 
         /// <summary>
-    /// Stores the elements in alphabetical order
-    /// Used for constructing empirical formulas
-    /// 1 to ELEMENT_COUNT
-    /// </summary>
+        /// Stores the elements in alphabetical order
+        /// Used for constructing empirical formulas
+        /// 1 to ELEMENT_COUNT
+        /// </summary>
         private string[] ElementAlph;
 
         /// <summary>
-    /// Element stats
-    /// 1 to ELEMENT_COUNT
-    /// </summary>
+        /// Element stats
+        /// 1 to ELEMENT_COUNT
+        /// </summary>
         private udtElementStatsType[] ElementStats;
 
         /// <summary>
-    /// Stores the element symbols, abbreviations, and amino acids in order of longest symbol length to shortest length, non-alphabetized,
-    /// for use in symbol matching when parsing a formula
-    /// 1 To MasterSymbolsListCount
-    /// </summary>
-    /// <remarks>No number for array size since we dynamically allocate memory for it</remarks>
+        /// Stores the element symbols, abbreviations, and amino acids in order of longest symbol length to shortest length, non-alphabetized,
+        /// for use in symbol matching when parsing a formula
+        /// 1 To MasterSymbolsListCount
+        /// </summary>
+        /// <remarks>No number for array size since we dynamically allocate memory for it</remarks>
         private string[,] MasterSymbolsList;
         private short MasterSymbolsListCount;
 
         /// <summary>
-    /// Includes both abbreviations and amino acids; 1-based array
-    /// </summary>
+        /// Includes both abbreviations and amino acids; 1-based array
+        /// </summary>
         private udtAbbrevStatsType[] AbbrevStats;
         private short AbbrevAllCount;
 
         /// <summary>
-    /// CautionStatements(x,0) holds the symbol combo to look for
-    /// CautionStatements(x, 1) holds the caution statement; 1-based array
-    /// </summary>
+        /// CautionStatements(x,0) holds the symbol combo to look for
+        /// CautionStatements(x, 1) holds the caution statement; 1-based array
+        /// </summary>
         private string[,] CautionStatements;
         private int CautionStatementCount;
 
         /// <summary>
-    /// Error messages; 1-based array
-    /// </summary>
+        /// Error messages; 1-based array
+        /// </summary>
         private string[] MessageStatements;
         private int MessageStatementCount;
         private udtErrorDescriptionType ErrorParams = new udtErrorDescriptionType();
 
         /// <summary>
-    /// Charge carrier mass
-    /// 1.00727649 for monoisotopic mass or 1.00739 for average mass
-    /// </summary>
+        /// Charge carrier mass
+        /// 1.00727649 for monoisotopic mass or 1.00739 for average mass
+        /// </summary>
         private double mChargeCarrierMass;
         private emElementModeConstants mCurrentElementMode;
         private string mStrCautionDescription;
@@ -325,10 +325,10 @@ namespace MwtWinDll
         protected System.IO.StreamWriter mLogFile;
 
         /// <summary>
-    /// Log file folder
-    /// If blank, mOutputFolderPath will be used
-    /// If mOutputFolderPath is also blank,  the log is created in the same folder as the executing assembly
-    /// </summary>
+        /// Log file folder
+        /// If blank, mOutputFolderPath will be used
+        /// If mOutputFolderPath is also blank,  the log is created in the same folder as the executing assembly
+        /// </summary>
         protected string mLogFolderPath;
 
         public event ProgressResetEventHandler ProgressReset;
@@ -336,10 +336,10 @@ namespace MwtWinDll
         public delegate void ProgressResetEventHandler();
 
         /// <summary>
-    /// Progress changed event
-    /// </summary>
-    /// <param name="taskDescription"></param>
-    /// <param name="percentComplete">Ranges from 0 to 100, but can contain decimal percentage values</param>
+        /// Progress changed event
+        /// </summary>
+        /// <param name="taskDescription"></param>
+        /// <param name="percentComplete">Ranges from 0 to 100, but can contain decimal percentage values</param>
         public event ProgressChangedEventHandler ProgressChanged;
 
         public delegate void ProgressChangedEventHandler(string taskDescription, float percentComplete);
@@ -351,8 +351,8 @@ namespace MwtWinDll
         protected string mProgressStepDescription;
 
         /// <summary>
-    /// Ranges from 0 to 100, but can contain decimal percentage values
-    /// </summary>
+        /// Ranges from 0 to 100, but can contain decimal percentage values
+        /// </summary>
         protected float mProgressPercentComplete;
 
         #endregion
@@ -424,9 +424,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Percent complete; ranges from 0 to 100, but can contain decimal percentage values
-    /// </summary>
-    /// <returns></returns>
+        /// Percent complete; ranges from 0 to 100, but can contain decimal percentage values
+        /// </summary>
+        /// <returns></returns>
         public float ProgressPercentComplete
         {
             get
@@ -450,10 +450,10 @@ namespace MwtWinDll
         #endregion
 
         /// <summary>
-    /// Update the abbreviation symbol stack
-    /// </summary>
-    /// <param name="udtAbbrevSymbolStack">Symbol stack; updated by this method</param>
-    /// <param name="symbolReference"></param>
+        /// Update the abbreviation symbol stack
+        /// </summary>
+        /// <param name="udtAbbrevSymbolStack">Symbol stack; updated by this method</param>
+        /// <param name="symbolReference"></param>
         private void AbbrevSymbolStackAdd(ref udtAbbrevSymbolStackType udtAbbrevSymbolStack, short symbolReference)
         {
             try
@@ -469,9 +469,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Update the abbreviation symbol stack
-    /// </summary>
-    /// <param name="udtAbbrevSymbolStack">Symbol stack; updated by this method</param>
+        /// Update the abbreviation symbol stack
+        /// </summary>
+        /// <param name="udtAbbrevSymbolStack">Symbol stack; updated by this method</param>
         private void AbbrevSymbolStackAddRemoveMostRecent(ref udtAbbrevSymbolStackType udtAbbrevSymbolStack)
         {
             if (udtAbbrevSymbolStack.Count > 0)
@@ -486,16 +486,16 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Add an abbreviation
-    /// </summary>
-    /// <param name="intAbbrevIndex"></param>
-    /// <param name="strSymbol"></param>
-    /// <param name="strFormula">Input/output; ParseFormulaPublic will standardize the format</param>
-    /// <param name="sngCharge"></param>
-    /// <param name="blnIsAminoAcid"></param>
-    /// <param name="strOneLetter"></param>
-    /// <param name="strComment"></param>
-    /// <param name="blnInvalidSymbolOrFormula"></param>
+        /// Add an abbreviation
+        /// </summary>
+        /// <param name="intAbbrevIndex"></param>
+        /// <param name="strSymbol"></param>
+        /// <param name="strFormula">Input/output; ParseFormulaPublic will standardize the format</param>
+        /// <param name="sngCharge"></param>
+        /// <param name="blnIsAminoAcid"></param>
+        /// <param name="strOneLetter"></param>
+        /// <param name="strComment"></param>
+        /// <param name="blnInvalidSymbolOrFormula"></param>
         private void AddAbbreviationWork(short intAbbrevIndex, string strSymbol, ref string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetter = "", string strComment = "", bool blnInvalidSymbolOrFormula = false)
         {
             {
@@ -587,15 +587,15 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Examines the formula excerpt to determine if it is an element, abbreviation, amino acid, or unknown
-    /// </summary>
-    /// <param name="strFormulaExcerpt"></param>
-    /// <param name="symbolReference">Output: index of the matched element or abbreviation in MasterSymbolsList()</param>
-    /// <returns>
-    /// smtElement if matched an element
-    /// smtAbbreviation if matched an abbreviation or amino acid
-    /// smtUnknown if no match
-    /// </returns>
+        /// Examines the formula excerpt to determine if it is an element, abbreviation, amino acid, or unknown
+        /// </summary>
+        /// <param name="strFormulaExcerpt"></param>
+        /// <param name="symbolReference">Output: index of the matched element or abbreviation in MasterSymbolsList()</param>
+        /// <returns>
+        /// smtElement if matched an element
+        /// smtAbbreviation if matched an abbreviation or amino acid
+        /// smtUnknown if no match
+        /// </returns>
         private smtSymbolMatchTypeConstants CheckElemAndAbbrev(string strFormulaExcerpt, ref short symbolReference)
         {
             short intIndex;
@@ -661,11 +661,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Compute the weight of a formula (or abbreviation)
-    /// </summary>
-    /// <param name="strFormula">Input/output: updated by ParseFormulaPublic</param>
-    /// <returns>The formula mass, or -1 if an error occurs</returns>
-    /// <remarks>Error information is stored in ErrorParams</remarks>
+        /// Compute the weight of a formula (or abbreviation)
+        /// </summary>
+        /// <param name="strFormula">Input/output: updated by ParseFormulaPublic</param>
+        /// <returns>The formula mass, or -1 if an error occurs</returns>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(ref string strFormula)
         {
             var udtComputationStats = new udtComputationStatsType();
@@ -682,16 +682,16 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
-    /// M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
-    /// </summary>
-    /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
-    /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    /// <param name="strResults">Output: Table of results</param>
-    /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-    /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    /// <returns>0 if success, -1 if an error</returns>
-    /// <remarks></remarks>
+        /// Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
+        /// M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
+        /// </summary>
+        /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+        /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+        /// <param name="strResults">Output: Table of results</param>
+        /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+        /// <returns>0 if success, -1 if an error</returns>
+        /// <remarks></remarks>
         public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount)
         {
             bool blnUseFactorials = false;
@@ -700,17 +700,17 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
-    /// M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
-    /// </summary>
-    /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
-    /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    /// <param name="strResults">Output: Table of results</param>
-    /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-    /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
-    /// <returns>0 if success, -1 if an error</returns>
-    /// <remarks></remarks>
+        /// Computes the Isotopic Distribution for a formula, returns uncharged mass values if intChargeState=0,
+        /// M+H values if intChargeState=1, and convoluted m/z if intChargeState is > 1
+        /// </summary>
+        /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+        /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+        /// <param name="strResults">Output: Table of results</param>
+        /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+        /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
+        /// <returns>0 if success, -1 if an error</returns>
+        /// <remarks></remarks>
         public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, bool blnAddProtonChargeCarrier)
         {
             const bool blnUseFactorials = false;
@@ -718,25 +718,25 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Isotopic Distribution for a formula
-    /// </summary>
-    /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
-    /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    /// <param name="strResults">Output: Table of results</param>
-    /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-    /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    /// <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
-    /// <param name="strHeaderMassToCharge">Header to use in strResults</param>
-    /// <param name="strHeaderFraction">Header to use in strResults</param>
-    /// <param name="strHeaderIntensity">Header to use in strResults</param>
-    /// <param name="blnUseFactorials">Set to true to use Factorial math, which is typically slower; default is False</param>
-    /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
-    /// <returns>0 if success, -1 if an error</returns>
-    /// <remarks>
-    /// Returns uncharged mass values if intChargeState=0,
-    /// Returns M+H values if intChargeState=1
-    /// Returns convoluted m/z if intChargeState is > 1
-    /// </remarks>
+        /// Computes the Isotopic Distribution for a formula
+        /// </summary>
+        /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+        /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+        /// <param name="strResults">Output: Table of results</param>
+        /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+        /// <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
+        /// <param name="strHeaderMassToCharge">Header to use in strResults</param>
+        /// <param name="strHeaderFraction">Header to use in strResults</param>
+        /// <param name="strHeaderIntensity">Header to use in strResults</param>
+        /// <param name="blnUseFactorials">Set to true to use Factorial math, which is typically slower; default is False</param>
+        /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
+        /// <returns>0 if success, -1 if an error</returns>
+        /// <remarks>
+        /// Returns uncharged mass values if intChargeState=0,
+        /// Returns M+H values if intChargeState=1
+        /// Returns convoluted m/z if intChargeState is > 1
+        /// </remarks>
         public short ComputeIsotopicAbundancesInternal(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, string strHeaderIsotopicAbundances, string strHeaderMassToCharge, string strHeaderFraction, string strHeaderIntensity, bool blnUseFactorials, bool blnAddProtonChargeCarrier)
         {
             string strFormula, strModifiedFormula;
@@ -1443,9 +1443,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Compute percent composition of the elements defined in udtComputationStats
-    /// </summary>
-    /// <param name="udtComputationStats">Input/output</param>
+        /// Compute percent composition of the elements defined in udtComputationStats
+        /// </summary>
+        /// <param name="udtComputationStats">Input/output</param>
         public void ComputePercentComposition(ref udtComputationStatsType udtComputationStats)
         {
             short intElementIndex;
@@ -1492,14 +1492,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
-    /// </summary>
-    /// <param name="XYVals">XY data, as key-value pairs</param>
-    /// <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
-    /// <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
-    /// <param name="intQualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
-    /// <returns>Gaussian spectrum data</returns>
-    /// <remarks></remarks>
+        /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
+        /// </summary>
+        /// <param name="XYVals">XY data, as key-value pairs</param>
+        /// <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
+        /// <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
+        /// <param name="intQualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
+        /// <returns>Gaussian spectrum data</returns>
+        /// <remarks></remarks>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> XYVals, int intResolution, double dblResolutionMass, int intQualityFactor)
         {
             // dblXVals() and dblYVals() are parallel arrays, 0-based (thus ranging from 0 to XYVals.count-1)
@@ -1833,39 +1833,39 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Converts dblMassMZ to the MZ that would appear at the given intDesiredCharge
-    /// </summary>
-    /// <param name="dblMassMZ"></param>
-    /// <param name="intCurrentCharge"></param>
-    /// <returns>The new m/z value</returns>
-    /// <remarks>To return the neutral mass, set intDesiredCharge to 0</remarks>
+        /// Converts dblMassMZ to the MZ that would appear at the given intDesiredCharge
+        /// </summary>
+        /// <param name="dblMassMZ"></param>
+        /// <param name="intCurrentCharge"></param>
+        /// <returns>The new m/z value</returns>
+        /// <remarks>To return the neutral mass, set intDesiredCharge to 0</remarks>
         public double ConvoluteMassInternal(double dblMassMZ, short intCurrentCharge)
         {
             return ConvoluteMassInternal(dblMassMZ, intCurrentCharge, 1, 0d);
         }
 
         /// <summary>
-    /// Converts dblMassMZ to the MZ that would appear at the given intDesiredCharge
-    /// </summary>
-    /// <param name="dblMassMZ"></param>
-    /// <param name="intCurrentCharge"></param>
-    /// <param name="intDesiredCharge"></param>
-    /// <returns>The new m/z value</returns>
-    /// <remarks>To return the neutral mass, set intDesiredCharge to 0</remarks>
+        /// Converts dblMassMZ to the MZ that would appear at the given intDesiredCharge
+        /// </summary>
+        /// <param name="dblMassMZ"></param>
+        /// <param name="intCurrentCharge"></param>
+        /// <param name="intDesiredCharge"></param>
+        /// <returns>The new m/z value</returns>
+        /// <remarks>To return the neutral mass, set intDesiredCharge to 0</remarks>
         public double ConvoluteMassInternal(double dblMassMZ, short intCurrentCharge, short intDesiredCharge)
         {
             return ConvoluteMassInternal(dblMassMZ, intCurrentCharge, intDesiredCharge, 0d);
         }
 
         /// <summary>
-    /// Converts dblMassMZ to the MZ that would appear at the given intDesiredCharge
-    /// </summary>
-    /// <param name="dblMassMZ"></param>
-    /// <param name="intCurrentCharge"></param>
-    /// <param name="intDesiredCharge"></param>
-    /// <param name="dblChargeCarrierMass">Charge carrier mass.  If 0, this function will use mChargeCarrierMass instead</param>
-    /// <returns>The new m/z value</returns>
-    /// <remarks>To return the neutral mass, set intDesiredCharge to 0</remarks>
+        /// Converts dblMassMZ to the MZ that would appear at the given intDesiredCharge
+        /// </summary>
+        /// <param name="dblMassMZ"></param>
+        /// <param name="intCurrentCharge"></param>
+        /// <param name="intDesiredCharge"></param>
+        /// <param name="dblChargeCarrierMass">Charge carrier mass.  If 0, this function will use mChargeCarrierMass instead</param>
+        /// <returns>The new m/z value</returns>
+        /// <remarks>To return the neutral mass, set intDesiredCharge to 0</remarks>
         public double ConvoluteMassInternal(double dblMassMZ, short intCurrentCharge, short intDesiredCharge, double dblChargeCarrierMass)
         {
             const double DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649d;
@@ -1924,11 +1924,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Converts strFormula to its corresponding empirical formula
-    /// </summary>
-    /// <param name="strFormula"></param>
-    /// <returns>The empirical formula, or -1 if an error</returns>
-    /// <remarks></remarks>
+        /// Converts strFormula to its corresponding empirical formula
+        /// </summary>
+        /// <param name="strFormula"></param>
+        /// <returns>The empirical formula, or -1 if an error</returns>
+        /// <remarks></remarks>
         public string ConvertFormulaToEmpirical(string strFormula)
         {
             var udtComputationStats = new udtComputationStatsType();
@@ -2001,11 +2001,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Expands abbreviations in formula to their elemental equivalent
-    /// </summary>
-    /// <param name="strFormula"></param>
-    /// <returns>Returns the result, or -1 if an error</returns>
-    /// <remarks></remarks>
+        /// Expands abbreviations in formula to their elemental equivalent
+        /// </summary>
+        /// <param name="strFormula"></param>
+        /// <returns>Returns the result, or -1 if an error</returns>
+        /// <remarks></remarks>
         public string ExpandAbbreviationsInFormula(string strFormula)
         {
             var udtComputationStats = new udtComputationStatsType();
@@ -2034,17 +2034,17 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Recursive function to Convolute the Results in IsoStats() and store in ConvolutedAbundances(); 1-based array
-    /// </summary>
-    /// <param name="ConvolutedAbundances"></param>
-    /// <param name="ConvolutedAbundanceStartMass"></param>
-    /// <param name="WorkingRow"></param>
-    /// <param name="WorkingAbundance"></param>
-    /// <param name="WorkingMassTotal"></param>
-    /// <param name="ElementTrack"></param>
-    /// <param name="IsoStats"></param>
-    /// <param name="ElementCount"></param>
-    /// <param name="Iterations"></param>
+        /// Recursive function to Convolute the Results in IsoStats() and store in ConvolutedAbundances(); 1-based array
+        /// </summary>
+        /// <param name="ConvolutedAbundances"></param>
+        /// <param name="ConvolutedAbundanceStartMass"></param>
+        /// <param name="WorkingRow"></param>
+        /// <param name="WorkingAbundance"></param>
+        /// <param name="WorkingMassTotal"></param>
+        /// <param name="ElementTrack"></param>
+        /// <param name="IsoStats"></param>
+        /// <param name="ElementCount"></param>
+        /// <param name="Iterations"></param>
         private void ConvoluteMasses(ref udtIsoResultsOverallType[] ConvolutedAbundances, int ConvolutedAbundanceStartMass, int WorkingRow, float WorkingAbundance, int WorkingMassTotal, short ElementTrack, ref udtIsoResultsByElementType[] IsoStats, short ElementCount, ref long Iterations)
         {
             int IndexToStoreResult, RowIndex;
@@ -2081,11 +2081,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Compute the factorial of a number; uses recursion
-    /// </summary>
-    /// <param name="Number">Integer number between 0 and 170</param>
-    /// <returns>The factorial, or -1 if an error</returns>
-    /// <remarks></remarks>
+        /// Compute the factorial of a number; uses recursion
+        /// </summary>
+        /// <param name="Number">Integer number between 0 and 170</param>
+        /// <returns>The factorial, or -1 if an error</returns>
+        /// <remarks></remarks>
         public double Factorial(short Number)
         {
             try
@@ -2185,12 +2185,12 @@ namespace MwtWinDll
         // 'End Function
 
         /// <summary>
-    /// Determines the number of Combo results (iterations) for the given
-    /// number of Atoms for an element with the given number of Isotopes
-    /// </summary>
-    /// <param name="AtomCount"></param>
-    /// <param name="IsotopeCount"></param>
-    /// <returns></returns>
+        /// Determines the number of Combo results (iterations) for the given
+        /// number of Atoms for an element with the given number of Isotopes
+        /// </summary>
+        /// <param name="AtomCount"></param>
+        /// <param name="IsotopeCount"></param>
+        /// <returns></returns>
         private int FindCombosPredictIterations(int AtomCount, short IsotopeCount)
         {
 
@@ -2271,17 +2271,17 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Recursive function to find all the combinations
-    /// of a number of atoms with the given maximum isotopic count
-    /// </summary>
-    /// <param name="ComboResults"></param>
-    /// <param name="AtomCount"></param>
-    /// <param name="MaxIsotopeCount"></param>
-    /// <param name="CurrentIsotopeCount"></param>
-    /// <param name="CurrentRow"></param>
-    /// <param name="CurrentCol"></param>
-    /// <param name="AtomTrackHistory"></param>
-    /// <returns></returns>
+        /// Recursive function to find all the combinations
+        /// of a number of atoms with the given maximum isotopic count
+        /// </summary>
+        /// <param name="ComboResults"></param>
+        /// <param name="AtomCount"></param>
+        /// <param name="MaxIsotopeCount"></param>
+        /// <param name="CurrentIsotopeCount"></param>
+        /// <param name="CurrentRow"></param>
+        /// <param name="CurrentCol"></param>
+        /// <param name="AtomTrackHistory"></param>
+        /// <returns></returns>
         private int FindCombosRecurse(ref int[,] ComboResults, int AtomCount, short MaxIsotopeCount, short CurrentIsotopeCount, ref int CurrentRow, short CurrentCol, ref int[] AtomTrackHistory)
         {
             int FindCombosRecurseRet = default;
@@ -2393,30 +2393,30 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get the number of abbreviations in memory
-    /// </summary>
-    /// <returns></returns>
+        /// Get the number of abbreviations in memory
+        /// </summary>
+        /// <returns></returns>
         public int GetAbbreviationCountInternal()
         {
             return AbbrevAllCount;
         }
 
         /// <summary>
-    /// Get the abbreviation ID for the given abbreviation symbol
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <returns>ID if found, otherwise 0</returns>
+        /// Get the abbreviation ID for the given abbreviation symbol
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <returns>ID if found, otherwise 0</returns>
         public int GetAbbreviationIDInternal(string strSymbol)
         {
             return GetAbbreviationIDInternal(strSymbol, false);
         }
 
         /// <summary>
-    /// Get the abbreviation ID for the given abbreviation symbol
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <param name="blnAminoAcidsOnly"></param>
-    /// <returns>ID if found, otherwise 0</returns>
+        /// Get the abbreviation ID for the given abbreviation symbol
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <param name="blnAminoAcidsOnly"></param>
+        /// <returns>ID if found, otherwise 0</returns>
         public int GetAbbreviationIDInternal(string strSymbol, bool blnAminoAcidsOnly)
         {
             for (int index = 1, loopTo = AbbrevAllCount; index <= loopTo; index++)
@@ -2442,17 +2442,17 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get an abbreviation, by ID
-    /// </summary>
-    /// <param name="abbreviationID"></param>
-    /// <param name="strSymbol">Output: symbol</param>
-    /// <param name="strFormula">Output: empirical formula</param>
-    /// <param name="sngCharge">Output: charge</param>
-    /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
-    /// <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
-    /// <param name="strComment">Output: comment</param>
-    /// <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
-    /// <returns> 0 if success, 1 if failure</returns>
+        /// Get an abbreviation, by ID
+        /// </summary>
+        /// <param name="abbreviationID"></param>
+        /// <param name="strSymbol">Output: symbol</param>
+        /// <param name="strFormula">Output: empirical formula</param>
+        /// <param name="sngCharge">Output: charge</param>
+        /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
+        /// <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
+        /// <param name="strComment">Output: comment</param>
+        /// <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
+        /// <returns> 0 if success, 1 if failure</returns>
         public int GetAbbreviationInternal(int abbreviationID, out string strSymbol, out string strFormula, out float sngCharge, out bool blnIsAminoAcid, out string strOneLetterSymbol, out string strComment, out bool blnInvalidSymbolOrFormula)
         {
             if (abbreviationID >= 1 & abbreviationID <= AbbrevAllCount)
@@ -2551,10 +2551,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get the caution statement ID for the given symbol combo
-    /// </summary>
-    /// <param name="strSymbolCombo"></param>
-    /// <returns>Statement ID if found, otherwise -1</returns>
+        /// Get the caution statement ID for the given symbol combo
+        /// </summary>
+        /// <param name="strSymbolCombo"></param>
+        /// <returns>Statement ID if found, otherwise -1</returns>
         public int GetCautionStatementIDInternal(string strSymbolCombo)
         {
             short intIndex;
@@ -2571,12 +2571,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get a caution statement, by ID
-    /// </summary>
-    /// <param name="cautionStatementID"></param>
-    /// <param name="strSymbolCombo">Output: symbol combo for the caution statement</param>
-    /// <param name="strCautionStatement">Output: caution statement text</param>
-    /// <returns>0 if success, 1 if an invalid ID</returns>
+        /// Get a caution statement, by ID
+        /// </summary>
+        /// <param name="cautionStatementID"></param>
+        /// <param name="strSymbolCombo">Output: symbol combo for the caution statement</param>
+        /// <param name="strCautionStatement">Output: caution statement text</param>
+        /// <returns>0 if success, 1 if an invalid ID</returns>
         public int GetCautionStatementInternal(int cautionStatementID, out string strSymbolCombo, out string strCautionStatement)
         {
             if (cautionStatementID >= 1 & cautionStatementID <= CautionStatementCount)
@@ -2609,15 +2609,15 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Returns the settings for the element with intElementID in the ByRef variables
-    /// </summary>
-    /// <param name="intElementID"></param>
-    /// <param name="strSymbol"></param>
-    /// <param name="dblMass"></param>
-    /// <param name="dblUncertainty"></param>
-    /// <param name="sngCharge"></param>
-    /// <param name="intIsotopeCount"></param>
-    /// <returns>0 if success, 1 if failure</returns>
+        /// Returns the settings for the element with intElementID in the ByRef variables
+        /// </summary>
+        /// <param name="intElementID"></param>
+        /// <param name="strSymbol"></param>
+        /// <param name="dblMass"></param>
+        /// <param name="dblUncertainty"></param>
+        /// <param name="sngCharge"></param>
+        /// <param name="intIsotopeCount"></param>
+        /// <returns>0 if success, 1 if failure</returns>
         public int GetElementInternal(short intElementID, out string strSymbol, out double dblMass, out double dblUncertainty, out float sngCharge, out short intIsotopeCount)
         {
             if (intElementID >= 1 & intElementID <= ELEMENT_COUNT)
@@ -2646,10 +2646,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get the element ID for the given symbol
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <returns>ID if found, otherwise 0</returns>
+        /// Get the element ID for the given symbol
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <returns>ID if found, otherwise 0</returns>
         public short GetElementIDInternal(string strSymbol)
         {
             short intIndex;
@@ -2665,13 +2665,13 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Returns the isotope masses and abundances for the element with intElementID
-    /// </summary>
-    /// <param name="intElementID"></param>
-    /// <param name="intIsotopeCount"></param>
-    /// <param name="dblIsotopeMasses"></param>
-    /// <param name="sngIsotopeAbundances"></param>
-    /// <returns>0 if a valid ID, 1 if invalid</returns>
+        /// Returns the isotope masses and abundances for the element with intElementID
+        /// </summary>
+        /// <param name="intElementID"></param>
+        /// <param name="intIsotopeCount"></param>
+        /// <param name="dblIsotopeMasses"></param>
+        /// <param name="sngIsotopeAbundances"></param>
+        /// <returns>0 if a valid ID, 1 if invalid</returns>
         public int GetElementIsotopesInternal(short intElementID, ref short intIsotopeCount, ref double[] dblIsotopeMasses, ref float[] sngIsotopeAbundances)
         {
             short intIsotopeIndex;
@@ -2697,24 +2697,24 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get the current element mode
-    /// </summary>
-    /// <returns>
-    /// emAverageMass  = 1
-    /// emIsotopicMass = 2
-    /// emIntegerMass  = 3
-    /// </returns>
+        /// Get the current element mode
+        /// </summary>
+        /// <returns>
+        /// emAverageMass  = 1
+        /// emIsotopicMass = 2
+        /// emIntegerMass  = 3
+        /// </returns>
         public emElementModeConstants GetElementModeInternal()
         {
             return mCurrentElementMode;
         }
 
         /// <summary>
-    /// Return the element symbol for the given element ID
-    /// </summary>
-    /// <param name="intElementID"></param>
-    /// <returns></returns>
-    /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
+        /// Return the element symbol for the given element ID
+        /// </summary>
+        /// <param name="intElementID"></param>
+        /// <returns></returns>
+        /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         public string GetElementSymbolInternal(short intElementID)
         {
             if (intElementID >= 1 & intElementID <= ELEMENT_COUNT)
@@ -2733,12 +2733,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Returns a single bit of information about a single element
-    /// </summary>
-    /// <param name="intElementID">Element ID</param>
-    /// <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
-    /// <returns></returns>
-    /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
+        /// Returns a single bit of information about a single element
+        /// </summary>
+        /// <param name="intElementID">Element ID</param>
+        /// <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
+        /// <returns></returns>
+        /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         public double GetElementStatInternal(short intElementID, MolecularWeightTool.esElementStatsConstants eElementStat)
         {
             if (intElementID >= 1 & intElementID <= ELEMENT_COUNT)
@@ -2810,15 +2810,15 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get message text using message ID
-    /// </summary>
-    /// <param name="messageID"></param>
-    /// <param name="strAppendText"></param>
-    /// <returns></returns>
-    /// <remarks>
-    /// GetMessageStringInternal simply returns the message for messageID
-    /// LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
-    /// </remarks>
+        /// Get message text using message ID
+        /// </summary>
+        /// <param name="messageID"></param>
+        /// <param name="strAppendText"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// GetMessageStringInternal simply returns the message for messageID
+        /// LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
+        /// </remarks>
         public string GetMessageStatementInternal(int messageID, string strAppendText)
         {
             string strMessage;
@@ -2853,12 +2853,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Checks for presence of SymbolReference in udtAbbrevSymbolStack
-    /// If found, returns true
-    /// </summary>
-    /// <param name="udtAbbrevSymbolStack"></param>
-    /// <param name="SymbolReference"></param>
-    /// <returns></returns>
+        /// Checks for presence of SymbolReference in udtAbbrevSymbolStack
+        /// If found, returns true
+        /// </summary>
+        /// <param name="udtAbbrevSymbolStack"></param>
+        /// <param name="SymbolReference"></param>
+        /// <returns></returns>
         private bool IsPresentInAbbrevSymbolStack(ref udtAbbrevSymbolStackType udtAbbrevSymbolStack, short SymbolReference)
         {
             short intIndex;
@@ -2886,14 +2886,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Returns True if the first letter of strTestChar is a ModSymbol
-    /// </summary>
-    /// <param name="strTestChar"></param>
-    /// <returns></returns>
-    /// <remarks>
-    /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
-    /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
-    /// </remarks>
+        /// Returns True if the first letter of strTestChar is a ModSymbol
+        /// </summary>
+        /// <param name="strTestChar"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
+        /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
+        /// </remarks>
         public bool IsModSymbolInternal(string strTestChar)
         {
             char chFirstChar;
@@ -2946,10 +2946,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Tests if all of the characters in strTest are letters
-    /// </summary>
-    /// <param name="strTest"></param>
-    /// <returns></returns>
+        /// Tests if all of the characters in strTest are letters
+        /// </summary>
+        /// <param name="strTest"></param>
+        /// <returns></returns>
         private bool IsStringAllLetters(string strTest)
         {
             bool IsStringAllLettersRet = default;
@@ -3102,12 +3102,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Looks up the message for messageID
-    /// Also appends any data in strAppendText to the message
-    /// </summary>
-    /// <param name="messageID"></param>
-    /// <param name="strAppendText"></param>
-    /// <returns>The complete message</returns>
+        /// Looks up the message for messageID
+        /// Also appends any data in strAppendText to the message
+        /// </summary>
+        /// <param name="messageID"></param>
+        /// <param name="strAppendText"></param>
+        /// <returns>The complete message</returns>
         internal string LookupMessage(int messageID, string strAppendText)
         {
             string LookupMessageRet = default;
@@ -3172,11 +3172,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Converts dblMassToConvert to ppm, based on the value of dblCurrentMZ
-    /// </summary>
-    /// <param name="dblMassToConvert"></param>
-    /// <param name="dblCurrentMZ"></param>
-    /// <returns></returns>
+        /// Converts dblMassToConvert to ppm, based on the value of dblCurrentMZ
+        /// </summary>
+        /// <param name="dblMassToConvert"></param>
+        /// <param name="dblCurrentMZ"></param>
+        /// <returns></returns>
         public double MassToPPMInternal(double dblMassToConvert, double dblCurrentMZ)
         {
             if (dblCurrentMZ > 0d)
@@ -3195,12 +3195,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Convert monoisotopic mass to m/z
-    /// </summary>
-    /// <param name="dblMonoisotopicMass"></param>
-    /// <param name="intCharge"></param>
-    /// <param name="dblChargeCarrierMass">If this is 0, uses mChargeCarrierMass</param>
-    /// <returns></returns>
+        /// Convert monoisotopic mass to m/z
+        /// </summary>
+        /// <param name="dblMonoisotopicMass"></param>
+        /// <param name="intCharge"></param>
+        /// <param name="dblChargeCarrierMass">If this is 0, uses mChargeCarrierMass</param>
+        /// <returns></returns>
         public double MonoMassToMZInternal(double dblMonoisotopicMass, short intCharge, double dblChargeCarrierMass)
         {
             if (Math.Abs(dblChargeCarrierMass) < float.Epsilon)
@@ -3368,9 +3368,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Define the caution statements
-    /// </summary>
-    /// <remarks>Use objMwtWin.ClearCautionStatements and objMwtWin.AddCautionStatement to set these based on language</remarks>
+        /// Define the caution statements
+        /// </summary>
+        /// <remarks>Use objMwtWin.ClearCautionStatements and objMwtWin.AddCautionStatement to set these based on language</remarks>
         public void MemoryLoadCautionStatements()
         {
             CautionStatementCount = 41;
@@ -3464,15 +3464,15 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Load elements
-    /// </summary>
-    /// <param name="eElementMode">Element mode: 1 for average weights, 2 for monoisotopic weights, 3 for integer weights</param>
-    /// <param name="intSpecificElement"></param>
-    /// <param name="eSpecificStatToReset"></param>
-    /// <remarks>
-    /// intSpecificElement and intSpecificElementProperty are zero when updating all of the elements
-    /// nonzero intSpecificElement and intSpecificElementProperty values will set just that specific value to the default
-    /// </remarks>
+        /// Load elements
+        /// </summary>
+        /// <param name="eElementMode">Element mode: 1 for average weights, 2 for monoisotopic weights, 3 for integer weights</param>
+        /// <param name="intSpecificElement"></param>
+        /// <param name="eSpecificStatToReset"></param>
+        /// <remarks>
+        /// intSpecificElement and intSpecificElementProperty are zero when updating all of the elements
+        /// nonzero intSpecificElement and intSpecificElementProperty values will set just that specific value to the default
+        /// </remarks>
         public void MemoryLoadElements(emElementModeConstants eElementMode, short intSpecificElement, MolecularWeightTool.esElementStatsConstants eSpecificStatToReset)
         {
             const double DEFAULT_CHARGE_CARRIER_MASS_AVG = 1.00739d;
@@ -4237,8 +4237,8 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Stores isotope information in ElementStats()
-    /// </summary>
+        /// Stores isotope information in ElementStats()
+        /// </summary>
         private void MemoryLoadIsotopes()
         {
             short intElementIndex, intIsotopeIndex;
@@ -5182,11 +5182,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Determines the molecular weight and elemental composition of strFormula
-    /// </summary>
-    /// <param name="strFormula">Input/output: formula to parse</param>
-    /// <param name="udtComputationStats">Output: additional information about the formula</param>
-    /// <returns>Computed molecular weight if no error; otherwise -1</returns>
+        /// Determines the molecular weight and elemental composition of strFormula
+        /// </summary>
+        /// <param name="strFormula">Input/output: formula to parse</param>
+        /// <param name="udtComputationStats">Output: additional information about the formula</param>
+        /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         public double ParseFormulaPublic(ref string strFormula, ref udtComputationStatsType udtComputationStats)
         {
             double argdblValueForX = 1d;
@@ -5194,12 +5194,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Determines the molecular weight and elemental composition of strFormula
-    /// </summary>
-    /// <param name="strFormula">Input/output: formula to parse</param>
-    /// <param name="udtComputationStats">Output: additional information about the formula</param>
-    /// <param name="blnExpandAbbreviations"></param>
-    /// <returns>Computed molecular weight if no error; otherwise -1</returns>
+        /// Determines the molecular weight and elemental composition of strFormula
+        /// </summary>
+        /// <param name="strFormula">Input/output: formula to parse</param>
+        /// <param name="udtComputationStats">Output: additional information about the formula</param>
+        /// <param name="blnExpandAbbreviations"></param>
+        /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         public double ParseFormulaPublic(ref string strFormula, ref udtComputationStatsType udtComputationStats, bool blnExpandAbbreviations)
         {
             double argdblValueForX = 1d;
@@ -5207,17 +5207,17 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Determines the molecular weight and elemental composition of strFormula
-    /// </summary>
-    /// <param name="strFormula">Input/output: formula to parse</param>
-    /// <param name="udtComputationStats">Output: additional information about the formula</param>
-    /// <param name="blnExpandAbbreviations"></param>
-    /// <param name="dblValueForX"></param>
-    /// <returns>Computed molecular weight if no error; otherwise -1</returns>
-    /// <remarks>
-    /// ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
-    /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
-    /// </remarks>
+        /// Determines the molecular weight and elemental composition of strFormula
+        /// </summary>
+        /// <param name="strFormula">Input/output: formula to parse</param>
+        /// <param name="udtComputationStats">Output: additional information about the formula</param>
+        /// <param name="blnExpandAbbreviations"></param>
+        /// <param name="dblValueForX"></param>
+        /// <returns>Computed molecular weight if no error; otherwise -1</returns>
+        /// <remarks>
+        /// ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
+        /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
+        /// </remarks>
         public double ParseFormulaPublic(ref string strFormula, ref udtComputationStatsType udtComputationStats, bool blnExpandAbbreviations, ref double dblValueForX)
         {
             short intElementIndex;
@@ -5271,23 +5271,23 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Determine elements in an abbreviation or elements and abbreviations in a formula
-    /// Stores results in udtComputationStats
-    /// ErrorParams will hold information on errors that occur
-    /// </summary>
-    /// <param name="strFormula"></param>
-    /// <param name="udtComputationStats"></param>
-    /// <param name="udtAbbrevSymbolStack"></param>
-    /// <param name="blnExpandAbbreviations"></param>
-    /// <param name="dblStdDevSum">Sum of the squares of the standard deviations</param>
-    /// <param name="CarbonOrSiliconReturnCount">Tracks the number of carbon and silicon atoms found; used when correcting for charge inside parentheses or inside an abbreviation</param>
-    /// <param name="dblValueForX"></param>
-    /// <param name="intCharCountPrior"></param>
-    /// <param name="dblParenthMultiplier">The value to multiply all values by if inside parentheses</param>
-    /// <param name="dblDashMultiplierPrior"></param>
-    /// <param name="dblBracketMultiplierPrior"></param>
-    /// <param name="intParenthLevelPrevious"></param>
-    /// <returns>Formatted formula</returns>
+        /// Determine elements in an abbreviation or elements and abbreviations in a formula
+        /// Stores results in udtComputationStats
+        /// ErrorParams will hold information on errors that occur
+        /// </summary>
+        /// <param name="strFormula"></param>
+        /// <param name="udtComputationStats"></param>
+        /// <param name="udtAbbrevSymbolStack"></param>
+        /// <param name="blnExpandAbbreviations"></param>
+        /// <param name="dblStdDevSum">Sum of the squares of the standard deviations</param>
+        /// <param name="CarbonOrSiliconReturnCount">Tracks the number of carbon and silicon atoms found; used when correcting for charge inside parentheses or inside an abbreviation</param>
+        /// <param name="dblValueForX"></param>
+        /// <param name="intCharCountPrior"></param>
+        /// <param name="dblParenthMultiplier">The value to multiply all values by if inside parentheses</param>
+        /// <param name="dblDashMultiplierPrior"></param>
+        /// <param name="dblBracketMultiplierPrior"></param>
+        /// <param name="intParenthLevelPrevious"></param>
+        /// <returns>Formatted formula</returns>
         private string ParseFormulaRecursive(string strFormula, ref udtComputationStatsType udtComputationStats, ref udtAbbrevSymbolStackType udtAbbrevSymbolStack, bool blnExpandAbbreviations, ref double dblStdDevSum, [Optional, DefaultParameterValue(0)] ref int CarbonOrSiliconReturnCount, double dblValueForX = 1.0d, int intCharCountPrior = 0, double dblParenthMultiplier = 1.0d, double dblDashMultiplierPrior = 1.0d, double dblBracketMultiplierPrior = 1.0d, short intParenthLevelPrevious = 0)
         {
 
@@ -6168,22 +6168,22 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Looks for a number and returns it if found
-    /// </summary>
-    /// <param name="strWork">Input/Output</param>
-    /// <param name="intNumLength">Output: length of the number</param>
-    /// <param name="blnAllowNegative"></param>
-    /// <returns>
-    /// Parsed number if found
-    /// If not a number, returns a negative number for the error code and sets intNumLength = 0
-    /// </returns>
-    /// <remarks>
-    /// Error codes:
-    /// -1 = No number
-    /// -2 =                                             (unused)
-    /// -3 = No number at all or (more likely) no number after decimal point
-    /// -4 = More than one decimal point
-    /// </remarks>
+        /// Looks for a number and returns it if found
+        /// </summary>
+        /// <param name="strWork">Input/Output</param>
+        /// <param name="intNumLength">Output: length of the number</param>
+        /// <param name="blnAllowNegative"></param>
+        /// <returns>
+        /// Parsed number if found
+        /// If not a number, returns a negative number for the error code and sets intNumLength = 0
+        /// </returns>
+        /// <remarks>
+        /// Error codes:
+        /// -1 = No number
+        /// -2 =                                             (unused)
+        /// -3 = No number at all or (more likely) no number after decimal point
+        /// -4 = More than one decimal point
+        /// </remarks>
         private double ParseNum(ref string strWork, out int intNumLength, bool blnAllowNegative = false)
         {
             double ParseNumRet = default;
@@ -6276,14 +6276,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Converts plain text to formatted rtf text
-    /// </summary>
-    /// <param name="strWorkText"></param>
-    /// <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
-    /// <param name="blnHighlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
-    /// <param name="blnOverrideErrorID"></param>
-    /// <param name="errorIDOverride"></param>
-    /// <returns></returns>
+        /// Converts plain text to formatted rtf text
+        /// </summary>
+        /// <param name="strWorkText"></param>
+        /// <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
+        /// <param name="blnHighlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
+        /// <param name="blnOverrideErrorID"></param>
+        /// <param name="errorIDOverride"></param>
+        /// <returns></returns>
         public string PlainTextToRtfInternal(string strWorkText, bool calculatorMode, bool blnHighlightCharFollowingPercentSign, bool blnOverrideErrorID, int errorIDOverride)
         {
             string PlainTextToRtfInternalRet = default;
@@ -6475,8 +6475,8 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Recomputes the Mass for all of the loaded abbreviations
-    /// </summary>
+        /// Recomputes the Mass for all of the loaded abbreviations
+        /// </summary>
         public void RecomputeAbbreviationMassesInternal()
         {
             for (int index = 1, loopTo = AbbrevAllCount; index <= loopTo; index++)
@@ -6500,10 +6500,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Look for the abbreviation and remove it
-    /// </summary>
-    /// <param name="strAbbreviationSymbol"></param>
-    /// <returns>0 if found and removed; 1 if error</returns>
+        /// Look for the abbreviation and remove it
+        /// </summary>
+        /// <param name="strAbbreviationSymbol"></param>
+        /// <returns>0 if found and removed; 1 if error</returns>
         public int RemoveAbbreviationInternal(string strAbbreviationSymbol)
         {
             var blnRemoved = default(bool);
@@ -6528,10 +6528,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Remove the abbreviation at index abbreviationID
-    /// </summary>
-    /// <param name="abbreviationID"></param>
-    /// <returns>0 if found and removed; 1 if error</returns>
+        /// Remove the abbreviation at index abbreviationID
+        /// </summary>
+        /// <param name="abbreviationID"></param>
+        /// <returns>0 if found and removed; 1 if error</returns>
         public int RemoveAbbreviationByIDInternal(int abbreviationID)
         {
             bool blnRemoved;
@@ -6559,10 +6559,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Look for the caution statement and remove it
-    /// </summary>
-    /// <param name="strCautionSymbol"></param>
-    /// <returns>0 if found and removed; 1 if error</returns>
+        /// Look for the caution statement and remove it
+        /// </summary>
+        /// <param name="strCautionSymbol"></param>
+        /// <returns>0 if found and removed; 1 if error</returns>
         public int RemoveCautionStatementInternal(string strCautionSymbol)
         {
             short intIndex, intIndexRemove;
@@ -6820,21 +6820,21 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Adds a new abbreviation or updates an existing one (based on strSymbol)
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <param name="strFormula"></param>
-    /// <param name="sngCharge"></param>
-    /// <param name="blnIsAminoAcid"></param>
-    /// <param name="strOneLetterSymbol"></param>
-    /// <param name="strComment"></param>
-    /// <param name="blnValidateFormula">If true, make sure the formula is valid</param>
-    /// <returns>0 if successful, otherwise an error ID</returns>
-    /// <remarks>
-    /// It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
-    /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
-    /// defined, then the parsing of the first abbreviation will fail
-    /// </remarks>
+        /// Adds a new abbreviation or updates an existing one (based on strSymbol)
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <param name="strFormula"></param>
+        /// <param name="sngCharge"></param>
+        /// <param name="blnIsAminoAcid"></param>
+        /// <param name="strOneLetterSymbol"></param>
+        /// <param name="strComment"></param>
+        /// <param name="blnValidateFormula">If true, make sure the formula is valid</param>
+        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <remarks>
+        /// It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
+        /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
+        /// defined, then the parsing of the first abbreviation will fail
+        /// </remarks>
         public int SetAbbreviationInternal(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment, bool blnValidateFormula)
         {
             bool blnAlreadyPresent;
@@ -6891,17 +6891,17 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Adds a new abbreviation or updates an existing one (based on intAbbrevID)
-    /// </summary>
-    /// <param name="intAbbrevID">If intAbbrevID is less than 1, adds as a new abbreviation</param>
-    /// <param name="strSymbol"></param>
-    /// <param name="strFormula"></param>
-    /// <param name="sngCharge"></param>
-    /// <param name="blnIsAminoAcid"></param>
-    /// <param name="strOneLetterSymbol"></param>
-    /// <param name="strComment"></param>
-    /// <param name="blnValidateFormula"></param>
-    /// <returns>0 if successful, otherwise an error ID</returns>
+        /// Adds a new abbreviation or updates an existing one (based on intAbbrevID)
+        /// </summary>
+        /// <param name="intAbbrevID">If intAbbrevID is less than 1, adds as a new abbreviation</param>
+        /// <param name="strSymbol"></param>
+        /// <param name="strFormula"></param>
+        /// <param name="sngCharge"></param>
+        /// <param name="blnIsAminoAcid"></param>
+        /// <param name="strOneLetterSymbol"></param>
+        /// <param name="strComment"></param>
+        /// <param name="blnValidateFormula"></param>
+        /// <returns>0 if successful, otherwise an error ID</returns>
         public int SetAbbreviationByIDInternal(short intAbbrevID, string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment, bool blnValidateFormula)
         {
             var udtComputationStats = new udtComputationStatsType();
@@ -6996,11 +6996,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Adds a new caution statement or updates an existing one (based on strSymbolCombo)
-    /// </summary>
-    /// <param name="strSymbolCombo"></param>
-    /// <param name="strNewCautionStatement"></param>
-    /// <returns>0 if successful, otherwise, returns an Error ID</returns>
+        /// Adds a new caution statement or updates an existing one (based on strSymbolCombo)
+        /// </summary>
+        /// <param name="strSymbolCombo"></param>
+        /// <param name="strNewCautionStatement"></param>
+        /// <returns>0 if successful, otherwise, returns an Error ID</returns>
         public int SetCautionStatementInternal(string strSymbolCombo, string strNewCautionStatement)
         {
             var blnAlreadyPresent = default(bool);
@@ -7078,14 +7078,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Update the values for a single element (based on strSymbol)
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <param name="dblMass"></param>
-    /// <param name="dblUncertainty"></param>
-    /// <param name="sngCharge"></param>
-    /// <param name="blnRecomputeAbbreviationMasses">Set to False if updating several elements</param>
-    /// <returns></returns>
+        /// Update the values for a single element (based on strSymbol)
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <param name="dblMass"></param>
+        /// <param name="dblUncertainty"></param>
+        /// <param name="sngCharge"></param>
+        /// <param name="blnRecomputeAbbreviationMasses">Set to False if updating several elements</param>
+        /// <returns></returns>
         public int SetElementInternal(string strSymbol, double dblMass, double dblUncertainty, float sngCharge, bool blnRecomputeAbbreviationMasses)
         {
             short intIndex;
@@ -7162,15 +7162,15 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Set the element mode
-    /// </summary>
-    /// <param name="NewElementMode"></param>
-    /// <param name="blnMemoryLoadElementValues"></param>
-    /// <remarks>
-    /// The only time you would want blnMemoryLoadElementValues to be False is if you're
-    /// manually setting element weight values, but want to let the software know that
-    /// they're average, isotopic, or integer values
-    /// </remarks>
+        /// Set the element mode
+        /// </summary>
+        /// <param name="NewElementMode"></param>
+        /// <param name="blnMemoryLoadElementValues"></param>
+        /// <remarks>
+        /// The only time you would want blnMemoryLoadElementValues to be False is if you're
+        /// manually setting element weight values, but want to let the software know that
+        /// they're average, isotopic, or integer values
+        /// </remarks>
         public void SetElementModeInternal(emElementModeConstants NewElementMode, bool blnMemoryLoadElementValues)
         {
             try
@@ -7197,11 +7197,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Used to replace the default message strings with foreign language equivalent ones
-    /// </summary>
-    /// <param name="messageID"></param>
-    /// <param name="strNewMessage"></param>
-    /// <returns>0 if success; 1 if failure</returns>
+        /// Used to replace the default message strings with foreign language equivalent ones
+        /// </summary>
+        /// <param name="messageID"></param>
+        /// <param name="strNewMessage"></param>
+        /// <returns>0 if success; 1 if failure</returns>
         public int SetMessageStatementInternal(int messageID, string strNewMessage)
         {
             if (messageID >= 1 & messageID <= MESSAGE_STATEMENT_DIM_COUNT & Strings.Len(strNewMessage) > 0)
@@ -7245,11 +7245,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Sort the list using a shell sort
-    /// </summary>
-    /// <param name="PointerArray"></param>
-    /// <param name="lowIndex"></param>
-    /// <param name="highIndex"></param>
+        /// Sort the list using a shell sort
+        /// </summary>
+        /// <param name="PointerArray"></param>
+        /// <param name="lowIndex"></param>
+        /// <param name="highIndex"></param>
         private void ShellSortSymbolsWork(ref int[] PointerArray, int lowIndex, int highIndex)
         {
             int itemCount;
@@ -7368,11 +7368,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Adds spaces to strWork until the length is intLength
-    /// </summary>
-    /// <param name="strWork"></param>
-    /// <param name="intLength"></param>
-    /// <returns></returns>
+        /// Adds spaces to strWork until the length is intLength
+        /// </summary>
+        /// <param name="strWork"></param>
+        /// <param name="intLength"></param>
+        /// <returns></returns>
         public string SpacePad(string strWork, short intLength)
         {
             while (Strings.Len(strWork) < intLength)
@@ -7388,31 +7388,31 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Update the progress description
-    /// </summary>
-    /// <param name="strProgressStepDescription">Description of the current processing occurring</param>
-    /// <remarks></remarks>
+        /// Update the progress description
+        /// </summary>
+        /// <param name="strProgressStepDescription">Description of the current processing occurring</param>
+        /// <remarks></remarks>
         protected void UpdateProgress(string strProgressStepDescription)
         {
             UpdateProgress(strProgressStepDescription, mProgressPercentComplete);
         }
 
         /// <summary>
-    /// Update the progress
-    /// </summary>
-    /// <param name="sngPercentComplete">Value between 0 and 100, indicating percent complete</param>
-    /// <remarks></remarks>
+        /// Update the progress
+        /// </summary>
+        /// <param name="sngPercentComplete">Value between 0 and 100, indicating percent complete</param>
+        /// <remarks></remarks>
         protected void UpdateProgress(float sngPercentComplete)
         {
             UpdateProgress(ProgressStepDescription, sngPercentComplete);
         }
 
         /// <summary>
-    /// Update the progress
-    /// </summary>
-    /// <param name="strProgressStepDescription">Description of the current processing occurring</param>
-    /// <param name="sngPercentComplete">Value between 0 and 100, indicating percent complete</param>
-    /// <remarks></remarks>
+        /// Update the progress
+        /// </summary>
+        /// <param name="strProgressStepDescription">Description of the current processing occurring</param>
+        /// <param name="sngPercentComplete">Value between 0 and 100, indicating percent complete</param>
+        /// <remarks></remarks>
         protected void UpdateProgress(string strProgressStepDescription, float sngPercentComplete)
         {
             bool blnDescriptionChanged = false;
@@ -7453,10 +7453,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Checks the formula of all abbreviations to make sure it's valid
-    /// Marks any abbreviations as Invalid if a problem is found or a circular reference exists
-    /// </summary>
-    /// <returns>Count of the number of invalid abbreviations found</returns>
+        /// Checks the formula of all abbreviations to make sure it's valid
+        /// Marks any abbreviations as Invalid if a problem is found or a circular reference exists
+        /// </summary>
+        /// <returns>Count of the number of invalid abbreviations found</returns>
         public int ValidateAllAbbreviationsInternal()
         {
             short intAbbrevIndex;

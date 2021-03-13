@@ -20,12 +20,12 @@ namespace MwtWinDll
         #region "Data classes and Enums"
 
         /// <summary>
-    /// Search tolerances for each element
-    /// </summary>
-    /// <remarks>
-    /// Target percent composition values must be between 0 and 100; they are only used when calling FindMatchesByPercentComposition
-    /// MinimumCount and MaximumCount are only used when the search mode is Bounded; they are ignored for Thorough search
-    /// </remarks>
+        /// Search tolerances for each element
+        /// </summary>
+        /// <remarks>
+        /// Target percent composition values must be between 0 and 100; they are only used when calling FindMatchesByPercentComposition
+        /// MinimumCount and MaximumCount are only used when the search mode is Bounded; they are ignored for Thorough search
+        /// </remarks>
         public class udtCandidateElementTolerances
         {
             public double TargetPercentComposition;
@@ -68,10 +68,10 @@ namespace MwtWinDll
         private bool mAbortProcessing;
 
         /// <summary>
-    /// Keys are element symbols, abbreviations, or even simply a mass value
-    /// Values are target percent composition values, between 0 and 100
-    /// </summary>
-    /// <remarks>The target percent composition values are only used when FindMatchesByPercentComposition is called</remarks>
+        /// Keys are element symbols, abbreviations, or even simply a mass value
+        /// Values are target percent composition values, between 0 and 100
+        /// </summary>
+        /// <remarks>The target percent composition values are only used when FindMatchesByPercentComposition is called</remarks>
         private Dictionary<string, udtCandidateElementTolerances> mCandidateElements;
         private readonly ElementAndMassTools mElementAndMassRoutines;
         private int mMaximumHits;
@@ -79,9 +79,9 @@ namespace MwtWinDll
         private int mMaxRecursiveCount;
 
         /// <summary>
-    /// Percent complete, between 0 and 100
-    /// </summary>
-    /// <remarks></remarks>
+        /// Percent complete, between 0 and 100
+        /// </summary>
+        /// <remarks></remarks>
         private double mPercentComplete;
 
         #endregion
@@ -89,11 +89,11 @@ namespace MwtWinDll
         #region "Properties"
 
         /// <summary>
-    /// Element symbols to consider when finding empirical formulas
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks>The values in the dictionary are target percent composition values; only used if you call FindMatchesByPercentComposition</remarks>
+        /// Element symbols to consider when finding empirical formulas
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks>The values in the dictionary are target percent composition values; only used if you call FindMatchesByPercentComposition</remarks>
         public Dictionary<string, udtCandidateElementTolerances> CandidateElements
         {
             get
@@ -136,9 +136,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Percent complete, between 0 and 100
-    /// </summary>
-    /// <remarks></remarks>
+        /// Percent complete, between 0 and 100
+        /// </summary>
+        /// <remarks></remarks>
         public double PercentComplete
         {
             get
@@ -164,9 +164,9 @@ namespace MwtWinDll
         #endregion
 
         /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <remarks></remarks>
+        /// Constructor
+        /// </summary>
+        /// <remarks></remarks>
         public FormulaFinder(ElementAndMassTools oElementAndMassTools)
         {
             mElementAndMassRoutines = oElementAndMassTools;
@@ -178,19 +178,19 @@ namespace MwtWinDll
         #region "Public Methods"
 
         /// <summary>
-    /// Abort processing
-    /// </summary>
-    /// <remarks>Only useful if the formula finder is running on a separate thread from the calling program</remarks>
+        /// Abort processing
+        /// </summary>
+        /// <remarks>Only useful if the formula finder is running on a separate thread from the calling program</remarks>
         public void AbortProcessingNow()
         {
             mAbortProcessing = true;
         }
 
         /// <summary>
-    /// Add a candidate element, abbreviation, or monoisotopic mass
-    /// </summary>
-    /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
-    /// <remarks></remarks>
+        /// Add a candidate element, abbreviation, or monoisotopic mass
+        /// </summary>
+        /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
+        /// <remarks></remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass)
         {
             var udtElementTolerances = GetDefaultCandidateElementTolerance();
@@ -198,11 +198,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Add a candidate element, abbreviation, or monoisotopic mass
-    /// </summary>
-    /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
-    /// <param name="targetPercentComposition">Target percent composition</param>
-    /// <remarks></remarks>
+        /// Add a candidate element, abbreviation, or monoisotopic mass
+        /// </summary>
+        /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
+        /// <param name="targetPercentComposition">Target percent composition</param>
+        /// <remarks></remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, double targetPercentComposition)
         {
             var udtElementTolerances = GetDefaultCandidateElementTolerance(targetPercentComposition);
@@ -210,12 +210,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Add a candidate element, abbreviation, or monoisotopic mass
-    /// </summary>
-    /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
-    /// <param name="minimumCount">Minimum occurrence count</param>
-    /// <param name="maximumCount">Maximum occurrence count</param>
-    /// <remarks>This method should be used when defining elements for a bounded search</remarks>
+        /// Add a candidate element, abbreviation, or monoisotopic mass
+        /// </summary>
+        /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
+        /// <param name="minimumCount">Minimum occurrence count</param>
+        /// <param name="maximumCount">Maximum occurrence count</param>
+        /// <remarks>This method should be used when defining elements for a bounded search</remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, int minimumCount, int maximumCount)
         {
             var udtElementTolerances = GetDefaultCandidateElementTolerance(minimumCount, maximumCount);
@@ -223,11 +223,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Add a candidate element, abbreviation, or monoisotopic mass
-    /// </summary>
-    /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
-    /// <param name="udtElementTolerances">Search tolerances, including % composition range and Min/Max count when using a bounded search</param>
-    /// <remarks></remarks>
+        /// Add a candidate element, abbreviation, or monoisotopic mass
+        /// </summary>
+        /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
+        /// <param name="udtElementTolerances">Search tolerances, including % composition range and Min/Max count when using a bounded search</param>
+        /// <remarks></remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, udtCandidateElementTolerances udtElementTolerances)
         {
             if (mCandidateElements.ContainsKey(elementSymbolAbbrevOrMass))
@@ -241,12 +241,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Find empirical formulas that match the given target mass, with the given ppm tolerance
-    /// </summary>
-    /// <param name="targetMass"></param>
-    /// <param name="massTolerancePPM"></param>
-    /// <returns></returns>
-    /// <remarks>Uses default search options</remarks>
+        /// Find empirical formulas that match the given target mass, with the given ppm tolerance
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massTolerancePPM"></param>
+        /// <returns></returns>
+        /// <remarks>Uses default search options</remarks>
         public List<FormulaFinderResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM)
         {
             var lstResults = FindMatchesByMassPPM(targetMass, massTolerancePPM, null);
@@ -256,13 +256,13 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Find empirical formulas that match the given target mass, with the given ppm tolerance
-    /// </summary>
-    /// <param name="targetMass"></param>
-    /// <param name="massTolerancePPM"></param>
-    /// <param name="searchOptions"></param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Find empirical formulas that match the given target mass, with the given ppm tolerance
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massTolerancePPM"></param>
+        /// <param name="searchOptions"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public List<FormulaFinderResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, FormulaFinderOptions searchOptions)
         {
             double massToleranceDa = massTolerancePPM * targetMass / 1000000.0d;
@@ -276,12 +276,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Find empirical formulas that match the given target mass, with the given tolerance
-    /// </summary>
-    /// <param name="targetMass"></param>
-    /// <param name="massToleranceDa"></param>
-    /// <returns></returns>
-    /// <remarks>Uses default search options</remarks>
+        /// Find empirical formulas that match the given target mass, with the given tolerance
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massToleranceDa"></param>
+        /// <returns></returns>
+        /// <remarks>Uses default search options</remarks>
         public List<FormulaFinderResult> FindMatchesByMass(double targetMass, double massToleranceDa)
         {
             var lstResults = FindMatchesByMass(targetMass, massToleranceDa, null);
@@ -291,13 +291,13 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Find empirical formulas that match the given target mass, with the given tolerance
-    /// </summary>
-    /// <param name="targetMass"></param>
-    /// <param name="massToleranceDa"></param>
-    /// <param name="searchOptions"></param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Find empirical formulas that match the given target mass, with the given tolerance
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massToleranceDa"></param>
+        /// <param name="searchOptions"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public List<FormulaFinderResult> FindMatchesByMass(double targetMass, double massToleranceDa, FormulaFinderOptions searchOptions)
         {
             if (searchOptions is null)
@@ -321,9 +321,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Reset to defaults
-    /// </summary>
-    /// <remarks></remarks>
+        /// Reset to defaults
+        /// </summary>
+        /// <remarks></remarks>
         public void Reset()
         {
             mCandidateElements.Clear();
@@ -359,16 +359,16 @@ namespace MwtWinDll
 
 
         /// <summary>
-    ///
-    /// </summary>
-    /// <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
-    /// <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
-    /// <param name="maximumFormulaMass">Only used when calculationMode is MatchPercentComposition</param>
-    /// <param name="searchOptions"></param>
-    /// <param name="ppmMode"></param>
-    /// <param name="calculationMode"></param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        ///
+        /// </summary>
+        /// <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
+        /// <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
+        /// <param name="maximumFormulaMass">Only used when calculationMode is MatchPercentComposition</param>
+        /// <param name="searchOptions"></param>
+        /// <param name="ppmMode"></param>
+        /// <param name="calculationMode"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         private List<FormulaFinderResult> BoundedSearch(double targetMass, double massToleranceDa, double maximumFormulaMass, FormulaFinderOptions searchOptions, bool ppmMode, eCalculationMode calculationMode, IList<FormulaFinderCandidateElement> sortedElementStats)
         {
             List<FormulaFinderResult> lstResults;
@@ -492,14 +492,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    ///
-    /// </summary>
-    /// <param name="totalMass"></param>
-    /// <param name="totalCharge"></param>
-    /// <param name="targetMass"></param>
-    /// <param name="massToleranceDa"></param>
-    /// <param name="intMultipleMtoZCharge"></param>
-    /// <remarks>True if the m/z is within tolerance of the target</remarks>
+        ///
+        /// </summary>
+        /// <param name="totalMass"></param>
+        /// <param name="totalCharge"></param>
+        /// <param name="targetMass"></param>
+        /// <param name="massToleranceDa"></param>
+        /// <param name="intMultipleMtoZCharge"></param>
+        /// <remarks>True if the m/z is within tolerance of the target</remarks>
         private bool CheckMtoZWithTarget(double totalMass, double totalCharge, double targetMass, double massToleranceDa, int intMultipleMtoZCharge)
         {
             double dblMtoZ;
@@ -549,27 +549,27 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Construct the empirical formula and verify hydrogens
-    /// </summary>
-    /// <param name="searchOptions"></param>
-    /// <param name="sbEmpiricalFormula"></param>
-    /// <param name="count1"></param>
-    /// <param name="count2"></param>
-    /// <param name="count3"></param>
-    /// <param name="count4"></param>
-    /// <param name="count5"></param>
-    /// <param name="count6"></param>
-    /// <param name="count7"></param>
-    /// <param name="count8"></param>
-    /// <param name="count9"></param>
-    /// <param name="count10"></param>
-    /// <param name="totalMass"></param>
-    /// <param name="targetMass">Only used when searchOptions.FindTargetMZ is true, and that is only valid when matching a target mass, not when matching percent composition values</param>
-    /// <param name="massToleranceDa">Only used when searchOptions.FindTargetMZ is true</param>
-    /// <param name="totalCharge"></param>
-    /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 1; otherwise, the current charge being searched for</param>
-    /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
-    /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
+        /// Construct the empirical formula and verify hydrogens
+        /// </summary>
+        /// <param name="searchOptions"></param>
+        /// <param name="sbEmpiricalFormula"></param>
+        /// <param name="count1"></param>
+        /// <param name="count2"></param>
+        /// <param name="count3"></param>
+        /// <param name="count4"></param>
+        /// <param name="count5"></param>
+        /// <param name="count6"></param>
+        /// <param name="count7"></param>
+        /// <param name="count8"></param>
+        /// <param name="count9"></param>
+        /// <param name="count10"></param>
+        /// <param name="totalMass"></param>
+        /// <param name="targetMass">Only used when searchOptions.FindTargetMZ is true, and that is only valid when matching a target mass, not when matching percent composition values</param>
+        /// <param name="massToleranceDa">Only used when searchOptions.FindTargetMZ is true</param>
+        /// <param name="totalCharge"></param>
+        /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 1; otherwise, the current charge being searched for</param>
+        /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
+        /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompound(FormulaFinderOptions searchOptions, StringBuilder sbEmpiricalFormula, int count1, int count2, int count3, int count4, int count5, int count6, int count7, int count8, int count9, int count10, IList<FormulaFinderCandidateElement> sortedElementStats, double totalMass, double targetMass, double massToleranceDa, double totalCharge, int intMultipleMtoZCharge, out Dictionary<string, int> empiricalResultSymbols, out double correctedCharge)
         {
 
@@ -611,18 +611,18 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Construct the empirical formula and verify hydrogens
-    /// </summary>
-    /// <param name="searchOptions"></param>
-    /// <param name="sbEmpiricalFormula"></param>
-    /// <param name="lstPotentialElementPointers"></param>
-    /// <param name="totalMass"></param>
-    /// <param name="targetMass">Only used when searchOptions.FindTargetMZ is true, and that is only valid when matching a target mass, not when matching percent composition values</param>
-    /// <param name="massToleranceDa">Only used when searchOptions.FindTargetMZ is true</param>
-    /// <param name="totalCharge"></param>
-    /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
-    /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
-    /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
+        /// Construct the empirical formula and verify hydrogens
+        /// </summary>
+        /// <param name="searchOptions"></param>
+        /// <param name="sbEmpiricalFormula"></param>
+        /// <param name="lstPotentialElementPointers"></param>
+        /// <param name="totalMass"></param>
+        /// <param name="targetMass">Only used when searchOptions.FindTargetMZ is true, and that is only valid when matching a target mass, not when matching percent composition values</param>
+        /// <param name="massToleranceDa">Only used when searchOptions.FindTargetMZ is true</param>
+        /// <param name="totalCharge"></param>
+        /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
+        /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
+        /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompoundRecursive(FormulaFinderOptions searchOptions, StringBuilder sbEmpiricalFormula, IList<FormulaFinderCandidateElement> sortedElementStats, IEnumerable<int> lstPotentialElementPointers, double totalMass, double targetMass, double massToleranceDa, double totalCharge, int intMultipleMtoZCharge, out Dictionary<string, int> empiricalResultSymbols, out double correctedCharge)
         {
             sbEmpiricalFormula.Clear();
@@ -884,14 +884,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Correct charge using rules for an empirical formula
-    /// </summary>
-    /// <param name="searchOptions"></param>
-    /// <param name="totalCharge"></param>
-    /// <param name="udtElementNum"></param>
-    /// <param name="chargeOK"></param>
-    /// <returns>Corrected charge</returns>
-    /// <remarks></remarks>
+        /// Correct charge using rules for an empirical formula
+        /// </summary>
+        /// <param name="searchOptions"></param>
+        /// <param name="totalCharge"></param>
+        /// <param name="udtElementNum"></param>
+        /// <param name="chargeOK"></param>
+        /// <returns>Corrected charge</returns>
+        /// <remarks></remarks>
         private double CorrectChargeEmpirical(FormulaFinderOptions searchOptions, double totalCharge, udtElementNumType udtElementNum, out bool chargeOK)
         {
             double correctedCharge = totalCharge;
@@ -961,13 +961,13 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Search empiricalResultSymbols for the elements in targetCountStats
-    /// </summary>
-    /// <param name="empiricalResultSymbols"></param>
-    /// <param name="targetCountStats"></param>
-    /// <returns>True if all of the elements are present in the given counts (extra elements may also be present),
-    /// false one or more is not found or has the wrong occurrence count</returns>
-    /// <remarks></remarks>
+        /// Search empiricalResultSymbols for the elements in targetCountStats
+        /// </summary>
+        /// <param name="empiricalResultSymbols"></param>
+        /// <param name="targetCountStats"></param>
+        /// <returns>True if all of the elements are present in the given counts (extra elements may also be present),
+        /// false one or more is not found or has the wrong occurrence count</returns>
+        /// <remarks></remarks>
         private bool EmpiricalFormulaHasElementCounts(IDictionary<string, int> empiricalResultSymbols, Dictionary<string, int> targetCountStats)
         {
             int empiricalElementCount;
@@ -1019,11 +1019,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Compute the factorial of a number; uses recursion
-    /// </summary>
-    /// <param name="value">Integer between 0 and 170</param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Compute the factorial of a number; uses recursion
+        /// </summary>
+        /// <param name="value">Integer between 0 and 170</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         private double Factorial(int value)
         {
             if (value > 170)
@@ -1377,15 +1377,15 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Initializes a new search result
-    /// </summary>
-    /// <param name="searchOptions"></param>
-    /// <param name="ppmMode"></param>
-    /// <param name="sbEmpiricalFormula"></param>
-    /// <param name="totalMass">If 0 or negative, means matching percent compositions, so don't want to add dm= to line</param>
-    /// <param name="targetMass"></param>
-    /// <param name="totalCharge"></param>
-    /// <remarks></remarks>
+        /// Initializes a new search result
+        /// </summary>
+        /// <param name="searchOptions"></param>
+        /// <param name="ppmMode"></param>
+        /// <param name="sbEmpiricalFormula"></param>
+        /// <param name="totalMass">If 0 or negative, means matching percent compositions, so don't want to add dm= to line</param>
+        /// <param name="targetMass"></param>
+        /// <param name="totalCharge"></param>
+        /// <remarks></remarks>
         private FormulaFinderResult GetSearchResult(FormulaFinderOptions searchOptions, bool ppmMode, StringBuilder sbEmpiricalFormula, double totalMass, double targetMass, double totalCharge, Dictionary<string, int> empiricalResultSymbols)
         {
             try
@@ -1438,11 +1438,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    ///
-    /// </summary>
-    /// <param name="potentialElementCount"></param>
-    /// <param name="searchOptions"></param>
-    /// <remarks>searchOptions is passed ByRef because it is a value type and .MzChargeMin and .MzChargeMax are updated</remarks>
+        ///
+        /// </summary>
+        /// <param name="potentialElementCount"></param>
+        /// <param name="searchOptions"></param>
+        /// <remarks>searchOptions is passed ByRef because it is a value type and .MzChargeMin and .MzChargeMax are updated</remarks>
         private void MultipleSearchMath(int potentialElementCount, FormulaFinderOptions searchOptions, out int mzSearchChargeMin, out int mzSearchChargeMax)
         {
             mzSearchChargeMin = searchOptions.ChargeMin;
@@ -1455,17 +1455,17 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Formula finder that uses a series of nested for loops and is thus slow when a large number of candidate elements
-    /// or when elements have a large range of potential counts
-    /// </summary>
-    /// <param name="searchOptions"></param>
-    /// <param name="ppmMode"></param>
-    /// <param name="calculationMode"></param>
-    /// <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
-    /// <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
-    /// <param name="maximumFormulaMass">Only used when calculationMode is MatchPercentComposition</param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Formula finder that uses a series of nested for loops and is thus slow when a large number of candidate elements
+        /// or when elements have a large range of potential counts
+        /// </summary>
+        /// <param name="searchOptions"></param>
+        /// <param name="ppmMode"></param>
+        /// <param name="calculationMode"></param>
+        /// <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
+        /// <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
+        /// <param name="maximumFormulaMass">Only used when calculationMode is MatchPercentComposition</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         private List<FormulaFinderResult> OldFormulaFinder(FormulaFinderOptions searchOptions, bool ppmMode, eCalculationMode calculationMode, IList<FormulaFinderCandidateElement> sortedElementStats, double targetMass, double massToleranceDa, double maximumFormulaMass)
         {
 
@@ -1823,19 +1823,19 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Recursively search for a target mass
-    /// </summary>
-    /// <param name="lstResults"></param>
-    /// <param name="searchOptions"></param>
-    /// <param name="sortedElementStats">Candidate elements, including mass and charge. Sorted by de</param>
-    /// <param name="intStartIndex">Index in candidateElementsStats to start at</param>
-    /// <param name="lstPotentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
-    /// <param name="dblPotentialMassTotal">Weight of the potential formula</param>
-    /// <param name="targetMass"></param>
-    /// <param name="massToleranceDa"></param>
-    /// <param name="potentialChargeTotal"></param>
-    /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
-    /// <remarks></remarks>
+        /// Recursively search for a target mass
+        /// </summary>
+        /// <param name="lstResults"></param>
+        /// <param name="searchOptions"></param>
+        /// <param name="sortedElementStats">Candidate elements, including mass and charge. Sorted by de</param>
+        /// <param name="intStartIndex">Index in candidateElementsStats to start at</param>
+        /// <param name="lstPotentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
+        /// <param name="dblPotentialMassTotal">Weight of the potential formula</param>
+        /// <param name="targetMass"></param>
+        /// <param name="massToleranceDa"></param>
+        /// <param name="potentialChargeTotal"></param>
+        /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
+        /// <remarks></remarks>
         private void RecursiveMWFinder(ICollection<FormulaFinderResult> lstResults, FormulaFinderOptions searchOptions, bool ppmMode, IList<FormulaFinderCandidateElement> sortedElementStats, int intStartIndex, IReadOnlyCollection<int> lstPotentialElementPointers, double dblPotentialMassTotal, double targetMass, double massToleranceDa, double potentialChargeTotal, int intMultipleMtoZCharge)
         {
             try
@@ -1929,15 +1929,15 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Recursively search for target percent composition values
-    /// </summary>
-    /// <param name="lstResults"></param>
-    /// <param name="intStartIndex"></param>
-    /// <param name="lstPotentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
-    /// <param name="dblPotentialMassTotal">>Weight of the potential formula</param>
-    /// <param name="maximumFormulaMass"></param>
-    /// <param name="potentialChargeTotal"></param>
-    /// <remarks></remarks>
+        /// Recursively search for target percent composition values
+        /// </summary>
+        /// <param name="lstResults"></param>
+        /// <param name="intStartIndex"></param>
+        /// <param name="lstPotentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
+        /// <param name="dblPotentialMassTotal">>Weight of the potential formula</param>
+        /// <param name="maximumFormulaMass"></param>
+        /// <param name="potentialChargeTotal"></param>
+        /// <remarks></remarks>
         private void RecursivePCompFinder(ICollection<FormulaFinderResult> lstResults, FormulaFinderOptions searchOptions, IList<FormulaFinderCandidateElement> sortedElementStats, int intStartIndex, ICollection<int> lstPotentialElementPointers, double dblPotentialMassTotal, double maximumFormulaMass, double potentialChargeTotal)
         {
             try

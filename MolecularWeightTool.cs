@@ -37,8 +37,8 @@ namespace MwtWinDll
         private const string PROGRAM_DATE = "January 17, 2020";
 
         /// <summary>
-    /// Constructor, assumes the elements are using average masses
-    /// </summary>
+        /// Constructor, assumes the elements are using average masses
+        /// </summary>
         public MolecularWeightTool()
         {
             mElementAndMassRoutines = new ElementAndMassTools();
@@ -57,9 +57,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Constructor where the element mode can be defined
-    /// </summary>
-    /// <param name="elementMode">Mass mode for elements (average, monoisotopic, or integer)</param>
+        /// Constructor where the element mode can be defined
+        /// </summary>
+        /// <param name="elementMode">Mass mode for elements (average, monoisotopic, or integer)</param>
         public MolecularWeightTool(ElementAndMassTools.emElementModeConstants elementMode) : this()
         {
             SetElementMode(elementMode);
@@ -261,9 +261,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Percent complete: ranges from 0 to 100, but can contain decimal percentage values
-    /// </summary>
-    /// <returns></returns>
+        /// Percent complete: ranges from 0 to 100, but can contain decimal percentage values
+        /// </summary>
+        /// <returns></returns>
         public float ProgressPercentComplete
         {
             get
@@ -336,10 +336,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Compute the mass of a formula
-    /// </summary>
-    /// <param name="strFormula"></param>
-    /// <returns>Mass of the formula</returns>
+        /// Compute the mass of a formula
+        /// </summary>
+        /// <param name="strFormula"></param>
+        /// <returns>Mass of the formula</returns>
         public double ComputeMass(string strFormula)
         {
 
@@ -350,19 +350,19 @@ namespace MwtWinDll
 
 
         /// <summary>
-    /// Computes the Isotopic Distribution for a formula
-    /// </summary>
-    /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
-    /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    /// <param name="strResults">Output: Table of results</param>
-    /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-    /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    /// <returns>0 if success, -1 if an error</returns>
-    /// <remarks>
-    /// Returns uncharged mass values if intChargeState=0,
-    /// Returns M+H values if intChargeState=1
-    /// Returns convoluted m/z if intChargeState is > 1
-    /// </remarks>
+        /// Computes the Isotopic Distribution for a formula
+        /// </summary>
+        /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+        /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+        /// <param name="strResults">Output: Table of results</param>
+        /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+        /// <returns>0 if success, -1 if an error</returns>
+        /// <remarks>
+        /// Returns uncharged mass values if intChargeState=0,
+        /// Returns M+H values if intChargeState=1
+        /// Returns convoluted m/z if intChargeState is > 1
+        /// </remarks>
         public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount)
         {
             return ComputeIsotopicAbundances(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, "Isotopic Abundances for", "Mass", "Fraction", "Intensity");
@@ -370,43 +370,43 @@ namespace MwtWinDll
 
 
         /// <summary>
-    /// Computes the Isotopic Distribution for a formula
-    /// </summary>
-    /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
-    /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    /// <param name="strResults">Output: Table of results</param>
-    /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-    /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
-    /// <returns>0 if success, -1 if an error</returns>
-    /// <remarks>
-    /// Returns uncharged mass values if intChargeState=0,
-    /// Returns M+H values if intChargeState=1
-    /// Returns convoluted m/z if intChargeState is > 1
-    /// </remarks>
+        /// Computes the Isotopic Distribution for a formula
+        /// </summary>
+        /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+        /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+        /// <param name="strResults">Output: Table of results</param>
+        /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+        /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
+        /// <returns>0 if success, -1 if an error</returns>
+        /// <remarks>
+        /// Returns uncharged mass values if intChargeState=0,
+        /// Returns M+H values if intChargeState=1
+        /// Returns convoluted m/z if intChargeState is > 1
+        /// </remarks>
         public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, bool blnAddProtonChargeCarrier)
         {
             return ComputeIsotopicAbundances(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, "Isotopic Abundances for", "Mass", "Fraction", "Intensity", blnAddProtonChargeCarrier);
         }
 
         /// <summary>
-    /// Computes the Isotopic Distribution for a formula
-    /// </summary>
-    /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
-    /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    /// <param name="strResults">Output: Table of results</param>
-    /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-    /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    /// <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
-    /// <param name="strHeaderMassToCharge">Header to use in strResults</param>
-    /// <param name="strHeaderFraction">Header to use in strResults</param>
-    /// <param name="strHeaderIntensity">Header to use in strResults</param>
-    /// <returns>0 if success, -1 if an error</returns>
-    /// <remarks>
-    /// Returns uncharged mass values if intChargeState=0,
-    /// Returns M+H values if intChargeState=1
-    /// Returns convoluted m/z if intChargeState is > 1
-    /// </remarks>
+        /// Computes the Isotopic Distribution for a formula
+        /// </summary>
+        /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+        /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+        /// <param name="strResults">Output: Table of results</param>
+        /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+        /// <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
+        /// <param name="strHeaderMassToCharge">Header to use in strResults</param>
+        /// <param name="strHeaderFraction">Header to use in strResults</param>
+        /// <param name="strHeaderIntensity">Header to use in strResults</param>
+        /// <returns>0 if success, -1 if an error</returns>
+        /// <remarks>
+        /// Returns uncharged mass values if intChargeState=0,
+        /// Returns M+H values if intChargeState=1
+        /// Returns convoluted m/z if intChargeState is > 1
+        /// </remarks>
         public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, string strHeaderIsotopicAbundances, string strHeaderMassToCharge, string strHeaderFraction, string strHeaderIntensity)
         {
             bool blnAddProtonChargeCarrier = true;
@@ -414,37 +414,37 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Isotopic Distribution for a formula
-    /// </summary>
-    /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
-    /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-    /// <param name="strResults">Output: Table of results</param>
-    /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-    /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-    /// <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
-    /// <param name="strHeaderMassToCharge">Header to use in strResults</param>
-    /// <param name="strHeaderFraction">Header to use in strResults</param>
-    /// <param name="strHeaderIntensity">Header to use in strResults</param>
-    /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
-    /// <returns>0 if success, -1 if an error</returns>
-    /// <remarks>
-    /// Returns uncharged mass values if intChargeState=0,
-    /// Returns M+H values if intChargeState=1
-    /// Returns convoluted m/z if intChargeState is > 1
-    /// </remarks>
+        /// Computes the Isotopic Distribution for a formula
+        /// </summary>
+        /// <param name="strFormulaIn">Input/output: The properly formatted formula to parse</param>
+        /// <param name="intChargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
+        /// <param name="strResults">Output: Table of results</param>
+        /// <param name="ConvolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+        /// <param name="strHeaderIsotopicAbundances">Header to use in strResults</param>
+        /// <param name="strHeaderMassToCharge">Header to use in strResults</param>
+        /// <param name="strHeaderFraction">Header to use in strResults</param>
+        /// <param name="strHeaderIntensity">Header to use in strResults</param>
+        /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
+        /// <returns>0 if success, -1 if an error</returns>
+        /// <remarks>
+        /// Returns uncharged mass values if intChargeState=0,
+        /// Returns M+H values if intChargeState=1
+        /// Returns convoluted m/z if intChargeState is > 1
+        /// </remarks>
         public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, string strHeaderIsotopicAbundances, string strHeaderMassToCharge, string strHeaderFraction, string strHeaderIntensity, bool blnAddProtonChargeCarrier)
         {
             return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMassToCharge, strHeaderFraction, strHeaderIntensity, false, blnAddProtonChargeCarrier);
         }
 
         /// <summary>
-    /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
-    /// </summary>
-    /// <param name="XYVals">XY data, as key-value pairs</param>
-    /// <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
-    /// <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
-    /// <returns>Gaussian spectrum data</returns>
-    /// <remarks></remarks>
+        /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
+        /// </summary>
+        /// <param name="XYVals">XY data, as key-value pairs</param>
+        /// <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
+        /// <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
+        /// <returns>Gaussian spectrum data</returns>
+        /// <remarks></remarks>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> XYVals, int intResolution, double dblResolutionMass)
         {
             int intQualityFactor = 50;
@@ -452,62 +452,62 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
-    /// </summary>
-    /// <param name="XYVals">XY data, as key-value pairs</param>
-    /// <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
-    /// <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
-    /// <param name="intQualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
-    /// <returns>Gaussian spectrum data</returns>
-    /// <remarks></remarks>
+        /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
+        /// </summary>
+        /// <param name="XYVals">XY data, as key-value pairs</param>
+        /// <param name="intResolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
+        /// <param name="dblResolutionMass">The m/z value at which the resolution applies</param>
+        /// <param name="intQualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
+        /// <returns>Gaussian spectrum data</returns>
+        /// <remarks></remarks>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> XYVals, int intResolution, double dblResolutionMass, int intQualityFactor)
         {
             return mElementAndMassRoutines.ConvertStickDataToGaussian2DArray(XYVals, intResolution, dblResolutionMass, intQualityFactor);
         }
 
         /// <summary>
-    /// Converts a given mass or m/z value to the MH+ m/z value
-    /// </summary>
-    /// <param name="dblMassMZ">Mass or m/z value</param>
-    /// <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Converts a given mass or m/z value to the MH+ m/z value
+        /// </summary>
+        /// <param name="dblMassMZ">Mass or m/z value</param>
+        /// <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public double ConvoluteMass(double dblMassMZ, short intCurrentCharge)
         {
             return ConvoluteMass(dblMassMZ, intCurrentCharge, 1, 0d);
         }
 
         /// <summary>
-    /// Converts a given mass or m/z value to the MH+ m/z value
-    /// </summary>
-    /// <param name="dblMassMZ">Mass or m/z value</param>
-    /// <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
-    /// <param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Converts a given mass or m/z value to the MH+ m/z value
+        /// </summary>
+        /// <param name="dblMassMZ">Mass or m/z value</param>
+        /// <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+        /// <param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public double ConvoluteMass(double dblMassMZ, short intCurrentCharge, short intDesiredCharge)
         {
             return ConvoluteMass(dblMassMZ, intCurrentCharge, intDesiredCharge, 0d);
         }
 
         /// <summary>
-    /// Converts a given mass or m/z value to the MH+ m/z value
-    /// </summary>
-    /// <param name="dblMassMZ">Mass or m/z value</param>
-    /// <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
-    /// <param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
-    /// <param name="dblChargeCarrierMass">Custom charge carrier mass (default is 1.00727649)</param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Converts a given mass or m/z value to the MH+ m/z value
+        /// </summary>
+        /// <param name="dblMassMZ">Mass or m/z value</param>
+        /// <param name="intCurrentCharge">Current charge (0 means neutral mass)</param>
+        /// <param name="intDesiredCharge">Desired charge (0 means neutral mass)</param>
+        /// <param name="dblChargeCarrierMass">Custom charge carrier mass (default is 1.00727649)</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public double ConvoluteMass(double dblMassMZ, short intCurrentCharge, short intDesiredCharge, double dblChargeCarrierMass)
         {
             return mElementAndMassRoutines.ConvoluteMassInternal(dblMassMZ, intCurrentCharge, intDesiredCharge, dblChargeCarrierMass);
         }
 
         /// <summary>
-    /// Determine the decimal point symbol (period or comma)
-    /// </summary>
-    /// <returns></returns>
+        /// Determine the decimal point symbol (period or comma)
+        /// </summary>
+        /// <returns></returns>
         internal static char DetermineDecimalPoint()
         {
             string strTestNumber;
@@ -541,14 +541,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get an abbreviation, by ID
-    /// </summary>
-    /// <param name="intAbbreviationID"></param>
-    /// <param name="strSymbol">Output: symbol</param>
-    /// <param name="strFormula">Output: empirical formula</param>
-    /// <param name="sngCharge">Output: charge</param>
-    /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
-    /// <returns> 0 if success, 1 if failure</returns>
+        /// Get an abbreviation, by ID
+        /// </summary>
+        /// <param name="intAbbreviationID"></param>
+        /// <param name="strSymbol">Output: symbol</param>
+        /// <param name="strFormula">Output: empirical formula</param>
+        /// <param name="sngCharge">Output: charge</param>
+        /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
+        /// <returns> 0 if success, 1 if failure</returns>
         public int GetAbbreviation(int intAbbreviationID, ref string strSymbol, ref string strFormula, ref float sngCharge, ref bool blnIsAminoAcid)
         {
             string argstrOneLetterSymbol = "";
@@ -558,16 +558,16 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get an abbreviation, by ID
-    /// </summary>
-    /// <param name="intAbbreviationID"></param>
-    /// <param name="strSymbol">Output: symbol</param>
-    /// <param name="strFormula">Output: empirical formula</param>
-    /// <param name="sngCharge">Output: charge</param>
-    /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
-    /// <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
-    /// <param name="strComment">Output: comment</param>
-    /// <returns> 0 if success, 1 if failure</returns>
+        /// Get an abbreviation, by ID
+        /// </summary>
+        /// <param name="intAbbreviationID"></param>
+        /// <param name="strSymbol">Output: symbol</param>
+        /// <param name="strFormula">Output: empirical formula</param>
+        /// <param name="sngCharge">Output: charge</param>
+        /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
+        /// <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
+        /// <param name="strComment">Output: comment</param>
+        /// <returns> 0 if success, 1 if failure</returns>
         public int GetAbbreviation(int intAbbreviationID, ref string strSymbol, ref string strFormula, ref float sngCharge, ref bool blnIsAminoAcid, ref string strOneLetterSymbol, ref string strComment)
         {
             bool argblnInvalidSymbolOrFormula = false;
@@ -575,26 +575,26 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get an abbreviation, by ID
-    /// </summary>
-    /// <param name="intAbbreviationID"></param>
-    /// <param name="strSymbol">Output: symbol</param>
-    /// <param name="strFormula">Output: empirical formula</param>
-    /// <param name="sngCharge">Output: charge</param>
-    /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
-    /// <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
-    /// <param name="strComment">Output: comment</param>
-    /// <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
-    /// <returns> 0 if success, 1 if failure</returns>
+        /// Get an abbreviation, by ID
+        /// </summary>
+        /// <param name="intAbbreviationID"></param>
+        /// <param name="strSymbol">Output: symbol</param>
+        /// <param name="strFormula">Output: empirical formula</param>
+        /// <param name="sngCharge">Output: charge</param>
+        /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
+        /// <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
+        /// <param name="strComment">Output: comment</param>
+        /// <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
+        /// <returns> 0 if success, 1 if failure</returns>
         public int GetAbbreviation(int intAbbreviationID, ref string strSymbol, ref string strFormula, ref float sngCharge, ref bool blnIsAminoAcid, ref string strOneLetterSymbol, ref string strComment, ref bool blnInvalidSymbolOrFormula)
         {
             return mElementAndMassRoutines.GetAbbreviationInternal(intAbbreviationID, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out strOneLetterSymbol, out strComment, out blnInvalidSymbolOrFormula);
         }
 
         /// <summary>
-    /// Get the number of abbreviations in memory
-    /// </summary>
-    /// <returns></returns>
+        /// Get the number of abbreviations in memory
+        /// </summary>
+        /// <returns></returns>
         public int GetAbbreviationCount()
         {
             return mElementAndMassRoutines.GetAbbreviationCountInternal();
@@ -606,10 +606,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get the abbreviation ID for the given abbreviation symbol
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <returns>ID if found, otherwise 0</returns>
+        /// Get the abbreviation ID for the given abbreviation symbol
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <returns>ID if found, otherwise 0</returns>
         public int GetAbbreviationID(string strSymbol)
         {
             return mElementAndMassRoutines.GetAbbreviationIDInternal(strSymbol);
@@ -624,31 +624,31 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Get caution statement information
-    /// </summary>
-    /// <param name="intCautionStatementID"></param>
-    /// <param name="strSymbolCombo">Output: symbol combo for the caution statement</param>
-    /// <param name="strCautionStatement">Output: caution statement text</param>
-    /// <returns>0 if success, 1 if an invalid ID</returns>
+        /// Get caution statement information
+        /// </summary>
+        /// <param name="intCautionStatementID"></param>
+        /// <param name="strSymbolCombo">Output: symbol combo for the caution statement</param>
+        /// <param name="strCautionStatement">Output: caution statement text</param>
+        /// <returns>0 if success, 1 if an invalid ID</returns>
         public int GetCautionStatement(int intCautionStatementID, ref string strSymbolCombo, ref string strCautionStatement)
         {
             return mElementAndMassRoutines.GetCautionStatementInternal(intCautionStatementID, out strSymbolCombo, out strCautionStatement);
         }
 
         /// <summary>
-    /// Get the number of Caution Statements in memory
-    /// </summary>
-    /// <returns></returns>
+        /// Get the number of Caution Statements in memory
+        /// </summary>
+        /// <returns></returns>
         public int GetCautionStatementCount()
         {
             return mElementAndMassRoutines.GetCautionStatementCountInternal();
         }
 
         /// <summary>
-    /// Get the caution statement ID for the given symbol combo
-    /// </summary>
-    /// <param name="strSymbolCombo"></param>
-    /// <returns>Statement ID if found, otherwise -1</returns>
+        /// Get the caution statement ID for the given symbol combo
+        /// </summary>
+        /// <param name="strSymbolCombo"></param>
+        /// <returns>Statement ID if found, otherwise -1</returns>
         public int GetCautionStatementID(string strSymbolCombo)
         {
             return mElementAndMassRoutines.GetCautionStatementIDInternal(strSymbolCombo);
@@ -660,104 +660,104 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Returns the settings for the element with intElementID in the ByRef variables
-    /// </summary>
-    /// <param name="intElementID"></param>
-    /// <param name="strSymbol"></param>
-    /// <param name="dblMass"></param>
-    /// <param name="dblUncertainty"></param>
-    /// <param name="sngCharge"></param>
-    /// <param name="intIsotopeCount"></param>
-    /// <returns>0 if success, 1 if failure</returns>
+        /// Returns the settings for the element with intElementID in the ByRef variables
+        /// </summary>
+        /// <param name="intElementID"></param>
+        /// <param name="strSymbol"></param>
+        /// <param name="dblMass"></param>
+        /// <param name="dblUncertainty"></param>
+        /// <param name="sngCharge"></param>
+        /// <param name="intIsotopeCount"></param>
+        /// <returns>0 if success, 1 if failure</returns>
         public int GetElement(short intElementID, ref string strSymbol, ref double dblMass, ref double dblUncertainty, ref float sngCharge, ref short intIsotopeCount)
         {
             return mElementAndMassRoutines.GetElementInternal(intElementID, out strSymbol, out dblMass, out dblUncertainty, out sngCharge, out intIsotopeCount);
         }
 
         /// <summary>
-    /// Returns the number of elements in memory
-    /// </summary>
-    /// <returns></returns>
+        /// Returns the number of elements in memory
+        /// </summary>
+        /// <returns></returns>
         public int GetElementCount()
         {
             return mElementAndMassRoutines.GetElementCountInternal();
         }
 
         /// <summary>
-    /// Get the element ID for the given symbol
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <returns>ID if found, otherwise 0</returns>
+        /// Get the element ID for the given symbol
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <returns>ID if found, otherwise 0</returns>
         public int GetElementID(string strSymbol)
         {
             return mElementAndMassRoutines.GetElementIDInternal(strSymbol);
         }
 
         /// <summary>
-    /// Returns the isotope masses and abundances for the element with intElementID
-    /// </summary>
-    /// <param name="intElementID"></param>
-    /// <param name="intIsotopeCount"></param>
-    /// <param name="dblIsotopeMasses"></param>
-    /// <param name="sngIsotopeAbundances"></param>
-    /// <returns>0 if a valid ID, 1 if invalid</returns>
+        /// Returns the isotope masses and abundances for the element with intElementID
+        /// </summary>
+        /// <param name="intElementID"></param>
+        /// <param name="intIsotopeCount"></param>
+        /// <param name="dblIsotopeMasses"></param>
+        /// <param name="sngIsotopeAbundances"></param>
+        /// <returns>0 if a valid ID, 1 if invalid</returns>
         public int GetElementIsotopes(short intElementID, ref short intIsotopeCount, ref double[] dblIsotopeMasses, ref float[] sngIsotopeAbundances)
         {
             return mElementAndMassRoutines.GetElementIsotopesInternal(intElementID, ref intIsotopeCount, ref dblIsotopeMasses, ref sngIsotopeAbundances);
         }
 
         /// <summary>
-    /// Get the current element mode
-    /// </summary>
-    /// <returns>
-    /// emAverageMass  = 1
-    /// emIsotopicMass = 2
-    /// emIntegerMass  = 3
-    /// </returns>
+        /// Get the current element mode
+        /// </summary>
+        /// <returns>
+        /// emAverageMass  = 1
+        /// emIsotopicMass = 2
+        /// emIntegerMass  = 3
+        /// </returns>
         public ElementAndMassTools.emElementModeConstants GetElementMode()
         {
             return mElementAndMassRoutines.GetElementModeInternal();
         }
 
         /// <summary>
-    /// Return the element symbol for the given element ID
-    /// </summary>
-    /// <param name="intElementID"></param>
-    /// <returns></returns>
-    /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
+        /// Return the element symbol for the given element ID
+        /// </summary>
+        /// <param name="intElementID"></param>
+        /// <returns></returns>
+        /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         public string GetElementSymbol(short intElementID)
         {
             return mElementAndMassRoutines.GetElementSymbolInternal(intElementID);
         }
 
         /// <summary>
-    /// Returns a single bit of information about a single element
-    /// </summary>
-    /// <param name="intElementID">Element ID</param>
-    /// <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
-    /// <returns></returns>
-    /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
+        /// Returns a single bit of information about a single element
+        /// </summary>
+        /// <param name="intElementID">Element ID</param>
+        /// <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
+        /// <returns></returns>
+        /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         public double GetElementStat(short intElementID, esElementStatsConstants eElementStat)
         {
             return mElementAndMassRoutines.GetElementStatInternal(intElementID, eElementStat);
         }
 
         /// <summary>
-    /// Get message text using message ID
-    /// </summary>
-    /// <param name="messageID"></param>
-    /// <returns></returns>
+        /// Get message text using message ID
+        /// </summary>
+        /// <param name="messageID"></param>
+        /// <returns></returns>
         public string GetMessageStatement(int messageID)
         {
             return GetMessageStatement(messageID, string.Empty);
         }
 
         /// <summary>
-    /// Get message text using message ID
-    /// </summary>
-    /// <param name="messageID"></param>
-    /// <param name="strAppendText"></param>
-    /// <returns></returns>
+        /// Get message text using message ID
+        /// </summary>
+        /// <param name="messageID"></param>
+        /// <param name="strAppendText"></param>
+        /// <returns></returns>
         public string GetMessageStatement(int messageID, string strAppendText)
         {
             return mElementAndMassRoutines.GetMessageStatementInternal(messageID, strAppendText);
@@ -769,14 +769,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Returns True if the first letter of strTestChar is a ModSymbol
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <returns></returns>
-    /// <remarks>
-    /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
-    /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
-    /// </remarks>
+        /// Returns True if the first letter of strTestChar is a ModSymbol
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
+        /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
+        /// </remarks>
         public bool IsModSymbol(string strSymbol)
         {
             return mElementAndMassRoutines.IsModSymbolInternal(strSymbol);
@@ -823,12 +823,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Recomputes the Mass for all of the loaded abbreviations
-    /// </summary>
-    /// <remarks>
-    /// Useful if we just finished setting lots of element masses, and
-    /// had blnRecomputeAbbreviationMasses = False when calling .SetElement()
-    /// </remarks>
+        /// Recomputes the Mass for all of the loaded abbreviations
+        /// </summary>
+        /// <remarks>
+        /// Useful if we just finished setting lots of element masses, and
+        /// had blnRecomputeAbbreviationMasses = False when calling .SetElement()
+        /// </remarks>
         public void RecomputeAbbreviationMasses()
         {
             mElementAndMassRoutines.RecomputeAbbreviationMassesInternal();
@@ -880,21 +880,21 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Adds a new abbreviation or updates an existing one (based on strSymbol)
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <param name="strFormula"></param>
-    /// <param name="sngCharge"></param>
-    /// <param name="blnIsAminoAcid"></param>
-    /// <param name="strOneLetterSymbol"></param>
-    /// <param name="strComment"></param>
-    /// <param name="blnValidateFormula">If true, make sure the formula is valid</param>
-    /// <returns>0 if successful, otherwise an error ID</returns>
-    /// <remarks>
-    /// It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
-    /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
-    /// defined, then the parsing of the first abbreviation will fail
-    /// </remarks>
+        /// Adds a new abbreviation or updates an existing one (based on strSymbol)
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <param name="strFormula"></param>
+        /// <param name="sngCharge"></param>
+        /// <param name="blnIsAminoAcid"></param>
+        /// <param name="strOneLetterSymbol"></param>
+        /// <param name="strComment"></param>
+        /// <param name="blnValidateFormula">If true, make sure the formula is valid</param>
+        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <remarks>
+        /// It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
+        /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
+        /// defined, then the parsing of the first abbreviation will fail
+        /// </remarks>
         public int SetAbbreviation(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment, bool blnValidateFormula)
         {
             return mElementAndMassRoutines.SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnValidateFormula);
@@ -906,33 +906,33 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Adds a new abbreviation or updates an existing one (based on intAbbrevID)
-    /// </summary>
-    /// <param name="intAbbrevID">If intAbbrevID is less than 1, adds as a new abbreviation</param>
-    /// <param name="strSymbol"></param>
-    /// <param name="strFormula"></param>
-    /// <param name="sngCharge"></param>
-    /// <param name="blnIsAminoAcid"></param>
-    /// <param name="strOneLetterSymbol"></param>
-    /// <param name="strComment"></param>
-    /// <param name="blnValidateFormula">If true, make sure the formula is valid</param>
-    /// <returns>0 if successful, otherwise an error ID</returns>
-    /// <remarks>
-    /// It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
-    /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
-    /// defined, then the parsing of the first abbreviation will fail
-    /// </remarks>
+        /// Adds a new abbreviation or updates an existing one (based on intAbbrevID)
+        /// </summary>
+        /// <param name="intAbbrevID">If intAbbrevID is less than 1, adds as a new abbreviation</param>
+        /// <param name="strSymbol"></param>
+        /// <param name="strFormula"></param>
+        /// <param name="sngCharge"></param>
+        /// <param name="blnIsAminoAcid"></param>
+        /// <param name="strOneLetterSymbol"></param>
+        /// <param name="strComment"></param>
+        /// <param name="blnValidateFormula">If true, make sure the formula is valid</param>
+        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <remarks>
+        /// It is useful to set blnValidateFormula = False when you're defining all of the abbreviations at once,
+        /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
+        /// defined, then the parsing of the first abbreviation will fail
+        /// </remarks>
         public int SetAbbreviationByID(int intAbbrevID, string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment, bool blnValidateFormula)
         {
             return mElementAndMassRoutines.SetAbbreviationByIDInternal((short)intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnValidateFormula);
         }
 
         /// <summary>
-    /// Adds a new caution statement or updates an existing one (based on strSymbolCombo)
-    /// </summary>
-    /// <param name="strSymbolCombo"></param>
-    /// <param name="strNewCautionStatement"></param>
-    /// <returns>0 if successful, otherwise, returns an Error ID</returns>
+        /// Adds a new caution statement or updates an existing one (based on strSymbolCombo)
+        /// </summary>
+        /// <param name="strSymbolCombo"></param>
+        /// <param name="strNewCautionStatement"></param>
+        /// <returns>0 if successful, otherwise, returns an Error ID</returns>
         public int SetCautionStatement(string strSymbolCombo, string strNewCautionStatement)
         {
             return mElementAndMassRoutines.SetCautionStatementInternal(strSymbolCombo, strNewCautionStatement);
@@ -949,14 +949,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Update the values for a single element (based on strSymbol)
-    /// </summary>
-    /// <param name="strSymbol"></param>
-    /// <param name="dblMass"></param>
-    /// <param name="dblUncertainty"></param>
-    /// <param name="sngCharge"></param>
-    /// <param name="blnRecomputeAbbreviationMasses">Set to False if updating several elements</param>
-    /// <returns></returns>
+        /// Update the values for a single element (based on strSymbol)
+        /// </summary>
+        /// <param name="strSymbol"></param>
+        /// <param name="dblMass"></param>
+        /// <param name="dblUncertainty"></param>
+        /// <param name="sngCharge"></param>
+        /// <param name="blnRecomputeAbbreviationMasses">Set to False if updating several elements</param>
+        /// <returns></returns>
         public int SetElement(string strSymbol, double dblMass, double dblUncertainty, float sngCharge, bool blnRecomputeAbbreviationMasses)
         {
             return mElementAndMassRoutines.SetElementInternal(strSymbol, dblMass, dblUncertainty, sngCharge, blnRecomputeAbbreviationMasses);
@@ -978,11 +978,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Used to replace the default message strings with foreign language equivalent ones
-    /// </summary>
-    /// <param name="messageID"></param>
-    /// <param name="strNewMessage"></param>
-    /// <returns>0 if success; 1 if failure</returns>
+        /// Used to replace the default message strings with foreign language equivalent ones
+        /// </summary>
+        /// <param name="messageID"></param>
+        /// <param name="strNewMessage"></param>
+        /// <returns>0 if success; 1 if failure</returns>
         public int SetMessageStatement(int messageID, string strNewMessage)
         {
             return mElementAndMassRoutines.SetMessageStatementInternal(messageID, strNewMessage);
@@ -1009,24 +1009,24 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Converts plain text to formatted rtf text
-    /// </summary>
-    /// <param name="strTextToConvert"></param>
-    /// <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
-    /// <param name="blnHighlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
-    /// <param name="blnOverrideErrorID"></param>
-    /// <param name="errorIDOverride"></param>
-    /// <returns></returns>
+        /// Converts plain text to formatted rtf text
+        /// </summary>
+        /// <param name="strTextToConvert"></param>
+        /// <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
+        /// <param name="blnHighlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
+        /// <param name="blnOverrideErrorID"></param>
+        /// <param name="errorIDOverride"></param>
+        /// <returns></returns>
         public string TextToRTF(string strTextToConvert, bool CalculatorMode, bool blnHighlightCharFollowingPercentSign, bool blnOverrideErrorID, int errorIDOverride)
         {
             return mElementAndMassRoutines.PlainTextToRtfInternal(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, blnOverrideErrorID, errorIDOverride);
         }
 
         /// <summary>
-    /// Checks the formula of all abbreviations to make sure it's valid
-    /// Marks any abbreviations as Invalid if a problem is found or a circular reference exists
-    /// </summary>
-    /// <returns>Count of the number of invalid abbreviations found</returns>
+        /// Checks the formula of all abbreviations to make sure it's valid
+        /// Marks any abbreviations as Invalid if a problem is found or a circular reference exists
+        /// </summary>
+        /// <returns>Count of the number of invalid abbreviations found</returns>
         public int ValidateAllAbbreviations()
         {
             return mElementAndMassRoutines.ValidateAllAbbreviationsInternal();

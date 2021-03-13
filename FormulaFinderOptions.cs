@@ -19,9 +19,9 @@
         #region "Properties"
 
         /// <summary>
-    /// When true, compute the overall charge of each compound
-    /// </summary>
-    /// <remarks></remarks>
+        /// When true, compute the overall charge of each compound
+        /// </summary>
+        /// <remarks></remarks>
         public bool FindCharge
         {
             get
@@ -41,11 +41,11 @@
         }
 
         /// <summary>
-    /// When true, filter the results by ChargeMin and ChargeMax
-    /// </summary>
-    /// <remarks>
-    /// Setting this to True auto-sets FindCharge to true
-    /// Setting this to False auto-sets FindTargetMZ to false</remarks>
+        /// When true, filter the results by ChargeMin and ChargeMax
+        /// </summary>
+        /// <remarks>
+        /// Setting this to True auto-sets FindCharge to true
+        /// Setting this to False auto-sets FindTargetMZ to false</remarks>
         public bool LimitChargeRange
         {
             get
@@ -67,21 +67,21 @@
         }
 
         /// <summary>
-    /// When LimitChargeRange is true, results will be limited to the range ChargeMin to ChargeMax
-    /// </summary>
-    /// <remarks>Negative values are allowed</remarks>
+        /// When LimitChargeRange is true, results will be limited to the range ChargeMin to ChargeMax
+        /// </summary>
+        /// <remarks>Negative values are allowed</remarks>
         public int ChargeMin { get; set; }
 
         /// <summary>
-    /// When LimitChargeRange is true, results will be limited to the range ChargeMin to ChargeMax
-    /// </summary>
-    /// <remarks>Negative values are allowed</remarks>
+        /// When LimitChargeRange is true, results will be limited to the range ChargeMin to ChargeMax
+        /// </summary>
+        /// <remarks>Negative values are allowed</remarks>
         public int ChargeMax { get; set; }
 
         /// <summary>
-    /// Set to true to search for a target m/z value instead of a target mass
-    /// </summary>
-    /// <remarks>Setting this to True auto-sets FindCharge and LimitChargeRange to True</remarks>
+        /// Set to true to search for a target m/z value instead of a target mass
+        /// </summary>
+        /// <remarks>Setting this to True auto-sets FindCharge and LimitChargeRange to True</remarks>
         public bool FindTargetMZ
         {
             get
@@ -105,9 +105,9 @@
         #endregion
 
         /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <remarks></remarks>
+        /// Constructor
+        /// </summary>
+        /// <remarks></remarks>
         public FormulaFinderOptions()
         {
             FindCharge = true;

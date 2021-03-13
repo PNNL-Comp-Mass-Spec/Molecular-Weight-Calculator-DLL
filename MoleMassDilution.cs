@@ -142,9 +142,9 @@ namespace MwtWinDll
         private acqAutoComputeQuantityModeConstants mAutoComputeQuantityMode; // The value to compute when mAutoComputeQuantity is true
 
         /// <summary>
-    /// Checks if AutoCompute Dilution is enabled
-    /// If yes, calls the appropriate function
-    /// </summary>
+        /// Checks if AutoCompute Dilution is enabled
+        /// If yes, calls the appropriate function
+        /// </summary>
         private void CheckAutoComputeDilution()
         {
             if (mAutoComputeDilution)
@@ -182,9 +182,9 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Checks if AutoCompute Quantity is enabled
-    /// If yes, calls the appropriate function
-    /// </summary>
+        /// Checks if AutoCompute Quantity is enabled
+        /// If yes, calls the appropriate function
+        /// </summary>
         private void CheckAutoComputeQuantity()
         {
             if (mAutoComputeQuantity)
@@ -214,10 +214,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Final Concentration, storing in .FinalConcentration, and returning it
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the Final Concentration, storing in .FinalConcentration, and returning it
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeDilutionFinalConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         {
             {
@@ -240,10 +240,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Initial Concentration, storing in .InitialConcentration, and returning it
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the Initial Concentration, storing in .InitialConcentration, and returning it
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeDilutionInitialConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         {
             {
@@ -266,14 +266,14 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the required dilution volumes using initial concentration, final concentration
-    /// and total final volume, storing in .StockSolutionVolume and .DilutingSolventVolume,
-    /// and returning .StockSolutionVolume
-    /// </summary>
-    /// <param name="eStockSolutionUnits"></param>
-    /// <param name="dblNewDilutingSolventVolume">Output: diluting solvent volume</param>
-    /// <param name="eDilutingSolventUnits"></param>
-    /// <returns></returns>
+        /// Computes the required dilution volumes using initial concentration, final concentration
+        /// and total final volume, storing in .StockSolutionVolume and .DilutingSolventVolume,
+        /// and returning .StockSolutionVolume
+        /// </summary>
+        /// <param name="eStockSolutionUnits"></param>
+        /// <param name="dblNewDilutingSolventVolume">Output: diluting solvent volume</param>
+        /// <param name="eDilutingSolventUnits"></param>
+        /// <returns></returns>
         public double ComputeDilutionRequiredStockAndDilutingSolventVolumes([Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume, uevUnitsExtendedVolumeConstants eStockSolutionUnits = uevUnitsExtendedVolumeConstants.uevML, uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
         {
             {
@@ -300,12 +300,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Compute the total volume following the dilution, storing in .TotalFinalVolume, and returning it
-    /// </summary>
-    /// <param name="dblNewDilutingSolventVolume">Output: diluting solvent volume</param>
-    /// <param name="eTotalVolumeUnits"></param>
-    /// <param name="eDilutingSolventUnits"></param>
-    /// <returns></returns>
+        /// Compute the total volume following the dilution, storing in .TotalFinalVolume, and returning it
+        /// </summary>
+        /// <param name="dblNewDilutingSolventVolume">Output: diluting solvent volume</param>
+        /// <param name="eTotalVolumeUnits"></param>
+        /// <param name="eDilutingSolventUnits"></param>
+        /// <returns></returns>
         public double ComputeDilutionTotalVolume([Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume, uevUnitsExtendedVolumeConstants eTotalVolumeUnits = uevUnitsExtendedVolumeConstants.uevML, uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
         {
             {
@@ -333,10 +333,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes mQuantity.Amount using mQuantity.Volume and mQuantity.Concentration, storing the result in mQuantity.Amount
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns>mQuantity.Amount, with the specified units</returns>
+        /// Computes mQuantity.Amount using mQuantity.Volume and mQuantity.Concentration, storing the result in mQuantity.Amount
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns>mQuantity.Amount, with the specified units</returns>
         public double ComputeQuantityAmount(uamUnitsAmountConstants eUnits = uamUnitsAmountConstants.uamMoles)
         {
             mQuantity.Amount = mQuantity.Concentration * mQuantity.Volume;
@@ -344,10 +344,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes mQuantity.Concentration using mQuantity.Amount and mQuantity.Volume, storing the result in mQuantity.Concentration
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns>mQuantity.Concentration, with the specified units</returns>
+        /// Computes mQuantity.Concentration using mQuantity.Amount and mQuantity.Volume, storing the result in mQuantity.Concentration
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns>mQuantity.Concentration, with the specified units</returns>
         public double ComputeQuantityConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
         {
             {
@@ -366,10 +366,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes mQuantity.Volume using mQuantity.Amount and mQuantity.Concentration, storing the result in mQuantity.Volume
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns>mQuantity.Volume, with the specified units</returns>
+        /// Computes mQuantity.Volume using mQuantity.Amount and mQuantity.Concentration, storing the result in mQuantity.Volume
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns>mQuantity.Volume, with the specified units</returns>
         public double ComputeQuantityVolume(uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevL)
         {
             {
@@ -388,12 +388,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// This function uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
-    /// </summary>
-    /// <param name="dblAmountIn"></param>
-    /// <param name="eCurrentUnits"></param>
-    /// <param name="eNewUnits"></param>
-    /// <returns></returns>
+        /// This function uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
+        /// </summary>
+        /// <param name="dblAmountIn"></param>
+        /// <param name="eCurrentUnits"></param>
+        /// <param name="eNewUnits"></param>
+        /// <returns></returns>
         public double ConvertAmount(double dblAmountIn, uamUnitsAmountConstants eCurrentUnits, uamUnitsAmountConstants eNewUnits)
         {
             double dblValue, dblFactor;
@@ -442,13 +442,13 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Convert concentration
-    /// </summary>
-    /// <param name="dblConcentrationIn"></param>
-    /// <param name="eCurrentUnits"></param>
-    /// <param name="eNewUnits"></param>
-    /// <returns></returns>
-    /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
+        /// Convert concentration
+        /// </summary>
+        /// <param name="dblConcentrationIn"></param>
+        /// <param name="eCurrentUnits"></param>
+        /// <param name="eNewUnits"></param>
+        /// <returns></returns>
+        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public double ConvertConcentration(double dblConcentrationIn, ummcUnitsMoleMassConcentrationConstants eCurrentUnits, ummcUnitsMoleMassConcentrationConstants eNewUnits)
         {
             double dblValue, dblFactor;
@@ -510,12 +510,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to Moles
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <param name="dblSampleMass">required for mass-based units</param>
-    /// <param name="dblSampleDensity">required for volume-based units</param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to Moles
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <param name="dblSampleMass">required for mass-based units</param>
+        /// <param name="dblSampleDensity">required for volume-based units</param>
+        /// <returns></returns>
         private double FactorAmount(uamUnitsAmountConstants eUnits, double dblSampleMass = -1, double dblSampleDensity = 0d)
         {
             double dblFactor;
@@ -672,12 +672,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to M
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <param name="dblSampleMass">required for mass-based units</param>
-    /// <returns></returns>
-    /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
+        /// Multiplication factor for converting from eUnits to M
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <param name="dblSampleMass">required for mass-based units</param>
+        /// <returns></returns>
+        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private double FactorConcentration(ummcUnitsMoleMassConcentrationConstants eUnits, double dblSampleMass = 0d)
         {
             double dblFactor;
@@ -779,11 +779,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to mL
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
-    /// <remarks>An extended version of the FactorVolume function in CapillaryFlow</remarks>
+        /// Multiplication factor for converting from eUnits to mL
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
+        /// <remarks>An extended version of the FactorVolume function in CapillaryFlow</remarks>
         private double FactorVolumeExtended(uevUnitsExtendedVolumeConstants eUnits)
         {
             double dblFactor;

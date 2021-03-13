@@ -169,43 +169,43 @@ namespace MwtWinDll
             public ctCapillaryTypeConstants CapillaryType;
 
             /// <summary>
-        /// Units: dynes/cm^2
-        /// </summary>
+            /// Units: dynes/cm^2
+            /// </summary>
             public double BackPressure;
 
             /// <summary>
-        /// Units: cm
-        /// </summary>
+            /// Units: cm
+            /// </summary>
             public double ColumnLength;
 
             /// <summary>
-        /// Units: cm
-        /// </summary>
+            /// Units: cm
+            /// </summary>
             public double ColumnID;
 
             /// <summary>
-        /// Units: poise
-        /// </summary>
+            /// Units: poise
+            /// </summary>
             public double SolventViscosity;
 
             /// <summary>
-        /// Units: cm
-        /// </summary>
+            /// Units: cm
+            /// </summary>
             public double ParticleDiameter;
 
             /// <summary>
-        /// Units: mL/min
-        /// </summary>
+            /// Units: mL/min
+            /// </summary>
             public double VolumetricFlowRate;
 
             /// <summary>
-        /// Units: cm/min
-        /// </summary>
+            /// Units: cm/min
+            /// </summary>
             public double LinearVelocity;
 
             /// <summary>
-        /// Units: min
-        /// </summary>
+            /// Units: min
+            /// </summary>
             public double ColumnDeadTime;
             public double InterparticlePorosity;
         }
@@ -213,33 +213,33 @@ namespace MwtWinDll
         private class udtMassRateParametersType
         {
             /// <summary>
-        /// Units: Molar
-        /// </summary>
+            /// Units: Molar
+            /// </summary>
             public double SampleConcentration;
 
             /// <summary>
-        /// Units: g/mole
-        /// </summary>
+            /// Units: g/mole
+            /// </summary>
             public double SampleMass;
 
             /// <summary>
-        /// Units: mL/min
-        /// </summary>
+            /// Units: mL/min
+            /// </summary>
             public double VolumetricFlowRate;
 
             /// <summary>
-        /// Units: min
-        /// </summary>
+            /// Units: min
+            /// </summary>
             public double InjectionTime;
 
             /// <summary>
-        /// Units: Moles/min
-        /// </summary>
+            /// Units: Moles/min
+            /// </summary>
             public double MassFlowRate;
 
             /// <summary>
-        /// Units: moles
-        /// </summary>
+            /// Units: moles
+            /// </summary>
             public double MolesInjected;
         }
 
@@ -247,43 +247,43 @@ namespace MwtWinDll
         {
 
             /// <summary>
-        /// Units: cm/min
-        /// </summary>
+            /// Units: cm/min
+            /// </summary>
             public double LinearVelocity;
 
             /// <summary>
-        /// Units: cm^2/sec
-        /// </summary>
+            /// Units: cm^2/sec
+            /// </summary>
             public double DiffusionCoefficient;
 
             /// <summary>
-        /// Units: cm
-        /// </summary>
+            /// Units: cm
+            /// </summary>
             public double OpenTubeLength;
 
             /// <summary>
-        /// Units: cm
-        /// </summary>
+            /// Units: cm
+            /// </summary>
             public double OpenTubeID;
 
             /// <summary>
-        /// Units: sec
-        /// </summary>
+            /// Units: sec
+            /// </summary>
             public double InitialPeakWidth;
 
             /// <summary>
-        /// Units: sec^2
-        /// </summary>
+            /// Units: sec^2
+            /// </summary>
             public double TemporalVariance;
 
             /// <summary>
-        /// Units: sec^2
-        /// </summary>
+            /// Units: sec^2
+            /// </summary>
             public double AdditionalTemporalVariance;
 
             /// <summary>
-        /// Units: sec
-        /// </summary>
+            /// Units: sec
+            /// </summary>
             public double ResultantPeakWidth;
         }
 
@@ -298,13 +298,13 @@ namespace MwtWinDll
         private udtExtraColumnBroadeningParametersType mExtraColumnBroadeningParameters = new udtExtraColumnBroadeningParametersType();
 
         /// <summary>
-    /// When true, automatically compute results whenever any value changes
-    /// </summary>
+        /// When true, automatically compute results whenever any value changes
+        /// </summary>
         private bool mAutoCompute;
 
         /// <summary>
-    /// The value to compute when mAutoCompute is true
-    /// </summary>
+        /// The value to compute when mAutoCompute is true
+        /// </summary>
         private acmAutoComputeModeConstants mAutoComputeMode;
 
         private void CheckAutoCompute()
@@ -361,10 +361,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the back pressure, stores in .BackPressure, and returns it
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the back pressure, stores in .BackPressure, and returns it
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeBackPressure(uprUnitsPressureConstants eUnits = uprUnitsPressureConstants.uprPsi)
         {
             double dblBackPressure, dblRadius;
@@ -406,10 +406,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the column length, stores in .ColumnLength, and returns it
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the column length, stores in .ColumnLength, and returns it
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeColumnLength(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
         {
             double dblColumnLength, dblRadius;
@@ -468,10 +468,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the column length, stores in .ColumnLength, and returns it
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the column length, stores in .ColumnLength, and returns it
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeColumnID(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
         {
             double dblRadius;
@@ -511,11 +511,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the column dead time, stores in .ColumnDeadTime, and returns it
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <param name="blnRecalculateVolFlowRate"></param>
-    /// <returns></returns>
+        /// Computes the column dead time, stores in .ColumnDeadTime, and returns it
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <param name="blnRecalculateVolFlowRate"></param>
+        /// <returns></returns>
         public double ComputeDeadTime(utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmMinutes, bool blnRecalculateVolFlowRate = true)
         {
             double dblDeadTime;
@@ -576,11 +576,11 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Linear velocity, stores in .LinearVelocity, and returns it
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <param name="blnRecalculateVolFlowRate"></param>
-    /// <returns></returns>
+        /// Computes the Linear velocity, stores in .LinearVelocity, and returns it
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <param name="blnRecalculateVolFlowRate"></param>
+        /// <returns></returns>
         public double ComputeLinearVelocity(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec, bool blnRecalculateVolFlowRate = true)
         {
             double dblLinearVelocity, dblRadius;
@@ -615,10 +615,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeMassFlowRate(umfMassFlowRateConstants eUnits = umfMassFlowRateConstants.umfFmolPerSec)
         {
             ComputeMassRateValues();
@@ -626,10 +626,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeMassRateMolesInjected(umaMolarAmountConstants eUnits = umaMolarAmountConstants.umaFemtoMoles)
         {
             ComputeMassRateValues();
@@ -646,12 +646,12 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the optimum linear velocity, based on
-    /// mCapillaryFlowParameters.ParticleDiameter
-    /// and mExtraColumnBroadeningParameters.DiffusionCoefficient
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the optimum linear velocity, based on
+        /// mCapillaryFlowParameters.ParticleDiameter
+        /// and mExtraColumnBroadeningParameters.DiffusionCoefficient
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec)
         {
             var dblOptimumLinearVelocity = default(double);
@@ -698,10 +698,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Volumetric flow rate, stores in .VolumetricFlowRate, and returns it
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Computes the Volumetric flow rate, stores in .VolumetricFlowRate, and returns it
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         public double ComputeVolFlowRate(ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
         {
             double dblVolFlowRate, dblRadius;
@@ -743,13 +743,13 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Computes the Volumetric flow rate using the dead time, stores in .VolumetricFlowRate, and returns it
-    /// This requires modifying the pressure value to give the computed volumetric flow rate
-    /// </summary>
-    /// <param name="dblNewBackPressure">Output: new back pressure</param>
-    /// <param name="eUnits"></param>
-    /// <param name="ePressureUnits"></param>
-    /// <returns></returns>
+        /// Computes the Volumetric flow rate using the dead time, stores in .VolumetricFlowRate, and returns it
+        /// This requires modifying the pressure value to give the computed volumetric flow rate
+        /// </summary>
+        /// <param name="dblNewBackPressure">Output: new back pressure</param>
+        /// <param name="eUnits"></param>
+        /// <param name="ePressureUnits"></param>
+        /// <returns></returns>
         public double ComputeVolFlowRateUsingDeadTime([Optional, DefaultParameterValue(0d)] out double dblNewBackPressure, ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin, uprUnitsPressureConstants ePressureUnits = uprUnitsPressureConstants.uprPsi)
         {
             dblNewBackPressure = 0;
@@ -788,13 +788,13 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Convert concentration
-    /// </summary>
-    /// <param name="dblConcentrationIn"></param>
-    /// <param name="eCurrentUnits"></param>
-    /// <param name="eNewUnits"></param>
-    /// <returns></returns>
-    /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
+        /// Convert concentration
+        /// </summary>
+        /// <param name="dblConcentrationIn"></param>
+        /// <param name="eCurrentUnits"></param>
+        /// <param name="eNewUnits"></param>
+        /// <returns></returns>
+        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public double ConvertConcentration(double dblConcentrationIn, ucoUnitsConcentrationConstants eCurrentUnits, ucoUnitsConcentrationConstants eNewUnits)
         {
             double dblValue, dblFactor;
@@ -1182,13 +1182,13 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to M
-    /// dblSampleMass is required for mass-based units
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <param name="dblSampleMass"></param>
-    /// <returns></returns>
-    /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
+        /// Multiplication factor for converting from eUnits to M
+        /// dblSampleMass is required for mass-based units
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <param name="dblSampleMass"></param>
+        /// <returns></returns>
+        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private double FactorConcentration(ucoUnitsConcentrationConstants eUnits, double dblSampleMass = 0d)
         {
             double dblFactor;
@@ -1284,10 +1284,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to Cm
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to Cm
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorLength(ulnUnitsLengthConstants eUnits)
         {
             switch (eUnits)
@@ -1325,10 +1325,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to Cm/Min
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to Cm/Min
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorLinearVelocity(ulvUnitsLinearVelocityConstants eUnits)
         {
             switch (eUnits)
@@ -1371,10 +1371,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to moles/min
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to moles/min
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorMassFlowRate(umfMassFlowRateConstants eUnits)
         {
             switch (eUnits)
@@ -1422,10 +1422,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to moles
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to moles
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorMoles(umaMolarAmountConstants eUnits)
         {
             switch (eUnits)
@@ -1473,10 +1473,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to dynes per cm^2
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to dynes per cm^2
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorPressure(uprUnitsPressureConstants eUnits)
         {
             switch (eUnits)
@@ -1524,10 +1524,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to minutes
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to minutes
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorTime(utmUnitsTimeConstants eUnits)
         {
             switch (eUnits)
@@ -1555,10 +1555,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to cm^2/sec
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to cm^2/sec
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorDiffusionCoeff(udcDiffusionCoefficientConstants eUnits)
         {
             switch (eUnits)
@@ -1586,10 +1586,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to poise
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to poise
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorViscosity(uviUnitsViscosityConstants eUnits)
         {
             switch (eUnits)
@@ -1612,10 +1612,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to mL/min
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to mL/min
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorVolFlowRate(ufrUnitsFlowRateConstants eUnits)
         {
             double FactorVolFlowRateRet = default;
@@ -1650,10 +1650,10 @@ namespace MwtWinDll
         }
 
         /// <summary>
-    /// Multiplication factor for converting from eUnits to mL
-    /// </summary>
-    /// <param name="eUnits"></param>
-    /// <returns></returns>
+        /// Multiplication factor for converting from eUnits to mL
+        /// </summary>
+        /// <param name="eUnits"></param>
+        /// <returns></returns>
         private double FactorVolume(uvoUnitsVolumeConstants eUnits)
         {
             switch (eUnits)

@@ -14,9 +14,9 @@ namespace MwtWinDll
         public int ChargeState { get; set; }
 
         /// <summary>
-    /// Percent composition results (only valid if matching percent compositions)
-    /// </summary>
-    /// <remarks>Keys are element or abbreviation symbols, values are percent composition, between 0 and 100</remarks>
+        /// Percent composition results (only valid if matching percent compositions)
+        /// </summary>
+        /// <remarks>Keys are element or abbreviation symbols, values are percent composition, between 0 and 100</remarks>
         public Dictionary<string, double> PercentComposition { get; set; }
 
         public string SortKey;
