@@ -1,1489 +1,1993 @@
-Option Strict On
-
-Imports System.Runtime.InteropServices
-
-Public Class CapillaryFlow
-
-    ' Molecular Weight Calculator routines with ActiveX Class interfaces: CapillaryFlow
-
-    ' -------------------------------------------------------------------------------
-    ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
-    ' E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
-    ' Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
-    ' -------------------------------------------------------------------------------
-    '
-    ' Licensed under the Apache License, Version 2.0; you may not use this file except
-    ' in compliance with the License.  You may obtain a copy of the License at
-    ' http://www.apache.org/licenses/LICENSE-2.0
-    '
-    ' Notice: This computer software was prepared by Battelle Memorial Institute,
-    ' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
-    ' Department of Energy (DOE).  All rights in the computer software are reserved
-    ' by DOE on behalf of the United States Government and the Contractor as
-    ' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
-    ' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
-    ' SOFTWARE.  This notice including this sentence must appear on any copies of
-    ' this computer software.
-
-    Public Sub New()
-        MyBase.New()
-        InitializeClass()
-    End Sub
-
-#Region "Enum Statements"
-
-    Public Enum ctCapillaryTypeConstants
-        ctOpenTubularCapillary = 0
-        ctPackedCapillary
-    End Enum
-
-    Public Enum uprUnitsPressureConstants
-        uprPsi = 0
-        uprPascals
-        uprKiloPascals
-        uprAtmospheres
-        uprBar
-        uprTorr
-        uprDynesPerSquareCm
-    End Enum
-
-    Public Enum ulnUnitsLengthConstants
-        ulnM = 0
-        ulnCM
-        ulnMM
-        ulnMicrons
-        ulnInches
-    End Enum
-
-    Public Enum uviUnitsViscosityConstants
-        uviPoise = 0
-        uviCentiPoise
-    End Enum
-
-    Public Enum ufrUnitsFlowRateConstants
-        ufrMLPerMin = 0
-        ufrULPerMin
-        ufrNLPerMin
-    End Enum
-
-    Public Enum ulvUnitsLinearVelocityConstants
-        ulvCmPerHr = 0
-        ulvMmPerHr
-        ulvCmPerMin
-        ulvMmPerMin
-        ulvCmPerSec
-        ulvMmPerSec
-    End Enum
-
-    Public Enum utmUnitsTimeConstants
-        utmHours = 0
-        utmMinutes
-        utmSeconds
-    End Enum
-
-    Public Enum uvoUnitsVolumeConstants
-        uvoML = 0
-        uvoUL
-        uvoNL
-        uvoPL
-    End Enum
-
-    Public Enum ucoUnitsConcentrationConstants
-        ucoMolar = 0
-        ucoMilliMolar
-        ucoMicroMolar
-        ucoNanoMolar
-        ucoPicoMolar
-        ucoFemtoMolar
-        ucoAttoMolar
-        ucoMgPerML
-        ucoUgPerML
-        ucoNgPerML
-        ucoUgPerUL
-        ucoNgPerUL
-    End Enum
-
-    Public Enum utpUnitsTemperatureConstants
-        utpCelsius = 0
-        utpKelvin
-        utpFahrenheit
-    End Enum
-
-    Public Enum umfMassFlowRateConstants
-        umfPmolPerMin = 0
-        umfFmolPerMin
-        umfAmolPerMin
-        umfPmolPerSec
-        umfFmolPerSec
-        umfAmolPerSec
-        umfMolesPerMin
-    End Enum
-
-    Public Enum umaMolarAmountConstants
-        umaMoles = 0
-        umaMilliMoles
-        umaMicroMoles
-        umaNanoMoles
-        umaPicoMoles
-        umaFemtoMoles
-        umaAttoMoles
-    End Enum
-
-    Public Enum udcDiffusionCoefficientConstants
-        udcCmSquaredPerHr = 0
-        udcCmSquaredPerMin
-        udcCmSquaredPerSec
-    End Enum
-
-    Public Enum acmAutoComputeModeConstants
-        acmBackPressure = 0
-        acmColumnID
-        acmColumnLength
-        acmDeadTime
-        acmLinearVelocity
-        acmVolFlowRate
-        acmVolFlowRateUsingDeadTime
-    End Enum
-
-#End Region
-
-#Region "Data classes"
-
-    Private Class udtCapillaryFlowParametersType
-        Public CapillaryType As ctCapillaryTypeConstants
-
-        ''' <summary>
-        ''' Units: dynes/cm^2
-        ''' </summary>
-        Public BackPressure As Double
-
-        ''' <summary>
-        ''' Units: cm
-        ''' </summary>
-        Public ColumnLength As Double
-
-        ''' <summary>
-        ''' Units: cm
-        ''' </summary>
-        Public ColumnID As Double
-
-        ''' <summary>
-        ''' Units: poise
-        ''' </summary>
-        Public SolventViscosity As Double
-
-        ''' <summary>
-        ''' Units: cm
-        ''' </summary>
-        Public ParticleDiameter As Double
-
-        ''' <summary>
-        ''' Units: mL/min
-        ''' </summary>
-        Public VolumetricFlowRate As Double
-
-        ''' <summary>
-        ''' Units: cm/min
-        ''' </summary>
-        Public LinearVelocity As Double
-
-        ''' <summary>
-        ''' Units: min
-        ''' </summary>
-        Public ColumnDeadTime As Double
-
-        Public InterparticlePorosity As Double
-    End Class
-
-    Private Class udtMassRateParametersType
-        ''' <summary>
-        ''' Units: Molar
-        ''' </summary>
-        Public SampleConcentration As Double
-
-        ''' <summary>
-        ''' Units: g/mole
-        ''' </summary>
-        Public SampleMass As Double
-
-        ''' <summary>
-        ''' Units: mL/min
-        ''' </summary>
-        Public VolumetricFlowRate As Double
-
-        ''' <summary>
-        ''' Units: min
-        ''' </summary>
-        Public InjectionTime As Double
-
-        ''' <summary>
-        ''' Units: Moles/min
-        ''' </summary>
-        Public MassFlowRate As Double
-
-        ''' <summary>
-        ''' Units: moles
-        ''' </summary>
-        Public MolesInjected As Double
-    End Class
-
-    Private Class udtExtraColumnBroadeningParametersType
-
-        ''' <summary>
-        ''' Units: cm/min
-        ''' </summary>
-        Public LinearVelocity As Double
-
-        ''' <summary>
-        ''' Units: cm^2/sec
-        ''' </summary>
-        Public DiffusionCoefficient As Double
-
-        ''' <summary>
-        ''' Units: cm
-        ''' </summary>
-        Public OpenTubeLength As Double
-
-        ''' <summary>
-        ''' Units: cm
-        ''' </summary>
-        Public OpenTubeID As Double
-
-        ''' <summary>
-        ''' Units: sec
-        ''' </summary>
-        Public InitialPeakWidth As Double
-
-        ''' <summary>
-        ''' Units: sec^2
-        ''' </summary>
-        Public TemporalVariance As Double
-
-        ''' <summary>
-        ''' Units: sec^2
-        ''' </summary>
-        Public AdditionalTemporalVariance As Double
-
-        ''' <summary>
-        ''' Units: sec
-        ''' </summary>
-        Public ResultantPeakWidth As Double
-    End Class
-
-#End Region
-
-
-    ' Conversion Factors
-    Private Const CM_PER_INCH As Single = 2.54
-    Private Const PI As Double = 3.14159265359
-
-    Private mCapillaryFlowParameters As New udtCapillaryFlowParametersType
-    Private mMassRateParameters As New udtMassRateParametersType
-    Private mExtraColumnBroadeningParameters As New udtExtraColumnBroadeningParametersType
-
-    ''' <summary>
-    ''' When true, automatically compute results whenever any value changes
-    ''' </summary>
-    Private mAutoCompute As Boolean
-
-    ''' <summary>
-    ''' The value to compute when mAutoCompute is true
-    ''' </summary>
-    Private mAutoComputeMode As acmAutoComputeModeConstants
-
-    Private Sub CheckAutoCompute()
-        If mAutoCompute Then
-            Select Case mAutoComputeMode
-                Case acmAutoComputeModeConstants.acmBackPressure : ComputeBackPressure()
-                Case acmAutoComputeModeConstants.acmColumnID : ComputeColumnID()
-                Case acmAutoComputeModeConstants.acmColumnLength : ComputeColumnLength()
-                Case acmAutoComputeModeConstants.acmDeadTime : ComputeDeadTime()
-                Case acmAutoComputeModeConstants.acmLinearVelocity : ComputeLinearVelocity()
-                Case acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime : ComputeVolFlowRateUsingDeadTime()
-                Case Else
-                    ' Includes acmVolFlowRate
-                    ComputeVolFlowRate()
-            End Select
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Computes the back pressure, stores in .BackPressure, and returns it
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Public Function ComputeBackPressure(Optional eUnits As uprUnitsPressureConstants = uprUnitsPressureConstants.uprPsi) As Double
-
-        Dim dblBackPressure, dblRadius As Double
-
-        With mCapillaryFlowParameters
-
-            dblRadius = .ColumnID / 2.0#
-
-            If Math.Abs(dblRadius) > Single.Epsilon Then
-                If .CapillaryType = ctCapillaryTypeConstants.ctOpenTubularCapillary Then
-                    ' Open tubular capillary
-                    dblBackPressure = (.VolumetricFlowRate * 8 * .SolventViscosity * .ColumnLength) / (dblRadius ^ 4 * PI * 60) ' Pressure in dynes/cm^2
-                Else
-                    ' Packed capillary
-                    If Math.Abs(.ParticleDiameter) > Single.Epsilon And Math.Abs(.InterparticlePorosity) > Single.Epsilon Then
-                        ' Flow rate in mL/sec
-                        dblBackPressure = (.VolumetricFlowRate * 180 * .SolventViscosity * .ColumnLength * (1 - .InterparticlePorosity) ^ 2) / (.ParticleDiameter ^ 2 * .InterparticlePorosity ^ 2 * PI * dblRadius ^ 2 * 60) / .InterparticlePorosity
-                    Else
-                        dblBackPressure = 0
-                    End If
-                End If
-            Else
-                dblBackPressure = 0
-            End If
-
-            .BackPressure = dblBackPressure
-        End With
-
-        ' Compute Dead Time (and Linear Velocity)
-        ' Must send false for RecalculateVolFlowRate since we're finding the back pressure, not volumetric flow rate
-        ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, False)
-
-        ' Return Back Pressure
-        Return ConvertPressure(dblBackPressure, uprUnitsPressureConstants.uprDynesPerSquareCm, eUnits)
-
-    End Function
-
-    ''' <summary>
-    ''' Computes the column length, stores in .ColumnLength, and returns it
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Public Function ComputeColumnLength(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM) As Double
-
-        Dim dblColumnLength, dblRadius As Double
-
-        With mCapillaryFlowParameters
-
-            dblRadius = .ColumnID / 2.0#
-
-            If Math.Abs(.SolventViscosity) > Single.Epsilon And Math.Abs(.VolumetricFlowRate) > Single.Epsilon Then
-                If .CapillaryType = ctCapillaryTypeConstants.ctOpenTubularCapillary Then
-                    ' Open tubular capillary
-                    dblColumnLength = (.BackPressure * dblRadius ^ 4 * PI * 60) / (8 * .SolventViscosity * .VolumetricFlowRate) ' Column length in cm
-                Else
-                    ' Packed capillary
-                    If Math.Abs(.InterparticlePorosity - 1) > Single.Epsilon Then
-                        ' Flow rate in mL/sec
-                        dblColumnLength = (.BackPressure * .ParticleDiameter ^ 2 * .InterparticlePorosity ^ 2 * PI * dblRadius ^ 2 * 60) * .InterparticlePorosity / (180 * .SolventViscosity * .VolumetricFlowRate * (1 - .InterparticlePorosity) ^ 2)
-                    Else
-                        dblColumnLength = 0
-                    End If
-                End If
-            Else
-                dblColumnLength = 0
-            End If
-
-            .ColumnLength = dblColumnLength
-        End With
-
-        ' Compute Dead Time (and Linear Velocity)
-        ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, True)
-
-        ' Return Column Length
-        Return ConvertLength(dblColumnLength, ulnUnitsLengthConstants.ulnCM, eUnits)
-
-    End Function
-
-    Public Function ComputeColumnVolume(Optional eUnits As uvoUnitsVolumeConstants = 0) As Double
-        ' Computes the column volume and returns it (does not store it)
-
-        Dim dblColumnVolume, dblRadius As Double
-
-        With mCapillaryFlowParameters
-
-            dblRadius = .ColumnID / 2.0#
-
-            dblColumnVolume = .ColumnLength * PI * dblRadius ^ 2 ' In mL
-
-            If .CapillaryType = ctCapillaryTypeConstants.ctPackedCapillary Then
-                dblColumnVolume *= .InterparticlePorosity
-            End If
-        End With
-
-        Return ConvertVolume(dblColumnVolume, uvoUnitsVolumeConstants.uvoML, eUnits)
-
-    End Function
-
-    ''' <summary>
-    ''' Computes the column length, stores in .ColumnLength, and returns it
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Public Function ComputeColumnID(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
-
-        Dim dblRadius As Double
-
-        With mCapillaryFlowParameters
-
-            If Math.Abs(.BackPressure) > Single.Epsilon Then
-                If .CapillaryType = ctCapillaryTypeConstants.ctOpenTubularCapillary Then
-                    ' Open tubular capillary
-                    dblRadius = ((.VolumetricFlowRate * 8 * .SolventViscosity * .ColumnLength) / (.BackPressure * PI * 60)) ^ (0.25)
-                Else
-                    ' Packed capillary
-                    If Math.Abs(.ParticleDiameter) > Single.Epsilon And Math.Abs(.InterparticlePorosity - 1) > Single.Epsilon Then
-                        ' Flow rate in mL/sec
-                        dblRadius = ((.VolumetricFlowRate * 180 * .SolventViscosity * .ColumnLength * (1 - .InterparticlePorosity) ^ 2) / (.BackPressure * .ParticleDiameter ^ 2 * .InterparticlePorosity ^ 2 * PI * 60) / .InterparticlePorosity) ^ 0.5
-                    Else
-                        dblRadius = 0
-                    End If
-                End If
-            Else
-                dblRadius = 0
-            End If
-
-            .ColumnID = dblRadius * 2.0#
-        End With
-
-        ' Compute Dead Time (and Linear Velocity)
-        ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, True)
-
-        ' Return Column ID
-        Return ConvertLength(dblRadius * 2.0#, ulnUnitsLengthConstants.ulnCM, eUnits)
-
-    End Function
-
-    ''' <summary>
-    ''' Computes the column dead time, stores in .ColumnDeadTime, and returns it
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <param name="blnRecalculateVolFlowRate"></param>
-    ''' <returns></returns>
-    Public Function ComputeDeadTime(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes, Optional blnRecalculateVolFlowRate As Boolean = True) As Double
-
-        Dim dblDeadTime As Double
-
-        ' Dead time is dependent on Linear Velocity, so compute
-        ComputeLinearVelocity(ulvUnitsLinearVelocityConstants.ulvCmPerSec, blnRecalculateVolFlowRate)
-
-        With mCapillaryFlowParameters
-
-            If Math.Abs(.LinearVelocity) > Single.Epsilon Then
-                dblDeadTime = .ColumnLength / .LinearVelocity ' Dead time in minutes
-            Else
-                dblDeadTime = 0
-            End If
-
-            .ColumnDeadTime = dblDeadTime
-        End With
-
-        ' Return Dead Time
-        Return ConvertTime(dblDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits)
-
-    End Function
-
-    Public Function ComputeExtraColumnBroadeningResultantPeakWidth(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds) As Double
-        ComputeExtraColumnBroadeningValues()
-
-        Return GetExtraColumnBroadeningResultantPeakWidth(eUnits)
-    End Function
-
-    Private Sub ComputeExtraColumnBroadeningValues()
-        Dim dblInitialPeakVariance As Double
-        Dim dblSumOfVariances As Double
-
-        With mExtraColumnBroadeningParameters
-            If Math.Abs(.LinearVelocity) > Single.Epsilon And Math.Abs(.DiffusionCoefficient) > Single.Epsilon Then
-                .TemporalVariance = .OpenTubeID ^ 2 * .OpenTubeLength / (96 * .DiffusionCoefficient * .LinearVelocity / 60) ' in sec^2
-            Else
-                .TemporalVariance = 0
-            End If
-
-            dblInitialPeakVariance = (.InitialPeakWidth / 4) ^ 2
-
-            dblSumOfVariances = dblInitialPeakVariance + .TemporalVariance + .AdditionalTemporalVariance
-
-            If dblSumOfVariances >= 0 Then
-                ' ResultantPeakWidth at the base = 4 sigma  and  sigma = Sqr(Total_Variance)
-                .ResultantPeakWidth = 4 * Math.Sqrt(dblSumOfVariances)
-            Else
-                .ResultantPeakWidth = 0
-            End If
-        End With
-    End Sub
-
-    ''' <summary>
-    ''' Computes the Linear velocity, stores in .LinearVelocity, and returns it
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <param name="blnRecalculateVolFlowRate"></param>
-    ''' <returns></returns>
-    Public Function ComputeLinearVelocity(Optional eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvCmPerSec, Optional blnRecalculateVolFlowRate As Boolean = True) As Double
-
-        Dim dblLinearVelocity, dblRadius As Double
-
-        If blnRecalculateVolFlowRate Then
-            ComputeVolFlowRate(ufrUnitsFlowRateConstants.ufrMLPerMin)
-        End If
-
-        With mCapillaryFlowParameters
-            dblRadius = .ColumnID / 2.0#
-            If Math.Abs(dblRadius) > Single.Epsilon Then
-                dblLinearVelocity = .VolumetricFlowRate / (PI * dblRadius ^ 2) ' Units in cm/min
-
-                ' Divide Linear Velocity by epsilon if a packed capillary
-                If .CapillaryType = ctCapillaryTypeConstants.ctPackedCapillary And Math.Abs(.InterparticlePorosity) > Single.Epsilon Then
-                    dblLinearVelocity /= .InterparticlePorosity
-                End If
-            Else
-                dblLinearVelocity = 0
-            End If
-
-            .LinearVelocity = dblLinearVelocity
-        End With
-
-        ' Return Linear Velocity
-        Return ConvertLinearVelocity(dblLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
-
-    End Function
-
-    ''' <summary>
-    ''' Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Public Function ComputeMassFlowRate(Optional eUnits As umfMassFlowRateConstants = umfMassFlowRateConstants.umfFmolPerSec) As Double
-
-        ComputeMassRateValues()
-        Return GetMassFlowRate(eUnits)
-
-    End Function
-
-    ''' <summary>
-    ''' Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Public Function ComputeMassRateMolesInjected(Optional eUnits As umaMolarAmountConstants = umaMolarAmountConstants.umaFemtoMoles) As Double
-
-        ComputeMassRateValues()
-        Return GetMassRateMolesInjected(eUnits)
-
-    End Function
-
-    Private Sub ComputeMassRateValues()
-
-        With mMassRateParameters
-            .MassFlowRate = .SampleConcentration * .VolumetricFlowRate / 1000 ' Compute mass flow rate in moles/min
-
-            .MolesInjected = .MassFlowRate * .InjectionTime ' Compute moles injected in moles
-        End With
-
-    End Sub
-
-    ''' <summary>
-    ''' Computes the optimum linear velocity, based on
-    ''' mCapillaryFlowParameters.ParticleDiameter
-    ''' and mExtraColumnBroadeningParameters.DiffusionCoefficient
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Public Function ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(Optional eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvCmPerSec) As Double
-
-        Dim dblOptimumLinearVelocity As Double
-
-        With mCapillaryFlowParameters
-            If Math.Abs(.ParticleDiameter) > Single.Epsilon Then
-                dblOptimumLinearVelocity = 3 * mExtraColumnBroadeningParameters.DiffusionCoefficient / .ParticleDiameter
-
-                dblOptimumLinearVelocity = ConvertLinearVelocity(dblOptimumLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerSec, eUnits)
-            End If
-        End With
-
-        Return dblOptimumLinearVelocity
-
-    End Function
-
-    Public Function ComputeMeCNViscosity(dblPercentAcetonitrile As Double, dblTemperature As Double, Optional eTemperatureUnits As utpUnitsTemperatureConstants = utpUnitsTemperatureConstants.utpCelsius, Optional eViscosityUnits As uviUnitsViscosityConstants = uviUnitsViscosityConstants.uviPoise) As Double
-
-        Dim dblPhi As Double ' Fraction Acetonitrile
-        Dim dblKelvin As Double
-        Dim dblViscosityInCentiPoise As Double
-
-        Try
-            dblPhi = dblPercentAcetonitrile / 100.0#
-            If dblPhi < 0 Then dblPhi = 0
-            If dblPhi > 100 Then dblPhi = 100
-
-            dblKelvin = ConvertTemperature(dblTemperature, eTemperatureUnits, utpUnitsTemperatureConstants.utpKelvin)
-
-            If dblKelvin > 0 Then
-                dblViscosityInCentiPoise = Math.Exp(dblPhi * (-3.476 + 726 / dblKelvin) + (1 - dblPhi) * (-5.414 + 1566 / dblKelvin) + dblPhi * (1 - dblPhi) * (-1.762 + 929 / dblKelvin))
-            Else
-                dblViscosityInCentiPoise = 0
-            End If
-
-            Return ConvertViscosity(dblViscosityInCentiPoise, uviUnitsViscosityConstants.uviCentiPoise, eViscosityUnits)
-        Catch ex As Exception
-            Return 0
-        End Try
-
-    End Function
-
-    ''' <summary>
-    ''' Computes the Volumetric flow rate, stores in .VolumetricFlowRate, and returns it
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Public Function ComputeVolFlowRate(Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin) As Double
-
-        Dim dblVolFlowRate, dblRadius As Double
-
-        With mCapillaryFlowParameters
-
-            dblRadius = .ColumnID / 2.0#
-
-            If Math.Abs(.SolventViscosity) > Single.Epsilon And Math.Abs(.ColumnLength) > Single.Epsilon Then
-                If .CapillaryType = ctCapillaryTypeConstants.ctOpenTubularCapillary Then
-                    ' Open tubular capillary
-                    dblVolFlowRate = (.BackPressure * dblRadius ^ 4 * PI) / (8 * .SolventViscosity * .ColumnLength) ' Flow rate in mL/sec
-                Else
-                    ' Packed capillary
-                    If Math.Abs(.InterparticlePorosity - 1) > Single.Epsilon Then
-                        ' Flow rate in mL/sec
-                        dblVolFlowRate = (.BackPressure * .ParticleDiameter ^ 2 * .InterparticlePorosity ^ 2 * PI * dblRadius ^ 2) * .InterparticlePorosity / (180 * .SolventViscosity * .ColumnLength * (1 - .InterparticlePorosity) ^ 2)
-                    Else
-                        dblVolFlowRate = 0
-                    End If
-                End If
-
-                ' Convert dblVolFlowRate to mL/min
-                dblVolFlowRate *= 60
-            Else
-                dblVolFlowRate = 0
-            End If
-
-            .VolumetricFlowRate = dblVolFlowRate
-        End With
-
-        ' Compute Dead Time (and Linear Velocity)
-        ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, False)
-
-        Return ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
-    End Function
-
-    ''' <summary>
-    ''' Computes the Volumetric flow rate using the dead time, stores in .VolumetricFlowRate, and returns it
-    ''' This requires modifying the pressure value to give the computed volumetric flow rate
-    ''' </summary>
-    ''' <param name="dblNewBackPressure">Output: new back pressure</param>
-    ''' <param name="eUnits"></param>
-    ''' <param name="ePressureUnits"></param>
-    ''' <returns></returns>
-    Public Function ComputeVolFlowRateUsingDeadTime(
-      <Out> Optional ByRef dblNewBackPressure As Double = 0,
-      Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin,
-      Optional ePressureUnits As uprUnitsPressureConstants = uprUnitsPressureConstants.uprPsi) As Double
-
-        Dim dblVolFlowRate, dblRadius As Double
-
-        With mCapillaryFlowParameters
-
-            dblRadius = .ColumnID / 2.0#
-
-            ' First find vol flow rate that gives observed dead time
-            If Math.Abs(.ColumnDeadTime) > Single.Epsilon Then
-
-                dblVolFlowRate = .ColumnLength * (PI * dblRadius ^ 2) / .ColumnDeadTime ' Vol flow rate in mL/sec
-
-                If .CapillaryType = ctCapillaryTypeConstants.ctPackedCapillary Then
-                    ' Packed Capillary
-                    dblVolFlowRate *= .InterparticlePorosity
-                End If
-
-                ' Store the new value
-                .VolumetricFlowRate = dblVolFlowRate
-
-                ' Now find pressure that gives computed dblVolFlowRate
-                ' The ComputeBackPressure sub will store the new pressure
-                dblNewBackPressure = ComputeBackPressure(ePressureUnits)
-            Else
-                dblVolFlowRate = 0
-                .VolumetricFlowRate = 0
-            End If
-
-        End With
-
-        ' Compute Linear Velocity (but not the dead time)
-        ComputeLinearVelocity(ulvUnitsLinearVelocityConstants.ulvCmPerSec, False)
-
-        Return ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
-    End Function
-
-    ''' <summary>
-    ''' Convert concentration
-    ''' </summary>
-    ''' <param name="dblConcentrationIn"></param>
-    ''' <param name="eCurrentUnits"></param>
-    ''' <param name="eNewUnits"></param>
-    ''' <returns></returns>
-    ''' <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
-    Public Function ConvertConcentration(dblConcentrationIn As Double, eCurrentUnits As ucoUnitsConcentrationConstants, eNewUnits As ucoUnitsConcentrationConstants) As Double
-        Dim dblValue, dblFactor As Double
-        Dim dblSampleMass As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblConcentrationIn
-        End If
-
-        dblSampleMass = mMassRateParameters.SampleMass
-
-        dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblConcentrationIn * dblFactor
-        End If
-
-        dblFactor = FactorConcentration(eNewUnits, dblSampleMass)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertDiffusionCoefficient(dblDiffusionCoefficientIn As Double, eCurrentUnits As udcDiffusionCoefficientConstants, eNewUnits As udcDiffusionCoefficientConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblDiffusionCoefficientIn
-        End If
-
-        dblFactor = FactorDiffusionCoeff(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblDiffusionCoefficientIn * dblFactor
-        End If
-
-        dblFactor = FactorDiffusionCoeff(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertLength(dblLengthIn As Double, eCurrentUnits As ulnUnitsLengthConstants, eNewUnits As ulnUnitsLengthConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblLengthIn
-        End If
-
-        dblFactor = FactorLength(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblLengthIn * dblFactor
-        End If
-
-        dblFactor = FactorLength(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertLinearVelocity(dblLinearVelocityIn As Double, eCurrentUnits As ulvUnitsLinearVelocityConstants, eNewUnits As ulvUnitsLinearVelocityConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblLinearVelocityIn
-        End If
-
-        dblFactor = FactorLinearVelocity(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblLinearVelocityIn * dblFactor
-        End If
-
-        dblFactor = FactorLinearVelocity(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertMassFlowRate(dblMassFlowRateIn As Double, eCurrentUnits As umfMassFlowRateConstants, eNewUnits As umfMassFlowRateConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblMassFlowRateIn
-        End If
-
-        dblFactor = FactorMassFlowRate(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblMassFlowRateIn * dblFactor
-        End If
-
-        dblFactor = FactorMassFlowRate(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertMoles(dblMolesIn As Double, eCurrentUnits As umaMolarAmountConstants, eNewUnits As umaMolarAmountConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblMolesIn
-        End If
-
-        dblFactor = FactorMoles(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblMolesIn * dblFactor
-        End If
-
-        dblFactor = FactorMoles(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertPressure(dblPressureIn As Double, eCurrentUnits As uprUnitsPressureConstants, eNewUnits As uprUnitsPressureConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblPressureIn
-        End If
-
-        dblFactor = FactorPressure(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblPressureIn * dblFactor
-        End If
-
-        dblFactor = FactorPressure(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertTemperature(dblTemperatureIn As Double, eCurrentUnits As utpUnitsTemperatureConstants, eNewUnits As utpUnitsTemperatureConstants) As Double
-        Dim dblValue As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblTemperatureIn
-        End If
-
-        ' First convert to Kelvin
-        Select Case eCurrentUnits
-            Case utpUnitsTemperatureConstants.utpCelsius
-                ' K = C + 273
-                dblValue = dblTemperatureIn + 273
-            Case utpUnitsTemperatureConstants.utpFahrenheit
-                ' Convert to Kelvin: C = 5/9*(F-32) and K = C + 273
-                dblValue = 5.0# / 9.0# * (dblTemperatureIn - 32) + 273
-            Case Else
-                ' Includes utpKelvin
-                ' Assume already Kelvin
-        End Select
-
-        ' We cannot get colder than absolute 0
-        If dblValue < 0 Then dblValue = 0
-
-        ' Now convert to the target units
-        Select Case eNewUnits
-            Case utpUnitsTemperatureConstants.utpCelsius
-                ' C = K - 273
-                dblValue -= 273
-            Case utpUnitsTemperatureConstants.utpFahrenheit
-                ' Convert to Fahrenheit: C = K - 273 and F = (9/5)C + 32
-                dblValue = 9.0# / 5.0# * (dblValue - 273) + 32
-            Case Else
-                ' Includes utpKelvin
-                ' Already in Kelvin
-        End Select
-
-        Return dblValue
-
-    End Function
-
-    Public Function ConvertTime(dblTimeIn As Double, eCurrentUnits As utmUnitsTimeConstants, eNewUnits As utmUnitsTimeConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblTimeIn
-        End If
-
-        dblFactor = FactorTime(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblTimeIn * dblFactor
-        End If
-
-        dblFactor = FactorTime(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertViscosity(dblViscosityIn As Double, eCurrentUnits As uviUnitsViscosityConstants, eNewUnits As uviUnitsViscosityConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblViscosityIn
-        End If
-
-        dblFactor = FactorViscosity(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblViscosityIn * dblFactor
-        End If
-
-        dblFactor = FactorViscosity(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertVolFlowRate(dblVolFlowRateIn As Double, eCurrentUnits As ufrUnitsFlowRateConstants, eNewUnits As ufrUnitsFlowRateConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblVolFlowRateIn
-        End If
-
-        dblFactor = FactorVolFlowRate(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblVolFlowRateIn * dblFactor
-        End If
-
-        dblFactor = FactorVolFlowRate(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    Public Function ConvertVolume(dblVolume As Double, eCurrentUnits As uvoUnitsVolumeConstants, eNewUnits As uvoUnitsVolumeConstants) As Double
-        Dim dblValue, dblFactor As Double
-
-        If eCurrentUnits = eNewUnits Then
-            Return dblVolume
-        End If
-
-        dblFactor = FactorVolume(eCurrentUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Then
-            Return -1
-        Else
-            dblValue = dblVolume * dblFactor
-        End If
-
-        dblFactor = FactorVolume(eNewUnits)
-        If Math.Abs(dblFactor + 1) < Single.Epsilon Or Math.Abs(dblFactor) < Single.Epsilon Then
-            Return -1
-        Else
-            Return dblValue / dblFactor
-        End If
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to M
-    ''' dblSampleMass is required for mass-based units
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <param name="dblSampleMass"></param>
-    ''' <returns></returns>
-    ''' <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
-    Private Function FactorConcentration(eUnits As ucoUnitsConcentrationConstants, Optional dblSampleMass As Double = 0) As Double
-        Dim dblFactor As Double
-
-        If Math.Abs(dblSampleMass) < Single.Epsilon Then
-            dblFactor = -1
-        Else
-            Select Case eUnits
-                Case ucoUnitsConcentrationConstants.ucoMolar : dblFactor = 1.0#
-                Case ucoUnitsConcentrationConstants.ucoMilliMolar : dblFactor = 1 / 1000.0#
-                Case ucoUnitsConcentrationConstants.ucoMicroMolar : dblFactor = 1 / 1000000.0#
-                Case ucoUnitsConcentrationConstants.ucoNanoMolar : dblFactor = 1 / 1000000000.0#
-                Case ucoUnitsConcentrationConstants.ucoPicoMolar : dblFactor = 1 / 1000000000000.0#
-                Case ucoUnitsConcentrationConstants.ucoFemtoMolar : dblFactor = 1 / 1.0E+15
-                Case ucoUnitsConcentrationConstants.ucoAttoMolar : dblFactor = 1 / 1.0E+18
-                Case ucoUnitsConcentrationConstants.ucoMgPerML : dblFactor = 1 / dblSampleMass '1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
-                Case ucoUnitsConcentrationConstants.ucoUgPerML : dblFactor = 1 / (dblSampleMass * 1000.0#) '1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                Case ucoUnitsConcentrationConstants.ucoNgPerML : dblFactor = 1 / (dblSampleMass * 1000000.0#) '1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
-                Case ucoUnitsConcentrationConstants.ucoUgPerUL : dblFactor = 1 / (dblSampleMass) '1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
-                Case ucoUnitsConcentrationConstants.ucoNgPerUL : dblFactor = 1 / (dblSampleMass * 1000.0#) '1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
-                Case Else : dblFactor = -1
-            End Select
-        End If
-
-        Return dblFactor
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to Cm
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorLength(eUnits As ulnUnitsLengthConstants) As Double
-
-        Select Case eUnits
-            Case ulnUnitsLengthConstants.ulnM : Return 100.0#
-            Case ulnUnitsLengthConstants.ulnCM : Return 1.0#
-            Case ulnUnitsLengthConstants.ulnMM : Return 1 / 10.0#
-            Case ulnUnitsLengthConstants.ulnMicrons : Return 1 / 10000.0#
-            Case ulnUnitsLengthConstants.ulnInches : Return CM_PER_INCH
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to Cm/Min
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorLinearVelocity(eUnits As ulvUnitsLinearVelocityConstants) As Double
-
-        Select Case eUnits
-            Case ulvUnitsLinearVelocityConstants.ulvCmPerHr : Return 1 / 60.0#
-            Case ulvUnitsLinearVelocityConstants.ulvMmPerHr : Return 1 / 60.0# / 10.0#
-            Case ulvUnitsLinearVelocityConstants.ulvCmPerMin : Return 1
-            Case ulvUnitsLinearVelocityConstants.ulvMmPerMin : Return 1 / 10.0#
-            Case ulvUnitsLinearVelocityConstants.ulvCmPerSec : Return 60.0#
-            Case ulvUnitsLinearVelocityConstants.ulvMmPerSec : Return 60.0# / 10.0#
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to moles/min
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorMassFlowRate(eUnits As umfMassFlowRateConstants) As Double
-
-        Select Case eUnits
-            Case umfMassFlowRateConstants.umfPmolPerMin : Return 1 / 1000000000000.0#
-            Case umfMassFlowRateConstants.umfFmolPerMin : Return 1 / 1.0E+15
-            Case umfMassFlowRateConstants.umfAmolPerMin : Return 1 / 1.0E+18
-            Case umfMassFlowRateConstants.umfPmolPerSec : Return 1 / (1000000000000.0# / 60.0#)
-            Case umfMassFlowRateConstants.umfFmolPerSec : Return 1 / (1.0E+15 / 60.0#)
-            Case umfMassFlowRateConstants.umfAmolPerSec : Return 1 / (1.0E+18 / 60.0#)
-            Case umfMassFlowRateConstants.umfMolesPerMin : Return 1.0#
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to moles
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorMoles(eUnits As umaMolarAmountConstants) As Double
-
-        Select Case eUnits
-            Case umaMolarAmountConstants.umaMoles : Return 1.0#
-            Case umaMolarAmountConstants.umaMilliMoles : Return 1 / 1000.0#
-            Case umaMolarAmountConstants.umaMicroMoles : Return 1 / 1000000.0#
-            Case umaMolarAmountConstants.umaNanoMoles : Return 1 / 1000000000.0#
-            Case umaMolarAmountConstants.umaPicoMoles : Return 1 / 1000000000000.0#
-            Case umaMolarAmountConstants.umaFemtoMoles : Return 1 / 1.0E+15
-            Case umaMolarAmountConstants.umaAttoMoles : Return 1 / 1.0E+18
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to dynes per cm^2
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorPressure(eUnits As uprUnitsPressureConstants) As Double
-
-        Select Case eUnits
-            Case uprUnitsPressureConstants.uprPsi : Return 68947.57
-            Case uprUnitsPressureConstants.uprPascals : Return 10.0#
-            Case uprUnitsPressureConstants.uprKiloPascals : Return 10000.0#
-            Case uprUnitsPressureConstants.uprAtmospheres : Return 1013250.0#
-            Case uprUnitsPressureConstants.uprBar : Return 1000000.0#
-            Case uprUnitsPressureConstants.uprTorr : Return 1333.22
-            Case uprUnitsPressureConstants.uprDynesPerSquareCm : Return 1
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to minutes
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorTime(eUnits As utmUnitsTimeConstants) As Double
-
-        Select Case eUnits
-            Case utmUnitsTimeConstants.utmHours : Return 60.0#
-            Case utmUnitsTimeConstants.utmMinutes : Return 1.0#
-            Case utmUnitsTimeConstants.utmSeconds : Return 1 / 60.0#
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to cm^2/sec
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorDiffusionCoeff(eUnits As udcDiffusionCoefficientConstants) As Double
-
-        Select Case eUnits
-            Case udcDiffusionCoefficientConstants.udcCmSquaredPerHr : Return 1 / 3600.0#
-            Case udcDiffusionCoefficientConstants.udcCmSquaredPerMin : Return 1 / 60.0#
-            Case udcDiffusionCoefficientConstants.udcCmSquaredPerSec : Return 1.0#
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to poise
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorViscosity(eUnits As uviUnitsViscosityConstants) As Double
-
-        Select Case eUnits
-            Case uviUnitsViscosityConstants.uviPoise : Return 1.0#
-            Case uviUnitsViscosityConstants.uviCentiPoise : Return 1 / 100.0#
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to mL/min
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorVolFlowRate(eUnits As ufrUnitsFlowRateConstants) As Double
-
-        Select Case eUnits
-            Case ufrUnitsFlowRateConstants.ufrMLPerMin : FactorVolFlowRate = 1.0#
-            Case ufrUnitsFlowRateConstants.ufrULPerMin : FactorVolFlowRate = 1 / 1000.0#
-            Case ufrUnitsFlowRateConstants.ufrNLPerMin : FactorVolFlowRate = 1 / 1000000.0#
-            Case Else : FactorVolFlowRate = -1
-        End Select
-
-    End Function
-
-    ''' <summary>
-    ''' Multiplication factor for converting from eUnits to mL
-    ''' </summary>
-    ''' <param name="eUnits"></param>
-    ''' <returns></returns>
-    Private Function FactorVolume(eUnits As uvoUnitsVolumeConstants) As Double
-
-        Select Case eUnits
-            Case uvoUnitsVolumeConstants.uvoML : Return 1.0#
-            Case uvoUnitsVolumeConstants.uvoUL : Return 1 / 1000.0#
-            Case uvoUnitsVolumeConstants.uvoNL : Return 1 / 1000000.0#
-            Case uvoUnitsVolumeConstants.uvoPL : Return 1 / 1000000000.0#
-            Case Else : Return -1
-        End Select
-
-    End Function
-
-    ' Get Methods
-    ' Gets the most recently computed value
-    ' If mAutoCompute = False, then must manually call a Compute Sub to recompute the value
-
-    Public Function GetAutoComputeEnabled() As Boolean
-        Return mAutoCompute
-    End Function
-
-    Public Function GetAutoComputeMode() As acmAutoComputeModeConstants
-        Return mAutoComputeMode
-    End Function
-
-    Public Function GetBackPressure(Optional eUnits As uprUnitsPressureConstants = uprUnitsPressureConstants.uprPsi) As Double
-        Return ConvertPressure(mCapillaryFlowParameters.BackPressure, uprUnitsPressureConstants.uprDynesPerSquareCm, eUnits)
-    End Function
-
-    Public Function GetCapillaryType() As ctCapillaryTypeConstants
-        Return mCapillaryFlowParameters.CapillaryType
-    End Function
-
-    Public Function GetColumnID(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
-        Return ConvertLength(mCapillaryFlowParameters.ColumnID, ulnUnitsLengthConstants.ulnCM, eUnits)
-    End Function
-
-    Public Function GetColumnLength(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM) As Double
-        Return ConvertLength(mCapillaryFlowParameters.ColumnLength, ulnUnitsLengthConstants.ulnCM, eUnits)
-    End Function
-
-    Public Function GetColumnVolume(Optional eUnits As uvoUnitsVolumeConstants = uvoUnitsVolumeConstants.uvoUL) As Double
-        ' Column volume isn't stored; simply re-compute it
-        Return ComputeColumnVolume(eUnits)
-    End Function
-
-    Public Function GetDeadTime(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes) As Double
-        Return ConvertTime(mCapillaryFlowParameters.ColumnDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits)
-    End Function
-
-    Public Function GetExtraColumnBroadeningAdditionalVarianceInSquareSeconds() As Double
-        Return mExtraColumnBroadeningParameters.AdditionalTemporalVariance
-    End Function
-
-    Public Function GetExtraColumnBroadeningDiffusionCoefficient(Optional eUnits As udcDiffusionCoefficientConstants = udcDiffusionCoefficientConstants.udcCmSquaredPerSec) As Double
-        Return ConvertDiffusionCoefficient(mExtraColumnBroadeningParameters.DiffusionCoefficient, udcDiffusionCoefficientConstants.udcCmSquaredPerSec, eUnits)
-    End Function
-
-    Public Function GetExtraColumnBroadeningInitialPeakWidthAtBase(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds) As Double
-        Return ConvertTime(mExtraColumnBroadeningParameters.InitialPeakWidth, utmUnitsTimeConstants.utmSeconds, eUnits)
-    End Function
-
-    Public Function GetExtraColumnBroadeningLinearVelocity(Optional eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvMmPerMin) As Double
-        Return ConvertLinearVelocity(mExtraColumnBroadeningParameters.LinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
-    End Function
-
-    Public Function GetExtraColumnBroadeningOpenTubeID(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
-        Return ConvertLength(mExtraColumnBroadeningParameters.OpenTubeID, ulnUnitsLengthConstants.ulnCM, eUnits)
-    End Function
-
-    Public Function GetExtraColumnBroadeningOpenTubeLength(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM) As Double
-        Return ConvertLength(mExtraColumnBroadeningParameters.OpenTubeLength, ulnUnitsLengthConstants.ulnCM, eUnits)
-    End Function
-
-    Public Function GetExtraColumnBroadeningResultantPeakWidth(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds) As Double
-        Return ConvertTime(mExtraColumnBroadeningParameters.ResultantPeakWidth, utmUnitsTimeConstants.utmSeconds, eUnits)
-    End Function
-
-    Public Function GetExtraColumnBroadeningTemporalVarianceInSquareSeconds() As Double
-        Return mExtraColumnBroadeningParameters.TemporalVariance
-    End Function
-
-    Public Function GetInterparticlePorosity() As Double
-        Return mCapillaryFlowParameters.InterparticlePorosity
-    End Function
-
-    Public Function GetLinearVelocity(Optional eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvCmPerSec) As Double
-        Return ConvertLinearVelocity(mCapillaryFlowParameters.LinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits)
-    End Function
-
-    Public Function GetMassRateConcentration(Optional eUnits As ucoUnitsConcentrationConstants = ucoUnitsConcentrationConstants.ucoMicroMolar) As Double
-        Return ConvertConcentration(mMassRateParameters.SampleConcentration, ucoUnitsConcentrationConstants.ucoMolar, eUnits)
-    End Function
-
-    Public Function GetMassRateInjectionTime(Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes) As Double
-        Return ConvertTime(mMassRateParameters.InjectionTime, utmUnitsTimeConstants.utmMinutes, eUnits)
-    End Function
-
-    Public Function GetMassFlowRate(Optional eUnits As umfMassFlowRateConstants = umfMassFlowRateConstants.umfFmolPerSec) As Double
-        Return ConvertMassFlowRate(mMassRateParameters.MassFlowRate, umfMassFlowRateConstants.umfMolesPerMin, eUnits)
-    End Function
-
-    Public Function GetMassRateMolesInjected(Optional eUnits As umaMolarAmountConstants = umaMolarAmountConstants.umaFemtoMoles) As Double
-        Return ConvertMoles(mMassRateParameters.MolesInjected, umaMolarAmountConstants.umaMoles, eUnits)
-    End Function
-
-    Public Function GetMassRateSampleMass() As Double
-        Return mMassRateParameters.SampleMass
-    End Function
-
-    Public Function GetMassRateVolFlowRate(Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin) As Double
-        Return ConvertVolFlowRate(mMassRateParameters.VolumetricFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
-    End Function
-
-    Public Function GetParticleDiameter(Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons) As Double
-        Return ConvertLength(mCapillaryFlowParameters.ParticleDiameter, ulnUnitsLengthConstants.ulnCM, eUnits)
-    End Function
-
-    Public Function GetSolventViscosity(Optional eUnits As uviUnitsViscosityConstants = uviUnitsViscosityConstants.uviPoise) As Double
-        Return ConvertViscosity(mCapillaryFlowParameters.SolventViscosity, uviUnitsViscosityConstants.uviPoise, eUnits)
-    End Function
-
-    Public Function GetVolFlowRate(Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin) As Double
-        Return ConvertVolFlowRate(mCapillaryFlowParameters.VolumetricFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits)
-    End Function
-
-
-    ' Set Methods
-    ' If mAutoCompute = False, then must manually call a Compute Sub to recompute other values
-
-    Public Sub SetAutoComputeEnabled(blnAutoCompute As Boolean)
-        mAutoCompute = blnAutoCompute
-    End Sub
-
-    Public Sub SetAutoComputeMode(eAutoComputeMode As acmAutoComputeModeConstants)
-        If eAutoComputeMode >= acmAutoComputeModeConstants.acmBackPressure And eAutoComputeMode <= acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime Then
-            mAutoComputeMode = eAutoComputeMode
-        End If
-    End Sub
-
-    Public Sub SetBackPressure(dblBackPressure As Double, Optional eUnits As uprUnitsPressureConstants = uprUnitsPressureConstants.uprPsi)
-        mCapillaryFlowParameters.BackPressure = ConvertPressure(dblBackPressure, eUnits, uprUnitsPressureConstants.uprDynesPerSquareCm)
-        CheckAutoCompute()
-    End Sub
-
-    Public Sub SetCapillaryType(eCapillaryType As ctCapillaryTypeConstants)
-        If eCapillaryType >= ctCapillaryTypeConstants.ctOpenTubularCapillary And eCapillaryType <= ctCapillaryTypeConstants.ctPackedCapillary Then
-            mCapillaryFlowParameters.CapillaryType = eCapillaryType
-        End If
-        CheckAutoCompute()
-    End Sub
-
-    Public Sub SetColumnID(dblColumnID As Double, Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons)
-        mCapillaryFlowParameters.ColumnID = ConvertLength(dblColumnID, eUnits, ulnUnitsLengthConstants.ulnCM)
-        CheckAutoCompute()
-    End Sub
-
-    Public Sub SetColumnLength(dblColumnLength As Double, Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM)
-        mCapillaryFlowParameters.ColumnLength = ConvertLength(dblColumnLength, eUnits, ulnUnitsLengthConstants.ulnCM)
-        CheckAutoCompute()
-    End Sub
-
-    Public Sub SetDeadTime(dblDeadTime As Double, Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes)
-        mCapillaryFlowParameters.ColumnDeadTime = ConvertTime(dblDeadTime, eUnits, utmUnitsTimeConstants.utmMinutes)
-        CheckAutoCompute()
-    End Sub
-
-    Public Sub SetExtraColumnBroadeningAdditionalVariance(dblAdditionalVarianceInSquareSeconds As Double)
-        mExtraColumnBroadeningParameters.AdditionalTemporalVariance = dblAdditionalVarianceInSquareSeconds
-        ComputeExtraColumnBroadeningValues()
-    End Sub
-
-    Public Sub SetExtraColumnBroadeningDiffusionCoefficient(dblDiffusionCoefficient As Double, Optional eUnits As udcDiffusionCoefficientConstants = udcDiffusionCoefficientConstants.udcCmSquaredPerSec)
-        mExtraColumnBroadeningParameters.DiffusionCoefficient = ConvertDiffusionCoefficient(dblDiffusionCoefficient, eUnits, udcDiffusionCoefficientConstants.udcCmSquaredPerSec)
-        ComputeExtraColumnBroadeningValues()
-    End Sub
-
-    Public Sub SetExtraColumnBroadeningInitialPeakWidthAtBase(dblWidth As Double, Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmSeconds)
-        mExtraColumnBroadeningParameters.InitialPeakWidth = ConvertTime(dblWidth, eUnits, utmUnitsTimeConstants.utmSeconds)
-        ComputeExtraColumnBroadeningValues()
-    End Sub
-
-    Public Sub SetExtraColumnBroadeningLinearVelocity(dblLinearVelocity As Double, Optional eUnits As ulvUnitsLinearVelocityConstants = ulvUnitsLinearVelocityConstants.ulvMmPerMin)
-        mExtraColumnBroadeningParameters.LinearVelocity = ConvertLinearVelocity(dblLinearVelocity, eUnits, ulvUnitsLinearVelocityConstants.ulvCmPerMin)
-        ComputeExtraColumnBroadeningValues()
-    End Sub
-
-    Public Sub SetExtraColumnBroadeningOpenTubeID(dblOpenTubeID As Double, Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons)
-        mExtraColumnBroadeningParameters.OpenTubeID = ConvertLength(dblOpenTubeID, eUnits, ulnUnitsLengthConstants.ulnCM)
-        ComputeExtraColumnBroadeningValues()
-    End Sub
-
-    Public Sub SetExtraColumnBroadeningOpenTubeLength(dblLength As Double, Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnCM)
-        mExtraColumnBroadeningParameters.OpenTubeLength = ConvertLength(dblLength, eUnits, ulnUnitsLengthConstants.ulnCM)
-        ComputeExtraColumnBroadeningValues()
-    End Sub
-
-    Public Sub SetInterparticlePorosity(dblPorosity As Double)
-        If dblPorosity >= 0 And dblPorosity <= 1 Then
-            mCapillaryFlowParameters.InterparticlePorosity = dblPorosity
-        End If
-        CheckAutoCompute()
-    End Sub
-
-    Public Sub SetMassRateConcentration(dblConcentration As Double, Optional eUnits As ucoUnitsConcentrationConstants = ucoUnitsConcentrationConstants.ucoMicroMolar)
-        mMassRateParameters.SampleConcentration = ConvertConcentration(dblConcentration, eUnits, ucoUnitsConcentrationConstants.ucoMolar)
-        ComputeMassRateValues()
-    End Sub
-
-    Public Sub SetMassRateInjectionTime(dblInjectionTime As Double, Optional eUnits As utmUnitsTimeConstants = utmUnitsTimeConstants.utmMinutes)
-        mMassRateParameters.InjectionTime = ConvertTime(dblInjectionTime, eUnits, utmUnitsTimeConstants.utmMinutes)
-        ComputeMassRateValues()
-    End Sub
-
-    Public Sub SetMassRateSampleMass(dblMassInGramsPerMole As Double)
-        If dblMassInGramsPerMole >= 0 Then
-            mMassRateParameters.SampleMass = dblMassInGramsPerMole
-        Else
-            mMassRateParameters.SampleMass = 0
-        End If
-        ComputeMassRateValues()
-    End Sub
-
-    Public Sub SetMassRateVolFlowRate(dblVolFlowRate As Double, Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin)
-        mMassRateParameters.VolumetricFlowRate = ConvertVolFlowRate(dblVolFlowRate, eUnits, ufrUnitsFlowRateConstants.ufrMLPerMin)
-        ComputeMassRateValues()
-    End Sub
-
-    Public Sub SetParticleDiameter(dblParticleDiameter As Double, Optional eUnits As ulnUnitsLengthConstants = ulnUnitsLengthConstants.ulnMicrons)
-        mCapillaryFlowParameters.ParticleDiameter = ConvertLength(dblParticleDiameter, eUnits, ulnUnitsLengthConstants.ulnCM)
-        CheckAutoCompute()
-    End Sub
-
-    Public Sub SetSolventViscosity(dblSolventViscosity As Double, Optional eUnits As uviUnitsViscosityConstants = uviUnitsViscosityConstants.uviPoise)
-        mCapillaryFlowParameters.SolventViscosity = ConvertViscosity(dblSolventViscosity, eUnits, uviUnitsViscosityConstants.uviPoise)
-        CheckAutoCompute()
-    End Sub
-
-    Public Sub SetVolFlowRate(dblVolFlowRate As Double, Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin)
-        mCapillaryFlowParameters.VolumetricFlowRate = ConvertVolFlowRate(dblVolFlowRate, eUnits, ufrUnitsFlowRateConstants.ufrMLPerMin)
-        CheckAutoCompute()
-    End Sub
-
-    Private Sub InitializeClass()
-        Me.SetAutoComputeEnabled(False)
-
-        Me.SetAutoComputeMode(acmAutoComputeModeConstants.acmVolFlowRate)
-        Me.SetCapillaryType(ctCapillaryTypeConstants.ctPackedCapillary)
-        Me.SetBackPressure(3000, uprUnitsPressureConstants.uprPsi)
-        Me.SetColumnLength(50, ulnUnitsLengthConstants.ulnCM)
-        Me.SetColumnID(75, ulnUnitsLengthConstants.ulnMicrons)
-        Me.SetSolventViscosity(0.0089, uviUnitsViscosityConstants.uviPoise)
-        Me.SetParticleDiameter(5, ulnUnitsLengthConstants.ulnMicrons)
-        Me.SetInterparticlePorosity(0.4)
-
-        Me.SetMassRateConcentration(1, ucoUnitsConcentrationConstants.ucoMicroMolar)
-        Me.SetMassRateVolFlowRate(600, ufrUnitsFlowRateConstants.ufrNLPerMin)
-        Me.SetMassRateInjectionTime(5, utmUnitsTimeConstants.utmMinutes)
-
-        ' Recompute
-        ComputeVolFlowRate()
-        ComputeMassRateValues()
-        ComputeExtraColumnBroadeningValues()
-
-        Me.SetAutoComputeEnabled(True)
-
-    End Sub
-
-End Class
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace MwtWinDll
+{
+    public class CapillaryFlow
+    {
+
+        // Molecular Weight Calculator routines with ActiveX Class interfaces: CapillaryFlow
+
+        // -------------------------------------------------------------------------------
+        // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
+        // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
+        // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
+        // -------------------------------------------------------------------------------
+        //
+        // Licensed under the Apache License, Version 2.0; you may not use this file except
+        // in compliance with the License.  You may obtain a copy of the License at
+        // http://www.apache.org/licenses/LICENSE-2.0
+        //
+        // Notice: This computer software was prepared by Battelle Memorial Institute,
+        // hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
+        // Department of Energy (DOE).  All rights in the computer software are reserved
+        // by DOE on behalf of the United States Government and the Contractor as
+        // provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
+        // WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
+        // SOFTWARE.  This notice including this sentence must appear on any copies of
+        // this computer software.
+
+        public CapillaryFlow() : base()
+        {
+            InitializeClass();
+        }
+
+        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        public enum ctCapillaryTypeConstants
+        {
+            ctOpenTubularCapillary = 0,
+            ctPackedCapillary
+        }
+
+        public enum uprUnitsPressureConstants
+        {
+            uprPsi = 0,
+            uprPascals,
+            uprKiloPascals,
+            uprAtmospheres,
+            uprBar,
+            uprTorr,
+            uprDynesPerSquareCm
+        }
+
+        public enum ulnUnitsLengthConstants
+        {
+            ulnM = 0,
+            ulnCM,
+            ulnMM,
+            ulnMicrons,
+            ulnInches
+        }
+
+        public enum uviUnitsViscosityConstants
+        {
+            uviPoise = 0,
+            uviCentiPoise
+        }
+
+        public enum ufrUnitsFlowRateConstants
+        {
+            ufrMLPerMin = 0,
+            ufrULPerMin,
+            ufrNLPerMin
+        }
+
+        public enum ulvUnitsLinearVelocityConstants
+        {
+            ulvCmPerHr = 0,
+            ulvMmPerHr,
+            ulvCmPerMin,
+            ulvMmPerMin,
+            ulvCmPerSec,
+            ulvMmPerSec
+        }
+
+        public enum utmUnitsTimeConstants
+        {
+            utmHours = 0,
+            utmMinutes,
+            utmSeconds
+        }
+
+        public enum uvoUnitsVolumeConstants
+        {
+            uvoML = 0,
+            uvoUL,
+            uvoNL,
+            uvoPL
+        }
+
+        public enum ucoUnitsConcentrationConstants
+        {
+            ucoMolar = 0,
+            ucoMilliMolar,
+            ucoMicroMolar,
+            ucoNanoMolar,
+            ucoPicoMolar,
+            ucoFemtoMolar,
+            ucoAttoMolar,
+            ucoMgPerML,
+            ucoUgPerML,
+            ucoNgPerML,
+            ucoUgPerUL,
+            ucoNgPerUL
+        }
+
+        public enum utpUnitsTemperatureConstants
+        {
+            utpCelsius = 0,
+            utpKelvin,
+            utpFahrenheit
+        }
+
+        public enum umfMassFlowRateConstants
+        {
+            umfPmolPerMin = 0,
+            umfFmolPerMin,
+            umfAmolPerMin,
+            umfPmolPerSec,
+            umfFmolPerSec,
+            umfAmolPerSec,
+            umfMolesPerMin
+        }
+
+        public enum umaMolarAmountConstants
+        {
+            umaMoles = 0,
+            umaMilliMoles,
+            umaMicroMoles,
+            umaNanoMoles,
+            umaPicoMoles,
+            umaFemtoMoles,
+            umaAttoMoles
+        }
+
+        public enum udcDiffusionCoefficientConstants
+        {
+            udcCmSquaredPerHr = 0,
+            udcCmSquaredPerMin,
+            udcCmSquaredPerSec
+        }
+
+        public enum acmAutoComputeModeConstants
+        {
+            acmBackPressure = 0,
+            acmColumnID,
+            acmColumnLength,
+            acmDeadTime,
+            acmLinearVelocity,
+            acmVolFlowRate,
+            acmVolFlowRateUsingDeadTime
+        }
+
+        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        private class udtCapillaryFlowParametersType
+        {
+            public ctCapillaryTypeConstants CapillaryType;
+
+            /// <summary>
+        /// Units: dynes/cm^2
+        /// </summary>
+            public double BackPressure;
+
+            /// <summary>
+        /// Units: cm
+        /// </summary>
+            public double ColumnLength;
+
+            /// <summary>
+        /// Units: cm
+        /// </summary>
+            public double ColumnID;
+
+            /// <summary>
+        /// Units: poise
+        /// </summary>
+            public double SolventViscosity;
+
+            /// <summary>
+        /// Units: cm
+        /// </summary>
+            public double ParticleDiameter;
+
+            /// <summary>
+        /// Units: mL/min
+        /// </summary>
+            public double VolumetricFlowRate;
+
+            /// <summary>
+        /// Units: cm/min
+        /// </summary>
+            public double LinearVelocity;
+
+            /// <summary>
+        /// Units: min
+        /// </summary>
+            public double ColumnDeadTime;
+            public double InterparticlePorosity;
+        }
+
+        private class udtMassRateParametersType
+        {
+            /// <summary>
+        /// Units: Molar
+        /// </summary>
+            public double SampleConcentration;
+
+            /// <summary>
+        /// Units: g/mole
+        /// </summary>
+            public double SampleMass;
+
+            /// <summary>
+        /// Units: mL/min
+        /// </summary>
+            public double VolumetricFlowRate;
+
+            /// <summary>
+        /// Units: min
+        /// </summary>
+            public double InjectionTime;
+
+            /// <summary>
+        /// Units: Moles/min
+        /// </summary>
+            public double MassFlowRate;
+
+            /// <summary>
+        /// Units: moles
+        /// </summary>
+            public double MolesInjected;
+        }
+
+        private class udtExtraColumnBroadeningParametersType
+        {
+
+            /// <summary>
+        /// Units: cm/min
+        /// </summary>
+            public double LinearVelocity;
+
+            /// <summary>
+        /// Units: cm^2/sec
+        /// </summary>
+            public double DiffusionCoefficient;
+
+            /// <summary>
+        /// Units: cm
+        /// </summary>
+            public double OpenTubeLength;
+
+            /// <summary>
+        /// Units: cm
+        /// </summary>
+            public double OpenTubeID;
+
+            /// <summary>
+        /// Units: sec
+        /// </summary>
+            public double InitialPeakWidth;
+
+            /// <summary>
+        /// Units: sec^2
+        /// </summary>
+            public double TemporalVariance;
+
+            /// <summary>
+        /// Units: sec^2
+        /// </summary>
+            public double AdditionalTemporalVariance;
+
+            /// <summary>
+        /// Units: sec
+        /// </summary>
+            public double ResultantPeakWidth;
+        }
+
+        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+
+        // Conversion Factors
+        private const float CM_PER_INCH = 2.54f;
+        private const double PI = 3.14159265359d;
+        private udtCapillaryFlowParametersType mCapillaryFlowParameters = new udtCapillaryFlowParametersType();
+        private udtMassRateParametersType mMassRateParameters = new udtMassRateParametersType();
+        private udtExtraColumnBroadeningParametersType mExtraColumnBroadeningParameters = new udtExtraColumnBroadeningParametersType();
+
+        /// <summary>
+    /// When true, automatically compute results whenever any value changes
+    /// </summary>
+        private bool mAutoCompute;
+
+        /// <summary>
+    /// The value to compute when mAutoCompute is true
+    /// </summary>
+        private acmAutoComputeModeConstants mAutoComputeMode;
+
+        private void CheckAutoCompute()
+        {
+            if (mAutoCompute)
+            {
+                switch (mAutoComputeMode)
+                {
+                    case acmAutoComputeModeConstants.acmBackPressure:
+                        {
+                            ComputeBackPressure();
+                            break;
+                        }
+
+                    case acmAutoComputeModeConstants.acmColumnID:
+                        {
+                            ComputeColumnID();
+                            break;
+                        }
+
+                    case acmAutoComputeModeConstants.acmColumnLength:
+                        {
+                            ComputeColumnLength();
+                            break;
+                        }
+
+                    case acmAutoComputeModeConstants.acmDeadTime:
+                        {
+                            ComputeDeadTime();
+                            break;
+                        }
+
+                    case acmAutoComputeModeConstants.acmLinearVelocity:
+                        {
+                            ComputeLinearVelocity();
+                            break;
+                        }
+
+                    case acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime:
+                        {
+                            double argdblNewBackPressure = 0d;
+                            this.ComputeVolFlowRateUsingDeadTime(dblNewBackPressure: ref argdblNewBackPressure);
+                            break;
+                        }
+
+                    default:
+                        {
+                            // Includes acmVolFlowRate
+                            ComputeVolFlowRate();
+                            break;
+                        }
+                }
+            }
+        }
+
+        /// <summary>
+    /// Computes the back pressure, stores in .BackPressure, and returns it
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        public double ComputeBackPressure(uprUnitsPressureConstants eUnits = uprUnitsPressureConstants.uprPsi)
+        {
+            double dblBackPressure, dblRadius;
+            {
+                var withBlock = mCapillaryFlowParameters;
+                dblRadius = withBlock.ColumnID / 2.0d;
+                if (Math.Abs(dblRadius) > float.Epsilon)
+                {
+                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
+                    {
+                        // Open tubular capillary
+                        dblBackPressure = withBlock.VolumetricFlowRate * 8d * withBlock.SolventViscosity * withBlock.ColumnLength / (Math.Pow(dblRadius, 4d) * PI * 60d); // Pressure in dynes/cm^2
+                    }
+                    // Packed capillary
+                    else if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon & Math.Abs(withBlock.InterparticlePorosity) > float.Epsilon)
+                    {
+                        // Flow rate in mL/sec
+                        dblBackPressure = withBlock.VolumetricFlowRate * 180d * withBlock.SolventViscosity * withBlock.ColumnLength * Math.Pow(1d - withBlock.InterparticlePorosity, 2d) / (Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * 60d) / withBlock.InterparticlePorosity;
+                    }
+                    else
+                    {
+                        dblBackPressure = 0d;
+                    }
+                }
+                else
+                {
+                    dblBackPressure = 0d;
+                }
+
+                withBlock.BackPressure = dblBackPressure;
+            }
+
+            // Compute Dead Time (and Linear Velocity)
+            // Must send false for RecalculateVolFlowRate since we're finding the back pressure, not volumetric flow rate
+            ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, false);
+
+            // Return Back Pressure
+            return ConvertPressure(dblBackPressure, uprUnitsPressureConstants.uprDynesPerSquareCm, eUnits);
+        }
+
+        /// <summary>
+    /// Computes the column length, stores in .ColumnLength, and returns it
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        public double ComputeColumnLength(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
+        {
+            double dblColumnLength, dblRadius;
+            {
+                var withBlock = mCapillaryFlowParameters;
+                dblRadius = withBlock.ColumnID / 2.0d;
+                if (Math.Abs(withBlock.SolventViscosity) > float.Epsilon & Math.Abs(withBlock.VolumetricFlowRate) > float.Epsilon)
+                {
+                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
+                    {
+                        // Open tubular capillary
+                        dblColumnLength = withBlock.BackPressure * Math.Pow(dblRadius, 4d) * PI * 60d / (8d * withBlock.SolventViscosity * withBlock.VolumetricFlowRate); // Column length in cm
+                    }
+                    // Packed capillary
+                    else if (Math.Abs(withBlock.InterparticlePorosity - 1d) > float.Epsilon)
+                    {
+                        // Flow rate in mL/sec
+                        dblColumnLength = withBlock.BackPressure * Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * 60d * withBlock.InterparticlePorosity / (180d * withBlock.SolventViscosity * withBlock.VolumetricFlowRate * Math.Pow(1d - withBlock.InterparticlePorosity, 2d));
+                    }
+                    else
+                    {
+                        dblColumnLength = 0d;
+                    }
+                }
+                else
+                {
+                    dblColumnLength = 0d;
+                }
+
+                withBlock.ColumnLength = dblColumnLength;
+            }
+
+            // Compute Dead Time (and Linear Velocity)
+            ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, true);
+
+            // Return Column Length
+            return ConvertLength(dblColumnLength, ulnUnitsLengthConstants.ulnCM, eUnits);
+        }
+
+        public double ComputeColumnVolume(uvoUnitsVolumeConstants eUnits = 0)
+        {
+            // Computes the column volume and returns it (does not store it)
+
+            double dblColumnVolume, dblRadius;
+            {
+                var withBlock = mCapillaryFlowParameters;
+                dblRadius = withBlock.ColumnID / 2.0d;
+                dblColumnVolume = withBlock.ColumnLength * PI * Math.Pow(dblRadius, 2d); // In mL
+                if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
+                {
+                    dblColumnVolume *= withBlock.InterparticlePorosity;
+                }
+            }
+
+            return ConvertVolume(dblColumnVolume, uvoUnitsVolumeConstants.uvoML, eUnits);
+        }
+
+        /// <summary>
+    /// Computes the column length, stores in .ColumnLength, and returns it
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        public double ComputeColumnID(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
+        {
+            double dblRadius;
+            {
+                var withBlock = mCapillaryFlowParameters;
+                if (Math.Abs(withBlock.BackPressure) > float.Epsilon)
+                {
+                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
+                    {
+                        // Open tubular capillary
+                        dblRadius = Math.Pow(withBlock.VolumetricFlowRate * 8d * withBlock.SolventViscosity * withBlock.ColumnLength / (withBlock.BackPressure * PI * 60d), 0.25d);
+                    }
+                    // Packed capillary
+                    else if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon & Math.Abs(withBlock.InterparticlePorosity - 1d) > float.Epsilon)
+                    {
+                        // Flow rate in mL/sec
+                        dblRadius = Math.Pow(withBlock.VolumetricFlowRate * 180d * withBlock.SolventViscosity * withBlock.ColumnLength * Math.Pow(1d - withBlock.InterparticlePorosity, 2d) / (withBlock.BackPressure * Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * 60d) / withBlock.InterparticlePorosity, 0.5d);
+                    }
+                    else
+                    {
+                        dblRadius = 0d;
+                    }
+                }
+                else
+                {
+                    dblRadius = 0d;
+                }
+
+                withBlock.ColumnID = dblRadius * 2.0d;
+            }
+
+            // Compute Dead Time (and Linear Velocity)
+            ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, true);
+
+            // Return Column ID
+            return ConvertLength(dblRadius * 2.0d, ulnUnitsLengthConstants.ulnCM, eUnits);
+        }
+
+        /// <summary>
+    /// Computes the column dead time, stores in .ColumnDeadTime, and returns it
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <param name="blnRecalculateVolFlowRate"></param>
+    /// <returns></returns>
+        public double ComputeDeadTime(utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmMinutes, bool blnRecalculateVolFlowRate = true)
+        {
+            double dblDeadTime;
+
+            // Dead time is dependent on Linear Velocity, so compute
+            ComputeLinearVelocity(ulvUnitsLinearVelocityConstants.ulvCmPerSec, blnRecalculateVolFlowRate);
+            {
+                var withBlock = mCapillaryFlowParameters;
+                if (Math.Abs(withBlock.LinearVelocity) > float.Epsilon)
+                {
+                    dblDeadTime = withBlock.ColumnLength / withBlock.LinearVelocity; // Dead time in minutes
+                }
+                else
+                {
+                    dblDeadTime = 0d;
+                }
+
+                withBlock.ColumnDeadTime = dblDeadTime;
+            }
+
+            // Return Dead Time
+            return ConvertTime(dblDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits);
+        }
+
+        public double ComputeExtraColumnBroadeningResultantPeakWidth(utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmSeconds)
+        {
+            ComputeExtraColumnBroadeningValues();
+            return GetExtraColumnBroadeningResultantPeakWidth(eUnits);
+        }
+
+        private void ComputeExtraColumnBroadeningValues()
+        {
+            double dblInitialPeakVariance;
+            double dblSumOfVariances;
+            {
+                var withBlock = mExtraColumnBroadeningParameters;
+                if (Math.Abs(withBlock.LinearVelocity) > float.Epsilon & Math.Abs(withBlock.DiffusionCoefficient) > float.Epsilon)
+                {
+                    withBlock.TemporalVariance = Math.Pow(withBlock.OpenTubeID, 2d) * withBlock.OpenTubeLength / (96d * withBlock.DiffusionCoefficient * withBlock.LinearVelocity / 60d); // in sec^2
+                }
+                else
+                {
+                    withBlock.TemporalVariance = 0d;
+                }
+
+                dblInitialPeakVariance = Math.Pow(withBlock.InitialPeakWidth / 4d, 2d);
+                dblSumOfVariances = dblInitialPeakVariance + withBlock.TemporalVariance + withBlock.AdditionalTemporalVariance;
+                if (dblSumOfVariances >= 0d)
+                {
+                    // ResultantPeakWidth at the base = 4 sigma  and  sigma = Sqr(Total_Variance)
+                    withBlock.ResultantPeakWidth = 4d * Math.Sqrt(dblSumOfVariances);
+                }
+                else
+                {
+                    withBlock.ResultantPeakWidth = 0d;
+                }
+            }
+        }
+
+        /// <summary>
+    /// Computes the Linear velocity, stores in .LinearVelocity, and returns it
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <param name="blnRecalculateVolFlowRate"></param>
+    /// <returns></returns>
+        public double ComputeLinearVelocity(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec, bool blnRecalculateVolFlowRate = true)
+        {
+            double dblLinearVelocity, dblRadius;
+            if (blnRecalculateVolFlowRate)
+            {
+                ComputeVolFlowRate(ufrUnitsFlowRateConstants.ufrMLPerMin);
+            }
+
+            {
+                var withBlock = mCapillaryFlowParameters;
+                dblRadius = withBlock.ColumnID / 2.0d;
+                if (Math.Abs(dblRadius) > float.Epsilon)
+                {
+                    dblLinearVelocity = withBlock.VolumetricFlowRate / (PI * Math.Pow(dblRadius, 2d)); // Units in cm/min
+
+                    // Divide Linear Velocity by epsilon if a packed capillary
+                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary & Math.Abs(withBlock.InterparticlePorosity) > float.Epsilon)
+                    {
+                        dblLinearVelocity /= withBlock.InterparticlePorosity;
+                    }
+                }
+                else
+                {
+                    dblLinearVelocity = 0d;
+                }
+
+                withBlock.LinearVelocity = dblLinearVelocity;
+            }
+
+            // Return Linear Velocity
+            return ConvertLinearVelocity(dblLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits);
+        }
+
+        /// <summary>
+    /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        public double ComputeMassFlowRate(umfMassFlowRateConstants eUnits = umfMassFlowRateConstants.umfFmolPerSec)
+        {
+            ComputeMassRateValues();
+            return GetMassFlowRate(eUnits);
+        }
+
+        /// <summary>
+    /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        public double ComputeMassRateMolesInjected(umaMolarAmountConstants eUnits = umaMolarAmountConstants.umaFemtoMoles)
+        {
+            ComputeMassRateValues();
+            return GetMassRateMolesInjected(eUnits);
+        }
+
+        private void ComputeMassRateValues()
+        {
+            {
+                var withBlock = mMassRateParameters;
+                withBlock.MassFlowRate = withBlock.SampleConcentration * withBlock.VolumetricFlowRate / 1000d; // Compute mass flow rate in moles/min
+                withBlock.MolesInjected = withBlock.MassFlowRate * withBlock.InjectionTime; // Compute moles injected in moles
+            }
+        }
+
+        /// <summary>
+    /// Computes the optimum linear velocity, based on
+    /// mCapillaryFlowParameters.ParticleDiameter
+    /// and mExtraColumnBroadeningParameters.DiffusionCoefficient
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        public double ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec)
+        {
+            var dblOptimumLinearVelocity = default(double);
+            {
+                var withBlock = mCapillaryFlowParameters;
+                if (Math.Abs(withBlock.ParticleDiameter) > float.Epsilon)
+                {
+                    dblOptimumLinearVelocity = 3d * mExtraColumnBroadeningParameters.DiffusionCoefficient / withBlock.ParticleDiameter;
+                    dblOptimumLinearVelocity = ConvertLinearVelocity(dblOptimumLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerSec, eUnits);
+                }
+            }
+
+            return dblOptimumLinearVelocity;
+        }
+
+        public double ComputeMeCNViscosity(double dblPercentAcetonitrile, double dblTemperature, utpUnitsTemperatureConstants eTemperatureUnits = utpUnitsTemperatureConstants.utpCelsius, uviUnitsViscosityConstants eViscosityUnits = uviUnitsViscosityConstants.uviPoise)
+        {
+            double dblPhi; // Fraction Acetonitrile
+            double dblKelvin;
+            double dblViscosityInCentiPoise;
+            try
+            {
+                dblPhi = dblPercentAcetonitrile / 100.0d;
+                if (dblPhi < 0d)
+                    dblPhi = 0d;
+                if (dblPhi > 100d)
+                    dblPhi = 100d;
+                dblKelvin = ConvertTemperature(dblTemperature, eTemperatureUnits, utpUnitsTemperatureConstants.utpKelvin);
+                if (dblKelvin > 0d)
+                {
+                    dblViscosityInCentiPoise = Math.Exp(dblPhi * (-3.476d + 726d / dblKelvin) + (1d - dblPhi) * (-5.414d + 1566d / dblKelvin) + dblPhi * (1d - dblPhi) * (-1.762d + 929d / dblKelvin));
+                }
+                else
+                {
+                    dblViscosityInCentiPoise = 0d;
+                }
+
+                return ConvertViscosity(dblViscosityInCentiPoise, uviUnitsViscosityConstants.uviCentiPoise, eViscosityUnits);
+            }
+            catch (Exception ex)
+            {
+                return 0d;
+            }
+        }
+
+        /// <summary>
+    /// Computes the Volumetric flow rate, stores in .VolumetricFlowRate, and returns it
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        public double ComputeVolFlowRate(ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
+        {
+            double dblVolFlowRate, dblRadius;
+            {
+                var withBlock = mCapillaryFlowParameters;
+                dblRadius = withBlock.ColumnID / 2.0d;
+                if (Math.Abs(withBlock.SolventViscosity) > float.Epsilon & Math.Abs(withBlock.ColumnLength) > float.Epsilon)
+                {
+                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
+                    {
+                        // Open tubular capillary
+                        dblVolFlowRate = withBlock.BackPressure * Math.Pow(dblRadius, 4d) * PI / (8d * withBlock.SolventViscosity * withBlock.ColumnLength); // Flow rate in mL/sec
+                    }
+                    // Packed capillary
+                    else if (Math.Abs(withBlock.InterparticlePorosity - 1d) > float.Epsilon)
+                    {
+                        // Flow rate in mL/sec
+                        dblVolFlowRate = withBlock.BackPressure * Math.Pow(withBlock.ParticleDiameter, 2d) * Math.Pow(withBlock.InterparticlePorosity, 2d) * PI * Math.Pow(dblRadius, 2d) * withBlock.InterparticlePorosity / (180d * withBlock.SolventViscosity * withBlock.ColumnLength * Math.Pow(1d - withBlock.InterparticlePorosity, 2d));
+                    }
+                    else
+                    {
+                        dblVolFlowRate = 0d;
+                    }
+
+                    // Convert dblVolFlowRate to mL/min
+                    dblVolFlowRate *= 60d;
+                }
+                else
+                {
+                    dblVolFlowRate = 0d;
+                }
+
+                withBlock.VolumetricFlowRate = dblVolFlowRate;
+            }
+
+            // Compute Dead Time (and Linear Velocity)
+            ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, false);
+            return ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits);
+        }
+
+        /// <summary>
+    /// Computes the Volumetric flow rate using the dead time, stores in .VolumetricFlowRate, and returns it
+    /// This requires modifying the pressure value to give the computed volumetric flow rate
+    /// </summary>
+    /// <param name="dblNewBackPressure">Output: new back pressure</param>
+    /// <param name="eUnits"></param>
+    /// <param name="ePressureUnits"></param>
+    /// <returns></returns>
+        public double ComputeVolFlowRateUsingDeadTime([Optional, DefaultParameterValue(0d)] out double dblNewBackPressure, ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin, uprUnitsPressureConstants ePressureUnits = uprUnitsPressureConstants.uprPsi)
+        {
+            double dblVolFlowRate, dblRadius;
+            {
+                var withBlock = mCapillaryFlowParameters;
+                dblRadius = withBlock.ColumnID / 2.0d;
+
+                // First find vol flow rate that gives observed dead time
+                if (Math.Abs(withBlock.ColumnDeadTime) > float.Epsilon)
+                {
+                    dblVolFlowRate = withBlock.ColumnLength * (PI * Math.Pow(dblRadius, 2d)) / withBlock.ColumnDeadTime; // Vol flow rate in mL/sec
+                    if (withBlock.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
+                    {
+                        // Packed Capillary
+                        dblVolFlowRate *= withBlock.InterparticlePorosity;
+                    }
+
+                    // Store the new value
+                    withBlock.VolumetricFlowRate = dblVolFlowRate;
+
+                    // Now find pressure that gives computed dblVolFlowRate
+                    // The ComputeBackPressure sub will store the new pressure
+                    dblNewBackPressure = ComputeBackPressure(ePressureUnits);
+                }
+                else
+                {
+                    dblVolFlowRate = 0d;
+                    withBlock.VolumetricFlowRate = 0d;
+                }
+            }
+
+            // Compute Linear Velocity (but not the dead time)
+            ComputeLinearVelocity(ulvUnitsLinearVelocityConstants.ulvCmPerSec, false);
+            return ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits);
+        }
+
+        /// <summary>
+    /// Convert concentration
+    /// </summary>
+    /// <param name="dblConcentrationIn"></param>
+    /// <param name="eCurrentUnits"></param>
+    /// <param name="eNewUnits"></param>
+    /// <returns></returns>
+    /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
+        public double ConvertConcentration(double dblConcentrationIn, ucoUnitsConcentrationConstants eCurrentUnits, ucoUnitsConcentrationConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            double dblSampleMass;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblConcentrationIn;
+            }
+
+            dblSampleMass = mMassRateParameters.SampleMass;
+            dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblConcentrationIn * dblFactor;
+            }
+
+            dblFactor = FactorConcentration(eNewUnits, dblSampleMass);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertDiffusionCoefficient(double dblDiffusionCoefficientIn, udcDiffusionCoefficientConstants eCurrentUnits, udcDiffusionCoefficientConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblDiffusionCoefficientIn;
+            }
+
+            dblFactor = FactorDiffusionCoeff(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblDiffusionCoefficientIn * dblFactor;
+            }
+
+            dblFactor = FactorDiffusionCoeff(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertLength(double dblLengthIn, ulnUnitsLengthConstants eCurrentUnits, ulnUnitsLengthConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblLengthIn;
+            }
+
+            dblFactor = FactorLength(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblLengthIn * dblFactor;
+            }
+
+            dblFactor = FactorLength(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertLinearVelocity(double dblLinearVelocityIn, ulvUnitsLinearVelocityConstants eCurrentUnits, ulvUnitsLinearVelocityConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblLinearVelocityIn;
+            }
+
+            dblFactor = FactorLinearVelocity(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblLinearVelocityIn * dblFactor;
+            }
+
+            dblFactor = FactorLinearVelocity(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertMassFlowRate(double dblMassFlowRateIn, umfMassFlowRateConstants eCurrentUnits, umfMassFlowRateConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblMassFlowRateIn;
+            }
+
+            dblFactor = FactorMassFlowRate(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblMassFlowRateIn * dblFactor;
+            }
+
+            dblFactor = FactorMassFlowRate(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertMoles(double dblMolesIn, umaMolarAmountConstants eCurrentUnits, umaMolarAmountConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblMolesIn;
+            }
+
+            dblFactor = FactorMoles(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblMolesIn * dblFactor;
+            }
+
+            dblFactor = FactorMoles(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertPressure(double dblPressureIn, uprUnitsPressureConstants eCurrentUnits, uprUnitsPressureConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblPressureIn;
+            }
+
+            dblFactor = FactorPressure(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblPressureIn * dblFactor;
+            }
+
+            dblFactor = FactorPressure(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertTemperature(double dblTemperatureIn, utpUnitsTemperatureConstants eCurrentUnits, utpUnitsTemperatureConstants eNewUnits)
+        {
+            var dblValue = default(double);
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblTemperatureIn;
+            }
+
+            // First convert to Kelvin
+            switch (eCurrentUnits)
+            {
+                case utpUnitsTemperatureConstants.utpCelsius:
+                    {
+                        // K = C + 273
+                        dblValue = dblTemperatureIn + 273d;
+                        break;
+                    }
+
+                case utpUnitsTemperatureConstants.utpFahrenheit:
+                    {
+                        // Convert to Kelvin: C = 5/9*(F-32) and K = C + 273
+                        dblValue = 5.0d / 9.0d * (dblTemperatureIn - 32d) + 273d;
+                        break;
+                    }
+
+                default:
+                    {
+                        break;
+                    }
+                    // Includes utpKelvin
+                    // Assume already Kelvin
+            }
+
+            // We cannot get colder than absolute 0
+            if (dblValue < 0d)
+                dblValue = 0d;
+
+            // Now convert to the target units
+            switch (eNewUnits)
+            {
+                case utpUnitsTemperatureConstants.utpCelsius:
+                    {
+                        // C = K - 273
+                        dblValue -= 273d;
+                        break;
+                    }
+
+                case utpUnitsTemperatureConstants.utpFahrenheit:
+                    {
+                        // Convert to Fahrenheit: C = K - 273 and F = (9/5)C + 32
+                        dblValue = 9.0d / 5.0d * (dblValue - 273d) + 32d;
+                        break;
+                    }
+
+                default:
+                    {
+                        break;
+                    }
+                    // Includes utpKelvin
+                    // Already in Kelvin
+            }
+
+            return dblValue;
+        }
+
+        public double ConvertTime(double dblTimeIn, utmUnitsTimeConstants eCurrentUnits, utmUnitsTimeConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblTimeIn;
+            }
+
+            dblFactor = FactorTime(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblTimeIn * dblFactor;
+            }
+
+            dblFactor = FactorTime(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertViscosity(double dblViscosityIn, uviUnitsViscosityConstants eCurrentUnits, uviUnitsViscosityConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblViscosityIn;
+            }
+
+            dblFactor = FactorViscosity(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblViscosityIn * dblFactor;
+            }
+
+            dblFactor = FactorViscosity(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertVolFlowRate(double dblVolFlowRateIn, ufrUnitsFlowRateConstants eCurrentUnits, ufrUnitsFlowRateConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblVolFlowRateIn;
+            }
+
+            dblFactor = FactorVolFlowRate(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblVolFlowRateIn * dblFactor;
+            }
+
+            dblFactor = FactorVolFlowRate(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        public double ConvertVolume(double dblVolume, uvoUnitsVolumeConstants eCurrentUnits, uvoUnitsVolumeConstants eNewUnits)
+        {
+            double dblValue, dblFactor;
+            if (eCurrentUnits == eNewUnits)
+            {
+                return dblVolume;
+            }
+
+            dblFactor = FactorVolume(eCurrentUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                dblValue = dblVolume * dblFactor;
+            }
+
+            dblFactor = FactorVolume(eNewUnits);
+            if (Math.Abs(dblFactor + 1d) < float.Epsilon | Math.Abs(dblFactor) < float.Epsilon)
+            {
+                return -1;
+            }
+            else
+            {
+                return dblValue / dblFactor;
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to M
+    /// dblSampleMass is required for mass-based units
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <param name="dblSampleMass"></param>
+    /// <returns></returns>
+    /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
+        private double FactorConcentration(ucoUnitsConcentrationConstants eUnits, double dblSampleMass = 0d)
+        {
+            double dblFactor;
+            if (Math.Abs(dblSampleMass) < float.Epsilon)
+            {
+                dblFactor = -1;
+            }
+            else
+            {
+                switch (eUnits)
+                {
+                    case ucoUnitsConcentrationConstants.ucoMolar:
+                        {
+                            dblFactor = 1.0d;
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoMilliMolar:
+                        {
+                            dblFactor = 1d / 1000.0d;
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoMicroMolar:
+                        {
+                            dblFactor = 1d / 1000000.0d;
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoNanoMolar:
+                        {
+                            dblFactor = 1d / 1000000000.0d;
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoPicoMolar:
+                        {
+                            dblFactor = 1d / 1000000000000.0d;
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoFemtoMolar:
+                        {
+                            dblFactor = 1d / 1.0E+15d;
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoAttoMolar:
+                        {
+                            dblFactor = 1d / 1.0E+18d;
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoMgPerML:
+                        {
+                            dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoUgPerML:
+                        {
+                            dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoNgPerML:
+                        {
+                            dblFactor = 1d / (dblSampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoUgPerUL:
+                        {
+                            dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                            break;
+                        }
+
+                    case ucoUnitsConcentrationConstants.ucoNgPerUL:
+                        {
+                            dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                            break;
+                        }
+
+                    default:
+                        {
+                            dblFactor = -1;
+                            break;
+                        }
+                }
+            }
+
+            return dblFactor;
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to Cm
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorLength(ulnUnitsLengthConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case ulnUnitsLengthConstants.ulnM:
+                    {
+                        return 100.0d;
+                    }
+
+                case ulnUnitsLengthConstants.ulnCM:
+                    {
+                        return 1.0d;
+                    }
+
+                case ulnUnitsLengthConstants.ulnMM:
+                    {
+                        return 1d / 10.0d;
+                    }
+
+                case ulnUnitsLengthConstants.ulnMicrons:
+                    {
+                        return 1d / 10000.0d;
+                    }
+
+                case ulnUnitsLengthConstants.ulnInches:
+                    {
+                        return CM_PER_INCH;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to Cm/Min
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorLinearVelocity(ulvUnitsLinearVelocityConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case ulvUnitsLinearVelocityConstants.ulvCmPerHr:
+                    {
+                        return 1d / 60.0d;
+                    }
+
+                case ulvUnitsLinearVelocityConstants.ulvMmPerHr:
+                    {
+                        return 1d / 60.0d / 10.0d;
+                    }
+
+                case ulvUnitsLinearVelocityConstants.ulvCmPerMin:
+                    {
+                        return 1d;
+                    }
+
+                case ulvUnitsLinearVelocityConstants.ulvMmPerMin:
+                    {
+                        return 1d / 10.0d;
+                    }
+
+                case ulvUnitsLinearVelocityConstants.ulvCmPerSec:
+                    {
+                        return 60.0d;
+                    }
+
+                case ulvUnitsLinearVelocityConstants.ulvMmPerSec:
+                    {
+                        return 60.0d / 10.0d;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to moles/min
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorMassFlowRate(umfMassFlowRateConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case umfMassFlowRateConstants.umfPmolPerMin:
+                    {
+                        return 1d / 1000000000000.0d;
+                    }
+
+                case umfMassFlowRateConstants.umfFmolPerMin:
+                    {
+                        return 1d / 1.0E+15d;
+                    }
+
+                case umfMassFlowRateConstants.umfAmolPerMin:
+                    {
+                        return 1d / 1.0E+18d;
+                    }
+
+                case umfMassFlowRateConstants.umfPmolPerSec:
+                    {
+                        return 1d / (1000000000000.0d / 60.0d);
+                    }
+
+                case umfMassFlowRateConstants.umfFmolPerSec:
+                    {
+                        return 1d / (1.0E+15d / 60.0d);
+                    }
+
+                case umfMassFlowRateConstants.umfAmolPerSec:
+                    {
+                        return 1d / (1.0E+18d / 60.0d);
+                    }
+
+                case umfMassFlowRateConstants.umfMolesPerMin:
+                    {
+                        return 1.0d;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to moles
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorMoles(umaMolarAmountConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case umaMolarAmountConstants.umaMoles:
+                    {
+                        return 1.0d;
+                    }
+
+                case umaMolarAmountConstants.umaMilliMoles:
+                    {
+                        return 1d / 1000.0d;
+                    }
+
+                case umaMolarAmountConstants.umaMicroMoles:
+                    {
+                        return 1d / 1000000.0d;
+                    }
+
+                case umaMolarAmountConstants.umaNanoMoles:
+                    {
+                        return 1d / 1000000000.0d;
+                    }
+
+                case umaMolarAmountConstants.umaPicoMoles:
+                    {
+                        return 1d / 1000000000000.0d;
+                    }
+
+                case umaMolarAmountConstants.umaFemtoMoles:
+                    {
+                        return 1d / 1.0E+15d;
+                    }
+
+                case umaMolarAmountConstants.umaAttoMoles:
+                    {
+                        return 1d / 1.0E+18d;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to dynes per cm^2
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorPressure(uprUnitsPressureConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case uprUnitsPressureConstants.uprPsi:
+                    {
+                        return 68947.57d;
+                    }
+
+                case uprUnitsPressureConstants.uprPascals:
+                    {
+                        return 10.0d;
+                    }
+
+                case uprUnitsPressureConstants.uprKiloPascals:
+                    {
+                        return 10000.0d;
+                    }
+
+                case uprUnitsPressureConstants.uprAtmospheres:
+                    {
+                        return 1013250.0d;
+                    }
+
+                case uprUnitsPressureConstants.uprBar:
+                    {
+                        return 1000000.0d;
+                    }
+
+                case uprUnitsPressureConstants.uprTorr:
+                    {
+                        return 1333.22d;
+                    }
+
+                case uprUnitsPressureConstants.uprDynesPerSquareCm:
+                    {
+                        return 1d;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to minutes
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorTime(utmUnitsTimeConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case utmUnitsTimeConstants.utmHours:
+                    {
+                        return 60.0d;
+                    }
+
+                case utmUnitsTimeConstants.utmMinutes:
+                    {
+                        return 1.0d;
+                    }
+
+                case utmUnitsTimeConstants.utmSeconds:
+                    {
+                        return 1d / 60.0d;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to cm^2/sec
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorDiffusionCoeff(udcDiffusionCoefficientConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case udcDiffusionCoefficientConstants.udcCmSquaredPerHr:
+                    {
+                        return 1d / 3600.0d;
+                    }
+
+                case udcDiffusionCoefficientConstants.udcCmSquaredPerMin:
+                    {
+                        return 1d / 60.0d;
+                    }
+
+                case udcDiffusionCoefficientConstants.udcCmSquaredPerSec:
+                    {
+                        return 1.0d;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to poise
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorViscosity(uviUnitsViscosityConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case uviUnitsViscosityConstants.uviPoise:
+                    {
+                        return 1.0d;
+                    }
+
+                case uviUnitsViscosityConstants.uviCentiPoise:
+                    {
+                        return 1d / 100.0d;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to mL/min
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorVolFlowRate(ufrUnitsFlowRateConstants eUnits)
+        {
+            double FactorVolFlowRateRet = default;
+            switch (eUnits)
+            {
+                case ufrUnitsFlowRateConstants.ufrMLPerMin:
+                    {
+                        FactorVolFlowRateRet = 1.0d;
+                        break;
+                    }
+
+                case ufrUnitsFlowRateConstants.ufrULPerMin:
+                    {
+                        FactorVolFlowRateRet = 1d / 1000.0d;
+                        break;
+                    }
+
+                case ufrUnitsFlowRateConstants.ufrNLPerMin:
+                    {
+                        FactorVolFlowRateRet = 1d / 1000000.0d;
+                        break;
+                    }
+
+                default:
+                    {
+                        FactorVolFlowRateRet = -1;
+                        break;
+                    }
+            }
+
+            return FactorVolFlowRateRet;
+        }
+
+        /// <summary>
+    /// Multiplication factor for converting from eUnits to mL
+    /// </summary>
+    /// <param name="eUnits"></param>
+    /// <returns></returns>
+        private double FactorVolume(uvoUnitsVolumeConstants eUnits)
+        {
+            switch (eUnits)
+            {
+                case uvoUnitsVolumeConstants.uvoML:
+                    {
+                        return 1.0d;
+                    }
+
+                case uvoUnitsVolumeConstants.uvoUL:
+                    {
+                        return 1d / 1000.0d;
+                    }
+
+                case uvoUnitsVolumeConstants.uvoNL:
+                    {
+                        return 1d / 1000000.0d;
+                    }
+
+                case uvoUnitsVolumeConstants.uvoPL:
+                    {
+                        return 1d / 1000000000.0d;
+                    }
+
+                default:
+                    {
+                        return -1;
+                    }
+            }
+        }
+
+        // Get Methods
+        // Gets the most recently computed value
+        // If mAutoCompute = False, then must manually call a Compute Sub to recompute the value
+
+        public bool GetAutoComputeEnabled()
+        {
+            return mAutoCompute;
+        }
+
+        public acmAutoComputeModeConstants GetAutoComputeMode()
+        {
+            return mAutoComputeMode;
+        }
+
+        public double GetBackPressure(uprUnitsPressureConstants eUnits = uprUnitsPressureConstants.uprPsi)
+        {
+            return ConvertPressure(mCapillaryFlowParameters.BackPressure, uprUnitsPressureConstants.uprDynesPerSquareCm, eUnits);
+        }
+
+        public ctCapillaryTypeConstants GetCapillaryType()
+        {
+            return mCapillaryFlowParameters.CapillaryType;
+        }
+
+        public double GetColumnID(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
+        {
+            return ConvertLength(mCapillaryFlowParameters.ColumnID, ulnUnitsLengthConstants.ulnCM, eUnits);
+        }
+
+        public double GetColumnLength(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
+        {
+            return ConvertLength(mCapillaryFlowParameters.ColumnLength, ulnUnitsLengthConstants.ulnCM, eUnits);
+        }
+
+        public double GetColumnVolume(uvoUnitsVolumeConstants eUnits = uvoUnitsVolumeConstants.uvoUL)
+        {
+            // Column volume isn't stored; simply re-compute it
+            return ComputeColumnVolume(eUnits);
+        }
+
+        public double GetDeadTime(utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmMinutes)
+        {
+            return ConvertTime(mCapillaryFlowParameters.ColumnDeadTime, utmUnitsTimeConstants.utmMinutes, eUnits);
+        }
+
+        public double GetExtraColumnBroadeningAdditionalVarianceInSquareSeconds()
+        {
+            return mExtraColumnBroadeningParameters.AdditionalTemporalVariance;
+        }
+
+        public double GetExtraColumnBroadeningDiffusionCoefficient(udcDiffusionCoefficientConstants eUnits = udcDiffusionCoefficientConstants.udcCmSquaredPerSec)
+        {
+            return ConvertDiffusionCoefficient(mExtraColumnBroadeningParameters.DiffusionCoefficient, udcDiffusionCoefficientConstants.udcCmSquaredPerSec, eUnits);
+        }
+
+        public double GetExtraColumnBroadeningInitialPeakWidthAtBase(utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmSeconds)
+        {
+            return ConvertTime(mExtraColumnBroadeningParameters.InitialPeakWidth, utmUnitsTimeConstants.utmSeconds, eUnits);
+        }
+
+        public double GetExtraColumnBroadeningLinearVelocity(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvMmPerMin)
+        {
+            return ConvertLinearVelocity(mExtraColumnBroadeningParameters.LinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits);
+        }
+
+        public double GetExtraColumnBroadeningOpenTubeID(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
+        {
+            return ConvertLength(mExtraColumnBroadeningParameters.OpenTubeID, ulnUnitsLengthConstants.ulnCM, eUnits);
+        }
+
+        public double GetExtraColumnBroadeningOpenTubeLength(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
+        {
+            return ConvertLength(mExtraColumnBroadeningParameters.OpenTubeLength, ulnUnitsLengthConstants.ulnCM, eUnits);
+        }
+
+        public double GetExtraColumnBroadeningResultantPeakWidth(utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmSeconds)
+        {
+            return ConvertTime(mExtraColumnBroadeningParameters.ResultantPeakWidth, utmUnitsTimeConstants.utmSeconds, eUnits);
+        }
+
+        public double GetExtraColumnBroadeningTemporalVarianceInSquareSeconds()
+        {
+            return mExtraColumnBroadeningParameters.TemporalVariance;
+        }
+
+        public double GetInterparticlePorosity()
+        {
+            return mCapillaryFlowParameters.InterparticlePorosity;
+        }
+
+        public double GetLinearVelocity(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec)
+        {
+            return ConvertLinearVelocity(mCapillaryFlowParameters.LinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerMin, eUnits);
+        }
+
+        public double GetMassRateConcentration(ucoUnitsConcentrationConstants eUnits = ucoUnitsConcentrationConstants.ucoMicroMolar)
+        {
+            return ConvertConcentration(mMassRateParameters.SampleConcentration, ucoUnitsConcentrationConstants.ucoMolar, eUnits);
+        }
+
+        public double GetMassRateInjectionTime(utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmMinutes)
+        {
+            return ConvertTime(mMassRateParameters.InjectionTime, utmUnitsTimeConstants.utmMinutes, eUnits);
+        }
+
+        public double GetMassFlowRate(umfMassFlowRateConstants eUnits = umfMassFlowRateConstants.umfFmolPerSec)
+        {
+            return ConvertMassFlowRate(mMassRateParameters.MassFlowRate, umfMassFlowRateConstants.umfMolesPerMin, eUnits);
+        }
+
+        public double GetMassRateMolesInjected(umaMolarAmountConstants eUnits = umaMolarAmountConstants.umaFemtoMoles)
+        {
+            return ConvertMoles(mMassRateParameters.MolesInjected, umaMolarAmountConstants.umaMoles, eUnits);
+        }
+
+        public double GetMassRateSampleMass()
+        {
+            return mMassRateParameters.SampleMass;
+        }
+
+        public double GetMassRateVolFlowRate(ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
+        {
+            return ConvertVolFlowRate(mMassRateParameters.VolumetricFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits);
+        }
+
+        public double GetParticleDiameter(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
+        {
+            return ConvertLength(mCapillaryFlowParameters.ParticleDiameter, ulnUnitsLengthConstants.ulnCM, eUnits);
+        }
+
+        public double GetSolventViscosity(uviUnitsViscosityConstants eUnits = uviUnitsViscosityConstants.uviPoise)
+        {
+            return ConvertViscosity(mCapillaryFlowParameters.SolventViscosity, uviUnitsViscosityConstants.uviPoise, eUnits);
+        }
+
+        public double GetVolFlowRate(ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
+        {
+            return ConvertVolFlowRate(mCapillaryFlowParameters.VolumetricFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits);
+        }
+
+
+        // Set Methods
+        // If mAutoCompute = False, then must manually call a Compute Sub to recompute other values
+
+        public void SetAutoComputeEnabled(bool blnAutoCompute)
+        {
+            mAutoCompute = blnAutoCompute;
+        }
+
+        public void SetAutoComputeMode(acmAutoComputeModeConstants eAutoComputeMode)
+        {
+            if (eAutoComputeMode >= acmAutoComputeModeConstants.acmBackPressure & eAutoComputeMode <= acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime)
+            {
+                mAutoComputeMode = eAutoComputeMode;
+            }
+        }
+
+        public void SetBackPressure(double dblBackPressure, uprUnitsPressureConstants eUnits = uprUnitsPressureConstants.uprPsi)
+        {
+            mCapillaryFlowParameters.BackPressure = ConvertPressure(dblBackPressure, eUnits, uprUnitsPressureConstants.uprDynesPerSquareCm);
+            CheckAutoCompute();
+        }
+
+        public void SetCapillaryType(ctCapillaryTypeConstants eCapillaryType)
+        {
+            if (eCapillaryType >= ctCapillaryTypeConstants.ctOpenTubularCapillary & eCapillaryType <= ctCapillaryTypeConstants.ctPackedCapillary)
+            {
+                mCapillaryFlowParameters.CapillaryType = eCapillaryType;
+            }
+
+            CheckAutoCompute();
+        }
+
+        public void SetColumnID(double dblColumnID, ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
+        {
+            mCapillaryFlowParameters.ColumnID = ConvertLength(dblColumnID, eUnits, ulnUnitsLengthConstants.ulnCM);
+            CheckAutoCompute();
+        }
+
+        public void SetColumnLength(double dblColumnLength, ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
+        {
+            mCapillaryFlowParameters.ColumnLength = ConvertLength(dblColumnLength, eUnits, ulnUnitsLengthConstants.ulnCM);
+            CheckAutoCompute();
+        }
+
+        public void SetDeadTime(double dblDeadTime, utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmMinutes)
+        {
+            mCapillaryFlowParameters.ColumnDeadTime = ConvertTime(dblDeadTime, eUnits, utmUnitsTimeConstants.utmMinutes);
+            CheckAutoCompute();
+        }
+
+        public void SetExtraColumnBroadeningAdditionalVariance(double dblAdditionalVarianceInSquareSeconds)
+        {
+            mExtraColumnBroadeningParameters.AdditionalTemporalVariance = dblAdditionalVarianceInSquareSeconds;
+            ComputeExtraColumnBroadeningValues();
+        }
+
+        public void SetExtraColumnBroadeningDiffusionCoefficient(double dblDiffusionCoefficient, udcDiffusionCoefficientConstants eUnits = udcDiffusionCoefficientConstants.udcCmSquaredPerSec)
+        {
+            mExtraColumnBroadeningParameters.DiffusionCoefficient = ConvertDiffusionCoefficient(dblDiffusionCoefficient, eUnits, udcDiffusionCoefficientConstants.udcCmSquaredPerSec);
+            ComputeExtraColumnBroadeningValues();
+        }
+
+        public void SetExtraColumnBroadeningInitialPeakWidthAtBase(double dblWidth, utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmSeconds)
+        {
+            mExtraColumnBroadeningParameters.InitialPeakWidth = ConvertTime(dblWidth, eUnits, utmUnitsTimeConstants.utmSeconds);
+            ComputeExtraColumnBroadeningValues();
+        }
+
+        public void SetExtraColumnBroadeningLinearVelocity(double dblLinearVelocity, ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvMmPerMin)
+        {
+            mExtraColumnBroadeningParameters.LinearVelocity = ConvertLinearVelocity(dblLinearVelocity, eUnits, ulvUnitsLinearVelocityConstants.ulvCmPerMin);
+            ComputeExtraColumnBroadeningValues();
+        }
+
+        public void SetExtraColumnBroadeningOpenTubeID(double dblOpenTubeID, ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
+        {
+            mExtraColumnBroadeningParameters.OpenTubeID = ConvertLength(dblOpenTubeID, eUnits, ulnUnitsLengthConstants.ulnCM);
+            ComputeExtraColumnBroadeningValues();
+        }
+
+        public void SetExtraColumnBroadeningOpenTubeLength(double dblLength, ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
+        {
+            mExtraColumnBroadeningParameters.OpenTubeLength = ConvertLength(dblLength, eUnits, ulnUnitsLengthConstants.ulnCM);
+            ComputeExtraColumnBroadeningValues();
+        }
+
+        public void SetInterparticlePorosity(double dblPorosity)
+        {
+            if (dblPorosity >= 0d & dblPorosity <= 1d)
+            {
+                mCapillaryFlowParameters.InterparticlePorosity = dblPorosity;
+            }
+
+            CheckAutoCompute();
+        }
+
+        public void SetMassRateConcentration(double dblConcentration, ucoUnitsConcentrationConstants eUnits = ucoUnitsConcentrationConstants.ucoMicroMolar)
+        {
+            mMassRateParameters.SampleConcentration = ConvertConcentration(dblConcentration, eUnits, ucoUnitsConcentrationConstants.ucoMolar);
+            ComputeMassRateValues();
+        }
+
+        public void SetMassRateInjectionTime(double dblInjectionTime, utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmMinutes)
+        {
+            mMassRateParameters.InjectionTime = ConvertTime(dblInjectionTime, eUnits, utmUnitsTimeConstants.utmMinutes);
+            ComputeMassRateValues();
+        }
+
+        public void SetMassRateSampleMass(double dblMassInGramsPerMole)
+        {
+            if (dblMassInGramsPerMole >= 0d)
+            {
+                mMassRateParameters.SampleMass = dblMassInGramsPerMole;
+            }
+            else
+            {
+                mMassRateParameters.SampleMass = 0d;
+            }
+
+            ComputeMassRateValues();
+        }
+
+        public void SetMassRateVolFlowRate(double dblVolFlowRate, ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
+        {
+            mMassRateParameters.VolumetricFlowRate = ConvertVolFlowRate(dblVolFlowRate, eUnits, ufrUnitsFlowRateConstants.ufrMLPerMin);
+            ComputeMassRateValues();
+        }
+
+        public void SetParticleDiameter(double dblParticleDiameter, ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
+        {
+            mCapillaryFlowParameters.ParticleDiameter = ConvertLength(dblParticleDiameter, eUnits, ulnUnitsLengthConstants.ulnCM);
+            CheckAutoCompute();
+        }
+
+        public void SetSolventViscosity(double dblSolventViscosity, uviUnitsViscosityConstants eUnits = uviUnitsViscosityConstants.uviPoise)
+        {
+            mCapillaryFlowParameters.SolventViscosity = ConvertViscosity(dblSolventViscosity, eUnits, uviUnitsViscosityConstants.uviPoise);
+            CheckAutoCompute();
+        }
+
+        public void SetVolFlowRate(double dblVolFlowRate, ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
+        {
+            mCapillaryFlowParameters.VolumetricFlowRate = ConvertVolFlowRate(dblVolFlowRate, eUnits, ufrUnitsFlowRateConstants.ufrMLPerMin);
+            CheckAutoCompute();
+        }
+
+        private void InitializeClass()
+        {
+            SetAutoComputeEnabled(false);
+            SetAutoComputeMode(acmAutoComputeModeConstants.acmVolFlowRate);
+            SetCapillaryType(ctCapillaryTypeConstants.ctPackedCapillary);
+            SetBackPressure(3000d, uprUnitsPressureConstants.uprPsi);
+            SetColumnLength(50d, ulnUnitsLengthConstants.ulnCM);
+            SetColumnID(75d, ulnUnitsLengthConstants.ulnMicrons);
+            SetSolventViscosity(0.0089d, uviUnitsViscosityConstants.uviPoise);
+            SetParticleDiameter(5d, ulnUnitsLengthConstants.ulnMicrons);
+            SetInterparticlePorosity(0.4d);
+            SetMassRateConcentration(1d, ucoUnitsConcentrationConstants.ucoMicroMolar);
+            SetMassRateVolFlowRate(600d, ufrUnitsFlowRateConstants.ufrNLPerMin);
+            SetMassRateInjectionTime(5d, utmUnitsTimeConstants.utmMinutes);
+
+            // Recompute
+            ComputeVolFlowRate();
+            ComputeMassRateValues();
+            ComputeExtraColumnBroadeningValues();
+            SetAutoComputeEnabled(true);
+        }
+    }
+}

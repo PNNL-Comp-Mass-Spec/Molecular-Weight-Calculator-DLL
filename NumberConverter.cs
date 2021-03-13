@@ -1,88 +1,123 @@
-Option Strict On
+﻿using System;
+using Microsoft.VisualBasic.CompilerServices;
 
-Class NumberConverter
+namespace MwtWinDll
+{
+    class NumberConverter
+    {
+        public static double CDblSafe(string strWork)
+        {
+            double dblValue = 0d;
+            if (double.TryParse(strWork, out dblValue))
+            {
+                return dblValue;
+            }
+            else
+            {
+                return 0d;
+            }
+        }
 
-    Public Shared Function CDblSafe(strWork As String) As Double
-        Dim dblValue As Double = 0
-        If Double.TryParse(strWork, dblValue) Then
-            Return dblValue
-        Else
-            Return 0
-        End If
-    End Function
+        public static short CShortSafe(double dblWork)
+        {
+            if (dblWork <= 32767d & dblWork >= -32767)
+            {
+                return (short)Math.Round(dblWork);
+            }
+            else if (dblWork < 0d)
+            {
+                return -32767;
+            }
+            else
+            {
+                return 32767;
+            }
+        }
 
-    Public Shared Function CShortSafe(dblWork As Double) As Int16
-        If dblWork <= 32767 And dblWork >= -32767 Then
-            Return CShort(dblWork)
-        Else
-            If dblWork < 0 Then
-                Return -32767
-            Else
-                Return 32767
-            End If
-        End If
-    End Function
+        public static short CShortSafe(string strWork)
+        {
+            double dblValue = 0d;
+            if (double.TryParse(strWork, out dblValue))
+            {
+                return CShortSafe(dblValue);
+            }
+            else if (strWork.ToLower() == "true")
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
-    Public Shared Function CShortSafe(strWork As String) As Int16
+        public static int CIntSafe(double dblWork)
+        {
+            if (dblWork <= int.MaxValue & dblWork >= int.MinValue)
+            {
+                return (int)Math.Round(dblWork);
+            }
+            else if (dblWork < 0d)
+            {
+                return int.MinValue;
+            }
+            else
+            {
+                return int.MaxValue;
+            }
+        }
 
-        Dim dblValue As Double = 0
+        public static int CIntSafe(string strWork)
+        {
+            double dblValue = 0d;
+            if (double.TryParse(strWork, out dblValue))
+            {
+                return CIntSafe(dblValue);
+            }
+            else if (strWork.ToLower() == "true")
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
-        If Double.TryParse(strWork, dblValue) Then
-            Return CShortSafe(dblValue)
-        ElseIf strWork.ToLower() = "true" Then
-            Return -1
-        Else
-            Return 0
-        End If
+        public static string CStrSafe(object Item)
+        {
+            try
+            {
+                if (Item is null)
+                {
+                    return string.Empty;
+                }
+                else if (Convert.IsDBNull(Item))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return Conversions.ToString(Item);
+                }
+            }
+            catch (Exception ex)
+            {
+                return string.Empty;
+            }
+        }
 
-    End Function
-
-    Public Shared Function CIntSafe(dblWork As Double) As Int32
-        If dblWork <= Integer.MaxValue And dblWork >= Integer.MinValue Then
-            Return CInt(dblWork)
-        Else
-            If dblWork < 0 Then
-                Return Integer.MinValue
-            Else
-                Return Integer.MaxValue
-            End If
-        End If
-    End Function
-
-    Public Shared Function CIntSafe(strWork As String) As Int32
-
-        Dim dblValue As Double = 0
-
-        If Double.TryParse(strWork, dblValue) Then
-            Return CIntSafe(dblValue)
-        ElseIf strWork.ToLower() = "true" Then
-            Return -1
-        Else
-            Return 0
-        End If
-
-    End Function
-
-    Public Shared Function CStrSafe(Item As Object) As String
-        Try
-            If Item Is Nothing Then
-                Return String.Empty
-            ElseIf Convert.IsDBNull(Item) Then
-                Return String.Empty
-            Else
-                Return CStr(Item)
-            End If
-        Catch ex As Exception
-            Return String.Empty
-        End Try
-    End Function
-
-    Public Shared Function IsNumber(strValue As String) As Boolean
-        Try
-            Return Double.TryParse(strValue, 0)
-        Catch ex As Exception
-            Return False
-        End Try
-    End Function
-
-End Class
+        public static bool IsNumber(string strValue)
+        {
+            try
+            {
+                double argresult = 0d;
+                return double.TryParse(strValue, out argresult);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+    }
+}

@@ -1,42 +1,44 @@
-﻿Imports System.Collections.Generic
+﻿using System.Collections.Generic;
 
-Public Class FormulaFinderResult
+namespace MwtWinDll
+{
+    public class FormulaFinderResult
+    {
+        public readonly string EmpiricalFormula;
 
-    Public ReadOnly EmpiricalFormula As String
+        public Dictionary<string, int> CountsByElement { get; private set; }
+        public double Mass { get; set; }
+        public double DeltaMass { get; set; }
+        public bool DeltaMassIsPPM { get; set; }
+        public double MZ { get; set; }
+        public int ChargeState { get; set; }
 
-    Public ReadOnly Property CountsByElement As Dictionary(Of String, Integer)
+        /// <summary>
+    /// Percent composition results (only valid if matching percent compositions)
+    /// </summary>
+    /// <remarks>Keys are element or abbreviation symbols, values are percent composition, between 0 and 100</remarks>
+        public Dictionary<string, double> PercentComposition { get; set; }
 
-    Public Property Mass As Double
-    Public Property DeltaMass As Double
-    Public Property DeltaMassIsPPM As Boolean
-    Public Property MZ As Double
+        public string SortKey;
 
-    Public Property ChargeState As Integer
+        public FormulaFinderResult(string newEmpiricalFormula, Dictionary<string, int> empiricalResultSymbols)
+        {
+            EmpiricalFormula = newEmpiricalFormula;
+            CountsByElement = empiricalResultSymbols;
+            SortKey = string.Empty;
+            PercentComposition = new Dictionary<string, double>();
+        }
 
-    ''' <summary>
-    ''' Percent composition results (only valid if matching percent compositions)
-    ''' </summary>
-    ''' <remarks>Keys are element or abbreviation symbols, values are percent composition, between 0 and 100</remarks>
-    Public Property PercentComposition As Dictionary(Of String, Double)
-
-    Public SortKey As String
-
-    Public Sub New(newEmpiricalFormula As String, empiricalResultSymbols As Dictionary(Of String, Integer))
-        EmpiricalFormula = newEmpiricalFormula
-        CountsByElement = empiricalResultSymbols
-
-        SortKey = String.Empty
-        PercentComposition = New Dictionary(Of String, Double)
-    End Sub
-
-    Public Overloads Function ToString() As String
-        If DeltaMassIsPPM Then
-            Return EmpiricalFormula & "   MW=" & Mass.ToString("0.0000") & "   dm=" & DeltaMass.ToString("0.00" & " ppm")
-        Else
-            Return EmpiricalFormula & "   MW=" & Mass.ToString("0.0000") & "   dm=" & DeltaMass.ToString("0.0000")
-        End If
-    End Function
-
-
-
-End Class
+        public new string ToString()
+        {
+            if (DeltaMassIsPPM)
+            {
+                return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.00" + " ppm");
+            }
+            else
+            {
+                return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.0000");
+            }
+        }
+    }
+}

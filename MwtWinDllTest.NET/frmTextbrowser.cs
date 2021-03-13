@@ -1,270 +1,471 @@
-Option Strict On
+﻿using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms;
+using Microsoft.VisualBasic;
 
-Public Class frmTextbrowser
-    Inherits System.Windows.Forms.Form
+namespace MwtWinDllTest
+{
+    public class frmTextbrowser : Form
+    {
 
-    ' -------------------------------------------------------------------------------
-    ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
-    ' E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
-    ' Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
-    ' -------------------------------------------------------------------------------
-    '
-    ' Licensed under the Apache License, Version 2.0; you may not use this file except
-    ' in compliance with the License.  You may obtain a copy of the License at
-    ' http://www.apache.org/licenses/LICENSE-2.0
-    '
-    ' Notice: This computer software was prepared by Battelle Memorial Institute,
-    ' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
-    ' Department of Energy (DOE).  All rights in the computer software are reserved
-    ' by DOE on behalf of the United States Government and the Contractor as
-    ' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
-    ' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
-    ' SOFTWARE.  This notice including this sentence must appear on any copies of
-    ' this computer software.
+        // -------------------------------------------------------------------------------
+        // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
+        // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
+        // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
+        // -------------------------------------------------------------------------------
+        // 
+        // Licensed under the Apache License, Version 2.0; you may not use this file except
+        // in compliance with the License.  You may obtain a copy of the License at
+        // http://www.apache.org/licenses/LICENSE-2.0
+        // 
+        // Notice: This computer software was prepared by Battelle Memorial Institute,
+        // hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
+        // Department of Energy (DOE).  All rights in the computer software are reserved
+        // by DOE on behalf of the United States Government and the Contractor as
+        // provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
+        // WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
+        // SOFTWARE.  This notice including this sentence must appear on any copies of
+        // this computer software.
 
-#Region " Windows Form Designer generated code "
+        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        public frmTextbrowser() : base()
+        {
 
-    Public Sub New()
-        MyBase.New()
+            // This call is required by the Windows Form Designer.
+            InitializeComponent();
 
-        'This call is required by the Windows Form Designer.
-        InitializeComponent()
+            // Add any initialization after the InitializeComponent() call
+            InitializeForm();
+        }
 
-        'Add any initialization after the InitializeComponent() call
-        InitializeForm()
-    End Sub
+        // Form overrides dispose to clean up the component list.
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components is object)
+                {
+                    components.Dispose();
+                }
+            }
 
-    'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
+            base.Dispose(disposing);
+        }
 
-    'Required by the Windows Form Designer
-    Private components As System.ComponentModel.IContainer
+        // Required by the Windows Form Designer
+        private System.ComponentModel.IContainer components;
 
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.
-    'Do not modify it using the code editor.
-    Friend WithEvents txtData As System.Windows.Forms.TextBox
-    Friend WithEvents MainMenuControl As System.Windows.Forms.MainMenu
-    Friend WithEvents mnuFile As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuFileExit As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuEdit As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuEditCut As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuEditCopy As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuEditPaste As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuEditSep1 As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuEditFontSizeDecrease As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuEditFontSizeIncrease As System.Windows.Forms.MenuItem
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.txtData = New System.Windows.Forms.TextBox
-        Me.MainMenuControl = New System.Windows.Forms.MainMenu
-        Me.mnuFile = New System.Windows.Forms.MenuItem
-        Me.mnuFileExit = New System.Windows.Forms.MenuItem
-        Me.mnuEdit = New System.Windows.Forms.MenuItem
-        Me.mnuEditCut = New System.Windows.Forms.MenuItem
-        Me.mnuEditCopy = New System.Windows.Forms.MenuItem
-        Me.mnuEditPaste = New System.Windows.Forms.MenuItem
-        Me.mnuEditSep1 = New System.Windows.Forms.MenuItem
-        Me.mnuEditFontSizeDecrease = New System.Windows.Forms.MenuItem
-        Me.mnuEditFontSizeIncrease = New System.Windows.Forms.MenuItem
-        Me.SuspendLayout()
-        '
-        'txtData
-        '
-        Me.txtData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtData.Location = New System.Drawing.Point(0, 0)
-        Me.txtData.Multiline = True
-        Me.txtData.Name = "txtData"
-        Me.txtData.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtData.Size = New System.Drawing.Size(488, 316)
-        Me.txtData.TabIndex = 0
-        Me.txtData.Text = ""
-        Me.txtData.WordWrap = False
-        '
-        'MainMenuControl
-        '
-        Me.MainMenuControl.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFile, Me.mnuEdit})
-        '
-        'mnuFile
-        '
-        Me.mnuFile.Index = 0
-        Me.mnuFile.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFileExit})
-        Me.mnuFile.Text = "&File"
-        '
-        'mnuFileExit
-        '
-        Me.mnuFileExit.Index = 0
-        Me.mnuFileExit.Text = "E&xit"
-        '
-        'mnuEdit
-        '
-        Me.mnuEdit.Index = 1
-        Me.mnuEdit.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuEditCut, Me.mnuEditCopy, Me.mnuEditPaste, Me.mnuEditSep1, Me.mnuEditFontSizeDecrease, Me.mnuEditFontSizeIncrease})
-        Me.mnuEdit.Text = "&Edit"
-        '
-        'mnuEditCut
-        '
-        Me.mnuEditCut.Index = 0
-        Me.mnuEditCut.Text = "Cu&t"
-        '
-        'mnuEditCopy
-        '
-        Me.mnuEditCopy.Index = 1
-        Me.mnuEditCopy.Text = "&Copy"
-        '
-        'mnuEditPaste
-        '
-        Me.mnuEditPaste.Index = 2
-        Me.mnuEditPaste.Text = "&Paste"
-        '
-        'mnuEditSep1
-        '
-        Me.mnuEditSep1.Index = 3
-        Me.mnuEditSep1.Text = "-"
-        '
-        'mnuEditFontSizeDecrease
-        '
-        Me.mnuEditFontSizeDecrease.Index = 4
-        Me.mnuEditFontSizeDecrease.Shortcut = System.Windows.Forms.Shortcut.F3
-        Me.mnuEditFontSizeDecrease.Text = "Decrease Font Size"
-        '
-        'mnuEditFontSizeIncrease
-        '
-        Me.mnuEditFontSizeIncrease.Index = 5
-        Me.mnuEditFontSizeIncrease.Shortcut = System.Windows.Forms.Shortcut.F4
-        Me.mnuEditFontSizeIncrease.Text = "Increase Font Size"
-        '
-        'frmTextbrowser
-        '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
-        Me.ClientSize = New System.Drawing.Size(488, 314)
-        Me.Controls.Add(Me.txtData)
-        Me.Menu = Me.MainMenuControl
-        Me.Name = "frmTextbrowser"
-        Me.Text = "frmTextbrowser"
-        Me.ResumeLayout(False)
+        // NOTE: The following procedure is required by the Windows Form Designer
+        // It can be modified using the Windows Form Designer.
+        // Do not modify it using the code editor.
+        internal TextBox txtData;
+        internal MainMenu MainMenuControl;
+        internal MenuItem mnuFile;
+        private MenuItem _mnuFileExit;
 
-    End Sub
+        internal MenuItem mnuFileExit
+        {
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get
+            {
+                return _mnuFileExit;
+            }
 
-#End Region
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            set
+            {
+                if (_mnuFileExit != null)
+                {
+                    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+                    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+                    _mnuFileExit.Click -= mnuFileExit_Click;
+                }
 
-#Region "Processing Options Interface Functions"
-    Public Property ReadOnlyText() As Boolean
-        Get
-            Return txtData.ReadOnly
-        End Get
-        Set
-            txtData.ReadOnly = Value
-        End Set
-    End Property
+                _mnuFileExit = value;
+                if (_mnuFileExit != null)
+                {
+                    _mnuFileExit.Click += mnuFileExit_Click;
+                }
+            }
+        }
 
-    Public ReadOnly Property GetText() As String
-        Get
-            Return txtData.Text
-        End Get
-    End Property
+        internal MenuItem mnuEdit;
+        private MenuItem _mnuEditCut;
 
-    Public WriteOnly Property SetText() As String
-        Set
-            txtData.Text = Value
-            txtData.SelectionStart = 1
-            txtData.ScrollToCaret()
-        End Set
-    End Property
+        internal MenuItem mnuEditCut
+        {
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get
+            {
+                return _mnuEditCut;
+            }
 
-    Public Property TextFontSize() As Single
-        Get
-            Return txtData.Font.SizeInPoints
-        End Get
-        Set
-            If Value < 6 Then
-                Value = 6
-            ElseIf Value > 72 Then
-                Value = 72
-            End If
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            set
+            {
+                if (_mnuEditCut != null)
+                {
+                    _mnuEditCut.Click -= mnuEditCut_Click;
+                }
 
-            Try
-                txtData.Font = New System.Drawing.Font(txtData.Font.FontFamily, Value)
-            Catch ex As Exception
-                ' Ignore errors here
-            End Try
+                _mnuEditCut = value;
+                if (_mnuEditCut != null)
+                {
+                    _mnuEditCut.Click += mnuEditCut_Click;
+                }
+            }
+        }
 
-        End Set
-    End Property
-#End Region
+        private MenuItem _mnuEditCopy;
 
-#Region "Procedures"
+        internal MenuItem mnuEditCopy
+        {
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get
+            {
+                return _mnuEditCopy;
+            }
 
-    Public Sub AppendText(Value As String)
-        txtData.Text &= Value & ControlChars.NewLine
-        txtData.SelectionStart = txtData.TextLength
-        txtData.ScrollToCaret()
-    End Sub
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            set
+            {
+                if (_mnuEditCopy != null)
+                {
+                    _mnuEditCopy.Click -= mnuEditCopy_Click;
+                }
 
-    Private Sub CopyText()
-        txtData.Copy()
-    End Sub
+                _mnuEditCopy = value;
+                if (_mnuEditCopy != null)
+                {
+                    _mnuEditCopy.Click += mnuEditCopy_Click;
+                }
+            }
+        }
 
-    Private Sub CutText()
-        If txtData.ReadOnly Then
-            CopyText()
-        Else
-            txtData.Cut()
-        End If
-    End Sub
+        private MenuItem _mnuEditPaste;
 
-    Private Sub InitializeForm()
-        txtData.ReadOnly = True
-        Me.TextFontSize = 11
-    End Sub
+        internal MenuItem mnuEditPaste
+        {
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get
+            {
+                return _mnuEditPaste;
+            }
 
-    Private Sub PasteText()
-        If txtData.ReadOnly Then Exit Sub
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            set
+            {
+                if (_mnuEditPaste != null)
+                {
+                    _mnuEditPaste.Click -= mnuEditPaste_Click;
+                }
 
-        txtData.Paste()
-    End Sub
-#End Region
+                _mnuEditPaste = value;
+                if (_mnuEditPaste != null)
+                {
+                    _mnuEditPaste.Click += mnuEditPaste_Click;
+                }
+            }
+        }
 
-#Region "Menu Handlers"
+        internal MenuItem mnuEditSep1;
+        private MenuItem _mnuEditFontSizeDecrease;
 
-    Private Sub mnuFileExit_Click(sender As System.Object, e As System.EventArgs) Handles mnuFileExit.Click
-        Me.Close()
-    End Sub
+        internal MenuItem mnuEditFontSizeDecrease
+        {
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get
+            {
+                return _mnuEditFontSizeDecrease;
+            }
 
-    Private Sub mnuEditCut_Click(sender As System.Object, e As System.EventArgs) Handles mnuEditCut.Click
-        CutText()
-    End Sub
-    Private Sub mnuEditCopy_Click(sender As Object, e As System.EventArgs) Handles mnuEditCopy.Click
-        CopyText()
-    End Sub
-    Private Sub mnuEditPaste_Click(sender As Object, e As System.EventArgs) Handles mnuEditPaste.Click
-        PasteText()
-    End Sub
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            set
+            {
+                if (_mnuEditFontSizeDecrease != null)
+                {
+                    _mnuEditFontSizeDecrease.Click -= mnuEditFontSizeDecrease_Click;
+                }
 
-    Private Sub mnuEditFontSizeDecrease_Click(sender As System.Object, e As System.EventArgs) Handles mnuEditFontSizeDecrease.Click
-        If Me.TextFontSize > 14 Then
-            Me.TextFontSize -= 2
-        Else
-            Me.TextFontSize -= 1
-        End If
-    End Sub
+                _mnuEditFontSizeDecrease = value;
+                if (_mnuEditFontSizeDecrease != null)
+                {
+                    _mnuEditFontSizeDecrease.Click += mnuEditFontSizeDecrease_Click;
+                }
+            }
+        }
 
-    Private Sub mnuEditFontSizeIncrease_Click(sender As System.Object, e As System.EventArgs) Handles mnuEditFontSizeIncrease.Click
-        If Me.TextFontSize >= 14 Then
-            Me.TextFontSize += 2
-        Else
-            Me.TextFontSize += 1
-        End If
-    End Sub
+        private MenuItem _mnuEditFontSizeIncrease;
 
-#End Region
+        internal MenuItem mnuEditFontSizeIncrease
+        {
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get
+            {
+                return _mnuEditFontSizeIncrease;
+            }
 
-End Class
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            set
+            {
+                if (_mnuEditFontSizeIncrease != null)
+                {
+                    _mnuEditFontSizeIncrease.Click -= mnuEditFontSizeIncrease_Click;
+                }
+
+                _mnuEditFontSizeIncrease = value;
+                if (_mnuEditFontSizeIncrease != null)
+                {
+                    _mnuEditFontSizeIncrease.Click += mnuEditFontSizeIncrease_Click;
+                }
+            }
+        }
+
+        [DebuggerStepThrough()]
+        private void InitializeComponent()
+        {
+            txtData = new TextBox();
+            MainMenuControl = new MainMenu();
+            mnuFile = new MenuItem();
+            _mnuFileExit = new MenuItem();
+            _mnuFileExit.Click += new EventHandler(mnuFileExit_Click);
+            mnuEdit = new MenuItem();
+            _mnuEditCut = new MenuItem();
+            _mnuEditCut.Click += new EventHandler(mnuEditCut_Click);
+            _mnuEditCopy = new MenuItem();
+            _mnuEditCopy.Click += new EventHandler(mnuEditCopy_Click);
+            _mnuEditPaste = new MenuItem();
+            _mnuEditPaste.Click += new EventHandler(mnuEditPaste_Click);
+            mnuEditSep1 = new MenuItem();
+            _mnuEditFontSizeDecrease = new MenuItem();
+            _mnuEditFontSizeDecrease.Click += new EventHandler(mnuEditFontSizeDecrease_Click);
+            _mnuEditFontSizeIncrease = new MenuItem();
+            _mnuEditFontSizeIncrease.Click += new EventHandler(mnuEditFontSizeIncrease_Click);
+            SuspendLayout();
+            // 
+            // txtData
+            // 
+            txtData.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+            txtData.Location = new Point(0, 0);
+            txtData.Multiline = true;
+            txtData.Name = "txtData";
+            txtData.ScrollBars = ScrollBars.Both;
+            txtData.Size = new Size(488, 316);
+            txtData.TabIndex = 0;
+            txtData.Text = "";
+            txtData.WordWrap = false;
+            // 
+            // MainMenuControl
+            // 
+            MainMenuControl.MenuItems.AddRange(new MenuItem[] { mnuFile, mnuEdit });
+            // 
+            // mnuFile
+            // 
+            mnuFile.Index = 0;
+            mnuFile.MenuItems.AddRange(new MenuItem[] { _mnuFileExit });
+            mnuFile.Text = "&File";
+            // 
+            // mnuFileExit
+            // 
+            _mnuFileExit.Index = 0;
+            _mnuFileExit.Text = "E&xit";
+            // 
+            // mnuEdit
+            // 
+            mnuEdit.Index = 1;
+            mnuEdit.MenuItems.AddRange(new MenuItem[] { _mnuEditCut, _mnuEditCopy, _mnuEditPaste, mnuEditSep1, _mnuEditFontSizeDecrease, _mnuEditFontSizeIncrease });
+            mnuEdit.Text = "&Edit";
+            // 
+            // mnuEditCut
+            // 
+            _mnuEditCut.Index = 0;
+            _mnuEditCut.Text = "Cu&t";
+            // 
+            // mnuEditCopy
+            // 
+            _mnuEditCopy.Index = 1;
+            _mnuEditCopy.Text = "&Copy";
+            // 
+            // mnuEditPaste
+            // 
+            _mnuEditPaste.Index = 2;
+            _mnuEditPaste.Text = "&Paste";
+            // 
+            // mnuEditSep1
+            // 
+            mnuEditSep1.Index = 3;
+            mnuEditSep1.Text = "-";
+            // 
+            // mnuEditFontSizeDecrease
+            // 
+            _mnuEditFontSizeDecrease.Index = 4;
+            _mnuEditFontSizeDecrease.Shortcut = Shortcut.F3;
+            _mnuEditFontSizeDecrease.Text = "Decrease Font Size";
+            // 
+            // mnuEditFontSizeIncrease
+            // 
+            _mnuEditFontSizeIncrease.Index = 5;
+            _mnuEditFontSizeIncrease.Shortcut = Shortcut.F4;
+            _mnuEditFontSizeIncrease.Text = "Increase Font Size";
+            // 
+            // frmTextbrowser
+            // 
+            AutoScaleBaseSize = new Size(5, 13);
+            ClientSize = new Size(488, 314);
+            Controls.Add(txtData);
+            Menu = MainMenuControl;
+            Name = "frmTextbrowser";
+            Text = "frmTextbrowser";
+            ResumeLayout(false);
+        }
+
+        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        public bool ReadOnlyText
+        {
+            get
+            {
+                return txtData.ReadOnly;
+            }
+
+            set
+            {
+                txtData.ReadOnly = value;
+            }
+        }
+
+        public string GetText
+        {
+            get
+            {
+                return txtData.Text;
+            }
+        }
+
+        public string SetText
+        {
+            set
+            {
+                txtData.Text = value;
+                txtData.SelectionStart = 1;
+                txtData.ScrollToCaret();
+            }
+        }
+
+        public float TextFontSize
+        {
+            get
+            {
+                return txtData.Font.SizeInPoints;
+            }
+
+            set
+            {
+                if (value < 6f)
+                {
+                    value = 6f;
+                }
+                else if (value > 72f)
+                {
+                    value = 72f;
+                }
+
+                try
+                {
+                    txtData.Font = new Font(txtData.Font.FontFamily, value);
+                }
+                catch (Exception ex)
+                {
+                    // Ignore errors here
+                }
+            }
+        }
+        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        public void AppendText(string Value)
+        {
+            txtData.Text += Value + ControlChars.NewLine;
+            txtData.SelectionStart = txtData.TextLength;
+            txtData.ScrollToCaret();
+        }
+
+        private void CopyText()
+        {
+            txtData.Copy();
+        }
+
+        private void CutText()
+        {
+            if (txtData.ReadOnly)
+            {
+                CopyText();
+            }
+            else
+            {
+                txtData.Cut();
+            }
+        }
+
+        private void InitializeForm()
+        {
+            txtData.ReadOnly = true;
+            TextFontSize = 11f;
+        }
+
+        private void PasteText()
+        {
+            if (txtData.ReadOnly)
+                return;
+            txtData.Paste();
+        }
+
+        private void mnuFileExit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void mnuEditCut_Click(object sender, EventArgs e)
+        {
+            CutText();
+        }
+
+        private void mnuEditCopy_Click(object sender, EventArgs e)
+        {
+            CopyText();
+        }
+
+        private void mnuEditPaste_Click(object sender, EventArgs e)
+        {
+            PasteText();
+        }
+
+        private void mnuEditFontSizeDecrease_Click(object sender, EventArgs e)
+        {
+            if (TextFontSize > 14f)
+            {
+                TextFontSize -= 2f;
+            }
+            else
+            {
+                TextFontSize -= 1f;
+            }
+        }
+
+        private void mnuEditFontSizeIncrease_Click(object sender, EventArgs e)
+        {
+            if (TextFontSize >= 14f)
+            {
+                TextFontSize += 2f;
+            }
+            else
+            {
+                TextFontSize += 1f;
+            }
+        }
+
+        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    }
+}

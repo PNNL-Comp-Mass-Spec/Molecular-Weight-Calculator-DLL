@@ -1,368 +1,426 @@
-Option Strict On
-
-Imports System.Collections.Generic
-
-Public Class Compound
-
-    ' Molecular Weight Calculator routines with ActiveX Class interfaces: Compound
-
-    ' The compound class can be used to represent a compound
-    ' Use the Formula Property to enter the compound's formula
-    ' Use ErrorDescription and CautionDescription to see if there are any problems with the formula
-    ' Custom abbreviations can be defined using the SetAbbreviationInternal() function in ElementAndMassRoutines()
-    ' Note that the standard amino acids and 16 other abbreviations are defined by default (see MemoryLoadAbbreviations())
-
-    ' Use the Mass Property to get the mass of the compound
-
-    ' -------------------------------------------------------------------------------
-    ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2002
-    ' E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
-    ' Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
-    ' -------------------------------------------------------------------------------
-    '
-    ' Licensed under the Apache License, Version 2.0; you may not use this file except
-    ' in compliance with the License.  You may obtain a copy of the License at
-    ' http://www.apache.org/licenses/LICENSE-2.0
-    '
-    ' Notice: This computer software was prepared by Battelle Memorial Institute,
-    ' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
-    ' Department of Energy (DOE).  All rights in the computer software are reserved
-    ' by DOE on behalf of the United States Government and the Contractor as
-    ' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
-    ' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
-    ' SOFTWARE.  This notice including this sentence must appear on any copies of
-    ' this computer software.
-
-    Public Sub New()
-        MyBase.New()
-        ElementAndMassRoutines = New ElementAndMassTools
-        InitializeClass()
-    End Sub
-
-    Public Sub New(objElementAndMassTools As ElementAndMassTools)
-        MyBase.New()
-        ElementAndMassRoutines = objElementAndMassTools
-        InitializeClass()
-    End Sub
-
-    Private mStrFormula As String
-    Private mStrFormattedFormula As String
-
-    Private mValueForX As Double ' The value to assign to x when present after a square bracket.
-    ' For example, in C6H6[xBr] if x = 1, then the formula is treated like C6H6Br
-    ' If x = 2, then the formula is treated like C6H6Br2
-
-    Private mCautionDescription As String
-    Private mErrorDescription As String
-    Private mErrorID As Integer
-
-    Private mComputationStats As ElementAndMassTools.udtComputationStatsType
-
-    Private ReadOnly ElementAndMassRoutines As ElementAndMassTools
-
-    Public Function ConvertToEmpirical() As String
-        ' Converts mStrFormula to its empirical formula and returns the result
-        Dim strResult As String
-
-        strResult = ElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula)
-        UpdateErrorAndCaution()
-
-        If mErrorDescription = "" Then
-            mStrFormula = strResult
-            mStrFormattedFormula = strResult
-            Return strResult
-        Else
-            Return ErrorDescription
-        End If
-    End Function
-
-    Public Function ElementPresent(elementID As Short) As Boolean
-        ' Returns True if the element is present
-        If elementID >= 1 And elementID <= ElementAndMassTools.ELEMENT_COUNT Then
-            Return mComputationStats.Elements(elementID).Used
-        Else
-            Return False
-        End If
-
-    End Function
-
-    Public Function ExpandAbbreviations() As String
-        ' Expands abbreviations in mStrFormula and returns the result
-
-        Dim strResult As String
-
-        strResult = ElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula)
-        UpdateErrorAndCaution()
-
-        If mErrorDescription = "" Then
-            mStrFormula = strResult
-            mStrFormattedFormula = strResult
-            Return strResult
-        Else
-            Return ErrorDescription
-        End If
-
-    End Function
-
-    Public Function GetAtomCountForElement(intElementID As Short) As Double
-        ' Return the number of atoms of a given element that are present in the formula
-        ' Note that the number of atoms is not necessarily an integer (e.g. C5.5)
-
-        If intElementID >= 1 And intElementID <= ElementAndMassTools.ELEMENT_COUNT Then
-            Return mComputationStats.Elements(intElementID).Count
-        Else
-            Return 0
-        End If
-
-    End Function
-
-    Public Function GetPercentCompositionForElement(intElementID As Short) As Double
-        ' Returns the percent composition for element
-        ' Returns -1 if an invalid ID
-
-        If intElementID >= 1 And intElementID <= ElementAndMassTools.ELEMENT_COUNT Then
-            Return mComputationStats.PercentCompositions(intElementID).PercentComposition
-        Else
-            Return -1
-        End If
-
-    End Function
-
-    Public Function GetPercentCompositionForElementAsString(elementId As Short) As String
-        Return GetPercentCompositionForElementAsString(elementId, True)
-    End Function
-
-    Public Function GetPercentCompositionForElementAsString(elementId As Short, blnIncludeStandardDeviation As Boolean) As String
-        ' Returns the percent composition and standard deviation for element
-        ' Returns "" if an invalid ID
-        Dim strElementSymbol As String
-        Dim strPctComposition As String
-
-        If elementId >= 1 And elementId <= ElementAndMassTools.ELEMENT_COUNT Then
-
-            With mComputationStats.PercentCompositions(elementId)
-
-                strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) & ":"
-                strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(.PercentComposition, .StdDeviation, blnIncludeStandardDeviation, True)
-                If .PercentComposition < 10 Then
-                    strPctComposition = " " & strPctComposition
-                End If
-                Return ElementAndMassRoutines.SpacePad(strElementSymbol, 4) & strPctComposition
-            End With
-        Else
-            Return String.Empty
-        End If
-
-    End Function
-
-    ''' <summary>
-    ''' Get the percent composition for all elements in an empirical formula
-    ''' </summary>
-    ''' <returns>
-    ''' Dictionary of percent composition values
-    ''' Keys are element symbols; values are the percent composition
-    ''' </returns>
-    Public Function GetPercentCompositionForAllElements() As Dictionary(Of String, String)
-        ' Returns the percent composition for all elements in strPctCompositionsOneBased
-
-        Dim percentCompositionByElement = New Dictionary(Of String, String)
-
-        Try
-
-            ElementAndMassRoutines.ComputePercentComposition(mComputationStats)
-
-            For elementId As Short = 1 To ElementAndMassTools.ELEMENT_COUNT
-                If mComputationStats.PercentCompositions(elementId).PercentComposition > 0 Then
-                    Dim percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(
-                        mComputationStats.PercentCompositions(elementId).PercentComposition,
-                        mComputationStats.PercentCompositions(elementId).StdDeviation)
-
-                    Dim elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId)
-
-                    If Not percentCompositionByElement.ContainsKey(elementSymbol) Then
-                        percentCompositionByElement.Add(elementSymbol, percentCompositionAndStDev)
-                    End If
-                End If
-
-            Next elementId
-        Catch ex As Exception
-            System.Diagnostics.Debug.WriteLine("Error occurred while copying percent composition values.  Probably an uninitialized array.")
-        End Try
-
-        Return percentCompositionByElement
-
-    End Function
-
-    Public Function GetUsedElementCount() As Short
-        ' Returns the number of unique elements present in mStrFormula
-
-        Dim intTotalElements As Short
-        Dim intElementIndex As Short
-
-        ' Determine # of elements in formula
-        intTotalElements = 0
-        For intElementIndex = 1 To ElementAndMassTools.ELEMENT_COUNT
-            ' Increment .TotalElements if element is present
-            If mComputationStats.Elements(intElementIndex).Used Then
-                intTotalElements += 1S
-            End If
-        Next intElementIndex
-
-        Return intTotalElements
-    End Function
-
-    Private Sub InitializeClass()
-        mStrFormula = ""
-        ValueForX = 1.0#
-    End Sub
-
-    Public Function SetFormula(strNewFormula As String) As Integer
-        ' Provides an alternate method for setting the formula
-        ' Returns ErrorID (0 if no error)
-
-        Me.Formula = strNewFormula
-
-        Return Me.ErrorID
-    End Function
-
-    Private Sub UpdateErrorAndCaution()
-        mCautionDescription = ElementAndMassRoutines.GetCautionDescription()
-        mErrorDescription = ElementAndMassRoutines.GetErrorDescription()
-        mErrorID = ElementAndMassRoutines.GetErrorID()
-    End Sub
-
-    Private Sub UpdateMass()
-
-        mStrFormattedFormula = mStrFormula
-
-        ' mStrFormattedFormula is passed ByRef
-        ' If gComputationOptions.CaseConversion = ccConvertCaseUp then mStrFormattedFormula is properly capitalized
-        ' The mass of the compound is stored in mComputationStats.TotalMass
-        ElementAndMassRoutines.ParseFormulaPublic(mStrFormattedFormula, mComputationStats, False, mValueForX)
-
-        ElementAndMassRoutines.ComputePercentComposition(mComputationStats)
-
-        UpdateErrorAndCaution()
-    End Sub
-
-    Public Function XIsPresentAfterBracket() As Boolean
-        Dim intCharLoc As Short
-
-        If ElementAndMassRoutines.gComputationOptions.BracketsAsParentheses Then
-            ' Treating brackets as parentheses, therefore an x after a bracket isn't allowed
-            XIsPresentAfterBracket = False
-        Else
-            intCharLoc = CShort(InStr(LCase(mStrFormattedFormula), "[x"))
-            If intCharLoc > 0 Then
-                If Mid(mStrFormattedFormula, intCharLoc + 1, 1) <> "e" Then
-                    Return True
-                Else
-                    Return False
-                End If
-            Else
-                Return False
-            End If
-        End If
-
-    End Function
-
-    Public ReadOnly Property CautionDescription() As String
-        Get
-            Return mCautionDescription
-        End Get
-    End Property
-
-
-    Public Property Charge() As Single
-        Get
-            Return mComputationStats.Charge
-        End Get
-        Set
-            mComputationStats.Charge = Value
-        End Set
-    End Property
-
-    Public ReadOnly Property ErrorDescription() As String
-        Get
-            Return mErrorDescription
-        End Get
-    End Property
-
-    Public ReadOnly Property ErrorID() As Integer
-        Get
-            Return mErrorID
-        End Get
-    End Property
-
-    Public Property Formula() As String
-        Get
-            Return mStrFormula
-        End Get
-        Set
-            mStrFormula = Value
-
-            ' Recompute the mass for this formula
-            ' Updates Error and Caution statements if there is a problem
-            UpdateMass()
-        End Set
-    End Property
-
-    Public ReadOnly Property FormulaCapitalized() As String
-        Get
-            Return mStrFormattedFormula
-        End Get
-    End Property
-
-    Public ReadOnly Property FormulaRTF() As String
-        Get
-            Return ElementAndMassRoutines.PlainTextToRtfInternal((Me.FormulaCapitalized), False)
-        End Get
-    End Property
-
-    Public ReadOnly Property Mass() As Double
-        Get
-            Return Me.Mass(True)
-        End Get
-    End Property
-
-    Public ReadOnly Property Mass(blnRecomputeMass As Boolean) As Double
-        Get
-            If blnRecomputeMass Then UpdateMass()
-
-            Return mComputationStats.TotalMass
-        End Get
-    End Property
-
-    Public ReadOnly Property MassAndStdDevString() As String
-        Get
-            Return Me.MassAndStdDevString(True)
-        End Get
-    End Property
-    Public ReadOnly Property MassAndStdDevString(blnRecomputeMass As Boolean) As String
-        Get
-            If blnRecomputeMass Then UpdateMass()
-
-            With mComputationStats
-                MassAndStdDevString = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(.TotalMass, .StandardDeviation)
-            End With
-        End Get
-    End Property
-
-    Public ReadOnly Property StandardDeviation() As Double
-        Get
-            Return mComputationStats.StandardDeviation
-        End Get
-    End Property
-
-
-    Public Property ValueForX() As Double
-        Get
-            Return mValueForX
-        End Get
-        Set
-            If Value >= 0 Then mValueForX = Value
-        End Set
-    End Property
-
-
-End Class
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.VisualBasic;
+
+namespace MwtWinDll
+{
+    public class Compound
+    {
+
+        // Molecular Weight Calculator routines with ActiveX Class interfaces: Compound
+
+        // The compound class can be used to represent a compound
+        // Use the Formula Property to enter the compound's formula
+        // Use ErrorDescription and CautionDescription to see if there are any problems with the formula
+        // Custom abbreviations can be defined using the SetAbbreviationInternal() function in ElementAndMassRoutines()
+        // Note that the standard amino acids and 16 other abbreviations are defined by default (see MemoryLoadAbbreviations())
+
+        // Use the Mass Property to get the mass of the compound
+
+        // -------------------------------------------------------------------------------
+        // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2002
+        // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
+        // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
+        // -------------------------------------------------------------------------------
+        // 
+        // Licensed under the Apache License, Version 2.0; you may not use this file except
+        // in compliance with the License.  You may obtain a copy of the License at
+        // http://www.apache.org/licenses/LICENSE-2.0
+        // 
+        // Notice: This computer software was prepared by Battelle Memorial Institute,
+        // hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
+        // Department of Energy (DOE).  All rights in the computer software are reserved
+        // by DOE on behalf of the United States Government and the Contractor as
+        // provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
+        // WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
+        // SOFTWARE.  This notice including this sentence must appear on any copies of
+        // this computer software.
+
+        public Compound() : base()
+        {
+            ElementAndMassRoutines = new ElementAndMassTools();
+            InitializeClass();
+        }
+
+        public Compound(ElementAndMassTools objElementAndMassTools) : base()
+        {
+            ElementAndMassRoutines = objElementAndMassTools;
+            InitializeClass();
+        }
+
+        private string mStrFormula;
+        private string mStrFormattedFormula;
+        private double mValueForX; // The value to assign to x when present after a square bracket.
+                                   // For example, in C6H6[xBr] if x = 1, then the formula is treated like C6H6Br
+                                   // If x = 2, then the formula is treated like C6H6Br2
+
+        private string mCautionDescription;
+        private string mErrorDescription;
+        private int mErrorID;
+        private ElementAndMassTools.udtComputationStatsType mComputationStats;
+        private readonly ElementAndMassTools ElementAndMassRoutines;
+
+        public string ConvertToEmpirical()
+        {
+            // Converts mStrFormula to its empirical formula and returns the result
+            string strResult;
+            strResult = ElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula);
+            UpdateErrorAndCaution();
+            if (string.IsNullOrEmpty(mErrorDescription))
+            {
+                mStrFormula = strResult;
+                mStrFormattedFormula = strResult;
+                return strResult;
+            }
+            else
+            {
+                return ErrorDescription;
+            }
+        }
+
+        public bool ElementPresent(short elementID)
+        {
+            // Returns True if the element is present
+            if (elementID >= 1 & elementID <= ElementAndMassTools.ELEMENT_COUNT)
+            {
+                return mComputationStats.Elements[elementID].Used;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public string ExpandAbbreviations()
+        {
+            // Expands abbreviations in mStrFormula and returns the result
+
+            string strResult;
+            strResult = ElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula);
+            UpdateErrorAndCaution();
+            if (string.IsNullOrEmpty(mErrorDescription))
+            {
+                mStrFormula = strResult;
+                mStrFormattedFormula = strResult;
+                return strResult;
+            }
+            else
+            {
+                return ErrorDescription;
+            }
+        }
+
+        public double GetAtomCountForElement(short intElementID)
+        {
+            // Return the number of atoms of a given element that are present in the formula
+            // Note that the number of atoms is not necessarily an integer (e.g. C5.5)
+
+            if (intElementID >= 1 & intElementID <= ElementAndMassTools.ELEMENT_COUNT)
+            {
+                return mComputationStats.Elements[intElementID].Count;
+            }
+            else
+            {
+                return 0d;
+            }
+        }
+
+        public double GetPercentCompositionForElement(short intElementID)
+        {
+            // Returns the percent composition for element
+            // Returns -1 if an invalid ID
+
+            if (intElementID >= 1 & intElementID <= ElementAndMassTools.ELEMENT_COUNT)
+            {
+                return mComputationStats.PercentCompositions[intElementID].PercentComposition;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public string GetPercentCompositionForElementAsString(short elementId)
+        {
+            return GetPercentCompositionForElementAsString(elementId, true);
+        }
+
+        public string GetPercentCompositionForElementAsString(short elementId, bool blnIncludeStandardDeviation)
+        {
+            // Returns the percent composition and standard deviation for element
+            // Returns "" if an invalid ID
+            string strElementSymbol;
+            string strPctComposition;
+            if (elementId >= 1 & elementId <= ElementAndMassTools.ELEMENT_COUNT)
+            {
+                {
+                    var withBlock = mComputationStats.PercentCompositions[elementId];
+                    strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) + ":";
+                    strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(withBlock.PercentComposition, withBlock.StdDeviation, blnIncludeStandardDeviation, true);
+                    if (withBlock.PercentComposition < 10d)
+                    {
+                        strPctComposition = " " + strPctComposition;
+                    }
+
+                    return ElementAndMassRoutines.SpacePad(strElementSymbol, 4) + strPctComposition;
+                }
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+    /// Get the percent composition for all elements in an empirical formula
+    /// </summary>
+    /// <returns>
+    /// Dictionary of percent composition values
+    /// Keys are element symbols; values are the percent composition
+    /// </returns>
+        public Dictionary<string, string> GetPercentCompositionForAllElements()
+        {
+            // Returns the percent composition for all elements in strPctCompositionsOneBased
+
+            var percentCompositionByElement = new Dictionary<string, string>();
+            try
+            {
+                ElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
+                for (short elementId = 1; elementId <= ElementAndMassTools.ELEMENT_COUNT; elementId++)
+                {
+                    if (mComputationStats.PercentCompositions[elementId].PercentComposition > 0d)
+                    {
+                        string percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(mComputationStats.PercentCompositions[elementId].PercentComposition, mComputationStats.PercentCompositions[elementId].StdDeviation);
+                        string elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId);
+                        if (!percentCompositionByElement.ContainsKey(elementSymbol))
+                        {
+                            percentCompositionByElement.Add(elementSymbol, percentCompositionAndStDev);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error occurred while copying percent composition values.  Probably an uninitialized array.");
+            }
+
+            return percentCompositionByElement;
+        }
+
+        public short GetUsedElementCount()
+        {
+            // Returns the number of unique elements present in mStrFormula
+
+            short intTotalElements;
+            short intElementIndex;
+
+            // Determine # of elements in formula
+            intTotalElements = 0;
+            for (intElementIndex = 1; intElementIndex <= ElementAndMassTools.ELEMENT_COUNT; intElementIndex++)
+            {
+                // Increment .TotalElements if element is present
+                if (mComputationStats.Elements[intElementIndex].Used)
+                {
+                    intTotalElements = (short)(intTotalElements + 1);
+                }
+            }
+
+            return intTotalElements;
+        }
+
+        private void InitializeClass()
+        {
+            mStrFormula = "";
+            ValueForX = 1.0d;
+        }
+
+        public int SetFormula(string strNewFormula)
+        {
+            // Provides an alternate method for setting the formula
+            // Returns ErrorID (0 if no error)
+
+            Formula = strNewFormula;
+            return ErrorID;
+        }
+
+        private void UpdateErrorAndCaution()
+        {
+            mCautionDescription = ElementAndMassRoutines.GetCautionDescription();
+            mErrorDescription = ElementAndMassRoutines.GetErrorDescription();
+            mErrorID = ElementAndMassRoutines.GetErrorID();
+        }
+
+        private void UpdateMass()
+        {
+            mStrFormattedFormula = mStrFormula;
+
+            // mStrFormattedFormula is passed ByRef
+            // If gComputationOptions.CaseConversion = ccConvertCaseUp then mStrFormattedFormula is properly capitalized
+            // The mass of the compound is stored in mComputationStats.TotalMass
+            ElementAndMassRoutines.ParseFormulaPublic(ref mStrFormattedFormula, ref mComputationStats, false, ref mValueForX);
+            ElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
+            UpdateErrorAndCaution();
+        }
+
+        public bool XIsPresentAfterBracket()
+        {
+            bool XIsPresentAfterBracketRet = default;
+            short intCharLoc;
+            if (ElementAndMassRoutines.gComputationOptions.BracketsAsParentheses)
+            {
+                // Treating brackets as parentheses, therefore an x after a bracket isn't allowed
+                XIsPresentAfterBracketRet = false;
+            }
+            else
+            {
+                intCharLoc = (short)Strings.InStr(Strings.LCase(mStrFormattedFormula), "[x");
+                if (intCharLoc > 0)
+                {
+                    if (Strings.Mid(mStrFormattedFormula, intCharLoc + 1, 1) != "e")
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return XIsPresentAfterBracketRet;
+        }
+
+        public string CautionDescription
+        {
+            get
+            {
+                return mCautionDescription;
+            }
+        }
+
+        public float Charge
+        {
+            get
+            {
+                return mComputationStats.Charge;
+            }
+
+            set
+            {
+                mComputationStats.Charge = value;
+            }
+        }
+
+        public string ErrorDescription
+        {
+            get
+            {
+                return mErrorDescription;
+            }
+        }
+
+        public int ErrorID
+        {
+            get
+            {
+                return mErrorID;
+            }
+        }
+
+        public string Formula
+        {
+            get
+            {
+                return mStrFormula;
+            }
+
+            set
+            {
+                mStrFormula = value;
+
+                // Recompute the mass for this formula
+                // Updates Error and Caution statements if there is a problem
+                UpdateMass();
+            }
+        }
+
+        public string FormulaCapitalized
+        {
+            get
+            {
+                return mStrFormattedFormula;
+            }
+        }
+
+        public string FormulaRTF
+        {
+            get
+            {
+                return ElementAndMassRoutines.PlainTextToRtfInternal(FormulaCapitalized, false);
+            }
+        }
+
+        public double Mass
+        {
+            get
+            {
+                return get_Mass(true);
+            }
+        }
+
+        public double get_Mass(bool blnRecomputeMass)
+        {
+            if (blnRecomputeMass)
+                UpdateMass();
+            return mComputationStats.TotalMass;
+        }
+
+        public string MassAndStdDevString
+        {
+            get
+            {
+                return get_MassAndStdDevString(true);
+            }
+        }
+
+        public string get_MassAndStdDevString(bool blnRecomputeMass)
+        {
+            string MassAndStdDevStringRet = default;
+            if (blnRecomputeMass)
+                UpdateMass();
+            {
+                var withBlock = mComputationStats;
+                MassAndStdDevStringRet = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(withBlock.TotalMass, withBlock.StandardDeviation);
+            }
+
+            return MassAndStdDevStringRet;
+        }
+
+        public double StandardDeviation
+        {
+            get
+            {
+                return mComputationStats.StandardDeviation;
+            }
+        }
+
+        public double ValueForX
+        {
+            get
+            {
+                return mValueForX;
+            }
+
+            set
+            {
+                if (value >= 0d)
+                    mValueForX = value;
+            }
+        }
+    }
+}
