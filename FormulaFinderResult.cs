@@ -7,10 +7,12 @@ namespace MwtWinDll
         public readonly string EmpiricalFormula;
 
         public Dictionary<string, int> CountsByElement { get; private set; }
+
         public double Mass { get; set; }
         public double DeltaMass { get; set; }
         public bool DeltaMassIsPPM { get; set; }
         public double MZ { get; set; }
+
         public int ChargeState { get; set; }
 
         /// <summary>
@@ -25,11 +27,12 @@ namespace MwtWinDll
         {
             EmpiricalFormula = newEmpiricalFormula;
             CountsByElement = empiricalResultSymbols;
+
             SortKey = string.Empty;
             PercentComposition = new Dictionary<string, double>();
         }
 
-        public new string ToString()
+        public override string ToString()
         {
             if (DeltaMassIsPPM)
             {

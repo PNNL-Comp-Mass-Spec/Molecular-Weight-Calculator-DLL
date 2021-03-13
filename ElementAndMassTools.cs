@@ -308,6 +308,7 @@ namespace MwtWinDll
         /// </summary>
         private string[] MessageStatements;
         private int MessageStatementCount;
+
         private udtErrorDescriptionType ErrorParams = new udtErrorDescriptionType();
 
         /// <summary>
@@ -315,11 +316,14 @@ namespace MwtWinDll
         /// 1.00727649 for monoisotopic mass or 1.00739 for average mass
         /// </summary>
         private double mChargeCarrierMass;
+
         private emElementModeConstants mCurrentElementMode;
         private string mStrCautionDescription;
         private udtComputationStatsType mComputationStatsSaved = new udtComputationStatsType();
+
         private bool mShowErrorMessageDialogs;
         protected bool mAbortProcessing;
+
         protected bool mLogMessagesToFile;
         protected string mLogFilePath;
         protected System.IO.StreamWriter mLogFile;
@@ -554,34 +558,24 @@ namespace MwtWinDll
                 switch (adjacentNum)
                 {
                     case -1:
-                        {
-                            break;
-                        }
+                        break;
                     // No number, but no error
                     // That's OK
                     case -3:
-                        {
-                            // Error: No number after decimal point
-                            ErrorParams.ErrorID = 12;
-                            ErrorParams.ErrorPosition = curCharacter + symbolLength;
-                            break;
-                        }
-
+                        // Error: No number after decimal point
+                        ErrorParams.ErrorID = 12;
+                        ErrorParams.ErrorPosition = curCharacter + symbolLength;
+                        break;
                     case -4:
-                        {
-                            // Error: More than one decimal point
-                            ErrorParams.ErrorID = 27;
-                            ErrorParams.ErrorPosition = curCharacter + symbolLength;
-                            break;
-                        }
-
+                        // Error: More than one decimal point
+                        ErrorParams.ErrorID = 27;
+                        ErrorParams.ErrorPosition = curCharacter + symbolLength;
+                        break;
                     default:
-                        {
-                            // Error: General number error
-                            ErrorParams.ErrorID = 14;
-                            ErrorParams.ErrorPosition = curCharacter + symbolLength;
-                            break;
-                        }
+                        // Error: General number error
+                        ErrorParams.ErrorID = 14;
+                        ErrorParams.ErrorPosition = curCharacter + symbolLength;
+                        break;
                 }
             }
         }
@@ -623,24 +617,16 @@ namespace MwtWinDll
                         switch (Strings.UCase(Strings.Left(MasterSymbolsList[intIndex, 1], 1)) ?? "")
                         {
                             case "E": // An element
-                                {
-                                    eSymbolMatchType = smtSymbolMatchTypeConstants.smtElement;
-                                    break;
-                                }
-
+                                eSymbolMatchType = smtSymbolMatchTypeConstants.smtElement;
+                                break;
                             case "A": // An abbreviation or amino acid
-                                {
-                                    eSymbolMatchType = smtSymbolMatchTypeConstants.smtAbbreviation;
-                                    break;
-                                }
-
+                                eSymbolMatchType = smtSymbolMatchTypeConstants.smtAbbreviation;
+                                break;
                             default:
-                                {
-                                    // error
-                                    eSymbolMatchType = smtSymbolMatchTypeConstants.smtUnknown;
-                                    symbolReference = -1;
-                                    break;
-                                }
+                                // error
+                                eSymbolMatchType = smtSymbolMatchTypeConstants.smtUnknown;
+                                symbolReference = -1;
+                                break;
                         }
 
                         if (eSymbolMatchType != smtSymbolMatchTypeConstants.smtUnknown)
@@ -2746,24 +2732,13 @@ namespace MwtWinDll
                 switch (eElementStat)
                 {
                     case MolecularWeightTool.esElementStatsConstants.esMass:
-                        {
-                            return ElementStats[intElementID].Mass;
-                        }
-
+                        return ElementStats[intElementID].Mass;
                     case MolecularWeightTool.esElementStatsConstants.esCharge:
-                        {
-                            return ElementStats[intElementID].Charge;
-                        }
-
+                        return ElementStats[intElementID].Charge;
                     case MolecularWeightTool.esElementStatsConstants.esUncertainty:
-                        {
-                            return ElementStats[intElementID].Uncertainty;
-                        }
-
+                        return ElementStats[intElementID].Uncertainty;
                     default:
-                        {
-                            return 0d;
-                        }
+                        return 0d;
                 }
             }
             else
@@ -2837,10 +2812,8 @@ namespace MwtWinDll
                     case 260:
                     case 270:
                     case 300:
-                        {
-                            strMessage = GetMessageStatementInternal(350) + ": " + strMessage;
-                            break;
-                        }
+                        strMessage = GetMessageStatementInternal(350) + ": " + strMessage;
+                        break;
                 }
 
                 // Now append strAppendText
@@ -2904,37 +2877,23 @@ namespace MwtWinDll
                 switch (Convert.ToInt32(chFirstChar))
                 {
                     case 34: // " is not allowed
-                        {
-                            blnIsModSymbol = false;
-                            break;
-                        }
-
+                        blnIsModSymbol = false;
+                        break;
                     case var @case when 40 <= @case && @case <= 41: // ( and ) are not allowed
-                        {
-                            blnIsModSymbol = false;
-                            break;
-                        }
-
+                        blnIsModSymbol = false;
+                        break;
                     case var case1 when 44 <= case1 && case1 <= 62: // . and - and , and / and numbers and : and ; and < and = and > are not allowed
-                        {
-                            blnIsModSymbol = false;
-                            break;
-                        }
-
+                        blnIsModSymbol = false;
+                        break;
                     case var case2 when 33 <= case2 && case2 <= 43:
                     case var case3 when 63 <= case3 && case3 <= 64:
                     case var case4 when 94 <= case4 && case4 <= 96:
                     case 126:
-                        {
-                            blnIsModSymbol = true;
-                            break;
-                        }
-
+                        blnIsModSymbol = true;
+                        break;
                     default:
-                        {
-                            blnIsModSymbol = false;
-                            break;
-                        }
+                        blnIsModSymbol = false;
+                        break;
                 }
             }
             else
@@ -3047,28 +3006,17 @@ namespace MwtWinDll
             switch (eMessageType)
             {
                 case eMessageTypeConstants.Normal:
-                    {
-                        strMessageType = "Normal";
-                        break;
-                    }
-
+                    strMessageType = "Normal";
+                    break;
                 case eMessageTypeConstants.ErrorMsg:
-                    {
-                        strMessageType = "Error";
-                        break;
-                    }
-
+                    strMessageType = "Error";
+                    break;
                 case eMessageTypeConstants.Warning:
-                    {
-                        strMessageType = "Warning";
-                        break;
-                    }
-
+                    strMessageType = "Warning";
+                    break;
                 default:
-                    {
-                        strMessageType = "Unknown";
-                        break;
-                    }
+                    strMessageType = "Unknown";
+                    break;
             }
 
             if (mLogFile is null)
@@ -3730,443 +3678,436 @@ namespace MwtWinDll
             switch (eElementMode)
             {
                 case emElementModeConstants.emIntegerMass:
-                    {
-                        // Integer Isotopic Weights
-                        dblElemVals[1, 1] = 1d;
-                        dblElemVals[2, 1] = 4d;
-                        dblElemVals[3, 1] = 7d;
-                        dblElemVals[4, 1] = 9d;
-                        dblElemVals[5, 1] = 11d;
-                        dblElemVals[6, 1] = 12d;
-                        dblElemVals[7, 1] = 14d;
-                        dblElemVals[8, 1] = 16d;
-                        dblElemVals[9, 1] = 19d;
-                        dblElemVals[10, 1] = 20d;
-                        dblElemVals[11, 1] = 23d;
-                        dblElemVals[12, 1] = 24d;
-                        dblElemVals[13, 1] = 27d;
-                        dblElemVals[14, 1] = 28d;
-                        dblElemVals[15, 1] = 31d;
-                        dblElemVals[16, 1] = 32d;
-                        dblElemVals[17, 1] = 35d;
-                        dblElemVals[18, 1] = 40d;
-                        dblElemVals[19, 1] = 39d;
-                        dblElemVals[20, 1] = 40d;
-                        dblElemVals[21, 1] = 45d;
-                        dblElemVals[22, 1] = 48d;
-                        dblElemVals[23, 1] = 51d;
-                        dblElemVals[24, 1] = 52d;
-                        dblElemVals[25, 1] = 55d;
-                        dblElemVals[26, 1] = 56d;
-                        dblElemVals[27, 1] = 59d;
-                        dblElemVals[28, 1] = 58d;
-                        dblElemVals[29, 1] = 63d;
-                        dblElemVals[30, 1] = 64d;
-                        dblElemVals[31, 1] = 69d;
-                        dblElemVals[32, 1] = 72d;
-                        dblElemVals[33, 1] = 75d;
-                        dblElemVals[34, 1] = 80d;
-                        dblElemVals[35, 1] = 79d;
-                        dblElemVals[36, 1] = 84d;
-                        dblElemVals[37, 1] = 85d;
-                        dblElemVals[38, 1] = 88d;
-                        dblElemVals[39, 1] = 89d;
-                        dblElemVals[40, 1] = 90d;
-                        dblElemVals[41, 1] = 93d;
-                        dblElemVals[42, 1] = 98d;
-                        dblElemVals[43, 1] = 98d;
-                        dblElemVals[44, 1] = 102d;
-                        dblElemVals[45, 1] = 103d;
-                        dblElemVals[46, 1] = 106d;
-                        dblElemVals[47, 1] = 107d;
-                        dblElemVals[48, 1] = 114d;
-                        dblElemVals[49, 1] = 115d;
-                        dblElemVals[50, 1] = 120d;
-                        dblElemVals[51, 1] = 121d;
-                        dblElemVals[52, 1] = 130d;
-                        dblElemVals[53, 1] = 127d;
-                        dblElemVals[54, 1] = 132d;
-                        dblElemVals[55, 1] = 133d;
-                        dblElemVals[56, 1] = 138d;
-                        dblElemVals[57, 1] = 139d;
-                        dblElemVals[58, 1] = 140d;
-                        dblElemVals[59, 1] = 141d;
-                        dblElemVals[60, 1] = 142d;
-                        dblElemVals[61, 1] = 145d;
-                        dblElemVals[62, 1] = 152d;
-                        dblElemVals[63, 1] = 153d;
-                        dblElemVals[64, 1] = 158d;
-                        dblElemVals[65, 1] = 159d;
-                        dblElemVals[66, 1] = 164d;
-                        dblElemVals[67, 1] = 165d;
-                        dblElemVals[68, 1] = 166d;
-                        dblElemVals[69, 1] = 169d;
-                        dblElemVals[70, 1] = 174d;
-                        dblElemVals[71, 1] = 175d;
-                        dblElemVals[72, 1] = 180d;
-                        dblElemVals[73, 1] = 181d;
-                        dblElemVals[74, 1] = 184d;
-                        dblElemVals[75, 1] = 187d;
-                        dblElemVals[76, 1] = 192d;
-                        dblElemVals[77, 1] = 193d;
-                        dblElemVals[78, 1] = 195d;
-                        dblElemVals[79, 1] = 197d;
-                        dblElemVals[80, 1] = 202d;
-                        dblElemVals[81, 1] = 205d;
-                        dblElemVals[82, 1] = 208d;
-                        dblElemVals[83, 1] = 209d;
-                        dblElemVals[84, 1] = 209d;
-                        dblElemVals[85, 1] = 210d;
-                        dblElemVals[86, 1] = 222d;
-                        dblElemVals[87, 1] = 223d;
-                        dblElemVals[88, 1] = 227d;
-                        dblElemVals[89, 1] = 227d;
-                        dblElemVals[90, 1] = 232d;
-                        dblElemVals[91, 1] = 231d;
-                        dblElemVals[92, 1] = 238d;
-                        dblElemVals[93, 1] = 237d;
-                        dblElemVals[94, 1] = 244d;
-                        dblElemVals[95, 1] = 243d;
-                        dblElemVals[96, 1] = 247d;
-                        dblElemVals[97, 1] = 247d;
-                        dblElemVals[98, 1] = 251d;
-                        dblElemVals[99, 1] = 252d;
-                        dblElemVals[100, 1] = 257d;
-                        dblElemVals[101, 1] = 258d;
-                        dblElemVals[102, 1] = 269d;
-                        dblElemVals[103, 1] = 260d;
-                        break;
-                    }
+                    // Integer Isotopic Weights
+                    dblElemVals[1, 1] = 1d;
+                    dblElemVals[2, 1] = 4d;
+                    dblElemVals[3, 1] = 7d;
+                    dblElemVals[4, 1] = 9d;
+                    dblElemVals[5, 1] = 11d;
+                    dblElemVals[6, 1] = 12d;
+                    dblElemVals[7, 1] = 14d;
+                    dblElemVals[8, 1] = 16d;
+                    dblElemVals[9, 1] = 19d;
+                    dblElemVals[10, 1] = 20d;
+                    dblElemVals[11, 1] = 23d;
+                    dblElemVals[12, 1] = 24d;
+                    dblElemVals[13, 1] = 27d;
+                    dblElemVals[14, 1] = 28d;
+                    dblElemVals[15, 1] = 31d;
+                    dblElemVals[16, 1] = 32d;
+                    dblElemVals[17, 1] = 35d;
+                    dblElemVals[18, 1] = 40d;
+                    dblElemVals[19, 1] = 39d;
+                    dblElemVals[20, 1] = 40d;
+                    dblElemVals[21, 1] = 45d;
+                    dblElemVals[22, 1] = 48d;
+                    dblElemVals[23, 1] = 51d;
+                    dblElemVals[24, 1] = 52d;
+                    dblElemVals[25, 1] = 55d;
+                    dblElemVals[26, 1] = 56d;
+                    dblElemVals[27, 1] = 59d;
+                    dblElemVals[28, 1] = 58d;
+                    dblElemVals[29, 1] = 63d;
+                    dblElemVals[30, 1] = 64d;
+                    dblElemVals[31, 1] = 69d;
+                    dblElemVals[32, 1] = 72d;
+                    dblElemVals[33, 1] = 75d;
+                    dblElemVals[34, 1] = 80d;
+                    dblElemVals[35, 1] = 79d;
+                    dblElemVals[36, 1] = 84d;
+                    dblElemVals[37, 1] = 85d;
+                    dblElemVals[38, 1] = 88d;
+                    dblElemVals[39, 1] = 89d;
+                    dblElemVals[40, 1] = 90d;
+                    dblElemVals[41, 1] = 93d;
+                    dblElemVals[42, 1] = 98d;
+                    dblElemVals[43, 1] = 98d;
+                    dblElemVals[44, 1] = 102d;
+                    dblElemVals[45, 1] = 103d;
+                    dblElemVals[46, 1] = 106d;
+                    dblElemVals[47, 1] = 107d;
+                    dblElemVals[48, 1] = 114d;
+                    dblElemVals[49, 1] = 115d;
+                    dblElemVals[50, 1] = 120d;
+                    dblElemVals[51, 1] = 121d;
+                    dblElemVals[52, 1] = 130d;
+                    dblElemVals[53, 1] = 127d;
+                    dblElemVals[54, 1] = 132d;
+                    dblElemVals[55, 1] = 133d;
+                    dblElemVals[56, 1] = 138d;
+                    dblElemVals[57, 1] = 139d;
+                    dblElemVals[58, 1] = 140d;
+                    dblElemVals[59, 1] = 141d;
+                    dblElemVals[60, 1] = 142d;
+                    dblElemVals[61, 1] = 145d;
+                    dblElemVals[62, 1] = 152d;
+                    dblElemVals[63, 1] = 153d;
+                    dblElemVals[64, 1] = 158d;
+                    dblElemVals[65, 1] = 159d;
+                    dblElemVals[66, 1] = 164d;
+                    dblElemVals[67, 1] = 165d;
+                    dblElemVals[68, 1] = 166d;
+                    dblElemVals[69, 1] = 169d;
+                    dblElemVals[70, 1] = 174d;
+                    dblElemVals[71, 1] = 175d;
+                    dblElemVals[72, 1] = 180d;
+                    dblElemVals[73, 1] = 181d;
+                    dblElemVals[74, 1] = 184d;
+                    dblElemVals[75, 1] = 187d;
+                    dblElemVals[76, 1] = 192d;
+                    dblElemVals[77, 1] = 193d;
+                    dblElemVals[78, 1] = 195d;
+                    dblElemVals[79, 1] = 197d;
+                    dblElemVals[80, 1] = 202d;
+                    dblElemVals[81, 1] = 205d;
+                    dblElemVals[82, 1] = 208d;
+                    dblElemVals[83, 1] = 209d;
+                    dblElemVals[84, 1] = 209d;
+                    dblElemVals[85, 1] = 210d;
+                    dblElemVals[86, 1] = 222d;
+                    dblElemVals[87, 1] = 223d;
+                    dblElemVals[88, 1] = 227d;
+                    dblElemVals[89, 1] = 227d;
+                    dblElemVals[90, 1] = 232d;
+                    dblElemVals[91, 1] = 231d;
+                    dblElemVals[92, 1] = 238d;
+                    dblElemVals[93, 1] = 237d;
+                    dblElemVals[94, 1] = 244d;
+                    dblElemVals[95, 1] = 243d;
+                    dblElemVals[96, 1] = 247d;
+                    dblElemVals[97, 1] = 247d;
+                    dblElemVals[98, 1] = 251d;
+                    dblElemVals[99, 1] = 252d;
+                    dblElemVals[100, 1] = 257d;
+                    dblElemVals[101, 1] = 258d;
+                    dblElemVals[102, 1] = 269d;
+                    dblElemVals[103, 1] = 260d;
+                    break;
 
                 // Unused elements
                 // data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
 
                 case emElementModeConstants.emIsotopicMass:
-                    {
-                        // isotopic Element Weights
-                        dblElemVals[1, 1] = 1.0078246d;
-                        dblElemVals[2, 1] = 4.0026029d;
-                        dblElemVals[3, 1] = 7.016005d;
-                        dblElemVals[4, 1] = 9.012183d;
-                        dblElemVals[5, 1] = 11.009305d;
-                        dblElemVals[6, 1] = 12d;
-                        dblElemVals[7, 1] = 14.003074d;
-                        dblElemVals[8, 1] = 15.994915d;
-                        dblElemVals[9, 1] = 18.9984032d;
-                        dblElemVals[10, 1] = 19.992439d;
-                        dblElemVals[11, 1] = 22.98977d;
-                        dblElemVals[12, 1] = 23.98505d;
-                        dblElemVals[13, 1] = 26.981541d;
-                        dblElemVals[14, 1] = 27.976928d;
-                        dblElemVals[15, 1] = 30.973763d;
-                        dblElemVals[16, 1] = 31.972072d;
-                        dblElemVals[17, 1] = 34.968853d;
-                        dblElemVals[18, 1] = 39.962383d;
-                        dblElemVals[19, 1] = 38.963708d;
-                        dblElemVals[20, 1] = 39.962591d;
-                        dblElemVals[21, 1] = 44.955914d;
-                        dblElemVals[22, 1] = 47.947947d;
-                        dblElemVals[23, 1] = 50.943963d;
-                        dblElemVals[24, 1] = 51.94051d;
-                        dblElemVals[25, 1] = 54.938046d;
-                        dblElemVals[26, 1] = 55.934939d;
-                        dblElemVals[27, 1] = 58.933198d;
-                        dblElemVals[28, 1] = 57.935347d;
-                        dblElemVals[29, 1] = 62.929599d;
-                        dblElemVals[30, 1] = 63.929145d;
-                        dblElemVals[31, 1] = 68.925581d;
-                        dblElemVals[32, 1] = 71.92208d;
-                        dblElemVals[33, 1] = 74.921596d;
-                        dblElemVals[34, 1] = 79.916521d;
-                        dblElemVals[35, 1] = 78.918336d;
-                        dblElemVals[36, 1] = 83.911506d;
-                        dblElemVals[37, 1] = 84.9118d;
-                        dblElemVals[38, 1] = 87.905625d;
-                        dblElemVals[39, 1] = 88.905856d;
-                        dblElemVals[40, 1] = 89.904708d;
-                        dblElemVals[41, 1] = 92.906378d;
-                        dblElemVals[42, 1] = 97.905405d;
-                        dblElemVals[43, 1] = 98d;
-                        dblElemVals[44, 1] = 101.90434d;
-                        dblElemVals[45, 1] = 102.905503d;
-                        dblElemVals[46, 1] = 105.903475d;
-                        dblElemVals[47, 1] = 106.905095d;
-                        dblElemVals[48, 1] = 113.903361d;
-                        dblElemVals[49, 1] = 114.903875d;
-                        dblElemVals[50, 1] = 119.902199d;
-                        dblElemVals[51, 1] = 120.903824d;
-                        dblElemVals[52, 1] = 129.906229d;
-                        dblElemVals[53, 1] = 126.904477d;
-                        dblElemVals[54, 1] = 131.904148d;
-                        dblElemVals[55, 1] = 132.905433d;
-                        dblElemVals[56, 1] = 137.905236d;
-                        dblElemVals[57, 1] = 138.906355d;
-                        dblElemVals[58, 1] = 139.905442d;
-                        dblElemVals[59, 1] = 140.907657d;
-                        dblElemVals[60, 1] = 141.907731d;
-                        dblElemVals[61, 1] = 145d;
-                        dblElemVals[62, 1] = 151.919741d;
-                        dblElemVals[63, 1] = 152.921243d;
-                        dblElemVals[64, 1] = 157.924111d;
-                        dblElemVals[65, 1] = 158.92535d;
-                        dblElemVals[66, 1] = 163.929183d;
-                        dblElemVals[67, 1] = 164.930332d;
-                        dblElemVals[68, 1] = 165.930305d;
-                        dblElemVals[69, 1] = 168.934225d;
-                        dblElemVals[70, 1] = 173.938873d;
-                        dblElemVals[71, 1] = 174.940785d;
-                        dblElemVals[72, 1] = 179.946561d;
-                        dblElemVals[73, 1] = 180.948014d;
-                        dblElemVals[74, 1] = 183.950953d;
-                        dblElemVals[75, 1] = 186.955765d;
-                        dblElemVals[76, 1] = 191.960603d;
-                        dblElemVals[77, 1] = 192.962942d;
-                        dblElemVals[78, 1] = 194.964785d;
-                        dblElemVals[79, 1] = 196.96656d;
-                        dblElemVals[80, 1] = 201.970632d;
-                        dblElemVals[81, 1] = 204.97441d;
-                        dblElemVals[82, 1] = 207.976641d;
-                        dblElemVals[83, 1] = 208.980388d;
-                        dblElemVals[84, 1] = 209d;
-                        dblElemVals[85, 1] = 210d;
-                        dblElemVals[86, 1] = 222d;
-                        dblElemVals[87, 1] = 223d;
-                        dblElemVals[88, 1] = 227d;
-                        dblElemVals[89, 1] = 227d;
-                        dblElemVals[90, 1] = 232.038054d;
-                        dblElemVals[91, 1] = 231d;
-                        dblElemVals[92, 1] = 238.050786d;
-                        dblElemVals[93, 1] = 237d;
-                        dblElemVals[94, 1] = 244d;
-                        dblElemVals[95, 1] = 243d;
-                        dblElemVals[96, 1] = 247d;
-                        dblElemVals[97, 1] = 247d;
-                        dblElemVals[98, 1] = 251d;
-                        dblElemVals[99, 1] = 252d;
-                        dblElemVals[100, 1] = 257d;
-                        dblElemVals[101, 1] = 258d;
-                        dblElemVals[102, 1] = 269d;
+                    // isotopic Element Weights
+                    dblElemVals[1, 1] = 1.0078246d;
+                    dblElemVals[2, 1] = 4.0026029d;
+                    dblElemVals[3, 1] = 7.016005d;
+                    dblElemVals[4, 1] = 9.012183d;
+                    dblElemVals[5, 1] = 11.009305d;
+                    dblElemVals[6, 1] = 12d;
+                    dblElemVals[7, 1] = 14.003074d;
+                    dblElemVals[8, 1] = 15.994915d;
+                    dblElemVals[9, 1] = 18.9984032d;
+                    dblElemVals[10, 1] = 19.992439d;
+                    dblElemVals[11, 1] = 22.98977d;
+                    dblElemVals[12, 1] = 23.98505d;
+                    dblElemVals[13, 1] = 26.981541d;
+                    dblElemVals[14, 1] = 27.976928d;
+                    dblElemVals[15, 1] = 30.973763d;
+                    dblElemVals[16, 1] = 31.972072d;
+                    dblElemVals[17, 1] = 34.968853d;
+                    dblElemVals[18, 1] = 39.962383d;
+                    dblElemVals[19, 1] = 38.963708d;
+                    dblElemVals[20, 1] = 39.962591d;
+                    dblElemVals[21, 1] = 44.955914d;
+                    dblElemVals[22, 1] = 47.947947d;
+                    dblElemVals[23, 1] = 50.943963d;
+                    dblElemVals[24, 1] = 51.94051d;
+                    dblElemVals[25, 1] = 54.938046d;
+                    dblElemVals[26, 1] = 55.934939d;
+                    dblElemVals[27, 1] = 58.933198d;
+                    dblElemVals[28, 1] = 57.935347d;
+                    dblElemVals[29, 1] = 62.929599d;
+                    dblElemVals[30, 1] = 63.929145d;
+                    dblElemVals[31, 1] = 68.925581d;
+                    dblElemVals[32, 1] = 71.92208d;
+                    dblElemVals[33, 1] = 74.921596d;
+                    dblElemVals[34, 1] = 79.916521d;
+                    dblElemVals[35, 1] = 78.918336d;
+                    dblElemVals[36, 1] = 83.911506d;
+                    dblElemVals[37, 1] = 84.9118d;
+                    dblElemVals[38, 1] = 87.905625d;
+                    dblElemVals[39, 1] = 88.905856d;
+                    dblElemVals[40, 1] = 89.904708d;
+                    dblElemVals[41, 1] = 92.906378d;
+                    dblElemVals[42, 1] = 97.905405d;
+                    dblElemVals[43, 1] = 98d;
+                    dblElemVals[44, 1] = 101.90434d;
+                    dblElemVals[45, 1] = 102.905503d;
+                    dblElemVals[46, 1] = 105.903475d;
+                    dblElemVals[47, 1] = 106.905095d;
+                    dblElemVals[48, 1] = 113.903361d;
+                    dblElemVals[49, 1] = 114.903875d;
+                    dblElemVals[50, 1] = 119.902199d;
+                    dblElemVals[51, 1] = 120.903824d;
+                    dblElemVals[52, 1] = 129.906229d;
+                    dblElemVals[53, 1] = 126.904477d;
+                    dblElemVals[54, 1] = 131.904148d;
+                    dblElemVals[55, 1] = 132.905433d;
+                    dblElemVals[56, 1] = 137.905236d;
+                    dblElemVals[57, 1] = 138.906355d;
+                    dblElemVals[58, 1] = 139.905442d;
+                    dblElemVals[59, 1] = 140.907657d;
+                    dblElemVals[60, 1] = 141.907731d;
+                    dblElemVals[61, 1] = 145d;
+                    dblElemVals[62, 1] = 151.919741d;
+                    dblElemVals[63, 1] = 152.921243d;
+                    dblElemVals[64, 1] = 157.924111d;
+                    dblElemVals[65, 1] = 158.92535d;
+                    dblElemVals[66, 1] = 163.929183d;
+                    dblElemVals[67, 1] = 164.930332d;
+                    dblElemVals[68, 1] = 165.930305d;
+                    dblElemVals[69, 1] = 168.934225d;
+                    dblElemVals[70, 1] = 173.938873d;
+                    dblElemVals[71, 1] = 174.940785d;
+                    dblElemVals[72, 1] = 179.946561d;
+                    dblElemVals[73, 1] = 180.948014d;
+                    dblElemVals[74, 1] = 183.950953d;
+                    dblElemVals[75, 1] = 186.955765d;
+                    dblElemVals[76, 1] = 191.960603d;
+                    dblElemVals[77, 1] = 192.962942d;
+                    dblElemVals[78, 1] = 194.964785d;
+                    dblElemVals[79, 1] = 196.96656d;
+                    dblElemVals[80, 1] = 201.970632d;
+                    dblElemVals[81, 1] = 204.97441d;
+                    dblElemVals[82, 1] = 207.976641d;
+                    dblElemVals[83, 1] = 208.980388d;
+                    dblElemVals[84, 1] = 209d;
+                    dblElemVals[85, 1] = 210d;
+                    dblElemVals[86, 1] = 222d;
+                    dblElemVals[87, 1] = 223d;
+                    dblElemVals[88, 1] = 227d;
+                    dblElemVals[89, 1] = 227d;
+                    dblElemVals[90, 1] = 232.038054d;
+                    dblElemVals[91, 1] = 231d;
+                    dblElemVals[92, 1] = 238.050786d;
+                    dblElemVals[93, 1] = 237d;
+                    dblElemVals[94, 1] = 244d;
+                    dblElemVals[95, 1] = 243d;
+                    dblElemVals[96, 1] = 247d;
+                    dblElemVals[97, 1] = 247d;
+                    dblElemVals[98, 1] = 251d;
+                    dblElemVals[99, 1] = 252d;
+                    dblElemVals[100, 1] = 257d;
+                    dblElemVals[101, 1] = 258d;
+                    dblElemVals[102, 1] = 269d;
 
-                        // Unused elements
-                        // data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
+                    // Unused elements
+                    // data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
 
-                        dblElemVals[103, 1] = 260d;
-                        break;
-                    }
+                    dblElemVals[103, 1] = 260d;
+                    break;
 
                 default:
-                    {
-                        // Weight                           Uncertainty
-                        // Average Element Weights
-                        dblElemVals[1, 1] = 1.00794d;
-                        dblElemVals[1, 2] = 0.00007d;
-                        dblElemVals[2, 1] = 4.002602d;
-                        dblElemVals[2, 2] = 0.000002d;
-                        dblElemVals[3, 1] = 6.941d;
-                        dblElemVals[3, 2] = 0.002d;
-                        dblElemVals[4, 1] = 9.012182d;
-                        dblElemVals[4, 2] = 0.000003d;
-                        dblElemVals[5, 1] = 10.811d;
-                        dblElemVals[5, 2] = 0.007d;
-                        dblElemVals[6, 1] = 12.0107d;
-                        dblElemVals[6, 2] = 0.0008d;
-                        dblElemVals[7, 1] = 14.00674d;
-                        dblElemVals[7, 2] = 0.00007d;
-                        dblElemVals[8, 1] = 15.9994d;
-                        dblElemVals[8, 2] = 0.0003d;
-                        dblElemVals[9, 1] = 18.9984032d;
-                        dblElemVals[9, 2] = 0.0000005d;
-                        dblElemVals[10, 1] = 20.1797d;
-                        dblElemVals[10, 2] = 0.0006d;
-                        dblElemVals[11, 1] = 22.98977d;
-                        dblElemVals[11, 2] = 0.000002d;
-                        dblElemVals[12, 1] = 24.305d;
-                        dblElemVals[12, 2] = 0.0006d;
-                        dblElemVals[13, 1] = 26.981538d;
-                        dblElemVals[13, 2] = 0.000002d;
-                        dblElemVals[14, 1] = 28.0855d;
-                        dblElemVals[14, 2] = 0.0003d;
-                        dblElemVals[15, 1] = 30.973761d;
-                        dblElemVals[15, 2] = 0.000002d;
-                        dblElemVals[16, 1] = 32.066d;
-                        dblElemVals[16, 2] = 0.006d;
-                        dblElemVals[17, 1] = 35.4527d;
-                        dblElemVals[17, 2] = 0.0009d;
-                        dblElemVals[18, 1] = 39.948d;
-                        dblElemVals[18, 2] = 0.001d;
-                        dblElemVals[19, 1] = 39.0983d;
-                        dblElemVals[19, 2] = 0.0001d;
-                        dblElemVals[20, 1] = 40.078d;
-                        dblElemVals[20, 2] = 0.004d;
-                        dblElemVals[21, 1] = 44.95591d;
-                        dblElemVals[21, 2] = 0.000008d;
-                        dblElemVals[22, 1] = 47.867d;
-                        dblElemVals[22, 2] = 0.001d;
-                        dblElemVals[23, 1] = 50.9415d;
-                        dblElemVals[23, 2] = 0.0001d;
-                        dblElemVals[24, 1] = 51.9961d;
-                        dblElemVals[24, 2] = 0.0006d;
-                        dblElemVals[25, 1] = 54.938049d;
-                        dblElemVals[25, 2] = 0.000009d;
-                        dblElemVals[26, 1] = 55.845d;
-                        dblElemVals[26, 2] = 0.002d;
-                        dblElemVals[27, 1] = 58.9332d;
-                        dblElemVals[27, 2] = 0.000009d;
-                        dblElemVals[28, 1] = 58.6934d;
-                        dblElemVals[28, 2] = 0.0002d;
-                        dblElemVals[29, 1] = 63.546d;
-                        dblElemVals[29, 2] = 0.003d;
-                        dblElemVals[30, 1] = 65.39d;
-                        dblElemVals[30, 2] = 0.02d;
-                        dblElemVals[31, 1] = 69.723d;
-                        dblElemVals[31, 2] = 0.001d;
-                        dblElemVals[32, 1] = 72.61d;
-                        dblElemVals[32, 2] = 0.02d;
-                        dblElemVals[33, 1] = 74.9216d;
-                        dblElemVals[33, 2] = 0.00002d;
-                        dblElemVals[34, 1] = 78.96d;
-                        dblElemVals[34, 2] = 0.03d;
-                        dblElemVals[35, 1] = 79.904d;
-                        dblElemVals[35, 2] = 0.001d;
-                        dblElemVals[36, 1] = 83.8d;
-                        dblElemVals[36, 2] = 0.01d;
-                        dblElemVals[37, 1] = 85.4678d;
-                        dblElemVals[37, 2] = 0.0003d;
-                        dblElemVals[38, 1] = 87.62d;
-                        dblElemVals[38, 2] = 0.01d;
-                        dblElemVals[39, 1] = 88.90585d;
-                        dblElemVals[39, 2] = 0.00002d;
-                        dblElemVals[40, 1] = 91.224d;
-                        dblElemVals[40, 2] = 0.002d;
-                        dblElemVals[41, 1] = 92.90638d;
-                        dblElemVals[41, 2] = 0.00002d;
-                        dblElemVals[42, 1] = 95.94d;
-                        dblElemVals[42, 2] = 0.01d;
-                        dblElemVals[43, 1] = 97.9072d;
-                        dblElemVals[43, 2] = 0.0005d;
-                        dblElemVals[44, 1] = 101.07d;
-                        dblElemVals[44, 2] = 0.02d;
-                        dblElemVals[45, 1] = 102.9055d;
-                        dblElemVals[45, 2] = 0.00002d;
-                        dblElemVals[46, 1] = 106.42d;
-                        dblElemVals[46, 2] = 0.01d;
-                        dblElemVals[47, 1] = 107.8682d;
-                        dblElemVals[47, 2] = 0.0002d;
-                        dblElemVals[48, 1] = 112.411d;
-                        dblElemVals[48, 2] = 0.008d;
-                        dblElemVals[49, 1] = 114.818d;
-                        dblElemVals[49, 2] = 0.003d;
-                        dblElemVals[50, 1] = 118.71d;
-                        dblElemVals[50, 2] = 0.007d;
-                        dblElemVals[51, 1] = 121.76d;
-                        dblElemVals[51, 2] = 0.001d;
-                        dblElemVals[52, 1] = 127.6d;
-                        dblElemVals[52, 2] = 0.03d;
-                        dblElemVals[53, 1] = 126.90447d;
-                        dblElemVals[53, 2] = 0.00003d;
-                        dblElemVals[54, 1] = 131.29d;
-                        dblElemVals[54, 2] = 0.02d;
-                        dblElemVals[55, 1] = 132.90545d;
-                        dblElemVals[55, 2] = 0.00002d;
-                        dblElemVals[56, 1] = 137.327d;
-                        dblElemVals[56, 2] = 0.007d;
-                        dblElemVals[57, 1] = 138.9055d;
-                        dblElemVals[57, 2] = 0.0002d;
-                        dblElemVals[58, 1] = 140.116d;
-                        dblElemVals[58, 2] = 0.001d;
-                        dblElemVals[59, 1] = 140.90765d;
-                        dblElemVals[59, 2] = 0.00002d;
-                        dblElemVals[60, 1] = 144.24d;
-                        dblElemVals[60, 2] = 0.03d;
-                        dblElemVals[61, 1] = 144.9127d;
-                        dblElemVals[61, 2] = 0.0005d;
-                        dblElemVals[62, 1] = 150.36d;
-                        dblElemVals[62, 2] = 0.03d;
-                        dblElemVals[63, 1] = 151.964d;
-                        dblElemVals[63, 2] = 0.001d;
-                        dblElemVals[64, 1] = 157.25d;
-                        dblElemVals[64, 2] = 0.03d;
-                        dblElemVals[65, 1] = 158.92534d;
-                        dblElemVals[65, 2] = 0.00002d;
-                        dblElemVals[66, 1] = 162.5d;
-                        dblElemVals[66, 2] = 0.03d;
-                        dblElemVals[67, 1] = 164.93032d;
-                        dblElemVals[67, 2] = 0.00002d;
-                        dblElemVals[68, 1] = 167.26d;
-                        dblElemVals[68, 2] = 0.03d;
-                        dblElemVals[69, 1] = 168.93421d;
-                        dblElemVals[69, 2] = 0.00002d;
-                        dblElemVals[70, 1] = 173.04d;
-                        dblElemVals[70, 2] = 0.03d;
-                        dblElemVals[71, 1] = 174.967d;
-                        dblElemVals[71, 2] = 0.001d;
-                        dblElemVals[72, 1] = 178.49d;
-                        dblElemVals[72, 2] = 0.02d;
-                        dblElemVals[73, 1] = 180.9479d;
-                        dblElemVals[73, 2] = 0.0001d;
-                        dblElemVals[74, 1] = 183.84d;
-                        dblElemVals[74, 2] = 0.01d;
-                        dblElemVals[75, 1] = 186.207d;
-                        dblElemVals[75, 2] = 0.001d;
-                        dblElemVals[76, 1] = 190.23d;
-                        dblElemVals[76, 2] = 0.03d;
-                        dblElemVals[77, 1] = 192.217d;
-                        dblElemVals[77, 2] = 0.03d;
-                        dblElemVals[78, 1] = 195.078d;
-                        dblElemVals[78, 2] = 0.002d;
-                        dblElemVals[79, 1] = 196.96655d;
-                        dblElemVals[79, 2] = 0.00002d;
-                        dblElemVals[80, 1] = 200.59d;
-                        dblElemVals[80, 2] = 0.02d;
-                        dblElemVals[81, 1] = 204.3833d;
-                        dblElemVals[81, 2] = 0.0002d;
-                        dblElemVals[82, 1] = 207.2d;
-                        dblElemVals[82, 2] = 0.1d;
-                        dblElemVals[83, 1] = 208.98038d;
-                        dblElemVals[83, 2] = 0.00002d;
-                        dblElemVals[84, 1] = 208.9824d;
-                        dblElemVals[84, 2] = 0.0005d;
-                        dblElemVals[85, 1] = 209.9871d;
-                        dblElemVals[85, 2] = 0.0005d;
-                        dblElemVals[86, 1] = 222.0176d;
-                        dblElemVals[86, 2] = 0.0005d;
-                        dblElemVals[87, 1] = 223.0197d;
-                        dblElemVals[87, 2] = 0.0005d;
-                        dblElemVals[88, 1] = 226.0254d;
-                        dblElemVals[88, 2] = 0.0001d;
-                        dblElemVals[89, 1] = 227.0278d;
-                        dblElemVals[89, 2] = 0.00001d;
-                        dblElemVals[90, 1] = 232.0381d;
-                        dblElemVals[90, 2] = 0.0001d;
-                        dblElemVals[91, 1] = 231.03588d;
-                        dblElemVals[91, 2] = 0.00002d;
-                        dblElemVals[92, 1] = 238.0289d;
-                        dblElemVals[92, 2] = 0.0001d;
-                        dblElemVals[93, 1] = 237.0482d;
-                        dblElemVals[93, 2] = 0.0005d;
-                        dblElemVals[94, 1] = 244.0642d;
-                        dblElemVals[94, 2] = 0.0005d;
-                        dblElemVals[95, 1] = 243.0614d;
-                        dblElemVals[95, 2] = 0.0005d;
-                        dblElemVals[96, 1] = 247.0703d;
-                        dblElemVals[96, 2] = 0.0005d;
-                        dblElemVals[97, 1] = 247.0703d;
-                        dblElemVals[97, 2] = 0.0005d;
-                        dblElemVals[98, 1] = 251.0796d;
-                        dblElemVals[98, 2] = 0.0005d;
-                        dblElemVals[99, 1] = 252.083d;
-                        dblElemVals[99, 2] = 0.005d;
-                        dblElemVals[100, 1] = 257.0951d;
-                        dblElemVals[100, 2] = 0.0005d;
-                        dblElemVals[101, 1] = 258.1d;
-                        dblElemVals[101, 2] = 0.05d;
-                        dblElemVals[102, 1] = 259.1009d;
-                        dblElemVals[102, 2] = 0.0005d;
-                        dblElemVals[103, 1] = 262.11d;
-                        dblElemVals[103, 2] = 0.05d;
-                        break;
-                    }
-
+                    // Weight                           Uncertainty
+                    // Average Element Weights
+                    dblElemVals[1, 1] = 1.00794d;
+                    dblElemVals[1, 2] = 0.00007d;
+                    dblElemVals[2, 1] = 4.002602d;
+                    dblElemVals[2, 2] = 0.000002d;
+                    dblElemVals[3, 1] = 6.941d;
+                    dblElemVals[3, 2] = 0.002d;
+                    dblElemVals[4, 1] = 9.012182d;
+                    dblElemVals[4, 2] = 0.000003d;
+                    dblElemVals[5, 1] = 10.811d;
+                    dblElemVals[5, 2] = 0.007d;
+                    dblElemVals[6, 1] = 12.0107d;
+                    dblElemVals[6, 2] = 0.0008d;
+                    dblElemVals[7, 1] = 14.00674d;
+                    dblElemVals[7, 2] = 0.00007d;
+                    dblElemVals[8, 1] = 15.9994d;
+                    dblElemVals[8, 2] = 0.0003d;
+                    dblElemVals[9, 1] = 18.9984032d;
+                    dblElemVals[9, 2] = 0.0000005d;
+                    dblElemVals[10, 1] = 20.1797d;
+                    dblElemVals[10, 2] = 0.0006d;
+                    dblElemVals[11, 1] = 22.98977d;
+                    dblElemVals[11, 2] = 0.000002d;
+                    dblElemVals[12, 1] = 24.305d;
+                    dblElemVals[12, 2] = 0.0006d;
+                    dblElemVals[13, 1] = 26.981538d;
+                    dblElemVals[13, 2] = 0.000002d;
+                    dblElemVals[14, 1] = 28.0855d;
+                    dblElemVals[14, 2] = 0.0003d;
+                    dblElemVals[15, 1] = 30.973761d;
+                    dblElemVals[15, 2] = 0.000002d;
+                    dblElemVals[16, 1] = 32.066d;
+                    dblElemVals[16, 2] = 0.006d;
+                    dblElemVals[17, 1] = 35.4527d;
+                    dblElemVals[17, 2] = 0.0009d;
+                    dblElemVals[18, 1] = 39.948d;
+                    dblElemVals[18, 2] = 0.001d;
+                    dblElemVals[19, 1] = 39.0983d;
+                    dblElemVals[19, 2] = 0.0001d;
+                    dblElemVals[20, 1] = 40.078d;
+                    dblElemVals[20, 2] = 0.004d;
+                    dblElemVals[21, 1] = 44.95591d;
+                    dblElemVals[21, 2] = 0.000008d;
+                    dblElemVals[22, 1] = 47.867d;
+                    dblElemVals[22, 2] = 0.001d;
+                    dblElemVals[23, 1] = 50.9415d;
+                    dblElemVals[23, 2] = 0.0001d;
+                    dblElemVals[24, 1] = 51.9961d;
+                    dblElemVals[24, 2] = 0.0006d;
+                    dblElemVals[25, 1] = 54.938049d;
+                    dblElemVals[25, 2] = 0.000009d;
+                    dblElemVals[26, 1] = 55.845d;
+                    dblElemVals[26, 2] = 0.002d;
+                    dblElemVals[27, 1] = 58.9332d;
+                    dblElemVals[27, 2] = 0.000009d;
+                    dblElemVals[28, 1] = 58.6934d;
+                    dblElemVals[28, 2] = 0.0002d;
+                    dblElemVals[29, 1] = 63.546d;
+                    dblElemVals[29, 2] = 0.003d;
+                    dblElemVals[30, 1] = 65.39d;
+                    dblElemVals[30, 2] = 0.02d;
+                    dblElemVals[31, 1] = 69.723d;
+                    dblElemVals[31, 2] = 0.001d;
+                    dblElemVals[32, 1] = 72.61d;
+                    dblElemVals[32, 2] = 0.02d;
+                    dblElemVals[33, 1] = 74.9216d;
+                    dblElemVals[33, 2] = 0.00002d;
+                    dblElemVals[34, 1] = 78.96d;
+                    dblElemVals[34, 2] = 0.03d;
+                    dblElemVals[35, 1] = 79.904d;
+                    dblElemVals[35, 2] = 0.001d;
+                    dblElemVals[36, 1] = 83.8d;
+                    dblElemVals[36, 2] = 0.01d;
+                    dblElemVals[37, 1] = 85.4678d;
+                    dblElemVals[37, 2] = 0.0003d;
+                    dblElemVals[38, 1] = 87.62d;
+                    dblElemVals[38, 2] = 0.01d;
+                    dblElemVals[39, 1] = 88.90585d;
+                    dblElemVals[39, 2] = 0.00002d;
+                    dblElemVals[40, 1] = 91.224d;
+                    dblElemVals[40, 2] = 0.002d;
+                    dblElemVals[41, 1] = 92.90638d;
+                    dblElemVals[41, 2] = 0.00002d;
+                    dblElemVals[42, 1] = 95.94d;
+                    dblElemVals[42, 2] = 0.01d;
+                    dblElemVals[43, 1] = 97.9072d;
+                    dblElemVals[43, 2] = 0.0005d;
+                    dblElemVals[44, 1] = 101.07d;
+                    dblElemVals[44, 2] = 0.02d;
+                    dblElemVals[45, 1] = 102.9055d;
+                    dblElemVals[45, 2] = 0.00002d;
+                    dblElemVals[46, 1] = 106.42d;
+                    dblElemVals[46, 2] = 0.01d;
+                    dblElemVals[47, 1] = 107.8682d;
+                    dblElemVals[47, 2] = 0.0002d;
+                    dblElemVals[48, 1] = 112.411d;
+                    dblElemVals[48, 2] = 0.008d;
+                    dblElemVals[49, 1] = 114.818d;
+                    dblElemVals[49, 2] = 0.003d;
+                    dblElemVals[50, 1] = 118.71d;
+                    dblElemVals[50, 2] = 0.007d;
+                    dblElemVals[51, 1] = 121.76d;
+                    dblElemVals[51, 2] = 0.001d;
+                    dblElemVals[52, 1] = 127.6d;
+                    dblElemVals[52, 2] = 0.03d;
+                    dblElemVals[53, 1] = 126.90447d;
+                    dblElemVals[53, 2] = 0.00003d;
+                    dblElemVals[54, 1] = 131.29d;
+                    dblElemVals[54, 2] = 0.02d;
+                    dblElemVals[55, 1] = 132.90545d;
+                    dblElemVals[55, 2] = 0.00002d;
+                    dblElemVals[56, 1] = 137.327d;
+                    dblElemVals[56, 2] = 0.007d;
+                    dblElemVals[57, 1] = 138.9055d;
+                    dblElemVals[57, 2] = 0.0002d;
+                    dblElemVals[58, 1] = 140.116d;
+                    dblElemVals[58, 2] = 0.001d;
+                    dblElemVals[59, 1] = 140.90765d;
+                    dblElemVals[59, 2] = 0.00002d;
+                    dblElemVals[60, 1] = 144.24d;
+                    dblElemVals[60, 2] = 0.03d;
+                    dblElemVals[61, 1] = 144.9127d;
+                    dblElemVals[61, 2] = 0.0005d;
+                    dblElemVals[62, 1] = 150.36d;
+                    dblElemVals[62, 2] = 0.03d;
+                    dblElemVals[63, 1] = 151.964d;
+                    dblElemVals[63, 2] = 0.001d;
+                    dblElemVals[64, 1] = 157.25d;
+                    dblElemVals[64, 2] = 0.03d;
+                    dblElemVals[65, 1] = 158.92534d;
+                    dblElemVals[65, 2] = 0.00002d;
+                    dblElemVals[66, 1] = 162.5d;
+                    dblElemVals[66, 2] = 0.03d;
+                    dblElemVals[67, 1] = 164.93032d;
+                    dblElemVals[67, 2] = 0.00002d;
+                    dblElemVals[68, 1] = 167.26d;
+                    dblElemVals[68, 2] = 0.03d;
+                    dblElemVals[69, 1] = 168.93421d;
+                    dblElemVals[69, 2] = 0.00002d;
+                    dblElemVals[70, 1] = 173.04d;
+                    dblElemVals[70, 2] = 0.03d;
+                    dblElemVals[71, 1] = 174.967d;
+                    dblElemVals[71, 2] = 0.001d;
+                    dblElemVals[72, 1] = 178.49d;
+                    dblElemVals[72, 2] = 0.02d;
+                    dblElemVals[73, 1] = 180.9479d;
+                    dblElemVals[73, 2] = 0.0001d;
+                    dblElemVals[74, 1] = 183.84d;
+                    dblElemVals[74, 2] = 0.01d;
+                    dblElemVals[75, 1] = 186.207d;
+                    dblElemVals[75, 2] = 0.001d;
+                    dblElemVals[76, 1] = 190.23d;
+                    dblElemVals[76, 2] = 0.03d;
+                    dblElemVals[77, 1] = 192.217d;
+                    dblElemVals[77, 2] = 0.03d;
+                    dblElemVals[78, 1] = 195.078d;
+                    dblElemVals[78, 2] = 0.002d;
+                    dblElemVals[79, 1] = 196.96655d;
+                    dblElemVals[79, 2] = 0.00002d;
+                    dblElemVals[80, 1] = 200.59d;
+                    dblElemVals[80, 2] = 0.02d;
+                    dblElemVals[81, 1] = 204.3833d;
+                    dblElemVals[81, 2] = 0.0002d;
+                    dblElemVals[82, 1] = 207.2d;
+                    dblElemVals[82, 2] = 0.1d;
+                    dblElemVals[83, 1] = 208.98038d;
+                    dblElemVals[83, 2] = 0.00002d;
+                    dblElemVals[84, 1] = 208.9824d;
+                    dblElemVals[84, 2] = 0.0005d;
+                    dblElemVals[85, 1] = 209.9871d;
+                    dblElemVals[85, 2] = 0.0005d;
+                    dblElemVals[86, 1] = 222.0176d;
+                    dblElemVals[86, 2] = 0.0005d;
+                    dblElemVals[87, 1] = 223.0197d;
+                    dblElemVals[87, 2] = 0.0005d;
+                    dblElemVals[88, 1] = 226.0254d;
+                    dblElemVals[88, 2] = 0.0001d;
+                    dblElemVals[89, 1] = 227.0278d;
+                    dblElemVals[89, 2] = 0.00001d;
+                    dblElemVals[90, 1] = 232.0381d;
+                    dblElemVals[90, 2] = 0.0001d;
+                    dblElemVals[91, 1] = 231.03588d;
+                    dblElemVals[91, 2] = 0.00002d;
+                    dblElemVals[92, 1] = 238.0289d;
+                    dblElemVals[92, 2] = 0.0001d;
+                    dblElemVals[93, 1] = 237.0482d;
+                    dblElemVals[93, 2] = 0.0005d;
+                    dblElemVals[94, 1] = 244.0642d;
+                    dblElemVals[94, 2] = 0.0005d;
+                    dblElemVals[95, 1] = 243.0614d;
+                    dblElemVals[95, 2] = 0.0005d;
+                    dblElemVals[96, 1] = 247.0703d;
+                    dblElemVals[96, 2] = 0.0005d;
+                    dblElemVals[97, 1] = 247.0703d;
+                    dblElemVals[97, 2] = 0.0005d;
+                    dblElemVals[98, 1] = 251.0796d;
+                    dblElemVals[98, 2] = 0.0005d;
+                    dblElemVals[99, 1] = 252.083d;
+                    dblElemVals[99, 2] = 0.005d;
+                    dblElemVals[100, 1] = 257.0951d;
+                    dblElemVals[100, 2] = 0.0005d;
+                    dblElemVals[101, 1] = 258.1d;
+                    dblElemVals[101, 2] = 0.05d;
+                    dblElemVals[102, 1] = 259.1009d;
+                    dblElemVals[102, 2] = 0.0005d;
+                    dblElemVals[103, 1] = 262.11d;
+                    dblElemVals[103, 2] = 0.05d;
+                    break;
                     // Unused elements
                     // data 104,Unq,Unnilquadium,261,1, 105,Unp,Unnilpentium,262,1, 106,Unh,Unnilhexium,263,1
             }
@@ -4209,27 +4150,16 @@ namespace MwtWinDll
                     switch (eSpecificStatToReset)
                     {
                         case MolecularWeightTool.esElementStatsConstants.esMass:
-                            {
-                                withBlock1.Mass = dblElemVals[intSpecificElement, 1];
-                                break;
-                            }
-
+                            withBlock1.Mass = dblElemVals[intSpecificElement, 1];
+                            break;
                         case MolecularWeightTool.esElementStatsConstants.esUncertainty:
-                            {
-                                withBlock1.Uncertainty = dblElemVals[intSpecificElement, 2];
-                                break;
-                            }
-
+                            withBlock1.Uncertainty = dblElemVals[intSpecificElement, 2];
+                            break;
                         case MolecularWeightTool.esElementStatsConstants.esCharge:
-                            {
-                                withBlock1.Charge = (float)dblElemVals[intSpecificElement, 3];
-                                break;
-                            }
-
+                            withBlock1.Charge = (float)dblElemVals[intSpecificElement, 3];
+                            break;
                         default:
-                            {
-                                break;
-                            }
+                            break;
                             // Ignore it
                     }
                 }
@@ -5450,648 +5380,615 @@ namespace MwtWinDll
                         {
                             case 40:
                             case 123: // (    Record its position
+                                // See if a number is present just after the opening parenthesis
+                                if (Information.IsNumeric(strChar2) || strChar2 == ".")
                                 {
-                                    // See if a number is present just after the opening parenthesis
-                                    if (Information.IsNumeric(strChar2) || strChar2 == ".")
-                                    {
-                                        // Misplaced number
-                                        ErrorParams.ErrorID = 14;
-                                        ErrorParams.ErrorPosition = intCharIndex;
-                                    }
+                                    // Misplaced number
+                                    ErrorParams.ErrorID = 14;
+                                    ErrorParams.ErrorPosition = intCharIndex;
+                                }
 
-                                    if (ErrorParams.ErrorID == 0)
+                                if (ErrorParams.ErrorID == 0)
+                                {
+                                    // search for closing parenthesis
+                                    intParenthLevel = 1;
+                                    var loopTo = Strings.Len(strFormula);
+                                    for (intParenthClose = intCharIndex + 1; intParenthClose <= loopTo; intParenthClose++)
                                     {
-                                        // search for closing parenthesis
-                                        intParenthLevel = 1;
-                                        var loopTo = Strings.Len(strFormula);
-                                        for (intParenthClose = intCharIndex + 1; intParenthClose <= loopTo; intParenthClose++)
+                                        switch (Strings.Mid(strFormula, intParenthClose, 1) ?? "")
                                         {
-                                            switch (Strings.Mid(strFormula, intParenthClose, 1) ?? "")
-                                            {
-                                                case "(":
-                                                case "{":
-                                                case "[":
+                                            case "(":
+                                            case "{":
+                                            case "[":
+                                                // Another opening parentheses
+                                                // increment parenthLevel
+                                                if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "[")
+                                                {
+                                                }
+                                                // Do not count the bracket
+                                                else
+                                                {
+                                                    intParenthLevel += 1;
+                                                }
+
+                                                break;
+
+                                            case ")":
+                                            case "}":
+                                            case "]":
+                                                if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "]")
+                                                {
+                                                }
+                                                // Do not count the bracket
+                                                else
+                                                {
+                                                    intParenthLevel -= 1;
+                                                    if (intParenthLevel == 0)
                                                     {
-                                                        // Another opening parentheses
-                                                        // increment parenthLevel
-                                                        if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "[")
+                                                        string argstrWork = Strings.Mid(strFormula, intParenthClose + 1);
+                                                        dblAdjacentNum = ParseNum(ref argstrWork, out intNumLength);
+                                                        CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                                        if (dblAdjacentNum < 0d)
                                                         {
+                                                            dblAdjacentNum = 1.0d;
+                                                            intAddonCount = 0;
                                                         }
-                                                        // Do not count the bracket
                                                         else
                                                         {
-                                                            intParenthLevel += 1;
+                                                            intAddonCount = intNumLength;
                                                         }
 
-                                                        break;
-                                                    }
+                                                        strSubFormula = Strings.Mid(strFormula, intCharIndex + 1, intParenthClose - (intCharIndex + 1));
 
-                                                case ")":
-                                                case "}":
-                                                case "]":
-                                                    {
-                                                        if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "]")
+                                                        // Note, must pass dblParenthMultiplier * dblAdjacentNum to preserve previous parentheses stuff
+                                                        strNewFormula = ParseFormulaRecursive(strSubFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, blnExpandAbbreviations, ref dblStdDevSum, ref CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, (short)(intParenthLevelPrevious + 1));
+
+                                                        // If expanding abbreviations, then strNewFormula might be longer than strFormula, must add this onto intCharIndex also
+                                                        intExpandAbbrevAdd = Strings.Len(strNewFormula) - Strings.Len(strSubFormula);
+
+                                                        // Must replace the part of the formula parsed with the strNewFormula part, in case the formula was expanded or elements were capitalized
+                                                        strFormula = Strings.Left(strFormula, intCharIndex) + strNewFormula + Strings.Mid(strFormula, intParenthClose);
+                                                        intCharIndex = intParenthClose + intAddonCount + intExpandAbbrevAdd;
+
+                                                        // Correct charge
+                                                        if (CarbonOrSiliconReturnCount > 0)
                                                         {
-                                                        }
-                                                        // Do not count the bracket
-                                                        else
-                                                        {
-                                                            intParenthLevel -= 1;
-                                                            if (intParenthLevel == 0)
+                                                            udtComputationStats.Charge = (float)(udtComputationStats.Charge - 2d * dblAdjacentNum);
+                                                            if (dblAdjacentNum > 1d && CarbonOrSiliconReturnCount > 1)
                                                             {
-                                                                string argstrWork = Strings.Mid(strFormula, intParenthClose + 1);
-                                                                dblAdjacentNum = ParseNum(ref argstrWork, out intNumLength);
-                                                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
-                                                                if (dblAdjacentNum < 0d)
-                                                                {
-                                                                    dblAdjacentNum = 1.0d;
-                                                                    intAddonCount = 0;
-                                                                }
-                                                                else
-                                                                {
-                                                                    intAddonCount = intNumLength;
-                                                                }
-
-                                                                strSubFormula = Strings.Mid(strFormula, intCharIndex + 1, intParenthClose - (intCharIndex + 1));
-
-                                                                // Note, must pass dblParenthMultiplier * dblAdjacentNum to preserve previous parentheses stuff
-                                                                strNewFormula = ParseFormulaRecursive(strSubFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, blnExpandAbbreviations, ref dblStdDevSum, ref CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, (short)(intParenthLevelPrevious + 1));
-
-                                                                // If expanding abbreviations, then strNewFormula might be longer than strFormula, must add this onto intCharIndex also
-                                                                intExpandAbbrevAdd = Strings.Len(strNewFormula) - Strings.Len(strSubFormula);
-
-                                                                // Must replace the part of the formula parsed with the strNewFormula part, in case the formula was expanded or elements were capitalized
-                                                                strFormula = Strings.Left(strFormula, intCharIndex) + strNewFormula + Strings.Mid(strFormula, intParenthClose);
-                                                                intCharIndex = intParenthClose + intAddonCount + intExpandAbbrevAdd;
-
-                                                                // Correct charge
-                                                                if (CarbonOrSiliconReturnCount > 0)
-                                                                {
-                                                                    udtComputationStats.Charge = (float)(udtComputationStats.Charge - 2d * dblAdjacentNum);
-                                                                    if (dblAdjacentNum > 1d && CarbonOrSiliconReturnCount > 1)
-                                                                    {
-                                                                        udtComputationStats.Charge = (float)(udtComputationStats.Charge - 2d * (dblAdjacentNum - 1d) * (CarbonOrSiliconReturnCount - 1));
-                                                                    }
-                                                                }
-
-                                                                break;
+                                                                udtComputationStats.Charge = (float)(udtComputationStats.Charge - 2d * (dblAdjacentNum - 1d) * (CarbonOrSiliconReturnCount - 1));
                                                             }
                                                         }
 
                                                         break;
                                                     }
-                                            }
+                                                }
+
+                                                break;
                                         }
                                     }
-
-                                    if (intParenthLevel > 0 && ErrorParams.ErrorID == 0)
-                                    {
-                                        // Missing closing parenthesis
-                                        ErrorParams.ErrorID = 3;
-                                        ErrorParams.ErrorPosition = intCharIndex;
-                                    }
-
-                                    PrevSymbolReference = 0;
-                                    break;
                                 }
+
+                                if (intParenthLevel > 0 && ErrorParams.ErrorID == 0)
+                                {
+                                    // Missing closing parenthesis
+                                    ErrorParams.ErrorID = 3;
+                                    ErrorParams.ErrorPosition = intCharIndex;
+                                }
+
+                                PrevSymbolReference = 0;
+                                break;
 
                             case 41:
                             case 125: // )    Repeat a section of a formula
-                                {
-                                    // Should have been skipped
-                                    // Unmatched closing parentheses
-                                    ErrorParams.ErrorID = 4;
-                                    ErrorParams.ErrorPosition = intCharIndex;
-                                    break;
-                                }
+                                // Should have been skipped
+                                // Unmatched closing parentheses
+                                ErrorParams.ErrorID = 4;
+                                ErrorParams.ErrorPosition = intCharIndex;
+                                break;
 
                             case 45: // -
+                                // Used to denote a leading coefficient
+                                string argstrWork1 = strChar2 + strChar3 + strCharRemain;
+                                dblAdjacentNum = ParseNum(ref argstrWork1, out intNumLength);
+                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                if (dblAdjacentNum > 0d)
                                 {
-                                    // Used to denote a leading coefficient
-                                    string argstrWork1 = strChar2 + strChar3 + strCharRemain;
-                                    dblAdjacentNum = ParseNum(ref argstrWork1, out intNumLength);
-                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
-                                    if (dblAdjacentNum > 0d)
-                                    {
-                                        intDashPos = intCharIndex + intNumLength;
-                                        dblDashMultiplier = dblAdjacentNum * dblDashMultiplierPrior;
-                                        intCharIndex += intNumLength;
-                                    }
-                                    else if (Math.Abs(dblAdjacentNum) < float.Epsilon)
-                                    {
-                                        // Cannot have 0 after a dash
-                                        ErrorParams.ErrorID = 5;
-                                        ErrorParams.ErrorPosition = intCharIndex + 1;
-                                    }
-                                    else
-                                    {
-                                        // No number is present, that's just fine
-                                        // Make sure defaults are set, though
-                                        intDashPos = 0;
-                                        dblDashMultiplier = dblDashMultiplierPrior;
-                                    }
-
-                                    PrevSymbolReference = 0;
-                                    break;
+                                    intDashPos = intCharIndex + intNumLength;
+                                    dblDashMultiplier = dblAdjacentNum * dblDashMultiplierPrior;
+                                    intCharIndex += intNumLength;
                                 }
+                                else if (Math.Abs(dblAdjacentNum) < float.Epsilon)
+                                {
+                                    // Cannot have 0 after a dash
+                                    ErrorParams.ErrorID = 5;
+                                    ErrorParams.ErrorPosition = intCharIndex + 1;
+                                }
+                                else
+                                {
+                                    // No number is present, that's just fine
+                                    // Make sure defaults are set, though
+                                    intDashPos = 0;
+                                    dblDashMultiplier = dblDashMultiplierPrior;
+                                }
+
+                                PrevSymbolReference = 0;
+                                break;
 
                             case 44:
                             case 46:
                             case var @case when 48 <= @case && @case <= 57: // . or , and Numbers 0 to 9
+                                // They should only be encountered as a leading coefficient
+                                // Should have been bypassed when the coefficient was processed
+                                if (intCharIndex == 1)
                                 {
-                                    // They should only be encountered as a leading coefficient
-                                    // Should have been bypassed when the coefficient was processed
-                                    if (intCharIndex == 1)
-                                    {
-                                        // Formula starts with a number -- multiply section by number (until next dash)
-                                        dblAdjacentNum = ParseNum(ref strFormulaExcerpt, out intNumLength);
-                                        CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
-                                        if (dblAdjacentNum >= 0d)
-                                        {
-                                            intDashPos = intCharIndex + intNumLength - 1;
-                                            dblDashMultiplier = dblAdjacentNum * dblDashMultiplierPrior;
-                                            intCharIndex = intCharIndex + intNumLength - 1;
-                                        }
-                                        else
-                                        {
-                                            // A number less then zero should have been handled by CatchParseNumError above
-                                            // Make sure defaults are set, though
-                                            intDashPos = 0;
-                                            dblDashMultiplier = dblDashMultiplierPrior;
-                                        }
-                                    }
-                                    else if (NumberConverter.CDblSafe(Strings.Mid(strFormula, intCharIndex - 1, 1)) > 0d)
-                                    {
-                                        // Number too large
-                                        ErrorParams.ErrorID = 7;
-                                        ErrorParams.ErrorPosition = intCharIndex;
-                                    }
-                                    else
-                                    {
-                                        // Misplaced number
-                                        ErrorParams.ErrorID = 14;
-                                        ErrorParams.ErrorPosition = intCharIndex;
-                                    }
-
-                                    PrevSymbolReference = 0;
-                                    break;
-                                }
-
-                            case 91: // [
-                                {
-                                    if (Strings.UCase(strChar2) == "X")
-                                    {
-                                        if (strChar3 == "e")
-                                        {
-                                            string argstrWork2 = strChar2 + strChar3 + strCharRemain;
-                                            dblAdjacentNum = ParseNum(ref argstrWork2, out intNumLength);
-                                            CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
-                                        }
-                                        else
-                                        {
-                                            dblAdjacentNum = dblValueForX;
-                                            intNumLength = 1;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        string argstrWork3 = strChar2 + strChar3 + strCharRemain;
-                                        dblAdjacentNum = ParseNum(ref argstrWork3, out intNumLength);
-                                        CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
-                                    }
-
-                                    if (ErrorParams.ErrorID == 0)
-                                    {
-                                        if (blnInsideBrackets)
-                                        {
-                                            // No Nested brackets.
-                                            ErrorParams.ErrorID = 16;
-                                            ErrorParams.ErrorPosition = intCharIndex;
-                                        }
-                                        else if (dblAdjacentNum < 0d)
-                                        {
-                                            // No number after bracket
-                                            ErrorParams.ErrorID = 12;
-                                            ErrorParams.ErrorPosition = intCharIndex + 1;
-                                        }
-                                        else
-                                        {
-                                            // Coefficient for bracketed section.
-                                            blnInsideBrackets = true;
-                                            dblBracketMultiplier = dblAdjacentNum * dblBracketMultiplierPrior; // Take times dblBracketMultiplierPrior in case it wasn't 1 to start with
-                                            intCharIndex += intNumLength;
-                                        }
-                                    }
-
-                                    PrevSymbolReference = 0;
-                                    break;
-                                }
-
-                            case 93: // ]
-                                {
-                                    string argstrWork4 = strChar2 + strChar3 + strCharRemain;
-                                    dblAdjacentNum = ParseNum(ref argstrWork4, out intNumLength);
+                                    // Formula starts with a number -- multiply section by number (until next dash)
+                                    dblAdjacentNum = ParseNum(ref strFormulaExcerpt, out intNumLength);
                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
                                     if (dblAdjacentNum >= 0d)
                                     {
-                                        // Number following bracket
-                                        ErrorParams.ErrorID = 11;
-                                        ErrorParams.ErrorPosition = intCharIndex + 1;
-                                    }
-                                    else if (blnInsideBrackets)
-                                    {
-                                        if (intDashPos > 0)
-                                        {
-                                            // Need to set intDashPos and dblDashMultiplier back to defaults, since a dash number goes back to one inside brackets
-                                            intDashPos = 0;
-                                            dblDashMultiplier = 1d;
-                                        }
-
-                                        blnInsideBrackets = false;
-                                        dblBracketMultiplier = dblBracketMultiplierPrior;
+                                        intDashPos = intCharIndex + intNumLength - 1;
+                                        dblDashMultiplier = dblAdjacentNum * dblDashMultiplierPrior;
+                                        intCharIndex = intCharIndex + intNumLength - 1;
                                     }
                                     else
                                     {
-                                        // Unmatched bracket
-                                        ErrorParams.ErrorID = 15;
+                                        // A number less then zero should have been handled by CatchParseNumError above
+                                        // Make sure defaults are set, though
+                                        intDashPos = 0;
+                                        dblDashMultiplier = dblDashMultiplierPrior;
+                                    }
+                                }
+                                else if (NumberConverter.CDblSafe(Strings.Mid(strFormula, intCharIndex - 1, 1)) > 0d)
+                                {
+                                    // Number too large
+                                    ErrorParams.ErrorID = 7;
+                                    ErrorParams.ErrorPosition = intCharIndex;
+                                }
+                                else
+                                {
+                                    // Misplaced number
+                                    ErrorParams.ErrorID = 14;
+                                    ErrorParams.ErrorPosition = intCharIndex;
+                                }
+
+                                PrevSymbolReference = 0;
+                                break;
+
+                            case 91: // [
+                                if (Strings.UCase(strChar2) == "X")
+                                {
+                                    if (strChar3 == "e")
+                                    {
+                                        string argstrWork2 = strChar2 + strChar3 + strCharRemain;
+                                        dblAdjacentNum = ParseNum(ref argstrWork2, out intNumLength);
+                                        CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                    }
+                                    else
+                                    {
+                                        dblAdjacentNum = dblValueForX;
+                                        intNumLength = 1;
+                                    }
+                                }
+                                else
+                                {
+                                    string argstrWork3 = strChar2 + strChar3 + strCharRemain;
+                                    dblAdjacentNum = ParseNum(ref argstrWork3, out intNumLength);
+                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                }
+
+                                if (ErrorParams.ErrorID == 0)
+                                {
+                                    if (blnInsideBrackets)
+                                    {
+                                        // No Nested brackets.
+                                        ErrorParams.ErrorID = 16;
                                         ErrorParams.ErrorPosition = intCharIndex;
                                     }
-
-                                    break;
+                                    else if (dblAdjacentNum < 0d)
+                                    {
+                                        // No number after bracket
+                                        ErrorParams.ErrorID = 12;
+                                        ErrorParams.ErrorPosition = intCharIndex + 1;
+                                    }
+                                    else
+                                    {
+                                        // Coefficient for bracketed section.
+                                        blnInsideBrackets = true;
+                                        dblBracketMultiplier = dblAdjacentNum * dblBracketMultiplierPrior; // Take times dblBracketMultiplierPrior in case it wasn't 1 to start with
+                                        intCharIndex += intNumLength;
+                                    }
                                 }
+
+                                PrevSymbolReference = 0;
+                                break;
+
+                            case 93: // ]
+                                string argstrWork4 = strChar2 + strChar3 + strCharRemain;
+                                dblAdjacentNum = ParseNum(ref argstrWork4, out intNumLength);
+                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                if (dblAdjacentNum >= 0d)
+                                {
+                                    // Number following bracket
+                                    ErrorParams.ErrorID = 11;
+                                    ErrorParams.ErrorPosition = intCharIndex + 1;
+                                }
+                                else if (blnInsideBrackets)
+                                {
+                                    if (intDashPos > 0)
+                                    {
+                                        // Need to set intDashPos and dblDashMultiplier back to defaults, since a dash number goes back to one inside brackets
+                                        intDashPos = 0;
+                                        dblDashMultiplier = 1d;
+                                    }
+
+                                    blnInsideBrackets = false;
+                                    dblBracketMultiplier = dblBracketMultiplierPrior;
+                                }
+                                else
+                                {
+                                    // Unmatched bracket
+                                    ErrorParams.ErrorID = 15;
+                                    ErrorParams.ErrorPosition = intCharIndex;
+                                }
+
+                                break;
 
                             case var case1 when 65 <= case1 && case1 <= 90:
                             case var case2 when 97 <= case2 && case2 <= 122:
                             case 43:
                             case 95: // Uppercase A to Z and lowercase a to z, and the plus (+) sign, and the underscore (_)
+                                intAddonCount = 0;
+                                dblAdjacentNum = 0d;
+                                var eSymbolMatchType = CheckElemAndAbbrev(strFormulaExcerpt, ref SymbolReference);
+                                switch (eSymbolMatchType)
                                 {
-                                    intAddonCount = 0;
-                                    dblAdjacentNum = 0d;
-                                    var eSymbolMatchType = CheckElemAndAbbrev(strFormulaExcerpt, ref SymbolReference);
-                                    switch (eSymbolMatchType)
-                                    {
-                                        case smtSymbolMatchTypeConstants.smtElement:
+                                    case smtSymbolMatchTypeConstants.smtElement:
+                                        // Found an element
+                                        // SymbolReference is the elemental number
+                                        intSymbolLength = ElementStats[SymbolReference].Symbol.Length;
+                                        if (intSymbolLength == 0)
+                                        {
+                                            // No elements in ElementStats yet
+                                            // Set intSymbolLength to 1
+                                            intSymbolLength = 1;
+                                        }
+                                        // Look for number after element
+                                        string argstrWork5 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
+                                        dblAdjacentNum = ParseNum(ref argstrWork5, out intNumLength);
+                                        CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                        if (dblAdjacentNum < 0d)
+                                        {
+                                            dblAdjacentNum = 1d;
+                                        }
+
+                                        // Note that intNumLength = 0 if dblAdjacentNum was -1 or otherwise < 0
+                                        intAddonCount = intNumLength + intSymbolLength - 1;
+                                        if (Math.Abs(dblAdjacentNum) < float.Epsilon)
+                                        {
+                                            // Zero after element
+                                            ErrorParams.ErrorID = 5;
+                                            ErrorParams.ErrorPosition = intCharIndex + intSymbolLength;
+                                        }
+                                        else
+                                        {
+                                            if (!blnCaretPresent)
                                             {
-                                                // Found an element
-                                                // SymbolReference is the elemental number
-                                                intSymbolLength = ElementStats[SymbolReference].Symbol.Length;
-                                                if (intSymbolLength == 0)
+                                                dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
                                                 {
-                                                    // No elements in ElementStats yet
-                                                    // Set intSymbolLength to 1
-                                                    intSymbolLength = 1;
-                                                }
-                                                // Look for number after element
-                                                string argstrWork5 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
-                                                dblAdjacentNum = ParseNum(ref argstrWork5, out intNumLength);
-                                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
-                                                if (dblAdjacentNum < 0d)
-                                                {
-                                                    dblAdjacentNum = 1d;
+                                                    var withBlock1 = udtComputationStats.Elements[SymbolReference];
+                                                    withBlock1.Count = withBlock1.Count + dblAtomCountToAdd;
+                                                    withBlock1.Used = true; // Element is present tag
+                                                    dblStdDevSum += dblAtomCountToAdd * Math.Pow(ElementStats[SymbolReference].Uncertainty, 2d);
                                                 }
 
-                                                // Note that intNumLength = 0 if dblAdjacentNum was -1 or otherwise < 0
-                                                intAddonCount = intNumLength + intSymbolLength - 1;
-                                                if (Math.Abs(dblAdjacentNum) < float.Epsilon)
                                                 {
-                                                    // Zero after element
-                                                    ErrorParams.ErrorID = 5;
-                                                    ErrorParams.ErrorPosition = intCharIndex + intSymbolLength;
-                                                }
-                                                else
-                                                {
-                                                    if (!blnCaretPresent)
+                                                    var withBlock2 = udtComputationStats;
+                                                    // Compute charge
+                                                    if (SymbolReference == 1)
                                                     {
-                                                        dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
+                                                        // Dealing with hydrogen
+                                                        switch (PrevSymbolReference)
                                                         {
-                                                            var withBlock1 = udtComputationStats.Elements[SymbolReference];
-                                                            withBlock1.Count = withBlock1.Count + dblAtomCountToAdd;
-                                                            withBlock1.Used = true; // Element is present tag
-                                                            dblStdDevSum += dblAtomCountToAdd * Math.Pow(ElementStats[SymbolReference].Uncertainty, 2d);
-                                                        }
-
-                                                        {
-                                                            var withBlock2 = udtComputationStats;
-                                                            // Compute charge
-                                                            if (SymbolReference == 1)
-                                                            {
-                                                                // Dealing with hydrogen
-                                                                switch (PrevSymbolReference)
-                                                                {
-                                                                    case 1:
-                                                                    case var case3 when 3 <= case3 && case3 <= 6:
-                                                                    case var case4 when 11 <= case4 && case4 <= 14:
-                                                                    case var case5 when 19 <= case5 && case5 <= 32:
-                                                                    case var case6 when 37 <= case6 && case6 <= 50:
-                                                                    case var case7 when 55 <= case7 && case7 <= 82:
-                                                                    case var case8 when 87 <= case8 && case8 <= 109:
-                                                                        {
-                                                                            // Hydrogen is -1 with metals (non-halides)
-                                                                            withBlock2.Charge = (float)(withBlock2.Charge + dblAtomCountToAdd * -1);
-                                                                            break;
-                                                                        }
-
-                                                                    default:
-                                                                        {
-                                                                            withBlock2.Charge = (float)(withBlock2.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
-                                                                            break;
-                                                                        }
-                                                                }
-                                                            }
-                                                            else
-                                                            {
+                                                            case 1:
+                                                            case var case3 when 3 <= case3 && case3 <= 6:
+                                                            case var case4 when 11 <= case4 && case4 <= 14:
+                                                            case var case5 when 19 <= case5 && case5 <= 32:
+                                                            case var case6 when 37 <= case6 && case6 <= 50:
+                                                            case var case7 when 55 <= case7 && case7 <= 82:
+                                                            case var case8 when 87 <= case8 && case8 <= 109:
+                                                                // Hydrogen is -1 with metals (non-halides)
+                                                                withBlock2.Charge = (float)(withBlock2.Charge + dblAtomCountToAdd * -1);
+                                                                break;
+                                                            default:
                                                                 withBlock2.Charge = (float)(withBlock2.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
-                                                            }
-                                                        }
-
-                                                        if (SymbolReference == 6 || SymbolReference == 14)
-                                                        {
-                                                            // Sum up number lone C and Si (not in abbreviations)
-                                                            LoneCarbonOrSilicon = (int)Math.Round(LoneCarbonOrSilicon + dblAdjacentNum);
-                                                            CarbonOrSiliconReturnCount = (int)Math.Round(CarbonOrSiliconReturnCount + dblAdjacentNum);
+                                                                break;
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        // blnCaretPresent = True
-                                                        // Check to make sure isotopic mass is reasonable
-                                                        dblIsoDifferenceTop = NumberConverter.CIntSafe(0.63d * SymbolReference + 6d);
-                                                        dblIsoDifferenceBottom = NumberConverter.CIntSafe(0.008d * Math.Pow(SymbolReference, 2d) - 0.4d * SymbolReference - 6d);
-                                                        dblCaretValDifference = dblCaretVal - SymbolReference * 2;
-                                                        if (dblCaretValDifference >= dblIsoDifferenceTop)
-                                                        {
-                                                            // Probably too high isotopic mass
-                                                            AddToCautionDescription(LookupMessage(660) + ": " + ElementStats[SymbolReference].Symbol + " - " + dblCaretVal.ToString() + " " + LookupMessage(665) + " " + ElementStats[SymbolReference].Mass.ToString());
-                                                        }
-                                                        else if (dblCaretVal < SymbolReference)
-                                                        {
-                                                            // Definitely too low isotopic mass
-                                                            AddToCautionDescription(LookupMessage(670) + ": " + ElementStats[SymbolReference].Symbol + " - " + SymbolReference.ToString() + " " + LookupMessage(675));
-                                                        }
-                                                        else if (dblCaretValDifference <= dblIsoDifferenceBottom)
-                                                        {
-                                                            // Probably too low isotopic mass
-                                                            AddToCautionDescription(LookupMessage(662) + ": " + ElementStats[SymbolReference].Symbol + " - " + dblCaretVal.ToString() + " " + LookupMessage(665) + " " + ElementStats[SymbolReference].Mass.ToString());
-                                                        }
-
-                                                        // Put in isotopic correction factor
-                                                        dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
-                                                        {
-                                                            var withBlock3 = udtComputationStats.Elements[SymbolReference];
-                                                            // Increment element counting bin
-                                                            withBlock3.Count = withBlock3.Count + dblAtomCountToAdd;
-
-                                                            // Store information in .Isotopes()
-                                                            // Increment the isotope counting bin
-                                                            withBlock3.IsotopeCount = (short)(withBlock3.IsotopeCount + 1);
-                                                            if (Information.UBound(withBlock3.Isotopes) < withBlock3.IsotopeCount)
-                                                            {
-                                                                Array.Resize(ref withBlock3.Isotopes, Information.UBound(withBlock3.Isotopes) + 2 + 1);
-                                                            }
-
-                                                            {
-                                                                var withBlock4 = withBlock3.Isotopes[withBlock3.IsotopeCount];
-                                                                withBlock4.Count = withBlock4.Count + dblAtomCountToAdd;
-                                                                withBlock4.Mass = dblCaretVal;
-                                                            }
-
-                                                            // Add correction amount to udtComputationStats.elements(SymbolReference).IsotopicCorrection
-                                                            withBlock3.IsotopicCorrection = withBlock3.IsotopicCorrection + (dblCaretVal * dblAtomCountToAdd - ElementStats[SymbolReference].Mass * dblAtomCountToAdd);
-
-                                                            // Set bit that element is present
-                                                            withBlock3.Used = true;
-
-                                                            // Assume no error in caret value, no need to change dblStdDevSum
-                                                        }
-
-                                                        // Reset blnCaretPresent
-                                                        blnCaretPresent = false;
+                                                        withBlock2.Charge = (float)(withBlock2.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
                                                     }
-
-                                                    if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccConvertCaseUp)
-                                                    {
-                                                        strFormula = Strings.Left(strFormula, intCharIndex - 1) + Strings.UCase(Strings.Mid(strFormula, intCharIndex, 1)) + Strings.Mid(strFormula, intCharIndex + 1);
-                                                    }
-
-                                                    intCharIndex += intAddonCount;
                                                 }
 
-                                                break;
+                                                if (SymbolReference == 6 || SymbolReference == 14)
+                                                {
+                                                    // Sum up number lone C and Si (not in abbreviations)
+                                                    LoneCarbonOrSilicon = (int)Math.Round(LoneCarbonOrSilicon + dblAdjacentNum);
+                                                    CarbonOrSiliconReturnCount = (int)Math.Round(CarbonOrSiliconReturnCount + dblAdjacentNum);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // blnCaretPresent = True
+                                                // Check to make sure isotopic mass is reasonable
+                                                dblIsoDifferenceTop = NumberConverter.CIntSafe(0.63d * SymbolReference + 6d);
+                                                dblIsoDifferenceBottom = NumberConverter.CIntSafe(0.008d * Math.Pow(SymbolReference, 2d) - 0.4d * SymbolReference - 6d);
+                                                dblCaretValDifference = dblCaretVal - SymbolReference * 2;
+                                                if (dblCaretValDifference >= dblIsoDifferenceTop)
+                                                {
+                                                    // Probably too high isotopic mass
+                                                    AddToCautionDescription(LookupMessage(660) + ": " + ElementStats[SymbolReference].Symbol + " - " + dblCaretVal.ToString() + " " + LookupMessage(665) + " " + ElementStats[SymbolReference].Mass.ToString());
+                                                }
+                                                else if (dblCaretVal < SymbolReference)
+                                                {
+                                                    // Definitely too low isotopic mass
+                                                    AddToCautionDescription(LookupMessage(670) + ": " + ElementStats[SymbolReference].Symbol + " - " + SymbolReference.ToString() + " " + LookupMessage(675));
+                                                }
+                                                else if (dblCaretValDifference <= dblIsoDifferenceBottom)
+                                                {
+                                                    // Probably too low isotopic mass
+                                                    AddToCautionDescription(LookupMessage(662) + ": " + ElementStats[SymbolReference].Symbol + " - " + dblCaretVal.ToString() + " " + LookupMessage(665) + " " + ElementStats[SymbolReference].Mass.ToString());
+                                                }
+
+                                                // Put in isotopic correction factor
+                                                dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
+                                                {
+                                                    var withBlock3 = udtComputationStats.Elements[SymbolReference];
+                                                    // Increment element counting bin
+                                                    withBlock3.Count = withBlock3.Count + dblAtomCountToAdd;
+
+                                                    // Store information in .Isotopes()
+                                                    // Increment the isotope counting bin
+                                                    withBlock3.IsotopeCount = (short)(withBlock3.IsotopeCount + 1);
+                                                    if (Information.UBound(withBlock3.Isotopes) < withBlock3.IsotopeCount)
+                                                    {
+                                                        Array.Resize(ref withBlock3.Isotopes, Information.UBound(withBlock3.Isotopes) + 2 + 1);
+                                                    }
+
+                                                    {
+                                                        var withBlock4 = withBlock3.Isotopes[withBlock3.IsotopeCount];
+                                                        withBlock4.Count = withBlock4.Count + dblAtomCountToAdd;
+                                                        withBlock4.Mass = dblCaretVal;
+                                                    }
+
+                                                    // Add correction amount to udtComputationStats.elements(SymbolReference).IsotopicCorrection
+                                                    withBlock3.IsotopicCorrection = withBlock3.IsotopicCorrection + (dblCaretVal * dblAtomCountToAdd - ElementStats[SymbolReference].Mass * dblAtomCountToAdd);
+
+                                                    // Set bit that element is present
+                                                    withBlock3.Used = true;
+
+                                                    // Assume no error in caret value, no need to change dblStdDevSum
+                                                }
+
+                                                // Reset blnCaretPresent
+                                                blnCaretPresent = false;
                                             }
 
-                                        case smtSymbolMatchTypeConstants.smtAbbreviation:
+                                            if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccConvertCaseUp)
                                             {
-                                                // Found an abbreviation or amino acid
-                                                // SymbolReference is the abbrev or amino acid number
+                                                strFormula = Strings.Left(strFormula, intCharIndex - 1) + Strings.UCase(Strings.Mid(strFormula, intCharIndex, 1)) + Strings.Mid(strFormula, intCharIndex + 1);
+                                            }
 
-                                                if (IsPresentInAbbrevSymbolStack(ref udtAbbrevSymbolStack, SymbolReference))
-                                                {
-                                                    // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
-                                                    // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
-                                                    // Furthermore, can't have this either: Lor = C6H5Tal and Tal = H4O2Vin and Vin = S3Lor
-                                                    ErrorParams.ErrorID = 28;
-                                                    ErrorParams.ErrorPosition = intCharIndex;
-                                                }
-                                                // Found an abbreviation
-                                                else if (blnCaretPresent)
-                                                {
-                                                    // Cannot have isotopic mass for an abbreviation, including deuterium
-                                                    if (Strings.UCase(strChar1) == "D" && strChar2 != "y")
-                                                    {
-                                                        // Isotopic mass used for Deuterium
-                                                        ErrorParams.ErrorID = 26;
-                                                        ErrorParams.ErrorPosition = intCharIndex;
-                                                    }
-                                                    else
-                                                    {
-                                                        ErrorParams.ErrorID = 24;
-                                                        ErrorParams.ErrorPosition = intCharIndex;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    // Parse abbreviation
-                                                    // Simply treat it like a formula surrounded by parentheses
-                                                    // Thus, find the number after the abbreviation, then call ParseFormulaRecursive, sending it the formula for the abbreviation
-                                                    // Update the udtAbbrevSymbolStack before calling so that we can check for circular abbreviation references
+                                            intCharIndex += intAddonCount;
+                                        }
 
-                                                    // Record the abbreviation length
-                                                    intSymbolLength = Strings.Len(AbbrevStats[SymbolReference].Symbol);
+                                        break;
 
-                                                    // Look for number after abbrev/amino
-                                                    string argstrWork6 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
-                                                    dblAdjacentNum = ParseNum(ref argstrWork6, out intNumLength);
+                                    case smtSymbolMatchTypeConstants.smtAbbreviation:
+                                        // Found an abbreviation or amino acid
+                                        // SymbolReference is the abbrev or amino acid number
+
+                                        if (IsPresentInAbbrevSymbolStack(ref udtAbbrevSymbolStack, SymbolReference))
+                                        {
+                                            // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
+                                            // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
+                                            // Furthermore, can't have this either: Lor = C6H5Tal and Tal = H4O2Vin and Vin = S3Lor
+                                            ErrorParams.ErrorID = 28;
+                                            ErrorParams.ErrorPosition = intCharIndex;
+                                        }
+                                        // Found an abbreviation
+                                        else if (blnCaretPresent)
+                                        {
+                                            // Cannot have isotopic mass for an abbreviation, including deuterium
+                                            if (Strings.UCase(strChar1) == "D" && strChar2 != "y")
+                                            {
+                                                // Isotopic mass used for Deuterium
+                                                ErrorParams.ErrorID = 26;
+                                                ErrorParams.ErrorPosition = intCharIndex;
+                                            }
+                                            else
+                                            {
+                                                ErrorParams.ErrorID = 24;
+                                                ErrorParams.ErrorPosition = intCharIndex;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Parse abbreviation
+                                            // Simply treat it like a formula surrounded by parentheses
+                                            // Thus, find the number after the abbreviation, then call ParseFormulaRecursive, sending it the formula for the abbreviation
+                                            // Update the udtAbbrevSymbolStack before calling so that we can check for circular abbreviation references
+
+                                            // Record the abbreviation length
+                                            intSymbolLength = Strings.Len(AbbrevStats[SymbolReference].Symbol);
+
+                                            // Look for number after abbrev/amino
+                                            string argstrWork6 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
+                                            dblAdjacentNum = ParseNum(ref argstrWork6, out intNumLength);
+                                            CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                            if (dblAdjacentNum < 0d)
+                                            {
+                                                dblAdjacentNum = 1d;
+                                                intAddonCount = intSymbolLength - 1;
+                                            }
+                                            else
+                                            {
+                                                intAddonCount = intNumLength + intSymbolLength - 1;
+                                            }
+
+                                            // Add this abbreviation symbol to the Abbreviation Symbol Stack
+                                            AbbrevSymbolStackAdd(ref udtAbbrevSymbolStack, SymbolReference);
+
+                                            // Compute the charge prior to calling ParseFormulaRecursive
+                                            // During the call to ParseFormulaRecursive, udtComputationStats.Charge will be
+                                            // modified according to the atoms in the abbreviation's formula
+                                            // This is not what we want; instead, we want to use the defined charge for the abbreviation
+                                            // We'll use the dblAtomCountToAdd variable here, though instead of an atom count, it's really an abbreviation occurrence count
+                                            dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
+                                            sngChargeSaved = (float)(udtComputationStats.Charge + dblAtomCountToAdd * AbbrevStats[SymbolReference].Charge);
+
+                                            // When parsing an abbreviation, do not pass on the value of blnExpandAbbreviations
+                                            // This way, an abbreviation containing an abbreviation will only get expanded one level
+                                            ParseFormulaRecursive(AbbrevStats[SymbolReference].Formula, ref udtComputationStats, ref udtAbbrevSymbolStack, false, ref dblStdDevSum, ref CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, intParenthLevelPrevious);
+
+                                            // Update the charge to sngChargeSaved
+                                            udtComputationStats.Charge = sngChargeSaved;
+
+                                            // Remove this symbol from the Abbreviation Symbol Stack
+                                            AbbrevSymbolStackAddRemoveMostRecent(ref udtAbbrevSymbolStack);
+                                            if (ErrorParams.ErrorID == 0)
+                                            {
+                                                if (blnExpandAbbreviations)
+                                                {
+                                                    // Replace abbreviation with empirical formula
+                                                    strReplace = AbbrevStats[SymbolReference].Formula;
+
+                                                    // Look for a number after the abbreviation or amino acid
+                                                    string argstrWork7 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
+                                                    dblAdjacentNum = ParseNum(ref argstrWork7, out intNumLength);
                                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                                    if (Conversions.ToBoolean(Strings.InStr(strReplace, ">")))
+                                                    {
+                                                        // The > symbol means take First Part minus the Second Part
+                                                        // If we are parsing a sub formula inside parentheses, or if there are
+                                                        // symbols (elements, abbreviations, or numbers) after the abbreviation, then
+                                                        // we cannot let the > symbol remain in the abbreviation
+                                                        // For example, if Jk = C6H5Cl2>HCl
+                                                        // and the user enters Jk2 then chooses Expand Abbreviations
+                                                        // Then, naively we might replace this with (C6H5Cl2>HCl)2
+                                                        // However, this will generate an error because (C6H5Cl2>HCl)2 gets split
+                                                        // to (C6H5Cl2 and HCl)2 which will both generate an error
+                                                        // The only option is to convert the abbreviation to its empirical formula
+                                                        if (intParenthLevelPrevious > 0 || intParenthLevel > 0 || intCharIndex + intSymbolLength <= Strings.Len(strFormula))
+                                                        {
+                                                            strReplace = ConvertFormulaToEmpirical(strReplace);
+                                                        }
+                                                    }
+
                                                     if (dblAdjacentNum < 0d)
                                                     {
+                                                        // No number after abbreviation
+                                                        strFormula = Strings.Left(strFormula, intCharIndex - 1) + strReplace + Strings.Mid(strFormula, intCharIndex + intSymbolLength);
+                                                        intSymbolLength = Strings.Len(strReplace);
                                                         dblAdjacentNum = 1d;
                                                         intAddonCount = intSymbolLength - 1;
                                                     }
                                                     else
                                                     {
+                                                        // Number after abbreviation -- must put abbreviation in parentheses
+                                                        // Parentheses can handle integer or decimal number
+                                                        strReplace = "(" + strReplace + ")";
+                                                        strFormula = Strings.Left(strFormula, intCharIndex - 1) + strReplace + Strings.Mid(strFormula, intCharIndex + intSymbolLength);
+                                                        intSymbolLength = Strings.Len(strReplace);
                                                         intAddonCount = intNumLength + intSymbolLength - 1;
                                                     }
-
-                                                    // Add this abbreviation symbol to the Abbreviation Symbol Stack
-                                                    AbbrevSymbolStackAdd(ref udtAbbrevSymbolStack, SymbolReference);
-
-                                                    // Compute the charge prior to calling ParseFormulaRecursive
-                                                    // During the call to ParseFormulaRecursive, udtComputationStats.Charge will be
-                                                    // modified according to the atoms in the abbreviation's formula
-                                                    // This is not what we want; instead, we want to use the defined charge for the abbreviation
-                                                    // We'll use the dblAtomCountToAdd variable here, though instead of an atom count, it's really an abbreviation occurrence count
-                                                    dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
-                                                    sngChargeSaved = (float)(udtComputationStats.Charge + dblAtomCountToAdd * AbbrevStats[SymbolReference].Charge);
-
-                                                    // When parsing an abbreviation, do not pass on the value of blnExpandAbbreviations
-                                                    // This way, an abbreviation containing an abbreviation will only get expanded one level
-                                                    ParseFormulaRecursive(AbbrevStats[SymbolReference].Formula, ref udtComputationStats, ref udtAbbrevSymbolStack, false, ref dblStdDevSum, ref CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, intParenthLevelPrevious);
-
-                                                    // Update the charge to sngChargeSaved
-                                                    udtComputationStats.Charge = sngChargeSaved;
-
-                                                    // Remove this symbol from the Abbreviation Symbol Stack
-                                                    AbbrevSymbolStackAddRemoveMostRecent(ref udtAbbrevSymbolStack);
-                                                    if (ErrorParams.ErrorID == 0)
-                                                    {
-                                                        if (blnExpandAbbreviations)
-                                                        {
-                                                            // Replace abbreviation with empirical formula
-                                                            strReplace = AbbrevStats[SymbolReference].Formula;
-
-                                                            // Look for a number after the abbreviation or amino acid
-                                                            string argstrWork7 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
-                                                            dblAdjacentNum = ParseNum(ref argstrWork7, out intNumLength);
-                                                            CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
-                                                            if (Conversions.ToBoolean(Strings.InStr(strReplace, ">")))
-                                                            {
-                                                                // The > symbol means take First Part minus the Second Part
-                                                                // If we are parsing a sub formula inside parentheses, or if there are
-                                                                // symbols (elements, abbreviations, or numbers) after the abbreviation, then
-                                                                // we cannot let the > symbol remain in the abbreviation
-                                                                // For example, if Jk = C6H5Cl2>HCl
-                                                                // and the user enters Jk2 then chooses Expand Abbreviations
-                                                                // Then, naively we might replace this with (C6H5Cl2>HCl)2
-                                                                // However, this will generate an error because (C6H5Cl2>HCl)2 gets split
-                                                                // to (C6H5Cl2 and HCl)2 which will both generate an error
-                                                                // The only option is to convert the abbreviation to its empirical formula
-                                                                if (intParenthLevelPrevious > 0 || intParenthLevel > 0 || intCharIndex + intSymbolLength <= Strings.Len(strFormula))
-                                                                {
-                                                                    strReplace = ConvertFormulaToEmpirical(strReplace);
-                                                                }
-                                                            }
-
-                                                            if (dblAdjacentNum < 0d)
-                                                            {
-                                                                // No number after abbreviation
-                                                                strFormula = Strings.Left(strFormula, intCharIndex - 1) + strReplace + Strings.Mid(strFormula, intCharIndex + intSymbolLength);
-                                                                intSymbolLength = Strings.Len(strReplace);
-                                                                dblAdjacentNum = 1d;
-                                                                intAddonCount = intSymbolLength - 1;
-                                                            }
-                                                            else
-                                                            {
-                                                                // Number after abbreviation -- must put abbreviation in parentheses
-                                                                // Parentheses can handle integer or decimal number
-                                                                strReplace = "(" + strReplace + ")";
-                                                                strFormula = Strings.Left(strFormula, intCharIndex - 1) + strReplace + Strings.Mid(strFormula, intCharIndex + intSymbolLength);
-                                                                intSymbolLength = Strings.Len(strReplace);
-                                                                intAddonCount = intNumLength + intSymbolLength - 1;
-                                                            }
-                                                        }
-
-                                                        if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccConvertCaseUp)
-                                                        {
-                                                            strFormula = Strings.Left(strFormula, intCharIndex - 1) + Strings.UCase(Strings.Mid(strFormula, intCharIndex, 1)) + Strings.Mid(strFormula, intCharIndex + 1);
-                                                        }
-                                                    }
                                                 }
 
-                                                intCharIndex += intAddonCount;
-                                                break;
-                                            }
-
-                                        default:
-                                            {
-                                                // Element not Found
-                                                if (Strings.UCase(strChar1) == "X")
+                                                if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccConvertCaseUp)
                                                 {
-                                                    // X for solver but no preceding bracket
-                                                    ErrorParams.ErrorID = 18;
+                                                    strFormula = Strings.Left(strFormula, intCharIndex - 1) + Strings.UCase(Strings.Mid(strFormula, intCharIndex, 1)) + Strings.Mid(strFormula, intCharIndex + 1);
                                                 }
-                                                else
-                                                {
-                                                    ErrorParams.ErrorID = 1;
-                                                }
-
-                                                ErrorParams.ErrorPosition = intCharIndex;
-                                                break;
                                             }
-                                    }
+                                        }
 
-                                    PrevSymbolReference = SymbolReference;
-                                    break;
+                                        intCharIndex += intAddonCount;
+                                        break;
+
+                                    default:
+                                        // Element not Found
+                                        if (Strings.UCase(strChar1) == "X")
+                                        {
+                                            // X for solver but no preceding bracket
+                                            ErrorParams.ErrorID = 18;
+                                        }
+                                        else
+                                        {
+                                            ErrorParams.ErrorID = 1;
+                                        }
+
+                                        ErrorParams.ErrorPosition = intCharIndex;
+                                        break;
                                 }
+
+                                PrevSymbolReference = SymbolReference;
+                                break;
 
                             case 94: // ^ (caret)
+                                string argstrWork8 = strChar2 + strChar3 + strCharRemain;
+                                dblAdjacentNum = ParseNum(ref argstrWork8, out intNumLength);
+                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                if (ErrorParams.ErrorID != 0)
                                 {
-                                    string argstrWork8 = strChar2 + strChar3 + strCharRemain;
-                                    dblAdjacentNum = ParseNum(ref argstrWork8, out intNumLength);
-                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
-                                    if (ErrorParams.ErrorID != 0)
+                                }
+                                // Problem, don't go on.
+                                else
+                                {
+                                    strCharVal = Strings.Mid(strFormula, intCharIndex + 1 + intNumLength, 1);
+                                    if (Strings.Len(strCharVal) > 0)
+                                        intCharAsc = Strings.Asc(strCharVal);
+                                    else
+                                        intCharAsc = 0;
+                                    if (dblAdjacentNum >= 0d)
                                     {
+                                        if (intCharAsc >= 65 && intCharAsc <= 90 || intCharAsc >= 97 && intCharAsc <= 122) // Uppercase A to Z and lowercase a to z
+                                        {
+                                            blnCaretPresent = true;
+                                            dblCaretVal = dblAdjacentNum;
+                                            intCharIndex += intNumLength;
+                                        }
+                                        else
+                                        {
+                                            // No letter after isotopic mass
+                                            ErrorParams.ErrorID = 22;
+                                            ErrorParams.ErrorPosition = intCharIndex + intNumLength + 1;
+                                        }
                                     }
-                                    // Problem, don't go on.
                                     else
                                     {
-                                        strCharVal = Strings.Mid(strFormula, intCharIndex + 1 + intNumLength, 1);
-                                        if (Strings.Len(strCharVal) > 0)
-                                            intCharAsc = Strings.Asc(strCharVal);
-                                        else
-                                            intCharAsc = 0;
-                                        if (dblAdjacentNum >= 0d)
+                                        // Adjacent number is < 0 or not present
+                                        // Record error
+                                        blnCaretPresent = false;
+                                        if (Strings.Mid(strFormula, intCharIndex + 1, 1) == "-")
                                         {
-                                            if (intCharAsc >= 65 && intCharAsc <= 90 || intCharAsc >= 97 && intCharAsc <= 122) // Uppercase A to Z and lowercase a to z
-                                            {
-                                                blnCaretPresent = true;
-                                                dblCaretVal = dblAdjacentNum;
-                                                intCharIndex += intNumLength;
-                                            }
-                                            else
-                                            {
-                                                // No letter after isotopic mass
-                                                ErrorParams.ErrorID = 22;
-                                                ErrorParams.ErrorPosition = intCharIndex + intNumLength + 1;
-                                            }
+                                            // Negative number following caret
+                                            ErrorParams.ErrorID = 23;
+                                            ErrorParams.ErrorPosition = intCharIndex + 1;
                                         }
                                         else
                                         {
-                                            // Adjacent number is < 0 or not present
-                                            // Record error
-                                            blnCaretPresent = false;
-                                            if (Strings.Mid(strFormula, intCharIndex + 1, 1) == "-")
-                                            {
-                                                // Negative number following caret
-                                                ErrorParams.ErrorID = 23;
-                                                ErrorParams.ErrorPosition = intCharIndex + 1;
-                                            }
-                                            else
-                                            {
-                                                // No number following caret
-                                                ErrorParams.ErrorID = 20;
-                                                ErrorParams.ErrorPosition = intCharIndex + 1;
-                                            }
+                                            // No number following caret
+                                            ErrorParams.ErrorID = 20;
+                                            ErrorParams.ErrorPosition = intCharIndex + 1;
                                         }
                                     }
-
-                                    break;
                                 }
+
+                                break;
 
                             default:
-                                {
-                                    break;
-                                }
-                                // There shouldn't be anything else (except the ~ filler character). If there is, we'll just ignore it
+                                break;
+                            // There shouldn't be anything else (except the ~ filler character). If there is, we'll just ignore it
                         }
 
                         if (intCharIndex == Strings.Len(strFormula))
@@ -6340,45 +6237,39 @@ namespace MwtWinDll
                         switch (errorID)
                         {
                             case var @case when 2 <= @case && @case <= 4:
+                                // Error involves a parentheses, find last opening parenthesis, (, or opening curly bracket, {
+                                for (intCharIndex2 = Strings.Len(strRTF); intCharIndex2 >= 2; intCharIndex2 -= 1)
                                 {
-                                    // Error involves a parentheses, find last opening parenthesis, (, or opening curly bracket, {
-                                    for (intCharIndex2 = Strings.Len(strRTF); intCharIndex2 >= 2; intCharIndex2 -= 1)
+                                    if (Strings.Mid(strRTF, intCharIndex2, 1) == "(")
                                     {
-                                        if (Strings.Mid(strRTF, intCharIndex2, 1) == "(")
-                                        {
-                                            strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 (}" + Strings.Mid(strRTF, intCharIndex2 + 1);
-                                            break;
-                                        }
-                                        else if (Strings.Mid(strRTF, intCharIndex2, 1) == "{")
-                                        {
-                                            strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 \{}" + Strings.Mid(strRTF, intCharIndex2 + 1);
-                                            break;
-                                        }
+                                        strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 (}" + Strings.Mid(strRTF, intCharIndex2 + 1);
+                                        break;
                                     }
-
-                                    break;
+                                    else if (Strings.Mid(strRTF, intCharIndex2, 1) == "{")
+                                    {
+                                        strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 \{}" + Strings.Mid(strRTF, intCharIndex2 + 1);
+                                        break;
+                                    }
                                 }
+
+                                break;
 
                             case 13:
                             case 15:
+                                // Error involves a bracket, find last opening bracket, [
+                                for (intCharIndex2 = Strings.Len(strRTF); intCharIndex2 >= 2; intCharIndex2 -= 1)
                                 {
-                                    // Error involves a bracket, find last opening bracket, [
-                                    for (intCharIndex2 = Strings.Len(strRTF); intCharIndex2 >= 2; intCharIndex2 -= 1)
+                                    if (Strings.Mid(strRTF, intCharIndex2, 1) == "[")
                                     {
-                                        if (Strings.Mid(strRTF, intCharIndex2, 1) == "[")
-                                        {
-                                            strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 [}" + Strings.Mid(strRTF, intCharIndex2 + 1);
-                                            break;
-                                        }
+                                        strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 [}" + Strings.Mid(strRTF, intCharIndex2 + 1);
+                                        break;
                                     }
-
-                                    break;
                                 }
+
+                                break;
 
                             default:
-                                {
-                                    break;
-                                }
+                                break;
                                 // Nothing to highlight
                         }
                     }
@@ -6741,22 +6632,14 @@ namespace MwtWinDll
             {
                 case 0d:
                 case 1d:
-                    {
-                        dblThisNum = 1d;
-                        break;
-                    }
-
+                    dblThisNum = 1d;
+                    break;
                 case var @case when 2d <= @case && @case <= 4d:
-                    {
-                        dblThisNum = 2d;
-                        break;
-                    }
-
+                    dblThisNum = 2d;
+                    break;
                 default:
-                    {
-                        dblThisNum = 5d;
-                        break;
-                    }
+                    dblThisNum = 5d;
+                    break;
             }
 
             // Convert dblThisNum back to the correct magnitude

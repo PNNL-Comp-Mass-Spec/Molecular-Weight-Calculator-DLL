@@ -37,6 +37,7 @@ namespace MwtWinDll
         public static short CShortSafe(string strWork)
         {
             double dblValue = 0d;
+
             if (double.TryParse(strWork, out dblValue))
             {
                 return CShortSafe(dblValue);
@@ -70,6 +71,7 @@ namespace MwtWinDll
         public static int CIntSafe(string strWork)
         {
             double dblValue = 0d;
+
             if (double.TryParse(strWork, out dblValue))
             {
                 return CIntSafe(dblValue);

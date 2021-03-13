@@ -31,6 +31,7 @@
             set
             {
                 mFindCharge = value;
+
                 if (mFindCharge == false)
                 {
                     // Auto-disable a few options
@@ -100,6 +101,7 @@
         }
 
         public eSearchMode SearchMode { get; set; }
+
         public bool VerifyHydrogens { get; set; }
 
         #endregion

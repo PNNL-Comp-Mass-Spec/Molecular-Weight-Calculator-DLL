@@ -7,7 +7,6 @@ namespace MwtWinDll
 {
     public class Peptide
     {
-
         // Molecular Weight Calculator routines with ActiveX Class interfaces: Peptide
 
         // -------------------------------------------------------------------------------
@@ -1850,34 +1849,17 @@ namespace MwtWinDll
             switch (eIonType)
             {
                 case itIonTypeConstants.itAIon:
-                    {
-                        return "a";
-                    }
-
+                    return "a";
                 case itIonTypeConstants.itBIon:
-                    {
-                        return "b";
-                    }
-
+                    return "b";
                 case itIonTypeConstants.itYIon:
-                    {
-                        return "y";
-                    }
-
+                    return "y";
                 case itIonTypeConstants.itCIon:
-                    {
-                        return "c";
-                    }
-
+                    return "c";
                 case itIonTypeConstants.itZIon:
-                    {
-                        return "z";
-                    }
-
+                    return "z";
                 default:
-                    {
-                        return string.Empty;
-                    }
+                    return string.Empty;
             }
         }
 
@@ -2151,28 +2133,17 @@ namespace MwtWinDll
             switch (eCTerminusGroup)
             {
                 case ctgCTerminusGroupConstants.ctgHydroxyl:
-                    {
-                        lngError = SetCTerminus("OH", strFollowingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetCTerminus("OH", strFollowingResidue, blnUse3LetterCode);
+                    break;
                 case ctgCTerminusGroupConstants.ctgAmide:
-                    {
-                        lngError = SetCTerminus("NH2", strFollowingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetCTerminus("NH2", strFollowingResidue, blnUse3LetterCode);
+                    break;
                 case ctgCTerminusGroupConstants.ctgNone:
-                    {
-                        lngError = SetCTerminus(string.Empty, strFollowingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetCTerminus(string.Empty, strFollowingResidue, blnUse3LetterCode);
+                    break;
                 default:
-                    {
-                        lngError = 1;
-                        break;
-                    }
+                    lngError = 1;
+                    break;
             }
 
             return lngError;
@@ -2391,52 +2362,29 @@ namespace MwtWinDll
             switch (eNTerminusGroup)
             {
                 case ntgNTerminusGroupConstants.ntgHydrogen:
-                    {
-                        lngError = SetNTerminus("H", strPrecedingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetNTerminus("H", strPrecedingResidue, blnUse3LetterCode);
+                    break;
                 case ntgNTerminusGroupConstants.ntgHydrogenPlusProton:
-                    {
-                        lngError = SetNTerminus("HH", strPrecedingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetNTerminus("HH", strPrecedingResidue, blnUse3LetterCode);
+                    break;
                 case ntgNTerminusGroupConstants.ntgAcetyl:
-                    {
-                        lngError = SetNTerminus("C2OH3", strPrecedingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetNTerminus("C2OH3", strPrecedingResidue, blnUse3LetterCode);
+                    break;
                 case ntgNTerminusGroupConstants.ntgPyroGlu:
-                    {
-                        lngError = SetNTerminus("C5O2NH6", strPrecedingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetNTerminus("C5O2NH6", strPrecedingResidue, blnUse3LetterCode);
+                    break;
                 case ntgNTerminusGroupConstants.ntgCarbamyl:
-                    {
-                        lngError = SetNTerminus("CONH2", strPrecedingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetNTerminus("CONH2", strPrecedingResidue, blnUse3LetterCode);
+                    break;
                 case ntgNTerminusGroupConstants.ntgPTC:
-                    {
-                        lngError = SetNTerminus("C7H6NS", strPrecedingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetNTerminus("C7H6NS", strPrecedingResidue, blnUse3LetterCode);
+                    break;
                 case ntgNTerminusGroupConstants.ntgNone:
-                    {
-                        lngError = SetNTerminus(string.Empty, strPrecedingResidue, blnUse3LetterCode);
-                        break;
-                    }
-
+                    lngError = SetNTerminus(string.Empty, strPrecedingResidue, blnUse3LetterCode);
+                    break;
                 default:
-                    {
-                        lngError = 1;
-                        break;
-                    }
+                    lngError = 1;
+                    break;
             }
 
             return lngError;

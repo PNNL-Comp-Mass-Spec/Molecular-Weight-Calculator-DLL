@@ -134,10 +134,13 @@ namespace MwtWinDll
 
         private const float POUNDS_PER_KG = 2.20462262f;
         private const float GALLONS_PER_L = 0.264172052f;
+
         private udtMoleMassQuantityType mQuantity = new udtMoleMassQuantityType();
         private udtMoleMassDilutionValuesType mDilutionValues = new udtMoleMassDilutionValuesType();
+
         private bool mAutoComputeDilution; // When true, automatically compute dilution results whenever any value changes
         private acdAutoComputeDilutionModeConstants mAutoComputeDilutionMode; // The value to compute when mAutoComputeDilution is true
+
         private bool mAutoComputeQuantity; // When true, automatically compute quantities whenever any value changes
         private acqAutoComputeQuantityModeConstants mAutoComputeQuantityMode; // The value to compute when mAutoComputeQuantity is true
 
@@ -152,31 +155,20 @@ namespace MwtWinDll
                 switch (mAutoComputeDilutionMode)
                 {
                     case acdAutoComputeDilutionModeConstants.acdFindRequiredTotalVolume:
-                        {
-                            double argdblNewDilutingSolventVolume = 0d;
-                            this.ComputeDilutionTotalVolume(out argdblNewDilutingSolventVolume);
-                            break;
-                        }
-
+                        double argdblNewDilutingSolventVolume = 0d;
+                        ComputeDilutionTotalVolume(out argdblNewDilutingSolventVolume);
+                        break;
                     case acdAutoComputeDilutionModeConstants.acdFindFinalConcentration:
-                        {
-                            ComputeDilutionFinalConcentration();
-                            break;
-                        }
-
+                        ComputeDilutionFinalConcentration();
+                        break;
                     case acdAutoComputeDilutionModeConstants.acdFindInitialConcentration:
-                        {
-                            ComputeDilutionInitialConcentration();
-                            break;
-                        }
-
+                        ComputeDilutionInitialConcentration();
+                        break;
                     default:
-                        {
-                            double argdblNewDilutingSolventVolume1 = 0d;
-                            // Includes acdFindRequiredDilutionVolumes
-                            this.ComputeDilutionRequiredStockAndDilutingSolventVolumes(out argdblNewDilutingSolventVolume1);
-                            break;
-                        }
+                        double argdblNewDilutingSolventVolume1 = 0d;
+                        // Includes acdFindRequiredDilutionVolumes
+                        ComputeDilutionRequiredStockAndDilutingSolventVolumes(out argdblNewDilutingSolventVolume1);
+                        break;
                 }
             }
         }
@@ -192,23 +184,15 @@ namespace MwtWinDll
                 switch (mAutoComputeQuantityMode)
                 {
                     case acqAutoComputeQuantityModeConstants.acqFindVolume:
-                        {
-                            ComputeQuantityVolume();
-                            break;
-                        }
-
+                        ComputeQuantityVolume();
+                        break;
                     case acqAutoComputeQuantityModeConstants.acqFindConcentration:
-                        {
-                            ComputeQuantityConcentration();
-                            break;
-                        }
-
+                        ComputeQuantityConcentration();
+                        break;
                     default:
-                        {
-                            // Includes acqFindAmount
-                            ComputeQuantityAmount();
-                            break;
-                        }
+                        // Includes acqFindAmount
+                        ComputeQuantityAmount();
+                        break;
                 }
             }
         }
@@ -270,8 +254,8 @@ namespace MwtWinDll
         /// and total final volume, storing in .StockSolutionVolume and .DilutingSolventVolume,
         /// and returning .StockSolutionVolume
         /// </summary>
-        /// <param name="eStockSolutionUnits"></param>
         /// <param name="dblNewDilutingSolventVolume">Output: diluting solvent volume</param>
+        /// <param name="eStockSolutionUnits"></param>
         /// <param name="eDilutingSolventUnits"></param>
         /// <returns></returns>
         public double ComputeDilutionRequiredStockAndDilutingSolventVolumes([Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume, uevUnitsExtendedVolumeConstants eStockSolutionUnits = uevUnitsExtendedVolumeConstants.uevML, uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
@@ -529,142 +513,74 @@ namespace MwtWinDll
                 switch (eUnits)
                 {
                     case uamUnitsAmountConstants.uamMoles:
-                        {
-                            dblFactor = 1d;
-                            break;
-                        }
-
+                        dblFactor = 1d;
+                        break;
                     case uamUnitsAmountConstants.uamMillimoles:
-                        {
-                            dblFactor = 1d / 1000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000.0d;
+                        break;
                     case uamUnitsAmountConstants.uamMicroMoles:
-                        {
-                            dblFactor = 1d / 1000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000.0d;
+                        break;
                     case uamUnitsAmountConstants.uamNanoMoles:
-                        {
-                            dblFactor = 1d / 1000000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000000.0d;
+                        break;
                     case uamUnitsAmountConstants.uamPicoMoles:
-                        {
-                            dblFactor = 1d / 1000000000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000000000.0d;
+                        break;
                     case uamUnitsAmountConstants.uamFemtoMoles:
-                        {
-                            dblFactor = 1d / 1.0E+15d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1.0E+15d;
+                        break;
                     case uamUnitsAmountConstants.uamAttoMoles:
-                        {
-                            dblFactor = 1d / 1.0E+18d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1.0E+18d;
+                        break;
                     case uamUnitsAmountConstants.uamKilograms:
-                        {
-                            dblFactor = 1000.0d / dblSampleMass;
-                            break;
-                        }
-
+                        dblFactor = 1000.0d / dblSampleMass;
+                        break;
                     case uamUnitsAmountConstants.uamGrams:
-                        {
-                            dblFactor = 1d / dblSampleMass;
-                            break;
-                        }
-
+                        dblFactor = 1d / dblSampleMass;
+                        break;
                     case uamUnitsAmountConstants.uamMilligrams:
-                        {
-                            dblFactor = 1d / (dblSampleMass * 1000.0d);
-                            break;
-                        }
-
+                        dblFactor = 1d / (dblSampleMass * 1000.0d);
+                        break;
                     case uamUnitsAmountConstants.uamMicrograms:
-                        {
-                            dblFactor = 1d / (dblSampleMass * 1000000.0d);
-                            break;
-                        }
-
+                        dblFactor = 1d / (dblSampleMass * 1000000.0d);
+                        break;
                     case uamUnitsAmountConstants.uamPounds:
-                        {
-                            dblFactor = 1000.0d / (dblSampleMass * POUNDS_PER_KG);
-                            break;
-                        }
-
+                        dblFactor = 1000.0d / (dblSampleMass * POUNDS_PER_KG);
+                        break;
                     case uamUnitsAmountConstants.uamOunces:
-                        {
-                            dblFactor = 1000.0d / (dblSampleMass * POUNDS_PER_KG * 16d);
-                            break;
-                        }
-
+                        dblFactor = 1000.0d / (dblSampleMass * POUNDS_PER_KG * 16d);
+                        break;
                     case uamUnitsAmountConstants.uamLiters:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevL);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevL);
+                        break;
                     case uamUnitsAmountConstants.uamDeciLiters:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevDL);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevDL);
+                        break;
                     case uamUnitsAmountConstants.uamMilliLiters:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevML);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevML);
+                        break;
                     case uamUnitsAmountConstants.uamMicroLiters:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevUL);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevUL);
+                        break;
                     case uamUnitsAmountConstants.uamNanoLiters:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevNL);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevNL);
+                        break;
                     case uamUnitsAmountConstants.uamPicoLiters:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevPL);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevPL);
+                        break;
                     case uamUnitsAmountConstants.uamGallons:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevGallons);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevGallons);
+                        break;
                     case uamUnitsAmountConstants.uamQuarts:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevQuarts);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevQuarts);
+                        break;
                     case uamUnitsAmountConstants.uamPints:
-                        {
-                            dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevPints);
-                            break;
-                        }
-
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevPints);
+                        break;
                     default:
-                        {
-                            dblFactor = -1;
-                            break;
-                        }
+                        dblFactor = -1;
+                        break;
                 }
             }
 
@@ -690,88 +606,47 @@ namespace MwtWinDll
                 switch (eUnits)
                 {
                     case ummcUnitsMoleMassConcentrationConstants.ummcMolar:
-                        {
-                            dblFactor = 1.0d;
-                            break;
-                        }
-
+                        dblFactor = 1.0d;
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcMilliMolar:
-                        {
-                            dblFactor = 1d / 1000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000.0d;
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcMicroMolar:
-                        {
-                            dblFactor = 1d / 1000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000.0d;
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcNanoMolar:
-                        {
-                            dblFactor = 1d / 1000000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000000.0d;
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcPicoMolar:
-                        {
-                            dblFactor = 1d / 1000000000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000000000.0d;
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcFemtoMolar:
-                        {
-                            dblFactor = 1d / 1.0E+15d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1.0E+15d;
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcAttoMolar:
-                        {
-                            dblFactor = 1d / 1.0E+18d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1.0E+18d;
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcMgPerDL:
-                        {
-                            dblFactor = 1d / dblSampleMass / 100.0d; // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / dblSampleMass / 100.0d; // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcMgPerML:
-                        {
-                            dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcUgPerML:
-                        {
-                            dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcNgPerML:
-                        {
-                            dblFactor = 1d / (dblSampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / (dblSampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcUgPerUL:
-                        {
-                            dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                        break;
                     case ummcUnitsMoleMassConcentrationConstants.ummcNgPerUL:
-                        {
-                            dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                        break;
                     default:
-                        {
-                            dblFactor = -1;
-                            break;
-                        }
+                        dblFactor = -1;
+                        break;
                 }
             }
 
@@ -792,64 +667,35 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case uevUnitsExtendedVolumeConstants.uevL:
-                    {
-                        dblFactor = 1d * 1000.0d;
-                        break;
-                    }
-
+                    dblFactor = 1d * 1000.0d;
+                    break;
                 case uevUnitsExtendedVolumeConstants.uevDL:
-                    {
-                        dblFactor = 1d * 100.0d;
-                        break;
-                    }
-
+                    dblFactor = 1d * 100.0d;
+                    break;
                 case uevUnitsExtendedVolumeConstants.uevML:
-                    {
-                        dblFactor = 1.0d;
-                        break;
-                    }
-
+                    dblFactor = 1.0d;
+                    break;
                 case uevUnitsExtendedVolumeConstants.uevUL:
-                    {
-                        dblFactor = 1d / 1000.0d;
-                        break;
-                    }
-
+                    dblFactor = 1d / 1000.0d;
+                    break;
                 case uevUnitsExtendedVolumeConstants.uevNL:
-                    {
-                        dblFactor = 1d / 1000000.0d;
-                        break;
-                    }
-
+                    dblFactor = 1d / 1000000.0d;
+                    break;
                 case uevUnitsExtendedVolumeConstants.uevPL:
-                    {
-                        dblFactor = 1d / 1000000000.0d;
-                        break;
-                    }
-
+                    dblFactor = 1d / 1000000000.0d;
+                    break;
                 case uevUnitsExtendedVolumeConstants.uevGallons:
-                    {
-                        dblFactor = 1000.0d / GALLONS_PER_L;
-                        break;
-                    }
-
+                    dblFactor = 1000.0d / GALLONS_PER_L;
+                    break;
                 case uevUnitsExtendedVolumeConstants.uevQuarts:
-                    {
-                        dblFactor = 1000.0d / GALLONS_PER_L / 4.0d;
-                        break;
-                    }
-
+                    dblFactor = 1000.0d / GALLONS_PER_L / 4.0d;
+                    break;
                 case uevUnitsExtendedVolumeConstants.uevPints:
-                    {
-                        dblFactor = 1000.0d / GALLONS_PER_L / 8.0d;
-                        break;
-                    }
-
+                    dblFactor = 1000.0d / GALLONS_PER_L / 8.0d;
+                    break;
                 default:
-                    {
-                        dblFactor = -1;
-                        break;
-                    }
+                    dblFactor = -1;
+                    break;
             }
 
             return dblFactor;

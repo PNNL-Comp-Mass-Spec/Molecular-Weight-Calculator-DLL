@@ -808,7 +808,6 @@ namespace MwtWinDllTest
                 for (short intCharge = 1; intCharge <= 4; intCharge++)
                     objResults.AppendText("  m/z of " + intCharge.ToString() + "+: " + withBlock.ConvoluteMass(dblMass, 0, intCharge));
 
-
                 // Test Capillary flow functions
                 {
                     var withBlock1 = withBlock.CapFlow;
@@ -1351,22 +1350,14 @@ namespace MwtWinDllTest
             switch (cboStdDevMode.SelectedIndex)
             {
                 case 1:
-                    {
-                        mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smScientific;
-                        break;
-                    }
-
+                    mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smScientific;
+                    break;
                 case 2:
-                    {
-                        mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smDecimal;
-                        break;
-                    }
-
+                    mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smDecimal;
+                    break;
                 default:
-                    {
-                        mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smShort;
-                        break;
-                    }
+                    mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smShort;
+                    break;
             }
         }
 
@@ -1375,22 +1366,14 @@ namespace MwtWinDllTest
             switch (cboWeightMode.SelectedIndex)
             {
                 case 1:
-                    {
-                        mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
-                        break;
-                    }
-
+                    mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+                    break;
                 case 2:
-                    {
-                        mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIntegerMass);
-                        break;
-                    }
-
+                    mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIntegerMass);
+                    break;
                 default:
-                    {
-                        mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emAverageMass);
-                        break;
-                    }
+                    mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emAverageMass);
+                    break;
             }
         }
 

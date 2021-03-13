@@ -712,76 +712,41 @@ namespace MwtWinDll
                 switch (item.Key ?? "")
                 {
                     case "C":
-                        {
-                            udtElementNum.C += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.C += item.Value;
+                        break;
                     case "Si":
-                        {
-                            udtElementNum.Si += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.Si += item.Value;
+                        break;
                     case "N":
-                        {
-                            udtElementNum.N += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.N += item.Value;
+                        break;
                     case "P":
-                        {
-                            udtElementNum.P += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.P += item.Value;
+                        break;
                     case "O":
-                        {
-                            udtElementNum.O += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.O += item.Value;
+                        break;
                     case "S":
-                        {
-                            udtElementNum.S += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.S += item.Value;
+                        break;
                     case "Cl":
-                        {
-                            udtElementNum.Cl += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.Cl += item.Value;
+                        break;
                     case "I":
-                        {
-                            udtElementNum.I += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.I += item.Value;
+                        break;
                     case "F":
-                        {
-                            udtElementNum.F += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.F += item.Value;
+                        break;
                     case "Br":
-                        {
-                            udtElementNum.Br += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.Br += item.Value;
+                        break;
                     case "H":
-                        {
-                            udtElementNum.H += item.Value;
-                            break;
-                        }
-
+                        udtElementNum.H += item.Value;
+                        break;
                     default:
-                        {
-                            udtElementNum.Other += item.Value;
-                            break;
-                        }
+                        udtElementNum.Other += item.Value;
+                        break;
                 }
             }
 
@@ -914,7 +879,7 @@ namespace MwtWinDll
             if (udtElementNum.N + udtElementNum.P > 0 && udtElementNum.C > 0)
             {
                 // Assume 2 hydrogens around each Nitrogen or Phosphorus, thus add back +2 for each H
-                // First, decrease udtElementNumber of halogens by udtElementNumber of hydrogens && halogens taken up by the carbons
+                // First, decrease udtElementNumber of halogens by udtElementNumber of hydrogens & halogens taken up by the carbons
                 // Determine # of H taken up by all the carbons in a compound without N or P, then add back 1 H for each N and P
                 int intNumHalogens = udtElementNum.H + udtElementNum.F + udtElementNum.Cl + udtElementNum.Br + udtElementNum.I;
                 intNumHalogens = intNumHalogens - (udtElementNum.C * 2 + 2) + udtElementNum.N + udtElementNum.P;

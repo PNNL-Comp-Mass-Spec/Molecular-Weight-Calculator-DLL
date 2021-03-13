@@ -207,6 +207,7 @@ namespace MwtWinDll
             /// Units: min
             /// </summary>
             public double ColumnDeadTime;
+
             public double InterparticlePorosity;
         }
 
@@ -314,48 +315,28 @@ namespace MwtWinDll
                 switch (mAutoComputeMode)
                 {
                     case acmAutoComputeModeConstants.acmBackPressure:
-                        {
-                            ComputeBackPressure();
-                            break;
-                        }
-
+                        ComputeBackPressure();
+                        break;
                     case acmAutoComputeModeConstants.acmColumnID:
-                        {
-                            ComputeColumnID();
-                            break;
-                        }
-
+                        ComputeColumnID();
+                        break;
                     case acmAutoComputeModeConstants.acmColumnLength:
-                        {
-                            ComputeColumnLength();
-                            break;
-                        }
-
+                        ComputeColumnLength();
+                        break;
                     case acmAutoComputeModeConstants.acmDeadTime:
-                        {
-                            ComputeDeadTime();
-                            break;
-                        }
-
+                        ComputeDeadTime();
+                        break;
                     case acmAutoComputeModeConstants.acmLinearVelocity:
-                        {
-                            ComputeLinearVelocity();
-                            break;
-                        }
-
+                        ComputeLinearVelocity();
+                        break;
                     case acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime:
-                        {
-                            double argdblNewBackPressure = 0d;
-                            this.ComputeVolFlowRateUsingDeadTime(out argdblNewBackPressure);
-                            break;
-                        }
-
+                        double argdblNewBackPressure = 0d;
+                        ComputeVolFlowRateUsingDeadTime(out argdblNewBackPressure);
+                        break;
                     default:
-                        {
-                            // Includes acmVolFlowRate
-                            ComputeVolFlowRate();
-                            break;
-                        }
+                        // Includes acmVolFlowRate
+                        ComputeVolFlowRate();
+                        break;
                 }
             }
         }
@@ -1012,23 +993,15 @@ namespace MwtWinDll
             switch (eCurrentUnits)
             {
                 case utpUnitsTemperatureConstants.utpCelsius:
-                    {
-                        // K = C + 273
-                        dblValue = dblTemperatureIn + 273d;
-                        break;
-                    }
-
+                    // K = C + 273
+                    dblValue = dblTemperatureIn + 273d;
+                    break;
                 case utpUnitsTemperatureConstants.utpFahrenheit:
-                    {
-                        // Convert to Kelvin: C = 5/9*(F-32) and K = C + 273
-                        dblValue = 5.0d / 9.0d * (dblTemperatureIn - 32d) + 273d;
-                        break;
-                    }
-
+                    // Convert to Kelvin: C = 5/9*(F-32) and K = C + 273
+                    dblValue = 5.0d / 9.0d * (dblTemperatureIn - 32d) + 273d;
+                    break;
                 default:
-                    {
-                        break;
-                    }
+                    break;
                     // Includes utpKelvin
                     // Assume already Kelvin
             }
@@ -1041,23 +1014,15 @@ namespace MwtWinDll
             switch (eNewUnits)
             {
                 case utpUnitsTemperatureConstants.utpCelsius:
-                    {
-                        // C = K - 273
-                        dblValue -= 273d;
-                        break;
-                    }
-
+                    // C = K - 273
+                    dblValue -= 273d;
+                    break;
                 case utpUnitsTemperatureConstants.utpFahrenheit:
-                    {
-                        // Convert to Fahrenheit: C = K - 273 and F = (9/5)C + 32
-                        dblValue = 9.0d / 5.0d * (dblValue - 273d) + 32d;
-                        break;
-                    }
-
+                    // Convert to Fahrenheit: C = K - 273 and F = (9/5)C + 32
+                    dblValue = 9.0d / 5.0d * (dblValue - 273d) + 32d;
+                    break;
                 default:
-                    {
-                        break;
-                    }
+                    break;
                     // Includes utpKelvin
                     // Already in Kelvin
             }
@@ -1201,82 +1166,44 @@ namespace MwtWinDll
                 switch (eUnits)
                 {
                     case ucoUnitsConcentrationConstants.ucoMolar:
-                        {
-                            dblFactor = 1.0d;
-                            break;
-                        }
-
+                        dblFactor = 1.0d;
+                        break;
                     case ucoUnitsConcentrationConstants.ucoMilliMolar:
-                        {
-                            dblFactor = 1d / 1000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000.0d;
+                        break;
                     case ucoUnitsConcentrationConstants.ucoMicroMolar:
-                        {
-                            dblFactor = 1d / 1000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000.0d;
+                        break;
                     case ucoUnitsConcentrationConstants.ucoNanoMolar:
-                        {
-                            dblFactor = 1d / 1000000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000000.0d;
+                        break;
                     case ucoUnitsConcentrationConstants.ucoPicoMolar:
-                        {
-                            dblFactor = 1d / 1000000000000.0d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1000000000000.0d;
+                        break;
                     case ucoUnitsConcentrationConstants.ucoFemtoMolar:
-                        {
-                            dblFactor = 1d / 1.0E+15d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1.0E+15d;
+                        break;
                     case ucoUnitsConcentrationConstants.ucoAttoMolar:
-                        {
-                            dblFactor = 1d / 1.0E+18d;
-                            break;
-                        }
-
+                        dblFactor = 1d / 1.0E+18d;
+                        break;
                     case ucoUnitsConcentrationConstants.ucoMgPerML:
-                        {
-                            dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                        break;
                     case ucoUnitsConcentrationConstants.ucoUgPerML:
-                        {
-                            dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                        break;
                     case ucoUnitsConcentrationConstants.ucoNgPerML:
-                        {
-                            dblFactor = 1d / (dblSampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / (dblSampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                        break;
                     case ucoUnitsConcentrationConstants.ucoUgPerUL:
-                        {
-                            dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                        break;
                     case ucoUnitsConcentrationConstants.ucoNgPerUL:
-                        {
-                            dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
-                            break;
-                        }
-
+                        dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                        break;
                     default:
-                        {
-                            dblFactor = -1;
-                            break;
-                        }
+                        dblFactor = -1;
+                        break;
                 }
             }
 
@@ -1293,34 +1220,17 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case ulnUnitsLengthConstants.ulnM:
-                    {
-                        return 100.0d;
-                    }
-
+                    return 100.0d;
                 case ulnUnitsLengthConstants.ulnCM:
-                    {
-                        return 1.0d;
-                    }
-
+                    return 1.0d;
                 case ulnUnitsLengthConstants.ulnMM:
-                    {
-                        return 1d / 10.0d;
-                    }
-
+                    return 1d / 10.0d;
                 case ulnUnitsLengthConstants.ulnMicrons:
-                    {
-                        return 1d / 10000.0d;
-                    }
-
+                    return 1d / 10000.0d;
                 case ulnUnitsLengthConstants.ulnInches:
-                    {
-                        return CM_PER_INCH;
-                    }
-
+                    return CM_PER_INCH;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 
@@ -1334,39 +1244,19 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case ulvUnitsLinearVelocityConstants.ulvCmPerHr:
-                    {
-                        return 1d / 60.0d;
-                    }
-
+                    return 1d / 60.0d;
                 case ulvUnitsLinearVelocityConstants.ulvMmPerHr:
-                    {
-                        return 1d / 60.0d / 10.0d;
-                    }
-
+                    return 1d / 60.0d / 10.0d;
                 case ulvUnitsLinearVelocityConstants.ulvCmPerMin:
-                    {
-                        return 1d;
-                    }
-
+                    return 1d;
                 case ulvUnitsLinearVelocityConstants.ulvMmPerMin:
-                    {
-                        return 1d / 10.0d;
-                    }
-
+                    return 1d / 10.0d;
                 case ulvUnitsLinearVelocityConstants.ulvCmPerSec:
-                    {
-                        return 60.0d;
-                    }
-
+                    return 60.0d;
                 case ulvUnitsLinearVelocityConstants.ulvMmPerSec:
-                    {
-                        return 60.0d / 10.0d;
-                    }
-
+                    return 60.0d / 10.0d;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 
@@ -1380,44 +1270,21 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case umfMassFlowRateConstants.umfPmolPerMin:
-                    {
-                        return 1d / 1000000000000.0d;
-                    }
-
+                    return 1d / 1000000000000.0d;
                 case umfMassFlowRateConstants.umfFmolPerMin:
-                    {
-                        return 1d / 1.0E+15d;
-                    }
-
+                    return 1d / 1.0E+15d;
                 case umfMassFlowRateConstants.umfAmolPerMin:
-                    {
-                        return 1d / 1.0E+18d;
-                    }
-
+                    return 1d / 1.0E+18d;
                 case umfMassFlowRateConstants.umfPmolPerSec:
-                    {
-                        return 1d / (1000000000000.0d / 60.0d);
-                    }
-
+                    return 1d / (1000000000000.0d / 60.0d);
                 case umfMassFlowRateConstants.umfFmolPerSec:
-                    {
-                        return 1d / (1.0E+15d / 60.0d);
-                    }
-
+                    return 1d / (1.0E+15d / 60.0d);
                 case umfMassFlowRateConstants.umfAmolPerSec:
-                    {
-                        return 1d / (1.0E+18d / 60.0d);
-                    }
-
+                    return 1d / (1.0E+18d / 60.0d);
                 case umfMassFlowRateConstants.umfMolesPerMin:
-                    {
-                        return 1.0d;
-                    }
-
+                    return 1.0d;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 
@@ -1431,44 +1298,21 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case umaMolarAmountConstants.umaMoles:
-                    {
-                        return 1.0d;
-                    }
-
+                    return 1.0d;
                 case umaMolarAmountConstants.umaMilliMoles:
-                    {
-                        return 1d / 1000.0d;
-                    }
-
+                    return 1d / 1000.0d;
                 case umaMolarAmountConstants.umaMicroMoles:
-                    {
-                        return 1d / 1000000.0d;
-                    }
-
+                    return 1d / 1000000.0d;
                 case umaMolarAmountConstants.umaNanoMoles:
-                    {
-                        return 1d / 1000000000.0d;
-                    }
-
+                    return 1d / 1000000000.0d;
                 case umaMolarAmountConstants.umaPicoMoles:
-                    {
-                        return 1d / 1000000000000.0d;
-                    }
-
+                    return 1d / 1000000000000.0d;
                 case umaMolarAmountConstants.umaFemtoMoles:
-                    {
-                        return 1d / 1.0E+15d;
-                    }
-
+                    return 1d / 1.0E+15d;
                 case umaMolarAmountConstants.umaAttoMoles:
-                    {
-                        return 1d / 1.0E+18d;
-                    }
-
+                    return 1d / 1.0E+18d;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 
@@ -1482,44 +1326,21 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case uprUnitsPressureConstants.uprPsi:
-                    {
-                        return 68947.57d;
-                    }
-
+                    return 68947.57d;
                 case uprUnitsPressureConstants.uprPascals:
-                    {
-                        return 10.0d;
-                    }
-
+                    return 10.0d;
                 case uprUnitsPressureConstants.uprKiloPascals:
-                    {
-                        return 10000.0d;
-                    }
-
+                    return 10000.0d;
                 case uprUnitsPressureConstants.uprAtmospheres:
-                    {
-                        return 1013250.0d;
-                    }
-
+                    return 1013250.0d;
                 case uprUnitsPressureConstants.uprBar:
-                    {
-                        return 1000000.0d;
-                    }
-
+                    return 1000000.0d;
                 case uprUnitsPressureConstants.uprTorr:
-                    {
-                        return 1333.22d;
-                    }
-
+                    return 1333.22d;
                 case uprUnitsPressureConstants.uprDynesPerSquareCm:
-                    {
-                        return 1d;
-                    }
-
+                    return 1d;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 
@@ -1533,24 +1354,13 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case utmUnitsTimeConstants.utmHours:
-                    {
-                        return 60.0d;
-                    }
-
+                    return 60.0d;
                 case utmUnitsTimeConstants.utmMinutes:
-                    {
-                        return 1.0d;
-                    }
-
+                    return 1.0d;
                 case utmUnitsTimeConstants.utmSeconds:
-                    {
-                        return 1d / 60.0d;
-                    }
-
+                    return 1d / 60.0d;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 
@@ -1564,24 +1374,13 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case udcDiffusionCoefficientConstants.udcCmSquaredPerHr:
-                    {
-                        return 1d / 3600.0d;
-                    }
-
+                    return 1d / 3600.0d;
                 case udcDiffusionCoefficientConstants.udcCmSquaredPerMin:
-                    {
-                        return 1d / 60.0d;
-                    }
-
+                    return 1d / 60.0d;
                 case udcDiffusionCoefficientConstants.udcCmSquaredPerSec:
-                    {
-                        return 1.0d;
-                    }
-
+                    return 1.0d;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 
@@ -1595,19 +1394,11 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case uviUnitsViscosityConstants.uviPoise:
-                    {
-                        return 1.0d;
-                    }
-
+                    return 1.0d;
                 case uviUnitsViscosityConstants.uviCentiPoise:
-                    {
-                        return 1d / 100.0d;
-                    }
-
+                    return 1d / 100.0d;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 
@@ -1622,28 +1413,17 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case ufrUnitsFlowRateConstants.ufrMLPerMin:
-                    {
-                        FactorVolFlowRateRet = 1.0d;
-                        break;
-                    }
-
+                    FactorVolFlowRateRet = 1.0d;
+                    break;
                 case ufrUnitsFlowRateConstants.ufrULPerMin:
-                    {
-                        FactorVolFlowRateRet = 1d / 1000.0d;
-                        break;
-                    }
-
+                    FactorVolFlowRateRet = 1d / 1000.0d;
+                    break;
                 case ufrUnitsFlowRateConstants.ufrNLPerMin:
-                    {
-                        FactorVolFlowRateRet = 1d / 1000000.0d;
-                        break;
-                    }
-
+                    FactorVolFlowRateRet = 1d / 1000000.0d;
+                    break;
                 default:
-                    {
-                        FactorVolFlowRateRet = -1;
-                        break;
-                    }
+                    FactorVolFlowRateRet = -1;
+                    break;
             }
 
             return FactorVolFlowRateRet;
@@ -1659,29 +1439,15 @@ namespace MwtWinDll
             switch (eUnits)
             {
                 case uvoUnitsVolumeConstants.uvoML:
-                    {
-                        return 1.0d;
-                    }
-
+                    return 1.0d;
                 case uvoUnitsVolumeConstants.uvoUL:
-                    {
-                        return 1d / 1000.0d;
-                    }
-
+                    return 1d / 1000.0d;
                 case uvoUnitsVolumeConstants.uvoNL:
-                    {
-                        return 1d / 1000000.0d;
-                    }
-
+                    return 1d / 1000000.0d;
                 case uvoUnitsVolumeConstants.uvoPL:
-                    {
-                        return 1d / 1000000000.0d;
-                    }
-
+                    return 1d / 1000000000.0d;
                 default:
-                    {
-                        return -1;
-                    }
+                    return -1;
             }
         }
 

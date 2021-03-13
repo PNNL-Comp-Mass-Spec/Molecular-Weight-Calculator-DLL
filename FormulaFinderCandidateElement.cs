@@ -1,15 +1,18 @@
-﻿
-namespace MwtWinDll
+﻿namespace MwtWinDll
 {
     internal class FormulaFinderCandidateElement
     {
         public double Mass { get; set; }
         public double Charge { get; set; }
+
         public int CountMinimum { get; set; }
         public int CountMaximum { get; set; }
+
         public double PercentCompMinimum { get; set; }
         public double PercentCompMaximum { get; set; }
+
         public string OriginalName { get; private set; }
+
         public string Symbol { get; set; }
 
         public FormulaFinderCandidateElement(string elementOrAbbrevSymbol)
