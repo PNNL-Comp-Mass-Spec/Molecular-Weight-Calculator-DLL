@@ -44,16 +44,21 @@ namespace MwtWinDll
         public const float DEFAULT_BYCZ_ION_INTENSITY = 100f;
         public const float DEFAULT_A_ION_INTENSITY = 20f;
         public const float DEFAULT_NEUTRAL_LOSS_ION_INTENSITY = 20f;
+
         public const float DEFAULT_DOUBLE_CHARGE_MZ_THRESHOLD = 800f;
         public const float DEFAULT_TRIPLE_CHARGE_MZ_THRESHOLD = 900f;
+
         private const short RESIDUE_DIM_CHUNK = 50;
         private const short MAX_MODIFICATIONS = 6; // Maximum number of modifications for a single residue
         private const string UNKNOWN_SYMBOL = "Xxx";
         private const string UNKNOWN_SYMBOL_ONE_LETTER = "X";
+
         private const string TERMINII_SYMBOL = "-";
         private const string TRYPTIC_RULE_RESIDUES = "KR";
         private const string TRYPTIC_EXCEPTION_RESIDUES = "P";
+
         private const string SHOULDER_ION_PREFIX = "Shoulder-";
+
         private readonly ElementAndMassTools ElementAndMassRoutines;
 
         public enum ctgCTerminusGroupConstants
@@ -210,20 +215,26 @@ namespace MwtWinDll
         // ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
         private udtTerminusType mCTerminus = new udtTerminusType(); // Formula on the C-Terminus
         private double mTotalMass;
+
         private string mWaterLossSymbol; // -H2O
         private string mAmmoniaLossSymbol; // -NH3
         private string mPhosphoLossSymbol; // -H3PO4
+
         private udtFragmentationSpectrumOptionsType mFragSpectrumOptions = new udtFragmentationSpectrumOptionsType();
+
         private double dblHOHMass;
         private double dblNH3Mass;
         private double dblH3PO4Mass;
         private double dblPhosphorylationMass; // H3PO4 minus HOH = 79.9663326
         private double dblHydrogenMass; // Mass of hydrogen
         private double dblChargeCarrierMass; // H minus one electron
+
         private double dblImmoniumMassDifference; // CO minus H = 26.9871
+
         private double dblHistidineFW; // 110
         private double dblPhenylalanineFW; // 120
         private double dblTyrosineFW; // 136
+
         private bool mDelayUpdateResidueMass;
         //
 
@@ -284,6 +295,7 @@ namespace MwtWinDll
             string strTestChar;
             int intSubPartLength;
             bool blnMatchFound;
+
             intSequenceStrLength = strPartialSequence.Length;
 
             // Find the entire group of potential modification symbols
@@ -379,7 +391,9 @@ namespace MwtWinDll
 
             itIonTypeConstants eIonIndex;
             short intIonCount;
+
             intIonCount = 0;
+
             for (eIonIndex = 0; eIonIndex <= ION_TYPE_MAX; eIonIndex++)
             {
                 if (mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex].ShowIon)
@@ -387,7 +401,8 @@ namespace MwtWinDll
                     intIonCount = (short)(intIonCount + 1);
                     if (Math.Abs(mFragSpectrumOptions.IntensityOptions.BYIonShoulder) > 0d)
                     {
-                        if ((eIonIndex == itIonTypeConstants.itBIon || eIonIndex == itIonTypeConstants.itYIon || eIonIndex == itIonTypeConstants.itCIon) || eIonIndex == itIonTypeConstants.itZIon)
+                        if (eIonIndex == itIonTypeConstants.itBIon || eIonIndex == itIonTypeConstants.itYIon ||
+                            eIonIndex == itIonTypeConstants.itCIon || eIonIndex == itIonTypeConstants.itZIon)
                         {
                             intIonCount = (short)(intIonCount + 2);
                         }
@@ -429,6 +444,7 @@ namespace MwtWinDll
             // Initialize the UDTs
             udtResidue.Initialize();
             strSymbol3Letter = string.Empty;
+
             if (strSymbol.Length > 0)
             {
                 if (blnUse3LetterCode)
@@ -464,6 +480,7 @@ namespace MwtWinDll
             }
 
             udtResidue.MassWithMods = udtResidue.Mass;
+
             return udtResidue;
         }
 
@@ -478,7 +495,9 @@ namespace MwtWinDll
             // Old: Func GetFragmentationMasses(lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
 
             List<udtFragmentationSpectrumDataType> lstFragSpectraData;
+
             lstFragSpectraData = GetFragmentationMasses();
+
             if (lstFragSpectraData.Count == 0)
             {
                 udtFragSpectrum = new udtFragmentationSpectrumDataType[1];
@@ -486,14 +505,17 @@ namespace MwtWinDll
             }
 
             udtFragSpectrum = new udtFragmentationSpectrumDataType[lstFragSpectraData.Count + 1];
+
             for (int intIndex = 0; intIndex < lstFragSpectraData.Count; intIndex++)
                 udtFragSpectrum[intIndex] = lstFragSpectraData[intIndex];
+
             return lstFragSpectraData.Count;
         }
 
         public List<udtFragmentationSpectrumDataType> GetFragmentationMasses()
         {
             const int MAX_CHARGE = 3;
+
             int lngResidueIndex;
             short intChargeIndex, intShoulderIndex;
             itIonTypeConstants eIonType;
@@ -502,15 +524,19 @@ namespace MwtWinDll
             float[] sngIonIntensities;
             sngIonIntensities = new float[5];
             float sngIonShoulderIntensity, sngNeutralLossIntensity;
+
             bool[] blnShowCharge;
             float[] sngChargeThreshold;
+
             float sngConvolutedMass, sngBaseMass, sngObservedMass;
             string strResidues;
             var blnPhosphorylated = default(bool);
             float sngIntensity;
             string strIonSymbol, strIonSymbolGeneric;
             udtFragmentationSpectrumDataType[] FragSpectrumWork;
+
             int[] PointerArray;
+
             if (ResidueCount == 0)
             {
                 // No residues
@@ -523,8 +549,10 @@ namespace MwtWinDll
             // Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
             for (eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
                 sngIonIntensities[(int)eIonType] = (float)mFragSpectrumOptions.IntensityOptions.IonType[(int)eIonType];
+
             sngIonShoulderIntensity = (float)mFragSpectrumOptions.IntensityOptions.BYIonShoulder;
             sngNeutralLossIntensity = (float)mFragSpectrumOptions.IntensityOptions.NeutralLoss;
+
             if (MAX_CHARGE >= 2)
             {
                 blnShowCharge[2] = mFragSpectrumOptions.DoubleChargeIonsShow;
@@ -540,27 +568,29 @@ namespace MwtWinDll
             // Populate sngIonMassesZeroBased() and sngIonIntensitiesZeroBased()
             // Put ion descriptions in strIonSymbolsZeroBased
             lngPredictedIonCount = GetFragmentationSpectrumRequiredDataPoints();
+
             if (lngPredictedIonCount == 0)
                 lngPredictedIonCount = ResidueCount;
             FragSpectrumWork = new udtFragmentationSpectrumDataType[lngPredictedIonCount + 1];
 
             // Need to update the residue masses in case the modifications have changed
             UpdateResidueMasses();
+
             lngIonCount = 0;
             for (lngResidueIndex = 1; lngResidueIndex <= ResidueCount; lngResidueIndex++)
             {
                 var residue = Residues[lngResidueIndex];
+
                 for (eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
                 {
                     if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].ShowIon)
                     {
                         if ((lngResidueIndex == 1 || lngResidueIndex == ResidueCount) && (eIonType == itIonTypeConstants.itAIon || eIonType == itIonTypeConstants.itBIon || eIonType == itIonTypeConstants.itCIon))
                         {
+                            // Don't include a, b, or c ions in the output masses for this residue
                         }
-                        // Don't include a, b, or c ions in the output masses for this residue
                         else
                         {
-
                             // Ion is used
                             sngBaseMass = (float)residue.IonMass[(int)eIonType]; // Already in the H+ state
                             sngIntensity = sngIonIntensities[(int)eIonType];
@@ -568,6 +598,7 @@ namespace MwtWinDll
                             // Get the list of residues preceding or following this residue
                             // Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() functions below
                             strResidues = GetInternalResidues(lngResidueIndex, eIonType, ref blnPhosphorylated);
+
                             for (intChargeIndex = 1; intChargeIndex <= MAX_CHARGE; intChargeIndex++)
                             {
                                 if (intChargeIndex == 1 || intChargeIndex > 1 && blnShowCharge[intChargeIndex])
@@ -584,8 +615,8 @@ namespace MwtWinDll
 
                                     if (intChargeIndex > 1 && sngBaseMass < sngChargeThreshold[intChargeIndex])
                                     {
+                                        // BaseMass is below threshold, do not add to Predicted Spectrum
                                     }
-                                    // BaseMass is below threshold, do not add to Predicted Spectrum
                                     else
                                     {
                                         // Add ion to Predicted Spectrum
@@ -665,14 +696,18 @@ namespace MwtWinDll
 
             // Sort arrays by mass (using a pointer array to synchronize the arrays)
             PointerArray = new int[lngIonCount + 1];
+
             for (lngIndex = 0; lngIndex < lngIonCount; lngIndex++)
                 PointerArray[lngIndex] = lngIndex;
+
             ShellSortFragSpectrum(ref FragSpectrumWork, ref PointerArray, 0, lngIonCount - 1);
 
             // Copy the data from FragSpectrumWork() to lstFragSpectraData
             var lstFragSpectraData = new List<udtFragmentationSpectrumDataType>(lngIonCount);
+
             for (lngIndex = 0; lngIndex <= lngIonCount; lngIndex++)
                 lstFragSpectraData.Add(FragSpectrumWork[PointerArray[lngIndex]]);
+
             return lstFragSpectraData;
         }
 
@@ -696,6 +731,7 @@ namespace MwtWinDll
 
             var udtDefaultOptions = new udtFragmentationSpectrumOptionsType();
             udtDefaultOptions.Initialize();
+
             return udtDefaultOptions;
         }
 
@@ -705,6 +741,7 @@ namespace MwtWinDll
 
             // Update the residue masses in order to update mTotalMass
             UpdateResidueMasses();
+
             return mTotalMass;
         }
 
@@ -725,6 +762,7 @@ namespace MwtWinDll
 
             string strInternalResidues;
             int lngResidueIndex;
+
             strInternalResidues = string.Empty;
             blnPhosphorylated = false;
             if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
@@ -788,6 +826,7 @@ namespace MwtWinDll
 
             int intIndex;
             var lngModificationIDMatch = default(int);
+
             for (intIndex = 1; intIndex <= ModificationSymbolCount; intIndex++)
             {
                 if ((ModificationSymbols[intIndex].Symbol ?? "") == (strModSymbol ?? ""))
@@ -831,6 +870,7 @@ namespace MwtWinDll
             string strSearchResidue3Letter;
             int lngResidueCount;
             int lngResidueIndex;
+
             if (blnUse3LetterCode)
             {
                 strSearchResidue3Letter = strResidueSymbol;
@@ -858,6 +898,7 @@ namespace MwtWinDll
             // ReDims lngModificationIDsOneBased() to hold the values
 
             short intIndex;
+
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
                 var residue = Residues[lngResidueNumber];
@@ -888,6 +929,7 @@ namespace MwtWinDll
             // Returns the symbol at the given residue number, or string.empty if an invalid residue number
 
             string strSymbol;
+
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
                 strSymbol = Residues[lngResidueNumber].Symbol;
@@ -918,22 +960,32 @@ namespace MwtWinDll
             return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues: false, blnSeparateResiduesWithDash: false, blnIncludeNAndCTerminii: false, blnIncludeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode, bool blnAddSpaceEvery10Residues)
+        public string GetSequence(bool blnUse3LetterCode,
+            bool blnAddSpaceEvery10Residues)
         {
             return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash: false, blnIncludeNAndCTerminii: false, blnIncludeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode, bool blnAddSpaceEvery10Residues, bool blnSeparateResiduesWithDash)
+        public string GetSequence(bool blnUse3LetterCode,
+            bool blnAddSpaceEvery10Residues,
+            bool blnSeparateResiduesWithDash)
         {
             return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNAndCTerminii: false, blnIncludeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode, bool blnAddSpaceEvery10Residues, bool blnSeparateResiduesWithDash, bool blnIncludeNAndCTerminii)
+        public string GetSequence(bool blnUse3LetterCode,
+            bool blnAddSpaceEvery10Residues,
+            bool blnSeparateResiduesWithDash,
+            bool blnIncludeNAndCTerminii)
         {
             return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNAndCTerminii, blnIncludeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode, bool blnAddSpaceEvery10Residues, bool blnSeparateResiduesWithDash, bool blnIncludeNAndCTerminii, bool blnIncludeModificationSymbols)
+        public string GetSequence(bool blnUse3LetterCode,
+            bool blnAddSpaceEvery10Residues,
+            bool blnSeparateResiduesWithDash,
+            bool blnIncludeNAndCTerminii,
+            bool blnIncludeModificationSymbols)
         {
             // Construct a text sequence using Residues() and the N and C Terminus info
 
@@ -946,10 +998,12 @@ namespace MwtWinDll
             int lngIndex;
             short intModIndex;
             int lngError;
+
             if (blnSeparateResiduesWithDash)
                 strDashAdd = "-";
             else
                 strDashAdd = string.Empty;
+
             strSequence = string.Empty;
             for (lngIndex = 1; lngIndex <= ResidueCount; lngIndex++)
             {
@@ -1030,31 +1084,47 @@ namespace MwtWinDll
         {
             int arglngReturnResidueStart = 0;
             int arglngReturnResidueEnd = 0;
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
+            return GetTrypticName(strProteinResidues, strPeptideResidues, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues, int lngProteinSearchStartLoc)
+        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
+            int lngProteinSearchStartLoc)
         {
             int arglngReturnResidueStart = 0;
             int arglngReturnResidueEnd = 0;
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, lngProteinSearchStartLoc);
+            return GetTrypticName(strProteinResidues, strPeptideResidues, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, lngProteinSearchStartLoc);
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues, ref int lngReturnResidueStart, ref int lngReturnResidueEnd)
+        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, false, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
+            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, false,
+                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, bool blnICR2LSCompatible)
+        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd,
+            bool blnICR2LSCompatible)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
+            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible,
+                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, bool blnICR2LSCompatible, string strRuleResidues, string strExceptionResidues, string strTerminiiSymbol)
+        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd,
+            bool blnICR2LSCompatible,
+            string strRuleResidues,
+            string strExceptionResidues,
+            string strTerminiiSymbol)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, true, 1);
+            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible,
+                                  strRuleResidues, strExceptionResidues, strTerminiiSymbol, true, 1);
         }
-
 
         /// <summary>
         /// Examines strPeptideResidues to see where they exist in strProteinResidues
@@ -1073,9 +1143,16 @@ namespace MwtWinDll
         /// <param name="lngProteinSearchStartLoc"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, bool blnICR2LSCompatible, string strRuleResidues, string strExceptionResidues, string strTerminiiSymbol, bool blnIgnoreCase, int lngProteinSearchStartLoc)
+        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd,
+            bool blnICR2LSCompatible,
+            string strRuleResidues,
+            string strExceptionResidues,
+            string strTerminiiSymbol,
+            bool blnIgnoreCase,
+            int lngProteinSearchStartLoc)
         {
-
             // The tryptic name in the following format
             // t1  indicates tryptic peptide 1
             // t2 represents tryptic peptide 2, etc.
@@ -1108,11 +1185,13 @@ namespace MwtWinDll
             string strPrefix, strSuffix;
             string strResidueFollowingSearchResidues;
             bool blnMatchesCleavageRule;
+
             short intTrypticResidueNumber;
             short intRuleResidueMatchCount;
             int lngRuleResidueLoc;
             string strProteinResiduesBeforeStartLoc;
             int lngPeptideResiduesLength;
+
             if (blnIgnoreCase)
             {
                 strProteinResidues = Strings.UCase(strProteinResidues);
@@ -1133,6 +1212,7 @@ namespace MwtWinDll
             }
 
             lngPeptideResiduesLength = Strings.Len(strPeptideResidues);
+
             if (intStartLoc > 0 && Strings.Len(strProteinResidues) > 0 && lngPeptideResiduesLength > 0)
             {
                 intEndLoc = intStartLoc + lngPeptideResiduesLength - 1;
@@ -1157,7 +1237,14 @@ namespace MwtWinDll
                     strSuffix = Strings.Mid(strProteinResidues, intEndLoc + 1, 1);
                 }
 
-                blnMatchesCleavageRule = CheckSequenceAgainstCleavageRule(strPrefix + "." + strPeptideResidues + "." + strSuffix, strRuleResidues, strExceptionResidues, false, ".", strTerminiiSymbol, blnIgnoreCase);
+                blnMatchesCleavageRule = CheckSequenceAgainstCleavageRule(strPrefix + "." + strPeptideResidues + "." + strSuffix,
+                                                                          strRuleResidues,
+                                                                          strExceptionResidues,
+                                                                          false,
+                                                                          ".",
+                                                                          strTerminiiSymbol,
+                                                                          blnIgnoreCase);
+
                 if (blnMatchesCleavageRule)
                 {
                     // Construct strTrypticName
@@ -1198,6 +1285,7 @@ namespace MwtWinDll
                         }
                     }
                     while (lngRuleResidueLoc > 0 && lngRuleResidueLoc < lngPeptideResiduesLength);
+
                     strTrypticName = "t" + Strings.Trim(Conversion.Str(intTrypticResidueNumber));
                     if (intRuleResidueMatchCount > 1)
                     {
@@ -1226,43 +1314,80 @@ namespace MwtWinDll
             }
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues, string strPeptideResidues)
+        public string GetTrypticNameMultipleMatches(string strProteinResidues,
+            string strPeptideResidues)
         {
             int arglngReturnMatchCount = 0;
             int arglngReturnResidueStart = 0;
             int arglngReturnResidueEnd = 0;
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
+            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
+                                                 ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues, string strPeptideResidues, int lngProteinSearchStartLoc)
+        public string GetTrypticNameMultipleMatches(string strProteinResidues,
+            string strPeptideResidues,
+            int lngProteinSearchStartLoc)
         {
             int arglngReturnMatchCount = 0;
             int arglngReturnResidueStart = 0;
             int arglngReturnResidueEnd = 0;
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, lngProteinSearchStartLoc, ", ");
+            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
+                                                 ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
+                                                 lngProteinSearchStartLoc, ", ");
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues, string strPeptideResidues, int lngProteinSearchStartLoc, string strListDelimiter)
+        public string GetTrypticNameMultipleMatches(string strProteinResidues,
+            string strPeptideResidues,
+            int lngProteinSearchStartLoc,
+            string strListDelimiter)
         {
             int arglngReturnMatchCount = 0;
             int arglngReturnResidueStart = 0;
             int arglngReturnResidueEnd = 0;
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, lngProteinSearchStartLoc, strListDelimiter);
+            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
+                                                 ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
+                                                 lngProteinSearchStartLoc, strListDelimiter);
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues, string strPeptideResidues, ref int lngReturnMatchCount, ref int lngReturnResidueStart, ref int lngReturnResidueEnd)
+        public string GetTrypticNameMultipleMatches(string strProteinResidues,
+            string strPeptideResidues,
+            ref int lngReturnMatchCount,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd)
         {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, false, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
+            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
+                                                 ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, false,
+                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues, string strPeptideResidues, ref int lngReturnMatchCount, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, bool blnICR2LSCompatible)
+        public string GetTrypticNameMultipleMatches(string strProteinResidues,
+            string strPeptideResidues,
+            ref int lngReturnMatchCount,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd,
+            bool blnICR2LSCompatible)
         {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
+            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
+                                                 ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible,
+                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues, string strPeptideResidues, ref int lngReturnMatchCount, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, bool blnICR2LSCompatible, string strRuleResidues, string strExceptionResidues, string strTerminiiSymbol)
+        public string GetTrypticNameMultipleMatches(string strProteinResidues,
+            string strPeptideResidues,
+            ref int lngReturnMatchCount,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd,
+            bool blnICR2LSCompatible,
+            string strRuleResidues,
+            string strExceptionResidues,
+            string strTerminiiSymbol)
         {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues, ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, true, 1, ", ");
+            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
+                                                 ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible,
+                                                 strRuleResidues, strExceptionResidues, strTerminiiSymbol, true, 1, ", ");
         }
 
         /// <summary>
@@ -1283,9 +1408,19 @@ namespace MwtWinDll
         /// <param name="strListDelimiter"></param>
         /// <returns>The number of matches</returns>
         /// <remarks></remarks>
-        public string GetTrypticNameMultipleMatches(string strProteinResidues, string strPeptideResidues, ref int lngReturnMatchCount, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, bool blnICR2LSCompatible, string strRuleResidues, string strExceptionResidues, string strTerminiiSymbol, bool blnIgnoreCase, int lngProteinSearchStartLoc, string strListDelimiter)
+        public string GetTrypticNameMultipleMatches(string strProteinResidues,
+            string strPeptideResidues,
+            ref int lngReturnMatchCount,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd,
+            bool blnICR2LSCompatible,
+            string strRuleResidues,
+            string strExceptionResidues,
+            string strTerminiiSymbol,
+            bool blnIgnoreCase,
+            int lngProteinSearchStartLoc,
+            string strListDelimiter)
         {
-
             // Returns the number of matches in lngReturnMatchCount
             // lngReturnResidueStart contains the residue number of the start of the first match
             // lngReturnResidueEnd contains the residue number of the end of the last match
@@ -1295,12 +1430,15 @@ namespace MwtWinDll
             string strNameList, strCurrentName;
             int lngCurrentSearchLoc;
             int lngCurrentResidueStart = default, lngCurrentResidueEnd = default;
+
             lngCurrentSearchLoc = lngProteinSearchStartLoc;
             lngReturnMatchCount = 0;
             strNameList = string.Empty;
+
             do
             {
                 strCurrentName = GetTrypticName(strProteinResidues, strPeptideResidues, ref lngCurrentResidueStart, ref lngCurrentResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, blnIgnoreCase, lngCurrentSearchLoc);
+
                 if (Strings.Len(strCurrentName) > 0)
                 {
                     if (strNameList.Length > 0)
@@ -1311,12 +1449,14 @@ namespace MwtWinDll
                     strNameList += strCurrentName;
                     lngCurrentSearchLoc = lngCurrentResidueEnd + 1;
                     lngReturnMatchCount += 1;
+
                     if (lngReturnMatchCount == 1)
                     {
                         lngReturnResidueStart = lngCurrentResidueStart;
                     }
 
                     lngReturnResidueEnd = lngCurrentResidueEnd;
+
                     if (lngCurrentSearchLoc > Strings.Len(strProteinResidues))
                         break;
                 }
@@ -1329,7 +1469,11 @@ namespace MwtWinDll
             return strNameList;
         }
 
-        private int GetTrypticNameFindNextCleavageLoc(string strSearchResidues, string strResidueFollowingSearchResidues, int lngStartChar, string strSearchChars = TRYPTIC_RULE_RESIDUES, string strExceptionSuffixResidues = TRYPTIC_EXCEPTION_RESIDUES, string strTerminiiSymbol = TERMINII_SYMBOL)
+        private int GetTrypticNameFindNextCleavageLoc(string strSearchResidues, string strResidueFollowingSearchResidues,
+            int lngStartChar,
+            string strSearchChars = TRYPTIC_RULE_RESIDUES,
+            string strExceptionSuffixResidues = TRYPTIC_EXCEPTION_RESIDUES,
+            string strTerminiiSymbol = TERMINII_SYMBOL)
         {
             // Finds the location of the next strSearchChar in strSearchResidues (K or R by default)
             // Assumes strSearchResidues are already upper case
@@ -1357,14 +1501,18 @@ namespace MwtWinDll
             short intCharLocInExceptionChars;
             string strResidueFollowingCleavageResidue;
             int lngExceptionCharLocInSearchResidues, lngCharLocViaRecursiveSearch;
+
             intExceptionSuffixResidueCount = (short)Strings.Len(strExceptionSuffixResidues);
+
             lngMinCharLoc = -1;
             for (intCharLocInSearchChars = 0; intCharLocInSearchChars < strSearchChars.Length; intCharLocInSearchChars++)
             {
                 lngCharLoc = Strings.InStr(Strings.Mid(strSearchResidues, lngStartChar), Strings.Mid(strSearchChars, intCharLocInSearchChars, 1));
+
                 if (lngCharLoc > 0)
                 {
                     lngCharLoc = lngCharLoc + lngStartChar - 1;
+
                     if (intExceptionSuffixResidueCount > 0)
                     {
                         // Make sure strSuffixResidue does not match strExceptionSuffixResidues
@@ -1390,6 +1538,7 @@ namespace MwtWinDll
                                 {
                                     // Recursively call this function to find the next cleavage position, using an updated lngStartChar position
                                     lngCharLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(strSearchResidues, strResidueFollowingSearchResidues, lngExceptionCharLocInSearchResidues, strSearchChars, strExceptionSuffixResidues, strTerminiiSymbol);
+
                                     if (lngCharLocViaRecursiveSearch > 0)
                                     {
                                         // Found a residue further along that is a valid cleavage point
@@ -1439,16 +1588,22 @@ namespace MwtWinDll
             }
         }
 
-        public string GetTrypticPeptideNext(string strProteinResidues, int lngSearchStartLoc)
+        public string GetTrypticPeptideNext(string strProteinResidues,
+            int lngSearchStartLoc)
         {
             int arglngReturnResidueStart = 0;
             int arglngReturnResidueEnd = 0;
             return GetTrypticPeptideNext(strProteinResidues, lngSearchStartLoc, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL);
         }
 
-        public string GetTrypticPeptideNext(string strProteinResidues, int lngSearchStartLoc, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, string strRuleResidues, string strExceptionResidues, string strTerminiiSymbol)
+        public string GetTrypticPeptideNext(string strProteinResidues,
+            int lngSearchStartLoc,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd,
+            string strRuleResidues,
+            string strExceptionResidues,
+            string strTerminiiSymbol)
         {
-
             // Returns the next tryptic peptide in strProteinResidues, starting the search as lngSearchStartLoc
             // Useful when obtaining all of the tryptic peptides for a protein, since this function will operate
             // much faster than repeatedly calling GetTrypticPeptideByFragmentNumber()
@@ -1457,8 +1612,10 @@ namespace MwtWinDll
 
             int lngRuleResidueLoc;
             int lngProteinResiduesLength;
+
             if (lngSearchStartLoc < 1)
                 lngSearchStartLoc = 1;
+
             lngProteinResiduesLength = Strings.Len(strProteinResidues);
             if (lngSearchStartLoc > lngProteinResiduesLength)
             {
@@ -1488,21 +1645,34 @@ namespace MwtWinDll
             }
         }
 
-        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues, short intDesiredPeptideNumber)
+        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
+            short intDesiredPeptideNumber)
         {
             int arglngReturnResidueStart = 0;
             int arglngReturnResidueEnd = 0;
-            return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
+            return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber, ref arglngReturnResidueStart, ref arglngReturnResidueEnd,
+                                                     TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
         }
 
-        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues, short intDesiredPeptideNumber, ref int lngReturnResidueStart, ref int lngReturnResidueEnd)
+        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
+            short intDesiredPeptideNumber,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd)
         {
-            return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber, ref lngReturnResidueStart, ref lngReturnResidueEnd, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
+            return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber,
+                                                     ref lngReturnResidueStart, ref lngReturnResidueEnd,
+                                                     TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
         }
 
-        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues, short intDesiredPeptideNumber, ref int lngReturnResidueStart, ref int lngReturnResidueEnd, string strRuleResidues, string strExceptionResidues, string strTerminiiSymbol, bool blnIgnoreCase)
+        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
+            short intDesiredPeptideNumber,
+            ref int lngReturnResidueStart,
+            ref int lngReturnResidueEnd,
+            string strRuleResidues,
+            string strExceptionResidues,
+            string strTerminiiSymbol,
+            bool blnIgnoreCase)
         {
-
             // Returns the desired tryptic peptide from strProteinResidues
 
             // ReSharper disable CommentTypo
@@ -1517,12 +1687,13 @@ namespace MwtWinDll
             // Optionally, returns the position of the start and end residues
             // using lngReturnResidueStart and lngReturnResidueEnd
 
-
             int lngStartLoc, lngRuleResidueLoc;
             var lngPrevStartLoc = default(int);
             int lngProteinResiduesLength;
             short intCurrentTrypticPeptideNumber;
+
             string strMatchingFragment;
+
             if (intDesiredPeptideNumber < 1)
             {
                 return string.Empty;
@@ -1534,6 +1705,7 @@ namespace MwtWinDll
             }
 
             lngProteinResiduesLength = Strings.Len(strProteinResidues);
+
             lngStartLoc = 1;
             intCurrentTrypticPeptideNumber = 0;
             do
@@ -1544,6 +1716,7 @@ namespace MwtWinDll
                     intCurrentTrypticPeptideNumber = (short)(intCurrentTrypticPeptideNumber + 1);
                     lngPrevStartLoc = lngStartLoc;
                     lngStartLoc = lngRuleResidueLoc + 1;
+
                     if (lngPrevStartLoc > lngProteinResiduesLength)
                     {
                         // User requested a peptide number that doesn't exist
@@ -1557,6 +1730,7 @@ namespace MwtWinDll
                 }
             }
             while (intCurrentTrypticPeptideNumber < intDesiredPeptideNumber);
+
             if (intCurrentTrypticPeptideNumber > 0 && lngPrevStartLoc > 0)
             {
                 if (lngPrevStartLoc > Strings.Len(strProteinResidues))
@@ -1592,26 +1766,48 @@ namespace MwtWinDll
             return strMatchingFragment;
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string strSequence, string strRuleResidues, string strExceptionSuffixResidues, bool blnAllowPartialCleavage)
+        public bool CheckSequenceAgainstCleavageRule(string strSequence,
+            string strRuleResidues,
+            string strExceptionSuffixResidues,
+            bool blnAllowPartialCleavage)
         {
             short argintRuleMatchCount = 0;
-            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues, blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, ref argintRuleMatchCount);
+            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
+                                                    blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, ref argintRuleMatchCount);
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string strSequence, string strRuleResidues, string strExceptionSuffixResidues, bool blnAllowPartialCleavage, ref short intRuleMatchCount)
+        public bool CheckSequenceAgainstCleavageRule(string strSequence,
+            string strRuleResidues,
+            string strExceptionSuffixResidues,
+            bool blnAllowPartialCleavage,
+            ref short intRuleMatchCount)
         {
-            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues, blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, ref intRuleMatchCount);
+            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
+                                                    blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, ref intRuleMatchCount);
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string strSequence, string strRuleResidues, string strExceptionSuffixResidues, bool blnAllowPartialCleavage, string strSeparationChar, string strTerminiiSymbol, bool blnIgnoreCase)
+        public bool CheckSequenceAgainstCleavageRule(string strSequence,
+            string strRuleResidues,
+            string strExceptionSuffixResidues,
+            bool blnAllowPartialCleavage,
+            string strSeparationChar,
+            string strTerminiiSymbol,
+            bool blnIgnoreCase)
         {
             short argintRuleMatchCount = 0;
-            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues, blnAllowPartialCleavage, strSeparationChar, strTerminiiSymbol, blnIgnoreCase, ref argintRuleMatchCount);
+            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
+                                                    blnAllowPartialCleavage, strSeparationChar, strTerminiiSymbol, blnIgnoreCase, ref argintRuleMatchCount);
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string strSequence, string strRuleResidues, string strExceptionSuffixResidues, bool blnAllowPartialCleavage, string strSeparationChar, string strTerminiiSymbol, bool blnIgnoreCase, ref short intRuleMatchCount)
+        public bool CheckSequenceAgainstCleavageRule(string strSequence,
+            string strRuleResidues,
+            string strExceptionSuffixResidues,
+            bool blnAllowPartialCleavage,
+            string strSeparationChar,
+            string strTerminiiSymbol,
+            bool blnIgnoreCase,
+            ref short intRuleMatchCount)
         {
-
             // Checks strSequence to see if it matches the cleavage rule
             // Returns True if valid, False if invalid
             // Returns True if doesn't contain any periods, and thus, can't be examined
@@ -1650,6 +1846,7 @@ namespace MwtWinDll
 
             if (strSeparationChar == null)
                 strSeparationChar = ".";
+
             if (!strSequence.Contains(strSeparationChar))
             {
                 // No periods, can't check
@@ -1688,7 +1885,8 @@ namespace MwtWinDll
             {
                 // Peptide database rules
                 // See if prefix and suffix are "" or are strTerminiiSymbol
-                if ((strPrefix ?? "") == (strTerminiiSymbol ?? "") && (strSuffix ?? "") == (strTerminiiSymbol ?? "") || (strPrefix ?? "") == (string.Empty ?? "") && (strSuffix ?? "") == (string.Empty ?? ""))
+                if ((strPrefix ?? "") == (strTerminiiSymbol ?? "") && (strSuffix ?? "") == (strTerminiiSymbol ?? "") ||
+                    (strPrefix ?? "") == (string.Empty ?? "") && (strSuffix ?? "") == (string.Empty ?? ""))
                 {
                     intRuleMatchCount = 2;
                     blnMatchesCleavageRule = true;
@@ -1775,6 +1973,7 @@ namespace MwtWinDll
             // Used to test by Rule Residues and Exception Residues
 
             string strCompareResidue;
+
             for (int intCharIndex = 0; intCharIndex < strRuleResidues.Length; intCharIndex++)
             {
                 strCompareResidue = strRuleResidues.Substring(intCharIndex, 1).Trim();
@@ -1831,6 +2030,7 @@ namespace MwtWinDll
             ReserveMemoryForResidues(50, false);
             ResidueCount = 0;
             mTotalMass = 0d;
+
             RemoveAllResiduesRet = 0;
             return RemoveAllResiduesRet;
         }
@@ -1844,6 +2044,7 @@ namespace MwtWinDll
 
             ReserveMemoryForModifications(10, false);
             ModificationSymbolCount = 0;
+
             RemoveAllModificationSymbolsRet = 0;
             return RemoveAllModificationSymbolsRet;
         }
@@ -1852,6 +2053,7 @@ namespace MwtWinDll
         {
             // Returns True if a leading H is removed
             int lngAbbrevID;
+
             if (strWorkingSequence.Length >= 4 && strWorkingSequence.ToUpper().StartsWith("H"))
             {
                 // If next character is not a character, then remove the H and the non-letter character
@@ -1865,6 +2067,7 @@ namespace MwtWinDll
                 {
                     // Formula starts with 4 characters and the first is H, see if the first 3 characters are a valid amino acid code
                     lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strWorkingSequence.Substring(0, 3), true);
+
                     if (lngAbbrevID <= 0)
                     {
                         // Doesn't start with a valid amino acid 3 letter abbreviation, so remove the initial H
@@ -1883,6 +2086,7 @@ namespace MwtWinDll
             int lngAbbrevID;
             bool blnOHRemoved;
             int lngStringLength;
+
             blnOHRemoved = false;
             lngStringLength = Strings.Len(strWorkingSequence);
             if (strWorkingSequence.Length >= 5 && strWorkingSequence.ToUpper().EndsWith("OH"))
@@ -1898,6 +2102,7 @@ namespace MwtWinDll
                 {
                     // Formula ends with 3 characters and the last two are OH, see if the last 3 characters are a valid amino acid code
                     lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(Strings.Mid(strWorkingSequence, lngStringLength - 2, 3), true);
+
                     if (lngAbbrevID <= 0)
                     {
                         // Doesn't end with a valid amino acid 3 letter abbreviation, so remove the trailing OH
@@ -1918,6 +2123,7 @@ namespace MwtWinDll
 
             int lngIndex;
             var blnRemoved = default(bool);
+
             for (lngIndex = 1; lngIndex <= ModificationSymbolCount; lngIndex++)
             {
                 if ((ModificationSymbols[lngIndex].Symbol ?? "") == (strModSymbol ?? ""))
@@ -1945,10 +2151,12 @@ namespace MwtWinDll
 
             int lngIndex;
             bool blnRemoved;
+
             if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
             {
                 for (lngIndex = lngModificationID; lngIndex < ModificationSymbolCount; lngIndex++)
                     ModificationSymbols[lngIndex] = ModificationSymbols[lngIndex + 1];
+
                 ModificationSymbolCount -= 1;
                 blnRemoved = true;
             }
@@ -1972,10 +2180,12 @@ namespace MwtWinDll
             // Returns 0 if found and removed; 1 if error
 
             int lngIndex;
+
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
                 for (lngIndex = lngResidueNumber; lngIndex < ResidueCount; lngIndex++)
                     Residues[lngIndex] = Residues[lngIndex + 1];
+
                 ResidueCount -= 1;
                 return 0;
             }
@@ -1992,6 +2202,7 @@ namespace MwtWinDll
 
             int intIndex;
             int intOldIndexEnd;
+
             if (lngNewResidueCount > ResidueCountDimmed)
             {
                 ResidueCountDimmed = lngNewResidueCount + RESIDUE_DIM_CHUNK;
@@ -2076,9 +2287,10 @@ namespace MwtWinDll
             return SetCTerminusGroup(eCTerminusGroup, strFollowingResidue, true);
         }
 
-        public int SetCTerminusGroup(ctgCTerminusGroupConstants eCTerminusGroup, string strFollowingResidue, bool blnUse3LetterCode)
+        public int SetCTerminusGroup(ctgCTerminusGroupConstants eCTerminusGroup,
+            string strFollowingResidue,
+            bool blnUse3LetterCode)
         {
-
             // Returns 0 if success; 1 if error
             int lngError;
             switch (eCTerminusGroup)
@@ -2131,6 +2343,7 @@ namespace MwtWinDll
         public void SetDefaultOptions()
         {
             itIonTypeConstants eIonIndex;
+
             try
             {
                 var intensityOptions = mFragSpectrumOptions.IntensityOptions;
@@ -2160,13 +2373,16 @@ namespace MwtWinDll
 
                 mFragSpectrumOptions.DoubleChargeIonsShow = true;
                 mFragSpectrumOptions.DoubleChargeIonsThreshold = DEFAULT_DOUBLE_CHARGE_MZ_THRESHOLD;
+
                 mFragSpectrumOptions.TripleChargeIonsShow = false;
                 mFragSpectrumOptions.TripleChargeIonsThreshold = DEFAULT_TRIPLE_CHARGE_MZ_THRESHOLD;
 
                 SetSymbolWaterLoss("-H2O");
                 SetSymbolAmmoniaLoss("-NH3");
                 SetSymbolPhosphoLoss("-H3PO4");
+
                 UpdateStandardMasses();
+
                 SetDefaultModificationSymbols();
             }
             catch (Exception ex)
@@ -2198,6 +2414,7 @@ namespace MwtWinDll
 
             string strTestChar;
             int lngIndexToUse, lngIndex, lngErrorID;
+
             lngErrorID = 0;
             if (Strings.Len(strModSymbol) < 1)
             {
@@ -2219,6 +2436,7 @@ namespace MwtWinDll
                 {
                     // See if the modification is alrady present
                     lngIndexToUse = GetModificationSymbolID(ref strModSymbol);
+
                     if (lngIndexToUse == 0)
                     {
                         // Need to add the modification
@@ -2290,11 +2508,13 @@ namespace MwtWinDll
             return SetNTerminusGroup(eNTerminusGroup, strPrecedingResidue, true);
         }
 
-        public int SetNTerminusGroup(ntgNTerminusGroupConstants eNTerminusGroup, string strPrecedingResidue, bool blnUse3LetterCode)
+        public int SetNTerminusGroup(ntgNTerminusGroupConstants eNTerminusGroup,
+            string strPrecedingResidue,
+            bool blnUse3LetterCode)
         {
-
             // Returns 0 if success; 1 if error
             int lngError;
+
             switch (eNTerminusGroup)
             {
                 case ntgNTerminusGroupConstants.ntgHydrogen:
@@ -2326,17 +2546,23 @@ namespace MwtWinDll
             return lngError;
         }
 
-        public int SetResidue(int lngResidueNumber, string strSymbol)
+        public int SetResidue(int lngResidueNumber,
+            string strSymbol)
         {
             return SetResidue(lngResidueNumber, strSymbol, true, false);
         }
 
-        public int SetResidue(int lngResidueNumber, string strSymbol, bool blnIs3LetterCode)
+        public int SetResidue(int lngResidueNumber,
+            string strSymbol, bool
+                blnIs3LetterCode)
         {
             return SetResidue(lngResidueNumber, strSymbol, blnIs3LetterCode, false);
         }
 
-        public int SetResidue(int lngResidueNumber, string strSymbol, bool blnIs3LetterCode, bool blnPhosphorylated)
+        public int SetResidue(int lngResidueNumber,
+            string strSymbol,
+            bool blnIs3LetterCode,
+            bool blnPhosphorylated)
         {
             int SetResidueRet = default;
 
@@ -2346,6 +2572,7 @@ namespace MwtWinDll
 
             int lngIndexToUse;
             string str3LetterSymbol;
+
             if (strSymbol == null || strSymbol.Length == 0)
             {
                 return -1;
@@ -2395,6 +2622,7 @@ namespace MwtWinDll
             residue.ModificationIDCount = 0;
 
             UpdateResidueMasses();
+
             SetResidueRet = lngIndexToUse;
             return SetResidueRet;
         }
@@ -2409,6 +2637,7 @@ namespace MwtWinDll
 
             short intIndex;
             int lngNewModID;
+
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount && intModificationCount >= 0)
             {
                 var residue = Residues[lngResidueNumber];
@@ -2454,7 +2683,10 @@ namespace MwtWinDll
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence)
         {
-            return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(strSequence,
+                   ntgNTerminusGroupConstants.ntgHydrogen,
+                   ctgCTerminusGroupConstants.ctgHydroxyl,
+                   blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
@@ -2465,7 +2697,10 @@ namespace MwtWinDll
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence1LetterSymbol(string strSequence)
         {
-            return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode: false, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(strSequence,
+                ntgNTerminusGroupConstants.ntgHydrogen,
+                ctgCTerminusGroupConstants.ctgHydroxyl,
+                blnIs3LetterCode: false, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
@@ -2476,9 +2711,12 @@ namespace MwtWinDll
         /// <param name="bln1LetterCheckForPrefixAndSuffixResidues"></param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence, bool blnIs3LetterCode, bool bln1LetterCheckForPrefixAndSuffixResidues)
+        public int SetSequence(string strSequence,
+            bool blnIs3LetterCode,
+            bool bln1LetterCheckForPrefixAndSuffixResidues)
         {
-            return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl,
+                blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
@@ -2489,9 +2727,12 @@ namespace MwtWinDll
         /// <param name="eCTerminus">C-terminus group</param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus)
+        public int SetSequence(string strSequence,
+            ntgNTerminusGroupConstants eNTerminus,
+            ctgCTerminusGroupConstants eCTerminus)
         {
-            return SetSequence(strSequence, eNTerminus, eCTerminus, blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(strSequence, eNTerminus, eCTerminus,
+                blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
@@ -2503,9 +2744,13 @@ namespace MwtWinDll
         /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus, bool blnIs3LetterCode)
+        public int SetSequence(string strSequence,
+            ntgNTerminusGroupConstants eNTerminus,
+            ctgCTerminusGroupConstants eCTerminus,
+            bool blnIs3LetterCode)
         {
-            return SetSequence(strSequence, eNTerminus, eCTerminus, blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(strSequence, eNTerminus, eCTerminus,
+                blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
@@ -2518,9 +2763,14 @@ namespace MwtWinDll
         /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus, bool blnIs3LetterCode, bool bln1LetterCheckForPrefixAndSuffixResidues)
+        public int SetSequence(string strSequence,
+            ntgNTerminusGroupConstants eNTerminus,
+            ctgCTerminusGroupConstants eCTerminus,
+            bool blnIs3LetterCode,
+            bool bln1LetterCheckForPrefixAndSuffixResidues)
         {
-            return SetSequence(strSequence, eNTerminus, eCTerminus, blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(strSequence, eNTerminus, eCTerminus,
+                blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
@@ -2534,9 +2784,17 @@ namespace MwtWinDll
         /// <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus, bool blnIs3LetterCode, bool bln1LetterCheckForPrefixAndSuffixResidues, bool bln3LetterCheckForPrefixHandSuffixOH)
+        public int SetSequence(string strSequence,
+            ntgNTerminusGroupConstants eNTerminus,
+            ctgCTerminusGroupConstants eCTerminus,
+            bool blnIs3LetterCode,
+            bool bln1LetterCheckForPrefixAndSuffixResidues,
+            bool bln3LetterCheckForPrefixHandSuffixOH)
         {
-            return SetSequence(strSequence, eNTerminus, eCTerminus, blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH, blnAddMissingModificationSymbols: false);
+            return SetSequence(strSequence, eNTerminus, eCTerminus,
+                blnIs3LetterCode,
+                bln1LetterCheckForPrefixAndSuffixResidues,
+                bln3LetterCheckForPrefixHandSuffixOH, blnAddMissingModificationSymbols: false);
         }
 
         /// <summary>
@@ -2551,13 +2809,21 @@ namespace MwtWinDll
         /// <param name="blnAddMissingModificationSymbols">Set to True to automatically add missing modification symbols (though the mod masses will be 0)</param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence, ntgNTerminusGroupConstants eNTerminus, ctgCTerminusGroupConstants eCTerminus, bool blnIs3LetterCode, bool bln1LetterCheckForPrefixAndSuffixResidues, bool bln3LetterCheckForPrefixHandSuffixOH, bool blnAddMissingModificationSymbols)
+        public int SetSequence(string strSequence,
+            ntgNTerminusGroupConstants eNTerminus,
+            ctgCTerminusGroupConstants eCTerminus,
+            bool blnIs3LetterCode,
+            bool bln1LetterCheckForPrefixAndSuffixResidues,
+            bool bln3LetterCheckForPrefixHandSuffixOH,
+            bool blnAddMissingModificationSymbols)
         {
             int lngIndex, lngSequenceStrLength, lngModSymbolLength;
             string str3LetterSymbol, str1LetterSymbol, strFirstChar;
+
             try
             {
                 strSequence = Strings.Trim(strSequence);
+
                 lngSequenceStrLength = Strings.Len(strSequence);
                 if (lngSequenceStrLength == 0)
                 {
@@ -2567,6 +2833,7 @@ namespace MwtWinDll
                 // Clear any old residue information
                 ResidueCount = 0;
                 ReserveMemoryForResidues(ResidueCount, false);
+
                 if (!blnIs3LetterCode)
                 {
                     // Sequence is 1 letter codes
@@ -2613,12 +2880,15 @@ namespace MwtWinDll
                             // Look up 3 letter symbol
                             // If none is found, this will return an empty string
                             str3LetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(str1LetterSymbol, true);
+
                             if (Strings.Len(str3LetterSymbol) == 0)
                                 str3LetterSymbol = UNKNOWN_SYMBOL;
+
                             SetSequenceAddResidue(str3LetterSymbol);
 
                             // Look at following character(s), and record any modification symbols present
                             lngModSymbolLength = CheckForModifications(Strings.Mid(strSequence, lngIndex + 1), ResidueCount, blnAddMissingModificationSymbols);
+
                             lngIndex += lngModSymbolLength;
                         }
                         // If . or - or space, then ignore it
@@ -2626,8 +2896,8 @@ namespace MwtWinDll
                         // If anything else, then should have been skipped, or should be skipped
                         else if (str1LetterSymbol == "." || str1LetterSymbol == "-" || str1LetterSymbol == " ")
                         {
+                            // All is fine; we can skip this
                         }
-                        // All is fine; we can skip this
                         else
                         {
                             // Ignore it
@@ -2638,6 +2908,7 @@ namespace MwtWinDll
                 {
                     // Sequence is 3 letter codes
                     lngIndex = 1;
+
                     if (bln3LetterCheckForPrefixHandSuffixOH)
                     {
                         // Look for a leading H or trailing OH, provided those don't match any of the amino acids
@@ -2656,6 +2927,7 @@ namespace MwtWinDll
                             if (char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 1, 1))) && char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 2, 1))))
                             {
                                 str3LetterSymbol = Strings.UCase(strFirstChar) + Strings.LCase(Strings.Mid(strSequence, lngIndex + 1, 2));
+
                                 if (ElementAndMassRoutines.GetAbbreviationIDInternal(str3LetterSymbol, true) == 0)
                                 {
                                     // 3 letter symbol not found
@@ -2667,6 +2939,7 @@ namespace MwtWinDll
 
                                 // Look at following character(s), and record any modification symbols present
                                 lngModSymbolLength = CheckForModifications(Strings.Mid(strSequence, lngIndex + 3), ResidueCount, blnAddMissingModificationSymbols);
+
                                 lngIndex += 3;
                                 lngIndex += lngModSymbolLength;
                             }
@@ -2683,8 +2956,8 @@ namespace MwtWinDll
                             // If anything else, then should have been skipped or should be skipped
                             if (strFirstChar == "." || strFirstChar == "-" || strFirstChar == " ")
                             {
+                                // All is fine; we can skip this
                             }
-                            // All is fine; we can skip this
                             else
                             {
                                 // Ignore it
@@ -2699,8 +2972,10 @@ namespace MwtWinDll
                 mDelayUpdateResidueMass = true;
                 SetNTerminusGroup(eNTerminus);
                 SetCTerminusGroup(eCTerminus);
+
                 mDelayUpdateResidueMass = false;
                 UpdateResidueMasses();
+
                 return 0;
             }
             catch (Exception ex)
@@ -2771,6 +3046,7 @@ namespace MwtWinDll
             {
                 while (lngIncrement < lngCount)
                     lngIncrement = 3 * lngIncrement + 1;
+
                 lngIncrement /= 3;
                 lngIncrement /= 3;
             }
@@ -2804,6 +3080,7 @@ namespace MwtWinDll
             double dblRunningTotal;
             bool blnPhosphorylationMassAdded;
             var blnProtonatedNTerminus = default(bool);
+
             if (mDelayUpdateResidueMass)
                 return;
 
@@ -2823,11 +3100,14 @@ namespace MwtWinDll
             {
                 var residue = Residues[lngIndex];
                 residue.Initialize();
+
                 lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(residue.Symbol, true);
+
                 if (lngAbbrevID > 0)
                 {
                     lngValidResidueCount += 1;
                     residue.Mass = ElementAndMassRoutines.GetAbbreviationMass(lngAbbrevID);
+
                     blnPhosphorylationMassAdded = false;
 
                     // Compute the mass, including the modifications
@@ -2859,6 +3139,7 @@ namespace MwtWinDll
                     }
 
                     dblRunningTotal += residue.MassWithMods;
+
                     residue.IonMass[(int)itIonTypeConstants.itAIon] = dblRunningTotal - dblImmoniumMassDifference - dblChargeCarrierMass;
                     residue.IonMass[(int)itIonTypeConstants.itBIon] = dblRunningTotal;
 
@@ -2890,6 +3171,7 @@ namespace MwtWinDll
 
             // Now compute the y-ion and z-ion masses
             dblRunningTotal = mCTerminus.Mass + dblChargeCarrierMass;
+
             for (lngIndex = ResidueCount; lngIndex >= 1; lngIndex -= 1)
             {
                 var residue = Residues[lngIndex];
@@ -2920,10 +3202,13 @@ namespace MwtWinDll
         public void UpdateStandardMasses()
         {
             ElementAndMassTools.emElementModeConstants eElementModeSaved;
+
             try
             {
                 eElementModeSaved = ElementAndMassRoutines.GetElementModeInternal();
+
                 ElementAndMassRoutines.SetElementModeInternal(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+
                 dblChargeCarrierMass = ElementAndMassRoutines.GetChargeCarrierMassInternal();
 
                 // Update standard mass values
@@ -2949,6 +3234,7 @@ namespace MwtWinDll
                 dblPhenylalanineFW = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula7);
                 string argstrFormula8 = "Tyr";
                 dblTyrosineFW = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula8);
+
                 ElementAndMassRoutines.SetElementModeInternal(eElementModeSaved);
             }
             catch (Exception ex)
@@ -2962,12 +3248,15 @@ namespace MwtWinDll
             try
             {
                 InitializeArrays();
+
                 ResidueCountDimmed = 0;
                 ResidueCount = 0;
                 ReserveMemoryForResidues(50, false);
+
                 ModificationSymbolCountDimmed = 0;
                 ModificationSymbolCount = 0;
                 ReserveMemoryForModifications(10, false);
+
                 SetDefaultOptions();
             }
             catch (Exception ex)

@@ -164,7 +164,7 @@ namespace MwtWinDll
             // Note: "Initialize" must be called to initialize instances of this structure
             public void Initialize()
             {
-                Isotopes = new udtIsotopeInfoType[12];
+                Isotopes = new udtIsotopeInfoType[ElementAndMassTools.MAX_ISOTOPES + 1];
             }
 
             public override string ToString()
@@ -500,7 +500,13 @@ namespace MwtWinDll
         /// <param name="strOneLetter"></param>
         /// <param name="strComment"></param>
         /// <param name="blnInvalidSymbolOrFormula"></param>
-        private void AddAbbreviationWork(short intAbbrevIndex, string strSymbol, ref string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetter = "", string strComment = "", bool blnInvalidSymbolOrFormula = false)
+        private void AddAbbreviationWork(
+            short intAbbrevIndex,  string strSymbol,
+            ref string strFormula, float sngCharge,
+            bool blnIsAminoAcid,
+            string strOneLetter = "",
+            string strComment = "",
+            bool blnInvalidSymbolOrFormula = false)
         {
             var stats = AbbrevStats[intAbbrevIndex];
             stats.InvalidSymbolOrFormula = blnInvalidSymbolOrFormula;
@@ -535,6 +541,7 @@ namespace MwtWinDll
             string strTest;
             string strNewCaution;
             short intLength;
+
             for (intLength = 1; intLength <= MAX_ABBREV_LENGTH; intLength++)
             {
                 if (intLength > strFormulaExcerpt.Length)
@@ -556,9 +563,9 @@ namespace MwtWinDll
                 switch (adjacentNum)
                 {
                     case -1:
+                        // No number, but no error
+                        // That's OK
                         break;
-                    // No number, but no error
-                    // That's OK
                     case -3:
                         // Error: No number after decimal point
                         ErrorParams.ErrorID = 12;
@@ -603,6 +610,7 @@ namespace MwtWinDll
 
             // Look for match, stepping directly through MasterSymbolsList()
             // List is sorted by reverse length, so can do all at once
+
             for (intIndex = 1; intIndex <= MasterSymbolsListCount; intIndex++)
             {
                 if (MasterSymbolsList[intIndex, 0].Length > 0)
@@ -652,7 +660,9 @@ namespace MwtWinDll
         {
             var udtComputationStats = new udtComputationStatsType();
             udtComputationStats.Initialize();
+
             ParseFormulaPublic(ref strFormula, ref udtComputationStats, false);
+
             if (ErrorParams.ErrorID == 0)
             {
                 return udtComputationStats.TotalMass;
@@ -674,11 +684,23 @@ namespace MwtWinDll
         /// <param name="ConvolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
         /// <returns>0 if success, -1 if an error</returns>
         /// <remarks></remarks>
-        public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount)
+        public short ComputeIsotopicAbundances(
+            ref string strFormulaIn,
+            short intChargeState,
+            ref string strResults,
+            ref double[,] ConvolutedMSData2DOneBased,
+            ref int ConvolutedMSDataCount)
         {
             bool blnUseFactorials = false;
             bool blnAddProtonChargeCarrier = true;
-            return ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, "Isotopic Abundances for", "Mass/Charge", "Fraction", "Intensity", blnUseFactorials, blnAddProtonChargeCarrier);
+
+            return ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount,
+                "Isotopic Abundances for",
+                "Mass/Charge",
+                "Fraction",
+                "Intensity",
+                blnUseFactorials,
+                blnAddProtonChargeCarrier);
         }
 
         /// <summary>
@@ -693,10 +715,23 @@ namespace MwtWinDll
         /// <param name="blnAddProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
         /// <returns>0 if success, -1 if an error</returns>
         /// <remarks></remarks>
-        public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, bool blnAddProtonChargeCarrier)
+        public short ComputeIsotopicAbundances(
+            ref string strFormulaIn,
+            short intChargeState,
+            ref string strResults,
+            ref double[,] ConvolutedMSData2DOneBased,
+            ref int ConvolutedMSDataCount,
+            bool blnAddProtonChargeCarrier)
         {
             const bool blnUseFactorials = false;
-            return ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, "Isotopic Abundances for", "Mass/Charge", "Fraction", "Intensity", blnUseFactorials, blnAddProtonChargeCarrier);
+
+            return ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount,
+                "Isotopic Abundances for",
+                "Mass/Charge",
+                "Fraction",
+                "Intensity",
+                blnUseFactorials,
+                blnAddProtonChargeCarrier);
         }
 
         /// <summary>
@@ -719,17 +754,32 @@ namespace MwtWinDll
         /// Returns M+H values if intChargeState=1
         /// Returns convoluted m/z if intChargeState is > 1
         /// </remarks>
-        public short ComputeIsotopicAbundancesInternal(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, string strHeaderIsotopicAbundances, string strHeaderMassToCharge, string strHeaderFraction, string strHeaderIntensity, bool blnUseFactorials, bool blnAddProtonChargeCarrier)
+        public short ComputeIsotopicAbundancesInternal(
+            ref string strFormulaIn,
+            short intChargeState,
+            ref string strResults,
+            ref double[,] ConvolutedMSData2DOneBased,
+            ref int ConvolutedMSDataCount,
+            string strHeaderIsotopicAbundances,
+            string strHeaderMassToCharge,
+            string strHeaderFraction,
+            string strHeaderIntensity,
+            bool blnUseFactorials,
+            bool blnAddProtonChargeCarrier)
         {
             string strFormula, strModifiedFormula;
             double dblWorkingFormulaMass;
             double dblMassDefect, dblExactBaseIsoMass, dblMaxPercentDifference;
             short intElementIndex, intElementCount;
             int massIndex, rowIndex;
+
             var udtComputationStats = new udtComputationStatsType();
             udtComputationStats.Initialize();
+
             double dblTemp;
+
             udtIsoResultsByElementType[] IsoStats;
+
             short IsotopeStartingMass, IsotopeCount, IsotopeEndingMass;
             short MasterElementIndex;
             int AtomCount;
@@ -740,41 +790,51 @@ namespace MwtWinDll
             int IndexToStoreAbundance;
             double dblThisComboFractionalAbundance, dblNextComboFractionalAbundance = default;
             bool blnRatioMethodUsed, blnRigorousMethodUsed;
+
             const string strDeuteriumEquiv = "^2.014H";
             bool blnReplaceDeuterium;
             int intAsciiOfNext;
+
             int IsotopeCountInThisCombo;
             string strOutput;
+
             long PredictedConvIterations;
             int PredictedTotalComboCalcs, CompletedComboCalcs;
+
             const double MIN_ABUNDANCE_TO_KEEP = 0.000001d;
             const double CUTOFF_FOR_RATIO_METHOD = 0.00001d;
 
             // AbundDenom  and  AbundSuffix are only needed if using the easily-overflowed factorial method
             double AbundDenom, AbundSuffix;
+
             int[] AtomTrackHistory;
+
             int[,] IsoCombos; // 2D array: Holds the # of each isotope for each combination
-                              // For example, Two chlorine atoms, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
-                              // m1  m2  m3
-                              // 2   0   0
-                              // 1   1   0
-                              // 1   0   1
-                              // 0   2   0
-                              // 0   1   1
-                              // 0   0   2
+            // For example, Two chlorine atoms, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
+            // m1  m2  m3
+            // 2   0   0
+            // 1   1   0
+            // 1   0   1
+            // 0   2   0
+            // 0   1   1
+            // 0   0   2
 
             udtIsoResultsOverallType[] ConvolutedAbundances; // Fractional abundance at each mass; 1-based array
             int ConvolutedAbundanceStartMass;
+
             int MaxWeight, MinWeight, ResultingMassCountForElement;
             var blnExplicitIsotopesPresent = default(bool);
             var ExplicitIsotopeCount = default(short);
+
             int SubIndex, sigma;
             double dblSumI, dblLogSigma, dblSumF;
             double dblWorkingSum;
             double dblLogFreq;
+
             double dblLogRho = default, dblFractionalAbundanceSaved, dblRho;
             double intM, intMPrime;
             double dblRatioOfFreqs;
+
             string strMessage;
             float sngPercentComplete;
 
@@ -799,6 +859,7 @@ namespace MwtWinDll
                 // Parse Formula to determine if valid and number of each element
                 strFormula = strFormulaIn;
                 dblWorkingFormulaMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats, false);
+
                 if (dblWorkingFormulaMass < 0d)
                 {
                     // Error occurred; information is stored in ErrorParams
@@ -856,6 +917,7 @@ namespace MwtWinDll
 
                     // Re-Parse Formula since D's are now ^2.014H
                     dblWorkingFormulaMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats, false);
+
                     if (dblWorkingFormulaMass < 0d)
                     {
                         // Error occurred; information is stored in ErrorParams
@@ -930,6 +992,7 @@ namespace MwtWinDll
                             IsoStats[intElementCount].ElementIndex = intElementIndex;
                             IsoStats[intElementCount].AtomCount = (int)Math.Round(udtComputationStats.Elements[intElementIndex].Count); // Note: Ignoring .Elements(intElementIndex).IsotopicCorrection
                             IsoStats[intElementCount].ExplicitMass = ElementStats[intElementIndex].Mass;
+
                             var stats = ElementStats[intElementIndex];
                             MinWeight = (int)Math.Round(MinWeight + IsoStats[intElementCount].AtomCount * Math.Round(stats.Isotopes[1].Mass, 0));
                             MaxWeight = (int)Math.Round(MaxWeight + IsoStats[intElementCount].AtomCount * Math.Round(stats.Isotopes[stats.IsotopeCount].Mass, 0));
@@ -948,10 +1011,12 @@ namespace MwtWinDll
                             for (IsotopeIndex = 1; IsotopeIndex <= element.IsotopeCount; IsotopeIndex++)
                             {
                                 intElementCount = (short)(intElementCount + 1);
+
                                 IsoStats[intElementCount].boolExplicitIsotope = true;
                                 IsoStats[intElementCount].ElementIndex = intElementIndex;
                                 IsoStats[intElementCount].AtomCount = (int)Math.Round(element.Isotopes[IsotopeIndex].Count);
                                 IsoStats[intElementCount].ExplicitMass = element.Isotopes[IsotopeIndex].Mass;
+
                                 var stats = IsoStats[intElementCount];
                                 MinWeight = (int)Math.Round(MinWeight + stats.AtomCount * stats.ExplicitMass);
                                 MaxWeight = (int)Math.Round(MaxWeight + stats.AtomCount * stats.ExplicitMass);
@@ -975,6 +1040,7 @@ namespace MwtWinDll
                     MasterElementIndex = IsoStats[intElementIndex].ElementIndex;
                     AtomCount = IsoStats[intElementIndex].AtomCount;
                     IsotopeCount = ElementStats[MasterElementIndex].IsotopeCount;
+
                     PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount);
                     PredictedTotalComboCalcs += PredictedCombos;
                 }
@@ -987,6 +1053,7 @@ namespace MwtWinDll
                 {
                     MasterElementIndex = IsoStats[intElementIndex].ElementIndex;
                     AtomCount = IsoStats[intElementIndex].AtomCount;
+
                     if (IsoStats[intElementIndex].boolExplicitIsotope)
                     {
                         IsotopeCount = 1;
@@ -1002,6 +1069,7 @@ namespace MwtWinDll
                     }
 
                     PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount);
+
                     if (PredictedCombos > 10000000)
                     {
                         strMessage = "Too many combinations necessary for prediction of isotopic distribution: " + PredictedCombos.ToString("#,##0") + ControlChars.NewLine + "Please use a simpler formula or reduce the isotopic range defined for the element (currently " + IsotopeCount + ")";
@@ -1015,9 +1083,11 @@ namespace MwtWinDll
                     }
 
                     IsoCombos = new int[PredictedCombos + 1, (IsotopeCount + 1)];
+
                     AtomTrackHistory = new int[(IsotopeCount + 1)];
                     AtomTrackHistory[1] = AtomCount;
                     int argCurrentRow = 1;
+
                     CombosFound = FindCombosRecurse(ref IsoCombos, AtomCount, IsotopeCount, IsotopeCount, ref argCurrentRow, 1, ref AtomTrackHistory);
 
                     // The predicted value should always match the actual value, unless blnExplicitIsotopesPresent = True
@@ -1036,6 +1106,7 @@ namespace MwtWinDll
                     IsoStats[intElementIndex].StartingResultsMass = MinWeight;
                     IsoStats[intElementIndex].ResultsCount = ResultingMassCountForElement;
                     IsoStats[intElementIndex].MassAbundances = new float[ResultingMassCountForElement + 1];
+
                     if (IsoStats[intElementIndex].boolExplicitIsotope)
                     {
                         // Explicitly defined isotope; there is only one "combo" and its abundance = 1
@@ -1047,6 +1118,7 @@ namespace MwtWinDll
                         for (ComboIndex = 1; ComboIndex <= CombosFound; ComboIndex++)
                         {
                             CompletedComboCalcs += 1;
+
                             sngPercentComplete = CompletedComboCalcs / (float)PredictedTotalComboCalcs * 100f;
                             if (CompletedComboCalcs % 10 == 0)
                             {
@@ -1056,6 +1128,7 @@ namespace MwtWinDll
                             dblThisComboFractionalAbundance = -1;
                             blnRatioMethodUsed = false;
                             blnRigorousMethodUsed = false;
+
                             if (blnUseFactorials)
                             {
                                 // #######
@@ -1063,6 +1136,7 @@ namespace MwtWinDll
                                 // #######
                                 //
                                 blnRigorousMethodUsed = true;
+
                                 AbundDenom = 1d;
                                 AbundSuffix = 1d;
                                 var stats = ElementStats[MasterElementIndex];
@@ -1087,9 +1161,11 @@ namespace MwtWinDll
                                     // #######
                                     //
                                     blnRigorousMethodUsed = true;
+
                                     dblLogSigma = 0d;
                                     for (sigma = 1; sigma <= AtomCount; sigma++)
                                         dblLogSigma += Math.Log(sigma);
+
                                     dblSumI = 0d;
                                     for (IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                                     {
@@ -1098,6 +1174,7 @@ namespace MwtWinDll
                                             dblWorkingSum = 0d;
                                             for (SubIndex = 1; SubIndex <= IsoCombos[ComboIndex, IsotopeIndex]; SubIndex++)
                                                 dblWorkingSum += Math.Log(SubIndex);
+
                                             dblSumI += dblWorkingSum;
                                         }
                                     }
@@ -1114,6 +1191,7 @@ namespace MwtWinDll
 
                                     dblLogFreq = dblLogSigma - dblSumI + dblSumF;
                                     dblThisComboFractionalAbundance = Math.Exp(dblLogFreq);
+
                                     dblFractionalAbundanceSaved = dblThisComboFractionalAbundance;
                                 }
 
@@ -1126,10 +1204,12 @@ namespace MwtWinDll
                                     // #######
                                     //
                                     dblRatioOfFreqs = 1d;
+
                                     for (IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                                     {
                                         intM = IsoCombos[ComboIndex, IsotopeIndex];
                                         intMPrime = IsoCombos[ComboIndex + 1, IsotopeIndex];
+
                                         if (intM > intMPrime)
                                         {
                                             dblLogSigma = 0d;
@@ -1161,6 +1241,7 @@ namespace MwtWinDll
                                     }
 
                                     dblNextComboFractionalAbundance = dblFractionalAbundanceSaved * dblRatioOfFreqs;
+
                                     dblFractionalAbundanceSaved = dblNextComboFractionalAbundance;
                                     blnRatioMethodUsed = true;
                                 }
@@ -1224,6 +1305,7 @@ namespace MwtWinDll
                 PredictedConvIterations = IsoStats[1].ResultsCount;
                 for (intElementIndex = 2; intElementIndex <= intElementCount; intElementIndex++)
                     PredictedConvIterations *= IsoStats[2].ResultsCount;
+
                 ResetProgress("Finding Isotopic Abundances: Convoluting results");
 
                 // Convolute the results for each element using a recursive convolution routine
@@ -1232,6 +1314,7 @@ namespace MwtWinDll
                 for (rowIndex = 1; rowIndex <= IsoStats[1].ResultsCount; rowIndex++)
                 {
                     ConvoluteMasses(ref ConvolutedAbundances, ConvolutedAbundanceStartMass, rowIndex, 1f, 0, 1, ref IsoStats, intElementCount, ref ConvolutionIterations);
+
                     sngPercentComplete = rowIndex / (float)IsoStats[1].ResultsCount * 100f;
                     UpdateProgress(sngPercentComplete);
                 }
@@ -1272,6 +1355,7 @@ namespace MwtWinDll
                 }
 
                 dblMaxPercentDifference = Math.Pow(10d, -(3d - Math.Round(Math.Log10(dblTemp), 0)));
+
                 if (Math.Abs(dblMassDefect / dblExactBaseIsoMass) >= dblMaxPercentDifference)
                 {
                     Console.WriteLine("dblMassDefect / dblExactBaseIsoMass is greater dblMaxPercentDifference: (" + dblMassDefect / dblExactBaseIsoMass + " vs. " + dblMaxPercentDifference + "); this is unexpected");
@@ -1314,6 +1398,7 @@ namespace MwtWinDll
                     var mass = ConvolutedAbundances[massIndex];
                     ConvolutedMSData2DOneBased[massIndex, 0] = ConvolutedAbundanceStartMass + massIndex - 1 + dblMassDefect;
                     ConvolutedMSData2DOneBased[massIndex, 1] = mass.Abundance / dblMaxAbundance * 100d;
+
                     if (intChargeState >= 1)
                     {
                         if (blnAddProtonChargeCarrier)
@@ -1383,8 +1468,8 @@ namespace MwtWinDll
             short intElementIndex;
             double dblElementTotalMass;
             double dblPercentComp, dblStdDeviation;
-            // Determine the number of elements in the formula
 
+            // Determine the number of elements in the formula
             for (intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
             {
                 if (udtComputationStats.TotalMass > 0d)
@@ -1394,7 +1479,6 @@ namespace MwtWinDll
                     // Percent is the percent composition
                     dblPercentComp = dblElementTotalMass / udtComputationStats.TotalMass * 100.0d;
                     udtComputationStats.PercentCompositions[intElementIndex].PercentComposition = dblPercentComp;
-
 
                     // Calculate standard deviation
                     if (Math.Abs(udtComputationStats.Elements[intElementIndex].IsotopicCorrection - 0d) < float.Epsilon)
@@ -1441,26 +1525,33 @@ namespace MwtWinDll
 
             const int MAX_DATA_POINTS = 1000000;
             const short MASS_PRECISION = 7;
+
             int intDataIndex;
             int intMidPointIndex;
             int intStickIndex;
             double DeltaX;
+
             double dblXValRange;
             double dblXValWindowRange;
             double dblRangeWork;
             double dblMinimalXValOfWindow;
             double dblMinimalXValSpacing;
             bool blnSearchForMinimumXVal;
+
             double dblXOffSet;
             double dblSigma;
+
             List<udtXYDataType> lstXYSummation;
             int intSummationIndex;
             int intMinimalSummationIndex;
+
             List<udtXYDataType> lstDataToAdd;
             int intDataToAddCount;
             bool blnAppendNewData;
             var udtThisDataPoint = new udtXYDataType();
+
             var lstGaussianData = new List<KeyValuePair<double, double>>();
+
             try
             {
                 if (XYVals == null || XYVals.Count == 0)
@@ -1482,8 +1573,10 @@ namespace MwtWinDll
 
                 if (dblXValRange < 1d)
                     dblXValRange = 1d;
+
                 if (intResolution < 1)
                     intResolution = 1;
+
                 if (intQualityFactor < 1 || intQualityFactor > 75)
                     intQualityFactor = 50;
 
@@ -1493,18 +1586,21 @@ namespace MwtWinDll
 
                 // Make sure DeltaX is a reasonable number
                 DeltaX = RoundToMultipleOf10(DeltaX);
+
                 if (Math.Abs(DeltaX) < float.Epsilon)
                     DeltaX = 1d;
 
                 // Set the Window Range to 1/10 the magnitude of the midpoint x value
                 dblRangeWork = XYVals.First().Key + dblXValRange / 2d;
                 dblRangeWork = RoundToMultipleOf10(dblRangeWork);
+
                 dblSigma = dblResolutionMass / intResolution / Math.Sqrt(5.54d);
 
                 // Set the window range (the xValue window width range) to calculate the Gaussian representation for each data point
                 // The width at the base of a peak is 4 dblSigma
                 // Use a width of 2 * 6 dblSigma
                 dblXValWindowRange = 2 * 6 * dblSigma;
+
                 if (dblXValRange / DeltaX > MAX_DATA_POINTS)
                 {
                     // Delta x is too small; change to a reasonable value
@@ -1537,7 +1633,9 @@ namespace MwtWinDll
                     // data in lstDataToAdd could be combined
                     intMinimalSummationIndex = 0;
                     lstDataToAdd.Clear();
+
                     dblMinimalXValOfWindow = XYVals[intStickIndex].Key - intMidPointIndex * DeltaX;
+
                     blnSearchForMinimumXVal = true;
                     if (lstXYSummation.Count > 0)
                     {
@@ -1581,16 +1679,19 @@ namespace MwtWinDll
                     // Round ThisDataPoint.XVal to the nearest DeltaX
                     // If .XVal is not an even multiple of DeltaX then bump up .XVal until it is
                     udtThisDataPoint.X = RoundToEvenMultiple(udtThisDataPoint.X, DeltaX, true);
+
                     for (intDataIndex = 0; intDataIndex < intDataToAddCount; intDataIndex++)
                     {
                         // Equation for Gaussian is: Amplitude * Exp[ -(x - mu)^2 / (2*dblSigma^2) ]
                         // Use intDataIndex, .YVal, and DeltaX
                         dblXOffSet = (intMidPointIndex - intDataIndex) * DeltaX;
+
                         var udtNewPoint = new udtXYDataType()
                         {
                             X = udtThisDataPoint.X - dblXOffSet,
                             Y = udtThisDataPoint.Y * Math.Exp(-Math.Pow(dblXOffSet, 2d) / (2d * Math.Pow(dblSigma, 2d)))
                         };
+
                         lstDataToAdd.Add(udtNewPoint);
                     }
 
@@ -1624,7 +1725,9 @@ namespace MwtWinDll
                                 {
                                     var udtCurrentVal = lstXYSummation[intSummationIndex];
                                     udtCurrentVal.Y += lstDataToAdd[intDataIndex].Y;
+
                                     lstXYSummation[intSummationIndex] = udtCurrentVal;
+
                                     intSummationIndex += 1;
                                     intDataIndex += 1;
                                     if (intDataIndex >= intDataToAddCount)
@@ -1658,6 +1761,7 @@ namespace MwtWinDll
                 // Assure there is a data point at each 1% point along x range (to give better looking plots)
                 // Probably need to add data, but may need to remove some
                 dblMinimalXValSpacing = dblXValRange / 100d;
+
                 intSummationIndex = 0;
                 while (intSummationIndex < lstXYSummation.Count - 1)
                 {
@@ -1682,6 +1786,7 @@ namespace MwtWinDll
                             X = lstXYSummation[intSummationIndex].X + dblRangeWork,
                             Y = (lstXYSummation[intSummationIndex].Y + lstXYSummation[intSummationIndex + 1].Y) / 2d
                         };
+
                         lstXYSummation.Insert(intSummationIndex + 1, udtNewDataPoint);
                     }
 
@@ -1746,6 +1851,7 @@ namespace MwtWinDll
                         if (!stats.InvalidSymbolOrFormula)
                         {
                             MasterSymbolsListCount = (short)(MasterSymbolsListCount + 1);
+
                             MasterSymbolsList[MasterSymbolsListCount, 0] = stats.Symbol;
                             MasterSymbolsList[MasterSymbolsListCount, 1] = "A" + Strings.Trim(Conversion.Str(intIndex));
                         }
@@ -1791,14 +1897,21 @@ namespace MwtWinDll
         /// <param name="dblChargeCarrierMass">Charge carrier mass.  If 0, this function will use mChargeCarrierMass instead</param>
         /// <returns>The new m/z value</returns>
         /// <remarks>To return the neutral mass, set intDesiredCharge to 0</remarks>
-        public double ConvoluteMassInternal(double dblMassMZ, short intCurrentCharge, short intDesiredCharge, double dblChargeCarrierMass)
+        public double ConvoluteMassInternal(
+            double dblMassMZ,
+            short intCurrentCharge,
+            short intDesiredCharge,
+            double dblChargeCarrierMass)
         {
             const double DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649d;
+
             double dblNewMZ;
+
             if (Math.Abs(dblChargeCarrierMass - 0d) < float.Epsilon)
                 dblChargeCarrierMass = mChargeCarrierMass;
             if (Math.Abs(dblChargeCarrierMass - 0d) < float.Epsilon)
                 dblChargeCarrierMass = DEFAULT_CHARGE_CARRIER_MASS_MONOISO;
+
             if (intCurrentCharge == intDesiredCharge)
             {
                 dblNewMZ = dblMassMZ;
@@ -1831,8 +1944,8 @@ namespace MwtWinDll
                 }
                 else if (intDesiredCharge == 1)
                 {
+                    // Return M+H, which is currently stored in dblNewMZ
                 }
-                // Return M+H, which is currently stored in dblNewMZ
                 else if (intDesiredCharge == 0)
                 {
                     // Return the neutral mass
@@ -1858,12 +1971,14 @@ namespace MwtWinDll
         {
             var udtComputationStats = new udtComputationStatsType();
             udtComputationStats.Initialize();
+
             string strEmpiricalFormula;
             short intElementIndex, intElementSearchIndex;
             var intElementIndexToUse = default(short);
 
             // Call ParseFormulaPublic to compute the formula's mass and fill udtComputationStats
             double dblMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats);
+
             if (ErrorParams.ErrorID == 0)
             {
                 // Convert to empirical formula
@@ -1935,6 +2050,7 @@ namespace MwtWinDll
 
             // Call ExpandAbbreviationsInFormula to compute the formula's mass
             double dblMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats, true);
+
             if (ErrorParams.ErrorID == 0)
             {
                 return strFormula;
@@ -1945,7 +2061,12 @@ namespace MwtWinDll
             }
         }
 
-        private int FindIndexForNominalMass(ref int[,] IsoCombos, int ComboIndex, short IsotopeCount, int AtomCount, ref udtIsotopeInfoType[] ThisElementsIsotopes)
+        private int FindIndexForNominalMass(
+            ref int[,] IsoCombos,
+            int ComboIndex,
+            short IsotopeCount,
+            int AtomCount,
+            ref udtIsotopeInfoType[] ThisElementsIsotopes)
         {
             int workingMass = 0;
             for (int IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
@@ -1967,13 +2088,24 @@ namespace MwtWinDll
         /// <param name="IsoStats"></param>
         /// <param name="ElementCount"></param>
         /// <param name="Iterations"></param>
-        private void ConvoluteMasses(ref udtIsoResultsOverallType[] ConvolutedAbundances, int ConvolutedAbundanceStartMass, int WorkingRow, float WorkingAbundance, int WorkingMassTotal, short ElementTrack, ref udtIsoResultsByElementType[] IsoStats, short ElementCount, ref long Iterations)
+        private void ConvoluteMasses(
+            ref udtIsoResultsOverallType[] ConvolutedAbundances,
+            int ConvolutedAbundanceStartMass,
+            int WorkingRow,
+            float WorkingAbundance,
+            int WorkingMassTotal,
+            short ElementTrack,
+            ref udtIsoResultsByElementType[] IsoStats,
+            short ElementCount,
+            ref long Iterations)
         {
             int IndexToStoreResult, RowIndex;
             float NewAbundance;
             int NewMassTotal;
+
             if (mAbortProcessing)
                 return;
+
             Iterations += 1L;
             if (Iterations % 10000L == 0L)
             {
@@ -1982,6 +2114,7 @@ namespace MwtWinDll
 
             NewAbundance = WorkingAbundance * IsoStats[ElementTrack].MassAbundances[WorkingRow];
             NewMassTotal = WorkingMassTotal + (IsoStats[ElementTrack].StartingResultsMass + WorkingRow - 1);
+
             if (ElementTrack >= ElementCount)
             {
                 IndexToStoreResult = NewMassTotal - ConvolutedAbundanceStartMass + 1;
@@ -2036,7 +2169,6 @@ namespace MwtWinDll
                 return -1;
             }
         }
-
 
         // Note: This function is unused
         //Private Function FindCombinations(Optional ByRef AtomCount As Integer = 2, Optional ByRef IsotopeCount As Short = 2, Optional ByRef boolPrintOutput As Boolean = False) As Integer
@@ -2112,7 +2244,6 @@ namespace MwtWinDll
         /// <returns></returns>
         private int FindCombosPredictIterations(int AtomCount, short IsotopeCount)
         {
-
             // Empirically determined the following results and figured out that the RunningSum()
             // method correctly predicts the results
 
@@ -2147,6 +2278,7 @@ namespace MwtWinDll
             int PredictedCombos;
             int[] RunningSum;
             int PreviousComputedValue;
+
             RunningSum = new int[AtomCount + 1];
             try
             {
@@ -2159,6 +2291,7 @@ namespace MwtWinDll
                     // Initialize RunningSum()
                     for (AtomIndex = 1; AtomIndex <= AtomCount; AtomIndex++)
                         RunningSum[AtomIndex] = AtomIndex + 1;
+
                     for (IsotopeIndex = 3; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                     {
                         PreviousComputedValue = IsotopeIndex;
@@ -2198,7 +2331,14 @@ namespace MwtWinDll
         /// <param name="CurrentCol"></param>
         /// <param name="AtomTrackHistory"></param>
         /// <returns></returns>
-        private int FindCombosRecurse(ref int[,] ComboResults, int AtomCount, short MaxIsotopeCount, short CurrentIsotopeCount, ref int CurrentRow, short CurrentCol, ref int[] AtomTrackHistory)
+        private int FindCombosRecurse(
+            ref int[,] ComboResults,
+            int AtomCount,
+            short MaxIsotopeCount,
+            short CurrentIsotopeCount,
+            ref int CurrentRow,
+            short CurrentCol,
+            ref int[] AtomTrackHistory)
         {
             int FindCombosRecurseRet = default;
 
@@ -2217,6 +2357,7 @@ namespace MwtWinDll
             short ColIndex;
             int AtomTrack;
             short intNewColumn;
+
             if (CurrentIsotopeCount == 1 || AtomCount == 0)
             {
                 // End recursion
@@ -2228,6 +2369,7 @@ namespace MwtWinDll
 
                 // Store AtomTrack value at current position
                 ComboResults[CurrentRow, CurrentCol] = AtomTrack;
+
                 while (AtomTrack > 0)
                 {
                     CurrentRow += 1;
@@ -2241,6 +2383,7 @@ namespace MwtWinDll
 
                     AtomTrack -= 1;
                     ComboResults[CurrentRow, CurrentCol] = AtomTrack;
+
                     if (CurrentCol < MaxIsotopeCount)
                     {
                         intNewColumn = (short)(CurrentCol + 1);
@@ -2274,6 +2417,7 @@ namespace MwtWinDll
         {
             string strMessage;
             string strErrorFilePath;
+
             strMessage = "Error in " + strCallingProcedure + ": " + Conversion.ErrorToString(errorNumber) + " (#" + Strings.Trim(errorNumber.ToString()) + ")";
             if (strErrorDescriptionAdditional != null && strErrorDescriptionAdditional.Length > 0)
             {
@@ -2281,6 +2425,7 @@ namespace MwtWinDll
             }
 
             LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
+
             if (mShowErrorMessageDialogs)
             {
                 Interaction.MsgBox(strMessage, MsgBoxStyle.Exclamation, "Error in MwtWinDll");
@@ -2348,7 +2493,12 @@ namespace MwtWinDll
             return 0;
         }
 
-        public int GetAbbreviationInternal(int abbreviationID, out string strSymbol, out string strFormula, out float sngCharge, out bool blnIsAminoAcid)
+        public int GetAbbreviationInternal(
+            int abbreviationID,
+            out string strSymbol,
+            out string strFormula,
+            out float sngCharge,
+            out bool blnIsAminoAcid)
         {
             string argstrOneLetterSymbol = "";
             string argstrComment = "";
@@ -2368,7 +2518,15 @@ namespace MwtWinDll
         /// <param name="strComment">Output: comment</param>
         /// <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
         /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviationInternal(int abbreviationID, out string strSymbol, out string strFormula, out float sngCharge, out bool blnIsAminoAcid, out string strOneLetterSymbol, out string strComment, out bool blnInvalidSymbolOrFormula)
+        public int GetAbbreviationInternal(
+            int abbreviationID,
+            out string strSymbol,
+            out string strFormula,
+            out float sngCharge,
+            out bool blnIsAminoAcid,
+            out string strOneLetterSymbol,
+            out string strComment,
+            out bool blnInvalidSymbolOrFormula)
         {
             if (abbreviationID >= 1 && abbreviationID <= AbbrevAllCount)
             {
@@ -2392,6 +2550,7 @@ namespace MwtWinDll
                 strOneLetterSymbol = string.Empty;
                 strComment = string.Empty;
                 blnInvalidSymbolOrFormula = true;
+
                 return 1;
             }
         }
@@ -2422,6 +2581,7 @@ namespace MwtWinDll
             // Otherwise, returns ""
 
             string strReturnSymbol, strCompareSymbol;
+
             strReturnSymbol = "";
             // Use AbbrevStats() array to lookup code
             for (int index = 1; index <= AbbrevAllCount; index++)
@@ -2471,6 +2631,7 @@ namespace MwtWinDll
         public int GetCautionStatementIDInternal(string strSymbolCombo)
         {
             short intIndex;
+
             for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
             {
                 if ((CautionStatements[intIndex, 0] ?? "") == (strSymbolCombo ?? ""))
@@ -2530,7 +2691,13 @@ namespace MwtWinDll
         /// <param name="sngCharge"></param>
         /// <param name="intIsotopeCount"></param>
         /// <returns>0 if success, 1 if failure</returns>
-        public int GetElementInternal(short intElementID, out string strSymbol, out double dblMass, out double dblUncertainty, out float sngCharge, out short intIsotopeCount)
+        public int GetElementInternal(
+            short intElementID,
+            out string strSymbol,
+            out double dblMass,
+            out double dblUncertainty,
+            out float sngCharge,
+            out short intIsotopeCount)
         {
             if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
@@ -2563,6 +2730,7 @@ namespace MwtWinDll
         public short GetElementIDInternal(string strSymbol)
         {
             short intIndex;
+
             for (intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
             {
                 if (string.Equals(ElementStats[intIndex].Symbol, strSymbol, StringComparison.InvariantCultureIgnoreCase))
@@ -2585,6 +2753,7 @@ namespace MwtWinDll
         public int GetElementIsotopesInternal(short intElementID, ref short intIsotopeCount, ref double[] dblIsotopeMasses, ref float[] sngIsotopeAbundances)
         {
             short intIsotopeIndex;
+
             if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
                 var stats = ElementStats[intElementID];
@@ -2718,6 +2887,7 @@ namespace MwtWinDll
         public string GetMessageStatementInternal(int messageID, string strAppendText)
         {
             string strMessage;
+
             if (messageID > 0 && messageID <= MessageStatementCount)
             {
                 strMessage = MessageStatements[messageID];
@@ -2757,6 +2927,7 @@ namespace MwtWinDll
         {
             short intIndex;
             bool blnFound;
+
             try
             {
                 blnFound = false;
@@ -2791,9 +2962,11 @@ namespace MwtWinDll
         {
             char chFirstChar;
             bool blnIsModSymbol;
+
             if (strTestChar.Length > 0)
             {
                 chFirstChar = strTestChar[0];
+
                 switch (Convert.ToInt32(chFirstChar))
                 {
                     case 34: // " is not allowed
@@ -2854,16 +3027,12 @@ namespace MwtWinDll
         {
             if (caseSensitive)
             {
-                var query = from item in ElementStats
-                            where (item.Symbol ?? "") == (elementSymbol ?? "")
-                            select item;
+                var query = from item in ElementStats where (item.Symbol ?? "") == (elementSymbol ?? "") select item;
                 return query.Any();
             }
             else
             {
-                var query = from item in ElementStats
-                            where (item.Symbol.ToLower() ?? "") == (elementSymbol.ToLower() ?? "")
-                            select item;
+                var query = from item in ElementStats where (item.Symbol.ToLower() ?? "") == (elementSymbol.ToLower() ?? "") select item;
                 return query.Any();
             }
         }
@@ -2884,10 +3053,12 @@ namespace MwtWinDll
                 {
                     mLogFilePath = System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location);
                     mLogFilePath += "_log_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+
                     try
                     {
                         if (mLogFolderPath == null)
                             mLogFolderPath = string.Empty;
+
                         if (mLogFolderPath.Length > 0)
                         {
                             // Create the log folder if it doesn't exist
@@ -2908,10 +3079,17 @@ namespace MwtWinDll
                     }
 
                     bool blnOpeningExistingFile = System.IO.File.Exists(mLogFilePath);
-                    mLogFile = new System.IO.StreamWriter(new System.IO.FileStream(mLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read)) { AutoFlush = true };
+
+                    mLogFile = new System.IO.StreamWriter(new System.IO.FileStream(mLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read))
+                    {
+                        AutoFlush = true
+                    };
+
                     if (!blnOpeningExistingFile)
                     {
-                        mLogFile.WriteLine("Date" + ControlChars.Tab + "Type" + ControlChars.Tab + "Message");
+                        mLogFile.WriteLine("Date" + ControlChars.Tab +
+                            "Type" + ControlChars.Tab +
+                            "Message");
                     }
                 }
                 catch (Exception ex)
@@ -2922,6 +3100,7 @@ namespace MwtWinDll
             }
 
             string strMessageType;
+
             switch (eMessageType)
             {
                 case eMessageTypeConstants.Normal:
@@ -2944,13 +3123,15 @@ namespace MwtWinDll
             }
             else
             {
-                mLogFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + ControlChars.Tab + strMessageType + ControlChars.Tab + strMessage);
+                mLogFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + ControlChars.Tab +
+                    strMessageType + ControlChars.Tab + strMessage);
             }
         }
 
         private string LookupCautionStatement(string strCompareText)
         {
             short intIndex;
+
             for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
             {
                 if ((strCompareText ?? "") == (CautionStatements[intIndex, 0] ?? ""))
@@ -2978,6 +3159,7 @@ namespace MwtWinDll
         {
             string LookupMessageRet = default;
             string strMessage;
+
             if (MessageStatementCount == 0)
                 MemoryLoadMessageStatements();
 
@@ -3067,7 +3249,10 @@ namespace MwtWinDll
         /// <param name="intCharge"></param>
         /// <param name="dblChargeCarrierMass">If this is 0, uses mChargeCarrierMass</param>
         /// <returns></returns>
-        public double MonoMassToMZInternal(double dblMonoisotopicMass, short intCharge, double dblChargeCarrierMass)
+        public double MonoMassToMZInternal(
+            double dblMonoisotopicMass,
+            short intCharge,
+            double dblChargeCarrierMass)
         {
             if (Math.Abs(dblChargeCarrierMass) < float.Epsilon)
                 dblChargeCarrierMass = mChargeCarrierMass;
@@ -3082,12 +3267,16 @@ namespace MwtWinDll
 
             // Reconstruct master symbols list
             ConstructMasterSymbolsList();
+
             MemoryLoadIsotopes();
+
             MemoryLoadAbbreviations();
 
             // Reconstruct master symbols list
             ConstructMasterSymbolsList();
+
             MemoryLoadCautionStatements();
+
             MemoryLoadMessageStatements();
         }
 
@@ -3097,10 +3286,12 @@ namespace MwtWinDll
 
             // Symbol                            Formula            1 letter abbreviation
             const short AminoAbbrevCount = 28;
+
             AbbrevAllCount = AminoAbbrevCount;
             for (intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
                 AbbrevStats[intIndex].IsAminoAcid = true;
             string argstrFormula = "C3H5NO";
+
             AddAbbreviationWork(1, "Ala", ref argstrFormula, 0f, true, "A", "Alanine");
             string argstrFormula1 = "C6H12N4O";
             AddAbbreviationWork(2, "Arg", ref argstrFormula1, 0f, true, "R", "Arginine, (unprotonated NH2)");
@@ -3156,11 +3347,13 @@ namespace MwtWinDll
             AddAbbreviationWork(27, "Val", ref argstrFormula26, 0f, true, "V", "Valine");
             string argstrFormula27 = "C6H12N2O";
             AddAbbreviationWork(28, "Xxx", ref argstrFormula27, 0f, true, "X", "Unknown");
+
             const short NormalAbbrevCount = 16;
             AbbrevAllCount += NormalAbbrevCount;
             for (intIndex = AminoAbbrevCount + 1; intIndex <= AbbrevAllCount; intIndex++)
                 AbbrevStats[intIndex].IsAminoAcid = false;
             string argstrFormula28 = "C10H8N2";
+
             AddAbbreviationWork(AminoAbbrevCount + 1, "Bpy", ref argstrFormula28, 0f, false, "", "Bipyridine");
             string argstrFormula29 = "C4H9";
             AddAbbreviationWork(AminoAbbrevCount + 2, "Bu", ref argstrFormula29, 1f, false, "", "Butyl");
@@ -3216,7 +3409,6 @@ namespace MwtWinDll
             // FlexGridAddItems .grdAminoAcids, "Statine", "Sta"
             // FlexGridAddItems .grdAminoAcids, "b-[2-Thienyl]Ala", "Thi"
 
-
             // Need to explore http://www.abrf.org/ABRF/ResearchCommittees/deltamass/deltamass.html
 
             // Isoelectric points
@@ -3227,8 +3419,6 @@ namespace MwtWinDll
             // GLU   E   C5H7NO3     129.04259  129.1155      1               4.5
             // CYS   C   C3H5NOS     103.00919  103.1388      0               8.6
             // ARG   R   C6H12N4O    156.10111  156.1875      1              12.0
-
-
         }
 
         /// <summary>
@@ -3337,7 +3527,10 @@ namespace MwtWinDll
         /// intSpecificElement and intSpecificElementProperty are zero when updating all of the elements
         /// nonzero intSpecificElement and intSpecificElementProperty values will set just that specific value to the default
         /// </remarks>
-        public void MemoryLoadElements(emElementModeConstants eElementMode, short intSpecificElement, MolecularWeightTool.esElementStatsConstants eSpecificStatToReset)
+        public void MemoryLoadElements(
+            emElementModeConstants eElementMode,
+            short intSpecificElement,
+            MolecularWeightTool.esElementStatsConstants eSpecificStatToReset)
         {
             const double DEFAULT_CHARGE_CARRIER_MASS_AVG = 1.00739d;
             const double DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649d;
@@ -3352,6 +3545,7 @@ namespace MwtWinDll
             // Note: I could make this array of type udtElementStatsType, but the size of this sub would increase dramatically
             double[,] dblElemVals;
             dblElemVals = new double[104, 4];
+
             short intIndex, intElementIndex, intCompareIndex;
             string strSwap;
 
@@ -3698,10 +3892,10 @@ namespace MwtWinDll
                     dblElemVals[101, 1] = 258d;
                     dblElemVals[102, 1] = 269d;
                     dblElemVals[103, 1] = 260d;
-                    break;
 
-                // Unused elements
-                // data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
+                    // Unused elements
+                    // data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
+                    break;
 
                 case emElementModeConstants.emIsotopicMass:
                     // isotopic Element Weights
@@ -3807,11 +4001,10 @@ namespace MwtWinDll
                     dblElemVals[100, 1] = 257d;
                     dblElemVals[101, 1] = 258d;
                     dblElemVals[102, 1] = 269d;
+                    dblElemVals[103, 1] = 260d;
 
                     // Unused elements
                     // data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
-
-                    dblElemVals[103, 1] = 260d;
                     break;
 
                 default:
@@ -4023,9 +4216,10 @@ namespace MwtWinDll
                     dblElemVals[102, 2] = 0.0005d;
                     dblElemVals[103, 1] = 262.11d;
                     dblElemVals[103, 2] = 0.05d;
-                    break;
+
                     // Unused elements
                     // data 104,Unq,Unnilquadium,261,1, 105,Unp,Unnilpentium,262,1, 106,Unh,Unnilhexium,263,1
+                    break;
             }
 
             if (intSpecificElement == 0)
@@ -4038,6 +4232,7 @@ namespace MwtWinDll
                     stats.Mass = dblElemVals[intElementIndex, 1];
                     stats.Uncertainty = dblElemVals[intElementIndex, 2];
                     stats.Charge = (float)dblElemVals[intElementIndex, 3];
+
                     ElementAlph[intElementIndex] = stats.Symbol;
                 }
 
@@ -4071,8 +4266,8 @@ namespace MwtWinDll
                         stats.Charge = (float)dblElemVals[intSpecificElement, 3];
                         break;
                     default:
-                        break;
                         // Ignore it
+                        break;
                 }
             }
         }
@@ -4093,6 +4288,7 @@ namespace MwtWinDll
             // starting with sngIsoAbun(x,1) and corresponding to dblIsoMasses()
             float[,] sngIsoAbun;
             sngIsoAbun = new float[104, 12];
+
             dblIsoMasses[1, 1] = 1.0078246d;
             sngIsoAbun[1, 1] = 0.99985f;
             dblIsoMasses[1, 2] = 2.014d;
@@ -4731,6 +4927,7 @@ namespace MwtWinDll
         public void MemoryLoadMessageStatements()
         {
             MessageStatementCount = 1555;
+
             MessageStatements[1] = "Unknown element";
             MessageStatements[2] = "Obsolete msg: Cannot handle more than 4 layers of embedded parentheses";
             MessageStatements[3] = "Missing closing parentheses";
@@ -4789,7 +4986,6 @@ namespace MwtWinDll
             MessageStatements[93] = "Use a period for a decimal point";
             MessageStatements[94] = "Use a comma for a decimal point";
             MessageStatements[95] = "A number must be present after a decimal point";
-
 
             // Cases 100 and up are shown when loading data from files and starting application
             MessageStatements[100] = "Error Saving Abbreviation File";
@@ -4902,6 +5098,7 @@ namespace MwtWinDll
             MessageStatements[1000] = "Determining number of ions in list";
             MessageStatements[1010] = "Parsing list";
             MessageStatements[1020] = "No valid ions were found on the clipboard.  A valid ion list is a list of mass and intensity pairs, separated by commas, tabs, or spaces.  One mass/intensity pair should be present per line.";
+
             MessageStatements[1030] = "Error writing data to file";
             MessageStatements[1040] = "Set Range";
             MessageStatements[1050] = "Start Val";
@@ -4926,10 +5123,12 @@ namespace MwtWinDll
             MessageStatements[1155] = "Maximum Offset";
             MessageStatements[1160] = "Offset Increment";
             MessageStatements[1165] = "Aligning Ions";
+
             MessageStatements[1200] = "Caution symbol must be 1 to " + MAX_ABBREV_LENGTH + " characters long";
             MessageStatements[1205] = "Caution symbol most only contain letters";
             MessageStatements[1210] = "Caution description length cannot be 0";
             MessageStatements[1215] = "Too many caution statements.  Unable to add another one.";
+
             MessageStatements[1500] = "All Files";
             MessageStatements[1510] = "Text Files";
             MessageStatements[1515] = "txt";
@@ -4947,6 +5146,7 @@ namespace MwtWinDll
         {
             string strMessage;
             bool blnShowErrorMessageDialogsSaved;
+
             if (Information.Err().Number == 6)
             {
                 strMessage = LookupMessage(590);
@@ -4961,6 +5161,7 @@ namespace MwtWinDll
             {
                 strMessage = LookupMessage(600) + ": " + Information.Err().Description + ControlChars.NewLine + " (" + strSourceForm + " handler)";
                 strMessage += ControlChars.NewLine + LookupMessage(605);
+
                 if (mShowErrorMessageDialogs)
                 {
                     Interaction.MsgBox(strMessage, MsgBoxStyle.OkOnly, LookupMessage(350));
@@ -4973,7 +5174,9 @@ namespace MwtWinDll
 
                 blnShowErrorMessageDialogsSaved = mShowErrorMessageDialogs;
                 mShowErrorMessageDialogs = false;
+
                 GeneralErrorHandler(strSourceForm, Information.Err().Number);
+
                 mShowErrorMessageDialogs = blnShowErrorMessageDialogsSaved;
             }
         }
@@ -4984,13 +5187,17 @@ namespace MwtWinDll
             ElementStats = new udtElementStatsType[104];
             for (int i = 0; i <= ELEMENT_COUNT - 1; i++)
                 ElementStats[i].Initialize();
+
             AbbrevStats = new udtAbbrevStatsType[501];
             CautionStatements = new string[101, 3];
             MessageStatements = new string[1601];
+
             mProgressStepDescription = string.Empty;
             mProgressPercentComplete = 0f;
+
             mLogFolderPath = string.Empty;
             mLogFilePath = string.Empty;
+
             mShowErrorMessageDialogs = false;
         }
 
@@ -5007,6 +5214,7 @@ namespace MwtWinDll
             udtComputationStats.Charge = 0.0f;
             udtComputationStats.StandardDeviation = 0.0d;
             udtComputationStats.TotalMass = 0.0d;
+
             for (intElementIndex = 0; intElementIndex <= ELEMENT_COUNT - 1; intElementIndex++)
             {
                 var element = udtComputationStats.Elements[intElementIndex];
@@ -5024,7 +5232,9 @@ namespace MwtWinDll
         /// <param name="strFormula">Input/output: formula to parse</param>
         /// <param name="udtComputationStats">Output: additional information about the formula</param>
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
-        public double ParseFormulaPublic(ref string strFormula, ref udtComputationStatsType udtComputationStats)
+        public double ParseFormulaPublic(
+            ref string strFormula,
+            ref udtComputationStatsType udtComputationStats)
         {
             double argdblValueForX = 1d;
             return ParseFormulaPublic(ref strFormula, ref udtComputationStats, false, ref argdblValueForX);
@@ -5037,7 +5247,10 @@ namespace MwtWinDll
         /// <param name="udtComputationStats">Output: additional information about the formula</param>
         /// <param name="blnExpandAbbreviations"></param>
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
-        public double ParseFormulaPublic(ref string strFormula, ref udtComputationStatsType udtComputationStats, bool blnExpandAbbreviations)
+        public double ParseFormulaPublic(
+            ref string strFormula,
+            ref udtComputationStatsType udtComputationStats,
+            bool blnExpandAbbreviations)
         {
             double argdblValueForX = 1d;
             return ParseFormulaPublic(ref strFormula, ref udtComputationStats, blnExpandAbbreviations, ref argdblValueForX);
@@ -5055,16 +5268,22 @@ namespace MwtWinDll
         /// ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
         /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
         /// </remarks>
-        public double ParseFormulaPublic(ref string strFormula, ref udtComputationStatsType udtComputationStats, bool blnExpandAbbreviations, ref double dblValueForX)
+        public double ParseFormulaPublic(
+            ref string strFormula,
+            ref udtComputationStatsType udtComputationStats,
+            bool blnExpandAbbreviations,
+            ref double dblValueForX)
         {
             short intElementIndex;
             double dblStdDevSum;
+
             var udtAbbrevSymbolStack = new udtAbbrevSymbolStackType();
             try
             {
                 // Initialize the UDTs
                 InitializeComputationStats(ref udtComputationStats);
                 InitializeAbbrevSymbolStack(ref udtAbbrevSymbolStack);
+
                 dblStdDevSum = 0.0d;
 
                 // Reset ErrorParams to clear any prior errors
@@ -5072,6 +5291,7 @@ namespace MwtWinDll
 
                 // Reset Caution Description
                 mStrCautionDescription = "";
+
                 if (Strings.Len(strFormula) > 0)
                 {
                     int argCarbonOrSiliconReturnCount = 0;
@@ -5081,6 +5301,7 @@ namespace MwtWinDll
                 // Copy udtComputationStats to mComputationStatsSaved
                 mComputationStatsSaved.Initialize();
                 mComputationStatsSaved = udtComputationStats;
+
                 if (ErrorParams.ErrorID == 0)
                 {
 
@@ -5093,6 +5314,7 @@ namespace MwtWinDll
                         // Increase total weight by multiplying the count of each element by the element's mass
                         // In addition, add in the Isotopic Correction value
                         udtComputationStats.TotalMass = udtComputationStats.TotalMass + ElementStats[intElementIndex].Mass * udtComputationStats.Elements[intElementIndex].Count + udtComputationStats.Elements[intElementIndex].IsotopicCorrection;
+
                     return udtComputationStats.TotalMass;
                 }
                 else
@@ -5125,9 +5347,20 @@ namespace MwtWinDll
         /// <param name="dblBracketMultiplierPrior"></param>
         /// <param name="intParenthLevelPrevious"></param>
         /// <returns>Formatted formula</returns>
-        private string ParseFormulaRecursive(string strFormula, ref udtComputationStatsType udtComputationStats, ref udtAbbrevSymbolStackType udtAbbrevSymbolStack, bool blnExpandAbbreviations, ref double dblStdDevSum, [Optional, DefaultParameterValue(0)] ref int CarbonOrSiliconReturnCount, double dblValueForX = 1.0d, int intCharCountPrior = 0, double dblParenthMultiplier = 1.0d, double dblDashMultiplierPrior = 1.0d, double dblBracketMultiplierPrior = 1.0d, short intParenthLevelPrevious = 0)
+        private string ParseFormulaRecursive(
+            string strFormula,
+            ref udtComputationStatsType udtComputationStats,
+            ref udtAbbrevSymbolStackType udtAbbrevSymbolStack,
+            bool blnExpandAbbreviations,
+            ref double dblStdDevSum,
+            [Optional, DefaultParameterValue(0)] ref int CarbonOrSiliconReturnCount,
+            double dblValueForX = 1.0d,
+            int intCharCountPrior = 0,
+            double dblParenthMultiplier = 1.0d,
+            double dblDashMultiplierPrior = 1.0d,
+            double dblBracketMultiplierPrior = 1.0d,
+            short intParenthLevelPrevious = 0)
         {
-
             // ( and ) are 40 and 41   - is 45   { and } are 123 and 125
             // Numbers are 48 to 57    . is 46
             // Uppercase letters are 65 to 90
@@ -5143,9 +5376,12 @@ namespace MwtWinDll
             string strLeftHalf, strRightHalf;
             bool blnMatchFound;
             string strNewFormulaRightHalf;
+
             var udtComputationStatsRightHalf = new udtComputationStatsType();
             udtComputationStatsRightHalf.Initialize();
+
             var udtAbbrevSymbolStackRightHalf = new udtAbbrevSymbolStackType();
+
             var dblStdDevSumRightHalf = default(double);
             double dblCaretVal = default, dblAdjacentNum, dblCaretValDifference;
             double dblAtomCountToAdd;
@@ -5162,6 +5398,7 @@ namespace MwtWinDll
             int intCharAsc;
             int LoneCarbonOrSilicon;
             double dblIsoDifferenceTop, dblIsoDifferenceBottom;
+
             short SymbolReference = default, PrevSymbolReference = default;
             string strNewFormula, strReplace, strSubFormula;
             int intParenthClose, intParenthLevel = default;
@@ -5171,9 +5408,11 @@ namespace MwtWinDll
                 dblDashMultiplier = dblDashMultiplierPrior; // Leading coefficient position and default value
                 dblBracketMultiplier = dblBracketMultiplierPrior; // Bracket correction factor
                 blnInsideBrackets = false; // Switch for in or out of brackets
+
                 intDashPos = 0;
                 strNewFormula = string.Empty;
                 strNewFormulaRightHalf = string.Empty;
+
                 LoneCarbonOrSilicon = 0; // The number of carbon or silicon atoms
                 CarbonOrSiliconReturnCount = 0;
 
@@ -5199,6 +5438,7 @@ namespace MwtWinDll
                             // Parse the second half
                             InitializeComputationStats(ref udtComputationStatsRightHalf);
                             InitializeAbbrevSymbolStack(ref udtAbbrevSymbolStackRightHalf);
+
                             strNewFormulaRightHalf = ParseFormulaRecursive(strRightHalf, ref udtComputationStatsRightHalf, ref udtAbbrevSymbolStackRightHalf, blnExpandAbbreviations, ref dblStdDevSumRightHalf, ref CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier, dblDashMultiplier, dblBracketMultiplier, intParenthLevelPrevious);
                             break;
                         }
@@ -5206,6 +5446,7 @@ namespace MwtWinDll
                         intCharIndex += 1;
                     }
                     while (intCharIndex <= Strings.Len(strFormula));
+
                     if (blnMatchFound)
                     {
                         // Update strFormula
@@ -5249,7 +5490,6 @@ namespace MwtWinDll
                 }
                 else
                 {
-
                     // Formula does not contain >
                     // Parse it
                     intCharIndex = 0;
@@ -5261,6 +5501,7 @@ namespace MwtWinDll
                         strCharRemain = Strings.Mid(strFormula, intCharIndex + 3);
                         if (gComputationOptions.CaseConversion != ccCaseConversionConstants.ccExactCase)
                             strChar1 = Strings.UCase(strChar1);
+
                         if (gComputationOptions.BracketsAsParentheses)
                         {
                             if (strChar1 == "[")
@@ -5277,10 +5518,12 @@ namespace MwtWinDll
                             strChar3 = Conversions.ToString(EMPTY_STRING_CHAR);
                         if (string.IsNullOrEmpty(strCharRemain))
                             strCharRemain = Conversions.ToString(EMPTY_STRING_CHAR);
+
                         strFormulaExcerpt = strChar1 + strChar2 + strChar3 + strCharRemain;
 
                         // Check for needed caution statements
                         CheckCaution(strFormulaExcerpt);
+
                         switch (Strings.Asc(strChar1))
                         {
                             case 40:
@@ -5308,8 +5551,8 @@ namespace MwtWinDll
                                                 // increment parenthLevel
                                                 if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "[")
                                                 {
+                                                    // Do not count the bracket
                                                 }
-                                                // Do not count the bracket
                                                 else
                                                 {
                                                     intParenthLevel += 1;
@@ -5322,8 +5565,8 @@ namespace MwtWinDll
                                             case "]":
                                                 if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "]")
                                                 {
+                                                    // Do not count the bracket
                                                 }
-                                                // Do not count the bracket
                                                 else
                                                 {
                                                     intParenthLevel -= 1;
@@ -5332,6 +5575,7 @@ namespace MwtWinDll
                                                         string argstrWork = Strings.Mid(strFormula, intParenthClose + 1);
                                                         dblAdjacentNum = ParseNum(ref argstrWork, out intNumLength);
                                                         CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+
                                                         if (dblAdjacentNum < 0d)
                                                         {
                                                             dblAdjacentNum = 1.0d;
@@ -5396,6 +5640,7 @@ namespace MwtWinDll
                                 string argstrWork1 = strChar2 + strChar3 + strCharRemain;
                                 dblAdjacentNum = ParseNum(ref argstrWork1, out intNumLength);
                                 CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+
                                 if (dblAdjacentNum > 0d)
                                 {
                                     intDashPos = intCharIndex + intNumLength;
@@ -5429,6 +5674,7 @@ namespace MwtWinDll
                                     // Formula starts with a number -- multiply section by number (until next dash)
                                     dblAdjacentNum = ParseNum(ref strFormulaExcerpt, out intNumLength);
                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+
                                     if (dblAdjacentNum >= 0d)
                                     {
                                         intDashPos = intCharIndex + intNumLength - 1;
@@ -5511,6 +5757,7 @@ namespace MwtWinDll
                                 string argstrWork4 = strChar2 + strChar3 + strCharRemain;
                                 dblAdjacentNum = ParseNum(ref argstrWork4, out intNumLength);
                                 CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+
                                 if (dblAdjacentNum >= 0d)
                                 {
                                     // Number following bracket
@@ -5544,7 +5791,9 @@ namespace MwtWinDll
                             case 95: // Uppercase A to Z and lowercase a to z, and the plus (+) sign, and the underscore (_)
                                 intAddonCount = 0;
                                 dblAdjacentNum = 0d;
+
                                 var eSymbolMatchType = CheckElemAndAbbrev(strFormulaExcerpt, ref SymbolReference);
+
                                 switch (eSymbolMatchType)
                                 {
                                     case smtSymbolMatchTypeConstants.smtElement:
@@ -5561,6 +5810,7 @@ namespace MwtWinDll
                                         string argstrWork5 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
                                         dblAdjacentNum = ParseNum(ref argstrWork5, out intNumLength);
                                         CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+
                                         if (dblAdjacentNum < 0d)
                                         {
                                             dblAdjacentNum = 1d;
@@ -5568,6 +5818,7 @@ namespace MwtWinDll
 
                                         // Note that intNumLength = 0 if dblAdjacentNum was -1 or otherwise < 0
                                         intAddonCount = intNumLength + intSymbolLength - 1;
+
                                         if (Math.Abs(dblAdjacentNum) < float.Epsilon)
                                         {
                                             // Zero after element
@@ -5625,6 +5876,7 @@ namespace MwtWinDll
                                                 dblIsoDifferenceTop = NumberConverter.CIntSafe(0.63d * SymbolReference + 6d);
                                                 dblIsoDifferenceBottom = NumberConverter.CIntSafe(0.008d * Math.Pow(SymbolReference, 2d) - 0.4d * SymbolReference - 6d);
                                                 dblCaretValDifference = dblCaretVal - SymbolReference * 2;
+
                                                 if (dblCaretValDifference >= dblIsoDifferenceTop)
                                                 {
                                                     // Probably too high isotopic mass
@@ -5650,6 +5902,7 @@ namespace MwtWinDll
                                                 // Store information in .Isotopes()
                                                 // Increment the isotope counting bin
                                                 element.IsotopeCount = (short)(element.IsotopeCount + 1);
+
                                                 if (Information.UBound(element.Isotopes) < element.IsotopeCount)
                                                 {
                                                     Array.Resize(ref element.Isotopes, Information.UBound(element.Isotopes) + 2 + 1);
@@ -5723,6 +5976,7 @@ namespace MwtWinDll
                                             string argstrWork6 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
                                             dblAdjacentNum = ParseNum(ref argstrWork6, out intNumLength);
                                             CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+
                                             if (dblAdjacentNum < 0d)
                                             {
                                                 dblAdjacentNum = 1d;
@@ -5753,6 +6007,7 @@ namespace MwtWinDll
 
                                             // Remove this symbol from the Abbreviation Symbol Stack
                                             AbbrevSymbolStackAddRemoveMostRecent(ref udtAbbrevSymbolStack);
+
                                             if (ErrorParams.ErrorID == 0)
                                             {
                                                 if (blnExpandAbbreviations)
@@ -5764,6 +6019,7 @@ namespace MwtWinDll
                                                     string argstrWork7 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
                                                     dblAdjacentNum = ParseNum(ref argstrWork7, out intNumLength);
                                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+
                                                     if (Conversions.ToBoolean(Strings.InStr(strReplace, ">")))
                                                     {
                                                         // The > symbol means take First Part minus the Second Part
@@ -5834,10 +6090,11 @@ namespace MwtWinDll
                                 string argstrWork8 = strChar2 + strChar3 + strCharRemain;
                                 dblAdjacentNum = ParseNum(ref argstrWork8, out intNumLength);
                                 CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+
                                 if (ErrorParams.ErrorID != 0)
                                 {
+                                    // Problem, don't go on.
                                 }
-                                // Problem, don't go on.
                                 else
                                 {
                                     strCharVal = Strings.Mid(strFormula, intCharIndex + 1 + intNumLength, 1);
@@ -5883,8 +6140,8 @@ namespace MwtWinDll
                                 break;
 
                             default:
+                                // There shouldn't be anything else (except the ~ filler character). If there is, we'll just ignore it
                                 break;
-                            // There shouldn't be anything else (except the ~ filler character). If there is, we'll just ignore it
                         }
 
                         if (intCharIndex == Strings.Len(strFormula))
@@ -5894,8 +6151,8 @@ namespace MwtWinDll
                             {
                                 if (intCharIndex != intDashPos)
                                 {
+                                    // Things went fine, no need to set anything
                                 }
-                                // Things went fine, no need to set anything
                                 else
                                 {
                                     // No compounds after leading coefficient after dash
@@ -5937,6 +6194,7 @@ namespace MwtWinDll
                 {
                     // Correct Charge for number of C and Si
                     udtComputationStats.Charge -= (LoneCarbonOrSilicon - 1) * 2;
+
                     CarbonOrSiliconReturnCount = LoneCarbonOrSilicon;
                 }
                 else
@@ -5953,6 +6211,7 @@ namespace MwtWinDll
                 MwtWinDllErrorHandler("MwtWinDll_clsElementAndMassRoutines|ParseFormula: " + ex.Message);
                 ErrorParams.ErrorID = -10;
                 ErrorParams.ErrorPosition = 0;
+
                 return strFormula;
             }
         }
@@ -5979,6 +6238,7 @@ namespace MwtWinDll
             double ParseNumRet = default;
             string strWorking, strFoundNum;
             short intIndex, intDecPtCount;
+
             if (gComputationOptions.DecimalSeparator == default(char))
             {
                 gComputationOptions.DecimalSeparator = MolecularWeightTool.DetermineDecimalPoint();
@@ -5989,6 +6249,7 @@ namespace MwtWinDll
             // length of the matched number before exiting the sub
             intNumLength = -1;
             strFoundNum = string.Empty;
+
             if (string.IsNullOrEmpty(strWork))
                 strWork = Conversions.ToString(EMPTY_STRING_CHAR);
             if ((Strings.Asc(Strings.Left(strWork, 1)) < 48 || Strings.Asc(Strings.Left(strWork, 1)) > 57) && Strings.Left(strWork, 1) != Conversions.ToString(gComputationOptions.DecimalSeparator) && !(Strings.Left(strWork, 1) == "-" && blnAllowNegative == true))
@@ -6058,7 +6319,10 @@ namespace MwtWinDll
             return PlainTextToRtfInternal(strWorkText, calculatorMode, true, false, 0);
         }
 
-        public string PlainTextToRtfInternal(string strWorkText, bool calculatorMode, bool blnHighlightCharFollowingPercentSign)
+        public string PlainTextToRtfInternal(
+            string strWorkText,
+            bool calculatorMode,
+            bool blnHighlightCharFollowingPercentSign)
         {
             return PlainTextToRtfInternal(strWorkText, calculatorMode, blnHighlightCharFollowingPercentSign, false, 0);
         }
@@ -6072,7 +6336,12 @@ namespace MwtWinDll
         /// <param name="blnOverrideErrorID"></param>
         /// <param name="errorIDOverride"></param>
         /// <returns></returns>
-        public string PlainTextToRtfInternal(string strWorkText, bool calculatorMode, bool blnHighlightCharFollowingPercentSign, bool blnOverrideErrorID, int errorIDOverride)
+        public string PlainTextToRtfInternal(
+            string strWorkText,
+            bool calculatorMode,
+            bool blnHighlightCharFollowingPercentSign,
+            bool blnOverrideErrorID,
+            int errorIDOverride)
         {
             string PlainTextToRtfInternalRet = default;
             string strWorkCharPrev, strWorkChar, strRTF;
@@ -6159,8 +6428,8 @@ namespace MwtWinDll
                                 break;
 
                             default:
-                                break;
                                 // Nothing to highlight
+                                break;
                         }
                     }
                     else
@@ -6191,9 +6460,9 @@ namespace MwtWinDll
                 }
                 else if (strWorkChar == Conversions.ToString(EMPTY_STRING_CHAR))
                 {
+                    // skip it, the tilde sign is used to add additional height to the formula line when isotopes are used
+                    // If it's here from a previous time, we ignore it, adding it at the end if needed (if blnSuperFound = true)
                 }
-                // skip it, the tilde sign is used to add additional height to the formula line when isotopes are used
-                // If it's here from a previous time, we ignore it, adding it at the end if needed (if blnSuperFound = true)
                 else if (Information.IsNumeric(strWorkChar) || strWorkChar == Conversions.ToString(gComputationOptions.DecimalSeparator))
                 {
                     // Number or period, so super or subscript it if needed
@@ -6226,8 +6495,8 @@ namespace MwtWinDll
                 }
                 else if (strWorkChar == " ")
                 {
+                    // Ignore it
                 }
-                // Ignore it
                 else
                 {
                     // Handle curly brackets
@@ -6285,7 +6554,9 @@ namespace MwtWinDll
         public int RemoveAbbreviationInternal(string strAbbreviationSymbol)
         {
             var blnRemoved = default(bool);
+
             strAbbreviationSymbol = Strings.LCase(strAbbreviationSymbol);
+
             for (int index = 1; index <= AbbrevAllCount; index++)
             {
                 if ((Strings.LCase(AbbrevStats[index].Symbol) ?? "") == (strAbbreviationSymbol ?? ""))
@@ -6313,10 +6584,12 @@ namespace MwtWinDll
         public int RemoveAbbreviationByIDInternal(int abbreviationID)
         {
             bool blnRemoved;
+
             if (abbreviationID >= 1 && abbreviationID <= AbbrevAllCount)
             {
                 for (int indexRemove = abbreviationID; indexRemove < AbbrevAllCount; indexRemove++)
                     AbbrevStats[indexRemove] = AbbrevStats[indexRemove + 1];
+
                 AbbrevAllCount = (short)(AbbrevAllCount - 1);
                 ConstructMasterSymbolsList();
                 blnRemoved = true;
@@ -6345,6 +6618,7 @@ namespace MwtWinDll
         {
             short intIndex, intIndexRemove;
             var blnRemoved = default(bool);
+
             for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
             {
                 if ((CautionStatements[intIndex, 0] ?? "") == (strCautionSymbol ?? ""))
@@ -6398,7 +6672,10 @@ namespace MwtWinDll
             return ReturnFormattedMassAndStdDev(dblMass, dblStdDev, blnIncludeStandardDeviation, false);
         }
 
-        public string ReturnFormattedMassAndStdDev(double dblMass, double dblStdDev, bool blnIncludeStandardDeviation, bool blnIncludePctSign)
+        public string ReturnFormattedMassAndStdDev(double dblMass,
+            double dblStdDev,
+            bool blnIncludeStandardDeviation,
+            bool blnIncludePctSign)
         {
             // Plan:
             // Round dblStdDev to 1 final digit.
@@ -6414,6 +6691,7 @@ namespace MwtWinDll
             double dblWork;
             short intExponentValue;
             string strPctSign;
+
             try
             {
                 // blnIncludePctSign is True when formatting Percent composition values
@@ -6436,7 +6714,6 @@ namespace MwtWinDll
                 }
                 else
                 {
-
                     // First round dblStdDev to show just one number
                     dblRoundedStdDev = Conversions.ToDouble(dblStdDev.ToString("0E+000"));
 
@@ -6446,11 +6723,14 @@ namespace MwtWinDll
                     // Now multiply to get back the rounded dblMass
                     strWork = dblStdDev.ToString("0E+000");
                     strStdDevShort = Strings.Left(strWork, 1);
+
                     intExponentValue = NumberConverter.CShortSafe(Strings.Right(strWork, 4));
                     dblWork = dblMass / Math.Pow(10d, intExponentValue);
                     dblWork = Math.Round(dblWork, 0);
                     dblRoundedMain = dblWork * Math.Pow(10d, intExponentValue);
+
                     strWork = dblRoundedMain.ToString("0.0##E+00");
+
                     if (gComputationOptions.StdDevMode == smStdDevModeConstants.smShort)
                     {
                         // StdDevType Short (Type 0)
@@ -6526,6 +6806,7 @@ namespace MwtWinDll
 
             // Convert dblThisNum back to the correct magnitude
             dblThisNum *= Math.Pow(10d, intExponentValue);
+
             return dblThisNum;
         }
 
@@ -6539,6 +6820,7 @@ namespace MwtWinDll
             // Find the exponent of MultipleValue
             strWork = MultipleValue.ToString("0E+000");
             intExponentValue = NumberConverter.CIntSafe(Strings.Right(strWork, 4));
+
             intLoopCount = 0;
             while (((dblValueToRound / MultipleValue).ToString().Trim() ?? "") != (Math.Round(dblValueToRound / MultipleValue, 0).ToString().Trim() ?? ""))
             {
@@ -6569,17 +6851,23 @@ namespace MwtWinDll
             return dblValueToRound;
         }
 
-        public int SetAbbreviationInternal(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid)
+        public int SetAbbreviationInternal(string strSymbol, string strFormula,
+            float sngCharge, bool blnIsAminoAcid)
         {
             return SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", true);
         }
 
-        public int SetAbbreviationInternal(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol)
+        public int SetAbbreviationInternal(string strSymbol, string strFormula,
+            float sngCharge, bool blnIsAminoAcid,
+            string strOneLetterSymbol)
         {
             return SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, "", true);
         }
 
-        public int SetAbbreviationInternal(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment)
+        public int SetAbbreviationInternal(string strSymbol, string strFormula,
+            float sngCharge, bool blnIsAminoAcid,
+            string strOneLetterSymbol,
+            string strComment)
         {
             return SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, true);
         }
@@ -6600,7 +6888,12 @@ namespace MwtWinDll
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
         /// defined, then the parsing of the first abbreviation will fail
         /// </remarks>
-        public int SetAbbreviationInternal(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment, bool blnValidateFormula)
+        public int SetAbbreviationInternal(
+            string strSymbol, string strFormula,
+            float sngCharge, bool blnIsAminoAcid,
+            string strOneLetterSymbol,
+            string strComment,
+            bool blnValidateFormula)
         {
             bool blnAlreadyPresent;
             var abbrevID = default(int);
@@ -6640,17 +6933,26 @@ namespace MwtWinDll
             return ErrorParams.ErrorID;
         }
 
-        public int SetAbbreviationByIDInternal(short intAbbrevID, string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid)
+        public int SetAbbreviationByIDInternal(short intAbbrevID, string strSymbol,
+            string strFormula, float sngCharge,
+            bool blnIsAminoAcid)
         {
             return SetAbbreviationByIDInternal(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", true);
         }
 
-        public int SetAbbreviationByIDInternal(short intAbbrevID, string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol)
+        public int SetAbbreviationByIDInternal(short intAbbrevID, string strSymbol,
+            string strFormula, float sngCharge,
+            bool blnIsAminoAcid,
+            string strOneLetterSymbol)
         {
             return SetAbbreviationByIDInternal(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, "", true);
         }
 
-        public int SetAbbreviationByIDInternal(short intAbbrevID, string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment)
+        public int SetAbbreviationByIDInternal(short intAbbrevID, string strSymbol,
+            string strFormula, float sngCharge,
+            bool blnIsAminoAcid,
+            string strOneLetterSymbol,
+            string strComment)
         {
             return SetAbbreviationByIDInternal(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, true);
         }
@@ -6667,19 +6969,28 @@ namespace MwtWinDll
         /// <param name="strComment"></param>
         /// <param name="blnValidateFormula"></param>
         /// <returns>0 if successful, otherwise an error ID</returns>
-        public int SetAbbreviationByIDInternal(short intAbbrevID, string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment, bool blnValidateFormula)
+        public int SetAbbreviationByIDInternal(
+            short intAbbrevID, string strSymbol,
+            string strFormula, float sngCharge,
+            bool blnIsAminoAcid,
+            string strOneLetterSymbol,
+            string strComment,
+            bool blnValidateFormula)
         {
             var udtComputationStats = new udtComputationStatsType();
             udtComputationStats.Initialize();
+
             var udtAbbrevSymbolStack = new udtAbbrevSymbolStackType();
             var blnInvalidSymbolOrFormula = default(bool);
             smtSymbolMatchTypeConstants eSymbolMatchType;
             var intSymbolReference = default(short);
+
             ResetErrorParamsInternal();
 
             // Initialize the UDTs
             InitializeComputationStats(ref udtComputationStats);
             InitializeAbbrevSymbolStack(ref udtAbbrevSymbolStack);
+
             if (Strings.Len(strSymbol) < 1)
             {
                 // Symbol length is 0
@@ -6717,6 +7028,7 @@ namespace MwtWinDll
                     {
                         // Make sure the abbreviation doesn't match one of the standard elements
                         eSymbolMatchType = CheckElemAndAbbrev(strSymbol, ref intSymbolReference);
+
                         if (eSymbolMatchType == smtSymbolMatchTypeConstants.smtElement)
                         {
                             if ((ElementStats[intSymbolReference].Symbol ?? "") == (strSymbol ?? ""))
@@ -6732,6 +7044,7 @@ namespace MwtWinDll
                             double argdblStdDevSum = 0d;
                             int argCarbonOrSiliconReturnCount = 0;
                             strFormula = ParseFormulaRecursive(strFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, false, ref argdblStdDevSum, CarbonOrSiliconReturnCount: ref argCarbonOrSiliconReturnCount);
+
                             if (ErrorParams.ErrorID != 0)
                             {
                                 // An error occurred while parsing
@@ -6742,6 +7055,7 @@ namespace MwtWinDll
                         }
 
                         AddAbbreviationWork(intAbbrevID, strSymbol, ref strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnInvalidSymbolOrFormula);
+
                         ConstructMasterSymbolsList();
                     }
                 }
@@ -6770,7 +7084,9 @@ namespace MwtWinDll
         {
             var blnAlreadyPresent = default(bool);
             int intIndex;
+
             ResetErrorParamsInternal();
+
             if (Strings.Len(strSymbolCombo) >= 1 && Strings.Len(strSymbolCombo) <= MAX_ABBREV_LENGTH)
             {
                 // Make sure all the characters in strSymbolCombo are letters
@@ -6850,10 +7166,13 @@ namespace MwtWinDll
         /// <param name="sngCharge"></param>
         /// <param name="blnRecomputeAbbreviationMasses">Set to False if updating several elements</param>
         /// <returns></returns>
-        public int SetElementInternal(string strSymbol, double dblMass, double dblUncertainty, float sngCharge, bool blnRecomputeAbbreviationMasses)
+        public int SetElementInternal(string strSymbol, double dblMass,
+            double dblUncertainty, float sngCharge,
+            bool blnRecomputeAbbreviationMasses)
         {
             short intIndex;
             var blnFound = default(bool);
+
             for (intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
             {
                 if ((Strings.LCase(strSymbol) ?? "") == (Strings.LCase(ElementStats[intIndex].Symbol) ?? ""))
@@ -6884,6 +7203,7 @@ namespace MwtWinDll
         {
             short intIndex, intIsotopeIndex;
             var blnFound = default(bool);
+
             for (intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
             {
                 if ((Strings.LCase(strSymbol) ?? "") == (Strings.LCase(ElementStats[intIndex].Symbol) ?? ""))
@@ -6939,6 +7259,7 @@ namespace MwtWinDll
                     if (NewElementMode != mCurrentElementMode || blnMemoryLoadElementValues)
                     {
                         mCurrentElementMode = NewElementMode;
+
                         if (blnMemoryLoadElementValues)
                         {
                             MemoryLoadElements(mCurrentElementMode);
@@ -6984,6 +7305,7 @@ namespace MwtWinDll
             // MasterSymbolsList starts at lowIndex
             for (int index = lowIndex; index <= highIndex; index++)
                 PointerArray[index] = index;
+
             ShellSortSymbolsWork(ref PointerArray, lowIndex, highIndex);
 
             // Reassign MasterSymbolsList array according to PointerArray order
@@ -7013,6 +7335,7 @@ namespace MwtWinDll
         {
             int itemCount;
             int incrementAmount;
+
             int indexCompare;
             int pointerSwap;
             int Length1, Length2;
@@ -7077,8 +7400,10 @@ namespace MwtWinDll
             int lowIndex, highIndex;
             int itemCount;
             int incrementAmount;
+
             int indexCompare;
             udtAbbrevStatsType udtCompare;
+
             itemCount = AbbrevAllCount;
             lowIndex = 1;
             highIndex = itemCount;
@@ -7096,6 +7421,7 @@ namespace MwtWinDll
             {
                 while (incrementAmount < itemCount)
                     incrementAmount = 3 * incrementAmount + 1;
+
                 incrementAmount /= 3;
                 incrementAmount /= 3;
             }
@@ -7134,6 +7460,7 @@ namespace MwtWinDll
         {
             while (Strings.Len(strWork) < intLength)
                 strWork += " ";
+
             return strWork;
         }
 
@@ -7141,6 +7468,7 @@ namespace MwtWinDll
         {
             while (Strings.Len(strWork) < intLength)
                 strWork = " " + strWork;
+
             return strWork;
         }
 
@@ -7173,6 +7501,7 @@ namespace MwtWinDll
         protected void UpdateProgress(string strProgressStepDescription, float sngPercentComplete)
         {
             bool blnDescriptionChanged = false;
+
             if ((strProgressStepDescription ?? "") != (mProgressStepDescription ?? ""))
             {
                 blnDescriptionChanged = true;
@@ -7189,6 +7518,7 @@ namespace MwtWinDll
             }
 
             mProgressPercentComplete = sngPercentComplete;
+
             if (blnDescriptionChanged)
             {
                 if (Math.Abs(mProgressPercentComplete) < float.Epsilon)
@@ -7218,6 +7548,7 @@ namespace MwtWinDll
         {
             short intAbbrevIndex;
             var intInvalidAbbreviationCount = default(short);
+
             for (intAbbrevIndex = 1; intAbbrevIndex <= AbbrevAllCount; intAbbrevIndex++)
             {
                 var stats = AbbrevStats[intAbbrevIndex];

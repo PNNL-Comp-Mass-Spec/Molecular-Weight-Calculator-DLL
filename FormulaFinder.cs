@@ -73,8 +73,11 @@ namespace MwtWinDll
         /// </summary>
         /// <remarks>The target percent composition values are only used when FindMatchesByPercentComposition is called</remarks>
         private Dictionary<string, udtCandidateElementTolerances> mCandidateElements;
+
         private readonly ElementAndMassTools mElementAndMassRoutines;
+
         private int mMaximumHits;
+
         private int mRecursiveCount;
         private int mMaxRecursiveCount;
 
@@ -105,6 +108,7 @@ namespace MwtWinDll
                 if (value != null)
                 {
                     mCandidateElements = value;
+
                     ValidateBoundedSearchValues();
                     ValidatePercentCompositionValues();
                 }
@@ -171,7 +175,9 @@ namespace MwtWinDll
         {
             mElementAndMassRoutines = oElementAndMassTools;
             mCandidateElements = new Dictionary<string, udtCandidateElementTolerances>();
+
             EchoMessagesToConsole = true;
+
             Reset();
         }
 
@@ -194,6 +200,7 @@ namespace MwtWinDll
         public void AddCandidateElement(string elementSymbolAbbrevOrMass)
         {
             var udtElementTolerances = GetDefaultCandidateElementTolerance();
+
             AddCandidateElement(elementSymbolAbbrevOrMass, udtElementTolerances);
         }
 
@@ -268,10 +275,10 @@ namespace MwtWinDll
             double massToleranceDa = massTolerancePPM * targetMass / 1000000.0d;
             if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
+
             var lstResults = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, true);
-            var sortedResults = (from item in lstResults
-                                 orderby item.SortKey
-                                 select item).ToList();
+
+            var sortedResults = (from item in lstResults orderby item.SortKey select item).ToList();
             return sortedResults;
         }
 
@@ -302,21 +309,24 @@ namespace MwtWinDll
         {
             if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
+
             var lstResults = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, false);
-            var sortedResults = (from item in lstResults
-                                 orderby item.SortKey
-                                 select item).ToList();
+
+            var sortedResults = (from item in lstResults orderby item.SortKey select item).ToList();
             return sortedResults;
         }
 
-        public List<FormulaFinderResult> FindMatchesByPercentComposition(double maximumFormulaMass, double percentTolerance, FormulaFinderOptions searchOptions)
+        public List<FormulaFinderResult> FindMatchesByPercentComposition(
+            double maximumFormulaMass,
+            double percentTolerance,
+            FormulaFinderOptions searchOptions)
         {
             if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
+
             var lstResults = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, searchOptions);
-            var sortedResults = (from item in lstResults
-                                 orderby item.SortKey
-                                 select item).ToList();
+
+            var sortedResults = (from item in lstResults orderby item.SortKey select item).ToList();
             return sortedResults;
         }
 
@@ -331,7 +341,9 @@ namespace MwtWinDll
             mCandidateElements.Add("H", GetDefaultCandidateElementTolerance(10d));
             mCandidateElements.Add("N", GetDefaultCandidateElementTolerance(10d));
             mCandidateElements.Add("O", GetDefaultCandidateElementTolerance(10d));
+
             mAbortProcessing = false;
+
             MaximumHits = DEFAULT_RESULTS_TO_FIND;
         }
 
@@ -342,6 +354,7 @@ namespace MwtWinDll
             if (elementCount != 0)
             {
                 sbEmpiricalFormula.Append(elementSymbol);
+
                 if (elementCount > 1)
                 {
                     sbEmpiricalFormula.Append(elementCount);
@@ -349,14 +362,18 @@ namespace MwtWinDll
             }
         }
 
-        private void AppendPercentCompositionResult(FormulaFinderResult searchResult, int elementCount, IList<FormulaFinderCandidateElement> sortedElementStats, int targetIndex, double percentComposition)
+        private void AppendPercentCompositionResult(
+            FormulaFinderResult searchResult,
+            int elementCount,
+            IList<FormulaFinderCandidateElement> sortedElementStats,
+            int targetIndex,
+            double percentComposition)
         {
             if (elementCount != 0 && targetIndex < sortedElementStats.Count)
             {
                 searchResult.PercentComposition.Add(sortedElementStats[targetIndex].Symbol, percentComposition);
             }
         }
-
 
         /// <summary>
         ///
@@ -369,41 +386,52 @@ namespace MwtWinDll
         /// <param name="calculationMode"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        private List<FormulaFinderResult> BoundedSearch(double targetMass, double massToleranceDa, double maximumFormulaMass, FormulaFinderOptions searchOptions, bool ppmMode, eCalculationMode calculationMode, IList<FormulaFinderCandidateElement> sortedElementStats)
+        private List<FormulaFinderResult> BoundedSearch(
+            double targetMass,
+            double massToleranceDa,
+            double maximumFormulaMass,
+            FormulaFinderOptions searchOptions,
+            bool ppmMode,
+            eCalculationMode calculationMode,
+            IList<FormulaFinderCandidateElement> sortedElementStats)
         {
             List<FormulaFinderResult> lstResults;
+
             if (searchOptions.FindTargetMZ)
             {
                 // Searching for target m/z rather than target mass
 
                 int mzSearchChargeMin;
                 int mzSearchChargeMax;
+
                 MultipleSearchMath(sortedElementStats.Count, searchOptions, out mzSearchChargeMin, out mzSearchChargeMax);
+
                 lstResults = OldFormulaFinder(searchOptions, ppmMode, calculationMode, sortedElementStats, targetMass, massToleranceDa, maximumFormulaMass);
             }
             else
             {
                 searchOptions.ChargeMin = 1;
                 searchOptions.ChargeMax = 1;
+
                 lstResults = OldFormulaFinder(searchOptions, ppmMode, calculationMode, sortedElementStats, targetMass, massToleranceDa, maximumFormulaMass);
             }
 
             ComputeSortKeys(lstResults);
+
             return lstResults;
         }
 
         private void ComputeSortKeys(IEnumerable<FormulaFinderResult> lstResults)
         {
-
             // Compute the sort key for each result
             var sbCodeString = new StringBuilder();
+
             foreach (var item in lstResults)
                 item.SortKey = ComputeSortKey(sbCodeString, item.EmpiricalFormula);
         }
 
         private string ComputeSortKey(StringBuilder sbCodeString, string empiricalFormula)
         {
-
             // Precedence order for sbCodeString
             // C1_ C2_ C3_ C4_ C5_ C6_ C7_ C8_ C9_  a   z    1,  2,  3...
             // 1   2   3   4   5   6   7   8   9   10  35   36  37  38
@@ -419,13 +447,17 @@ namespace MwtWinDll
             int charIndex = 0;
             int formulaLength = empiricalFormula.Length;
             int parsedValue;
+
             sbCodeString.Clear();
+
             while (charIndex < formulaLength)
             {
                 char strCurrentLetter = char.ToUpper(empiricalFormula[charIndex]);
+
                 if (char.IsLetter(strCurrentLetter))
                 {
                     sbCodeString.Append('\0');
+
                     if (charIndex + 2 < formulaLength && empiricalFormula.Substring(charIndex + 2, 1) == "_")
                     {
                         // At a custom element, which are notated as "C1_", "C2_", etc.
@@ -433,6 +465,7 @@ namespace MwtWinDll
                         // Also, need to bump up charIndex by 2
 
                         string customElementNum = empiricalFormula.Substring(charIndex + 1, 1);
+
                         if (int.TryParse(customElementNum, out parsedValue))
                         {
                             sbCodeString.Append((char)parsedValue);
@@ -500,7 +533,12 @@ namespace MwtWinDll
         /// <param name="massToleranceDa"></param>
         /// <param name="intMultipleMtoZCharge"></param>
         /// <remarks>True if the m/z is within tolerance of the target</remarks>
-        private bool CheckMtoZWithTarget(double totalMass, double totalCharge, double targetMass, double massToleranceDa, int intMultipleMtoZCharge)
+        private bool CheckMtoZWithTarget(
+            double totalMass,
+            double totalCharge,
+            double targetMass,
+            double massToleranceDa,
+            int intMultipleMtoZCharge)
         {
             double dblMtoZ;
             double dblOriginalMtoZ;
@@ -570,16 +608,27 @@ namespace MwtWinDll
         /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 1; otherwise, the current charge being searched for</param>
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
         /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
-        private bool ConstructAndVerifyCompound(FormulaFinderOptions searchOptions, StringBuilder sbEmpiricalFormula, int count1, int count2, int count3, int count4, int count5, int count6, int count7, int count8, int count9, int count10, IList<FormulaFinderCandidateElement> sortedElementStats, double totalMass, double targetMass, double massToleranceDa, double totalCharge, int intMultipleMtoZCharge, out Dictionary<string, int> empiricalResultSymbols, out double correctedCharge)
+        private bool ConstructAndVerifyCompound(
+            FormulaFinderOptions searchOptions,
+            StringBuilder sbEmpiricalFormula,
+            int count1, int count2, int count3, int count4, int count5, int count6, int count7, int count8, int count9, int count10,
+            IList<FormulaFinderCandidateElement> sortedElementStats,
+            double totalMass,
+            double targetMass,
+            double massToleranceDa,
+            double totalCharge,
+            int intMultipleMtoZCharge,
+            out Dictionary<string, int> empiricalResultSymbols,
+            out double correctedCharge)
         {
-
             // This dictionary tracks the elements and abbreviations of the found formula so that they can be properly ordered according to empirical formula conventions
             // Key is the element or abbreviation symbol, value is the number of each element or abbreviation
             empiricalResultSymbols = new Dictionary<string, int>();
+
             sbEmpiricalFormula.Clear();
+
             try
             {
-
                 // Convert to empirical formula and sort
                 ConstructAndVerifyAddIfValid(sortedElementStats, empiricalResultSymbols, 0, count1);
                 ConstructAndVerifyAddIfValid(sortedElementStats, empiricalResultSymbols, 1, count2);
@@ -591,7 +640,13 @@ namespace MwtWinDll
                 ConstructAndVerifyAddIfValid(sortedElementStats, empiricalResultSymbols, 7, count8);
                 ConstructAndVerifyAddIfValid(sortedElementStats, empiricalResultSymbols, 8, count9);
                 ConstructAndVerifyAddIfValid(sortedElementStats, empiricalResultSymbols, 9, count10);
-                bool valid = ConstructAndVerifyCompoundWork(searchOptions, sbEmpiricalFormula, totalMass, targetMass, massToleranceDa, totalCharge, intMultipleMtoZCharge, empiricalResultSymbols, out correctedCharge);
+
+                var valid = ConstructAndVerifyCompoundWork(searchOptions,
+                                                           sbEmpiricalFormula,
+                                                           totalMass, targetMass, massToleranceDa,
+                                                           totalCharge, intMultipleMtoZCharge,
+                                                           empiricalResultSymbols, out correctedCharge);
+
                 return valid;
             }
             catch (Exception ex)
@@ -602,7 +657,11 @@ namespace MwtWinDll
             }
         }
 
-        private void ConstructAndVerifyAddIfValid(IList<FormulaFinderCandidateElement> sortedElementStats, IDictionary<string, int> empiricalResultSymbols, int targetElementIndex, int currentCount)
+        private void ConstructAndVerifyAddIfValid(
+            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IDictionary<string, int> empiricalResultSymbols,
+            int targetElementIndex,
+            int currentCount)
         {
             if (currentCount != 0 && targetElementIndex < sortedElementStats.Count)
             {
@@ -623,16 +682,33 @@ namespace MwtWinDll
         /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
         /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
-        private bool ConstructAndVerifyCompoundRecursive(FormulaFinderOptions searchOptions, StringBuilder sbEmpiricalFormula, IList<FormulaFinderCandidateElement> sortedElementStats, IEnumerable<int> lstPotentialElementPointers, double totalMass, double targetMass, double massToleranceDa, double totalCharge, int intMultipleMtoZCharge, out Dictionary<string, int> empiricalResultSymbols, out double correctedCharge)
+        private bool ConstructAndVerifyCompoundRecursive(
+            FormulaFinderOptions searchOptions,
+            StringBuilder sbEmpiricalFormula,
+            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IEnumerable<int> lstPotentialElementPointers,
+            double totalMass,
+            double targetMass,
+            double massToleranceDa,
+            double totalCharge,
+            int intMultipleMtoZCharge,
+            out Dictionary<string, int> empiricalResultSymbols,
+            out double correctedCharge)
         {
             sbEmpiricalFormula.Clear();
+
             try
             {
                 // The empiricalResultSymbols dictionary tracks the elements and abbreviations of the found formula
                 // so that they can be properly ordered according to empirical formula conventions
                 // Keys are the element or abbreviation symbol, value is the number of each element or abbreviation
                 empiricalResultSymbols = ConvertElementPointersToElementStats(sortedElementStats, lstPotentialElementPointers);
-                bool valid = ConstructAndVerifyCompoundWork(searchOptions, sbEmpiricalFormula, totalMass, targetMass, massToleranceDa, totalCharge, intMultipleMtoZCharge, empiricalResultSymbols, out correctedCharge);
+
+                var valid = ConstructAndVerifyCompoundWork(searchOptions,
+                                                           sbEmpiricalFormula,
+                                                           totalMass, targetMass, massToleranceDa,
+                                                           totalCharge, intMultipleMtoZCharge,
+                                                           empiricalResultSymbols, out correctedCharge);
 
                 // Uncomment to debug
                 // Dim computedMass = mElementAndMassRoutines.ComputeFormulaWeight(sbEmpiricalFormula.ToString())
@@ -651,17 +727,29 @@ namespace MwtWinDll
             }
         }
 
-        private int[] GetElementCountArray(int potentialElementCount, IEnumerable<int> lstNewPotentialElementPointers)
+        private int[] GetElementCountArray(
+            int potentialElementCount,
+            IEnumerable<int> lstNewPotentialElementPointers)
         {
-
             // Store the occurrence count of each element
             var elementCountArray = new int[potentialElementCount];
+
             foreach (var elementIndex in lstNewPotentialElementPointers)
                 elementCountArray[elementIndex] += 1;
+
             return elementCountArray;
         }
 
-        private bool ConstructAndVerifyCompoundWork(FormulaFinderOptions searchOptions, StringBuilder sbEmpiricalFormula, double totalMass, double targetMass, double massToleranceDa, double totalCharge, int intMultipleMtoZCharge, Dictionary<string, int> empiricalResultSymbols, out double correctedCharge)
+        private bool ConstructAndVerifyCompoundWork(
+            FormulaFinderOptions searchOptions,
+            StringBuilder sbEmpiricalFormula,
+            double totalMass,
+            double targetMass,
+            double massToleranceDa,
+            double totalCharge,
+            int intMultipleMtoZCharge,
+            Dictionary<string, int> empiricalResultSymbols,
+            out double correctedCharge)
         {
             correctedCharge = totalCharge;
 
@@ -685,10 +773,8 @@ namespace MwtWinDll
                     sbEmpiricalFormula.Append(matchCount);
             }
 
-            var query = from item in empiricalResultSymbols
-                        where item.Key != "C" && item.Key != "H"
-                        orderby item.Key
-                        select item;
+            var query = from item in empiricalResultSymbols where item.Key != "C" && item.Key != "H" orderby item.Key select item;
+
             foreach (var result in query)
             {
                 sbEmpiricalFormula.Append(result.Key);
@@ -753,7 +839,9 @@ namespace MwtWinDll
             int maxH = 0;
 
             // Compute maximum number of hydrogens
-            if (udtElementNum.Si == 0 && udtElementNum.C == 0 && udtElementNum.N == 0 && udtElementNum.P == 0 && udtElementNum.Other == 0 && (udtElementNum.O > 0 || udtElementNum.S > 0))
+            if (udtElementNum.Si == 0 && udtElementNum.C == 0 && udtElementNum.N == 0 &&
+                udtElementNum.P == 0 && udtElementNum.Other == 0 &&
+                (udtElementNum.O > 0 || udtElementNum.S > 0))
             {
                 // Only O and S
                 maxH = 3;
@@ -824,19 +912,23 @@ namespace MwtWinDll
             // If charge is within range and checking for multiples, see if correct m/z too
             if (chargeOK && searchOptions.FindTargetMZ)
             {
-                chargeOK = CheckMtoZWithTarget(totalMass, correctedCharge, targetMass, massToleranceDa, intMultipleMtoZCharge);
+                chargeOK = CheckMtoZWithTarget(totalMass, correctedCharge, targetMass,
+                                               massToleranceDa, intMultipleMtoZCharge);
             }
 
             return chargeOK;
         }
 
-        private Dictionary<string, int> ConvertElementPointersToElementStats(IList<FormulaFinderCandidateElement> sortedElementStats, IEnumerable<int> lstPotentialElementPointers)
+        private Dictionary<string, int> ConvertElementPointersToElementStats(
+            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IEnumerable<int> lstPotentialElementPointers)
         {
-
             // This dictionary tracks the elements and abbreviations of the found formula so that they can be properly ordered according to empirical formula conventions
             // Key is the element or abbreviation symbol, value is the number of each element or abbreviation
             var empiricalResultSymbols = new Dictionary<string, int>();
+
             var elementCountArray = GetElementCountArray(sortedElementStats.Count, lstPotentialElementPointers);
+
             for (int intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
             {
                 if (elementCountArray[intIndex] != 0)
@@ -857,9 +949,14 @@ namespace MwtWinDll
         /// <param name="chargeOK"></param>
         /// <returns>Corrected charge</returns>
         /// <remarks></remarks>
-        private double CorrectChargeEmpirical(FormulaFinderOptions searchOptions, double totalCharge, udtElementNumType udtElementNum, out bool chargeOK)
+        private double CorrectChargeEmpirical(
+            FormulaFinderOptions searchOptions,
+            double totalCharge,
+            udtElementNumType udtElementNum,
+            out bool chargeOK)
         {
             double correctedCharge = totalCharge;
+
             if (udtElementNum.C + udtElementNum.Si >= 1)
             {
                 if (udtElementNum.H > 0 && Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, MolecularWeightTool.esElementStatsConstants.esCharge) - 1d) < float.Epsilon)
@@ -883,12 +980,14 @@ namespace MwtWinDll
                 // Determine # of H taken up by all the carbons in a compound without N or P, then add back 1 H for each N and P
                 int intNumHalogens = udtElementNum.H + udtElementNum.F + udtElementNum.Cl + udtElementNum.Br + udtElementNum.I;
                 intNumHalogens = intNumHalogens - (udtElementNum.C * 2 + 2) + udtElementNum.N + udtElementNum.P;
+
                 if (intNumHalogens >= 0)
                 {
                     for (int intIndex = 1; intIndex <= udtElementNum.N + udtElementNum.P; intIndex++)
                     {
                         correctedCharge += 2d;
                         intNumHalogens -= 1;
+
                         if (intNumHalogens <= 0)
                         {
                             break;
@@ -907,7 +1006,8 @@ namespace MwtWinDll
             if (searchOptions.LimitChargeRange)
             {
                 // Make sure correctedCharge is within the specified range
-                if (correctedCharge >= searchOptions.ChargeMin && correctedCharge <= searchOptions.ChargeMax)
+                if (correctedCharge >= searchOptions.ChargeMin &&
+                    correctedCharge <= searchOptions.ChargeMax)
                 {
                     // Charge is within range
                     chargeOK = true;
@@ -933,9 +1033,12 @@ namespace MwtWinDll
         /// <returns>True if all of the elements are present in the given counts (extra elements may also be present),
         /// false one or more is not found or has the wrong occurrence count</returns>
         /// <remarks></remarks>
-        private bool EmpiricalFormulaHasElementCounts(IDictionary<string, int> empiricalResultSymbols, Dictionary<string, int> targetCountStats)
+        private bool EmpiricalFormulaHasElementCounts(
+            IDictionary<string, int> empiricalResultSymbols,
+            Dictionary<string, int> targetCountStats)
         {
             int empiricalElementCount;
+
             foreach (var targetElement in targetCountStats)
             {
                 if (!empiricalResultSymbols.TryGetValue(targetElement.Key, out empiricalElementCount))
@@ -954,9 +1057,9 @@ namespace MwtWinDll
 
         private void EstimateNumberOfOperations(int potentialElementCount, int multipleSearchMax = 0)
         {
-
             // Estimate the number of operations that will be performed
             mRecursiveCount = 0;
+
             if (potentialElementCount == 1)
             {
                 mMaxRecursiveCount = 1;
@@ -1011,9 +1114,12 @@ namespace MwtWinDll
             }
         }
 
-        private List<FormulaFinderResult> FindMatchesByMass(double targetMass, double massToleranceDa, FormulaFinderOptions searchOptions, bool ppmMode)
+        private List<FormulaFinderResult> FindMatchesByMass(
+            double targetMass,
+            double massToleranceDa,
+            FormulaFinderOptions searchOptions,
+            bool ppmMode)
         {
-
             // Validate the Inputs
             if (!ValidateSettings(eCalculationMode.MatchMolecularWeight))
             {
@@ -1033,14 +1139,14 @@ namespace MwtWinDll
             }
 
             var candidateElementsStats = GetCandidateElements();
+
             if (candidateElementsStats.Count == 0)
             {
                 return new List<FormulaFinderResult>();
             }
 
-            var sortedElementStats = (from item in candidateElementsStats
-                                      orderby item.Mass descending
-                                      select item).ToList();
+            var sortedElementStats = (from item in candidateElementsStats orderby item.Mass descending select item).ToList();
+
             if (searchOptions.SearchMode == FormulaFinderOptions.eSearchMode.Thorough)
             {
                 // Thorough search
@@ -1049,14 +1155,18 @@ namespace MwtWinDll
 
                 // Pointers to the potential elements
                 var lstPotentialElementPointers = new List<int>();
+
                 var lstResults = new List<FormulaFinderResult>();
+
                 if (searchOptions.FindTargetMZ)
                 {
                     // Searching for target m/z rather than target mass
 
                     int mzSearchChargeMin;
                     int mzSearchChargeMax;
+
                     MultipleSearchMath(sortedElementStats.Count, searchOptions, out mzSearchChargeMin, out mzSearchChargeMax);
+
                     for (int currentMzCharge = mzSearchChargeMin; currentMzCharge <= mzSearchChargeMax; currentMzCharge++)
                         // Call the RecursiveMWFinder repeatedly, sending dblTargetWeight * x each time to search for target, target*2, target*3, etc.
                         RecursiveMWFinder(lstResults, searchOptions, ppmMode, sortedElementStats, 0, lstPotentialElementPointers, 0d, targetMass * currentMzCharge, massToleranceDa, 0d, currentMzCharge);
@@ -1068,21 +1178,29 @@ namespace MwtWinDll
                 }
 
                 ComputeSortKeys(lstResults);
+
                 return lstResults;
             }
             else
             {
                 // Bounded search
                 const int maximumFormulaMass = 0;
-                var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass, searchOptions, ppmMode, eCalculationMode.MatchMolecularWeight, sortedElementStats);
+
+                var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
+                                                         searchOptions, ppmMode, eCalculationMode.MatchMolecularWeight,
+                                                         sortedElementStats);
+
                 ComputeSortKeys(boundedSearchResults);
+
                 return boundedSearchResults;
             }
         }
 
-        private List<FormulaFinderResult> FindMatchesByPercentCompositionWork(double maximumFormulaMass, double percentTolerance, FormulaFinderOptions searchOptions)
+        private List<FormulaFinderResult> FindMatchesByPercentCompositionWork(
+            double maximumFormulaMass,
+            double percentTolerance,
+            FormulaFinderOptions searchOptions)
         {
-
             // Validate the Inputs
             if (!ValidateSettings(eCalculationMode.MatchPercentComposition))
             {
@@ -1102,14 +1220,14 @@ namespace MwtWinDll
             }
 
             var candidateElementsStats = GetCandidateElements(percentTolerance);
+
             if (candidateElementsStats.Count == 0)
             {
                 return new List<FormulaFinderResult>();
             }
 
-            var sortedElementStats = (from item in candidateElementsStats
-                                      orderby item.Mass descending
-                                      select item).ToList();
+            var sortedElementStats = (from item in candidateElementsStats orderby item.Mass descending select item).ToList();
+
             if (searchOptions.SearchMode == FormulaFinderOptions.eSearchMode.Thorough)
             {
                 // Thorough search
@@ -1118,9 +1236,13 @@ namespace MwtWinDll
 
                 // Pointers to the potential elements
                 var lstPotentialElementPointers = new List<int>();
+
                 var lstResults = new List<FormulaFinderResult>();
+
                 RecursivePCompFinder(lstResults, searchOptions, sortedElementStats, 0, lstPotentialElementPointers, 0d, maximumFormulaMass, 9d);
+
                 ComputeSortKeys(lstResults);
+
                 return lstResults;
             }
             else
@@ -1130,8 +1252,13 @@ namespace MwtWinDll
                 const int targetMass = 0;
                 const int massToleranceDa = 0;
                 const bool ppmMode = false;
-                var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass, searchOptions, ppmMode, eCalculationMode.MatchPercentComposition, sortedElementStats);
+
+                var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
+                                                         searchOptions, ppmMode, eCalculationMode.MatchPercentComposition,
+                                                         sortedElementStats);
+
                 ComputeSortKeys(boundedSearchResults);
+
                 return boundedSearchResults;
             }
         }
@@ -1139,9 +1266,11 @@ namespace MwtWinDll
         private List<FormulaFinderCandidateElement> GetCandidateElements(double percentTolerance = 0d)
         {
             var candidateElementsStats = new List<FormulaFinderCandidateElement>();
+
             int customElementCounter = 0;
             double dblMass;
             float sngCharge;
+
             foreach (var item in mCandidateElements)
             {
                 var candidateElement = new FormulaFinderCandidateElement(item.Key)
@@ -1149,12 +1278,15 @@ namespace MwtWinDll
                     CountMinimum = item.Value.MinimumCount,
                     CountMaximum = item.Value.MaximumCount
                 };
+
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
                     short elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
+
                     double argdblUncertainty = 0d;
                     short argintIsotopeCount = 0;
                     mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out argdblUncertainty, out sngCharge, out argintIsotopeCount);
+
                     candidateElement.Mass = dblMass;
                     candidateElement.Charge = sngCharge;
                 }
@@ -1163,11 +1295,13 @@ namespace MwtWinDll
                     // Working with an abbreviation or simply a mass
 
                     double customMass;
+
                     if (double.TryParse(item.Key, out customMass))
                     {
                         // Custom element, only weight given so charge is 0
                         candidateElement.Mass = customMass;
                         candidateElement.Charge = 0d;
+
                         customElementCounter += 1;
 
                         // Custom elements are named C1_ or C2_ or C3_ etc.
@@ -1179,6 +1313,7 @@ namespace MwtWinDll
 
                         // Convert input to default format of first letter capitalized and rest lowercase
                         string abbrevSymbol = item.Key.Substring(0, 1).ToUpper() + item.Key.Substring(1).ToLower();
+
                         foreach (var currentChar in abbrevSymbol)
                         {
                             if (!(char.IsLetter(currentChar) || Conversions.ToString(currentChar) == "+" || Conversions.ToString(currentChar) == "_"))
@@ -1208,14 +1343,18 @@ namespace MwtWinDll
                         string abbrevFormula = string.Empty;
                         bool blnIsAminoAcid;
                         mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out matchedAbbrevSymbol, out abbrevFormula, out sngCharge, out blnIsAminoAcid);
+
                         dblMass = mElementAndMassRoutines.ComputeFormulaWeight(ref abbrevFormula);
+
                         candidateElement.Mass = dblMass;
+
                         candidateElement.Charge = sngCharge;
                     }
                 }
 
                 candidateElement.PercentCompMinimum = item.Value.TargetPercentComposition - percentTolerance;  // Lower bound of target percentage
                 candidateElement.PercentCompMaximum = item.Value.TargetPercentComposition + percentTolerance;  // Upper bound of target percentage
+
                 candidateElementsStats.Add(candidateElement);
             }
 
@@ -1223,24 +1362,34 @@ namespace MwtWinDll
         }
 
         [Obsolete("Deprecated")]
-        private int GetCandidateElements(double percentTolerance, int[,] intRange, double[,] dblPotentialElementStats, IList<string> strPotentialElements, double[,] dblTargetPercents)
+        private int GetCandidateElements(
+            double percentTolerance,
+            int[,] intRange,
+            double[,] dblPotentialElementStats,
+            IList<string> strPotentialElements,
+            double[,] dblTargetPercents)
         {
             int potentialElementCount = 0;
             int customElementCounter = 0;
             double dblMass;
             float sngCharge;
+
             foreach (var item in mCandidateElements)
             {
                 intRange[potentialElementCount, 0] = item.Value.MinimumCount;
                 intRange[potentialElementCount, 1] = item.Value.MaximumCount;
+
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
                     short elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
+
                     double argdblUncertainty = 0d;
                     short argintIsotopeCount = 0;
                     mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out argdblUncertainty, out sngCharge, out argintIsotopeCount);
+
                     dblPotentialElementStats[potentialElementCount, 0] = dblMass;
                     dblPotentialElementStats[potentialElementCount, 1] = sngCharge;
+
                     strPotentialElements[potentialElementCount] = item.Key;
                 }
                 else
@@ -1248,11 +1397,13 @@ namespace MwtWinDll
                     // Working with an abbreviation or simply a mass
 
                     double customMass;
+
                     if (double.TryParse(item.Key, out customMass))
                     {
                         // Custom element, only weight given so charge is 0
                         dblPotentialElementStats[potentialElementCount, 0] = customMass;
                         dblPotentialElementStats[potentialElementCount, 1] = 0d;
+
                         customElementCounter += 1;
 
                         // Custom elements are named C1_ or C2_ or C3_ etc.
@@ -1264,6 +1415,7 @@ namespace MwtWinDll
 
                         // Convert input to default format of first letter capitalized and rest lowercase
                         string abbrevSymbol = item.Key.Substring(0).ToUpper() + item.Key.Substring(1).ToLower();
+
                         foreach (var currentChar in abbrevSymbol)
                         {
                             if (!(char.IsLetter(currentChar) || Conversions.ToString(currentChar) == "+" || Conversions.ToString(currentChar) == "_"))
@@ -1295,10 +1447,12 @@ namespace MwtWinDll
                         string abbrevFormula = string.Empty;
                         bool blnIsAminoAcid;
                         mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out matchedAbbrevSymbol, out abbrevFormula, out sngCharge, out blnIsAminoAcid);
+
                         dblMass = mElementAndMassRoutines.ComputeFormulaWeight(ref abbrevFormula);
 
                         // Returns weight of element/abbreviation, but also charge
                         dblPotentialElementStats[potentialElementCount, 0] = dblMass;
+
                         dblPotentialElementStats[potentialElementCount, 1] = charge;
 
                         // No problems, store symbol
@@ -1308,6 +1462,7 @@ namespace MwtWinDll
 
                 dblTargetPercents[potentialElementCount, 0] = item.Value.TargetPercentComposition - percentTolerance;  // Lower bound of target percentage
                 dblTargetPercents[potentialElementCount, 1] = item.Value.TargetPercentComposition + percentTolerance;  // Upper bound of target percentage
+
                 potentialElementCount += 1;
             }
 
@@ -1327,6 +1482,7 @@ namespace MwtWinDll
                 MaximumCount = maximumCount,    // Only used with the Bounded search mode
                 TargetPercentComposition = 0d   // Only used when searching for percent compositions
             };
+
             return udtElementTolerances;
         }
 
@@ -1338,6 +1494,7 @@ namespace MwtWinDll
                 MaximumCount = 10,              // Only used with the Bounded search mode
                 TargetPercentComposition = targetPercentComposition   // Only used when searching for percent compositions
             };
+
             return udtElementTolerances;
         }
 
@@ -1351,11 +1508,19 @@ namespace MwtWinDll
         /// <param name="targetMass"></param>
         /// <param name="totalCharge"></param>
         /// <remarks></remarks>
-        private FormulaFinderResult GetSearchResult(FormulaFinderOptions searchOptions, bool ppmMode, StringBuilder sbEmpiricalFormula, double totalMass, double targetMass, double totalCharge, Dictionary<string, int> empiricalResultSymbols)
+        private FormulaFinderResult GetSearchResult(
+            FormulaFinderOptions searchOptions,
+            bool ppmMode,
+            StringBuilder sbEmpiricalFormula,
+            double totalMass,
+            double targetMass,
+            double totalCharge,
+            Dictionary<string, int> empiricalResultSymbols)
         {
             try
             {
                 var searchResult = new FormulaFinderResult(sbEmpiricalFormula.ToString(), empiricalResultSymbols);
+
                 if (searchOptions.FindCharge)
                 {
                     searchResult.ChargeState = (int)Math.Round(Math.Round(totalCharge));
@@ -1408,14 +1573,21 @@ namespace MwtWinDll
         /// <param name="potentialElementCount"></param>
         /// <param name="searchOptions"></param>
         /// <remarks>searchOptions is passed ByRef because it is a value type and .MzChargeMin and .MzChargeMax are updated</remarks>
-        private void MultipleSearchMath(int potentialElementCount, FormulaFinderOptions searchOptions, out int mzSearchChargeMin, out int mzSearchChargeMax)
+        private void MultipleSearchMath(
+            int potentialElementCount,
+            FormulaFinderOptions searchOptions,
+            out int mzSearchChargeMin,
+            out int mzSearchChargeMax)
         {
             mzSearchChargeMin = searchOptions.ChargeMin;
             mzSearchChargeMax = searchOptions.ChargeMax;
+
             mzSearchChargeMax = Math.Max(Math.Abs(mzSearchChargeMin), Math.Abs(mzSearchChargeMax));
             mzSearchChargeMin = 1;
+
             if (mzSearchChargeMax < mzSearchChargeMin)
                 mzSearchChargeMax = mzSearchChargeMin;
+
             EstimateNumberOfOperations(potentialElementCount, mzSearchChargeMax - mzSearchChargeMin + 1);
         }
 
@@ -1431,19 +1603,29 @@ namespace MwtWinDll
         /// <param name="maximumFormulaMass">Only used when calculationMode is MatchPercentComposition</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        private List<FormulaFinderResult> OldFormulaFinder(FormulaFinderOptions searchOptions, bool ppmMode, eCalculationMode calculationMode, IList<FormulaFinderCandidateElement> sortedElementStats, double targetMass, double massToleranceDa, double maximumFormulaMass)
+        private List<FormulaFinderResult> OldFormulaFinder(
+            FormulaFinderOptions searchOptions,
+            bool ppmMode,
+            eCalculationMode calculationMode,
+            IList<FormulaFinderCandidateElement> sortedElementStats,
+            double targetMass,
+            double massToleranceDa,
+            double maximumFormulaMass)
         {
-
             // The calculated percentages for the specific compound
             var Percent = new double[11];
+
             var lstResults = new List<FormulaFinderResult>();
             try
             {
 
                 // Only used when calculationMode is MatchMolecularWeight
                 double dblMultipleSearchMaxWeight = targetMass * searchOptions.ChargeMax;
+
                 var sbEmpiricalFormula = new StringBuilder();
+
                 var lstRanges = new List<udtBoundedSearchRangeType>();
+
                 for (int elementIndex = 0; elementIndex < sortedElementStats.Count; elementIndex++)
                 {
                     var udtBoundedSearchRange = new udtBoundedSearchRangeType()
@@ -1489,38 +1671,47 @@ namespace MwtWinDll
                                                     {
                                                         double totalMass = j * sortedElementStats[0].Mass;
                                                         double totalCharge = j * sortedElementStats[0].Charge;
+
                                                         if (potentialElementCount > 1)
                                                         {
                                                             totalMass += k * sortedElementStats[1].Mass;
                                                             totalCharge += k * sortedElementStats[1].Charge;
+
                                                             if (potentialElementCount > 2)
                                                             {
                                                                 totalMass += l * sortedElementStats[2].Mass;
                                                                 totalCharge += l * sortedElementStats[2].Charge;
+
                                                                 if (potentialElementCount > 3)
                                                                 {
                                                                     totalMass += m * sortedElementStats[3].Mass;
                                                                     totalCharge += m * sortedElementStats[3].Charge;
+
                                                                     if (potentialElementCount > 4)
                                                                     {
                                                                         totalMass += N * sortedElementStats[4].Mass;
                                                                         totalCharge += N * sortedElementStats[4].Charge;
+
                                                                         if (potentialElementCount > 5)
                                                                         {
                                                                             totalMass += O * sortedElementStats[5].Mass;
                                                                             totalCharge += O * sortedElementStats[5].Charge;
+
                                                                             if (potentialElementCount > 6)
                                                                             {
                                                                                 totalMass += P * sortedElementStats[6].Mass;
                                                                                 totalCharge += P * sortedElementStats[6].Charge;
+
                                                                                 if (potentialElementCount > 7)
                                                                                 {
                                                                                     totalMass += q * sortedElementStats[7].Mass;
                                                                                     totalCharge += q * sortedElementStats[7].Charge;
+
                                                                                     if (potentialElementCount > 8)
                                                                                     {
                                                                                         totalMass += r * sortedElementStats[8].Mass;
                                                                                         totalCharge += r * sortedElementStats[8].Charge;
+
                                                                                         if (potentialElementCount > 9)
                                                                                         {
                                                                                             totalMass += s * sortedElementStats[9].Mass;
@@ -1544,27 +1735,35 @@ namespace MwtWinDll
                                                                 if (potentialElementCount > 1)
                                                                 {
                                                                     Percent[1] = k * sortedElementStats[1].Mass / totalMass * 100d;
+
                                                                     if (potentialElementCount > 1)
                                                                     {
                                                                         Percent[2] = l * sortedElementStats[2].Mass / totalMass * 100d;
+
                                                                         if (potentialElementCount > 1)
                                                                         {
                                                                             Percent[3] = m * sortedElementStats[3].Mass / totalMass * 100d;
+
                                                                             if (potentialElementCount > 1)
                                                                             {
                                                                                 Percent[4] = N * sortedElementStats[4].Mass / totalMass * 100d;
+
                                                                                 if (potentialElementCount > 1)
                                                                                 {
                                                                                     Percent[5] = O * sortedElementStats[5].Mass / totalMass * 100d;
+
                                                                                     if (potentialElementCount > 1)
                                                                                     {
                                                                                         Percent[6] = P * sortedElementStats[6].Mass / totalMass * 100d;
+
                                                                                         if (potentialElementCount > 1)
                                                                                         {
                                                                                             Percent[7] = q * sortedElementStats[7].Mass / totalMass * 100d;
+
                                                                                             if (potentialElementCount > 1)
                                                                                             {
                                                                                                 Percent[8] = r * sortedElementStats[8].Mass / totalMass * 100d;
+
                                                                                                 if (potentialElementCount > 1)
                                                                                                 {
                                                                                                     Percent[9] = s * sortedElementStats[9].Mass / totalMass * 100d;
@@ -1595,7 +1794,15 @@ namespace MwtWinDll
                                                                     double correctedCharge;
 
                                                                     // Construct the empirical formula and verify hydrogens
-                                                                    bool blnHOK = ConstructAndVerifyCompound(searchOptions, sbEmpiricalFormula, j, k, l, m, N, O, P, q, r, s, sortedElementStats, totalMass, targetMass, massToleranceDa, totalCharge, 0, out empiricalResultSymbols, out correctedCharge);
+                                                                    var blnHOK = ConstructAndVerifyCompound(searchOptions,
+                                                                                                            sbEmpiricalFormula,
+                                                                                                            j, k, l, m, N, O, P, q, r, s,
+                                                                                                            sortedElementStats,
+                                                                                                            totalMass, targetMass, massToleranceDa,
+                                                                                                            totalCharge, 0,
+                                                                                                            out empiricalResultSymbols,
+                                                                                                            out correctedCharge);
+
                                                                     if (sbEmpiricalFormula.Length > 0 && blnHOK)
                                                                     {
                                                                         var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
@@ -1612,6 +1819,7 @@ namespace MwtWinDll
                                                                         AppendPercentCompositionResult(searchResult, q, sortedElementStats, 7, Percent[7]);
                                                                         AppendPercentCompositionResult(searchResult, r, sortedElementStats, 8, Percent[8]);
                                                                         AppendPercentCompositionResult(searchResult, s, sortedElementStats, 9, Percent[9]);
+
                                                                         lstResults.Add(searchResult);
                                                                     }
                                                                 }
@@ -1634,10 +1842,19 @@ namespace MwtWinDll
                                                                     double correctedCharge;
 
                                                                     // Construct the empirical formula and verify hydrogens
-                                                                    bool blnHOK = ConstructAndVerifyCompound(searchOptions, sbEmpiricalFormula, j, k, l, m, N, O, P, q, r, s, sortedElementStats, totalMass, targetMass * intCurrentCharge, massToleranceDa, totalCharge, intCurrentCharge, out empiricalResultSymbols, out correctedCharge);
+                                                                    var blnHOK = ConstructAndVerifyCompound(searchOptions,
+                                                                                                            sbEmpiricalFormula,
+                                                                                                            j, k, l, m, N, O, P, q, r, s,
+                                                                                                            sortedElementStats,
+                                                                                                            totalMass, targetMass * intCurrentCharge, massToleranceDa,
+                                                                                                            totalCharge, intCurrentCharge,
+                                                                                                            out empiricalResultSymbols,
+                                                                                                            out correctedCharge);
+
                                                                     if (sbEmpiricalFormula.Length > 0 && blnHOK)
                                                                     {
                                                                         var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, targetMass, correctedCharge, empiricalResultSymbols);
+
                                                                         lstResults.Add(searchResult);
                                                                     }
 
@@ -1745,9 +1962,13 @@ namespace MwtWinDll
         }
 
         [Obsolete("Deprecated")]
-        private void SortCandidateElements(eCalculationMode calculationMode, int potentialElementCount, double[,] dblPotentialElementStats, IList<string> strPotentialElements, double[,] dblTargetPercents)
+        private void SortCandidateElements(
+            eCalculationMode calculationMode,
+            int potentialElementCount,
+            double[,] dblPotentialElementStats,
+            IList<string> strPotentialElements,
+            double[,] dblTargetPercents)
         {
-
             // Reorder dblPotentialElementStats pointer array in order from heaviest to lightest element
             // Greatly speeds up the recursive routine
 
@@ -1772,12 +1993,14 @@ namespace MwtWinDll
                         dblSwapVal = dblPotentialElementStats[x, 1];
                         dblPotentialElementStats[x, 1] = dblPotentialElementStats[x + 1, 1];
                         dblPotentialElementStats[x + 1, 1] = dblSwapVal;
+
                         if (calculationMode == eCalculationMode.MatchPercentComposition)
                         {
                             // and the dblTargetPercents array
                             dblSwapVal = dblTargetPercents[x, 0];
                             dblTargetPercents[x, 0] = dblTargetPercents[x + 1, 0];
                             dblTargetPercents[x + 1, 0] = dblSwapVal;
+
                             dblSwapVal = dblTargetPercents[x, 1];
                             dblTargetPercents[x, 1] = dblTargetPercents[x + 1, 1];
                             dblTargetPercents[x + 1, 1] = dblSwapVal;
@@ -1801,22 +2024,37 @@ namespace MwtWinDll
         /// <param name="potentialChargeTotal"></param>
         /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
         /// <remarks></remarks>
-        private void RecursiveMWFinder(ICollection<FormulaFinderResult> lstResults, FormulaFinderOptions searchOptions, bool ppmMode, IList<FormulaFinderCandidateElement> sortedElementStats, int intStartIndex, IReadOnlyCollection<int> lstPotentialElementPointers, double dblPotentialMassTotal, double targetMass, double massToleranceDa, double potentialChargeTotal, int intMultipleMtoZCharge)
+        private void RecursiveMWFinder(
+            ICollection<FormulaFinderResult> lstResults,
+            FormulaFinderOptions searchOptions,
+            bool ppmMode,
+            IList<FormulaFinderCandidateElement> sortedElementStats,
+            int intStartIndex,
+            IReadOnlyCollection<int> lstPotentialElementPointers,
+            double dblPotentialMassTotal,
+            double targetMass,
+            double massToleranceDa,
+            double potentialChargeTotal,
+            int intMultipleMtoZCharge)
         {
             try
             {
                 var lstNewPotentialElementPointers = new List<int>(lstPotentialElementPointers.Count + 1);
+
                 if (mAbortProcessing || lstResults.Count >= mMaximumHits)
                 {
                     return;
                 }
 
                 var sbEmpiricalFormula = new StringBuilder();
+
                 for (int intCurrentIndex = intStartIndex; intCurrentIndex < sortedElementStats.Count; intCurrentIndex++)
                 {
                     double totalMass = dblPotentialMassTotal + sortedElementStats[intCurrentIndex].Mass;
                     double totalCharge = potentialChargeTotal + sortedElementStats[intCurrentIndex].Charge;
+
                     lstNewPotentialElementPointers.Clear();
+
                     if (totalMass <= targetMass + massToleranceDa)
                     {
                         // Below or within dblMassTolerance, add current element's pointer to pointer array
@@ -1832,7 +2070,13 @@ namespace MwtWinDll
                         if (lstPotentialElementPointers.Count >= 3)
                         {
                             var empiricalResultSymbols = ConvertElementPointersToElementStats(sortedElementStats, lstPotentialElementPointers);
-                            var debugCompound = new Dictionary<string, int>() { { "C", 7 }, { "H", 4 }, { "O", 7 } };
+                            var debugCompound = new Dictionary<string, int>()
+                            {
+                                { "C", 7 },
+                                { "H", 4 },
+                                { "O", 7 }
+                            };
+
                             if (EmpiricalFormulaHasElementCounts(empiricalResultSymbols, debugCompound))
                             {
                                 Console.WriteLine("Debug: Check this formula");
@@ -1852,10 +2096,18 @@ namespace MwtWinDll
                             double correctedCharge;
 
                             // Construct the empirical formula and verify hydrogens
-                            bool blnHOK = ConstructAndVerifyCompoundRecursive(searchOptions, sbEmpiricalFormula, sortedElementStats, lstNewPotentialElementPointers, totalMass, targetMass, massToleranceDa, totalCharge, intMultipleMtoZCharge, out empiricalResultSymbols, out correctedCharge);
+                            var blnHOK = ConstructAndVerifyCompoundRecursive(searchOptions,
+                                                                             sbEmpiricalFormula, sortedElementStats,
+                                                                             lstNewPotentialElementPointers,
+                                                                             totalMass, targetMass, massToleranceDa,
+                                                                             totalCharge, intMultipleMtoZCharge,
+                                                                             out empiricalResultSymbols,
+                                                                             out correctedCharge);
+
                             if (sbEmpiricalFormula.Length > 0 && blnHOK)
                             {
                                 var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, targetMass, correctedCharge, empiricalResultSymbols);
+
                                 lstResults.Add(searchResult);
                             }
                         }
@@ -1903,12 +2155,22 @@ namespace MwtWinDll
         /// <param name="maximumFormulaMass"></param>
         /// <param name="potentialChargeTotal"></param>
         /// <remarks></remarks>
-        private void RecursivePCompFinder(ICollection<FormulaFinderResult> lstResults, FormulaFinderOptions searchOptions, IList<FormulaFinderCandidateElement> sortedElementStats, int intStartIndex, ICollection<int> lstPotentialElementPointers, double dblPotentialMassTotal, double maximumFormulaMass, double potentialChargeTotal)
+        private void RecursivePCompFinder(
+            ICollection<FormulaFinderResult> lstResults,
+            FormulaFinderOptions searchOptions,
+            IList<FormulaFinderCandidateElement> sortedElementStats,
+            int intStartIndex,
+            ICollection<int> lstPotentialElementPointers,
+            double dblPotentialMassTotal,
+            double maximumFormulaMass,
+            double potentialChargeTotal)
         {
             try
             {
                 var lstNewPotentialElementPointers = new List<int>(lstPotentialElementPointers.Count + 1);
+
                 var dblPotentialPercents = new double[sortedElementStats.Count + 1];
+
                 if (mAbortProcessing || lstResults.Count >= mMaximumHits)
                 {
                     return;
@@ -1916,11 +2178,14 @@ namespace MwtWinDll
 
                 var sbEmpiricalFormula = new StringBuilder();
                 const bool ppmMode = false;
+
                 for (int intCurrentIndex = intStartIndex; intCurrentIndex < sortedElementStats.Count; intCurrentIndex++)  // potentialElementCount >= 1, if 1, means just dblPotentialElementStats[0,0], etc.
                 {
                     double totalMass = dblPotentialMassTotal + sortedElementStats[intCurrentIndex].Mass;
                     double totalCharge = potentialChargeTotal + sortedElementStats[intCurrentIndex].Charge;
+
                     lstNewPotentialElementPointers.Clear();
+
                     if (totalMass <= maximumFormulaMass)
                     {
                         // only proceed if weight is less than max weight
@@ -1932,23 +2197,23 @@ namespace MwtWinDll
 
                         // Compute the number of each element
                         var elementCountArray = GetElementCountArray(sortedElementStats.Count, lstNewPotentialElementPointers);
-                        int nonZeroCount = (from item in elementCountArray
-                                            where item > 0
-                                            select item).Count();
+
+                        int nonZeroCount = (from item in elementCountArray where item > 0 select item).Count();
 
                         // Only proceed if all elements are present
                         if (nonZeroCount == sortedElementStats.Count)
                         {
-
                             // Compute % comp of each element
                             for (int intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
                                 dblPotentialPercents[intIndex] = elementCountArray[intIndex] * sortedElementStats[intIndex].Mass / totalMass * 100d;
+
                             // If intPointerCount = 0 Then dblPotentialPercents(0) = 100
 
                             int intPercentTrack = 0;
                             for (int intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
                             {
-                                if (dblPotentialPercents[intIndex] >= sortedElementStats[intIndex].PercentCompMinimum && dblPotentialPercents[intIndex] <= sortedElementStats[intIndex].PercentCompMaximum)
+                                if (dblPotentialPercents[intIndex] >= sortedElementStats[intIndex].PercentCompMinimum &&
+                                    dblPotentialPercents[intIndex] <= sortedElementStats[intIndex].PercentCompMaximum)
                                 {
                                     intPercentTrack += 1;
                                 }
@@ -1962,7 +2227,14 @@ namespace MwtWinDll
                                 double correctedCharge;
 
                                 // Construct the empirical formula and verify hydrogens
-                                bool blnHOK = ConstructAndVerifyCompoundRecursive(searchOptions, sbEmpiricalFormula, sortedElementStats, lstNewPotentialElementPointers, totalMass, 0d, 0d, totalCharge, 0, out empiricalResultSymbols, out correctedCharge);
+                                var blnHOK = ConstructAndVerifyCompoundRecursive(searchOptions,
+                                                                                 sbEmpiricalFormula, sortedElementStats,
+                                                                                 lstNewPotentialElementPointers,
+                                                                                 totalMass, 0d, 0d,
+                                                                                 totalCharge, 0,
+                                                                                 out empiricalResultSymbols,
+                                                                                 out correctedCharge);
+
                                 if (sbEmpiricalFormula.Length > 0 && blnHOK)
                                 {
                                     var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
@@ -1973,6 +2245,7 @@ namespace MwtWinDll
                                         if (elementCountArray[intIndex] != 0)
                                         {
                                             double percentComposition = elementCountArray[intIndex] * sortedElementStats[intIndex].Mass / totalMass * 100d;
+
                                             AppendPercentCompositionResult(searchResult, elementCountArray[intIndex], sortedElementStats, intIndex, percentComposition);
                                         }
                                     }
@@ -1984,6 +2257,7 @@ namespace MwtWinDll
 
                         // Update status
                         UpdateStatus();
+
                         if (mAbortProcessing || lstResults.Count >= mMaximumHits)
                         {
                             return;
@@ -2006,6 +2280,7 @@ namespace MwtWinDll
         {
             if (EchoMessagesToConsole)
                 Console.WriteLine(strErrorMessage);
+
             ErrorEvent?.Invoke(strErrorMessage);
         }
 
@@ -2013,6 +2288,7 @@ namespace MwtWinDll
         {
             if (EchoMessagesToConsole)
                 Console.WriteLine(strWarningMessage);
+
             WarningEvent?.Invoke(strWarningMessage);
         }
 
@@ -2026,6 +2302,7 @@ namespace MwtWinDll
         private void UpdateStatus()
         {
             mRecursiveCount += 1;
+
             if (mRecursiveCount <= mMaxRecursiveCount)
             {
                 mPercentComplete = mRecursiveCount / (float)mMaxRecursiveCount * 100f;
@@ -2037,12 +2314,14 @@ namespace MwtWinDll
             foreach (var elementSymbol in mCandidateElements.Keys)
             {
                 var udtElementTolerances = mCandidateElements[elementSymbol];
+
                 if (udtElementTolerances.MinimumCount < 0 || udtElementTolerances.MaximumCount > MAX_BOUNDED_SEARCH_COUNT)
                 {
                     if (udtElementTolerances.MinimumCount < 0)
                         udtElementTolerances.MinimumCount = 0;
                     if (udtElementTolerances.MaximumCount > MAX_BOUNDED_SEARCH_COUNT)
                         udtElementTolerances.MaximumCount = MAX_BOUNDED_SEARCH_COUNT;
+
                     mCandidateElements[elementSymbol] = udtElementTolerances;
                 }
             }
@@ -2053,12 +2332,14 @@ namespace MwtWinDll
             foreach (var elementSymbol in mCandidateElements.Keys)
             {
                 var udtElementTolerances = mCandidateElements[elementSymbol];
+
                 if (udtElementTolerances.TargetPercentComposition < 0d || udtElementTolerances.TargetPercentComposition > 100d)
                 {
                     if (udtElementTolerances.TargetPercentComposition < 0d)
                         udtElementTolerances.TargetPercentComposition = 0d;
                     if (udtElementTolerances.TargetPercentComposition > 100d)
                         udtElementTolerances.TargetPercentComposition = 100d;
+
                     mCandidateElements[elementSymbol] = udtElementTolerances;
                 }
             }
@@ -2073,9 +2354,11 @@ namespace MwtWinDll
             }
 
             ValidateBoundedSearchValues();
+
             if (calculationMode == eCalculationMode.MatchPercentComposition)
             {
                 double totalTargetPercentComp = GetTotalPercentComposition();
+
                 if (Math.Abs(totalTargetPercentComp - 100d) > float.Epsilon)
                 {
                     ReportError("Sum of the target percentages must be 100%; it is currently " + totalTargetPercentComp.ToString("0.0") + "%");

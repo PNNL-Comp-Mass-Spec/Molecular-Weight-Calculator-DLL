@@ -96,7 +96,6 @@ namespace MwtWinDllTest
             // txtData
             //
             txtData.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-
             txtData.Location = new Point(0, 0);
             txtData.Multiline = true;
             txtData.Name = "txtData";

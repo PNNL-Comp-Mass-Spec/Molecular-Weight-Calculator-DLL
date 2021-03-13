@@ -246,7 +246,6 @@ namespace MwtWinDll
 
         private class udtExtraColumnBroadeningParametersType
         {
-
             /// <summary>
             /// Units: cm/min
             /// </summary>
@@ -349,7 +348,9 @@ namespace MwtWinDll
         public double ComputeBackPressure(uprUnitsPressureConstants eUnits = uprUnitsPressureConstants.uprPsi)
         {
             double dblBackPressure, dblRadius;
+
             dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+
             if (Math.Abs(dblRadius) > float.Epsilon)
             {
                 if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
@@ -391,7 +392,9 @@ namespace MwtWinDll
         public double ComputeColumnLength(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnCM)
         {
             double dblColumnLength, dblRadius;
+
             dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+
             if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.VolumetricFlowRate) > float.Epsilon)
             {
                 if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
@@ -429,8 +432,11 @@ namespace MwtWinDll
             // Computes the column volume and returns it (does not store it)
 
             double dblColumnVolume, dblRadius;
+
             dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+
             dblColumnVolume = mCapillaryFlowParameters.ColumnLength * PI * Math.Pow(dblRadius, 2d); // In mL
+
             if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
             {
                 dblColumnVolume *= mCapillaryFlowParameters.InterparticlePorosity;
@@ -447,6 +453,7 @@ namespace MwtWinDll
         public double ComputeColumnID(ulnUnitsLengthConstants eUnits = ulnUnitsLengthConstants.ulnMicrons)
         {
             double dblRadius;
+
             if (Math.Abs(mCapillaryFlowParameters.BackPressure) > float.Epsilon)
             {
                 if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
@@ -510,6 +517,7 @@ namespace MwtWinDll
         public double ComputeExtraColumnBroadeningResultantPeakWidth(utmUnitsTimeConstants eUnits = utmUnitsTimeConstants.utmSeconds)
         {
             ComputeExtraColumnBroadeningValues();
+
             return GetExtraColumnBroadeningResultantPeakWidth(eUnits);
         }
 
@@ -517,6 +525,7 @@ namespace MwtWinDll
         {
             double dblInitialPeakVariance;
             double dblSumOfVariances;
+
             if (Math.Abs(mExtraColumnBroadeningParameters.LinearVelocity) > float.Epsilon && Math.Abs(mExtraColumnBroadeningParameters.DiffusionCoefficient) > float.Epsilon)
             {
                 mExtraColumnBroadeningParameters.TemporalVariance = Math.Pow(mExtraColumnBroadeningParameters.OpenTubeID, 2d) * mExtraColumnBroadeningParameters.OpenTubeLength / (96d * mExtraColumnBroadeningParameters.DiffusionCoefficient * mExtraColumnBroadeningParameters.LinearVelocity / 60d); // in sec^2
@@ -527,7 +536,9 @@ namespace MwtWinDll
             }
 
             dblInitialPeakVariance = Math.Pow(mExtraColumnBroadeningParameters.InitialPeakWidth / 4d, 2d);
+
             dblSumOfVariances = dblInitialPeakVariance + mExtraColumnBroadeningParameters.TemporalVariance + mExtraColumnBroadeningParameters.AdditionalTemporalVariance;
+
             if (dblSumOfVariances >= 0d)
             {
                 // ResultantPeakWidth at the base = 4 sigma  and  sigma = Sqr(Total_Variance)
@@ -548,6 +559,7 @@ namespace MwtWinDll
         public double ComputeLinearVelocity(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec, bool blnRecalculateVolFlowRate = true)
         {
             double dblLinearVelocity, dblRadius;
+
             if (blnRecalculateVolFlowRate)
             {
                 ComputeVolFlowRate(ufrUnitsFlowRateConstants.ufrMLPerMin);
@@ -613,9 +625,11 @@ namespace MwtWinDll
         public double ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(ulvUnitsLinearVelocityConstants eUnits = ulvUnitsLinearVelocityConstants.ulvCmPerSec)
         {
             var dblOptimumLinearVelocity = default(double);
+
             if (Math.Abs(mCapillaryFlowParameters.ParticleDiameter) > float.Epsilon)
             {
                 dblOptimumLinearVelocity = 3d * mExtraColumnBroadeningParameters.DiffusionCoefficient / mCapillaryFlowParameters.ParticleDiameter;
+
                 dblOptimumLinearVelocity = ConvertLinearVelocity(dblOptimumLinearVelocity, ulvUnitsLinearVelocityConstants.ulvCmPerSec, eUnits);
             }
 
@@ -632,9 +646,12 @@ namespace MwtWinDll
                 dblPhi = dblPercentAcetonitrile / 100.0d;
                 if (dblPhi < 0d)
                     dblPhi = 0d;
+
                 if (dblPhi > 100d)
                     dblPhi = 100d;
+
                 dblKelvin = ConvertTemperature(dblTemperature, eTemperatureUnits, utpUnitsTemperatureConstants.utpKelvin);
+
                 if (dblKelvin > 0d)
                 {
                     dblViscosityInCentiPoise = Math.Exp(dblPhi * (-3.476d + 726d / dblKelvin) + (1d - dblPhi) * (-5.414d + 1566d / dblKelvin) + dblPhi * (1d - dblPhi) * (-1.762d + 929d / dblKelvin));
@@ -660,7 +677,9 @@ namespace MwtWinDll
         public double ComputeVolFlowRate(ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin)
         {
             double dblVolFlowRate, dblRadius;
+
             dblRadius = mCapillaryFlowParameters.ColumnID / 2.0d;
+
             if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.ColumnLength) > float.Epsilon)
             {
                 if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctOpenTubularCapillary)
@@ -691,6 +710,7 @@ namespace MwtWinDll
 
             // Compute Dead Time (and Linear Velocity)
             ComputeDeadTime(utmUnitsTimeConstants.utmMinutes, false);
+
             return ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits);
         }
 
@@ -702,7 +722,10 @@ namespace MwtWinDll
         /// <param name="eUnits"></param>
         /// <param name="ePressureUnits"></param>
         /// <returns></returns>
-        public double ComputeVolFlowRateUsingDeadTime([Optional, DefaultParameterValue(0d)] out double dblNewBackPressure, ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin, uprUnitsPressureConstants ePressureUnits = uprUnitsPressureConstants.uprPsi)
+        public double ComputeVolFlowRateUsingDeadTime(
+            [Optional, DefaultParameterValue(0d)] out double dblNewBackPressure,
+            ufrUnitsFlowRateConstants eUnits = ufrUnitsFlowRateConstants.ufrNLPerMin,
+            uprUnitsPressureConstants ePressureUnits = uprUnitsPressureConstants.uprPsi)
         {
             dblNewBackPressure = 0;
             double dblVolFlowRate, dblRadius;
@@ -713,6 +736,7 @@ namespace MwtWinDll
             if (Math.Abs(mCapillaryFlowParameters.ColumnDeadTime) > float.Epsilon)
             {
                 dblVolFlowRate = mCapillaryFlowParameters.ColumnLength * (PI * Math.Pow(dblRadius, 2d)) / mCapillaryFlowParameters.ColumnDeadTime; // Vol flow rate in mL/sec
+
                 if (mCapillaryFlowParameters.CapillaryType == ctCapillaryTypeConstants.ctPackedCapillary)
                 {
                     // Packed Capillary
@@ -734,6 +758,7 @@ namespace MwtWinDll
 
             // Compute Linear Velocity (but not the dead time)
             ComputeLinearVelocity(ulvUnitsLinearVelocityConstants.ulvCmPerSec, false);
+
             return ConvertVolFlowRate(dblVolFlowRate, ufrUnitsFlowRateConstants.ufrMLPerMin, eUnits);
         }
 
@@ -749,12 +774,14 @@ namespace MwtWinDll
         {
             double dblValue, dblFactor;
             double dblSampleMass;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblConcentrationIn;
             }
 
             dblSampleMass = mMassRateParameters.SampleMass;
+
             dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon)
             {
@@ -779,6 +806,7 @@ namespace MwtWinDll
         public double ConvertDiffusionCoefficient(double dblDiffusionCoefficientIn, udcDiffusionCoefficientConstants eCurrentUnits, udcDiffusionCoefficientConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblDiffusionCoefficientIn;
@@ -808,6 +836,7 @@ namespace MwtWinDll
         public double ConvertLength(double dblLengthIn, ulnUnitsLengthConstants eCurrentUnits, ulnUnitsLengthConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblLengthIn;
@@ -837,6 +866,7 @@ namespace MwtWinDll
         public double ConvertLinearVelocity(double dblLinearVelocityIn, ulvUnitsLinearVelocityConstants eCurrentUnits, ulvUnitsLinearVelocityConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblLinearVelocityIn;
@@ -866,6 +896,7 @@ namespace MwtWinDll
         public double ConvertMassFlowRate(double dblMassFlowRateIn, umfMassFlowRateConstants eCurrentUnits, umfMassFlowRateConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblMassFlowRateIn;
@@ -895,6 +926,7 @@ namespace MwtWinDll
         public double ConvertMoles(double dblMolesIn, umaMolarAmountConstants eCurrentUnits, umaMolarAmountConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblMolesIn;
@@ -924,6 +956,7 @@ namespace MwtWinDll
         public double ConvertPressure(double dblPressureIn, uprUnitsPressureConstants eCurrentUnits, uprUnitsPressureConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblPressureIn;
@@ -970,9 +1003,9 @@ namespace MwtWinDll
                     dblValue = 5.0d / 9.0d * (dblTemperatureIn - 32d) + 273d;
                     break;
                 default:
-                    break;
                     // Includes utpKelvin
                     // Assume already Kelvin
+                    break;
             }
 
             // We cannot get colder than absolute 0
@@ -991,9 +1024,9 @@ namespace MwtWinDll
                     dblValue = 9.0d / 5.0d * (dblValue - 273d) + 32d;
                     break;
                 default:
-                    break;
                     // Includes utpKelvin
                     // Already in Kelvin
+                    break;
             }
 
             return dblValue;
@@ -1002,6 +1035,7 @@ namespace MwtWinDll
         public double ConvertTime(double dblTimeIn, utmUnitsTimeConstants eCurrentUnits, utmUnitsTimeConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblTimeIn;
@@ -1031,6 +1065,7 @@ namespace MwtWinDll
         public double ConvertViscosity(double dblViscosityIn, uviUnitsViscosityConstants eCurrentUnits, uviUnitsViscosityConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblViscosityIn;
@@ -1060,6 +1095,7 @@ namespace MwtWinDll
         public double ConvertVolFlowRate(double dblVolFlowRateIn, ufrUnitsFlowRateConstants eCurrentUnits, ufrUnitsFlowRateConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblVolFlowRateIn;
@@ -1089,6 +1125,7 @@ namespace MwtWinDll
         public double ConvertVolume(double dblVolume, uvoUnitsVolumeConstants eCurrentUnits, uvoUnitsVolumeConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblVolume;
@@ -1126,6 +1163,7 @@ namespace MwtWinDll
         private double FactorConcentration(ucoUnitsConcentrationConstants eUnits, double dblSampleMass = 0d)
         {
             double dblFactor;
+
             if (Math.Abs(dblSampleMass) < float.Epsilon)
             {
                 dblFactor = -1;
@@ -1710,6 +1748,7 @@ namespace MwtWinDll
         private void InitializeClass()
         {
             SetAutoComputeEnabled(false);
+
             SetAutoComputeMode(acmAutoComputeModeConstants.acmVolFlowRate);
             SetCapillaryType(ctCapillaryTypeConstants.ctPackedCapillary);
             SetBackPressure(3000d, uprUnitsPressureConstants.uprPsi);
@@ -1718,6 +1757,7 @@ namespace MwtWinDll
             SetSolventViscosity(0.0089d, uviUnitsViscosityConstants.uviPoise);
             SetParticleDiameter(5d, ulnUnitsLengthConstants.ulnMicrons);
             SetInterparticlePorosity(0.4d);
+
             SetMassRateConcentration(1d, ucoUnitsConcentrationConstants.ucoMicroMolar);
             SetMassRateVolFlowRate(600d, ufrUnitsFlowRateConstants.ufrNLPerMin);
             SetMassRateInjectionTime(5d, utmUnitsTimeConstants.utmMinutes);
@@ -1726,6 +1766,7 @@ namespace MwtWinDll
             ComputeVolFlowRate();
             ComputeMassRateValues();
             ComputeExtraColumnBroadeningValues();
+
             SetAutoComputeEnabled(true);
         }
     }

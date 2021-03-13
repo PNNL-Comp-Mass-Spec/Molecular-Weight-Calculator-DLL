@@ -33,7 +33,6 @@ namespace MwtWinDll
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-
         private const string PROGRAM_DATE = "January 17, 2020";
 
         /// <summary>
@@ -50,9 +49,11 @@ namespace MwtWinDll
             // We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
             if (!mDataInitialized)
                 LoadDefaults();
+
             Compound = new Compound(mElementAndMassRoutines);
             Peptide = new Peptide(mElementAndMassRoutines);
             FormulaFinder = new FormulaFinder(mElementAndMassRoutines);
+
             CapFlow = new CapillaryFlow();
         }
 
@@ -85,6 +86,7 @@ namespace MwtWinDll
 
         #region "Classwide Variables"
         private bool mDataInitialized;
+
         public Compound Compound;
         public Peptide Peptide;
         public FormulaFinder FormulaFinder;
@@ -342,12 +344,10 @@ namespace MwtWinDll
         /// <returns>Mass of the formula</returns>
         public double ComputeMass(string strFormula)
         {
-
             // Simply assigning strFormula to .Formula will update the Mass
             Compound.Formula = strFormula;
             return Compound.get_Mass(false);
         }
-
 
         /// <summary>
         /// Computes the Isotopic Distribution for a formula
@@ -363,11 +363,13 @@ namespace MwtWinDll
         /// Returns M+H values if intChargeState=1
         /// Returns convoluted m/z if intChargeState is > 1
         /// </remarks>
-        public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount)
+        public short ComputeIsotopicAbundances(
+            ref string strFormulaIn, short intChargeState, ref string strResults,
+            ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount)
         {
-            return ComputeIsotopicAbundances(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, "Isotopic Abundances for", "Mass", "Fraction", "Intensity");
+            return ComputeIsotopicAbundances(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount,
+                                             "Isotopic Abundances for", "Mass", "Fraction", "Intensity");
         }
-
 
         /// <summary>
         /// Computes the Isotopic Distribution for a formula
@@ -384,9 +386,12 @@ namespace MwtWinDll
         /// Returns M+H values if intChargeState=1
         /// Returns convoluted m/z if intChargeState is > 1
         /// </remarks>
-        public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, bool blnAddProtonChargeCarrier)
+        public short ComputeIsotopicAbundances(
+            ref string strFormulaIn, short intChargeState, ref string strResults,
+            ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, bool blnAddProtonChargeCarrier)
         {
-            return ComputeIsotopicAbundances(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, "Isotopic Abundances for", "Mass", "Fraction", "Intensity", blnAddProtonChargeCarrier);
+            return ComputeIsotopicAbundances(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount,
+                                             "Isotopic Abundances for", "Mass", "Fraction", "Intensity", blnAddProtonChargeCarrier);
         }
 
         /// <summary>
@@ -407,7 +412,13 @@ namespace MwtWinDll
         /// Returns M+H values if intChargeState=1
         /// Returns convoluted m/z if intChargeState is > 1
         /// </remarks>
-        public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, string strHeaderIsotopicAbundances, string strHeaderMassToCharge, string strHeaderFraction, string strHeaderIntensity)
+        public short ComputeIsotopicAbundances(
+            ref string strFormulaIn, short intChargeState, ref string strResults,
+            ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount,
+            string strHeaderIsotopicAbundances,
+            string strHeaderMassToCharge,
+            string strHeaderFraction,
+            string strHeaderIntensity)
         {
             bool blnAddProtonChargeCarrier = true;
             return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMassToCharge, strHeaderFraction, strHeaderIntensity, false, blnAddProtonChargeCarrier);
@@ -432,7 +443,14 @@ namespace MwtWinDll
         /// Returns M+H values if intChargeState=1
         /// Returns convoluted m/z if intChargeState is > 1
         /// </remarks>
-        public short ComputeIsotopicAbundances(ref string strFormulaIn, short intChargeState, ref string strResults, ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount, string strHeaderIsotopicAbundances, string strHeaderMassToCharge, string strHeaderFraction, string strHeaderIntensity, bool blnAddProtonChargeCarrier)
+        public short ComputeIsotopicAbundances(
+            ref string strFormulaIn, short intChargeState, ref string strResults,
+            ref double[,] ConvolutedMSData2DOneBased, ref int ConvolutedMSDataCount,
+            string strHeaderIsotopicAbundances,
+            string strHeaderMassToCharge,
+            string strHeaderFraction,
+            string strHeaderIntensity,
+            bool blnAddProtonChargeCarrier)
         {
             return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMassToCharge, strHeaderFraction, strHeaderIntensity, false, blnAddProtonChargeCarrier);
         }
@@ -549,7 +567,9 @@ namespace MwtWinDll
         /// <param name="sngCharge">Output: charge</param>
         /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
         /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol, ref string strFormula, ref float sngCharge, ref bool blnIsAminoAcid)
+        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol,
+            ref string strFormula, ref float sngCharge,
+            ref bool blnIsAminoAcid)
         {
             string argstrOneLetterSymbol = "";
             string argstrComment = "";
@@ -568,7 +588,11 @@ namespace MwtWinDll
         /// <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="strComment">Output: comment</param>
         /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol, ref string strFormula, ref float sngCharge, ref bool blnIsAminoAcid, ref string strOneLetterSymbol, ref string strComment)
+        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol,
+            ref string strFormula, ref float sngCharge,
+            ref bool blnIsAminoAcid,
+            ref string strOneLetterSymbol,
+            ref string strComment)
         {
             bool argblnInvalidSymbolOrFormula = false;
             return GetAbbreviation(intAbbreviationID, ref strSymbol, ref strFormula, ref sngCharge, ref blnIsAminoAcid, ref strOneLetterSymbol, ref strComment, ref argblnInvalidSymbolOrFormula);
@@ -586,9 +610,17 @@ namespace MwtWinDll
         /// <param name="strComment">Output: comment</param>
         /// <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
         /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol, ref string strFormula, ref float sngCharge, ref bool blnIsAminoAcid, ref string strOneLetterSymbol, ref string strComment, ref bool blnInvalidSymbolOrFormula)
+        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol,
+            ref string strFormula, ref float sngCharge,
+            ref bool blnIsAminoAcid,
+            ref string strOneLetterSymbol,
+            ref string strComment,
+            ref bool blnInvalidSymbolOrFormula)
         {
-            return mElementAndMassRoutines.GetAbbreviationInternal(intAbbreviationID, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out strOneLetterSymbol, out strComment, out blnInvalidSymbolOrFormula);
+            return mElementAndMassRoutines.GetAbbreviationInternal(
+                intAbbreviationID, out strSymbol, out strFormula,
+                out sngCharge, out blnIsAminoAcid, out strOneLetterSymbol,
+                out strComment, out blnInvalidSymbolOrFormula);
         }
 
         /// <summary>
@@ -785,6 +817,7 @@ namespace MwtWinDll
         private void LoadDefaults()
         {
             mElementAndMassRoutines.MemoryLoadAll(ElementAndMassTools.emElementModeConstants.emAverageMass);
+
             SetElementMode(ElementAndMassTools.emElementModeConstants.emAverageMass);
             AbbreviationRecognitionMode = arAbbrevRecognitionModeConstants.arNormalPlusAminoAcids;
             BracketsTreatedAsParentheses = true;
@@ -793,7 +826,9 @@ namespace MwtWinDll
             RtfFontName = "Arial";
             RtfFontSize = 10;
             StdDevMode = ElementAndMassTools.smStdDevModeConstants.smDecimal;
+
             mElementAndMassRoutines.gComputationOptions.DecimalSeparator = DetermineDecimalPoint();
+
             mDataInitialized = true;
         }
 
@@ -869,12 +904,16 @@ namespace MwtWinDll
             mElementAndMassRoutines.MemoryLoadMessageStatements();
         }
 
-        public int SetAbbreviation(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid)
+        public int SetAbbreviation(string strSymbol, string strFormula, float sngCharge,
+            bool blnIsAminoAcid)
         {
             return SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", true);
         }
 
-        public int SetAbbreviation(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment)
+        public int SetAbbreviation(string strSymbol, string strFormula, float sngCharge,
+            bool blnIsAminoAcid,
+            string strOneLetterSymbol,
+            string strComment)
         {
             return SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, true);
         }
@@ -895,12 +934,19 @@ namespace MwtWinDll
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
         /// defined, then the parsing of the first abbreviation will fail
         /// </remarks>
-        public int SetAbbreviation(string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment, bool blnValidateFormula)
+        public int SetAbbreviation(
+            string strSymbol, string strFormula, float sngCharge,
+            bool blnIsAminoAcid,
+            string strOneLetterSymbol,
+            string strComment,
+            bool blnValidateFormula)
         {
             return mElementAndMassRoutines.SetAbbreviationInternal(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnValidateFormula);
         }
 
-        public int SetAbbreviationByID(int intAbbrevID, string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid)
+        public int SetAbbreviationByID(
+            int intAbbrevID, string strSymbol, string strFormula,
+            float sngCharge, bool blnIsAminoAcid)
         {
             return SetAbbreviationByID(intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, "", "", true);
         }
@@ -922,7 +968,12 @@ namespace MwtWinDll
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
         /// defined, then the parsing of the first abbreviation will fail
         /// </remarks>
-        public int SetAbbreviationByID(int intAbbrevID, string strSymbol, string strFormula, float sngCharge, bool blnIsAminoAcid, string strOneLetterSymbol, string strComment, bool blnValidateFormula)
+        public int SetAbbreviationByID(
+            int intAbbrevID, string strSymbol, string strFormula,
+            float sngCharge, bool blnIsAminoAcid,
+            string strOneLetterSymbol,
+            string strComment,
+            bool blnValidateFormula)
         {
             return mElementAndMassRoutines.SetAbbreviationByIDInternal((short)intAbbrevID, strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment, blnValidateFormula);
         }
@@ -943,7 +994,8 @@ namespace MwtWinDll
             mElementAndMassRoutines.SetChargeCarrierMassInternal(dblMass);
         }
 
-        public int SetElement(string strSymbol, double dblMass, double dblUncertainty, float sngCharge)
+        public int SetElement(string strSymbol, double dblMass,
+            double dblUncertainty, float sngCharge)
         {
             return SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, true);
         }
@@ -957,7 +1009,9 @@ namespace MwtWinDll
         /// <param name="sngCharge"></param>
         /// <param name="blnRecomputeAbbreviationMasses">Set to False if updating several elements</param>
         /// <returns></returns>
-        public int SetElement(string strSymbol, double dblMass, double dblUncertainty, float sngCharge, bool blnRecomputeAbbreviationMasses)
+        public int SetElement(string strSymbol, double dblMass, double dblUncertainty,
+            float sngCharge,
+            bool blnRecomputeAbbreviationMasses)
         {
             return mElementAndMassRoutines.SetElementInternal(strSymbol, dblMass, dblUncertainty, sngCharge, blnRecomputeAbbreviationMasses);
         }
@@ -1003,7 +1057,8 @@ namespace MwtWinDll
             return TextToRTF(strTextToConvert, CalculatorMode, true, false, 0);
         }
 
-        public string TextToRTF(string strTextToConvert, bool CalculatorMode, bool blnHighlightCharFollowingPercentSign)
+        public string TextToRTF(string strTextToConvert, bool CalculatorMode,
+            bool blnHighlightCharFollowingPercentSign)
         {
             return TextToRTF(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, false, 0);
         }
@@ -1017,7 +1072,12 @@ namespace MwtWinDll
         /// <param name="blnOverrideErrorID"></param>
         /// <param name="errorIDOverride"></param>
         /// <returns></returns>
-        public string TextToRTF(string strTextToConvert, bool CalculatorMode, bool blnHighlightCharFollowingPercentSign, bool blnOverrideErrorID, int errorIDOverride)
+        public string TextToRTF(
+            string strTextToConvert,
+            bool CalculatorMode,
+            bool blnHighlightCharFollowingPercentSign,
+            bool blnOverrideErrorID,
+            int errorIDOverride)
         {
             return mElementAndMassRoutines.PlainTextToRtfInternal(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, blnOverrideErrorID, errorIDOverride);
         }

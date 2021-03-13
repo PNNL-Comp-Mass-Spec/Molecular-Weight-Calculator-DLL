@@ -51,21 +51,25 @@ namespace MwtWinDll
         private string mStrFormula;
         private string mStrFormattedFormula;
         private double mValueForX; // The value to assign to x when present after a square bracket.
-                                   // For example, in C6H6[xBr] if x = 1, then the formula is treated like C6H6Br
-                                   // If x = 2, then the formula is treated like C6H6Br2
+        // For example, in C6H6[xBr] if x = 1, then the formula is treated like C6H6Br
+        // If x = 2, then the formula is treated like C6H6Br2
 
         private string mCautionDescription;
         private string mErrorDescription;
         private int mErrorID;
+
         private ElementAndMassTools.udtComputationStatsType mComputationStats;
+
         private readonly ElementAndMassTools ElementAndMassRoutines;
 
         public string ConvertToEmpirical()
         {
             // Converts mStrFormula to its empirical formula and returns the result
             string strResult;
+
             strResult = ElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula);
             UpdateErrorAndCaution();
+
             if (string.IsNullOrEmpty(mErrorDescription))
             {
                 mStrFormula = strResult;
@@ -96,8 +100,10 @@ namespace MwtWinDll
             // Expands abbreviations in mStrFormula and returns the result
 
             string strResult;
+
             strResult = ElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula);
             UpdateErrorAndCaution();
+
             if (string.IsNullOrEmpty(mErrorDescription))
             {
                 mStrFormula = strResult;
@@ -151,6 +157,7 @@ namespace MwtWinDll
             // Returns "" if an invalid ID
             string strElementSymbol;
             string strPctComposition;
+
             if (elementId >= 1 && elementId <= ElementAndMassTools.ELEMENT_COUNT)
             {
                 var compStats = mComputationStats.PercentCompositions[elementId];
@@ -181,15 +188,21 @@ namespace MwtWinDll
             // Returns the percent composition for all elements in strPctCompositionsOneBased
 
             var percentCompositionByElement = new Dictionary<string, string>();
+
             try
             {
                 ElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
+
                 for (short elementId = 1; elementId <= ElementAndMassTools.ELEMENT_COUNT; elementId++)
                 {
                     if (mComputationStats.PercentCompositions[elementId].PercentComposition > 0d)
                     {
-                        string percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(mComputationStats.PercentCompositions[elementId].PercentComposition, mComputationStats.PercentCompositions[elementId].StdDeviation);
+                        string percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(
+                            mComputationStats.PercentCompositions[elementId].PercentComposition,
+                            mComputationStats.PercentCompositions[elementId].StdDeviation);
+
                         string elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId);
+
                         if (!percentCompositionByElement.ContainsKey(elementSymbol))
                         {
                             percentCompositionByElement.Add(elementSymbol, percentCompositionAndStDev);
@@ -238,6 +251,7 @@ namespace MwtWinDll
             // Returns ErrorID (0 if no error)
 
             Formula = strNewFormula;
+
             return ErrorID;
         }
 
@@ -256,7 +270,9 @@ namespace MwtWinDll
             // If gComputationOptions.CaseConversion = ccConvertCaseUp then mStrFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
             ElementAndMassRoutines.ParseFormulaPublic(ref mStrFormattedFormula, ref mComputationStats, false, ref mValueForX);
+
             ElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
+
             UpdateErrorAndCaution();
         }
 
@@ -264,6 +280,7 @@ namespace MwtWinDll
         {
             bool XIsPresentAfterBracketRet = default;
             short intCharLoc;
+
             if (ElementAndMassRoutines.gComputationOptions.BracketsAsParentheses)
             {
                 // Treating brackets as parentheses, therefore an x after a bracket isn't allowed

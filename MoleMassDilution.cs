@@ -252,7 +252,10 @@ namespace MwtWinDll
         /// <param name="eStockSolutionUnits"></param>
         /// <param name="eDilutingSolventUnits"></param>
         /// <returns></returns>
-        public double ComputeDilutionRequiredStockAndDilutingSolventVolumes([Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume, uevUnitsExtendedVolumeConstants eStockSolutionUnits = uevUnitsExtendedVolumeConstants.uevML, uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public double ComputeDilutionRequiredStockAndDilutingSolventVolumes(
+            [Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume,
+            uevUnitsExtendedVolumeConstants eStockSolutionUnits = uevUnitsExtendedVolumeConstants.uevML,
+            uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
         {
             if (Math.Abs(mDilutionValues.InitialConcentration) > float.Epsilon)
             {
@@ -264,6 +267,7 @@ namespace MwtWinDll
             }
 
             mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
+
             if (mDilutionValues.DilutingSolventVolume < 0d)
             {
                 mDilutionValues.DilutingSolventVolume = -1;
@@ -271,6 +275,7 @@ namespace MwtWinDll
             }
 
             dblNewDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, uevUnitsExtendedVolumeConstants.uevL, eDilutingSolventUnits);
+
             return ConvertVolumeExtended(mDilutionValues.StockSolutionVolume, uevUnitsExtendedVolumeConstants.uevL, eStockSolutionUnits);
         }
 
@@ -281,7 +286,10 @@ namespace MwtWinDll
         /// <param name="eTotalVolumeUnits"></param>
         /// <param name="eDilutingSolventUnits"></param>
         /// <returns></returns>
-        public double ComputeDilutionTotalVolume([Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume, uevUnitsExtendedVolumeConstants eTotalVolumeUnits = uevUnitsExtendedVolumeConstants.uevML, uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public double ComputeDilutionTotalVolume(
+            [Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume,
+            uevUnitsExtendedVolumeConstants eTotalVolumeUnits = uevUnitsExtendedVolumeConstants.uevML,
+            uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
         {
             if (mDilutionValues.InitialConcentration > 0d && mDilutionValues.FinalConcentration > 0d)
             {
@@ -301,6 +309,7 @@ namespace MwtWinDll
                 mDilutionValues.DilutingSolventVolume = -1;
 
             dblNewDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, uevUnitsExtendedVolumeConstants.uevL, eDilutingSolventUnits);
+
             return ConvertVolumeExtended(mDilutionValues.TotalFinalVolume, uevUnitsExtendedVolumeConstants.uevL, eTotalVolumeUnits);
         }
 
@@ -312,6 +321,7 @@ namespace MwtWinDll
         public double ComputeQuantityAmount(uamUnitsAmountConstants eUnits = uamUnitsAmountConstants.uamMoles)
         {
             mQuantity.Amount = mQuantity.Concentration * mQuantity.Volume;
+
             return ConvertAmount(mQuantity.Amount, uamUnitsAmountConstants.uamMoles, eUnits);
         }
 
@@ -366,6 +376,7 @@ namespace MwtWinDll
             double dblSampleMass, dblSampleDensity;
             uevUnitsExtendedVolumeConstants eCurrentVolumeUnits;
             uevUnitsExtendedVolumeConstants eNewVolumeUnits;
+
             if (eCurrentUnits == eNewUnits)
             {
                 // No conversion, simply return dblAmountIn
@@ -379,12 +390,14 @@ namespace MwtWinDll
 
                 eCurrentVolumeUnits = (uevUnitsExtendedVolumeConstants)Conversions.ToInteger((int)eCurrentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
                 eNewVolumeUnits = (uevUnitsExtendedVolumeConstants)Conversions.ToInteger((int)eNewUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+
                 return ConvertVolumeExtended(dblAmountIn, eCurrentVolumeUnits, eNewVolumeUnits);
             }
             else
             {
                 dblSampleMass = mQuantity.SampleMass;
                 dblSampleDensity = mQuantity.SampleDensity;
+
                 dblFactor = FactorAmount(eCurrentUnits, dblSampleMass, dblSampleDensity);
                 if (dblFactor < 0d)
                 {
@@ -419,12 +432,14 @@ namespace MwtWinDll
         {
             double dblValue, dblFactor;
             double dblSampleMass;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblConcentrationIn;
             }
 
             dblSampleMass = mQuantity.SampleMass;
+
             dblFactor = FactorConcentration(eCurrentUnits, dblSampleMass);
             if (dblFactor < 0d)
             {
@@ -449,6 +464,7 @@ namespace MwtWinDll
         public double ConvertVolumeExtended(double dblVolume, uevUnitsExtendedVolumeConstants eCurrentUnits, uevUnitsExtendedVolumeConstants eNewUnits)
         {
             double dblValue, dblFactor;
+
             if (eCurrentUnits == eNewUnits)
             {
                 return dblVolume;
@@ -482,9 +498,13 @@ namespace MwtWinDll
         /// <param name="dblSampleMass">required for mass-based units</param>
         /// <param name="dblSampleDensity">required for volume-based units</param>
         /// <returns></returns>
-        private double FactorAmount(uamUnitsAmountConstants eUnits, double dblSampleMass = -1, double dblSampleDensity = 0d)
+        private double FactorAmount(
+            uamUnitsAmountConstants eUnits,
+            double dblSampleMass = -1,
+            double dblSampleDensity = 0d)
         {
             double dblFactor;
+
             if (Math.Abs(dblSampleMass) < float.Epsilon)
             {
                 dblFactor = -1;
@@ -579,6 +599,7 @@ namespace MwtWinDll
         private double FactorConcentration(ummcUnitsMoleMassConcentrationConstants eUnits, double dblSampleMass = 0d)
         {
             double dblFactor;
+
             if (Math.Abs(dblSampleMass) < float.Epsilon)
             {
                 dblFactor = -1;
@@ -869,11 +890,15 @@ namespace MwtWinDll
         {
             SetAutoComputeDilutionEnabled(false);
             SetAutoComputeQuantityEnabled(false);
+
             SetAutoComputeDilutionMode(acdAutoComputeDilutionModeConstants.acdFindRequiredDilutionVolumes);
+
             SetAutoComputeQuantityMode(acqAutoComputeQuantityModeConstants.acqFindConcentration);
+
             SetQuantityAmount(1d, uamUnitsAmountConstants.uamMoles);
             SetQuantityVolume(100d, uevUnitsExtendedVolumeConstants.uevML);
             SetQuantityConcentration(1d, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
+
             SetDilutionInitialConcentration(10d, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
             SetDilutionVolumeStockSolution(3d, uevUnitsExtendedVolumeConstants.uevML);
             SetDilutionFinalConcentration(2d, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
@@ -884,6 +909,7 @@ namespace MwtWinDll
             ComputeQuantityAmount();
             double argdblNewDilutingSolventVolume = 0d;
             this.ComputeDilutionRequiredStockAndDilutingSolventVolumes(out argdblNewDilutingSolventVolume);
+
             SetAutoComputeDilutionEnabled(true);
             SetAutoComputeQuantityEnabled(true);
         }
