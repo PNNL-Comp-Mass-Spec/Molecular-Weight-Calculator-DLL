@@ -58,215 +58,16 @@ namespace MwtWinDllTest
         // Required by the Windows Form Designer
         private System.ComponentModel.IContainer components;
         public ToolTip ToolTip1;
-        private Button _cmdTestGetTrypticName;
-
-        public Button cmdTestGetTrypticName
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cmdTestGetTrypticName;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cmdTestGetTrypticName != null)
-                {
-                    _cmdTestGetTrypticName.Click -= cmdTestGetTrypticName_Click;
-                }
-
-                _cmdTestGetTrypticName = value;
-                if (_cmdTestGetTrypticName != null)
-                {
-                    _cmdTestGetTrypticName.Click += cmdTestGetTrypticName_Click;
-                }
-            }
-        }
-        // Public WithEvents grdFlexGrid As AxMSFlexGridLib.AxMSFlexGrid
-        private Button _cmdExpandAbbreviations;
-
-        public Button cmdExpandAbbreviations
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cmdExpandAbbreviations;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cmdExpandAbbreviations != null)
-                {
-                    _cmdExpandAbbreviations.Click -= cmdExpandAbbreviations_Click;
-                }
-
-                _cmdExpandAbbreviations = value;
-                if (_cmdExpandAbbreviations != null)
-                {
-                    _cmdExpandAbbreviations.Click += cmdExpandAbbreviations_Click;
-                }
-            }
-        }
-
-        private Button _cmdTestFunctions;
-
-        public Button cmdTestFunctions
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cmdTestFunctions;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cmdTestFunctions != null)
-                {
-                    _cmdTestFunctions.Click -= cmdTestFunctions_Click;
-                }
-
-                _cmdTestFunctions = value;
-                if (_cmdTestFunctions != null)
-                {
-                    _cmdTestFunctions.Click += cmdTestFunctions_Click;
-                }
-            }
-        }
-
-        private ComboBox _cboStdDevMode;
-
-        public ComboBox cboStdDevMode
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cboStdDevMode;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cboStdDevMode != null)
-                {
-                    _cboStdDevMode.SelectedIndexChanged -= cboStdDevMode_SelectedIndexChanged;
-                }
-
-                _cboStdDevMode = value;
-                if (_cboStdDevMode != null)
-                {
-                    _cboStdDevMode.SelectedIndexChanged += cboStdDevMode_SelectedIndexChanged;
-                }
-            }
-        }
-
-        private ComboBox _cboWeightMode;
-
-        public ComboBox cboWeightMode
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cboWeightMode;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cboWeightMode != null)
-                {
-                    _cboWeightMode.SelectedIndexChanged -= cboWeightMode_SelectedIndexChanged;
-                }
-
-                _cboWeightMode = value;
-                if (_cboWeightMode != null)
-                {
-                    _cboWeightMode.SelectedIndexChanged += cboWeightMode_SelectedIndexChanged;
-                }
-            }
-        }
-
-        private Button _cmdConvertToEmpirical;
-
-        public Button cmdConvertToEmpirical
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cmdConvertToEmpirical;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cmdConvertToEmpirical != null)
-                {
-                    _cmdConvertToEmpirical.Click -= cmdConvertToEmpirical_Click;
-                }
-
-                _cmdConvertToEmpirical = value;
-                if (_cmdConvertToEmpirical != null)
-                {
-                    _cmdConvertToEmpirical.Click += cmdConvertToEmpirical_Click;
-                }
-            }
-        }
-
-        private Button _cmdFindMass;
-
-        public Button cmdFindMass
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cmdFindMass;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cmdFindMass != null)
-                {
-                    _cmdFindMass.Click -= cmdFindMass_Click;
-                }
-
-                _cmdFindMass = value;
-                if (_cmdFindMass != null)
-                {
-                    _cmdFindMass.Click += cmdFindMass_Click;
-                }
-            }
-        }
-
+        public Button cmdTestGetTrypticName;
+        //public AxMSFlexGridLib.AxMSFlexGrid grdFlexGrid;
+        public Button cmdExpandAbbreviations;
+        public Button cmdTestFunctions;
+        public ComboBox cboStdDevMode;
+        public ComboBox cboWeightMode;
+        public Button cmdConvertToEmpirical;
+        public Button cmdFindMass;
         public TextBox txtFormula;
-        private Button _cmdClose;
-
-        public Button cmdClose
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cmdClose;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cmdClose != null)
-                {
-                    _cmdClose.Click -= cmdClose_Click;
-                }
-
-                _cmdClose = value;
-                if (_cmdClose != null)
-                {
-                    _cmdClose.Click += cmdClose_Click;
-                }
-            }
-        }
-
+        public Button cmdClose;
         public Label lblStdDevMode;
         public Label lblWeightMode;
         public Label lblStatusLabel;
@@ -280,86 +81,11 @@ namespace MwtWinDllTest
         // It can be modified using the Windows Form Designer.
         // Do not modify it using the code editor.
         internal DataGrid dgDataGrid;
-        private RichTextBox _rtfFormula;
-
-        internal RichTextBox rtfFormula
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _rtfFormula;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_rtfFormula != null)
-                {
-                    _rtfFormula.TextChanged -= rtfFormula_TextChanged;
-                }
-
-                _rtfFormula = value;
-                if (_rtfFormula != null)
-                {
-                    _rtfFormula.TextChanged += rtfFormula_TextChanged;
-                }
-            }
-        }
-
-        private CheckBox _chkShowRTFSource;
-
-        internal CheckBox chkShowRTFSource
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _chkShowRTFSource;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_chkShowRTFSource != null)
-                {
-                    _chkShowRTFSource.CheckedChanged -= chkShowRTFSource_CheckedChanged;
-                }
-
-                _chkShowRTFSource = value;
-                if (_chkShowRTFSource != null)
-                {
-                    _chkShowRTFSource.CheckedChanged += chkShowRTFSource_CheckedChanged;
-                }
-            }
-        }
-
+        internal RichTextBox rtfFormula;
+        internal CheckBox chkShowRTFSource;
         public TextBox txtRTFSource;
         public Label lblProgress;
-        private Button _cmdTestFormulaFinder;
-
-        public Button cmdTestFormulaFinder
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _cmdTestFormulaFinder;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_cmdTestFormulaFinder != null)
-                {
-                    _cmdTestFormulaFinder.Click -= cmdTestFormulaFinder_Click;
-                }
-
-                _cmdTestFormulaFinder = value;
-                if (_cmdTestFormulaFinder != null)
-                {
-                    _cmdTestFormulaFinder.Click += cmdTestFormulaFinder_Click;
-                }
-            }
-        }
-
+        public Button cmdTestFormulaFinder;
         public ComboBox cboFormulaFinderTestMode;
         public Label lblDLLVersion;
 
@@ -368,23 +94,23 @@ namespace MwtWinDllTest
         {
             components = new System.ComponentModel.Container();
             ToolTip1 = new ToolTip(components);
-            _cmdTestGetTrypticName = new Button();
-            _cmdTestGetTrypticName.Click += new EventHandler(cmdTestGetTrypticName_Click);
-            _cmdExpandAbbreviations = new Button();
-            _cmdExpandAbbreviations.Click += new EventHandler(cmdExpandAbbreviations_Click);
-            _cmdTestFunctions = new Button();
-            _cmdTestFunctions.Click += new EventHandler(cmdTestFunctions_Click);
-            _cboStdDevMode = new ComboBox();
-            _cboStdDevMode.SelectedIndexChanged += new EventHandler(cboStdDevMode_SelectedIndexChanged);
-            _cboWeightMode = new ComboBox();
-            _cboWeightMode.SelectedIndexChanged += new EventHandler(cboWeightMode_SelectedIndexChanged);
-            _cmdConvertToEmpirical = new Button();
-            _cmdConvertToEmpirical.Click += new EventHandler(cmdConvertToEmpirical_Click);
-            _cmdFindMass = new Button();
-            _cmdFindMass.Click += new EventHandler(cmdFindMass_Click);
+            cmdTestGetTrypticName = new Button();
+            cmdTestGetTrypticName.Click += new EventHandler(cmdTestGetTrypticName_Click);
+            cmdExpandAbbreviations = new Button();
+            cmdExpandAbbreviations.Click += new EventHandler(cmdExpandAbbreviations_Click);
+            cmdTestFunctions = new Button();
+            cmdTestFunctions.Click += new EventHandler(cmdTestFunctions_Click);
+            cboStdDevMode = new ComboBox();
+            cboStdDevMode.SelectedIndexChanged += new EventHandler(cboStdDevMode_SelectedIndexChanged);
+            cboWeightMode = new ComboBox();
+            cboWeightMode.SelectedIndexChanged += new EventHandler(cboWeightMode_SelectedIndexChanged);
+            cmdConvertToEmpirical = new Button();
+            cmdConvertToEmpirical.Click += new EventHandler(cmdConvertToEmpirical_Click);
+            cmdFindMass = new Button();
+            cmdFindMass.Click += new EventHandler(cmdFindMass_Click);
             txtFormula = new TextBox();
-            _cmdClose = new Button();
-            _cmdClose.Click += new EventHandler(cmdClose_Click);
+            cmdClose = new Button();
+            cmdClose.Click += new EventHandler(cmdClose_Click);
             lblStdDevMode = new Label();
             lblWeightMode = new Label();
             lblStatusLabel = new Label();
@@ -395,114 +121,114 @@ namespace MwtWinDllTest
             lblMassLabel = new Label();
             lblFormula = new Label();
             dgDataGrid = new DataGrid();
-            _rtfFormula = new RichTextBox();
-            _rtfFormula.TextChanged += new EventHandler(rtfFormula_TextChanged);
-            _chkShowRTFSource = new CheckBox();
-            _chkShowRTFSource.CheckedChanged += new EventHandler(chkShowRTFSource_CheckedChanged);
+            rtfFormula = new RichTextBox();
+            rtfFormula.TextChanged += new EventHandler(rtfFormula_TextChanged);
+            chkShowRTFSource = new CheckBox();
+            chkShowRTFSource.CheckedChanged += new EventHandler(chkShowRTFSource_CheckedChanged);
             txtRTFSource = new TextBox();
             lblDLLVersion = new Label();
             lblProgress = new Label();
-            _cmdTestFormulaFinder = new Button();
-            _cmdTestFormulaFinder.Click += new EventHandler(cmdTestFormulaFinder_Click);
+            cmdTestFormulaFinder = new Button();
+            cmdTestFormulaFinder.Click += new EventHandler(cmdTestFormulaFinder_Click);
             cboFormulaFinderTestMode = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgDataGrid).BeginInit();
             SuspendLayout();
             //
             // cmdTestGetTrypticName
             //
-            _cmdTestGetTrypticName.BackColor = SystemColors.Control;
-            _cmdTestGetTrypticName.Cursor = Cursors.Default;
-            _cmdTestGetTrypticName.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cmdTestGetTrypticName.ForeColor = SystemColors.ControlText;
-            _cmdTestGetTrypticName.Location = new Point(307, 396);
-            _cmdTestGetTrypticName.Name = "_cmdTestGetTrypticName";
-            _cmdTestGetTrypticName.RightToLeft = RightToLeft.No;
-            _cmdTestGetTrypticName.Size = new Size(107, 51);
-            _cmdTestGetTrypticName.TabIndex = 19;
-            _cmdTestGetTrypticName.Text = "Test Get Tryptic Name";
-            _cmdTestGetTrypticName.UseVisualStyleBackColor = false;
+            cmdTestGetTrypticName.BackColor = SystemColors.Control;
+            cmdTestGetTrypticName.Cursor = Cursors.Default;
+            cmdTestGetTrypticName.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdTestGetTrypticName.ForeColor = SystemColors.ControlText;
+            cmdTestGetTrypticName.Location = new Point(307, 396);
+            cmdTestGetTrypticName.Name = "cmdTestGetTrypticName";
+            cmdTestGetTrypticName.RightToLeft = RightToLeft.No;
+            cmdTestGetTrypticName.Size = new Size(107, 51);
+            cmdTestGetTrypticName.TabIndex = 19;
+            cmdTestGetTrypticName.Text = "Test Get Tryptic Name";
+            cmdTestGetTrypticName.UseVisualStyleBackColor = false;
             //
             // cmdExpandAbbreviations
             //
-            _cmdExpandAbbreviations.BackColor = SystemColors.Control;
-            _cmdExpandAbbreviations.Cursor = Cursors.Default;
-            _cmdExpandAbbreviations.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cmdExpandAbbreviations.ForeColor = SystemColors.ControlText;
-            _cmdExpandAbbreviations.Location = new Point(346, 10);
-            _cmdExpandAbbreviations.Name = "_cmdExpandAbbreviations";
-            _cmdExpandAbbreviations.RightToLeft = RightToLeft.No;
-            _cmdExpandAbbreviations.Size = new Size(106, 50);
-            _cmdExpandAbbreviations.TabIndex = 4;
-            _cmdExpandAbbreviations.Text = "Expand Abbreviations";
-            _cmdExpandAbbreviations.UseVisualStyleBackColor = false;
+            cmdExpandAbbreviations.BackColor = SystemColors.Control;
+            cmdExpandAbbreviations.Cursor = Cursors.Default;
+            cmdExpandAbbreviations.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdExpandAbbreviations.ForeColor = SystemColors.ControlText;
+            cmdExpandAbbreviations.Location = new Point(346, 10);
+            cmdExpandAbbreviations.Name = "cmdExpandAbbreviations";
+            cmdExpandAbbreviations.RightToLeft = RightToLeft.No;
+            cmdExpandAbbreviations.Size = new Size(106, 50);
+            cmdExpandAbbreviations.TabIndex = 4;
+            cmdExpandAbbreviations.Text = "Expand Abbreviations";
+            cmdExpandAbbreviations.UseVisualStyleBackColor = false;
             //
             // cmdTestFunctions
             //
-            _cmdTestFunctions.BackColor = SystemColors.Control;
-            _cmdTestFunctions.Cursor = Cursors.Default;
-            _cmdTestFunctions.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cmdTestFunctions.ForeColor = SystemColors.ControlText;
-            _cmdTestFunctions.Location = new Point(614, 10);
-            _cmdTestFunctions.Name = "_cmdTestFunctions";
-            _cmdTestFunctions.RightToLeft = RightToLeft.No;
-            _cmdTestFunctions.Size = new Size(107, 50);
-            _cmdTestFunctions.TabIndex = 6;
-            _cmdTestFunctions.Text = "Test Functions";
-            _cmdTestFunctions.UseVisualStyleBackColor = false;
+            cmdTestFunctions.BackColor = SystemColors.Control;
+            cmdTestFunctions.Cursor = Cursors.Default;
+            cmdTestFunctions.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdTestFunctions.ForeColor = SystemColors.ControlText;
+            cmdTestFunctions.Location = new Point(614, 10);
+            cmdTestFunctions.Name = "cmdTestFunctions";
+            cmdTestFunctions.RightToLeft = RightToLeft.No;
+            cmdTestFunctions.Size = new Size(107, 50);
+            cmdTestFunctions.TabIndex = 6;
+            cmdTestFunctions.Text = "Test Functions";
+            cmdTestFunctions.UseVisualStyleBackColor = false;
             //
             // cboStdDevMode
             //
-            _cboStdDevMode.BackColor = SystemColors.Window;
-            _cboStdDevMode.Cursor = Cursors.Default;
-            _cboStdDevMode.DropDownStyle = ComboBoxStyle.DropDownList;
-            _cboStdDevMode.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cboStdDevMode.ForeColor = SystemColors.WindowText;
-            _cboStdDevMode.Location = new Point(125, 318);
-            _cboStdDevMode.Name = "_cboStdDevMode";
-            _cboStdDevMode.RightToLeft = RightToLeft.No;
-            _cboStdDevMode.Size = new Size(174, 24);
-            _cboStdDevMode.TabIndex = 3;
+            cboStdDevMode.BackColor = SystemColors.Window;
+            cboStdDevMode.Cursor = Cursors.Default;
+            cboStdDevMode.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboStdDevMode.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cboStdDevMode.ForeColor = SystemColors.WindowText;
+            cboStdDevMode.Location = new Point(125, 318);
+            cboStdDevMode.Name = "cboStdDevMode";
+            cboStdDevMode.RightToLeft = RightToLeft.No;
+            cboStdDevMode.Size = new Size(174, 24);
+            cboStdDevMode.TabIndex = 3;
             //
             // cboWeightMode
             //
-            _cboWeightMode.BackColor = SystemColors.Window;
-            _cboWeightMode.Cursor = Cursors.Default;
-            _cboWeightMode.DropDownStyle = ComboBoxStyle.DropDownList;
-            _cboWeightMode.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cboWeightMode.ForeColor = SystemColors.WindowText;
-            _cboWeightMode.Location = new Point(125, 288);
-            _cboWeightMode.Name = "_cboWeightMode";
-            _cboWeightMode.RightToLeft = RightToLeft.No;
-            _cboWeightMode.Size = new Size(174, 24);
-            _cboWeightMode.TabIndex = 2;
+            cboWeightMode.BackColor = SystemColors.Window;
+            cboWeightMode.Cursor = Cursors.Default;
+            cboWeightMode.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboWeightMode.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cboWeightMode.ForeColor = SystemColors.WindowText;
+            cboWeightMode.Location = new Point(125, 288);
+            cboWeightMode.Name = "cboWeightMode";
+            cboWeightMode.RightToLeft = RightToLeft.No;
+            cboWeightMode.Size = new Size(174, 24);
+            cboWeightMode.TabIndex = 2;
             //
             // cmdConvertToEmpirical
             //
-            _cmdConvertToEmpirical.BackColor = SystemColors.Control;
-            _cmdConvertToEmpirical.Cursor = Cursors.Default;
-            _cmdConvertToEmpirical.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cmdConvertToEmpirical.ForeColor = SystemColors.ControlText;
-            _cmdConvertToEmpirical.Location = new Point(480, 10);
-            _cmdConvertToEmpirical.Name = "_cmdConvertToEmpirical";
-            _cmdConvertToEmpirical.RightToLeft = RightToLeft.No;
-            _cmdConvertToEmpirical.Size = new Size(107, 50);
-            _cmdConvertToEmpirical.TabIndex = 5;
-            _cmdConvertToEmpirical.Text = "Convert to &Empirical";
-            _cmdConvertToEmpirical.UseVisualStyleBackColor = false;
+            cmdConvertToEmpirical.BackColor = SystemColors.Control;
+            cmdConvertToEmpirical.Cursor = Cursors.Default;
+            cmdConvertToEmpirical.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdConvertToEmpirical.ForeColor = SystemColors.ControlText;
+            cmdConvertToEmpirical.Location = new Point(480, 10);
+            cmdConvertToEmpirical.Name = "cmdConvertToEmpirical";
+            cmdConvertToEmpirical.RightToLeft = RightToLeft.No;
+            cmdConvertToEmpirical.Size = new Size(107, 50);
+            cmdConvertToEmpirical.TabIndex = 5;
+            cmdConvertToEmpirical.Text = "Convert to &Empirical";
+            cmdConvertToEmpirical.UseVisualStyleBackColor = false;
             //
             // cmdFindMass
             //
-            _cmdFindMass.BackColor = SystemColors.Control;
-            _cmdFindMass.Cursor = Cursors.Default;
-            _cmdFindMass.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cmdFindMass.ForeColor = SystemColors.ControlText;
-            _cmdFindMass.Location = new Point(10, 406);
-            _cmdFindMass.Name = "_cmdFindMass";
-            _cmdFindMass.RightToLeft = RightToLeft.No;
-            _cmdFindMass.Size = new Size(106, 41);
-            _cmdFindMass.TabIndex = 8;
-            _cmdFindMass.Text = "&Calculate";
-            _cmdFindMass.UseVisualStyleBackColor = false;
+            cmdFindMass.BackColor = SystemColors.Control;
+            cmdFindMass.Cursor = Cursors.Default;
+            cmdFindMass.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdFindMass.ForeColor = SystemColors.ControlText;
+            cmdFindMass.Location = new Point(10, 406);
+            cmdFindMass.Name = "cmdFindMass";
+            cmdFindMass.RightToLeft = RightToLeft.No;
+            cmdFindMass.Size = new Size(106, 41);
+            cmdFindMass.TabIndex = 8;
+            cmdFindMass.Text = "&Calculate";
+            cmdFindMass.UseVisualStyleBackColor = false;
             //
             // txtFormula
             //
@@ -521,18 +247,18 @@ namespace MwtWinDllTest
             //
             // cmdClose
             //
-            _cmdClose.BackColor = SystemColors.Control;
-            _cmdClose.Cursor = Cursors.Default;
-            _cmdClose.DialogResult = DialogResult.Cancel;
-            _cmdClose.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cmdClose.ForeColor = SystemColors.ControlText;
-            _cmdClose.Location = new Point(125, 406);
-            _cmdClose.Name = "_cmdClose";
-            _cmdClose.RightToLeft = RightToLeft.No;
-            _cmdClose.Size = new Size(107, 41);
-            _cmdClose.TabIndex = 9;
-            _cmdClose.Text = "Cl&ose";
-            _cmdClose.UseVisualStyleBackColor = false;
+            cmdClose.BackColor = SystemColors.Control;
+            cmdClose.Cursor = Cursors.Default;
+            cmdClose.DialogResult = DialogResult.Cancel;
+            cmdClose.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdClose.ForeColor = SystemColors.ControlText;
+            cmdClose.Location = new Point(125, 406);
+            cmdClose.Name = "cmdClose";
+            cmdClose.RightToLeft = RightToLeft.No;
+            cmdClose.Size = new Size(107, 41);
+            cmdClose.TabIndex = 9;
+            cmdClose.Text = "Cl&ose";
+            cmdClose.UseVisualStyleBackColor = false;
             //
             // lblStdDevMode
             //
@@ -663,20 +389,20 @@ namespace MwtWinDllTest
             //
             // rtfFormula
             //
-            _rtfFormula.Location = new Point(125, 108);
-            _rtfFormula.Name = "_rtfFormula";
-            _rtfFormula.ReadOnly = true;
-            _rtfFormula.Size = new Size(278, 59);
-            _rtfFormula.TabIndex = 21;
-            _rtfFormula.Text = "";
+            rtfFormula.Location = new Point(125, 108);
+            rtfFormula.Name = "rtfFormula";
+            rtfFormula.ReadOnly = true;
+            rtfFormula.Size = new Size(278, 59);
+            rtfFormula.TabIndex = 21;
+            rtfFormula.Text = "";
             //
             // chkShowRTFSource
             //
-            _chkShowRTFSource.Location = new Point(10, 465);
-            _chkShowRTFSource.Name = "_chkShowRTFSource";
-            _chkShowRTFSource.Size = new Size(105, 30);
-            _chkShowRTFSource.TabIndex = 22;
-            _chkShowRTFSource.Text = "Show RTF Source";
+            chkShowRTFSource.Location = new Point(10, 465);
+            chkShowRTFSource.Name = "chkShowRTFSource";
+            chkShowRTFSource.Size = new Size(105, 30);
+            chkShowRTFSource.TabIndex = 22;
+            chkShowRTFSource.Text = "Show RTF Source";
             //
             // txtRTFSource
             //
@@ -723,17 +449,17 @@ namespace MwtWinDllTest
             //
             // cmdTestFormulaFinder
             //
-            _cmdTestFormulaFinder.BackColor = SystemColors.Control;
-            _cmdTestFormulaFinder.Cursor = Cursors.Default;
-            _cmdTestFormulaFinder.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
-            _cmdTestFormulaFinder.ForeColor = SystemColors.ControlText;
-            _cmdTestFormulaFinder.Location = new Point(743, 10);
-            _cmdTestFormulaFinder.Name = "_cmdTestFormulaFinder";
-            _cmdTestFormulaFinder.RightToLeft = RightToLeft.No;
-            _cmdTestFormulaFinder.Size = new Size(161, 33);
-            _cmdTestFormulaFinder.TabIndex = 26;
-            _cmdTestFormulaFinder.Text = "Test Formula Finder";
-            _cmdTestFormulaFinder.UseVisualStyleBackColor = false;
+            cmdTestFormulaFinder.BackColor = SystemColors.Control;
+            cmdTestFormulaFinder.Cursor = Cursors.Default;
+            cmdTestFormulaFinder.Font = new Font("Arial", 8.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdTestFormulaFinder.ForeColor = SystemColors.ControlText;
+            cmdTestFormulaFinder.Location = new Point(743, 10);
+            cmdTestFormulaFinder.Name = "cmdTestFormulaFinder";
+            cmdTestFormulaFinder.RightToLeft = RightToLeft.No;
+            cmdTestFormulaFinder.Size = new Size(161, 33);
+            cmdTestFormulaFinder.TabIndex = 26;
+            cmdTestFormulaFinder.Text = "Test Formula Finder";
+            cmdTestFormulaFinder.UseVisualStyleBackColor = false;
             //
             // cboFormulaFinderTestMode
             //
@@ -751,28 +477,28 @@ namespace MwtWinDllTest
             //
             // frmMwtWinDllTest
             //
-            AcceptButton = _cmdFindMass;
+            AcceptButton = cmdFindMass;
             AutoScaleBaseSize = new Size(6, 16);
             BackColor = SystemColors.Control;
-            CancelButton = _cmdClose;
+            CancelButton = cmdClose;
             ClientSize = new Size(995, 505);
             Controls.Add(cboFormulaFinderTestMode);
-            Controls.Add(_cmdTestFormulaFinder);
+            Controls.Add(cmdTestFormulaFinder);
             Controls.Add(lblProgress);
             Controls.Add(lblDLLVersion);
             Controls.Add(txtRTFSource);
             Controls.Add(txtFormula);
-            Controls.Add(_chkShowRTFSource);
-            Controls.Add(_rtfFormula);
+            Controls.Add(chkShowRTFSource);
+            Controls.Add(rtfFormula);
             Controls.Add(dgDataGrid);
-            Controls.Add(_cmdTestGetTrypticName);
-            Controls.Add(_cmdExpandAbbreviations);
-            Controls.Add(_cmdTestFunctions);
-            Controls.Add(_cboStdDevMode);
-            Controls.Add(_cboWeightMode);
-            Controls.Add(_cmdConvertToEmpirical);
-            Controls.Add(_cmdFindMass);
-            Controls.Add(_cmdClose);
+            Controls.Add(cmdTestGetTrypticName);
+            Controls.Add(cmdExpandAbbreviations);
+            Controls.Add(cmdTestFunctions);
+            Controls.Add(cboStdDevMode);
+            Controls.Add(cboWeightMode);
+            Controls.Add(cmdConvertToEmpirical);
+            Controls.Add(cmdFindMass);
+            Controls.Add(cmdClose);
             Controls.Add(lblStdDevMode);
             Controls.Add(lblWeightMode);
             Controls.Add(lblStatusLabel);
@@ -793,36 +519,7 @@ namespace MwtWinDllTest
             PerformLayout();
         }
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        private MolecularWeightTool _mMwtWin;
-
-        private MolecularWeightTool mMwtWin
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _mMwtWin;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_mMwtWin != null)
-                {
-                    _mMwtWin.ProgressChanged -= mMwtWin_ProgressChanged;
-                    _mMwtWin.ProgressComplete -= mMwtWin_ProgressComplete;
-                    _mMwtWin.ProgressReset -= mMwtWin_ProgressReset;
-                }
-
-                _mMwtWin = value;
-                if (_mMwtWin != null)
-                {
-                    _mMwtWin.ProgressChanged += mMwtWin_ProgressChanged;
-                    _mMwtWin.ProgressComplete += mMwtWin_ProgressComplete;
-                    _mMwtWin.ProgressReset += mMwtWin_ProgressReset;
-                }
-            }
-        }
-
+        private MolecularWeightTool mMwtWin;
         private DataView mMDIDListDataView;
         private DataSet myDataSet;
 
@@ -914,6 +611,10 @@ namespace MwtWinDllTest
         private void InitializeControls()
         {
             mMwtWin = new MolecularWeightTool() { ShowErrorDialogs = true };
+            mMwtWin.ProgressChanged += mMwtWin_ProgressChanged;
+            mMwtWin.ProgressComplete += mMwtWin_ProgressComplete;
+            mMwtWin.ProgressReset += mMwtWin_ProgressReset;
+
             lblDLLVersion.Text = "DLL Info: " + mMwtWin.AppDate + ", Version " + mMwtWin.AppVersion;
             PopulateComboBoxes();
         }
@@ -1695,6 +1396,13 @@ namespace MwtWinDllTest
 
         private void cmdClose_Click(object eventSender, EventArgs eventArgs)
         {
+            if (mMwtWin != null)
+            {
+                mMwtWin.ProgressChanged -= mMwtWin_ProgressChanged;
+                mMwtWin.ProgressComplete -= mMwtWin_ProgressComplete;
+                mMwtWin.ProgressReset -= mMwtWin_ProgressReset;
+            }
+
             mMwtWin = null;
             Close();
             Environment.Exit(0);

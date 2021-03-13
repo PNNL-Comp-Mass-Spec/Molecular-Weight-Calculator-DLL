@@ -11,7 +11,7 @@ namespace MwtWinDll
 
         // Molecular Weight Calculator routines with ActiveX Class interfaces
         // Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002
-        // 
+        //
         // ActiveX Dll version written by Matthew Monroe in Richland, WA (2002)
         // Ported to VB.NET by Nikša Blonder in Richland, WA (2005)
 
@@ -20,11 +20,11 @@ namespace MwtWinDll
         // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
         // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
         // -------------------------------------------------------------------------------
-        // 
+        //
         // Licensed under the Apache License, Version 2.0; you may not use this file except
         // in compliance with the License.  You may obtain a copy of the License at
         // http://www.apache.org/licenses/LICENSE-2.0
-        // 
+        //
         // Notice: This computer software was prepared by Battelle Memorial Institute,
         // hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
         // Department of Energy (DOE).  All rights in the computer software are reserved
@@ -43,6 +43,9 @@ namespace MwtWinDll
         public MolecularWeightTool()
         {
             mElementAndMassRoutines = new ElementAndMassTools();
+            mElementAndMassRoutines.ProgressChanged += mElementAndMassRoutines_ProgressChanged;
+            mElementAndMassRoutines.ProgressComplete += mElementAndMassRoutines_ProgressComplete;
+            mElementAndMassRoutines.ProgressReset += mElementAndMassRoutines_ProgressReset;
 
             // LoadDefaults calls mElementAndMassRoutines.MemoryLoadAll, which is required prior to instantiating the Peptide class.
             // We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
@@ -85,35 +88,8 @@ namespace MwtWinDll
         public Peptide Peptide;
         public FormulaFinder FormulaFinder;
         public CapillaryFlow CapFlow;
-        private ElementAndMassTools _mElementAndMassRoutines;
 
-        private ElementAndMassTools mElementAndMassRoutines
-        {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return _mElementAndMassRoutines;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            set
-            {
-                if (_mElementAndMassRoutines != null)
-                {
-                    _mElementAndMassRoutines.ProgressChanged -= mElementAndMassRoutines_ProgressChanged;
-                    _mElementAndMassRoutines.ProgressComplete -= mElementAndMassRoutines_ProgressComplete;
-                    _mElementAndMassRoutines.ProgressReset -= mElementAndMassRoutines_ProgressReset;
-                }
-
-                _mElementAndMassRoutines = value;
-                if (_mElementAndMassRoutines != null)
-                {
-                    _mElementAndMassRoutines.ProgressChanged += mElementAndMassRoutines_ProgressChanged;
-                    _mElementAndMassRoutines.ProgressComplete += mElementAndMassRoutines_ProgressComplete;
-                    _mElementAndMassRoutines.ProgressReset += mElementAndMassRoutines_ProgressReset;
-                }
-            }
-        }
+        private readonly ElementAndMassTools mElementAndMassRoutines;
 
         public event ProgressResetEventHandler ProgressReset;
 
