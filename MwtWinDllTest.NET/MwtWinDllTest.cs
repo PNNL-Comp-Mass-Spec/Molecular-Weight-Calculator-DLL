@@ -47,7 +47,7 @@ namespace MwtWinDllTest
         {
             if (Disposing)
             {
-                if (components is object)
+                if (components != null)
                 {
                     components.Dispose();
                 }

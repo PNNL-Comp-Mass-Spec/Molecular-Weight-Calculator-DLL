@@ -111,7 +111,7 @@ namespace MwtWinDll
 
             public void Initialize(bool blnForceInit)
             {
-                if (blnForceInit || IonMass is null)
+                if (blnForceInit || IonMass == null)
                 {
                     IonMass = new double[5];
                     ModificationIDs = new int[(MAX_MODIFICATIONS + 1)];
@@ -1642,13 +1642,13 @@ namespace MwtWinDll
             // First, make sure the sequence is in the form A.BCDEFG.H or A.BCDEFG or BCDEFG.H
             // If it isn't, then we can't check it (we'll return true)
 
-            if (strRuleResidues is null || strRuleResidues.Length == 0)
+            if (strRuleResidues == null || strRuleResidues.Length == 0)
             {
                 // No rule residues
                 return true;
             }
 
-            if (strSeparationChar is null)
+            if (strSeparationChar == null)
                 strSeparationChar = ".";
             if (!strSequence.Contains(strSeparationChar))
             {
@@ -1995,7 +1995,7 @@ namespace MwtWinDll
             if (lngNewResidueCount > ResidueCountDimmed)
             {
                 ResidueCountDimmed = lngNewResidueCount + RESIDUE_DIM_CHUNK;
-                if (blnPreserveContents && Residues is object)
+                if (blnPreserveContents && Residues != null)
                 {
                     intOldIndexEnd = Residues.Length - 1;
                     Array.Resize(ref Residues, ResidueCountDimmed + 1);
@@ -2346,7 +2346,7 @@ namespace MwtWinDll
 
             int lngIndexToUse;
             string str3LetterSymbol;
-            if (strSymbol is null || strSymbol.Length == 0)
+            if (strSymbol == null || strSymbol.Length == 0)
             {
                 return -1;
             }

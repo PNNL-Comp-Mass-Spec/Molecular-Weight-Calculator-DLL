@@ -102,7 +102,7 @@ namespace MwtWinDll
             }
             set
             {
-                if (value is object)
+                if (value != null)
                 {
                     mCandidateElements = value;
                     ValidateBoundedSearchValues();
@@ -266,7 +266,7 @@ namespace MwtWinDll
         public List<FormulaFinderResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, FormulaFinderOptions searchOptions)
         {
             double massToleranceDa = massTolerancePPM * targetMass / 1000000.0d;
-            if (searchOptions is null)
+            if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
             var lstResults = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, true);
             var sortedResults = (from item in lstResults
@@ -300,7 +300,7 @@ namespace MwtWinDll
         /// <remarks></remarks>
         public List<FormulaFinderResult> FindMatchesByMass(double targetMass, double massToleranceDa, FormulaFinderOptions searchOptions)
         {
-            if (searchOptions is null)
+            if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
             var lstResults = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, false);
             var sortedResults = (from item in lstResults
@@ -311,7 +311,7 @@ namespace MwtWinDll
 
         public List<FormulaFinderResult> FindMatchesByPercentComposition(double maximumFormulaMass, double percentTolerance, FormulaFinderOptions searchOptions)
         {
-            if (searchOptions is null)
+            if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
             var lstResults = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, searchOptions);
             var sortedResults = (from item in lstResults

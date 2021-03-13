@@ -90,7 +90,7 @@ namespace MwtWinDll
         {
             try
             {
-                if (Item is null)
+                if (Item == null)
                 {
                     return string.Empty;
                 }

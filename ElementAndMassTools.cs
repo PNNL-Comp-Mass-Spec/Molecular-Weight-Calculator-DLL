@@ -541,7 +541,7 @@ namespace MwtWinDll
                     break;
                 strTest = strFormulaExcerpt.Substring(0, intLength);
                 strNewCaution = LookupCautionStatement(strTest);
-                if (strNewCaution is object && strNewCaution.Length > 0)
+                if (strNewCaution != null && strNewCaution.Length > 0)
                 {
                     AddToCautionDescription(strNewCaution);
                     break;
@@ -779,7 +779,7 @@ namespace MwtWinDll
             float sngPercentComplete;
 
             // Make sure formula is not blank
-            if (strFormulaIn is null || strFormulaIn.Length == 0)
+            if (strFormulaIn == null || strFormulaIn.Length == 0)
             {
                 return -1;
             }
@@ -1463,7 +1463,7 @@ namespace MwtWinDll
             var lstGaussianData = new List<KeyValuePair<double, double>>();
             try
             {
-                if (XYVals is null || XYVals.Count == 0)
+                if (XYVals == null || XYVals.Count == 0)
                 {
                     return lstGaussianData;
                 }
@@ -2275,7 +2275,7 @@ namespace MwtWinDll
             string strMessage;
             string strErrorFilePath;
             strMessage = "Error in " + strCallingProcedure + ": " + Conversion.ErrorToString(errorNumber) + " (#" + Strings.Trim(errorNumber.ToString()) + ")";
-            if (strErrorDescriptionAdditional is object && strErrorDescriptionAdditional.Length > 0)
+            if (strErrorDescriptionAdditional != null && strErrorDescriptionAdditional.Length > 0)
             {
                 strMessage += ControlChars.NewLine + strErrorDescriptionAdditional;
             }
@@ -2878,7 +2878,7 @@ namespace MwtWinDll
             // Note that CleanupFilePaths() will update mOutputFolderPath, which is used here if mLogFolderPath is blank
             // Thus, be sure to call CleanupFilePaths (or update mLogFolderPath) before the first call to LogMessage
 
-            if (mLogFile is null && mLogMessagesToFile)
+            if (mLogFile == null && mLogMessagesToFile)
             {
                 try
                 {
@@ -2886,7 +2886,7 @@ namespace MwtWinDll
                     mLogFilePath += "_log_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
                     try
                     {
-                        if (mLogFolderPath is null)
+                        if (mLogFolderPath == null)
                             mLogFolderPath = string.Empty;
                         if (mLogFolderPath.Length > 0)
                         {
@@ -2938,7 +2938,7 @@ namespace MwtWinDll
                     break;
             }
 
-            if (mLogFile is null)
+            if (mLogFile == null)
             {
                 Console.WriteLine(strMessageType + ControlChars.Tab + strMessage);
             }
