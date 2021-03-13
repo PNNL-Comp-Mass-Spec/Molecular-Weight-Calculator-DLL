@@ -66,9 +66,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MwtWinDll.csproj">
+    <ProjectReference Include="..\MolecularWeightCalculatorLib.csproj">
       <Project>{78332537-7ecc-4b74-8aa9-ba66ab296af0}</Project>
-      <Name>MwtWinDll</Name>
+      <Name>MolecularWeightCalculatorLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
