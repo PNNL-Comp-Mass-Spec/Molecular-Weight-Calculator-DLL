@@ -540,8 +540,7 @@ namespace MwtWinDllTest
             else if (intDecimalPlaces >= 0)
             {
                 TextCol.Format = "0.";
-                var loopTo = intDecimalPlaces - 1;
-                for (i = 0; i <= loopTo; i++)
+                for (i = 0; i < intDecimalPlaces; i++)
                     TextCol.Format += "0";
             }
 
@@ -642,8 +641,7 @@ namespace MwtWinDllTest
 
             // Append rows to the table.
             int lngIndex;
-            var loopTo = lngIonCount - 1;
-            for (lngIndex = 0; lngIndex <= loopTo; lngIndex++)
+            for (lngIndex = 0; lngIndex < lngIonCount; lngIndex++)
             {
                 newRow = tDataTable.NewRow();
                 newRow["Mass"] = udtFragSpectrum[lngIndex].Mass;
@@ -733,7 +731,7 @@ namespace MwtWinDllTest
 
             // Test Abbreviations
             lngItemCount = mMwtWin.GetAbbreviationCount();
-            for (int intIndex = 1, loopTo = lngItemCount; intIndex <= loopTo; intIndex++)
+            for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
                 intResult = mMwtWin.GetAbbreviation(intIndex, ref strSymbol, ref strFormula, ref sngCharge, ref blnIsAminoAcid, ref strOneLetterSymbol, ref strComment);
                 Debug.Assert(intResult == 0, "");
@@ -744,7 +742,7 @@ namespace MwtWinDllTest
 
             // Test Caution statements
             lngItemCount = mMwtWin.GetCautionStatementCount();
-            for (int intIndex = 1, loopTo1 = lngItemCount; intIndex <= loopTo1; intIndex++)
+            for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
                 intResult = mMwtWin.GetCautionStatement(intIndex, ref strSymbol, ref strStatement);
                 Debug.Assert(intResult == 0, "");
@@ -755,7 +753,7 @@ namespace MwtWinDllTest
 
             // Test Element access
             lngItemCount = mMwtWin.GetElementCount();
-            for (int intIndex = 1, loopTo2 = lngItemCount; intIndex <= loopTo2; intIndex++)
+            for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
                 intResult = mMwtWin.GetElement((short)intIndex, ref strSymbol, ref dblMass, ref dblUncertainty, ref sngCharge, ref intIsotopeCount);
                 Debug.Assert(intResult == 0, "");
@@ -773,8 +771,7 @@ namespace MwtWinDllTest
 
             // Test Message Statements access
             lngItemCount = mMwtWin.GetMessageStatementCount();
-            var loopTo3 = lngItemCount;
-            for (lngIndex = 1; lngIndex <= loopTo3; lngIndex++)
+            for (lngIndex = 1; lngIndex <= lngItemCount; lngIndex++)
             {
                 strStatement = mMwtWin.GetMessageStatement(lngIndex);
                 intResult = mMwtWin.SetMessageStatement(lngIndex, strStatement);
@@ -925,7 +922,7 @@ namespace MwtWinDllTest
             objResults.AppendText(strResults);
             objResults.AppendText("Convert isotopic distribution to gaussian");
             var lstXYVals = new List<KeyValuePair<double, double>>();
-            for (int intIndex = 1, loopTo4 = ConvolutedMSDataCount; intIndex <= loopTo4; intIndex++)
+            for (int intIndex = 1; intIndex <= ConvolutedMSDataCount; intIndex++)
                 lstXYVals.Add(new KeyValuePair<double, double>(ConvolutedMSData2DOneBased[intIndex, 0], ConvolutedMSData2DOneBased[intIndex, 1]));
             int intResolution = 2000;
             double dblResolutionMass = 1000d;
@@ -933,7 +930,7 @@ namespace MwtWinDllTest
             var lstGaussianData = mMwtWin.ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor);
             var sbResults = new StringBuilder();
             sbResults.AppendLine("m/z" + ControlChars.Tab + "Intensity");
-            for (int intIndex = 0, loopTo5 = lstGaussianData.Count - 1; intIndex <= loopTo5; intIndex++)
+            for (int intIndex = 0; intIndex < lstGaussianData.Count; intIndex++)
             {
                 if (lstGaussianData[intIndex].Key >= 15175d && lstGaussianData[intIndex].Key < 15193d)
                 {
@@ -1212,8 +1209,7 @@ namespace MwtWinDllTest
                 // Generate random protein
                 lngProteinLengthRand = Conversion.Int((MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) * VBMath.Rnd() + MIN_PROTEIN_LENGTH);
                 strProtein = "";
-                var loopTo = lngProteinLengthRand;
-                for (lngResidueRand = 1f; lngResidueRand <= loopTo; lngResidueRand++)
+                for (lngResidueRand = 1f; lngResidueRand <= lngProteinLengthRand; lngResidueRand++)
                 {
                     strNewResidue = Strings.Mid(POSSIBLE_RESIDUES, (int)Math.Round(Conversion.Int(Strings.Len(POSSIBLE_RESIDUES)) * VBMath.Rnd() + 1f), 1);
                     strProtein += strNewResidue;
@@ -1223,8 +1219,7 @@ namespace MwtWinDllTest
                 lngMwtWinResultCount = 0;
                 Debug.Write("Starting residue is ");
                 lngStartTime = modMwtWinDllTest.GetTickCount();
-                var loopTo1 = Strings.Len(strProtein);
-                for (lngResidueStart = 1; lngResidueStart <= loopTo1; lngResidueStart++)
+                for (lngResidueStart = 0; lngResidueStart < strProtein.Length; lngResidueStart++)
                 {
                     if (lngResidueStart % 10 == 0)
                     {
@@ -1232,8 +1227,7 @@ namespace MwtWinDllTest
                         Application.DoEvents();
                     }
 
-                    var loopTo2 = Strings.Len(strProtein) - lngResidueStart;
-                    for (lngResidueEnd = 1; lngResidueEnd <= loopTo2; lngResidueEnd++)
+                    for (lngResidueEnd = 0; lngResidueEnd < strProtein.Length - lngResidueStart; lngResidueEnd++)
                     {
                         if (lngResidueEnd - lngResidueStart > 50)
                         {

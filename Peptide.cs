@@ -486,7 +486,7 @@ namespace MwtWinDll
             }
 
             udtFragSpectrum = new udtFragmentationSpectrumDataType[lstFragSpectraData.Count + 1];
-            for (int intIndex = 0, loopTo = lstFragSpectraData.Count - 1; intIndex <= loopTo; intIndex++)
+            for (int intIndex = 0; intIndex < lstFragSpectraData.Count; intIndex++)
                 udtFragSpectrum[intIndex] = lstFragSpectraData[intIndex];
             return lstFragSpectraData.Count;
         }
@@ -547,8 +547,7 @@ namespace MwtWinDll
             // Need to update the residue masses in case the modifications have changed
             UpdateResidueMasses();
             lngIonCount = 0;
-            var loopTo = ResidueCount;
-            for (lngResidueIndex = 1; lngResidueIndex <= loopTo; lngResidueIndex++)
+            for (lngResidueIndex = 1; lngResidueIndex <= ResidueCount; lngResidueIndex++)
             {
                 var residue = Residues[lngResidueIndex];
                 for (eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
@@ -666,15 +665,13 @@ namespace MwtWinDll
 
             // Sort arrays by mass (using a pointer array to synchronize the arrays)
             PointerArray = new int[lngIonCount + 1];
-            var loopTo1 = lngIonCount - 1;
-            for (lngIndex = 0; lngIndex <= loopTo1; lngIndex++)
+            for (lngIndex = 0; lngIndex < lngIonCount; lngIndex++)
                 PointerArray[lngIndex] = lngIndex;
             ShellSortFragSpectrum(ref FragSpectrumWork, ref PointerArray, 0, lngIonCount - 1);
 
             // Copy the data from FragSpectrumWork() to lstFragSpectraData
             var lstFragSpectraData = new List<udtFragmentationSpectrumDataType>(lngIonCount);
-            var loopTo2 = lngIonCount - 1;
-            for (lngIndex = 0; lngIndex <= loopTo2; lngIndex++)
+            for (lngIndex = 0; lngIndex <= lngIonCount; lngIndex++)
                 lstFragSpectraData.Add(FragSpectrumWork[PointerArray[lngIndex]]);
             return lstFragSpectraData;
         }
@@ -732,8 +729,7 @@ namespace MwtWinDll
             blnPhosphorylated = false;
             if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
             {
-                var loopTo = ResidueCount;
-                for (lngResidueIndex = lngCurrentResidueIndex; lngResidueIndex <= loopTo; lngResidueIndex++)
+                for (lngResidueIndex = lngCurrentResidueIndex; lngResidueIndex <= ResidueCount; lngResidueIndex++)
                 {
                     strInternalResidues = strInternalResidues + Residues[lngResidueIndex].Symbol + " ";
                     if (Residues[lngResidueIndex].Phosphorylated)
@@ -742,8 +738,7 @@ namespace MwtWinDll
             }
             else
             {
-                var loopTo1 = lngCurrentResidueIndex;
-                for (lngResidueIndex = 1; lngResidueIndex <= loopTo1; lngResidueIndex++)
+                for (lngResidueIndex = 1; lngResidueIndex <= lngCurrentResidueIndex; lngResidueIndex++)
                 {
                     strInternalResidues = strInternalResidues + Residues[lngResidueIndex].Symbol + " ";
                     if (Residues[lngResidueIndex].Phosphorylated)
@@ -793,8 +788,7 @@ namespace MwtWinDll
 
             int intIndex;
             var lngModificationIDMatch = default(int);
-            var loopTo = ModificationSymbolCount;
-            for (intIndex = 1; intIndex <= loopTo; intIndex++)
+            for (intIndex = 1; intIndex <= ModificationSymbolCount; intIndex++)
             {
                 if ((ModificationSymbols[intIndex].Symbol ?? "") == (strModSymbol ?? ""))
                 {
@@ -847,8 +841,7 @@ namespace MwtWinDll
             }
 
             lngResidueCount = 0;
-            var loopTo = ResidueCount - 1;
-            for (lngResidueIndex = 0; lngResidueIndex <= loopTo; lngResidueIndex++)
+            for (lngResidueIndex = 0; lngResidueIndex < ResidueCount; lngResidueIndex++)
             {
                 if ((Residues[lngResidueIndex].Symbol ?? "") == (strSearchResidue3Letter ?? ""))
                 {
@@ -879,8 +872,7 @@ namespace MwtWinDll
                     // Ignore errors
                 }
 
-                var loopTo = residue.ModificationIDCount;
-                for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                for (intIndex = 1; intIndex <= residue.ModificationIDCount; intIndex++)
                     lngModificationIDsOneBased[intIndex] = residue.ModificationIDs[intIndex];
 
                 return residue.ModificationIDCount;
@@ -959,8 +951,7 @@ namespace MwtWinDll
             else
                 strDashAdd = string.Empty;
             strSequence = string.Empty;
-            var loopTo = ResidueCount;
-            for (lngIndex = 1; lngIndex <= loopTo; lngIndex++)
+            for (lngIndex = 1; lngIndex <= ResidueCount; lngIndex++)
             {
                 var residue = Residues[lngIndex];
                 strSymbol3Letter = residue.Symbol;
@@ -978,8 +969,7 @@ namespace MwtWinDll
 
                 if (blnIncludeModificationSymbols)
                 {
-                    var loopTo1 = residue.ModificationIDCount;
-                    for (intModIndex = 1; intModIndex <= loopTo1; intModIndex++)
+                    for (intModIndex = 1; intModIndex <= residue.ModificationIDCount; intModIndex++)
                     {
                         lngError = GetModificationSymbol(residue.ModificationIDs[intModIndex], ref strModSymbol, ref dblModMass, ref blnIndicatesPhosphorylation, ref strModSymbolComment);
                         if (lngError == 0)
@@ -1369,8 +1359,7 @@ namespace MwtWinDll
             int lngExceptionCharLocInSearchResidues, lngCharLocViaRecursiveSearch;
             intExceptionSuffixResidueCount = (short)Strings.Len(strExceptionSuffixResidues);
             lngMinCharLoc = -1;
-            var loopTo = (short)Strings.Len(strSearchChars);
-            for (intCharLocInSearchChars = 1; intCharLocInSearchChars <= loopTo; intCharLocInSearchChars++)
+            for (intCharLocInSearchChars = 0; intCharLocInSearchChars < strSearchChars.Length; intCharLocInSearchChars++)
             {
                 lngCharLoc = Strings.InStr(Strings.Mid(strSearchResidues, lngStartChar), Strings.Mid(strSearchChars, intCharLocInSearchChars, 1));
                 if (lngCharLoc > 0)
@@ -1391,8 +1380,7 @@ namespace MwtWinDll
                             strResidueFollowingCleavageResidue = strResidueFollowingSearchResidues;
                         }
 
-                        var loopTo1 = intExceptionSuffixResidueCount;
-                        for (intCharLocInExceptionChars = 1; intCharLocInExceptionChars <= loopTo1; intCharLocInExceptionChars++)
+                        for (intCharLocInExceptionChars = 1; intCharLocInExceptionChars <= intExceptionSuffixResidueCount; intCharLocInExceptionChars++)
                         {
                             if ((strResidueFollowingCleavageResidue ?? "") == (Strings.Mid(strExceptionSuffixResidues, intCharLocInExceptionChars, 1) ?? ""))
                             {
@@ -1787,7 +1775,7 @@ namespace MwtWinDll
             // Used to test by Rule Residues and Exception Residues
 
             string strCompareResidue;
-            for (int intCharIndex = 0, loopTo = strRuleResidues.Length - 1; intCharIndex <= loopTo; intCharIndex++)
+            for (int intCharIndex = 0; intCharIndex < strRuleResidues.Length; intCharIndex++)
             {
                 strCompareResidue = strRuleResidues.Substring(intCharIndex, 1).Trim();
                 if (strCompareResidue.Length > 0)
@@ -1930,8 +1918,7 @@ namespace MwtWinDll
 
             int lngIndex;
             var blnRemoved = default(bool);
-            var loopTo = ModificationSymbolCount;
-            for (lngIndex = 1; lngIndex <= loopTo; lngIndex++)
+            for (lngIndex = 1; lngIndex <= ModificationSymbolCount; lngIndex++)
             {
                 if ((ModificationSymbols[lngIndex].Symbol ?? "") == (strModSymbol ?? ""))
                 {
@@ -1960,8 +1947,7 @@ namespace MwtWinDll
             bool blnRemoved;
             if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
             {
-                var loopTo = ModificationSymbolCount - 1;
-                for (lngIndex = lngModificationID; lngIndex <= loopTo; lngIndex++)
+                for (lngIndex = lngModificationID; lngIndex < ModificationSymbolCount; lngIndex++)
                     ModificationSymbols[lngIndex] = ModificationSymbols[lngIndex + 1];
                 ModificationSymbolCount -= 1;
                 blnRemoved = true;
@@ -1988,8 +1974,7 @@ namespace MwtWinDll
             int lngIndex;
             if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
             {
-                var loopTo = ResidueCount - 1;
-                for (lngIndex = lngResidueNumber; lngIndex <= loopTo; lngIndex++)
+                for (lngIndex = lngResidueNumber; lngIndex < ResidueCount; lngIndex++)
                     Residues[lngIndex] = Residues[lngIndex + 1];
                 ResidueCount -= 1;
                 return 0;
@@ -2014,15 +1999,13 @@ namespace MwtWinDll
                 {
                     intOldIndexEnd = Residues.Length - 1;
                     Array.Resize(ref Residues, ResidueCountDimmed + 1);
-                    var loopTo = ResidueCountDimmed;
-                    for (intIndex = intOldIndexEnd + 1; intIndex <= loopTo; intIndex++)
+                    for (intIndex = intOldIndexEnd + 1; intIndex <= ResidueCountDimmed; intIndex++)
                         Residues[intIndex].Initialize(true);
                 }
                 else
                 {
                     Residues = new udtResidueType[ResidueCountDimmed + 1];
-                    var loopTo1 = ResidueCountDimmed;
-                    for (intIndex = 0; intIndex <= loopTo1; intIndex++)
+                    for (intIndex = 0; intIndex <= ResidueCountDimmed; intIndex++)
                         Residues[intIndex].Initialize(true);
                 }
             }
@@ -2223,8 +2206,7 @@ namespace MwtWinDll
             else
             {
                 // Make sure strModSymbol contains no letters, numbers, spaces, dashes, or periods
-                var loopTo = Strings.Len(strModSymbol);
-                for (lngIndex = 1; lngIndex <= loopTo; lngIndex++)
+                for (lngIndex = 0; lngIndex < strModSymbol.Length; lngIndex++)
                 {
                     strTestChar = Strings.Mid(strModSymbol, lngIndex, 1);
                     if (!ElementAndMassRoutines.IsModSymbolInternal(strTestChar))
@@ -2437,8 +2419,7 @@ namespace MwtWinDll
 
                 residue.ModificationIDCount = 0;
                 residue.Phosphorylated = false;
-                var loopTo = intModificationCount;
-                for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                for (intIndex = 1; intIndex <= intModificationCount; intIndex++)
                 {
                     lngNewModID = lngModificationIDsOneBased[intIndex];
                     if (lngNewModID >= 1 && lngNewModID <= ModificationSymbolCount)
@@ -2623,8 +2604,7 @@ namespace MwtWinDll
                         }
                     }
 
-                    var loopTo = lngSequenceStrLength;
-                    for (lngIndex = 1; lngIndex <= loopTo; lngIndex++)
+                    for (lngIndex = 0; lngIndex < lngSequenceStrLength; lngIndex++)
                     {
                         str1LetterSymbol = Strings.Mid(strSequence, lngIndex, 1);
                         if (char.IsLetter(Conversions.ToChar(str1LetterSymbol)))
@@ -2798,12 +2778,10 @@ namespace MwtWinDll
             while (lngIncrement > 0)
             {
                 // Sort by insertion in increments of lngIncrement
-                var loopTo = lngHighIndex;
-                for (lngIndex = lngLowIndex + lngIncrement; lngIndex <= loopTo; lngIndex++)
+                for (lngIndex = lngLowIndex + lngIncrement; lngIndex <= lngHighIndex; lngIndex++)
                 {
                     lngPointerSwap = PointerArray[lngIndex];
-                    var loopTo1 = lngLowIndex;
-                    for (lngIndexCompare = lngIndex - lngIncrement; -lngIncrement >= 0 ? lngIndexCompare <= loopTo1 : lngIndexCompare >= loopTo1; lngIndexCompare += -lngIncrement)
+                    for (lngIndexCompare = lngIndex - lngIncrement; lngIndexCompare >= lngLowIndex; lngIndexCompare += -lngIncrement)
                     {
                         // Use <= to sort ascending; Use > to sort descending
                         if (FragSpectrumWork[PointerArray[lngIndexCompare]].Mass <= FragSpectrumWork[lngPointerSwap].Mass)
@@ -2841,8 +2819,7 @@ namespace MwtWinDll
                 dblRunningTotal -= dblHydrogenMass;
             }
 
-            var loopTo = ResidueCount;
-            for (lngIndex = 1; lngIndex <= loopTo; lngIndex++)
+            for (lngIndex = 1; lngIndex <= ResidueCount; lngIndex++)
             {
                 var residue = Residues[lngIndex];
                 residue.Initialize();
@@ -2855,8 +2832,7 @@ namespace MwtWinDll
 
                     // Compute the mass, including the modifications
                     residue.MassWithMods = residue.Mass;
-                    var loopTo1 = residue.ModificationIDCount;
-                    for (intModIndex = 1; intModIndex <= loopTo1; intModIndex++)
+                    for (intModIndex = 1; intModIndex <= residue.ModificationIDCount; intModIndex++)
                     {
                         if (residue.ModificationIDs[intModIndex] <= ModificationSymbolCount)
                         {

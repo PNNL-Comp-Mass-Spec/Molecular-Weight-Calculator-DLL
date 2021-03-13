@@ -837,7 +837,7 @@ namespace MwtWinDll
             // Key is the element or abbreviation symbol, value is the number of each element or abbreviation
             var empiricalResultSymbols = new Dictionary<string, int>();
             var elementCountArray = GetElementCountArray(sortedElementStats.Count, lstPotentialElementPointers);
-            for (int intIndex = 0, loopTo = sortedElementStats.Count - 1; intIndex <= loopTo; intIndex++)
+            for (int intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
             {
                 if (elementCountArray[intIndex] != 0)
                 {
@@ -885,7 +885,7 @@ namespace MwtWinDll
                 intNumHalogens = intNumHalogens - (udtElementNum.C * 2 + 2) + udtElementNum.N + udtElementNum.P;
                 if (intNumHalogens >= 0)
                 {
-                    for (int intIndex = 1, loopTo = udtElementNum.N + udtElementNum.P; intIndex <= loopTo; intIndex++)
+                    for (int intIndex = 1; intIndex <= udtElementNum.N + udtElementNum.P; intIndex++)
                     {
                         correctedCharge += 2d;
                         intNumHalogens -= 1;
@@ -1057,7 +1057,7 @@ namespace MwtWinDll
                     int mzSearchChargeMin;
                     int mzSearchChargeMax;
                     MultipleSearchMath(sortedElementStats.Count, searchOptions, out mzSearchChargeMin, out mzSearchChargeMax);
-                    for (int currentMzCharge = mzSearchChargeMin, loopTo = mzSearchChargeMax; currentMzCharge <= loopTo; currentMzCharge++)
+                    for (int currentMzCharge = mzSearchChargeMin; currentMzCharge <= mzSearchChargeMax; currentMzCharge++)
                         // Call the RecursiveMWFinder repeatedly, sending dblTargetWeight * x each time to search for target, target*2, target*3, etc.
                         RecursiveMWFinder(lstResults, searchOptions, ppmMode, sortedElementStats, 0, lstPotentialElementPointers, 0d, targetMass * currentMzCharge, massToleranceDa, 0d, currentMzCharge);
                 }
@@ -1444,7 +1444,7 @@ namespace MwtWinDll
                 double dblMultipleSearchMaxWeight = targetMass * searchOptions.ChargeMax;
                 var sbEmpiricalFormula = new StringBuilder();
                 var lstRanges = new List<udtBoundedSearchRangeType>();
-                for (int elementIndex = 0, loopTo = sortedElementStats.Count - 1; elementIndex <= loopTo; elementIndex++)
+                for (int elementIndex = 0; elementIndex < sortedElementStats.Count; elementIndex++)
                 {
                     var udtBoundedSearchRange = new udtBoundedSearchRangeType()
                     {
@@ -1467,25 +1467,25 @@ namespace MwtWinDll
                 int potentialElementCount = sortedElementStats.Count;
 
                 // Determine the valid compounds
-                for (int j = lstRanges[0].Min, loopTo1 = lstRanges[0].Max; j <= loopTo1; j++)
+                for (int j = lstRanges[0].Min; j <= lstRanges[0].Max; j++)
                 {
-                    for (int k = lstRanges[1].Min, loopTo2 = lstRanges[1].Max; k <= loopTo2; k++)
+                    for (int k = lstRanges[1].Min; k <= lstRanges[1].Max; k++)
                     {
-                        for (int l = lstRanges[2].Min, loopTo3 = lstRanges[2].Max; l <= loopTo3; l++)
+                        for (int l = lstRanges[2].Min; l <= lstRanges[2].Max; l++)
                         {
-                            for (int m = lstRanges[3].Min, loopTo4 = lstRanges[3].Max; m <= loopTo4; m++)
+                            for (int m = lstRanges[3].Min; m <= lstRanges[3].Max; m++)
                             {
-                                for (int N = lstRanges[4].Min, loopTo5 = lstRanges[4].Max; N <= loopTo5; N++)
+                                for (int N = lstRanges[4].Min; N <= lstRanges[4].Max; N++)
                                 {
-                                    for (int O = lstRanges[5].Min, loopTo6 = lstRanges[5].Max; O <= loopTo6; O++)
+                                    for (int O = lstRanges[5].Min; O <= lstRanges[5].Max; O++)
                                     {
-                                        for (int P = lstRanges[6].Min, loopTo7 = lstRanges[6].Max; P <= loopTo7; P++)
+                                        for (int P = lstRanges[6].Min; P <= lstRanges[6].Max; P++)
                                         {
-                                            for (int q = lstRanges[7].Min, loopTo8 = lstRanges[7].Max; q <= loopTo8; q++)
+                                            for (int q = lstRanges[7].Min; q <= lstRanges[7].Max; q++)
                                             {
-                                                for (int r = lstRanges[8].Min, loopTo9 = lstRanges[8].Max; r <= loopTo9; r++)
+                                                for (int r = lstRanges[8].Min; r <= lstRanges[8].Max; r++)
                                                 {
-                                                    for (int s = lstRanges[9].Min, loopTo10 = lstRanges[9].Max; s <= loopTo10; s++)
+                                                    for (int s = lstRanges[9].Min; s <= lstRanges[9].Max; s++)
                                                     {
                                                         double totalMass = j * sortedElementStats[0].Mass;
                                                         double totalCharge = j * sortedElementStats[0].Charge;
@@ -1579,7 +1579,7 @@ namespace MwtWinDll
                                                                 }
 
                                                                 int intSubTrack = 0;
-                                                                for (int intIndex = 0, loopTo11 = potentialElementCount - 1; intIndex <= loopTo11; intIndex++)
+                                                                for (int intIndex = 0; intIndex < potentialElementCount; intIndex++)
                                                                 {
                                                                     if (Percent[intIndex] >= sortedElementStats[intIndex].PercentCompMinimum && Percent[intIndex] <= sortedElementStats[intIndex].PercentCompMaximum)
                                                                     {
@@ -1623,7 +1623,7 @@ namespace MwtWinDll
                                                         {
 
                                                             // When searchOptions.FindTargetMZ is false, ChargeMin and ChargeMax will be 1
-                                                            for (int intCurrentCharge = searchOptions.ChargeMin, loopTo12 = searchOptions.ChargeMax; intCurrentCharge <= loopTo12; intCurrentCharge++)
+                                                            for (int intCurrentCharge = searchOptions.ChargeMin; intCurrentCharge <= searchOptions.ChargeMax; intCurrentCharge++)
                                                             {
                                                                 double dblMatchWeight = targetMass * intCurrentCharge;
                                                                 if (totalMass <= dblMatchWeight + massToleranceDa && totalMass >= dblMatchWeight - massToleranceDa)
@@ -1754,7 +1754,7 @@ namespace MwtWinDll
             // Bubble sort
             for (int y = potentialElementCount - 1; y >= 1; y -= 1)       // Sort from end to start
             {
-                for (int x = 0, loopTo = y - 1; x <= loopTo; x++)
+                for (int x = 0; x < y; x++)
                 {
                     if (dblPotentialElementStats[x, 0] < dblPotentialElementStats[x + 1, 0])
                     {
@@ -1812,7 +1812,7 @@ namespace MwtWinDll
                 }
 
                 var sbEmpiricalFormula = new StringBuilder();
-                for (int intCurrentIndex = intStartIndex, loopTo = sortedElementStats.Count - 1; intCurrentIndex <= loopTo; intCurrentIndex++)
+                for (int intCurrentIndex = intStartIndex; intCurrentIndex < sortedElementStats.Count; intCurrentIndex++)
                 {
                     double totalMass = dblPotentialMassTotal + sortedElementStats[intCurrentIndex].Mass;
                     double totalCharge = potentialChargeTotal + sortedElementStats[intCurrentIndex].Charge;
@@ -1876,7 +1876,7 @@ namespace MwtWinDll
 
                             if (intExtra > 0)
                             {
-                                for (int intPointer = 1, loopTo1 = intExtra; intPointer <= loopTo1; intPointer++)
+                                for (int intPointer = 1; intPointer <= intExtra; intPointer++)
                                     lstNewPotentialElementPointers.Add(intCurrentIndex);
                             }
                         }
@@ -1916,7 +1916,7 @@ namespace MwtWinDll
 
                 var sbEmpiricalFormula = new StringBuilder();
                 const bool ppmMode = false;
-                for (int intCurrentIndex = intStartIndex, loopTo = sortedElementStats.Count - 1; intCurrentIndex <= loopTo; intCurrentIndex++)  // potentialElementCount >= 1, if 1, means just dblPotentialElementStats(0,0), etc.
+                for (int intCurrentIndex = intStartIndex; intCurrentIndex < sortedElementStats.Count; intCurrentIndex++)  // potentialElementCount >= 1, if 1, means just dblPotentialElementStats[0,0], etc.
                 {
                     double totalMass = dblPotentialMassTotal + sortedElementStats[intCurrentIndex].Mass;
                     double totalCharge = potentialChargeTotal + sortedElementStats[intCurrentIndex].Charge;
@@ -1941,12 +1941,12 @@ namespace MwtWinDll
                         {
 
                             // Compute % comp of each element
-                            for (int intIndex = 0, loopTo1 = sortedElementStats.Count - 1; intIndex <= loopTo1; intIndex++)
+                            for (int intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
                                 dblPotentialPercents[intIndex] = elementCountArray[intIndex] * sortedElementStats[intIndex].Mass / totalMass * 100d;
                             // If intPointerCount = 0 Then dblPotentialPercents(0) = 100
 
                             int intPercentTrack = 0;
-                            for (int intIndex = 0, loopTo2 = sortedElementStats.Count - 1; intIndex <= loopTo2; intIndex++)
+                            for (int intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
                             {
                                 if (dblPotentialPercents[intIndex] >= sortedElementStats[intIndex].PercentCompMinimum && dblPotentialPercents[intIndex] <= sortedElementStats[intIndex].PercentCompMaximum)
                                 {
@@ -1968,7 +1968,7 @@ namespace MwtWinDll
                                     var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
 
                                     // Add % composition info
-                                    for (int intIndex = 0, loopTo3 = sortedElementStats.Count - 1; intIndex <= loopTo3; intIndex++)
+                                    for (int intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
                                     {
                                         if (elementCountArray[intIndex] != 0)
                                         {

@@ -603,9 +603,7 @@ namespace MwtWinDll
 
             // Look for match, stepping directly through MasterSymbolsList()
             // List is sorted by reverse length, so can do all at once
-
-            var loopTo = MasterSymbolsListCount;
-            for (intIndex = 1; intIndex <= loopTo; intIndex++)
+            for (intIndex = 1; intIndex <= MasterSymbolsListCount; intIndex++)
             {
                 if (MasterSymbolsList[intIndex, 0].Length > 0)
                 {
@@ -885,8 +883,7 @@ namespace MwtWinDll
                     {
                         blnExplicitIsotopesPresent = true;
                         ExplicitIsotopeCount += element.IsotopeCount;
-                        var loopTo = element.IsotopeCount;
-                        for (IsotopeIndex = 1; IsotopeIndex <= loopTo; IsotopeIndex++)
+                        for (IsotopeIndex = 1; IsotopeIndex <= element.IsotopeCount; IsotopeIndex++)
                             element.Count = element.Count - element.Isotopes[IsotopeIndex].Count;
                     }
                 }
@@ -948,8 +945,7 @@ namespace MwtWinDll
                         var element = udtComputationStats.Elements[intElementIndex];
                         if (element.IsotopeCount > 0)
                         {
-                            var loopTo1 = element.IsotopeCount;
-                            for (IsotopeIndex = 1; IsotopeIndex <= loopTo1; IsotopeIndex++)
+                            for (IsotopeIndex = 1; IsotopeIndex <= element.IsotopeCount; IsotopeIndex++)
                             {
                                 intElementCount = (short)(intElementCount + 1);
                                 IsoStats[intElementCount].boolExplicitIsotope = true;
@@ -974,8 +970,7 @@ namespace MwtWinDll
 
                 // Predict the total number of computations required; show progress if necessary
                 PredictedTotalComboCalcs = 0;
-                var loopTo2 = intElementCount;
-                for (intElementIndex = 1; intElementIndex <= loopTo2; intElementIndex++)
+                for (intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
                 {
                     MasterElementIndex = IsoStats[intElementIndex].ElementIndex;
                     AtomCount = IsoStats[intElementIndex].AtomCount;
@@ -988,8 +983,7 @@ namespace MwtWinDll
 
                 // For each element, compute all of the possible combinations
                 CompletedComboCalcs = 0;
-                var loopTo3 = intElementCount;
-                for (intElementIndex = 1; intElementIndex <= loopTo3; intElementIndex++)
+                for (intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
                 {
                     MasterElementIndex = IsoStats[intElementIndex].ElementIndex;
                     AtomCount = IsoStats[intElementIndex].AtomCount;
@@ -1050,8 +1044,7 @@ namespace MwtWinDll
                     else
                     {
                         dblFractionalAbundanceSaved = 0d;
-                        var loopTo4 = CombosFound;
-                        for (ComboIndex = 1; ComboIndex <= loopTo4; ComboIndex++)
+                        for (ComboIndex = 1; ComboIndex <= CombosFound; ComboIndex++)
                         {
                             CompletedComboCalcs += 1;
                             sngPercentComplete = CompletedComboCalcs / (float)PredictedTotalComboCalcs * 100f;
@@ -1073,8 +1066,7 @@ namespace MwtWinDll
                                 AbundDenom = 1d;
                                 AbundSuffix = 1d;
                                 var stats = ElementStats[MasterElementIndex];
-                                var loopTo5 = IsotopeCount;
-                                for (IsotopeIndex = 1; IsotopeIndex <= loopTo5; IsotopeIndex++)
+                                for (IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                                 {
                                     IsotopeCountInThisCombo = IsoCombos[ComboIndex, IsotopeIndex];
                                     if (IsotopeCountInThisCombo > 0)
@@ -1096,18 +1088,15 @@ namespace MwtWinDll
                                     //
                                     blnRigorousMethodUsed = true;
                                     dblLogSigma = 0d;
-                                    var loopTo6 = AtomCount;
-                                    for (sigma = 1; sigma <= loopTo6; sigma++)
+                                    for (sigma = 1; sigma <= AtomCount; sigma++)
                                         dblLogSigma += Math.Log(sigma);
                                     dblSumI = 0d;
-                                    var loopTo7 = IsotopeCount;
-                                    for (IsotopeIndex = 1; IsotopeIndex <= loopTo7; IsotopeIndex++)
+                                    for (IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                                     {
                                         if (IsoCombos[ComboIndex, IsotopeIndex] > 0)
                                         {
                                             dblWorkingSum = 0d;
-                                            var loopTo8 = IsoCombos[ComboIndex, IsotopeIndex];
-                                            for (SubIndex = 1; SubIndex <= loopTo8; SubIndex++)
+                                            for (SubIndex = 1; SubIndex <= IsoCombos[ComboIndex, IsotopeIndex]; SubIndex++)
                                                 dblWorkingSum += Math.Log(SubIndex);
                                             dblSumI += dblWorkingSum;
                                         }
@@ -1115,8 +1104,7 @@ namespace MwtWinDll
 
                                     var stats = ElementStats[MasterElementIndex];
                                     dblSumF = 0d;
-                                    var loopTo9 = IsotopeCount;
-                                    for (IsotopeIndex = 1; IsotopeIndex <= loopTo9; IsotopeIndex++)
+                                    for (IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                                     {
                                         if (stats.Isotopes[IsotopeIndex].Abundance > 0f)
                                         {
@@ -1138,16 +1126,14 @@ namespace MwtWinDll
                                     // #######
                                     //
                                     dblRatioOfFreqs = 1d;
-                                    var loopTo10 = IsotopeCount;
-                                    for (IsotopeIndex = 1; IsotopeIndex <= loopTo10; IsotopeIndex++)
+                                    for (IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                                     {
                                         intM = IsoCombos[ComboIndex, IsotopeIndex];
                                         intMPrime = IsoCombos[ComboIndex + 1, IsotopeIndex];
                                         if (intM > intMPrime)
                                         {
                                             dblLogSigma = 0d;
-                                            var loopTo11 = (int)Math.Round(intM);
-                                            for (SubIndex = (int)Math.Round(intMPrime) + 1; SubIndex <= loopTo11; SubIndex++)
+                                            for (SubIndex = (int)Math.Round(intMPrime) + 1; SubIndex <= (int)Math.Round(intM); SubIndex++)
                                                 dblLogSigma += Math.Log(SubIndex);
 
                                             dblLogRho = dblLogSigma - (intM - intMPrime) * Math.Log(ElementStats[MasterElementIndex].Isotopes[IsotopeIndex].Abundance);
@@ -1155,8 +1141,7 @@ namespace MwtWinDll
                                         else if (intM < intMPrime)
                                         {
                                             dblLogSigma = 0d;
-                                            var loopTo12 = (int)Math.Round(intMPrime);
-                                            for (SubIndex = (int)Math.Round(intM) + 1; SubIndex <= loopTo12; SubIndex++)
+                                            for (SubIndex = (int)Math.Round(intM) + 1; SubIndex <= (int)Math.Round(intMPrime); SubIndex++)
                                                 dblLogSigma += Math.Log(SubIndex);
 
                                             var stats = ElementStats[MasterElementIndex];
@@ -1221,8 +1206,7 @@ namespace MwtWinDll
                 // Step Through IsoStats from the end to the beginning, shortening the length to the
                 // first value greater than MIN_ABUNDANCE_TO_KEEP
                 // This greatly speeds up the convolution
-                var loopTo13 = intElementCount;
-                for (intElementIndex = 1; intElementIndex <= loopTo13; intElementIndex++)
+                for (intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
                 {
                     var stats = IsoStats[intElementIndex];
                     rowIndex = stats.ResultsCount;
@@ -1238,16 +1222,14 @@ namespace MwtWinDll
 
                 // Examine IsoStats() to predict the number of ConvolutionIterations
                 PredictedConvIterations = IsoStats[1].ResultsCount;
-                var loopTo14 = intElementCount;
-                for (intElementIndex = 2; intElementIndex <= loopTo14; intElementIndex++)
+                for (intElementIndex = 2; intElementIndex <= intElementCount; intElementIndex++)
                     PredictedConvIterations *= IsoStats[2].ResultsCount;
                 ResetProgress("Finding Isotopic Abundances: Convoluting results");
 
                 // Convolute the results for each element using a recursive convolution routine
                 long ConvolutionIterations;
                 ConvolutionIterations = 0L;
-                var loopTo15 = IsoStats[1].ResultsCount;
-                for (rowIndex = 1; rowIndex <= loopTo15; rowIndex++)
+                for (rowIndex = 1; rowIndex <= IsoStats[1].ResultsCount; rowIndex++)
                 {
                     ConvoluteMasses(ref ConvolutedAbundances, ConvolutedAbundanceStartMass, rowIndex, 1f, 0, 1, ref IsoStats, intElementCount, ref ConvolutionIterations);
                     sngPercentComplete = rowIndex / (float)IsoStats[1].ResultsCount * 100f;
@@ -1263,8 +1245,7 @@ namespace MwtWinDll
 
                 // Compute mass defect (difference of initial isotope's mass from integer mass)
                 dblExactBaseIsoMass = 0d;
-                var loopTo16 = intElementCount;
-                for (intElementIndex = 1; intElementIndex <= loopTo16; intElementIndex++)
+                for (intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
                 {
                     var stats = IsoStats[intElementIndex];
                     if (stats.boolExplicitIsotope)
@@ -1316,8 +1297,7 @@ namespace MwtWinDll
                 // Find Maximum Abundance
                 double dblMaxAbundance;
                 dblMaxAbundance = 0d;
-                var loopTo17 = ConvolutedMSDataCount;
-                for (massIndex = 1; massIndex <= loopTo17; massIndex++)
+                for (massIndex = 1; massIndex <= ConvolutedMSDataCount; massIndex++)
                 {
                     if (ConvolutedAbundances[massIndex].Abundance > dblMaxAbundance)
                     {
@@ -1329,8 +1309,7 @@ namespace MwtWinDll
                 // Also, if intChargeState is >= 1, then convolute the mass to the appropriate m/z
                 if (Math.Abs(dblMaxAbundance) < float.Epsilon)
                     dblMaxAbundance = 1d;
-                var loopTo18 = ConvolutedMSDataCount;
-                for (massIndex = 1; massIndex <= loopTo18; massIndex++)
+                for (massIndex = 1; massIndex <= ConvolutedMSDataCount; massIndex++)
                 {
                     var mass = ConvolutedAbundances[massIndex];
                     ConvolutedMSData2DOneBased[massIndex, 0] = ConvolutedAbundanceStartMass + massIndex - 1 + dblMassDefect;
@@ -1363,8 +1342,7 @@ namespace MwtWinDll
                 {
                     rowIndex -= 1;
                     // Remove rows from the start of ConvolutedMSData2DOneBased() since 0 mass
-                    var loopTo19 = ConvolutedMSDataCount;
-                    for (massIndex = rowIndex + 1; massIndex <= loopTo19; massIndex++)
+                    for (massIndex = rowIndex + 1; massIndex <= ConvolutedMSDataCount; massIndex++)
                     {
                         ConvolutedMSData2DOneBased[massIndex - rowIndex, 0] = ConvolutedMSData2DOneBased[massIndex, 0];
                         ConvolutedMSData2DOneBased[massIndex - rowIndex, 1] = ConvolutedMSData2DOneBased[massIndex, 1];
@@ -1374,8 +1352,7 @@ namespace MwtWinDll
                 }
 
                 // Write to strOutput
-                var loopTo20 = ConvolutedMSDataCount;
-                for (massIndex = 1; massIndex <= loopTo20; massIndex++)
+                for (massIndex = 1; massIndex <= ConvolutedMSDataCount; massIndex++)
                 {
                     strOutput = strOutput + SpacePadFront(ConvolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + Constants.vbTab;
                     strOutput = strOutput + (ConvolutedMSData2DOneBased[massIndex, 1] * dblMaxAbundance / 100d).ToString("0.0000000") + Constants.vbTab;
@@ -1548,8 +1525,7 @@ namespace MwtWinDll
 
                 // Compute the Gaussian data for each point in dblXVals()
 
-                var loopTo = XYVals.Count - 1;
-                for (intStickIndex = 0; intStickIndex <= loopTo; intStickIndex++)
+                for (intStickIndex = 0; intStickIndex < XYVals.Count; intStickIndex++)
                 {
                     if (intStickIndex % 25 == 0)
                     {
@@ -1580,8 +1556,7 @@ namespace MwtWinDll
                         }
                         else
                         {
-                            var loopTo1 = lstXYSummation.Count - 1;
-                            for (intSummationIndex = 0; intSummationIndex <= loopTo1; intSummationIndex++)
+                            for (intSummationIndex = 0; intSummationIndex < lstXYSummation.Count; intSummationIndex++)
                             {
                                 if (lstXYSummation[intSummationIndex].X >= dblMinimalXValOfWindow)
                                 {
@@ -1606,8 +1581,7 @@ namespace MwtWinDll
                     // Round ThisDataPoint.XVal to the nearest DeltaX
                     // If .XVal is not an even multiple of DeltaX then bump up .XVal until it is
                     udtThisDataPoint.X = RoundToEvenMultiple(udtThisDataPoint.X, DeltaX, true);
-                    var loopTo2 = intDataToAddCount - 1;
-                    for (intDataIndex = 0; intDataIndex <= loopTo2; intDataIndex++)
+                    for (intDataIndex = 0; intDataIndex < intDataToAddCount; intDataIndex++)
                     {
                         // Equation for Gaussian is: Amplitude * Exp[ -(x - mu)^2 / (2*dblSigma^2) ]
                         // Use intDataIndex, .YVal, and DeltaX
@@ -1640,8 +1614,7 @@ namespace MwtWinDll
                         blnAppendNewData = false;
                         // Step through lstXYSummation starting at intMinimalSummationIndex, looking for
                         // the index to start combining data at
-                        var loopTo3 = lstXYSummation.Count - 1;
-                        for (intSummationIndex = intMinimalSummationIndex; intSummationIndex <= loopTo3; intSummationIndex++)
+                        for (intSummationIndex = intMinimalSummationIndex; intSummationIndex < lstXYSummation.Count; intSummationIndex++)
                         {
                             if (Math.Round(lstDataToAdd[intDataIndex].X, MASS_PRECISION) <= Math.Round(lstXYSummation[intSummationIndex].X, MASS_PRECISION))
                             {
@@ -1763,8 +1736,7 @@ namespace MwtWinDll
                     blnIncludeAmino = false;
                 }
 
-                var loopTo = AbbrevAllCount;
-                for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                for (intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
                 {
                     var stats = AbbrevStats[intIndex];
                     // If blnIncludeAmino = False then do not include amino acids
@@ -1976,7 +1948,7 @@ namespace MwtWinDll
         private int FindIndexForNominalMass(ref int[,] IsoCombos, int ComboIndex, short IsotopeCount, int AtomCount, ref udtIsotopeInfoType[] ThisElementsIsotopes)
         {
             int workingMass = 0;
-            for (int IsotopeIndex = 1, loopTo = IsotopeCount; IsotopeIndex <= loopTo; IsotopeIndex++)
+            for (int IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                 workingMass = (int)Math.Round(workingMass + IsoCombos[ComboIndex, IsotopeIndex] * Math.Round(ThisElementsIsotopes[IsotopeIndex].Mass, 0));
 
             // (workingMass  - IsoStats(ElementIndex).StartingResultsMass) + 1
@@ -2022,8 +1994,7 @@ namespace MwtWinDll
             }
             else
             {
-                var loopTo = IsoStats[ElementTrack + 1].ResultsCount;
-                for (RowIndex = 1; RowIndex <= loopTo; RowIndex++)
+                for (RowIndex = 1; RowIndex <= IsoStats[ElementTrack + 1].ResultsCount; RowIndex++)
                     ConvoluteMasses(ref ConvolutedAbundances, ConvolutedAbundanceStartMass, RowIndex, NewAbundance, NewMassTotal, (short)(ElementTrack + 1), ref IsoStats, ElementCount, ref Iterations);
             }
         }
@@ -2186,15 +2157,12 @@ namespace MwtWinDll
                 else
                 {
                     // Initialize RunningSum()
-                    var loopTo = AtomCount;
-                    for (AtomIndex = 1; AtomIndex <= loopTo; AtomIndex++)
+                    for (AtomIndex = 1; AtomIndex <= AtomCount; AtomIndex++)
                         RunningSum[AtomIndex] = AtomIndex + 1;
-                    var loopTo1 = IsotopeCount;
-                    for (IsotopeIndex = 3; IsotopeIndex <= loopTo1; IsotopeIndex++)
+                    for (IsotopeIndex = 3; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                     {
                         PreviousComputedValue = IsotopeIndex;
-                        var loopTo2 = AtomCount;
-                        for (AtomIndex = 2; AtomIndex <= loopTo2; AtomIndex++)
+                        for (AtomIndex = 2; AtomIndex <= AtomCount; AtomIndex++)
                         {
                             // Compute new count for this AtomIndex
                             RunningSum[AtomIndex] = PreviousComputedValue + RunningSum[AtomIndex];
@@ -2267,8 +2235,7 @@ namespace MwtWinDll
                     // Went to a new row; if CurrentCol > 1 then need to assign previous values to previous columns
                     if (CurrentCol > 1)
                     {
-                        var loopTo = (short)(CurrentCol - 1);
-                        for (ColIndex = 1; ColIndex <= loopTo; ColIndex++)
+                        for (ColIndex = 1; ColIndex < CurrentCol; ColIndex++)
                             ComboResults[CurrentRow, ColIndex] = AtomTrackHistory[ColIndex];
                     }
 
@@ -2367,7 +2334,7 @@ namespace MwtWinDll
         /// <returns>ID if found, otherwise 0</returns>
         public int GetAbbreviationIDInternal(string strSymbol, bool blnAminoAcidsOnly)
         {
-            for (int index = 1, loopTo = AbbrevAllCount; index <= loopTo; index++)
+            for (int index = 1; index <= AbbrevAllCount; index++)
             {
                 if ((Strings.LCase(AbbrevStats[index].Symbol) ?? "") == (Strings.LCase(strSymbol) ?? ""))
                 {
@@ -2457,7 +2424,7 @@ namespace MwtWinDll
             string strReturnSymbol, strCompareSymbol;
             strReturnSymbol = "";
             // Use AbbrevStats() array to lookup code
-            for (int index = 1, loopTo = AbbrevAllCount; index <= loopTo; index++)
+            for (int index = 1; index <= AbbrevAllCount; index++)
             {
                 if (AbbrevStats[index].IsAminoAcid)
                 {
@@ -2504,8 +2471,7 @@ namespace MwtWinDll
         public int GetCautionStatementIDInternal(string strSymbolCombo)
         {
             short intIndex;
-            var loopTo = (short)CautionStatementCount;
-            for (intIndex = 1; intIndex <= loopTo; intIndex++)
+            for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
             {
                 if ((CautionStatements[intIndex, 0] ?? "") == (strSymbolCombo ?? ""))
                 {
@@ -2623,8 +2589,7 @@ namespace MwtWinDll
             {
                 var stats = ElementStats[intElementID];
                 intIsotopeCount = stats.IsotopeCount;
-                var loopTo = stats.IsotopeCount;
-                for (intIsotopeIndex = 1; intIsotopeIndex <= loopTo; intIsotopeIndex++)
+                for (intIsotopeIndex = 1; intIsotopeIndex <= stats.IsotopeCount; intIsotopeIndex++)
                 {
                     dblIsotopeMasses[intIsotopeIndex] = stats.Isotopes[intIsotopeIndex].Mass;
                     sngIsotopeAbundances[intIsotopeIndex] = stats.Isotopes[intIsotopeIndex].Abundance;
@@ -2795,8 +2760,7 @@ namespace MwtWinDll
             try
             {
                 blnFound = false;
-                var loopTo = (short)(udtAbbrevSymbolStack.Count - 1);
-                for (intIndex = 0; intIndex <= loopTo; intIndex++)
+                for (intIndex = 0; intIndex < udtAbbrevSymbolStack.Count; intIndex++)
                 {
                     if (udtAbbrevSymbolStack.SymbolReferenceStack[intIndex] == SymbolReference)
                     {
@@ -2873,8 +2837,7 @@ namespace MwtWinDll
 
             // Assume true until proven otherwise
             blnAllLetters = true;
-            var loopTo = (short)Strings.Len(strTest);
-            for (intIndex = 1; intIndex <= loopTo; intIndex++)
+            for (intIndex = 0; intIndex < strTest.Length; intIndex++)
             {
                 if (!char.IsLetter(Conversions.ToChar(Strings.Mid(strTest, intIndex, 1))))
                 {
@@ -2988,8 +2951,7 @@ namespace MwtWinDll
         private string LookupCautionStatement(string strCompareText)
         {
             short intIndex;
-            var loopTo = (short)CautionStatementCount;
-            for (intIndex = 1; intIndex <= loopTo; intIndex++)
+            for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
             {
                 if ((strCompareText ?? "") == (CautionStatements[intIndex, 0] ?? ""))
                 {
@@ -3136,8 +3098,7 @@ namespace MwtWinDll
             // Symbol                            Formula            1 letter abbreviation
             const short AminoAbbrevCount = 28;
             AbbrevAllCount = AminoAbbrevCount;
-            var loopTo = AbbrevAllCount;
-            for (intIndex = 1; intIndex <= loopTo; intIndex++)
+            for (intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
                 AbbrevStats[intIndex].IsAminoAcid = true;
             string argstrFormula = "C3H5NO";
             AddAbbreviationWork(1, "Ala", ref argstrFormula, 0f, true, "A", "Alanine");
@@ -3197,8 +3158,7 @@ namespace MwtWinDll
             AddAbbreviationWork(28, "Xxx", ref argstrFormula27, 0f, true, "X", "Unknown");
             const short NormalAbbrevCount = 16;
             AbbrevAllCount += NormalAbbrevCount;
-            var loopTo1 = AbbrevAllCount;
-            for (intIndex = AminoAbbrevCount + 1; intIndex <= loopTo1; intIndex++)
+            for (intIndex = AminoAbbrevCount + 1; intIndex <= AbbrevAllCount; intIndex++)
                 AbbrevStats[intIndex].IsAminoAcid = false;
             string argstrFormula28 = "C10H8N2";
             AddAbbreviationWork(AminoAbbrevCount + 1, "Bpy", ref argstrFormula28, 0f, false, "", "Bipyridine");
@@ -4084,8 +4044,7 @@ namespace MwtWinDll
                 // Alphabetize ElementAlph() array via bubble sort
                 for (intCompareIndex = ELEMENT_COUNT; intCompareIndex >= 2; intCompareIndex += -1) // Sort from end to start
                 {
-                    var loopTo = (short)(intCompareIndex - 1);
-                    for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                    for (intIndex = 1; intIndex < intCompareIndex; intIndex++)
                     {
                         if (Operators.CompareString(ElementAlph[intIndex], ElementAlph[intIndex + 1], false) > 0)
                         {
@@ -5293,7 +5252,7 @@ namespace MwtWinDll
 
                     // Formula does not contain >
                     // Parse it
-                    intCharIndex = 1;
+                    intCharIndex = 0;
                     do
                     {
                         strChar1 = Strings.Mid(strFormula, intCharIndex, 1);
@@ -5338,8 +5297,7 @@ namespace MwtWinDll
                                 {
                                     // search for closing parenthesis
                                     intParenthLevel = 1;
-                                    var loopTo = Strings.Len(strFormula);
-                                    for (intParenthClose = intCharIndex + 1; intParenthClose <= loopTo; intParenthClose++)
+                                    for (intParenthClose = intCharIndex + 1; intParenthClose < strFormula.Length; intParenthClose++)
                                     {
                                         switch (Strings.Mid(strFormula, intParenthClose, 1) ?? "")
                                         {
@@ -6041,8 +5999,7 @@ namespace MwtWinDll
             else
             {
                 // Start of string is a number or a decimal point, or (if allowed) a negative sign
-                var loopTo = (short)Strings.Len(strWork);
-                for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                for (intIndex = 0; intIndex < strWork.Length; intIndex++)
                 {
                     strWorking = Strings.Mid(strWork, intIndex, 1);
                     if (Information.IsNumeric(strWorking) || strWorking == Conversions.ToString(gComputationOptions.DecimalSeparator) || blnAllowNegative == true && strWorking == "-")
@@ -6065,8 +6022,7 @@ namespace MwtWinDll
                 {
                     // Check for more than one decimal point (. or ,)
                     intDecPtCount = 0;
-                    var loopTo1 = (short)Strings.Len(strFoundNum);
-                    for (intIndex = 1; intIndex <= loopTo1; intIndex++)
+                    for (intIndex = 0; intIndex < strFoundNum.Length; intIndex++)
                     {
                         if (Strings.Mid(strFoundNum, intIndex, 1) == Conversions.ToString(gComputationOptions.DecimalSeparator))
                             intDecPtCount = (short)(intDecPtCount + 1);
@@ -6149,8 +6105,7 @@ namespace MwtWinDll
 
             blnSuperFound = false;
             strWorkCharPrev = "";
-            var loopTo = Strings.Len(strWorkText);
-            for (intCharIndex = 1; intCharIndex <= loopTo; intCharIndex++)
+            for (intCharIndex = 0; intCharIndex < strWorkText.Length; intCharIndex++)
             {
                 strWorkChar = Strings.Mid(strWorkText, intCharIndex, 1);
                 if (strWorkChar == "%" && blnHighlightCharFollowingPercentSign)
@@ -6305,7 +6260,7 @@ namespace MwtWinDll
         /// </summary>
         public void RecomputeAbbreviationMassesInternal()
         {
-            for (int index = 1, loopTo = AbbrevAllCount; index <= loopTo; index++)
+            for (int index = 1; index <= AbbrevAllCount; index++)
             {
                 AbbrevStats[index].Mass = ComputeFormulaWeight(ref AbbrevStats[index].Formula);
             }
@@ -6331,7 +6286,7 @@ namespace MwtWinDll
         {
             var blnRemoved = default(bool);
             strAbbreviationSymbol = Strings.LCase(strAbbreviationSymbol);
-            for (int index = 1, loopTo = AbbrevAllCount; index <= loopTo; index++)
+            for (int index = 1; index <= AbbrevAllCount; index++)
             {
                 if ((Strings.LCase(AbbrevStats[index].Symbol) ?? "") == (strAbbreviationSymbol ?? ""))
                 {
@@ -6360,7 +6315,7 @@ namespace MwtWinDll
             bool blnRemoved;
             if (abbreviationID >= 1 && abbreviationID <= AbbrevAllCount)
             {
-                for (int indexRemove = abbreviationID, loopTo = AbbrevAllCount - 1; indexRemove <= loopTo; indexRemove++)
+                for (int indexRemove = abbreviationID; indexRemove < AbbrevAllCount; indexRemove++)
                     AbbrevStats[indexRemove] = AbbrevStats[indexRemove + 1];
                 AbbrevAllCount = (short)(AbbrevAllCount - 1);
                 ConstructMasterSymbolsList();
@@ -6390,13 +6345,11 @@ namespace MwtWinDll
         {
             short intIndex, intIndexRemove;
             var blnRemoved = default(bool);
-            var loopTo = (short)CautionStatementCount;
-            for (intIndex = 1; intIndex <= loopTo; intIndex++)
+            for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
             {
                 if ((CautionStatements[intIndex, 0] ?? "") == (strCautionSymbol ?? ""))
                 {
-                    var loopTo1 = (short)(CautionStatementCount - 1);
-                    for (intIndexRemove = intIndex; intIndexRemove <= loopTo1; intIndexRemove++)
+                    for (intIndexRemove = intIndex; intIndexRemove < CautionStatementCount; intIndexRemove++)
                     {
                         CautionStatements[intIndexRemove, 0] = CautionStatements[intIndexRemove + 1, 0];
                         CautionStatements[intIndexRemove, 1] = CautionStatements[intIndexRemove + 1, 1];
@@ -6654,7 +6607,7 @@ namespace MwtWinDll
 
             // See if the abbreviation is already present
             blnAlreadyPresent = false;
-            for (int index = 1, loopTo = AbbrevAllCount; index <= loopTo; index++)
+            for (int index = 1; index <= AbbrevAllCount; index++)
             {
                 if ((Strings.UCase(AbbrevStats[index].Symbol) ?? "") == (Strings.UCase(strSymbol) ?? ""))
                 {
@@ -6825,9 +6778,8 @@ namespace MwtWinDll
                 {
                     if (Strings.Len(strNewCautionStatement) > 0)
                     {
-                        // See if strSymbolCombo is present in CautionStatements()
-                        var loopTo = CautionStatementCount;
-                        for (intIndex = 1; intIndex <= loopTo; intIndex++)
+                        // See if strSymbolCombo is present in CautionStatements[]
+                        for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
                         {
                             if ((CautionStatements[intIndex, 0] ?? "") == (strSymbolCombo ?? ""))
                             {
@@ -6940,8 +6892,7 @@ namespace MwtWinDll
                     if (intIsotopeCount < 0)
                         intIsotopeCount = 0;
                     stats.IsotopeCount = intIsotopeCount;
-                    var loopTo = stats.IsotopeCount;
-                    for (intIsotopeIndex = 1; intIsotopeIndex <= loopTo; intIsotopeIndex++)
+                    for (intIsotopeIndex = 1; intIsotopeIndex <= stats.IsotopeCount; intIsotopeIndex++)
                     {
                         if (intIsotopeIndex > MAX_ISOTOPES)
                             break;
@@ -7031,13 +6982,13 @@ namespace MwtWinDll
             SymbolsStore = new string[highIndex + 1, 2];
 
             // MasterSymbolsList starts at lowIndex
-            for (int index = lowIndex, loopTo = highIndex; index <= loopTo; index++)
+            for (int index = lowIndex; index <= highIndex; index++)
                 PointerArray[index] = index;
             ShellSortSymbolsWork(ref PointerArray, lowIndex, highIndex);
 
             // Reassign MasterSymbolsList array according to PointerArray order
             // First, copy to a temporary array (I know it eats up memory, but I have no choice)
-            for (int index = lowIndex, loopTo1 = highIndex; index <= loopTo1; index++)
+            for (int index = lowIndex; index <= highIndex; index++)
             {
                 SymbolsStore[index, 0] = MasterSymbolsList[index, 0];
                 SymbolsStore[index, 1] = MasterSymbolsList[index, 1];
@@ -7045,7 +6996,7 @@ namespace MwtWinDll
 
             // Now, put them back into the MasterSymbolsList() array in the correct order
             // Use PointerArray() for this
-            for (int index = lowIndex, loopTo2 = highIndex; index <= loopTo2; index++)
+            for (int index = lowIndex; index <= highIndex; index++)
             {
                 MasterSymbolsList[index, 0] = SymbolsStore[PointerArray[index], 0];
                 MasterSymbolsList[index, 1] = SymbolsStore[PointerArray[index], 1];
@@ -7088,11 +7039,10 @@ namespace MwtWinDll
             while (incrementAmount > 0)
             {
                 // Sort by insertion in increments of incrementAmount
-                for (int index = lowIndex + incrementAmount, loopTo = highIndex; index <= loopTo; index++)
+                for (int index = lowIndex + incrementAmount; index <= highIndex; index++)
                 {
                     pointerSwap = PointerArray[index];
-                    var loopTo1 = lowIndex;
-                    for (indexCompare = index - incrementAmount; -incrementAmount >= 0 ? indexCompare <= loopTo1 : indexCompare >= loopTo1; indexCompare += -incrementAmount)
+                    for (indexCompare = index - incrementAmount; indexCompare >= lowIndex; indexCompare += -incrementAmount)
                     {
                         // Use <= to sort ascending; Use > to sort descending
                         // Sort by decreasing length
@@ -7153,11 +7103,10 @@ namespace MwtWinDll
             while (incrementAmount > 0)
             {
                 // sort by insertion in increments of incrementAmount
-                for (int index = lowIndex + incrementAmount, loopTo = highIndex; index <= loopTo; index++)
+                for (int index = lowIndex + incrementAmount; index <= highIndex; index++)
                 {
                     udtCompare = AbbrevStats[index];
-                    var loopTo1 = lowIndex;
-                    for (indexCompare = index - incrementAmount; -incrementAmount >= 0 ? indexCompare <= loopTo1 : indexCompare >= loopTo1; indexCompare += -incrementAmount)
+                    for (indexCompare = index - incrementAmount; indexCompare >= lowIndex; indexCompare += -incrementAmount)
                     {
                         // Use <= to sort ascending; Use > to sort descending
                         if (Operators.CompareString(AbbrevStats[indexCompare].Symbol, udtCompare.Symbol, false) <= 0)
@@ -7269,8 +7218,7 @@ namespace MwtWinDll
         {
             short intAbbrevIndex;
             var intInvalidAbbreviationCount = default(short);
-            var loopTo = AbbrevAllCount;
-            for (intAbbrevIndex = 1; intAbbrevIndex <= loopTo; intAbbrevIndex++)
+            for (intAbbrevIndex = 1; intAbbrevIndex <= AbbrevAllCount; intAbbrevIndex++)
             {
                 var stats = AbbrevStats[intAbbrevIndex];
                 SetAbbreviationByIDInternal(intAbbrevIndex, stats.Symbol, stats.Formula, stats.Charge, stats.IsAminoAcid, stats.OneLetterSymbol, stats.Comment, true);
