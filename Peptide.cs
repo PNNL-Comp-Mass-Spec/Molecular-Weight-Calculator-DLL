@@ -326,8 +326,7 @@ namespace MwtWinDll
                 for (intSubPartLength = strModSymbolGroup.Length; intSubPartLength >= 1; intSubPartLength -= 1)
                 {
                     // See if the modification is already defined
-                    string argstrModSymbol = strModSymbolGroup.Substring(0, intSubPartLength);
-                    intModificationID = GetModificationSymbolID(ref argstrModSymbol);
+                    intModificationID = GetModificationSymbolID(strModSymbolGroup.Substring(0, intSubPartLength));
                     if (intModificationID > 0)
                     {
                         blnMatchFound = true;
@@ -819,7 +818,7 @@ namespace MwtWinDll
             return ModificationSymbolCount;
         }
 
-        public int GetModificationSymbolID(ref string strModSymbol)
+        public int GetModificationSymbolID(string strModSymbol)
         {
             // Returns the ID for a given modification
             // Returns 0 if not found, the ID if found
@@ -1082,47 +1081,43 @@ namespace MwtWinDll
 
         public string GetTrypticName(string strProteinResidues, string strPeptideResidues)
         {
-            int arglngReturnResidueStart = 0;
-            int arglngReturnResidueEnd = 0;
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+            return GetTrypticName(strProteinResidues, strPeptideResidues, out _, out _, false,
                                   TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
         public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
             int lngProteinSearchStartLoc)
         {
-            int arglngReturnResidueStart = 0;
-            int arglngReturnResidueEnd = 0;
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+            return GetTrypticName(strProteinResidues, strPeptideResidues, out _, out _, false,
                                   TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, lngProteinSearchStartLoc);
         }
 
         public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd)
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, false,
+            return GetTrypticName(strProteinResidues, strPeptideResidues, out lngReturnResidueStart, out lngReturnResidueEnd, false,
                                   TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
         public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd,
             bool blnICR2LSCompatible)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible,
+            return GetTrypticName(strProteinResidues, strPeptideResidues, out lngReturnResidueStart, out lngReturnResidueEnd, blnICR2LSCompatible,
                                   TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
         public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd,
             bool blnICR2LSCompatible,
             string strRuleResidues,
             string strExceptionResidues,
             string strTerminiiSymbol)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible,
+            return GetTrypticName(strProteinResidues, strPeptideResidues, out lngReturnResidueStart, out lngReturnResidueEnd, blnICR2LSCompatible,
                                   strRuleResidues, strExceptionResidues, strTerminiiSymbol, true, 1);
         }
 
@@ -1144,8 +1139,8 @@ namespace MwtWinDll
         /// <returns></returns>
         /// <remarks></remarks>
         public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd,
             bool blnICR2LSCompatible,
             string strRuleResidues,
             string strExceptionResidues,
@@ -1317,11 +1312,8 @@ namespace MwtWinDll
         public string GetTrypticNameMultipleMatches(string strProteinResidues,
             string strPeptideResidues)
         {
-            int arglngReturnMatchCount = 0;
-            int arglngReturnResidueStart = 0;
-            int arglngReturnResidueEnd = 0;
             return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+                                                 out _, out _, out _, false,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
@@ -1329,11 +1321,8 @@ namespace MwtWinDll
             string strPeptideResidues,
             int lngProteinSearchStartLoc)
         {
-            int arglngReturnMatchCount = 0;
-            int arglngReturnResidueStart = 0;
-            int arglngReturnResidueEnd = 0;
             return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+                                                 out _, out _, out _, false,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
                                                  lngProteinSearchStartLoc, ", ");
         }
@@ -1343,50 +1332,47 @@ namespace MwtWinDll
             int lngProteinSearchStartLoc,
             string strListDelimiter)
         {
-            int arglngReturnMatchCount = 0;
-            int arglngReturnResidueStart = 0;
-            int arglngReturnResidueEnd = 0;
             return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 ref arglngReturnMatchCount, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, false,
+                                                 out _, out _, out _, false,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
                                                  lngProteinSearchStartLoc, strListDelimiter);
         }
 
         public string GetTrypticNameMultipleMatches(string strProteinResidues,
             string strPeptideResidues,
-            ref int lngReturnMatchCount,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd)
+            out int lngReturnMatchCount,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd)
         {
             return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, false,
+                                                 out lngReturnMatchCount, out lngReturnResidueStart, out lngReturnResidueEnd, false,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
         public string GetTrypticNameMultipleMatches(string strProteinResidues,
             string strPeptideResidues,
-            ref int lngReturnMatchCount,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd,
+            out int lngReturnMatchCount,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd,
             bool blnICR2LSCompatible)
         {
             return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible,
+                                                 out lngReturnMatchCount, out lngReturnResidueStart, out lngReturnResidueEnd, blnICR2LSCompatible,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
         public string GetTrypticNameMultipleMatches(string strProteinResidues,
             string strPeptideResidues,
-            ref int lngReturnMatchCount,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd,
+            out int lngReturnMatchCount,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd,
             bool blnICR2LSCompatible,
             string strRuleResidues,
             string strExceptionResidues,
             string strTerminiiSymbol)
         {
             return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 ref lngReturnMatchCount, ref lngReturnResidueStart, ref lngReturnResidueEnd, blnICR2LSCompatible,
+                                                 out lngReturnMatchCount, out lngReturnResidueStart, out lngReturnResidueEnd, blnICR2LSCompatible,
                                                  strRuleResidues, strExceptionResidues, strTerminiiSymbol, true, 1, ", ");
         }
 
@@ -1410,9 +1396,9 @@ namespace MwtWinDll
         /// <remarks></remarks>
         public string GetTrypticNameMultipleMatches(string strProteinResidues,
             string strPeptideResidues,
-            ref int lngReturnMatchCount,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd,
+            out int lngReturnMatchCount,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd,
             bool blnICR2LSCompatible,
             string strRuleResidues,
             string strExceptionResidues,
@@ -1433,11 +1419,13 @@ namespace MwtWinDll
 
             lngCurrentSearchLoc = lngProteinSearchStartLoc;
             lngReturnMatchCount = 0;
+            lngReturnResidueStart = 0;
+            lngReturnResidueEnd = 0;
             strNameList = string.Empty;
 
             do
             {
-                strCurrentName = GetTrypticName(strProteinResidues, strPeptideResidues, ref lngCurrentResidueStart, ref lngCurrentResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, blnIgnoreCase, lngCurrentSearchLoc);
+                strCurrentName = GetTrypticName(strProteinResidues, strPeptideResidues, out lngCurrentResidueStart, out lngCurrentResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, blnIgnoreCase, lngCurrentSearchLoc);
 
                 if (Strings.Len(strCurrentName) > 0)
                 {
@@ -1591,15 +1579,13 @@ namespace MwtWinDll
         public string GetTrypticPeptideNext(string strProteinResidues,
             int lngSearchStartLoc)
         {
-            int arglngReturnResidueStart = 0;
-            int arglngReturnResidueEnd = 0;
-            return GetTrypticPeptideNext(strProteinResidues, lngSearchStartLoc, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL);
+            return GetTrypticPeptideNext(strProteinResidues, lngSearchStartLoc, out _, out _, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL);
         }
 
         public string GetTrypticPeptideNext(string strProteinResidues,
             int lngSearchStartLoc,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd,
             string strRuleResidues,
             string strExceptionResidues,
             string strTerminiiSymbol)
@@ -1612,6 +1598,9 @@ namespace MwtWinDll
 
             int lngRuleResidueLoc;
             int lngProteinResiduesLength;
+
+            lngReturnResidueStart = 1;
+            lngReturnResidueEnd = 1;
 
             if (lngSearchStartLoc < 1)
                 lngSearchStartLoc = 1;
@@ -1648,26 +1637,24 @@ namespace MwtWinDll
         public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
             short intDesiredPeptideNumber)
         {
-            int arglngReturnResidueStart = 0;
-            int arglngReturnResidueEnd = 0;
-            return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber, ref arglngReturnResidueStart, ref arglngReturnResidueEnd,
+            return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber, out _, out _,
                                                      TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
         }
 
         public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
             short intDesiredPeptideNumber,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd)
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd)
         {
             return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber,
-                                                     ref lngReturnResidueStart, ref lngReturnResidueEnd,
+                                                     out lngReturnResidueStart, out lngReturnResidueEnd,
                                                      TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
         }
 
         public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
             short intDesiredPeptideNumber,
-            ref int lngReturnResidueStart,
-            ref int lngReturnResidueEnd,
+            out int lngReturnResidueStart,
+            out int lngReturnResidueEnd,
             string strRuleResidues,
             string strExceptionResidues,
             string strTerminiiSymbol,
@@ -1693,6 +1680,9 @@ namespace MwtWinDll
             short intCurrentTrypticPeptideNumber;
 
             string strMatchingFragment;
+
+            lngReturnResidueStart = 1;
+            lngReturnResidueEnd = 1;
 
             if (intDesiredPeptideNumber < 1)
             {
@@ -1771,19 +1761,18 @@ namespace MwtWinDll
             string strExceptionSuffixResidues,
             bool blnAllowPartialCleavage)
         {
-            short argintRuleMatchCount = 0;
             return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
-                                                    blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, ref argintRuleMatchCount);
+                                                    blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, out _);
         }
 
         public bool CheckSequenceAgainstCleavageRule(string strSequence,
             string strRuleResidues,
             string strExceptionSuffixResidues,
             bool blnAllowPartialCleavage,
-            ref short intRuleMatchCount)
+            out short intRuleMatchCount)
         {
             return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
-                                                    blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, ref intRuleMatchCount);
+                                                    blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, out intRuleMatchCount);
         }
 
         public bool CheckSequenceAgainstCleavageRule(string strSequence,
@@ -1794,9 +1783,8 @@ namespace MwtWinDll
             string strTerminiiSymbol,
             bool blnIgnoreCase)
         {
-            short argintRuleMatchCount = 0;
             return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
-                                                    blnAllowPartialCleavage, strSeparationChar, strTerminiiSymbol, blnIgnoreCase, ref argintRuleMatchCount);
+                                                    blnAllowPartialCleavage, strSeparationChar, strTerminiiSymbol, blnIgnoreCase, out _);
         }
 
         public bool CheckSequenceAgainstCleavageRule(string strSequence,
@@ -1806,7 +1794,7 @@ namespace MwtWinDll
             string strSeparationChar,
             string strTerminiiSymbol,
             bool blnIgnoreCase,
-            ref short intRuleMatchCount)
+            out short intRuleMatchCount)
         {
             // Checks strSequence to see if it matches the cleavage rule
             // Returns True if valid, False if invalid
@@ -2435,7 +2423,7 @@ namespace MwtWinDll
                 if (lngErrorID == 0)
                 {
                     // See if the modification is alrady present
-                    lngIndexToUse = GetModificationSymbolID(ref strModSymbol);
+                    lngIndexToUse = GetModificationSymbolID(strModSymbol);
 
                     if (lngIndexToUse == 0)
                     {
@@ -3212,28 +3200,19 @@ namespace MwtWinDll
                 dblChargeCarrierMass = ElementAndMassRoutines.GetChargeCarrierMassInternal();
 
                 // Update standard mass values
-                string argstrFormula = "HOH";
-                dblHOHMass = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula);
-                string argstrFormula1 = "NH3";
-                dblNH3Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula1);
-                string argstrFormula2 = "H3PO4";
-                dblH3PO4Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula2);
-                string argstrFormula3 = "H";
-                dblHydrogenMass = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula3);
+                dblHOHMass = ElementAndMassRoutines.ComputeFormulaWeight("HOH");
+                dblNH3Mass = ElementAndMassRoutines.ComputeFormulaWeight("NH3");
+                dblH3PO4Mass = ElementAndMassRoutines.ComputeFormulaWeight("H3PO4");
+                dblHydrogenMass = ElementAndMassRoutines.ComputeFormulaWeight("H");
 
                 // Phosphorylation is the loss of OH and the addition of H2PO4, for a net change of HPO3
-                string argstrFormula4 = "HPO3";
-                dblPhosphorylationMass = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula4);
+                dblPhosphorylationMass = ElementAndMassRoutines.ComputeFormulaWeight("HPO3");
 
                 // The immonium mass is equal to the mass of CO minus the mass of H, thus typically 26.9871
-                string argstrFormula5 = "CO";
-                dblImmoniumMassDifference = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula5) - dblHydrogenMass;
-                string argstrFormula6 = "His";
-                dblHistidineFW = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula6);
-                string argstrFormula7 = "Phe";
-                dblPhenylalanineFW = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula7);
-                string argstrFormula8 = "Tyr";
-                dblTyrosineFW = ElementAndMassRoutines.ComputeFormulaWeight(ref argstrFormula8);
+                dblImmoniumMassDifference = ElementAndMassRoutines.ComputeFormulaWeight("CO") - dblHydrogenMass;
+                dblHistidineFW = ElementAndMassRoutines.ComputeFormulaWeight("His");
+                dblPhenylalanineFW = ElementAndMassRoutines.ComputeFormulaWeight("Phe");
+                dblTyrosineFW = ElementAndMassRoutines.ComputeFormulaWeight("Tyr");
 
                 ElementAndMassRoutines.SetElementModeInternal(eElementModeSaved);
             }

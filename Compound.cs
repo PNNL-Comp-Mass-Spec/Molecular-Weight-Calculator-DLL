@@ -269,7 +269,7 @@ namespace MwtWinDll
             // mStrFormattedFormula is passed ByRef
             // If gComputationOptions.CaseConversion = ccConvertCaseUp then mStrFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
-            ElementAndMassRoutines.ParseFormulaPublic(ref mStrFormattedFormula, ref mComputationStats, false, ref mValueForX);
+            ElementAndMassRoutines.ParseFormulaPublic(ref mStrFormattedFormula, ref mComputationStats, false, mValueForX);
 
             ElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
 

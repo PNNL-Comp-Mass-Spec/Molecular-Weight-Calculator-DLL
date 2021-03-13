@@ -571,10 +571,7 @@ namespace MwtWinDll
             ref string strFormula, ref float sngCharge,
             ref bool blnIsAminoAcid)
         {
-            string argstrOneLetterSymbol = "";
-            string argstrComment = "";
-            bool argblnInvalidSymbolOrFormula = false;
-            return GetAbbreviation(intAbbreviationID, ref strSymbol, ref strFormula, ref sngCharge, ref blnIsAminoAcid, ref argstrOneLetterSymbol, ref argstrComment, ref argblnInvalidSymbolOrFormula);
+            return GetAbbreviation(intAbbreviationID, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out _, out _, out _);
         }
 
         /// <summary>
@@ -588,14 +585,13 @@ namespace MwtWinDll
         /// <param name="strOneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="strComment">Output: comment</param>
         /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol,
-            ref string strFormula, ref float sngCharge,
-            ref bool blnIsAminoAcid,
-            ref string strOneLetterSymbol,
-            ref string strComment)
+        public int GetAbbreviation(int intAbbreviationID, out string strSymbol,
+            out string strFormula, out float sngCharge,
+            out bool blnIsAminoAcid,
+            out string strOneLetterSymbol,
+            out string strComment)
         {
-            bool argblnInvalidSymbolOrFormula = false;
-            return GetAbbreviation(intAbbreviationID, ref strSymbol, ref strFormula, ref sngCharge, ref blnIsAminoAcid, ref strOneLetterSymbol, ref strComment, ref argblnInvalidSymbolOrFormula);
+            return GetAbbreviation(intAbbreviationID, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out strOneLetterSymbol, out strComment, out _);
         }
 
         /// <summary>
@@ -610,12 +606,12 @@ namespace MwtWinDll
         /// <param name="strComment">Output: comment</param>
         /// <param name="blnInvalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
         /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol,
-            ref string strFormula, ref float sngCharge,
-            ref bool blnIsAminoAcid,
-            ref string strOneLetterSymbol,
-            ref string strComment,
-            ref bool blnInvalidSymbolOrFormula)
+        public int GetAbbreviation(int intAbbreviationID, out string strSymbol,
+            out string strFormula, out float sngCharge,
+            out bool blnIsAminoAcid,
+            out string strOneLetterSymbol,
+            out string strComment,
+            out bool blnInvalidSymbolOrFormula)
         {
             return mElementAndMassRoutines.GetAbbreviationInternal(
                 intAbbreviationID, out strSymbol, out strFormula,

@@ -502,7 +502,7 @@ namespace MwtWinDll
         /// <param name="blnInvalidSymbolOrFormula"></param>
         /// <returns><paramref name="strFormula"/> with format standardized by ParseFormulaPublic</returns>
         private string AddAbbreviationWork(
-            short intAbbrevIndex,  string strSymbol,
+            short intAbbrevIndex, string strSymbol,
             string strFormula, float sngCharge,
             bool blnIsAminoAcid,
             string strOneLetter = "",
@@ -651,6 +651,17 @@ namespace MwtWinDll
             }
 
             return eSymbolMatchType;
+        }
+
+        /// <summary>
+        /// Compute the weight of a formula (or abbreviation)
+        /// </summary>
+        /// <param name="strFormula">Input</param>
+        /// <returns>The formula mass, or -1 if an error occurs</returns>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
+        public double ComputeFormulaWeight(string strFormula)
+        {
+            return ComputeFormulaWeight(ref strFormula);
         }
 
         /// <summary>
@@ -1089,9 +1100,8 @@ namespace MwtWinDll
 
                     AtomTrackHistory = new int[(IsotopeCount + 1)];
                     AtomTrackHistory[1] = AtomCount;
-                    int argCurrentRow = 1;
 
-                    CombosFound = FindCombosRecurse(ref IsoCombos, AtomCount, IsotopeCount, IsotopeCount, ref argCurrentRow, 1, ref AtomTrackHistory);
+                    CombosFound = FindCombosRecurse(ref IsoCombos, AtomCount, IsotopeCount, IsotopeCount, 1, 1, ref AtomTrackHistory);
 
                     // The predicted value should always match the actual value, unless blnExplicitIsotopesPresent = True
                     if (!blnExplicitIsotopesPresent)
@@ -2339,12 +2349,10 @@ namespace MwtWinDll
             int AtomCount,
             short MaxIsotopeCount,
             short CurrentIsotopeCount,
-            ref int CurrentRow,
+            int CurrentRow,
             short CurrentCol,
             ref int[] AtomTrackHistory)
         {
-            int FindCombosRecurseRet = default;
-
             // IsoCombos() is a 2D array holding the # of each isotope for each combination
             // For example, Two chlorine atoms, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
             // m1  m2  m3
@@ -2391,7 +2399,7 @@ namespace MwtWinDll
                     {
                         intNewColumn = (short)(CurrentCol + 1);
                         AtomTrackHistory[intNewColumn - 1] = AtomTrack;
-                        FindCombosRecurse(ref ComboResults, AtomCount - AtomTrack, MaxIsotopeCount, (short)(CurrentIsotopeCount - 1), ref CurrentRow, intNewColumn, ref AtomTrackHistory);
+                        CurrentRow = FindCombosRecurse(ref ComboResults, AtomCount - AtomTrack, MaxIsotopeCount, (short)(CurrentIsotopeCount - 1), CurrentRow, intNewColumn, ref AtomTrackHistory);
                     }
                     else
                     {
@@ -2402,8 +2410,7 @@ namespace MwtWinDll
                 // Reached AtomTrack = 0; end recursion
             }
 
-            FindCombosRecurseRet = CurrentRow;
-            return FindCombosRecurseRet;
+            return CurrentRow;
         }
 
         public void GeneralErrorHandler(string strCallingProcedure, int errorNumber)
@@ -5192,8 +5199,7 @@ namespace MwtWinDll
             ref string strFormula,
             ref udtComputationStatsType udtComputationStats)
         {
-            double argdblValueForX = 1d;
-            return ParseFormulaPublic(ref strFormula, ref udtComputationStats, false, ref argdblValueForX);
+            return ParseFormulaPublic(ref strFormula, ref udtComputationStats, false, 1);
         }
 
         /// <summary>
@@ -5208,8 +5214,7 @@ namespace MwtWinDll
             ref udtComputationStatsType udtComputationStats,
             bool blnExpandAbbreviations)
         {
-            double argdblValueForX = 1d;
-            return ParseFormulaPublic(ref strFormula, ref udtComputationStats, blnExpandAbbreviations, ref argdblValueForX);
+            return ParseFormulaPublic(ref strFormula, ref udtComputationStats, blnExpandAbbreviations, 1);
         }
 
         /// <summary>
@@ -5228,7 +5233,7 @@ namespace MwtWinDll
             ref string strFormula,
             ref udtComputationStatsType udtComputationStats,
             bool blnExpandAbbreviations,
-            ref double dblValueForX)
+            double dblValueForX)
         {
             short intElementIndex;
             double dblStdDevSum;
@@ -5251,7 +5256,7 @@ namespace MwtWinDll
                 if (Strings.Len(strFormula) > 0)
                 {
                     int argCarbonOrSiliconReturnCount = 0;
-                    strFormula = ParseFormulaRecursive(strFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, blnExpandAbbreviations, ref dblStdDevSum, dblValueForX: dblValueForX, CarbonOrSiliconReturnCount: ref argCarbonOrSiliconReturnCount);
+                    strFormula = ParseFormulaRecursive(strFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, blnExpandAbbreviations, ref dblStdDevSum, ref argCarbonOrSiliconReturnCount, dblValueForX);
                 }
 
                 // Copy udtComputationStats to mComputationStatsSaved
@@ -5528,8 +5533,7 @@ namespace MwtWinDll
                                                     intParenthLevel -= 1;
                                                     if (intParenthLevel == 0)
                                                     {
-                                                        string argstrWork = Strings.Mid(strFormula, intParenthClose + 1);
-                                                        dblAdjacentNum = ParseNum(ref argstrWork, out intNumLength);
+                                                        dblAdjacentNum = ParseNum(Strings.Mid(strFormula, intParenthClose + 1), out intNumLength);
                                                         CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                                         if (dblAdjacentNum < 0d)
@@ -5593,8 +5597,7 @@ namespace MwtWinDll
 
                             case 45: // -
                                 // Used to denote a leading coefficient
-                                string argstrWork1 = strChar2 + strChar3 + strCharRemain;
-                                dblAdjacentNum = ParseNum(ref argstrWork1, out intNumLength);
+                                dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
                                 CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                 if (dblAdjacentNum > 0d)
@@ -5628,7 +5631,7 @@ namespace MwtWinDll
                                 if (intCharIndex == 1)
                                 {
                                     // Formula starts with a number -- multiply section by number (until next dash)
-                                    dblAdjacentNum = ParseNum(ref strFormulaExcerpt, out intNumLength);
+                                    dblAdjacentNum = ParseNum(strFormulaExcerpt, out intNumLength);
                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                     if (dblAdjacentNum >= 0d)
@@ -5666,8 +5669,7 @@ namespace MwtWinDll
                                 {
                                     if (strChar3 == "e")
                                     {
-                                        string argstrWork2 = strChar2 + strChar3 + strCharRemain;
-                                        dblAdjacentNum = ParseNum(ref argstrWork2, out intNumLength);
+                                        dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
                                         CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
                                     }
                                     else
@@ -5678,8 +5680,7 @@ namespace MwtWinDll
                                 }
                                 else
                                 {
-                                    string argstrWork3 = strChar2 + strChar3 + strCharRemain;
-                                    dblAdjacentNum = ParseNum(ref argstrWork3, out intNumLength);
+                                    dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
                                 }
 
@@ -5710,8 +5711,7 @@ namespace MwtWinDll
                                 break;
 
                             case 93: // ]
-                                string argstrWork4 = strChar2 + strChar3 + strCharRemain;
-                                dblAdjacentNum = ParseNum(ref argstrWork4, out intNumLength);
+                                dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
                                 CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                 if (dblAdjacentNum >= 0d)
@@ -5763,8 +5763,7 @@ namespace MwtWinDll
                                             intSymbolLength = 1;
                                         }
                                         // Look for number after element
-                                        string argstrWork5 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
-                                        dblAdjacentNum = ParseNum(ref argstrWork5, out intNumLength);
+                                        dblAdjacentNum = ParseNum(Strings.Mid(strFormula, intCharIndex + intSymbolLength), out intNumLength);
                                         CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                         if (dblAdjacentNum < 0d)
@@ -5929,8 +5928,7 @@ namespace MwtWinDll
                                             intSymbolLength = Strings.Len(AbbrevStats[SymbolReference].Symbol);
 
                                             // Look for number after abbrev/amino
-                                            string argstrWork6 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
-                                            dblAdjacentNum = ParseNum(ref argstrWork6, out intNumLength);
+                                            dblAdjacentNum = ParseNum(Strings.Mid(strFormula, intCharIndex + intSymbolLength), out intNumLength);
                                             CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                             if (dblAdjacentNum < 0d)
@@ -5972,8 +5970,7 @@ namespace MwtWinDll
                                                     strReplace = AbbrevStats[SymbolReference].Formula;
 
                                                     // Look for a number after the abbreviation or amino acid
-                                                    string argstrWork7 = Strings.Mid(strFormula, intCharIndex + intSymbolLength);
-                                                    dblAdjacentNum = ParseNum(ref argstrWork7, out intNumLength);
+                                                    dblAdjacentNum = ParseNum(Strings.Mid(strFormula, intCharIndex + intSymbolLength), out intNumLength);
                                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                                     if (Conversions.ToBoolean(Strings.InStr(strReplace, ">")))
@@ -6043,8 +6040,7 @@ namespace MwtWinDll
                                 break;
 
                             case 94: // ^ (caret)
-                                string argstrWork8 = strChar2 + strChar3 + strCharRemain;
-                                dblAdjacentNum = ParseNum(ref argstrWork8, out intNumLength);
+                                dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
                                 CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                 if (ErrorParams.ErrorID != 0)
@@ -6175,7 +6171,7 @@ namespace MwtWinDll
         /// <summary>
         /// Looks for a number and returns it if found
         /// </summary>
-        /// <param name="strWork">Input/Output</param>
+        /// <param name="strWork">Input</param>
         /// <param name="intNumLength">Output: length of the number</param>
         /// <param name="blnAllowNegative"></param>
         /// <returns>
@@ -6189,7 +6185,7 @@ namespace MwtWinDll
         /// -3 = No number at all or (more likely) no number after decimal point
         /// -4 = More than one decimal point
         /// </remarks>
-        private double ParseNum(ref string strWork, out int intNumLength, bool blnAllowNegative = false)
+        private double ParseNum(string strWork, out int intNumLength, bool blnAllowNegative = false)
         {
             double ParseNumRet = default;
             string strWorking, strFoundNum;
@@ -6999,7 +6995,7 @@ namespace MwtWinDll
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
                             double argdblStdDevSum = 0d;
                             int argCarbonOrSiliconReturnCount = 0;
-                            strFormula = ParseFormulaRecursive(strFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, false, ref argdblStdDevSum, CarbonOrSiliconReturnCount: ref argCarbonOrSiliconReturnCount);
+                            strFormula = ParseFormulaRecursive(strFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, false, ref argdblStdDevSum, ref argCarbonOrSiliconReturnCount);
 
                             if (ErrorParams.ErrorID != 0)
                             {

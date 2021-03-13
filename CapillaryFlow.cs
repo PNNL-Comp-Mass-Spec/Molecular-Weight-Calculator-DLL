@@ -329,8 +329,7 @@ namespace MwtWinDll
                         ComputeLinearVelocity();
                         break;
                     case acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime:
-                        double argdblNewBackPressure = 0d;
-                        ComputeVolFlowRateUsingDeadTime(out argdblNewBackPressure);
+                        ComputeVolFlowRateUsingDeadTime(out _);
                         break;
                     default:
                         // Includes acmVolFlowRate

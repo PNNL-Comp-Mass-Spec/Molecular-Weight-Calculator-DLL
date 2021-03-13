@@ -1342,7 +1342,7 @@ namespace MwtWinDll
                         bool blnIsAminoAcid;
                         mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out matchedAbbrevSymbol, out abbrevFormula, out sngCharge, out blnIsAminoAcid);
 
-                        dblMass = mElementAndMassRoutines.ComputeFormulaWeight(ref abbrevFormula);
+                        dblMass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
 
                         candidateElement.Mass = dblMass;
 
@@ -1444,7 +1444,7 @@ namespace MwtWinDll
                         bool blnIsAminoAcid;
                         mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out matchedAbbrevSymbol, out abbrevFormula, out sngCharge, out blnIsAminoAcid);
 
-                        dblMass = mElementAndMassRoutines.ComputeFormulaWeight(ref abbrevFormula);
+                        dblMass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
 
                         // Returns weight of element/abbreviation, but also charge
                         dblPotentialElementStats[potentialElementCount, 0] = dblMass;

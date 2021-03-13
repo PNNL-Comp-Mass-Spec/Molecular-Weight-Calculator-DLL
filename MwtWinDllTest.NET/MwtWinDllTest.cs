@@ -747,7 +747,7 @@ namespace MwtWinDllTest
             lngItemCount = mMwtWin.GetAbbreviationCount();
             for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
-                intResult = mMwtWin.GetAbbreviation(intIndex, ref strSymbol, ref strFormula, ref sngCharge, ref blnIsAminoAcid, ref strOneLetterSymbol, ref strComment);
+                intResult = mMwtWin.GetAbbreviation(intIndex, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out strOneLetterSymbol, out strComment);
                 Debug.Assert(intResult == 0, "");
                 Debug.Assert(mMwtWin.GetAbbreviationID(strSymbol) == intIndex, "");
 
@@ -1275,7 +1275,7 @@ namespace MwtWinDllTest
             objResults.AppendText("Testing GetTrypticPeptideByFragmentNumber function");
             for (lngIndex = 1; lngIndex <= 43; lngIndex++)
             {
-                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, ref lngResidueStart, ref lngResidueEnd);
+                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out lngResidueStart, out lngResidueEnd);
                 //strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(lngIndex))
                 //
                 //Debug.Assert strPeptideFragMwtWin = strPeptideFragIcr2ls
@@ -1296,7 +1296,7 @@ namespace MwtWinDllTest
             lngIndex = 1;
             do
             {
-                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, ref lngResidueStart, ref lngResidueEnd);
+                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out lngResidueStart, out lngResidueEnd);
                 objResults.AppendText("Tryptic fragment " + Strings.Trim(lngIndex.ToString()) + ": " + strPeptideFragMwtWin);
                 lngIndex += 1;
             }
@@ -1337,9 +1337,7 @@ namespace MwtWinDllTest
                         }
 
                         strPeptideResidues = Strings.Mid(strProtein, lngResidueStart, lngResidueEnd);
-                        int arglngReturnResidueStart = 0;
-                        int arglngReturnResidueEnd = 0;
-                        strPeptideNameMwtWin[lngMwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(strProtein, strPeptideResidues, ref arglngReturnResidueStart, ref arglngReturnResidueEnd, true);
+                        strPeptideNameMwtWin[lngMwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(strProtein, strPeptideResidues, out _, out _, true);
 
                         lngMwtWinResultCount += 1;
                         if (lngMwtWinResultCount > lngMwtWinDimCount)

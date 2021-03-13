@@ -905,8 +905,7 @@ namespace MwtWinDll
 
             // Recompute
             ComputeQuantityAmount();
-            double argdblNewDilutingSolventVolume = 0d;
-            this.ComputeDilutionRequiredStockAndDilutingSolventVolumes(out argdblNewDilutingSolventVolume);
+            ComputeDilutionRequiredStockAndDilutingSolventVolumes(out _);
 
             SetAutoComputeDilutionEnabled(true);
             SetAutoComputeQuantityEnabled(true);
