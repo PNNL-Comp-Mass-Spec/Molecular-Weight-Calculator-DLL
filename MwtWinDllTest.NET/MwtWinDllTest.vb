@@ -839,7 +839,7 @@ Friend Class frmMwtWinDllTest
 
                 ' Confirm that auto-compute worked
 
-                objResults.AppendText("Vol flow rate: " & .ComputeVolFlowRateUsingDeadTime(MwtWinDll.CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin, dblNewPressure, MwtWinDll.CapillaryFlow.uprUnitsPressureConstants.uprPsi) & "  (confirmation of computed volumetric flow rate)")
+                objResults.AppendText("Vol flow rate: " & .ComputeVolFlowRateUsingDeadTime(dblNewPressure, MwtWinDll.CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin, MwtWinDll.CapillaryFlow.uprUnitsPressureConstants.uprPsi) & "  (confirmation of computed volumetric flow rate)")
                 objResults.AppendText("New pressure: " & dblNewPressure)
 
                 objResults.AppendText("")

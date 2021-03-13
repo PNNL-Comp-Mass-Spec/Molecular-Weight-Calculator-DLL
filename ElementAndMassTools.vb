@@ -4259,7 +4259,7 @@ Public Class ElementAndMassTools
             mStrCautionDescription = ""
 
             If Len(strFormula) > 0 Then
-                strFormula = ParseFormulaRecursive(strFormula, udtComputationStats, udtAbbrevSymbolStack, blnExpandAbbreviations, dblStdDevSum, dblValueForX)
+                strFormula = ParseFormulaRecursive(strFormula, udtComputationStats, udtAbbrevSymbolStack, blnExpandAbbreviations, dblStdDevSum, dblValueForX:= dblValueForX)
             End If
 
             ' Copy udtComputationStats to mComputationStatsSaved
@@ -4302,12 +4302,12 @@ Public Class ElementAndMassTools
     ''' <param name="udtAbbrevSymbolStack"></param>
     ''' <param name="blnExpandAbbreviations"></param>
     ''' <param name="dblStdDevSum">Sum of the squares of the standard deviations</param>
+    ''' <param name="CarbonOrSiliconReturnCount">Tracks the number of carbon and silicon atoms found; used when correcting for charge inside parentheses or inside an abbreviation</param>
     ''' <param name="dblValueForX"></param>
     ''' <param name="intCharCountPrior"></param>
     ''' <param name="dblParenthMultiplier">The value to multiply all values by if inside parentheses</param>
     ''' <param name="dblDashMultiplierPrior"></param>
     ''' <param name="dblBracketMultiplierPrior"></param>
-    ''' <param name="CarbonOrSiliconReturnCount">Tracks the number of carbon and silicon atoms found; used when correcting for charge inside parentheses or inside an abbreviation</param>
     ''' <param name="intParenthLevelPrevious"></param>
     ''' <returns>Formatted formula</returns>
     Private Function ParseFormulaRecursive(
@@ -4316,12 +4316,12 @@ Public Class ElementAndMassTools
        ByRef udtAbbrevSymbolStack As udtAbbrevSymbolStackType,
        blnExpandAbbreviations As Boolean,
        ByRef dblStdDevSum As Double,
+       Optional ByRef CarbonOrSiliconReturnCount As Integer = 0,
        Optional dblValueForX As Double = 1.0#,
        Optional intCharCountPrior As Integer = 0,
        Optional dblParenthMultiplier As Double = 1.0#,
        Optional dblDashMultiplierPrior As Double = 1.0#,
        Optional dblBracketMultiplierPrior As Double = 1.0#,
-       Optional ByRef CarbonOrSiliconReturnCount As Integer = 0,
        Optional intParenthLevelPrevious As Short = 0) As String
 
         ' ( and ) are 40 and 41   - is 45   { and } are 123 and 125
@@ -4393,13 +4393,13 @@ Public Class ElementAndMassTools
                         strRightHalf = Mid(strFormula, intCharIndex + 1)
 
                         ' Parse the first half
-                        strNewFormula = ParseFormulaRecursive(strLeftHalf, udtComputationStats, udtAbbrevSymbolStack, blnExpandAbbreviations, dblStdDevSum, dblValueForX, intCharCountPrior, dblParenthMultiplier, dblDashMultiplier, dblBracketMultiplier, CarbonOrSiliconReturnCount, intParenthLevelPrevious)
+                        strNewFormula = ParseFormulaRecursive(strLeftHalf, udtComputationStats, udtAbbrevSymbolStack, blnExpandAbbreviations, dblStdDevSum, CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior, dblParenthMultiplier, dblDashMultiplier, dblBracketMultiplier, intParenthLevelPrevious)
 
                         ' Parse the second half
                         InitializeComputationStats(udtComputationStatsRightHalf)
                         InitializeAbbrevSymbolStack(udtAbbrevSymbolStackRightHalf)
 
-                        strNewFormulaRightHalf = ParseFormulaRecursive(strRightHalf, udtComputationStatsRightHalf, udtAbbrevSymbolStackRightHalf, blnExpandAbbreviations, dblStdDevSumRightHalf, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier, dblDashMultiplier, dblBracketMultiplier, CarbonOrSiliconReturnCount, intParenthLevelPrevious)
+                        strNewFormulaRightHalf = ParseFormulaRecursive(strRightHalf, udtComputationStatsRightHalf, udtAbbrevSymbolStackRightHalf, blnExpandAbbreviations, dblStdDevSumRightHalf, CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier, dblDashMultiplier, dblBracketMultiplier, intParenthLevelPrevious)
 
                         Exit Do
                     End If
@@ -4505,7 +4505,7 @@ Public Class ElementAndMassTools
                                                     strSubFormula = Mid(strFormula, intCharIndex + 1, intParenthClose - (intCharIndex + 1))
 
                                                     ' Note, must pass dblParenthMultiplier * dblAdjacentNum to preserve previous parentheses stuff
-                                                    strNewFormula = ParseFormulaRecursive(strSubFormula, udtComputationStats, udtAbbrevSymbolStack, blnExpandAbbreviations, dblStdDevSum, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, CarbonOrSiliconReturnCount, intParenthLevelPrevious + 1S)
+                                                    strNewFormula = ParseFormulaRecursive(strSubFormula, udtComputationStats, udtAbbrevSymbolStack, blnExpandAbbreviations, dblStdDevSum, CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, intParenthLevelPrevious + 1S)
 
                                                     ' If expanding abbreviations, then strNewFormula might be longer than strFormula, must add this onto intCharIndex also
                                                     intExpandAbbrevAdd = Len(strNewFormula) - Len(strSubFormula)
@@ -4807,7 +4807,7 @@ Public Class ElementAndMassTools
 
                                             ' When parsing an abbreviation, do not pass on the value of blnExpandAbbreviations
                                             ' This way, an abbreviation containing an abbreviation will only get expanded one level
-                                            ParseFormulaRecursive(AbbrevStats(SymbolReference).Formula, udtComputationStats, udtAbbrevSymbolStack, False, dblStdDevSum, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, CarbonOrSiliconReturnCount, intParenthLevelPrevious)
+                                            ParseFormulaRecursive(AbbrevStats(SymbolReference).Formula, udtComputationStats, udtAbbrevSymbolStack, False, dblStdDevSum, CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, intParenthLevelPrevious)
 
                                             ' Update the charge to sngChargeSaved
                                             udtComputationStats.Charge = sngChargeSaved

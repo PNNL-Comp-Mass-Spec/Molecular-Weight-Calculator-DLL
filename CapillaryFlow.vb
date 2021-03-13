@@ -1,5 +1,7 @@
 Option Strict On
 
+Imports System.Runtime.InteropServices
+
 Public Class CapillaryFlow
 
     ' Molecular Weight Calculator routines with ActiveX Class interfaces: CapillaryFlow
@@ -670,13 +672,13 @@ Public Class CapillaryFlow
     ''' Computes the Volumetric flow rate using the dead time, stores in .VolumetricFlowRate, and returns it
     ''' This requires modifying the pressure value to give the computed volumetric flow rate
     ''' </summary>
-    ''' <param name="eUnits"></param>
     ''' <param name="dblNewBackPressure">Output: new back pressure</param>
+    ''' <param name="eUnits"></param>
     ''' <param name="ePressureUnits"></param>
     ''' <returns></returns>
     Public Function ComputeVolFlowRateUsingDeadTime(
+      <Out> Optional ByRef dblNewBackPressure As Double = 0,
       Optional eUnits As ufrUnitsFlowRateConstants = ufrUnitsFlowRateConstants.ufrNLPerMin,
-      Optional ByRef dblNewBackPressure As Double = 0,
       Optional ePressureUnits As uprUnitsPressureConstants = uprUnitsPressureConstants.uprPsi) As Double
 
         Dim dblVolFlowRate, dblRadius As Double

@@ -1,5 +1,7 @@
 Option Strict On
 
+Imports System.Runtime.InteropServices
+
 Public Class MoleMassDilution
 
     ' Molecular Weight Calculator routines with ActiveX Class interfaces: MoleMassDilution
@@ -221,8 +223,8 @@ Public Class MoleMassDilution
     ''' <param name="eDilutingSolventUnits"></param>
     ''' <returns></returns>
     Public Function ComputeDilutionRequiredStockAndDilutingSolventVolumes(
+      <Out> Optional ByRef dblNewDilutingSolventVolume As Double = 0,
       Optional eStockSolutionUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML,
-      Optional ByRef dblNewDilutingSolventVolume As Double = 0,
       Optional eDilutingSolventUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
 
         With mDilutionValues
@@ -249,13 +251,13 @@ Public Class MoleMassDilution
     ''' <summary>
     ''' Compute the total volume following the dilution, storing in .TotalFinalVolume, and returning it
     ''' </summary>
-    ''' <param name="eTotalVolumeUnits"></param>
     ''' <param name="dblNewDilutingSolventVolume">Output: diluting solvent volume</param>
+    ''' <param name="eTotalVolumeUnits"></param>
     ''' <param name="eDilutingSolventUnits"></param>
     ''' <returns></returns>
     Public Function ComputeDilutionTotalVolume(
+      <Out> Optional ByRef dblNewDilutingSolventVolume As Double = 0,
       Optional eTotalVolumeUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML,
-      Optional ByRef dblNewDilutingSolventVolume As Double = 0,
       Optional eDilutingSolventUnits As uevUnitsExtendedVolumeConstants = uevUnitsExtendedVolumeConstants.uevML) As Double
 
         With mDilutionValues
