@@ -1178,19 +1178,19 @@ namespace MwtWinDllTest
             objResults.Show();
             objResults.SetText = string.Empty;
 
-            // '    Dim lngIcr2lsWorkTime As Long
-            // '    Dim lngIcr2lsTime As Long
-            // '    strPeptideFragIcr2ls As String
-            // '    lngICR2lsDimCount = DIM_CHUNK
-            // '    ReDim strPeptideNameIcr2ls(lngICR2lsDimCount)
-            // '
-            // '    Dim ICRTools As Object
-            // '
-            // '    Set ICRTools = CreateObject("ICR2LS.ICR2LScls")
-            // '
-            // '    objResults.AppendText("ICR2ls Version: " & ICRTools.ICR2LSversion)
+            //Dim lngIcr2lsWorkTime As Long
+            //Dim lngIcr2lsTime As Long
+            //strPeptideFragIcr2ls As String
+            //lngICR2lsDimCount = DIM_CHUNK
+            //ReDim strPeptideNameIcr2ls(lngICR2lsDimCount)
+            //
+            //Dim ICRTools As Object
+            //
+            //Set ICRTools = CreateObject("ICR2LS.ICR2LScls")
+            //
+            //objResults.AppendText("ICR2ls Version: " & ICRTools.ICR2LSversion)
 
-            // strProtein = "MGNISFLTGGNPSSPQSIAESIYQLENTSVVFLSAWQRTTPDFQRAARASQEAMLHLDHIVNEIMRNRDQLQADGTYTGSQLEGLLNISRAVSVSPVTRAEQDDLANYGPGNGVLPSAGSSISMEKLLNKIKHRRTNSANFRIGASGEHIFIIGVDKPNRQPDSIVEFIVGDFCQHCSDIAALI"
+            //strProtein = "MGNISFLTGGNPSSPQSIAESIYQLENTSVVFLSAWQRTTPDFQRAARASQEAMLHLDHIVNEIMRNRDQLQADGTYTGSQLEGLLNISRAVSVSPVTRAEQDDLANYGPGNGVLPSAGSSISMEKLLNKIKHRRTNSANFRIGASGEHIFIIGVDKPNRQPDSIVEFIVGDFCQHCSDIAALI"
 
             // Bigger protein
             strProtein = "MMKANVTKKTLNEGLGLLERVIPSRSSNPLLTALKVETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVRNLGGELVELELSGQELSVRSGGSDFKLQTGDIEAYPPLSFPAQADVSLDGGELSRAFSSVRYAASNEAFQAVFRGIKLEHHGESARVVASDGYRVAIRDFPASGDGKNLIIPARSVDELIRVLKDGEARFTYGDGMLTVTTDRVKMNLKLLDGDFPDYERVIPKDIKLQVTLPATALKEAVNRVAVLADKNANNRVEFLVSEGTLRLAAEGDYGRAQDTLSVTQGGTEQAMSLAFNARHVLDALGPIDGDAELLFSGSTSPAIFRARRWGRRVYGGHGHAARLRGLLRPLRGMSALAHHPESSPPLEPRPEFA";
@@ -1202,9 +1202,9 @@ namespace MwtWinDllTest
             for (lngIndex = 1; lngIndex <= 43; lngIndex++)
             {
                 strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, ref lngResidueStart, ref lngResidueEnd);
-                // '        strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(lngIndex))
-                // '
-                // '        Debug.Assert strPeptideFragMwtWin = strPeptideFragIcr2ls
+                //strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(lngIndex))
+                //
+                //Debug.Assert strPeptideFragMwtWin = strPeptideFragIcr2ls
 
                 if (Strings.Len(strPeptideFragMwtWin) > 1)
                 {
@@ -1279,55 +1279,54 @@ namespace MwtWinDllTest
                 Console.WriteLine("");
                 Console.WriteLine("MwtWin time (" + lngMwtWinResultCount + " peptides) = " + lngMwtWinWorkTime + " msec");
 
-                // '        lngIcr2lsResultCount = 0
-                // '        Debug.Print "Starting residue is ";
-                // '        lngStartTime = GetTickCount()
-                // '        For lngResidueStart = 1 To Len(strProtein)
-                // '            If lngResidueStart Mod 10 = 0 Then
-                // '                Debug.Print lngResidueStart & ", ";
-                // '                DoEvents
-                // '            End If
-                // '            ' Use DoEvents on every iteration since Icr2ls is quite slow
-                // '            DoEvents
-                // '
-                // '            For lngResidueEnd = 1 To Len(strProtein) - lngResidueStart
-                // '                If lngResidueEnd - lngResidueStart > 50 Then
-                // '                    Exit For
-                // '                End If
-                // '
-                // '                strPeptideResidues = Mid(strProtein, lngResidueStart, lngResidueEnd)
-                // '                strPeptideNameIcr2ls(lngIcr2lsResultCount) = ICRTools.TrypticName(strProtein, strPeptideResidues)
-                // '
-                // '                lngIcr2lsResultCount = lngIcr2lsResultCount + 1
-                // '                If lngIcr2lsResultCount > lngICR2lsDimCount Then
-                // '                    lngICR2lsDimCount = lngICR2lsDimCount + DIM_CHUNK
-                // '                    ReDim Preserve strPeptideNameIcr2ls(lngICR2lsDimCount)
-                // '                End If
-                // '            Next lngResidueEnd
-                // '        Next lngResidueStart
-                // '        lngStopTime = GetTickCount()
-                // '        lngIcr2lsWorkTime = lngStopTime - lngStartTime
-                // '        Debug.Print ""
-                // '        Debug.Print "Icr2ls time (" & lngMwtWinResultCount & " peptides) = " & lngIcr2lsWorkTime & " msec"
+                //lngIcr2lsResultCount = 0
+                //Debug.Print "Starting residue is ";
+                //lngStartTime = GetTickCount()
+                //For lngResidueStart = 1 To Len(strProtein)
+                //    If lngResidueStart Mod 10 = 0 Then
+                //        Debug.Print lngResidueStart & ", ";
+                //        DoEvents
+                //    End If
+                //    ' Use DoEvents on every iteration since Icr2ls is quite slow
+                //    DoEvents
+                //
+                //    For lngResidueEnd = 1 To Len(strProtein) - lngResidueStart
+                //        If lngResidueEnd - lngResidueStart > 50 Then
+                //            Exit For
+                //        End If
+                //
+                //        strPeptideResidues = Mid(strProtein, lngResidueStart, lngResidueEnd)
+                //        strPeptideNameIcr2ls(lngIcr2lsResultCount) = ICRTools.TrypticName(strProtein, strPeptideResidues)
+                //
+                //        lngIcr2lsResultCount = lngIcr2lsResultCount + 1
+                //        If lngIcr2lsResultCount > lngICR2lsDimCount Then
+                //            lngICR2lsDimCount = lngICR2lsDimCount + DIM_CHUNK
+                //            ReDim Preserve strPeptideNameIcr2ls(lngICR2lsDimCount)
+                //        End If
+                //    Next lngResidueEnd
+                //Next lngResidueStart
+                //lngStopTime = GetTickCount()
+                //lngIcr2lsWorkTime = lngStopTime - lngStartTime
+                //Debug.Print ""
+                //Debug.Print "Icr2ls time (" & lngMwtWinResultCount & " peptides) = " & lngIcr2lsWorkTime & " msec"
 
-                // '        ' Check that results match
-                // '        For lngIndex = 0 To lngMwtWinResultCount - 1
-                // '            If Left(strPeptideNameMwtWin(lngIndex), 1) = "t" Then
-                // '                If Val(Right(strPeptideNameMwtWin(lngIndex), 1)) < 5 Then
-                // '                    ' Icr2LS does not return the correct name when strPeptideResidues contains 5 or more tryptic peptides
-                // '                    If strPeptideNameMwtWin(lngIndex) <> strPeptideNameIcr2ls(lngIndex) Then
-                // '                        objResults.AppendText("Difference found, index = " & lngIndex & ", " & strPeptideNameMwtWin(lngIndex) & " vs. " & strPeptideNameIcr2ls(lngIndex))
-                // '                        blnDifferenceFound = True
-                // '                    End If
-                // '                End If
-                // '            Else
-                // '                If strPeptideNameMwtWin(lngIndex) <> strPeptideNameIcr2ls(lngIndex) Then
-                // '                    objResults.AppendText("Difference found, index = " & lngIndex & ", " & strPeptideNameMwtWin(lngIndex) & " vs. " & strPeptideNameIcr2ls(lngIndex))
-                // '                    blnDifferenceFound = True
-                // '                End If
-                // '            End If
-                // '        Next lngIndex
-
+                //' Check that results match
+                //For lngIndex = 0 To lngMwtWinResultCount - 1
+                //    If Left(strPeptideNameMwtWin(lngIndex), 1) = "t" Then
+                //        If Val(Right(strPeptideNameMwtWin(lngIndex), 1)) < 5 Then
+                //            ' Icr2LS does not return the correct name when strPeptideResidues contains 5 or more tryptic peptides
+                //            If strPeptideNameMwtWin(lngIndex) <> strPeptideNameIcr2ls(lngIndex) Then
+                //                objResults.AppendText("Difference found, index = " & lngIndex & ", " & strPeptideNameMwtWin(lngIndex) & " vs. " & strPeptideNameIcr2ls(lngIndex))
+                //                blnDifferenceFound = True
+                //            End If
+                //        End If
+                //    Else
+                //        If strPeptideNameMwtWin(lngIndex) <> strPeptideNameIcr2ls(lngIndex) Then
+                //            objResults.AppendText("Difference found, index = " & lngIndex & ", " & strPeptideNameMwtWin(lngIndex) & " vs. " & strPeptideNameIcr2ls(lngIndex))
+                //            blnDifferenceFound = True
+                //        End If
+                //    End If
+                //Next lngIndex
             }
 
             objResults.AppendText("Check of Tryptic Sequence functions Complete");

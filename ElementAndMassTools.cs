@@ -1425,8 +1425,8 @@ namespace MwtWinDll
                     strOutput = strOutput + SpacePadFront(ConvolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + Constants.vbTab;
                     strOutput = strOutput + (ConvolutedMSData2DOneBased[massIndex, 1] * dblMaxAbundance / 100d).ToString("0.0000000") + Constants.vbTab;
                     strOutput = strOutput + SpacePadFront(ConvolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + ControlChars.NewLine;
-                    // 'ToDo: Fix Multiplicity
-                    // 'strOutput = strOutput + ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + ControlChars.NewLine
+                    //ToDo: Fix Multiplicity
+                    //strOutput = strOutput + ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + ControlChars.NewLine
                 }
 
                 strResults = strOutput;
@@ -2120,69 +2120,69 @@ namespace MwtWinDll
 
 
         // Note: This function is unused
-        // 'Private Function FindCombinations(Optional ByRef AtomCount As Integer = 2, Optional ByRef IsotopeCount As Short = 2, Optional ByRef boolPrintOutput As Boolean = False) As Integer
-        // '    ' Find Combinations of atoms for a given number of atoms and number of potential isotopes
-        // '    ' Can print results to debug window
+        //Private Function FindCombinations(Optional ByRef AtomCount As Integer = 2, Optional ByRef IsotopeCount As Short = 2, Optional ByRef boolPrintOutput As Boolean = False) As Integer
+        //    ' Find Combinations of atoms for a given number of atoms and number of potential isotopes
+        //    ' Can print results to debug window
 
-        // '    Dim ComboResults(,) As Integer
-        // '    Dim AtomTrackHistory() As Integer
-        // '    Dim PredictedCombos, CombosFound As Integer
+        //    Dim ComboResults(,) As Integer
+        //    Dim AtomTrackHistory() As Integer
+        //    Dim PredictedCombos, CombosFound As Integer
 
-        // '    Dim strMessage As String
+        //    Dim strMessage As String
 
-        // '    PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount)
+        //    PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount)
 
-        // '    If PredictedCombos > 10000000 Then
-        // '        strMessage = "Too many combinations necessary for prediction of isotopic distribution: " & PredictedCombos.ToString("#,##0") & ControlChars.NewLine & "Please use a simpler formula or reduce the isotopic range defined for the element (currently " & IsotopeCount & ")"
-        // '        If mShowErrorMessageDialogs Then
-        // '            MsgBox(strMessage)
-        // '        End If
-        // '        LogMessage(strMessage, eMessageTypeConstants.ErrorMsg)
-        // '        Return -1
-        // '    End If
+        //    If PredictedCombos > 10000000 Then
+        //        strMessage = "Too many combinations necessary for prediction of isotopic distribution: " & PredictedCombos.ToString("#,##0") & ControlChars.NewLine & "Please use a simpler formula or reduce the isotopic range defined for the element (currently " & IsotopeCount & ")"
+        //        If mShowErrorMessageDialogs Then
+        //            MsgBox(strMessage)
+        //        End If
+        //        LogMessage(strMessage, eMessageTypeConstants.ErrorMsg)
+        //        Return -1
+        //    End If
 
-        // '    Try
-        // '        ReDim ComboResults(PredictedCombos, IsotopeCount)
+        //    Try
+        //        ReDim ComboResults(PredictedCombos, IsotopeCount)
 
-        // '        ReDim AtomTrackHistory(IsotopeCount)
-        // '        AtomTrackHistory(1) = AtomCount
+        //        ReDim AtomTrackHistory(IsotopeCount)
+        //        AtomTrackHistory(1) = AtomCount
 
-        // '        CombosFound = FindCombosRecurse(ComboResults, AtomCount, IsotopeCount, IsotopeCount, 1, 1, AtomTrackHistory)
+        //        CombosFound = FindCombosRecurse(ComboResults, AtomCount, IsotopeCount, IsotopeCount, 1, 1, AtomTrackHistory)
 
-        // '        Dim strOutput, strHeader As String
-        // '        Dim RowIndex As Integer
-        // '        Dim ColIndex As Short
-        // '        If boolPrintOutput Then
+        //        Dim strOutput, strHeader As String
+        //        Dim RowIndex As Integer
+        //        Dim ColIndex As Short
+        //        If boolPrintOutput Then
 
-        // '            strHeader = CombosFound & " combos found for " & AtomCount & " atoms for element with " & IsotopeCount & " isotopes"
-        // '            If CombosFound > 5000 Then
-        // '                strHeader = strHeader & ControlChars.NewLine & "Only displaying the first 5000 combinations"
-        // '            End If
+        //            strHeader = CombosFound & " combos found for " & AtomCount & " atoms for element with " & IsotopeCount & " isotopes"
+        //            If CombosFound > 5000 Then
+        //                strHeader = strHeader & ControlChars.NewLine & "Only displaying the first 5000 combinations"
+        //            End If
 
-        // '            System.Diagnostics.Debug.WriteLine(strHeader)
+        //            System.Diagnostics.Debug.WriteLine(strHeader)
 
-        // '            For RowIndex = 1 To CombosFound
-        // '                strOutput = ""
-        // '                For ColIndex = 1 To IsotopeCount
-        // '                    strOutput = strOutput & ComboResults(RowIndex, ColIndex) & vbTab
-        // '                Next ColIndex
-        // '                System.Diagnostics.Debug.WriteLine(strOutput)
-        // '                If RowIndex > 5000 Then Exit For
-        // '            Next RowIndex
+        //            For RowIndex = 1 To CombosFound
+        //                strOutput = ""
+        //                For ColIndex = 1 To IsotopeCount
+        //                    strOutput = strOutput & ComboResults(RowIndex, ColIndex) & vbTab
+        //                Next ColIndex
+        //                System.Diagnostics.Debug.WriteLine(strOutput)
+        //                If RowIndex > 5000 Then Exit For
+        //            Next RowIndex
 
-        // '            If CombosFound > 50 Then System.Diagnostics.Debug.WriteLine(strHeader)
+        //            If CombosFound > 50 Then System.Diagnostics.Debug.WriteLine(strHeader)
 
-        // '        End If
+        //        End If
 
-        // '        Return CombosFound
-        // '    Catch ex As Exception
-        // '        MwtWinDllErrorHandler("MwtWinDll|FindCombinations")
-        // '        ErrorParams.ErrorID = 590
-        // '        ErrorParams.ErrorPosition = 0
-        // '        Return -1
-        // '    End Try
+        //        Return CombosFound
+        //    Catch ex As Exception
+        //        MwtWinDllErrorHandler("MwtWinDll|FindCombinations")
+        //        ErrorParams.ErrorID = 590
+        //        ErrorParams.ErrorPosition = 0
+        //        Return -1
+        //    End Try
 
-        // 'End Function
+        //End Function
 
         /// <summary>
         /// Determines the number of Combo results (iterations) for the given
@@ -3329,11 +3329,11 @@ namespace MwtWinDll
             string argstrFormula43 = "H2NCONH2";
             AddAbbreviationWork(AminoAbbrevCount + 16, "Urea", ref argstrFormula43, 0f, false, "", "Urea");
 
-            // ' Note Asx or B is often used for Asp or Asn
-            // ' Note Glx or Z is often used for Glu or Gln
-            // ' Note X is often used for "unknown"
+            // Note Asx or B is often used for Asp or Asn
+            // Note Glx or Z is often used for Glu or Gln
+            // Note X is often used for "unknown"
             //
-            // ' Other amino acids without widely agreed upon 1 letter codes
+            // Other amino acids without widely agreed upon 1 letter codes
             //
             // FlexGridAddItems .grdAminoAcids, "Aminosuberic Acid", "Asu"     ' A pair of Cys residues bonded by S-S
             // FlexGridAddItems .grdAminoAcids, "Cystine", "Cyn"
