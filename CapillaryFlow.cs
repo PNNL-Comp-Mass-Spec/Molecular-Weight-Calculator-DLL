@@ -778,20 +778,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblConcentrationIn * dblFactor;
-            }
+
+            dblValue = dblConcentrationIn * dblFactor;
 
             dblFactor = FactorConcentration(eNewUnits, dblSampleMass);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertDiffusionCoefficient(double dblDiffusionCoefficientIn, udcDiffusionCoefficientConstants eCurrentUnits, udcDiffusionCoefficientConstants eNewUnits)
@@ -808,20 +804,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblDiffusionCoefficientIn * dblFactor;
-            }
+
+            dblValue = dblDiffusionCoefficientIn * dblFactor;
 
             dblFactor = FactorDiffusionCoeff(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertLength(double dblLengthIn, ulnUnitsLengthConstants eCurrentUnits, ulnUnitsLengthConstants eNewUnits)
@@ -838,20 +830,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblLengthIn * dblFactor;
-            }
+
+            dblValue = dblLengthIn * dblFactor;
 
             dblFactor = FactorLength(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertLinearVelocity(double dblLinearVelocityIn, ulvUnitsLinearVelocityConstants eCurrentUnits, ulvUnitsLinearVelocityConstants eNewUnits)
@@ -868,20 +856,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblLinearVelocityIn * dblFactor;
-            }
+
+            dblValue = dblLinearVelocityIn * dblFactor;
 
             dblFactor = FactorLinearVelocity(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertMassFlowRate(double dblMassFlowRateIn, umfMassFlowRateConstants eCurrentUnits, umfMassFlowRateConstants eNewUnits)
@@ -898,20 +882,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblMassFlowRateIn * dblFactor;
-            }
+
+            dblValue = dblMassFlowRateIn * dblFactor;
 
             dblFactor = FactorMassFlowRate(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertMoles(double dblMolesIn, umaMolarAmountConstants eCurrentUnits, umaMolarAmountConstants eNewUnits)
@@ -928,20 +908,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblMolesIn * dblFactor;
-            }
+
+            dblValue = dblMolesIn * dblFactor;
 
             dblFactor = FactorMoles(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertPressure(double dblPressureIn, uprUnitsPressureConstants eCurrentUnits, uprUnitsPressureConstants eNewUnits)
@@ -958,20 +934,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblPressureIn * dblFactor;
-            }
+
+            dblValue = dblPressureIn * dblFactor;
 
             dblFactor = FactorPressure(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertTemperature(double dblTemperatureIn, utpUnitsTemperatureConstants eCurrentUnits, utpUnitsTemperatureConstants eNewUnits)
@@ -1037,20 +1009,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblTimeIn * dblFactor;
-            }
+
+            dblValue = dblTimeIn * dblFactor;
 
             dblFactor = FactorTime(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertViscosity(double dblViscosityIn, uviUnitsViscosityConstants eCurrentUnits, uviUnitsViscosityConstants eNewUnits)
@@ -1067,20 +1035,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblViscosityIn * dblFactor;
-            }
+
+            dblValue = dblViscosityIn * dblFactor;
 
             dblFactor = FactorViscosity(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertVolFlowRate(double dblVolFlowRateIn, ufrUnitsFlowRateConstants eCurrentUnits, ufrUnitsFlowRateConstants eNewUnits)
@@ -1097,20 +1061,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblVolFlowRateIn * dblFactor;
-            }
+
+            dblValue = dblVolFlowRateIn * dblFactor;
 
             dblFactor = FactorVolFlowRate(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertVolume(double dblVolume, uvoUnitsVolumeConstants eCurrentUnits, uvoUnitsVolumeConstants eNewUnits)
@@ -1127,20 +1087,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblVolume * dblFactor;
-            }
+
+            dblValue = dblVolume * dblFactor;
 
             dblFactor = FactorVolume(eNewUnits);
             if (Math.Abs(dblFactor + 1d) < float.Epsilon || Math.Abs(dblFactor) < float.Epsilon)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         /// <summary>

@@ -70,10 +70,8 @@ namespace MolecularWeightCalculator
                 mStrFormattedFormula = strResult;
                 return strResult;
             }
-            else
-            {
-                return ErrorDescription;
-            }
+
+            return ErrorDescription;
         }
 
         public bool ElementPresent(short elementID)
@@ -83,10 +81,8 @@ namespace MolecularWeightCalculator
             {
                 return mComputationStats.Elements[elementID].Used;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public string ExpandAbbreviations()
@@ -101,10 +97,8 @@ namespace MolecularWeightCalculator
                 mStrFormattedFormula = strResult;
                 return strResult;
             }
-            else
-            {
-                return ErrorDescription;
-            }
+
+            return ErrorDescription;
         }
 
         public double GetAtomCountForElement(short intElementID)
@@ -116,10 +110,8 @@ namespace MolecularWeightCalculator
             {
                 return mComputationStats.Elements[intElementID].Count;
             }
-            else
-            {
-                return 0d;
-            }
+
+            return 0d;
         }
 
         public double GetPercentCompositionForElement(short intElementID)
@@ -131,10 +123,8 @@ namespace MolecularWeightCalculator
             {
                 return mComputationStats.PercentCompositions[intElementID].PercentComposition;
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         public string GetPercentCompositionForElementAsString(short elementId)
@@ -159,10 +149,8 @@ namespace MolecularWeightCalculator
 
                 return ElementAndMassRoutines.SpacePad(strElementSymbol, 4) + strPctComposition;
             }
-            else
-            {
-                return string.Empty;
-            }
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -280,15 +268,11 @@ namespace MolecularWeightCalculator
                     {
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
+
                     return false;
                 }
+
+                return false;
             }
 
             return XIsPresentAfterBracketRet;

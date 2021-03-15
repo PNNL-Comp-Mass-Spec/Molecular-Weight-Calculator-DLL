@@ -556,15 +556,13 @@ namespace MolecularWeightCalculator
                 Console.WriteLine("Cannot compute factorial of a number over 170.  Thus, cannot compute the combination.");
                 return -1;
             }
-            else if (a < b)
+
+            if (a < b)
             {
                 Console.WriteLine("First number should be greater than or equal to the second number");
                 return -1;
             }
-            else
-            {
-                return Factorial(a) / (Factorial(b) * Factorial(a - b));
-            }
+            return Factorial(a) / (Factorial(b) * Factorial(a - b));
         }
 
         /// <summary>
@@ -971,13 +969,11 @@ namespace MolecularWeightCalculator
                         {
                             break;
                         }
-                        else
-                        {
-                            correctedCharge += 2d;
-                            intNumHalogens -= 1;
-                            if (intNumHalogens <= 0)
-                                break;
-                        }
+
+                        correctedCharge += 2d;
+                        intNumHalogens -= 1;
+                        if (intNumHalogens <= 0)
+                            break;
                     }
                 }
             }
@@ -1085,10 +1081,8 @@ namespace MolecularWeightCalculator
             {
                 return 1d;
             }
-            else
-            {
-                return value * Factorial(value - 1);
-            }
+
+            return value * Factorial(value - 1);
         }
 
         private List<FormulaFinderResult> FindMatchesByMass(
@@ -1155,19 +1149,17 @@ namespace MolecularWeightCalculator
 
                 return lstResults;
             }
-            else
-            {
-                // Bounded search
-                const int maximumFormulaMass = 0;
 
-                var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
-                                                         searchOptions, ppmMode, eCalculationMode.MatchMolecularWeight,
-                                                         sortedElementStats);
+            // Bounded search
+            const int maximumFormulaMass = 0;
 
-                ComputeSortKeys(boundedSearchResults);
+            var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
+                searchOptions, ppmMode, eCalculationMode.MatchMolecularWeight,
+                sortedElementStats);
 
-                return boundedSearchResults;
-            }
+            ComputeSortKeys(boundedSearchResults);
+
+            return boundedSearchResults;
         }
 
         private List<FormulaFinderResult> FindMatchesByPercentCompositionWork(
@@ -1219,22 +1211,19 @@ namespace MolecularWeightCalculator
 
                 return lstResults;
             }
-            else
-            {
-                // Bounded search
+            // Bounded search
 
-                const int targetMass = 0;
-                const int massToleranceDa = 0;
-                const bool ppmMode = false;
+            const int targetMass = 0;
+            const int massToleranceDa = 0;
+            const bool ppmMode = false;
 
-                var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
-                                                         searchOptions, ppmMode, eCalculationMode.MatchPercentComposition,
-                                                         sortedElementStats);
+            var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
+                searchOptions, ppmMode, eCalculationMode.MatchPercentComposition,
+                sortedElementStats);
 
-                ComputeSortKeys(boundedSearchResults);
+            ComputeSortKeys(boundedSearchResults);
 
-                return boundedSearchResults;
-            }
+            return boundedSearchResults;
         }
 
         private List<FormulaFinderCandidateElement> GetCandidateElements(double percentTolerance = 0d)

@@ -27,10 +27,8 @@
             {
                 return Symbol + ": " + Mass.ToString("0.0000") + " Da, charge " + Charge.ToString();
             }
-            else
-            {
-                return OriginalName + "(" + Symbol + "): " + Mass.ToString("0.0000") + " Da, charge " + Charge.ToString();
-            }
+
+            return OriginalName + "(" + Symbol + "): " + Mass.ToString("0.0000") + " Da, charge " + Charge.ToString();
         }
     }
 }

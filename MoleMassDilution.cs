@@ -386,32 +386,26 @@ namespace MolecularWeightCalculator
 
                 return ConvertVolumeExtended(dblAmountIn, eCurrentVolumeUnits, eNewVolumeUnits);
             }
-            else
+
+            var dblSampleMass = mQuantity.SampleMass;
+            var dblSampleDensity = mQuantity.SampleDensity;
+
+            var dblFactor = FactorAmount(eCurrentUnits, dblSampleMass, dblSampleDensity);
+            double dblValue;
+            if (dblFactor < 0d)
             {
-                var dblSampleMass = mQuantity.SampleMass;
-                var dblSampleDensity = mQuantity.SampleDensity;
-
-                var dblFactor = FactorAmount(eCurrentUnits, dblSampleMass, dblSampleDensity);
-                double dblValue;
-                if (dblFactor < 0d)
-                {
-                    return -1;
-                }
-                else
-                {
-                    dblValue = dblAmountIn * dblFactor;
-                }
-
-                dblFactor = FactorAmount(eNewUnits, dblSampleMass, dblSampleDensity);
-                if (dblFactor <= 0d)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return dblValue / dblFactor;
-                }
+                return -1;
             }
+
+            dblValue = dblAmountIn * dblFactor;
+
+            dblFactor = FactorAmount(eNewUnits, dblSampleMass, dblSampleDensity);
+            if (dblFactor <= 0d)
+            {
+                return -1;
+            }
+
+            return dblValue / dblFactor;
         }
 
         /// <summary>
@@ -438,20 +432,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblConcentrationIn * dblFactor;
-            }
+
+            dblValue = dblConcentrationIn * dblFactor;
 
             dblFactor = FactorConcentration(eNewUnits, dblSampleMass);
             if (dblFactor <= 0d)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         public double ConvertVolumeExtended(double dblVolume, uevUnitsExtendedVolumeConstants eCurrentUnits, uevUnitsExtendedVolumeConstants eNewUnits)
@@ -468,20 +458,16 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                dblValue = dblVolume * dblFactor;
-            }
+
+            dblValue = dblVolume * dblFactor;
 
             dblFactor = FactorVolumeExtended(eNewUnits);
             if (dblFactor <= 0d)
             {
                 return -1;
             }
-            else
-            {
-                return dblValue / dblFactor;
-            }
+
+            return dblValue / dblFactor;
         }
 
         /// <summary>

@@ -38,10 +38,8 @@ namespace MolecularWeightCalculator
             {
                 return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.00" + " ppm");
             }
-            else
-            {
-                return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.0000");
-            }
+
+            return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.0000");
         }
     }
 }

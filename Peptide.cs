@@ -275,10 +275,8 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
-            else
-            {
-                return lngNumber;
-            }
+
+            return lngNumber;
         }
 
         private int CheckForModifications(string strPartialSequence, int intResidueNumber, bool blnAddMissingModificationSymbols = false)
@@ -782,14 +780,12 @@ namespace MolecularWeightCalculator
 
                 return 0;
             }
-            else
-            {
-                strModSymbol = string.Empty;
-                dblModificationMass = 0d;
-                blnIndicatesPhosphorylation = false;
-                strComment = string.Empty;
-                return 1;
-            }
+
+            strModSymbol = string.Empty;
+            dblModificationMass = 0d;
+            blnIndicatesPhosphorylation = false;
+            strComment = string.Empty;
+            return 1;
         }
 
         public int GetModificationSymbolCount()
@@ -832,10 +828,8 @@ namespace MolecularWeightCalculator
 
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         public int GetResidueCount()
@@ -895,10 +889,8 @@ namespace MolecularWeightCalculator
 
                 return residue.ModificationIDCount;
             }
-            else
-            {
-                return 0;
-            }
+
+            return 0;
         }
 
         public string GetResidueSymbolOnly(int lngResidueNumber, bool blnUse3LetterCode)
@@ -1271,13 +1263,11 @@ namespace MolecularWeightCalculator
                 lngReturnResidueEnd = intEndLoc;
                 return strTrypticName;
             }
-            else
-            {
-                // Residues not found
-                lngReturnResidueStart = 0;
-                lngReturnResidueEnd = 0;
-                return string.Empty;
-            }
+
+            // Residues not found
+            lngReturnResidueStart = 0;
+            lngReturnResidueEnd = 0;
+            return string.Empty;
         }
 
         public string GetTrypticNameMultipleMatches(string strProteinResidues,
@@ -1535,10 +1525,8 @@ namespace MolecularWeightCalculator
             {
                 return 0;
             }
-            else
-            {
-                return lngMinCharLoc;
-            }
+
+            return lngMinCharLoc;
         }
 
         public string GetTrypticPeptideNext(string strProteinResidues,
@@ -1588,12 +1576,10 @@ namespace MolecularWeightCalculator
 
                 return Strings.Mid(strProteinResidues, lngReturnResidueStart, lngReturnResidueEnd - lngReturnResidueStart + 1);
             }
-            else
-            {
-                lngReturnResidueStart = 1;
-                lngReturnResidueEnd = lngProteinResiduesLength;
-                return strProteinResidues;
-            }
+
+            lngReturnResidueStart = 1;
+            lngReturnResidueEnd = lngProteinResiduesLength;
+            return strProteinResidues;
         }
 
         public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
@@ -2109,10 +2095,8 @@ namespace MolecularWeightCalculator
             {
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         public int RemoveResidue(int lngResidueNumber)
@@ -2128,10 +2112,8 @@ namespace MolecularWeightCalculator
                 ResidueCount -= 1;
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         private void ReserveMemoryForResidues(int lngNewResidueCount, bool blnPreserveContents)
@@ -2830,10 +2812,6 @@ namespace MolecularWeightCalculator
                         {
                             // All is fine; we can skip this
                         }
-                        else
-                        {
-                            // Ignore it
-                        }
                     }
                 }
                 else
@@ -2889,10 +2867,6 @@ namespace MolecularWeightCalculator
                             if (strFirstChar == "." || strFirstChar == "-" || strFirstChar == " ")
                             {
                                 // All is fine; we can skip this
-                            }
-                            else
-                            {
-                                // Ignore it
                             }
 
                             lngIndex += 1;

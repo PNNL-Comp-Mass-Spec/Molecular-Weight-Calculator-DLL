@@ -624,10 +624,8 @@ namespace MolecularWeightCalculator
             {
                 return udtComputationStats.TotalMass;
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         /// <summary>
@@ -1928,10 +1926,8 @@ namespace MolecularWeightCalculator
 
                 return strEmpiricalFormula;
             }
-            else
-            {
-                return (-1).ToString();
-            }
+
+            return (-1).ToString();
         }
 
         /// <summary>
@@ -1952,10 +1948,8 @@ namespace MolecularWeightCalculator
             {
                 return strFormula;
             }
-            else
-            {
-                return (-1).ToString();
-            }
+
+            return (-1).ToString();
         }
 
         private int FindIndexForNominalMass(
@@ -2051,10 +2045,8 @@ namespace MolecularWeightCalculator
                 {
                     return 1d;
                 }
-                else
-                {
-                    return Number * Factorial((short)(Number - 1));
-                }
+
+                return Number * Factorial((short)(Number - 1));
             }
             catch
             {
@@ -2416,18 +2408,16 @@ namespace MolecularWeightCalculator
 
                 return 0;
             }
-            else
-            {
-                strSymbol = string.Empty;
-                strFormula = string.Empty;
-                sngCharge = 0f;
-                blnIsAminoAcid = false;
-                strOneLetterSymbol = string.Empty;
-                strComment = string.Empty;
-                blnInvalidSymbolOrFormula = true;
 
-                return 1;
-            }
+            strSymbol = string.Empty;
+            strFormula = string.Empty;
+            sngCharge = 0f;
+            blnIsAminoAcid = false;
+            strOneLetterSymbol = string.Empty;
+            strComment = string.Empty;
+            blnInvalidSymbolOrFormula = true;
+
+            return 1;
         }
 
         public double GetAbbreviationMass(int abbreviationID)
@@ -2443,10 +2433,8 @@ namespace MolecularWeightCalculator
             {
                 return AbbrevStats[abbreviationID].Mass;
             }
-            else
-            {
-                return 0d;
-            }
+
+            return 0d;
         }
 
         public string GetAminoAcidSymbolConversionInternal(string strSymbolToFind, bool bln1LetterTo3Letter)
@@ -2532,12 +2520,10 @@ namespace MolecularWeightCalculator
                 strCautionStatement = CautionStatements[cautionStatementID, 1];
                 return 0;
             }
-            else
-            {
-                strSymbolCombo = string.Empty;
-                strCautionStatement = string.Empty;
-                return 1;
-            }
+
+            strSymbolCombo = string.Empty;
+            strCautionStatement = string.Empty;
+            return 1;
         }
 
         public string GetCautionDescription()
@@ -2585,15 +2571,13 @@ namespace MolecularWeightCalculator
 
                 return 0;
             }
-            else
-            {
-                strSymbol = string.Empty;
-                dblMass = 0d;
-                dblUncertainty = 0d;
-                sngCharge = 0f;
-                intIsotopeCount = 0;
-                return 1;
-            }
+
+            strSymbol = string.Empty;
+            dblMass = 0d;
+            dblUncertainty = 0d;
+            sngCharge = 0f;
+            intIsotopeCount = 0;
+            return 1;
         }
 
         /// <summary>
@@ -2638,10 +2622,8 @@ namespace MolecularWeightCalculator
 
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         /// <summary>
@@ -2669,10 +2651,8 @@ namespace MolecularWeightCalculator
             {
                 return ElementStats[intElementID].Symbol;
             }
-            else
-            {
-                return "";
-            }
+
+            return "";
         }
 
         public List<udtElementStatsType> GetElements()
@@ -2703,10 +2683,8 @@ namespace MolecularWeightCalculator
                         return 0d;
                 }
             }
-            else
-            {
-                return 0d;
-            }
+
+            return 0d;
         }
 
         public string GetErrorDescription()
@@ -2715,10 +2693,8 @@ namespace MolecularWeightCalculator
             {
                 return LookupMessage(ErrorParams.ErrorID);
             }
-            else
-            {
-                return "";
-            }
+
+            return "";
         }
 
         public int GetErrorID()
@@ -2780,10 +2756,8 @@ namespace MolecularWeightCalculator
                 // Now append strAppendText
                 return strMessage + strAppendText;
             }
-            else
-            {
-                return "";
-            }
+
+            return "";
         }
 
         /// <summary>
@@ -3095,10 +3069,8 @@ namespace MolecularWeightCalculator
             {
                 return dblMassToConvert * 1000000.0d / dblCurrentMZ;
             }
-            else
-            {
-                return 0d;
-            }
+
+            return 0d;
         }
 
         public double MonoMassToMZInternal(double dblMonoisotopicMass, short intCharge)
@@ -3536,10 +3508,8 @@ namespace MolecularWeightCalculator
 
                     return udtComputationStats.TotalMass;
                 }
-                else
-                {
-                    return -1;
-                }
+
+                return -1;
             }
             catch (Exception ex)
             {
@@ -4490,10 +4460,6 @@ namespace MolecularWeightCalculator
                         strFoundNum = (-4).ToString();
                         intNumLength = 0;
                     }
-                    else
-                    {
-                        // All is fine
-                    }
                 }
 
                 if (intNumLength < 0)
@@ -4596,7 +4562,8 @@ namespace MolecularWeightCalculator
                                         strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 (}" + Strings.Mid(strRTF, intCharIndex2 + 1);
                                         break;
                                     }
-                                    else if (Strings.Mid(strRTF, intCharIndex2, 1) == "{")
+
+                                    if (Strings.Mid(strRTF, intCharIndex2, 1) == "{")
                                     {
                                         strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 \{}" + Strings.Mid(strRTF, intCharIndex2 + 1);
                                         break;
@@ -4762,10 +4729,8 @@ namespace MolecularWeightCalculator
             {
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         /// <summary>
@@ -4795,10 +4760,8 @@ namespace MolecularWeightCalculator
             {
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         /// <summary>
@@ -4829,10 +4792,8 @@ namespace MolecularWeightCalculator
             {
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         public void ResetErrorParamsInternal()
@@ -5369,10 +5330,8 @@ namespace MolecularWeightCalculator
                     RecomputeAbbreviationMassesInternal();
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         public int SetElementIsotopesInternal(string strSymbol, short intIsotopeCount, ref double[] dblIsotopeMassesOneBased, ref float[] sngIsotopeAbundancesOneBased)
@@ -5404,10 +5363,8 @@ namespace MolecularWeightCalculator
             {
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         public void SetElementModeInternal(emElementModeConstants NewElementMode)
@@ -5464,10 +5421,8 @@ namespace MolecularWeightCalculator
                 MessageStatements[messageID] = strNewMessage;
                 return 0;
             }
-            else
-            {
-                return 1;
-            }
+
+            return 1;
         }
 
         private void ShellSortSymbols(int lowIndex, int highIndex)

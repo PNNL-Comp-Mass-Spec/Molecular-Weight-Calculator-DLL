@@ -1208,9 +1208,6 @@ namespace MwtWinDllTest
             const string POSSIBLE_RESIDUES = "ACDEFGHIKLMNPQRSTVWY";
 
             int lngMultipleIteration;
-
-            int lngResidueStart = default, lngResidueEnd = default;
-
             int lngIndex;
 
             string strPeptideFragMwtWin;
@@ -1253,7 +1250,7 @@ namespace MwtWinDllTest
             objResults.AppendText("Testing GetTrypticPeptideByFragmentNumber function");
             for (lngIndex = 1; lngIndex <= 43; lngIndex++)
             {
-                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out lngResidueStart, out lngResidueEnd);
+                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out var lngResidueStart, out var lngResidueEnd);
                 //strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(lngIndex))
                 //
                 //Debug.Assert strPeptideFragMwtWin = strPeptideFragIcr2ls
@@ -1274,7 +1271,7 @@ namespace MwtWinDllTest
             lngIndex = 1;
             do
             {
-                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out lngResidueStart, out lngResidueEnd);
+                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out var lngResidueStart, out var lngResidueEnd);
                 objResults.AppendText("Tryptic fragment " + Strings.Trim(lngIndex.ToString()) + ": " + strPeptideFragMwtWin);
                 lngIndex += 1;
             }
@@ -1300,7 +1297,7 @@ namespace MwtWinDllTest
                 var lngMwtWinResultCount = 0;
                 Debug.Write("Starting residue is ");
                 var lngStartTime = modMwtWinDllTest.GetTickCount();
-                for (lngResidueStart = 0; lngResidueStart < strProtein.Length; lngResidueStart++)
+                for (var lngResidueStart = 0; lngResidueStart < strProtein.Length; lngResidueStart++)
                 {
                     if (lngResidueStart % 10 == 0)
                     {
@@ -1308,7 +1305,7 @@ namespace MwtWinDllTest
                         Application.DoEvents();
                     }
 
-                    for (lngResidueEnd = 0; lngResidueEnd < strProtein.Length - lngResidueStart; lngResidueEnd++)
+                    for (var lngResidueEnd = 0; lngResidueEnd < strProtein.Length - lngResidueStart; lngResidueEnd++)
                     {
                         if (lngResidueEnd - lngResidueStart > 50)
                         {

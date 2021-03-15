@@ -11,10 +11,8 @@ namespace MolecularWeightCalculator
             {
                 return dblValue;
             }
-            else
-            {
-                return 0d;
-            }
+
+            return 0d;
         }
 
         public static short CShortSafe(double dblWork)
@@ -23,14 +21,12 @@ namespace MolecularWeightCalculator
             {
                 return (short)Math.Round(dblWork);
             }
-            else if (dblWork < 0d)
+
+            if (dblWork < 0d)
             {
                 return -32767;
             }
-            else
-            {
-                return 32767;
-            }
+            return 32767;
         }
 
         public static short CShortSafe(string strWork)
@@ -39,14 +35,12 @@ namespace MolecularWeightCalculator
             {
                 return CShortSafe(dblValue);
             }
-            else if (strWork.ToLower() == "true")
+
+            if (strWork.ToLower() == "true")
             {
                 return -1;
             }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         public static int CIntSafe(double dblWork)
@@ -55,14 +49,12 @@ namespace MolecularWeightCalculator
             {
                 return (int)Math.Round(dblWork);
             }
-            else if (dblWork < 0d)
+
+            if (dblWork < 0d)
             {
                 return int.MinValue;
             }
-            else
-            {
-                return int.MaxValue;
-            }
+            return int.MaxValue;
         }
 
         public static int CIntSafe(string strWork)
@@ -71,14 +63,12 @@ namespace MolecularWeightCalculator
             {
                 return CIntSafe(dblValue);
             }
-            else if (strWork.ToLower() == "true")
+
+            if (strWork.ToLower() == "true")
             {
                 return -1;
             }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         public static string CStrSafe(object Item)
@@ -89,14 +79,12 @@ namespace MolecularWeightCalculator
                 {
                     return string.Empty;
                 }
-                else if (Convert.IsDBNull(Item))
+
+                if (Convert.IsDBNull(Item))
                 {
                     return string.Empty;
                 }
-                else
-                {
-                    return Conversions.ToString(Item);
-                }
+                return Conversions.ToString(Item);
             }
             catch
             {

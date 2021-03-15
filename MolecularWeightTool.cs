@@ -449,11 +449,9 @@ namespace MolecularWeightCalculator
                     // Use comma as Decimal point
                     return ',';
                 }
-                else
-                {
-                    // Use period as Decimal point
-                    return '.';
-                }
+
+                // Use period as Decimal point
+                return '.';
             }
             catch
             {
