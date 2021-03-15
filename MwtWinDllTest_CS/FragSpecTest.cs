@@ -67,7 +67,7 @@ namespace MwtWinDllTestCS
 
             // Get the fragmentation masses
             Peptide.udtFragmentationSpectrumDataType[] fragSpectrum = null;
-            mMwtWin.Peptide.GetFragmentationMasses(ref fragSpectrum);
+            mMwtWin.Peptide.GetFragmentationMasses(out fragSpectrum);
 
             // Print the results to the console
             Console.WriteLine("Fragmentation spectrum for " + mMwtWin.Peptide.GetSequence(false, true, false, false));

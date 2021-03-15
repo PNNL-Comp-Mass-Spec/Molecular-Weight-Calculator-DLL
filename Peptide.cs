@@ -375,7 +375,6 @@ namespace MolecularWeightCalculator
 
         private short ComputeMaxIonsPerResidue()
         {
-            short ComputeMaxIonsPerResidueRet = default;
             // Estimate the total ions per residue that will be created
             // This number will nearly always be much higher than the number of ions that will actually
             // be stored for a given sequence, since not all will be doubly charged, and not all will show
@@ -419,8 +418,7 @@ namespace MolecularWeightCalculator
                 intIonCount = (short)(intIonCount * 2);
             }
 
-            ComputeMaxIonsPerResidueRet = intIonCount;
-            return ComputeMaxIonsPerResidueRet;
+            return intIonCount;
         }
 
         private udtResidueType FillResidueStructureUsingSymbol(string strSymbol, bool blnUse3LetterCode = true)
@@ -480,7 +478,7 @@ namespace MolecularWeightCalculator
         /// <param name="udtFragSpectrum"></param>
         /// <returns>The number of ions in udtFragSpectrum()</returns>
         /// <remarks></remarks>
-        public int GetFragmentationMasses(ref udtFragmentationSpectrumDataType[] udtFragSpectrum)
+        public int GetFragmentationMasses(out udtFragmentationSpectrumDataType[] udtFragSpectrum)
         {
             // Old: Func GetFragmentationMasses(lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
 
@@ -508,8 +506,6 @@ namespace MolecularWeightCalculator
             itIonTypeConstants eIonType;
             int lngIndex;
             var sngIonIntensities = new float[5];
-
-            var blnPhosphorylated = default(bool);
 
             if (ResidueCount == 0)
             {
@@ -571,7 +567,7 @@ namespace MolecularWeightCalculator
 
                             // Get the list of residues preceding or following this residue
                             // Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() functions below
-                            var strResidues = GetInternalResidues(lngResidueIndex, eIonType, ref blnPhosphorylated);
+                            var strResidues = GetInternalResidues(lngResidueIndex, eIonType, out var blnPhosphorylated);
 
                             short intChargeIndex;
                             for (intChargeIndex = 1; intChargeIndex <= MAX_CHARGE; intChargeIndex++)
@@ -727,10 +723,10 @@ namespace MolecularWeightCalculator
         private string GetInternalResidues(int lngCurrentResidueIndex, itIonTypeConstants eIonType)
         {
             bool blnPhosphorylated = false;
-            return GetInternalResidues(lngCurrentResidueIndex, eIonType, ref blnPhosphorylated);
+            return GetInternalResidues(lngCurrentResidueIndex, eIonType, out blnPhosphorylated);
         }
 
-        private string GetInternalResidues(int lngCurrentResidueIndex, itIonTypeConstants eIonType, ref bool blnPhosphorylated)
+        private string GetInternalResidues(int lngCurrentResidueIndex, itIonTypeConstants eIonType, out bool blnPhosphorylated)
         {
             // Determines the residues preceding or following the given residue (up to and including the current residue)
             // If eIonType is a, b, or c ions, then returns residues from the N terminus
@@ -765,7 +761,7 @@ namespace MolecularWeightCalculator
             return strInternalResidues;
         }
 
-        public int GetModificationSymbol(int lngModificationID, ref string strModSymbol, ref double dblModificationMass, ref bool blnIndicatesPhosphorylation, ref string strComment)
+        public int GetModificationSymbol(int lngModificationID, out string strModSymbol, out double dblModificationMass, out bool blnIndicatesPhosphorylation, out string strComment)
         {
             // Returns information on the modification with lngModificationID
             // Returns 0 if success, 1 if failure
@@ -959,11 +955,6 @@ namespace MolecularWeightCalculator
             // Construct a text sequence using Residues() and the N and C Terminus info
 
             string strDashAdd;
-            string strModSymbol = string.Empty;
-            string strModSymbolComment = string.Empty;
-            var blnIndicatesPhosphorylation = default(bool);
-            var dblModMass = default(double);
-            int lngIndex;
 
             if (blnSeparateResiduesWithDash)
                 strDashAdd = "-";
@@ -971,7 +962,7 @@ namespace MolecularWeightCalculator
                 strDashAdd = string.Empty;
 
             var strSequence = string.Empty;
-            for (lngIndex = 1; lngIndex <= ResidueCount; lngIndex++)
+            for (var lngIndex = 1; lngIndex <= ResidueCount; lngIndex++)
             {
                 var residue = Residues[lngIndex];
                 var strSymbol3Letter = residue.Symbol;
@@ -992,7 +983,7 @@ namespace MolecularWeightCalculator
                     short intModIndex;
                     for (intModIndex = 1; intModIndex <= residue.ModificationIDCount; intModIndex++)
                     {
-                        var lngError = GetModificationSymbol(residue.ModificationIDs[intModIndex], ref strModSymbol, ref dblModMass, ref blnIndicatesPhosphorylation, ref strModSymbolComment);
+                        var lngError = GetModificationSymbol(residue.ModificationIDs[intModIndex], out var strModSymbol, out _, out _, out _);
                         if (lngError == 0)
                         {
                             strSequence += strModSymbol;
@@ -1954,7 +1945,6 @@ namespace MolecularWeightCalculator
 
         public int RemoveAllResidues()
         {
-            int RemoveAllResiduesRet = default;
             // Removes all the residues
             // Returns 0 on success, 1 on failure
 
@@ -1962,13 +1952,11 @@ namespace MolecularWeightCalculator
             ResidueCount = 0;
             mTotalMass = 0d;
 
-            RemoveAllResiduesRet = 0;
-            return RemoveAllResiduesRet;
+            return 0;
         }
 
         public int RemoveAllModificationSymbols()
         {
-            int RemoveAllModificationSymbolsRet = default;
             // Removes all possible Modification Symbols
             // Returns 0 on success, 1 on failure
             // Removing all modifications will invalidate any modifications present in a sequence
@@ -1976,8 +1964,7 @@ namespace MolecularWeightCalculator
             ReserveMemoryForModifications(10, false);
             ModificationSymbolCount = 0;
 
-            RemoveAllModificationSymbolsRet = 0;
-            return RemoveAllModificationSymbolsRet;
+            return 0;
         }
 
         private void RemoveLeadingH(ref string strWorkingSequence)
@@ -2011,7 +1998,6 @@ namespace MolecularWeightCalculator
 
         private bool RemoveTrailingOH(ref string strWorkingSequence)
         {
-            bool RemoveTrailingOHRet = default;
             // Returns True if a trailing OH is removed
 
             var blnOHRemoved = false;
@@ -2039,17 +2025,15 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            RemoveTrailingOHRet = blnOHRemoved;
-            return RemoveTrailingOHRet;
+            return blnOHRemoved;
         }
 
         public int RemoveModification(ref string strModSymbol)
         {
-            int RemoveModificationRet = default;
             // Returns 0 if found and removed; 1 if error
 
             int lngIndex;
-            var blnRemoved = default(bool);
+            var blnRemoved = false;
 
             for (lngIndex = 1; lngIndex <= ModificationSymbolCount; lngIndex++)
             {
@@ -2062,14 +2046,10 @@ namespace MolecularWeightCalculator
 
             if (blnRemoved)
             {
-                RemoveModificationRet = 0;
-            }
-            else
-            {
-                RemoveModificationRet = 1;
+                return 0;
             }
 
-            return RemoveModificationRet;
+            return 1;
         }
 
         public int RemoveModificationByID(int lngModificationID)
@@ -2169,9 +2149,8 @@ namespace MolecularWeightCalculator
 
         public int SetCTerminus(string strFormula, string strFollowingResidue, bool blnUse3LetterCode)
         {
-            int SetCTerminusRet = default;
-
             // Returns 0 if success; 1 if error
+            var success = 0;
 
             // Typical N terminus mods
             // Free Acid = OH
@@ -2182,18 +2161,18 @@ namespace MolecularWeightCalculator
             if (mCTerminus.Mass < 0d)
             {
                 mCTerminus.Mass = 0d;
-                SetCTerminusRet = 1;
+                success = 1;
             }
             else
             {
-                SetCTerminusRet = 0;
+                success = 0;
             }
 
             mCTerminus.PrecedingResidue = FillResidueStructureUsingSymbol(string.Empty);
             mCTerminus.FollowingResidue = FillResidueStructureUsingSymbol(strFollowingResidue, blnUse3LetterCode);
 
             UpdateResidueMasses();
-            return SetCTerminusRet;
+            return success;
         }
 
         public int SetCTerminusGroup(ctgCTerminusGroupConstants eCTerminusGroup)
@@ -2326,7 +2305,6 @@ namespace MolecularWeightCalculator
 
         public int SetModificationSymbol(string strModSymbol, double dblModificationMass, bool blnIndicatesPhosphorylation, string strComment)
         {
-            int SetModificationSymbolRet = default;
             // Adds a new modification or updates an existing one (based on strModSymbol)
             // Returns 0 if successful, otherwise, returns -1
 
@@ -2369,8 +2347,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            SetModificationSymbolRet = lngErrorID;
-            return SetModificationSymbolRet;
+            return lngErrorID;
         }
 
         public int SetNTerminus(string strFormula)
@@ -2385,8 +2362,8 @@ namespace MolecularWeightCalculator
 
         public int SetNTerminus(string strFormula, string strPrecedingResidue, bool blnUse3LetterCode)
         {
-            int SetNTerminusRet = default;
             // Returns 0 if success; 1 if error
+            var success = 0;
 
             // Typical N terminus mods
             // Hydrogen = H
@@ -2400,18 +2377,18 @@ namespace MolecularWeightCalculator
             if (mNTerminus.Mass < 0d)
             {
                 mNTerminus.Mass = 0d;
-                SetNTerminusRet = 1;
+                success = 1;
             }
             else
             {
-                SetNTerminusRet = 0;
+                success = 0;
             }
 
             mNTerminus.PrecedingResidue = FillResidueStructureUsingSymbol(strPrecedingResidue, blnUse3LetterCode);
             mNTerminus.FollowingResidue = FillResidueStructureUsingSymbol(string.Empty);
 
             UpdateResidueMasses();
-            return SetNTerminusRet;
+            return success;
         }
 
         public int SetNTerminusGroup(ntgNTerminusGroupConstants eNTerminusGroup)
@@ -2480,8 +2457,6 @@ namespace MolecularWeightCalculator
             bool blnIs3LetterCode,
             bool blnPhosphorylated)
         {
-            int SetResidueRet = default;
-
             // Sets or adds a residue (must add residues in order)
             // Returns the index of the modified residue, or the new index if added
             // Returns -1 if a problem
@@ -2539,13 +2514,11 @@ namespace MolecularWeightCalculator
 
             UpdateResidueMasses();
 
-            SetResidueRet = lngIndexToUse;
-            return SetResidueRet;
+            return lngIndexToUse;
         }
 
         public int SetResidueModifications(int lngResidueNumber, short intModificationCount, int[] lngModificationIDsOneBased)
         {
-            int SetResidueModificationsRet = default;
             // Sets the modifications for a specific residue
             // Modification Symbols are defined using successive calls to SetModificationSymbol()
 
@@ -2579,14 +2552,10 @@ namespace MolecularWeightCalculator
                     }
                 }
 
-                SetResidueModificationsRet = 0;
-            }
-            else
-            {
-                SetResidueModificationsRet = 1;
+                return 0;
             }
 
-            return SetResidueModificationsRet;
+            return 1;
         }
 
         /// <summary>
@@ -2767,7 +2736,6 @@ namespace MolecularWeightCalculator
                             if (Strings.Mid(strSequence, lngSequenceStrLength - 1, 1) == ".")
                             {
                                 strSequence = Strings.Left(strSequence, lngSequenceStrLength - 2);
-                                lngSequenceStrLength = Strings.Len(strSequence);
                             }
 
                             // Also check for starting with a . or ending with a .

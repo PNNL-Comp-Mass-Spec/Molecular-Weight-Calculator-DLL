@@ -1298,10 +1298,7 @@ namespace MolecularWeightCalculator
                         }
 
                         // Found a normal abbreviation
-                        string matchedAbbrevSymbol = string.Empty;
-                        string abbrevFormula = string.Empty;
-                        bool blnIsAminoAcid;
-                        mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out matchedAbbrevSymbol, out abbrevFormula, out sngCharge, out blnIsAminoAcid);
+                        mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out _, out var abbrevFormula, out sngCharge, out _);
 
                         dblMass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
 
@@ -1398,10 +1395,7 @@ namespace MolecularWeightCalculator
                         }
 
                         // Found a normal abbreviation
-                        string matchedAbbrevSymbol = string.Empty;
-                        string abbrevFormula = string.Empty;
-                        bool blnIsAminoAcid;
-                        mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out matchedAbbrevSymbol, out abbrevFormula, out sngCharge, out blnIsAminoAcid);
+                        mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out var matchedAbbrevSymbol, out var abbrevFormula, out sngCharge, out _);
 
                         dblMass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
 

@@ -468,9 +468,9 @@ namespace MolecularWeightCalculator
         /// <param name="sngCharge">Output: charge</param>
         /// <param name="blnIsAminoAcid">Output: true if an amino acid</param>
         /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int intAbbreviationID, ref string strSymbol,
-            ref string strFormula, ref float sngCharge,
-            ref bool blnIsAminoAcid)
+        public int GetAbbreviation(int intAbbreviationID, out string strSymbol,
+            out string strFormula, out float sngCharge,
+            out bool blnIsAminoAcid)
         {
             return GetAbbreviation(intAbbreviationID, out strSymbol, out strFormula, out sngCharge, out blnIsAminoAcid, out _, out _, out _);
         }
@@ -559,7 +559,7 @@ namespace MolecularWeightCalculator
         /// <param name="strSymbolCombo">Output: symbol combo for the caution statement</param>
         /// <param name="strCautionStatement">Output: caution statement text</param>
         /// <returns>0 if success, 1 if an invalid ID</returns>
-        public int GetCautionStatement(int intCautionStatementID, ref string strSymbolCombo, ref string strCautionStatement)
+        public int GetCautionStatement(int intCautionStatementID, out string strSymbolCombo, out string strCautionStatement)
         {
             return mElementAndMassRoutines.GetCautionStatementInternal(intCautionStatementID, out strSymbolCombo, out strCautionStatement);
         }
@@ -598,7 +598,7 @@ namespace MolecularWeightCalculator
         /// <param name="sngCharge"></param>
         /// <param name="intIsotopeCount"></param>
         /// <returns>0 if success, 1 if failure</returns>
-        public int GetElement(short intElementID, ref string strSymbol, ref double dblMass, ref double dblUncertainty, ref float sngCharge, ref short intIsotopeCount)
+        public int GetElement(short intElementID, out string strSymbol, out double dblMass, out double dblUncertainty, out float sngCharge, out short intIsotopeCount)
         {
             return mElementAndMassRoutines.GetElementInternal(intElementID, out strSymbol, out dblMass, out dblUncertainty, out sngCharge, out intIsotopeCount);
         }
@@ -971,12 +971,12 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public string TextToRTF(
             string strTextToConvert,
-            bool CalculatorMode,
+            bool calculatorMode,
             bool blnHighlightCharFollowingPercentSign,
             bool blnOverrideErrorID,
             int errorIDOverride)
         {
-            return mElementAndMassRoutines.PlainTextToRtfInternal(strTextToConvert, CalculatorMode, blnHighlightCharFollowingPercentSign, blnOverrideErrorID, errorIDOverride);
+            return mElementAndMassRoutines.PlainTextToRtfInternal(strTextToConvert, calculatorMode, blnHighlightCharFollowingPercentSign, blnOverrideErrorID, errorIDOverride);
         }
 
         /// <summary>

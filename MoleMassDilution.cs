@@ -251,7 +251,7 @@ namespace MolecularWeightCalculator
         /// <param name="eDilutingSolventUnits"></param>
         /// <returns></returns>
         public double ComputeDilutionRequiredStockAndDilutingSolventVolumes(
-            [Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume,
+            out double dblNewDilutingSolventVolume,
             uevUnitsExtendedVolumeConstants eStockSolutionUnits = uevUnitsExtendedVolumeConstants.uevML,
             uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
         {
@@ -285,7 +285,7 @@ namespace MolecularWeightCalculator
         /// <param name="eDilutingSolventUnits"></param>
         /// <returns></returns>
         public double ComputeDilutionTotalVolume(
-            [Optional, DefaultParameterValue(0d)] out double dblNewDilutingSolventVolume,
+            out double dblNewDilutingSolventVolume,
             uevUnitsExtendedVolumeConstants eTotalVolumeUnits = uevUnitsExtendedVolumeConstants.uevML,
             uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
         {
@@ -391,13 +391,12 @@ namespace MolecularWeightCalculator
             var dblSampleDensity = mQuantity.SampleDensity;
 
             var dblFactor = FactorAmount(eCurrentUnits, dblSampleMass, dblSampleDensity);
-            double dblValue;
             if (dblFactor < 0d)
             {
                 return -1;
             }
 
-            dblValue = dblAmountIn * dblFactor;
+            var dblValue = dblAmountIn * dblFactor;
 
             dblFactor = FactorAmount(eNewUnits, dblSampleMass, dblSampleDensity);
             if (dblFactor <= 0d)
@@ -418,8 +417,6 @@ namespace MolecularWeightCalculator
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public double ConvertConcentration(double dblConcentrationIn, ummcUnitsMoleMassConcentrationConstants eCurrentUnits, ummcUnitsMoleMassConcentrationConstants eNewUnits)
         {
-            double dblValue;
-
             if (eCurrentUnits == eNewUnits)
             {
                 return dblConcentrationIn;
@@ -433,7 +430,7 @@ namespace MolecularWeightCalculator
                 return -1;
             }
 
-            dblValue = dblConcentrationIn * dblFactor;
+            var dblValue = dblConcentrationIn * dblFactor;
 
             dblFactor = FactorConcentration(eNewUnits, dblSampleMass);
             if (dblFactor <= 0d)
@@ -446,8 +443,6 @@ namespace MolecularWeightCalculator
 
         public double ConvertVolumeExtended(double dblVolume, uevUnitsExtendedVolumeConstants eCurrentUnits, uevUnitsExtendedVolumeConstants eNewUnits)
         {
-            double dblValue;
-
             if (eCurrentUnits == eNewUnits)
             {
                 return dblVolume;
@@ -459,7 +454,7 @@ namespace MolecularWeightCalculator
                 return -1;
             }
 
-            dblValue = dblVolume * dblFactor;
+            var dblValue = dblVolume * dblFactor;
 
             dblFactor = FactorVolumeExtended(eNewUnits);
             if (dblFactor <= 0d)

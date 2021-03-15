@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualBasic;
 
@@ -252,30 +251,24 @@ namespace MolecularWeightCalculator
 
         public bool XIsPresentAfterBracket()
         {
-            bool XIsPresentAfterBracketRet = default;
-
             if (ElementAndMassRoutines.gComputationOptions.BracketsAsParentheses)
             {
                 // Treating brackets as parentheses, therefore an x after a bracket isn't allowed
-                XIsPresentAfterBracketRet = false;
+                return false;
             }
-            else
-            {
-                var intCharLoc = (short)Strings.InStr(Strings.LCase(mStrFormattedFormula), "[x");
-                if (intCharLoc > 0)
-                {
-                    if (Strings.Mid(mStrFormattedFormula, intCharLoc + 1, 1) != "e")
-                    {
-                        return true;
-                    }
 
-                    return false;
+            var intCharLoc = (short)Strings.InStr(Strings.LCase(mStrFormattedFormula), "[x");
+            if (intCharLoc > 0)
+            {
+                if (Strings.Mid(mStrFormattedFormula, intCharLoc + 1, 1) != "e")
+                {
+                    return true;
                 }
 
                 return false;
             }
 
-            return XIsPresentAfterBracketRet;
+            return false;
         }
 
         public string CautionDescription { get; private set; }
@@ -320,13 +313,10 @@ namespace MolecularWeightCalculator
 
         public string get_MassAndStdDevString(bool blnRecomputeMass)
         {
-            string MassAndStdDevStringRet = default;
             if (blnRecomputeMass)
                 UpdateMass();
 
-            MassAndStdDevStringRet = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(mComputationStats.TotalMass, mComputationStats.StandardDeviation);
-
-            return MassAndStdDevStringRet;
+            return ElementAndMassRoutines.ReturnFormattedMassAndStdDev(mComputationStats.TotalMass, mComputationStats.StandardDeviation);
         }
 
         public double StandardDeviation => mComputationStats.StandardDeviation;

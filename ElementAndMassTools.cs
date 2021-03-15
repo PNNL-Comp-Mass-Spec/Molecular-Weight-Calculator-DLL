@@ -2480,9 +2480,7 @@ namespace MolecularWeightCalculator
 
         public int GetCautionStatementCountInternal()
         {
-            int GetCautionStatementCountInternalRet = default;
-            GetCautionStatementCountInternalRet = CautionStatementCount;
-            return GetCautionStatementCountInternalRet;
+            return CautionStatementCount;
         }
 
         /// <summary>
@@ -2492,9 +2490,7 @@ namespace MolecularWeightCalculator
         /// <returns>Statement ID if found, otherwise -1</returns>
         public int GetCautionStatementIDInternal(string strSymbolCombo)
         {
-            short intIndex;
-
-            for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
+            for (var intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
             {
                 if ((CautionStatements[intIndex, 0] ?? "") == (strSymbolCombo ?? ""))
                 {
@@ -2844,7 +2840,6 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private bool IsStringAllLetters(string strTest)
         {
-            bool IsStringAllLettersRet = default;
             short intIndex;
 
             // Assume true until proven otherwise
@@ -2858,8 +2853,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            IsStringAllLettersRet = blnAllLetters;
-            return IsStringAllLettersRet;
+            return blnAllLetters;
         }
 
         public bool IsValidElementSymbol(string elementSymbol, bool caseSensitive = true)
@@ -2996,8 +2990,6 @@ namespace MolecularWeightCalculator
         /// <returns>The complete message</returns>
         internal string LookupMessage(int messageID, string strAppendText)
         {
-            string LookupMessageRet = default;
-
             if (MessageStatementCount == 0)
                 MemoryLoadMessageStatements();
 
@@ -3053,8 +3045,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            LookupMessageRet = strMessage;
-            return LookupMessageRet;
+            return strMessage;
         }
 
         /// <summary>
@@ -3542,7 +3533,7 @@ namespace MolecularWeightCalculator
             ref udtAbbrevSymbolStackType udtAbbrevSymbolStack,
             bool blnExpandAbbreviations,
             ref double dblStdDevSum,
-            [Optional, DefaultParameterValue(0)] ref int CarbonOrSiliconReturnCount,
+            ref int CarbonOrSiliconReturnCount,
             double dblValueForX = 1.0d,
             int intCharCountPrior = 0,
             double dblParenthMultiplier = 1.0d,
@@ -4402,8 +4393,6 @@ namespace MolecularWeightCalculator
         /// </remarks>
         private double ParseNum(string strWork, out int intNumLength, bool blnAllowNegative = false)
         {
-            double ParseNumRet = default;
-
             if (gComputationOptions.DecimalSeparator == default(char))
             {
                 gComputationOptions.DecimalSeparator = MolecularWeightTool.DetermineDecimalPoint();
@@ -4420,54 +4409,51 @@ namespace MolecularWeightCalculator
             if ((Strings.Asc(Strings.Left(strWork, 1)) < 48 || Strings.Asc(Strings.Left(strWork, 1)) > 57) && Strings.Left(strWork, 1) != Conversions.ToString(gComputationOptions.DecimalSeparator) && !(Strings.Left(strWork, 1) == "-" && blnAllowNegative == true))
             {
                 intNumLength = 0; // No number found
-                ParseNumRet = -1;
+                return -1;
             }
-            else
-            {
-                // Start of string is a number or a decimal point, or (if allowed) a negative sign
-                for (var intIndex = 0; intIndex < strWork.Length; intIndex++)
-                {
-                    var strWorking = Strings.Mid(strWork, intIndex, 1);
-                    if (Information.IsNumeric(strWorking) || strWorking == Conversions.ToString(gComputationOptions.DecimalSeparator) || blnAllowNegative == true && strWorking == "-")
-                    {
-                        strFoundNum += strWorking;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
 
-                if (Strings.Len(strFoundNum) == 0 || strFoundNum == Conversions.ToString(gComputationOptions.DecimalSeparator))
+            // Start of string is a number or a decimal point, or (if allowed) a negative sign
+            for (var intIndex = 0; intIndex < strWork.Length; intIndex++)
+            {
+                var strWorking = Strings.Mid(strWork, intIndex, 1);
+                if (Information.IsNumeric(strWorking) || strWorking == Conversions.ToString(gComputationOptions.DecimalSeparator) || blnAllowNegative == true && strWorking == "-")
                 {
-                    // No number at all or (more likely) no number after decimal point
-                    strFoundNum = (-3).ToString();
-                    intNumLength = 0;
+                    strFoundNum += strWorking;
                 }
                 else
                 {
-                    // Check for more than one decimal point (. or ,)
-                    var intDecPtCount = 0;
-                    for (var intIndex = 0; intIndex < strFoundNum.Length; intIndex++)
-                    {
-                        if (Strings.Mid(strFoundNum, intIndex, 1) == Conversions.ToString(gComputationOptions.DecimalSeparator))
-                            intDecPtCount = (short)(intDecPtCount + 1);
-                    }
-
-                    if (intDecPtCount > 1)
-                    {
-                        // more than one intDecPtCount
-                        strFoundNum = (-4).ToString();
-                        intNumLength = 0;
-                    }
+                    break;
                 }
-
-                if (intNumLength < 0)
-                    intNumLength = (short)Strings.Len(strFoundNum);
-                ParseNumRet = NumberConverter.CDblSafe(strFoundNum);
             }
 
-            return ParseNumRet;
+            if (Strings.Len(strFoundNum) == 0 || strFoundNum == Conversions.ToString(gComputationOptions.DecimalSeparator))
+            {
+                // No number at all or (more likely) no number after decimal point
+                strFoundNum = (-3).ToString();
+                intNumLength = 0;
+            }
+            else
+            {
+                // Check for more than one decimal point (. or ,)
+                var intDecPtCount = 0;
+                for (var intIndex = 0; intIndex < strFoundNum.Length; intIndex++)
+                {
+                    if (Strings.Mid(strFoundNum, intIndex, 1) == Conversions.ToString(gComputationOptions.DecimalSeparator))
+                        intDecPtCount = (short)(intDecPtCount + 1);
+                }
+
+                if (intDecPtCount > 1)
+                {
+                    // more than one intDecPtCount
+                    strFoundNum = (-4).ToString();
+                    intNumLength = 0;
+                }
+            }
+
+            if (intNumLength < 0)
+                intNumLength = (short)Strings.Len(strFoundNum);
+
+            return NumberConverter.CDblSafe(strFoundNum);
         }
 
         public string PlainTextToRtfInternal(string strWorkText)
@@ -4504,8 +4490,6 @@ namespace MolecularWeightCalculator
             bool blnOverrideErrorID,
             int errorIDOverride)
         {
-            string PlainTextToRtfInternalRet = default;
-
             // ReSharper disable CommentTypo
 
             // Rtf string must begin with {{\fonttbl{\f0\fcharset0\fprq2 Times New Roman;}}\pard\plain\fs25
@@ -4679,8 +4663,7 @@ namespace MolecularWeightCalculator
                 strRTF += "}";
             }
 
-            PlainTextToRtfInternalRet = strRTF;
-            return PlainTextToRtfInternalRet;
+            return strRTF;
         }
 
         /// <summary>

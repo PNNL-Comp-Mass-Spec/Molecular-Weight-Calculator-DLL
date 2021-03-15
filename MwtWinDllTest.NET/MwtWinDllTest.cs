@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
@@ -718,15 +717,7 @@ namespace MwtWinDllTest
         {
             int intResult;
             int lngIndex;
-            string strSymbol = string.Empty;
-            string strFormula = string.Empty;
-            var sngCharge = default(float);
-            string strOneLetterSymbol = string.Empty;
-            string strComment = string.Empty;
-            string strStatement = string.Empty;
-            var dblMass = default(double);
-            var dblUncertainty = default(double);
-            short intIsotopeCount = default, intIsotopeCount2 = default;
+            double dblMass;
 
             var objResults = new frmTextbrowser();
 
@@ -739,7 +730,7 @@ namespace MwtWinDllTest
             var lngItemCount = mMwtWin.GetAbbreviationCount();
             for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
-                intResult = mMwtWin.GetAbbreviation(intIndex, out strSymbol, out strFormula, out sngCharge, out var blnIsAminoAcid, out strOneLetterSymbol, out strComment);
+                intResult = mMwtWin.GetAbbreviation(intIndex, out var strSymbol, out var strFormula, out var sngCharge, out var blnIsAminoAcid, out var strOneLetterSymbol, out var strComment);
                 Debug.Assert(intResult == 0, "");
                 Debug.Assert(mMwtWin.GetAbbreviationID(strSymbol) == intIndex, "");
 
@@ -751,7 +742,7 @@ namespace MwtWinDllTest
             lngItemCount = mMwtWin.GetCautionStatementCount();
             for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
-                intResult = mMwtWin.GetCautionStatement(intIndex, ref strSymbol, ref strStatement);
+                intResult = mMwtWin.GetCautionStatement(intIndex, out var strSymbol, out var strStatement);
                 Debug.Assert(intResult == 0, "");
                 Debug.Assert(mMwtWin.GetCautionStatementID(strSymbol) == intIndex, "");
 
@@ -763,7 +754,7 @@ namespace MwtWinDllTest
             lngItemCount = mMwtWin.GetElementCount();
             for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
-                intResult = mMwtWin.GetElement((short)intIndex, ref strSymbol, ref dblMass, ref dblUncertainty, ref sngCharge, ref intIsotopeCount);
+                intResult = mMwtWin.GetElement((short)intIndex, out var strSymbol, out dblMass, out var dblUncertainty, out var sngCharge, out var intIsotopeCount);
                 Debug.Assert(intResult == 0, "");
                 Debug.Assert(mMwtWin.GetElementID(strSymbol) == intIndex, "");
 
@@ -773,6 +764,7 @@ namespace MwtWinDllTest
                 var dblIsotopeMasses = new double[intIsotopeCount + 1 + 1];
                 var sngIsotopeAbundances = new float[intIsotopeCount + 1 + 1];
 
+                short intIsotopeCount2 = default;
                 intResult = mMwtWin.GetElementIsotopes((short)intIndex, ref intIsotopeCount2, ref dblIsotopeMasses, ref sngIsotopeAbundances);
                 Debug.Assert(intIsotopeCount == intIsotopeCount2, "");
                 Debug.Assert(intResult == 0, "");
@@ -785,7 +777,7 @@ namespace MwtWinDllTest
             lngItemCount = mMwtWin.GetMessageStatementCount();
             for (lngIndex = 1; lngIndex <= lngItemCount; lngIndex++)
             {
-                strStatement = mMwtWin.GetMessageStatement(lngIndex);
+                var strStatement = mMwtWin.GetMessageStatement(lngIndex);
 
                 intResult = mMwtWin.SetMessageStatement(lngIndex, strStatement);
             }
@@ -901,8 +893,6 @@ namespace MwtWinDllTest
             var udtFragSpectrumOptions = new Peptide.udtFragmentationSpectrumOptionsType();
             udtFragSpectrumOptions.Initialize();
 
-            Peptide.udtFragmentationSpectrumDataType[] udtFragSpectrum = null;
-
             var peptide = mMwtWin.Peptide;
             peptide.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G");
             // .SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
@@ -947,14 +937,13 @@ namespace MwtWinDllTest
 
             peptide.SetFragmentationSpectrumOptions(udtFragSpectrumOptions);
 
-            var lngIonCount = peptide.GetFragmentationMasses(ref udtFragSpectrum);
+            var lngIonCount = peptide.GetFragmentationMasses(out var udtFragSpectrum);
 
             MakeDataSet(lngIonCount, udtFragSpectrum);
             dgDataGrid.SetDataBinding(myDataSet, "DataTable1");
 
             objResults.AppendText(string.Empty);
 
-            short intSuccess;
             string strResults = string.Empty;
             var ConvolutedMSDataCount = default(int);
 
@@ -965,7 +954,7 @@ namespace MwtWinDllTest
 
             var ConvolutedMSData2DOneBased = new double[1, 2];
             string argstrFormulaIn = "C1255H43O2Cl";
-            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount);
+            var intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount);
             objResults.AppendText(strResults);
 
             objResults.AppendText("Convert isotopic distribution to gaussian");
