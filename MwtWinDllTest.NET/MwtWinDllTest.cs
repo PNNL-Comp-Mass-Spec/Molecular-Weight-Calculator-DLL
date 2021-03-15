@@ -522,7 +522,6 @@ namespace MwtWinDllTest
         #endregion
 
         private MolecularWeightTool mMwtWin;
-        private DataView mMDIDListDataView;
         private DataSet myDataSet;
 
         private void AppendColumnToTableStyle(ref DataGridTableStyle tsTableStyle, string strMappingName, string strHeaderText, int intWidth = 75, bool blnIsReadOnly = false, bool blnIsDateTime = false, int intDecimalPlaces = -1)

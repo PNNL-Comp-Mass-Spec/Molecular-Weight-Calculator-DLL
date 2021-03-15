@@ -531,9 +531,9 @@ namespace MolecularWeightCalculator
 
         private void AddToCautionDescription(string strTextToAdd)
         {
-            if (Strings.Len(mStrCautionDescription) > 0)
+            if (string.IsNullOrWhiteSpace(mStrCautionDescription))
             {
-                mStrCautionDescription = mStrCautionDescription;
+                mStrCautionDescription = "";
             }
 
             mStrCautionDescription += strTextToAdd;
