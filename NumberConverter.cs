@@ -7,8 +7,7 @@ namespace MolecularWeightCalculator
     {
         public static double CDblSafe(string strWork)
         {
-            double dblValue = 0d;
-            if (double.TryParse(strWork, out dblValue))
+            if (double.TryParse(strWork, out var dblValue))
             {
                 return dblValue;
             }
@@ -36,9 +35,7 @@ namespace MolecularWeightCalculator
 
         public static short CShortSafe(string strWork)
         {
-            double dblValue = 0d;
-
-            if (double.TryParse(strWork, out dblValue))
+            if (double.TryParse(strWork, out var dblValue))
             {
                 return CShortSafe(dblValue);
             }
@@ -70,9 +67,7 @@ namespace MolecularWeightCalculator
 
         public static int CIntSafe(string strWork)
         {
-            double dblValue = 0d;
-
-            if (double.TryParse(strWork, out dblValue))
+            if (double.TryParse(strWork, out var dblValue))
             {
                 return CIntSafe(dblValue);
             }

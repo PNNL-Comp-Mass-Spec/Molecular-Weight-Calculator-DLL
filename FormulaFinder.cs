@@ -736,10 +736,8 @@ namespace MolecularWeightCalculator
 
             // Convert to a formatted empirical formula (elements order by C, H, then alphabetical)
 
-            int matchCount;
-
             // First find C
-            if (empiricalResultSymbols.TryGetValue("C", out matchCount))
+            if (empiricalResultSymbols.TryGetValue("C", out var matchCount))
             {
                 sbEmpiricalFormula.Append("C");
                 if (matchCount > 1)
@@ -1020,8 +1018,7 @@ namespace MolecularWeightCalculator
         {
             foreach (var targetElement in targetCountStats)
             {
-                int empiricalElementCount;
-                if (!empiricalResultSymbols.TryGetValue(targetElement.Key, out empiricalElementCount))
+                if (!empiricalResultSymbols.TryGetValue(targetElement.Key, out var empiricalElementCount))
                 {
                     return false;
                 }
@@ -1142,10 +1139,7 @@ namespace MolecularWeightCalculator
                 {
                     // Searching for target m/z rather than target mass
 
-                    int mzSearchChargeMin;
-                    int mzSearchChargeMax;
-
-                    MultipleSearchMath(sortedElementStats.Count, searchOptions, out mzSearchChargeMin, out mzSearchChargeMax);
+                    MultipleSearchMath(sortedElementStats.Count, searchOptions, out var mzSearchChargeMin, out var mzSearchChargeMax);
 
                     for (int currentMzCharge = mzSearchChargeMin; currentMzCharge <= mzSearchChargeMax; currentMzCharge++)
                         // Call the RecursiveMWFinder repeatedly, sending dblTargetWeight * x each time to search for target, target*2, target*3, etc.
@@ -1272,9 +1266,7 @@ namespace MolecularWeightCalculator
                 {
                     // Working with an abbreviation or simply a mass
 
-                    double customMass;
-
-                    if (double.TryParse(item.Key, out customMass))
+                    if (double.TryParse(item.Key, out var customMass))
                     {
                         // Custom element, only weight given so charge is 0
                         candidateElement.Mass = customMass;
@@ -1372,9 +1364,7 @@ namespace MolecularWeightCalculator
                 {
                     // Working with an abbreviation or simply a mass
 
-                    double customMass;
-
-                    if (double.TryParse(item.Key, out customMass))
+                    if (double.TryParse(item.Key, out var customMass))
                     {
                         // Custom element, only weight given so charge is 0
                         dblPotentialElementStats[potentialElementCount, 0] = customMass;
@@ -1766,9 +1756,6 @@ namespace MolecularWeightCalculator
                                                                 {
                                                                     // All of the elements have percent compositions matching the target
 
-                                                                    Dictionary<string, int> empiricalResultSymbols = null;
-                                                                    double correctedCharge;
-
                                                                     // Construct the empirical formula and verify hydrogens
                                                                     var blnHOK = ConstructAndVerifyCompound(searchOptions,
                                                                                                             sbEmpiricalFormula,
@@ -1776,8 +1763,8 @@ namespace MolecularWeightCalculator
                                                                                                             sortedElementStats,
                                                                                                             totalMass, targetMass, massToleranceDa,
                                                                                                             totalCharge, 0,
-                                                                                                            out empiricalResultSymbols,
-                                                                                                            out correctedCharge);
+                                                                                                            out var empiricalResultSymbols,
+                                                                                                            out var correctedCharge);
 
                                                                     if (sbEmpiricalFormula.Length > 0 && blnHOK)
                                                                     {
@@ -1814,9 +1801,6 @@ namespace MolecularWeightCalculator
                                                                 {
                                                                     // Within massToleranceDa
 
-                                                                    Dictionary<string, int> empiricalResultSymbols = null;
-                                                                    double correctedCharge;
-
                                                                     // Construct the empirical formula and verify hydrogens
                                                                     var blnHOK = ConstructAndVerifyCompound(searchOptions,
                                                                                                             sbEmpiricalFormula,
@@ -1824,8 +1808,8 @@ namespace MolecularWeightCalculator
                                                                                                             sortedElementStats,
                                                                                                             totalMass, targetMass * intCurrentCharge, massToleranceDa,
                                                                                                             totalCharge, intCurrentCharge,
-                                                                                                            out empiricalResultSymbols,
-                                                                                                            out correctedCharge);
+                                                                                                            out var empiricalResultSymbols,
+                                                                                                            out var correctedCharge);
 
                                                                     if (sbEmpiricalFormula.Length > 0 && blnHOK)
                                                                     {
@@ -2068,17 +2052,14 @@ namespace MolecularWeightCalculator
                         {
                             // Matching compound
 
-                            Dictionary<string, int> empiricalResultSymbols = null;
-                            double correctedCharge;
-
                             // Construct the empirical formula and verify hydrogens
                             var blnHOK = ConstructAndVerifyCompoundRecursive(searchOptions,
                                                                              sbEmpiricalFormula, sortedElementStats,
                                                                              lstNewPotentialElementPointers,
                                                                              totalMass, targetMass, massToleranceDa,
                                                                              totalCharge, intMultipleMtoZCharge,
-                                                                             out empiricalResultSymbols,
-                                                                             out correctedCharge);
+                                                                             out var empiricalResultSymbols,
+                                                                             out var correctedCharge);
 
                             if (sbEmpiricalFormula.Length > 0 && blnHOK)
                             {
@@ -2199,17 +2180,14 @@ namespace MolecularWeightCalculator
                             {
                                 // Matching compound
 
-                                Dictionary<string, int> empiricalResultSymbols = null;
-                                double correctedCharge;
-
                                 // Construct the empirical formula and verify hydrogens
                                 var blnHOK = ConstructAndVerifyCompoundRecursive(searchOptions,
                                                                                  sbEmpiricalFormula, sortedElementStats,
                                                                                  lstNewPotentialElementPointers,
                                                                                  totalMass, 0d, 0d,
                                                                                  totalCharge, 0,
-                                                                                 out empiricalResultSymbols,
-                                                                                 out correctedCharge);
+                                                                                 out var empiricalResultSymbols,
+                                                                                 out var correctedCharge);
 
                                 if (sbEmpiricalFormula.Length > 0 && blnHOK)
                                 {

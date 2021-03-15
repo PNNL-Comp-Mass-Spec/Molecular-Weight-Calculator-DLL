@@ -3273,15 +3273,6 @@ namespace MolecularWeightCalculator
             const double DEFAULT_CHARGE_CARRIER_MASS_AVG = 1.00739d;
             const double DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649d;
 
-            // This array stores the element names
-            string[] strElementNames;
-
-            // dblElemVals[intElementIndex,1] stores the element's weight
-            // dblElemVals[intElementIndex,2] stores the element's uncertainty
-            // dblElemVals[intElementIndex,3] stores the element's charge
-            // Note: I could make this array of type udtElementStatsType, but the size of this sub would increase dramatically
-            double[,] dblElemVals;
-
             // Data Load Statements
             // Uncertainties from CRC Handbook of Chemistry and Physics
             // For Radioactive elements, the most stable isotope is NOT used;
@@ -3303,7 +3294,12 @@ namespace MolecularWeightCalculator
                 SetChargeCarrierMassInternal(DEFAULT_CHARGE_CARRIER_MASS_MONOISO);
             }
 
-            ElementAndMassInMemoryData.MemoryLoadElements(eElementMode, out strElementNames, out dblElemVals);
+            // strElementNames stores the element names
+            // dblElemVals[intElementIndex,1] stores the element's weight
+            // dblElemVals[intElementIndex,2] stores the element's uncertainty
+            // dblElemVals[intElementIndex,3] stores the element's charge
+            // Note: I could make this array of type udtElementStatsType, but the size of this sub would increase dramatically
+            ElementAndMassInMemoryData.MemoryLoadElements(eElementMode, out var strElementNames, out var dblElemVals);
 
             if (intSpecificElement == 0)
             {
