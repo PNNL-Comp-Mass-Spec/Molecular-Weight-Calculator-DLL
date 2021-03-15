@@ -1,8 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace MwtWinDllTest
+﻿namespace MwtWinDllTest
 {
     partial class frmTextbrowser
     {
@@ -33,114 +29,126 @@ namespace MwtWinDllTest
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            txtData = new TextBox();
-            MainMenuControl = new MainMenu();
-            mnuFile = new MenuItem();
-            mnuFileExit = new MenuItem();
-            mnuFileExit.Click += new EventHandler(mnuFileExit_Click);
-            mnuEdit = new MenuItem();
-            mnuEditCut = new MenuItem();
-            mnuEditCut.Click += new EventHandler(mnuEditCut_Click);
-            mnuEditCopy = new MenuItem();
-            mnuEditCopy.Click += new EventHandler(mnuEditCopy_Click);
-            mnuEditPaste = new MenuItem();
-            mnuEditPaste.Click += new EventHandler(mnuEditPaste_Click);
-            mnuEditSep1 = new MenuItem();
-            mnuEditFontSizeDecrease = new MenuItem();
-            mnuEditFontSizeDecrease.Click += new EventHandler(mnuEditFontSizeDecrease_Click);
-            mnuEditFontSizeIncrease = new MenuItem();
-            mnuEditFontSizeIncrease.Click += new EventHandler(mnuEditFontSizeIncrease_Click);
-            SuspendLayout();
-            //
+            this.txtData = new System.Windows.Forms.TextBox();
+            this.MainMenuControl = new System.Windows.Forms.MainMenu(this.components);
+            this.mnuFile = new System.Windows.Forms.MenuItem();
+            this.mnuFileExit = new System.Windows.Forms.MenuItem();
+            this.mnuEdit = new System.Windows.Forms.MenuItem();
+            this.mnuEditCut = new System.Windows.Forms.MenuItem();
+            this.mnuEditCopy = new System.Windows.Forms.MenuItem();
+            this.mnuEditPaste = new System.Windows.Forms.MenuItem();
+            this.mnuEditSep1 = new System.Windows.Forms.MenuItem();
+            this.mnuEditFontSizeDecrease = new System.Windows.Forms.MenuItem();
+            this.mnuEditFontSizeIncrease = new System.Windows.Forms.MenuItem();
+            this.SuspendLayout();
+            // 
             // txtData
-            //
-            txtData.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtData.Location = new Point(0, 0);
-            txtData.Multiline = true;
-            txtData.Name = "txtData";
-            txtData.ScrollBars = ScrollBars.Both;
-            txtData.Size = new Size(488, 316);
-            txtData.TabIndex = 0;
-            txtData.Text = "";
-            txtData.WordWrap = false;
-            //
+            // 
+            this.txtData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtData.Location = new System.Drawing.Point(0, 0);
+            this.txtData.Multiline = true;
+            this.txtData.Name = "txtData";
+            this.txtData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtData.Size = new System.Drawing.Size(488, 316);
+            this.txtData.TabIndex = 0;
+            this.txtData.WordWrap = false;
+            // 
             // MainMenuControl
-            //
-            MainMenuControl.MenuItems.AddRange(new MenuItem[] { mnuFile, mnuEdit });
-            //
+            // 
+            this.MainMenuControl.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuFile,
+            this.mnuEdit});
+            // 
             // mnuFile
-            //
-            mnuFile.Index = 0;
-            mnuFile.MenuItems.AddRange(new MenuItem[] { mnuFileExit });
-            mnuFile.Text = "&File";
-            //
+            // 
+            this.mnuFile.Index = 0;
+            this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuFileExit});
+            this.mnuFile.Text = "&File";
+            // 
             // mnuFileExit
-            //
-            mnuFileExit.Index = 0;
-            mnuFileExit.Text = "E&xit";
-            //
+            // 
+            this.mnuFileExit.Index = 0;
+            this.mnuFileExit.Text = "E&xit";
+            this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
+            // 
             // mnuEdit
-            //
-            mnuEdit.Index = 1;
-            mnuEdit.MenuItems.AddRange(new MenuItem[] { mnuEditCut, mnuEditCopy, mnuEditPaste, mnuEditSep1, mnuEditFontSizeDecrease, mnuEditFontSizeIncrease });
-            mnuEdit.Text = "&Edit";
-            //
+            // 
+            this.mnuEdit.Index = 1;
+            this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuEditCut,
+            this.mnuEditCopy,
+            this.mnuEditPaste,
+            this.mnuEditSep1,
+            this.mnuEditFontSizeDecrease,
+            this.mnuEditFontSizeIncrease});
+            this.mnuEdit.Text = "&Edit";
+            // 
             // mnuEditCut
-            //
-            mnuEditCut.Index = 0;
-            mnuEditCut.Text = "Cu&t";
-            //
+            // 
+            this.mnuEditCut.Index = 0;
+            this.mnuEditCut.Text = "Cu&t";
+            this.mnuEditCut.Click += new System.EventHandler(this.mnuEditCut_Click);
+            // 
             // mnuEditCopy
-            //
-            mnuEditCopy.Index = 1;
-            mnuEditCopy.Text = "&Copy";
-            //
+            // 
+            this.mnuEditCopy.Index = 1;
+            this.mnuEditCopy.Text = "&Copy";
+            this.mnuEditCopy.Click += new System.EventHandler(this.mnuEditCopy_Click);
+            // 
             // mnuEditPaste
-            //
-            mnuEditPaste.Index = 2;
-            mnuEditPaste.Text = "&Paste";
-            //
+            // 
+            this.mnuEditPaste.Index = 2;
+            this.mnuEditPaste.Text = "&Paste";
+            this.mnuEditPaste.Click += new System.EventHandler(this.mnuEditPaste_Click);
+            // 
             // mnuEditSep1
-            //
-            mnuEditSep1.Index = 3;
-            mnuEditSep1.Text = "-";
-            //
+            // 
+            this.mnuEditSep1.Index = 3;
+            this.mnuEditSep1.Text = "-";
+            // 
             // mnuEditFontSizeDecrease
-            //
-            mnuEditFontSizeDecrease.Index = 4;
-            mnuEditFontSizeDecrease.Shortcut = Shortcut.F3;
-            mnuEditFontSizeDecrease.Text = "Decrease Font Size";
-            //
+            // 
+            this.mnuEditFontSizeDecrease.Index = 4;
+            this.mnuEditFontSizeDecrease.Shortcut = System.Windows.Forms.Shortcut.F3;
+            this.mnuEditFontSizeDecrease.Text = "Decrease Font Size";
+            this.mnuEditFontSizeDecrease.Click += new System.EventHandler(this.mnuEditFontSizeDecrease_Click);
+            // 
             // mnuEditFontSizeIncrease
-            //
-            mnuEditFontSizeIncrease.Index = 5;
-            mnuEditFontSizeIncrease.Shortcut = Shortcut.F4;
-            mnuEditFontSizeIncrease.Text = "Increase Font Size";
-            //
+            // 
+            this.mnuEditFontSizeIncrease.Index = 5;
+            this.mnuEditFontSizeIncrease.Shortcut = System.Windows.Forms.Shortcut.F4;
+            this.mnuEditFontSizeIncrease.Text = "Increase Font Size";
+            this.mnuEditFontSizeIncrease.Click += new System.EventHandler(this.mnuEditFontSizeIncrease_Click);
+            // 
             // frmTextbrowser
-            //
-            AutoScaleBaseSize = new Size(5, 13);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new Size(488, 314);
-            Controls.Add(txtData);
-            Menu = MainMenuControl;
-            Name = "frmTextbrowser";
-            Text = "frmTextbrowser";
-            ResumeLayout(false);
+            this.ClientSize = new System.Drawing.Size(488, 314);
+            this.Controls.Add(this.txtData);
+            this.Menu = this.MainMenuControl;
+            this.Name = "frmTextbrowser";
+            this.Text = "frmTextbrowser";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
 
-        private TextBox txtData;
-        private MainMenu MainMenuControl;
-        private MenuItem mnuFile;
-        private MenuItem mnuFileExit;
-        private MenuItem mnuEdit;
-        private MenuItem mnuEditCut;
-        private MenuItem mnuEditCopy;
-        private MenuItem mnuEditPaste;
-        private MenuItem mnuEditSep1;
-        private MenuItem mnuEditFontSizeDecrease;
-        private MenuItem mnuEditFontSizeIncrease;
+        private System.Windows.Forms.TextBox txtData;
+        private System.Windows.Forms.MainMenu MainMenuControl;
+        private System.Windows.Forms.MenuItem mnuFile;
+        private System.Windows.Forms.MenuItem mnuFileExit;
+        private System.Windows.Forms.MenuItem mnuEdit;
+        private System.Windows.Forms.MenuItem mnuEditCut;
+        private System.Windows.Forms.MenuItem mnuEditCopy;
+        private System.Windows.Forms.MenuItem mnuEditPaste;
+        private System.Windows.Forms.MenuItem mnuEditSep1;
+        private System.Windows.Forms.MenuItem mnuEditFontSizeDecrease;
+        private System.Windows.Forms.MenuItem mnuEditFontSizeIncrease;
     }
 }
