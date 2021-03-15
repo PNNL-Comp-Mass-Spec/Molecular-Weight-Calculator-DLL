@@ -1152,7 +1152,7 @@ namespace MwtWinDllTest
             }
 
             // Add the table to the DataSet.
-            myDataSet.Tables.Add(tDataTable);;
+            myDataSet.Tables.Add(tDataTable);
 
             var sbPercentCompInfo = new StringBuilder();
 

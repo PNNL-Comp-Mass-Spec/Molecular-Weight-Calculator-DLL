@@ -262,7 +262,7 @@ namespace MolecularWeightCalculator
 
                 lngIonCount += 1;
             }
-            catch (Exception ex)
+            catch
             {
                 Console.WriteLine(Information.Err().Description);
             }
@@ -885,7 +885,7 @@ namespace MolecularWeightCalculator
                 {
                     lngModificationIDsOneBased = new int[(residue.ModificationIDCount + 1)];
                 }
-                catch (Exception ex)
+                catch
                 {
                     // Ignore errors
                 }
@@ -1783,7 +1783,7 @@ namespace MolecularWeightCalculator
             // First, make sure the sequence is in the form A.BCDEFG.H or A.BCDEFG or BCDEFG.H
             // If it isn't, then we can't check it (we'll return true)
 
-            if (strRuleResidues == null || strRuleResidues.Length == 0)
+            if (string.IsNullOrEmpty(strRuleResidues))
             {
                 // No rule residues
                 return true;
@@ -2089,7 +2089,7 @@ namespace MolecularWeightCalculator
         public int RemoveModificationByID(int lngModificationID)
         {
             // Returns 0 if found and removed; 1 if error
-            
+
             bool blnRemoved;
 
             if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
@@ -2507,7 +2507,7 @@ namespace MolecularWeightCalculator
             int lngIndexToUse;
             string str3LetterSymbol;
 
-            if (strSymbol == null || strSymbol.Length == 0)
+            if (string.IsNullOrEmpty(strSymbol))
             {
                 return -1;
             }
@@ -2910,7 +2910,7 @@ namespace MolecularWeightCalculator
 
                 return 0;
             }
-            catch (Exception ex)
+            catch
             {
                 return AssureNonZero(Information.Err().Number);
             }

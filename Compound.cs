@@ -203,7 +203,7 @@ namespace MolecularWeightCalculator
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 Debug.WriteLine("Error occurred while copying percent composition values.  Probably an uninitialized array.");
             }

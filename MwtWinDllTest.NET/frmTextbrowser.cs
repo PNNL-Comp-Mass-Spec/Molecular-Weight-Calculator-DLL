@@ -223,7 +223,7 @@ namespace MwtWinDllTest
                 {
                     txtData.Font = new Font(txtData.Font.FontFamily, value);
                 }
-                catch (Exception ex)
+                catch
                 {
                     // Ignore errors here
                 }

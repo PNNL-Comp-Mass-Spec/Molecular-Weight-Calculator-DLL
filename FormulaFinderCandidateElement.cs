@@ -11,7 +11,7 @@
         public double PercentCompMinimum { get; set; }
         public double PercentCompMaximum { get; set; }
 
-        public string OriginalName { get; private set; }
+        public string OriginalName { get; }
 
         public string Symbol { get; set; }
 

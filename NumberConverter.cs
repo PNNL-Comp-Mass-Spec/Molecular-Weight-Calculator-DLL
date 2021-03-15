@@ -103,7 +103,7 @@ namespace MolecularWeightCalculator
                     return Conversions.ToString(Item);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 return string.Empty;
             }
@@ -115,7 +115,7 @@ namespace MolecularWeightCalculator
             {
                 return double.TryParse(strValue, out _);
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }

@@ -1044,7 +1044,7 @@ namespace MolecularWeightCalculator
                     return false;
                 }
 
-                if (!(empiricalElementCount == targetElement.Value))
+                if (empiricalElementCount != targetElement.Value)
                 {
                     return false;
                 }

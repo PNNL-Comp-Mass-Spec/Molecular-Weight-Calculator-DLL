@@ -1421,7 +1421,7 @@ namespace MolecularWeightCalculator
 
                 strResults = strOutput;
             }
-            catch (Exception ex)
+            catch
             {
                 MwtWinDllErrorHandler("MwtWinDll|ComputeIsotopicAbundances");
                 ErrorParams.ErrorID = 590;
@@ -2109,7 +2109,7 @@ namespace MolecularWeightCalculator
                     return Number * Factorial((short)(Number - 1));
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 Console.WriteLine("Number too large");
                 return -1;
@@ -2251,7 +2251,7 @@ namespace MolecularWeightCalculator
 
                 return PredictedCombos;
             }
-            catch (Exception ex)
+            catch
             {
                 MwtWinDllErrorHandler("MwtWinDll|FindCombosPredictIterations");
                 ErrorParams.ErrorID = 590;
@@ -2377,7 +2377,7 @@ namespace MolecularWeightCalculator
                     srOutFile.WriteLine(DateTime.Now.ToString() + " -- " + strMessage + ControlChars.NewLine);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 // Ignore errors here
             }
@@ -2986,7 +2986,7 @@ namespace MolecularWeightCalculator
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         mLogFolderPath = string.Empty;
                     }
@@ -3010,7 +3010,7 @@ namespace MolecularWeightCalculator
                             "Message");
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     // Error creating the log file; set mLogMessagesToFile to false so we don't repeatedly try to create it
                     mLogMessagesToFile = false;
@@ -5008,7 +5008,7 @@ namespace MolecularWeightCalculator
 
                 return strResult;
             }
-            catch (Exception ex)
+            catch
             {
                 MwtWinDllErrorHandler("MwtWinDll_clsElementAndMassRoutines|ReturnFormattedMassAndStdDev");
                 ErrorParams.ErrorID = -10;
@@ -5718,12 +5718,7 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         protected void UpdateProgress(string strProgressStepDescription, float sngPercentComplete)
         {
-            bool blnDescriptionChanged = false;
-
-            if ((strProgressStepDescription ?? "") != (mProgressStepDescription ?? ""))
-            {
-                blnDescriptionChanged = true;
-            }
+            bool blnDescriptionChanged = !string.Equals(strProgressStepDescription, mProgressStepDescription);
 
             mProgressStepDescription = string.Copy(strProgressStepDescription);
             if (sngPercentComplete < 0f)

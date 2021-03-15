@@ -141,7 +141,7 @@ namespace MolecularWeightCalculator
                 {
                     strVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
                 }
-                catch (Exception ex)
+                catch
                 {
                     strVersion = "??.??.??.??";
                 }
@@ -548,7 +548,7 @@ namespace MolecularWeightCalculator
                     return '.';
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 return '.';
             }

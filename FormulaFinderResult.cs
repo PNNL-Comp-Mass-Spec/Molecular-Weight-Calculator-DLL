@@ -6,7 +6,7 @@ namespace MolecularWeightCalculator
     {
         public readonly string EmpiricalFormula;
 
-        public Dictionary<string, int> CountsByElement { get; private set; }
+        public Dictionary<string, int> CountsByElement { get; }
 
         public double Mass { get; set; }
         public double DeltaMass { get; set; }

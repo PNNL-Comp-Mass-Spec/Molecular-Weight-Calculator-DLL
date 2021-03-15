@@ -655,7 +655,7 @@ namespace MolecularWeightCalculator
 
                 return ConvertViscosity(dblViscosityInCentiPoise, uviUnitsViscosityConstants.uviCentiPoise, eViscosityUnits);
             }
-            catch (Exception ex)
+            catch
             {
                 return 0d;
             }
