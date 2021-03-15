@@ -49,10 +49,16 @@
     <Compile Include="frmTextbrowser.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmTextbrowser.Designer.cs">
+      <DependentUpon>frmTextbrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="modMwtWinDllTest.cs" />
     <Compile Include="MwtWinDllTest.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MwtWinDllTest.Designer.cs">
+      <DependentUpon>MwtWinDllTest.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmTextbrowser.resx">
