@@ -135,8 +135,8 @@ namespace MolecularWeightCalculator
         private const float POUNDS_PER_KG = 2.20462262f;
         private const float GALLONS_PER_L = 0.264172052f;
 
-        private udtMoleMassQuantityType mQuantity = new udtMoleMassQuantityType();
-        private udtMoleMassDilutionValuesType mDilutionValues = new udtMoleMassDilutionValuesType();
+        private readonly udtMoleMassQuantityType mQuantity = new udtMoleMassQuantityType();
+        private readonly udtMoleMassDilutionValuesType mDilutionValues = new udtMoleMassDilutionValuesType();
 
         private bool mAutoComputeDilution; // When true, automatically compute dilution results whenever any value changes
         private acdAutoComputeDilutionModeConstants mAutoComputeDilutionMode; // The value to compute when mAutoComputeDilution is true

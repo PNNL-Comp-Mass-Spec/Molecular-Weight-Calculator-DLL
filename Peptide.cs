@@ -210,10 +210,10 @@ namespace MolecularWeightCalculator
         private int ModificationSymbolCountDimmed;
 
         // ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
-        private udtTerminusType mNTerminus = new udtTerminusType(); // Formula on the N-Terminus
+        private readonly udtTerminusType mNTerminus = new udtTerminusType(); // Formula on the N-Terminus
 
         // ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
-        private udtTerminusType mCTerminus = new udtTerminusType(); // Formula on the C-Terminus
+        private readonly udtTerminusType mCTerminus = new udtTerminusType(); // Formula on the C-Terminus
         private double mTotalMass;
 
         private string mWaterLossSymbol; // -H2O

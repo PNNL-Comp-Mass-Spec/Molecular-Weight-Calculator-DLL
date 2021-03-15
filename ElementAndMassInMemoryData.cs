@@ -14,7 +14,7 @@ namespace MolecularWeightCalculator
         /// <remarks>Use objMwtWin.ClearCautionStatements and objMwtWin.AddCautionStatement to set these based on language</remarks>
         public static int MemoryLoadCautionStatementsEnglish(ref string[,] cautionStatements)
         {
-            var statementCount = 41;
+            const int statementCount = 41;
             cautionStatements[1, 0] = "Bi";
             cautionStatements[1, 1] = "Bi means bismuth; BI means boron-iodine.  ";
             cautionStatements[2, 0] = "Bk";
@@ -1437,7 +1437,7 @@ namespace MolecularWeightCalculator
 
         public static int MemoryLoadMessageStatementsEnglish(ref string[] MessageStatements)
         {
-            var statementCount = 1555;
+            const int statementCount = 1555;
 
             MessageStatements[1] = "Unknown element";
             MessageStatements[2] = "Obsolete msg: Cannot handle more than 4 layers of embedded parentheses";

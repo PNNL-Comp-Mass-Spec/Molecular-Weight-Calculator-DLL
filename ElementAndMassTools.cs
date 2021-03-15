@@ -309,7 +309,7 @@ namespace MolecularWeightCalculator
         private string[] MessageStatements;
         private int MessageStatementCount;
 
-        private udtErrorDescriptionType ErrorParams = new udtErrorDescriptionType();
+        private readonly udtErrorDescriptionType ErrorParams = new udtErrorDescriptionType();
 
         /// <summary>
         /// Charge carrier mass
@@ -648,8 +648,8 @@ namespace MolecularWeightCalculator
             ref double[,] ConvolutedMSData2DOneBased,
             ref int ConvolutedMSDataCount)
         {
-            bool blnUseFactorials = false;
-            bool blnAddProtonChargeCarrier = true;
+            const bool blnUseFactorials = false;
+            const bool blnAddProtonChargeCarrier = true;
 
             return ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount,
                 "Isotopic Abundances for",
@@ -5565,7 +5565,7 @@ namespace MolecularWeightCalculator
         public void SortAbbreviationsInternal()
         {
             int itemCount = AbbrevAllCount;
-            var lowIndex = 1;
+            const int lowIndex = 1;
             var highIndex = itemCount;
 
             // sort array[lowIndex..highIndex]

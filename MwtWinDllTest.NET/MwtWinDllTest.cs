@@ -921,7 +921,7 @@ namespace MwtWinDllTest
             // Can define that the * modification equals 15
             peptide.SetModificationSymbol("*", 15d, false, "");
 
-            var strNewSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys";
+            const string strNewSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys";
             objResults.AppendText(strNewSeq);
             peptide.SetSequence(strNewSeq);
 
@@ -959,7 +959,7 @@ namespace MwtWinDllTest
             var ConvolutedMSDataCount = default(int);
 
             // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
-            short intChargeState = 1;
+            const short intChargeState = 1;
             bool blnAddProtonChargeCarrier = true;
             objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState);
 
@@ -973,9 +973,9 @@ namespace MwtWinDllTest
             for (int intIndex = 1; intIndex <= ConvolutedMSDataCount; intIndex++)
                 lstXYVals.Add(new KeyValuePair<double, double>(ConvolutedMSData2DOneBased[intIndex, 0], ConvolutedMSData2DOneBased[intIndex, 1]));
 
-            int intResolution = 2000;
-            double dblResolutionMass = 1000d;
-            int intQualityFactor = 50;
+            const int intResolution = 2000;
+            const double dblResolutionMass = 1000d;
+            const int intQualityFactor = 50;
 
             var lstGaussianData = mMwtWin.ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor);
 
@@ -1214,7 +1214,7 @@ namespace MwtWinDllTest
             int lngIndex;
 
             string strPeptideFragMwtWin;
-            var lngMatchCount = default(int);
+            const int lngMatchCount = default(int);
 
             var objResults = new frmTextbrowser();
 

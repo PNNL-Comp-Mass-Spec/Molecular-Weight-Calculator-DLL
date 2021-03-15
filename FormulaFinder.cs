@@ -1398,7 +1398,7 @@ namespace MolecularWeightCalculator
                             return 0;
                         }
 
-                        int charge = 0;
+                        const int charge = 0;
 
                         // See if this is an abbreviation
                         int intSymbolReference = mElementAndMassRoutines.GetAbbreviationIDInternal(abbrevSymbol);

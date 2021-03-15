@@ -326,7 +326,7 @@ namespace MolecularWeightCalculator
             string strHeaderFraction,
             string strHeaderIntensity)
         {
-            bool blnAddProtonChargeCarrier = true;
+            const bool blnAddProtonChargeCarrier = true;
             return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref strFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, strHeaderIsotopicAbundances, strHeaderMassToCharge, strHeaderFraction, strHeaderIntensity, false, blnAddProtonChargeCarrier);
         }
 
@@ -371,7 +371,7 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> XYVals, int intResolution, double dblResolutionMass)
         {
-            int intQualityFactor = 50;
+            const int intQualityFactor = 50;
             return ConvertStickDataToGaussian2DArray(XYVals, intResolution, dblResolutionMass, intQualityFactor);
         }
 
@@ -442,7 +442,7 @@ namespace MolecularWeightCalculator
             try
             {
                 // Determine what locale we're in (. or , for decimal point)
-                var strTestNumber = "5,500";
+                const string strTestNumber = "5,500";
                 var sglConversionResult = Conversions.ToDouble(strTestNumber);
                 if (Math.Abs(sglConversionResult - 5.5d) < float.Epsilon)
                 {
