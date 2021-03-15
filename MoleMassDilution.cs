@@ -906,28 +906,10 @@ namespace MolecularWeightCalculator
             SetAutoComputeQuantityEnabled(true);
         }
 
-        public short AmountsUnitListCount
-        {
-            get
-            {
-                return Conversions.ToShort((int)AMOUNT_UNITS_LIST_INDEX_MAX + 1);
-            }
-        }
+        public short AmountsUnitListCount => Conversions.ToShort((int)AMOUNT_UNITS_LIST_INDEX_MAX + 1);
 
-        public short AmountsUnitListVolumeIndexStart
-        {
-            get
-            {
-                return Conversions.ToShort(AMOUNT_UNITS_VOLUME_INDEX_START);
-            }
-        }
+        public short AmountsUnitListVolumeIndexStart => Conversions.ToShort(AMOUNT_UNITS_VOLUME_INDEX_START);
 
-        public short AmountsUnitListVolumeIndexEnd
-        {
-            get
-            {
-                return (short)Conversions.ToInteger(AMOUNT_UNITS_LIST_INDEX_MAX);
-            }
-        }
+        public short AmountsUnitListVolumeIndexEnd => (short)Conversions.ToInteger(AMOUNT_UNITS_LIST_INDEX_MAX);
     }
 }

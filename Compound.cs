@@ -54,10 +54,6 @@ namespace MolecularWeightCalculator
         // For example, in C6H6[xBr] if x = 1, then the formula is treated like C6H6Br
         // If x = 2, then the formula is treated like C6H6Br2
 
-        private string mCautionDescription;
-        private string mErrorDescription;
-        private int mErrorID;
-
         private ElementAndMassTools.udtComputationStatsType mComputationStats;
 
         private readonly ElementAndMassTools ElementAndMassRoutines;
@@ -68,7 +64,7 @@ namespace MolecularWeightCalculator
             var strResult = ElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula);
             UpdateErrorAndCaution();
 
-            if (string.IsNullOrEmpty(mErrorDescription))
+            if (string.IsNullOrEmpty(ErrorDescription))
             {
                 mStrFormula = strResult;
                 mStrFormattedFormula = strResult;
@@ -99,7 +95,7 @@ namespace MolecularWeightCalculator
             var strResult = ElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula);
             UpdateErrorAndCaution();
 
-            if (string.IsNullOrEmpty(mErrorDescription))
+            if (string.IsNullOrEmpty(ErrorDescription))
             {
                 mStrFormula = strResult;
                 mStrFormattedFormula = strResult;
@@ -247,9 +243,9 @@ namespace MolecularWeightCalculator
 
         private void UpdateErrorAndCaution()
         {
-            mCautionDescription = ElementAndMassRoutines.GetCautionDescription();
-            mErrorDescription = ElementAndMassRoutines.GetErrorDescription();
-            mErrorID = ElementAndMassRoutines.GetErrorID();
+            CautionDescription = ElementAndMassRoutines.GetCautionDescription();
+            ErrorDescription = ElementAndMassRoutines.GetErrorDescription();
+            ErrorID = ElementAndMassRoutines.GetErrorID();
         }
 
         private void UpdateMass()
@@ -298,48 +294,21 @@ namespace MolecularWeightCalculator
             return XIsPresentAfterBracketRet;
         }
 
-        public string CautionDescription
-        {
-            get
-            {
-                return mCautionDescription;
-            }
-        }
+        public string CautionDescription { get; private set; }
 
         public float Charge
         {
-            get
-            {
-                return mComputationStats.Charge;
-            }
-            set
-            {
-                mComputationStats.Charge = value;
-            }
+            get => mComputationStats.Charge;
+            set => mComputationStats.Charge = value;
         }
 
-        public string ErrorDescription
-        {
-            get
-            {
-                return mErrorDescription;
-            }
-        }
+        public string ErrorDescription { get; private set; }
 
-        public int ErrorID
-        {
-            get
-            {
-                return mErrorID;
-            }
-        }
+        public int ErrorID { get; private set; }
 
         public string Formula
         {
-            get
-            {
-                return mStrFormula;
-            }
+            get => mStrFormula;
             set
             {
                 mStrFormula = value;
@@ -350,29 +319,11 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public string FormulaCapitalized
-        {
-            get
-            {
-                return mStrFormattedFormula;
-            }
-        }
+        public string FormulaCapitalized => mStrFormattedFormula;
 
-        public string FormulaRTF
-        {
-            get
-            {
-                return ElementAndMassRoutines.PlainTextToRtfInternal(FormulaCapitalized, false);
-            }
-        }
+        public string FormulaRTF => ElementAndMassRoutines.PlainTextToRtfInternal(FormulaCapitalized, false);
 
-        public double Mass
-        {
-            get
-            {
-                return get_Mass(true);
-            }
-        }
+        public double Mass => get_Mass(true);
 
         public double get_Mass(bool blnRecomputeMass)
         {
@@ -381,13 +332,7 @@ namespace MolecularWeightCalculator
             return mComputationStats.TotalMass;
         }
 
-        public string MassAndStdDevString
-        {
-            get
-            {
-                return get_MassAndStdDevString(true);
-            }
-        }
+        public string MassAndStdDevString => get_MassAndStdDevString(true);
 
         public string get_MassAndStdDevString(bool blnRecomputeMass)
         {
@@ -400,20 +345,11 @@ namespace MolecularWeightCalculator
             return MassAndStdDevStringRet;
         }
 
-        public double StandardDeviation
-        {
-            get
-            {
-                return mComputationStats.StandardDeviation;
-            }
-        }
+        public double StandardDeviation => mComputationStats.StandardDeviation;
 
         public double ValueForX
         {
-            get
-            {
-                return mValueForX;
-            }
+            get => mValueForX;
             set
             {
                 if (value >= 0d)

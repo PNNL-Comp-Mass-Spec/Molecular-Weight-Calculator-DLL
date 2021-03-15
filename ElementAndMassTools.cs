@@ -321,7 +321,6 @@ namespace MolecularWeightCalculator
         private string mStrCautionDescription;
         private udtComputationStatsType mComputationStatsSaved = new udtComputationStatsType();
 
-        private bool mShowErrorMessageDialogs;
         protected bool mAbortProcessing;
 
         protected bool mLogMessagesToFile;
@@ -365,91 +364,39 @@ namespace MolecularWeightCalculator
 
         public bool AbortProcessing
         {
-            get
-            {
-                return mAbortProcessing;
-            }
-            set
-            {
-                mAbortProcessing = value;
-            }
+            get => mAbortProcessing;
+            set => mAbortProcessing = value;
         }
 
         public emElementModeConstants ElementModeInternal
         {
-            get
-            {
-                return mCurrentElementMode;
-            }
-            set
-            {
-                SetElementModeInternal(value);
-            }
+            get => mCurrentElementMode;
+            set => SetElementModeInternal(value);
         }
 
-        public string LogFilePath
-        {
-            get
-            {
-                return mLogFilePath;
-            }
-        }
+        public string LogFilePath => mLogFilePath;
 
         public string LogFolderPath
         {
-            get
-            {
-                return mLogFolderPath;
-            }
-            set
-            {
-                mLogFolderPath = value;
-            }
+            get => mLogFolderPath;
+            set => mLogFolderPath = value;
         }
 
         public bool LogMessagesToFile
         {
-            get
-            {
-                return mLogMessagesToFile;
-            }
-            set
-            {
-                mLogMessagesToFile = value;
-            }
+            get => mLogMessagesToFile;
+            set => mLogMessagesToFile = value;
         }
 
-        public virtual string ProgressStepDescription
-        {
-            get
-            {
-                return mProgressStepDescription;
-            }
-        }
+        public virtual string ProgressStepDescription => mProgressStepDescription;
 
         /// <summary>
         /// Percent complete; ranges from 0 to 100, but can contain decimal percentage values
         /// </summary>
         /// <returns></returns>
-        public float ProgressPercentComplete
-        {
-            get
-            {
-                return Conversions.ToSingle(Math.Round(mProgressPercentComplete, 2));
-            }
-        }
+        public float ProgressPercentComplete => Conversions.ToSingle(Math.Round(mProgressPercentComplete, 2));
 
-        public bool ShowErrorMessageDialogs
-        {
-            get
-            {
-                return mShowErrorMessageDialogs;
-            }
-            set
-            {
-                mShowErrorMessageDialogs = value;
-            }
-        }
+        public bool ShowErrorMessageDialogs { get; set; }
 
         #endregion
 
@@ -1038,7 +985,7 @@ namespace MolecularWeightCalculator
                     if (PredictedCombos > 10000000)
                     {
                         var strMessage = "Too many combinations necessary for prediction of isotopic distribution: " + PredictedCombos.ToString("#,##0") + ControlChars.NewLine + "Please use a simpler formula or reduce the isotopic range defined for the element (currently " + IsotopeCount + ")";
-                        if (mShowErrorMessageDialogs)
+                        if (ShowErrorMessageDialogs)
                         {
                             Interaction.MsgBox(strMessage);
                         }
@@ -2357,7 +2304,7 @@ namespace MolecularWeightCalculator
 
             LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
 
-            if (mShowErrorMessageDialogs)
+            if (ShowErrorMessageDialogs)
             {
                 Interaction.MsgBox(strMessage, MsgBoxStyle.Exclamation, "Error in MwtWinDll");
             }
@@ -3431,7 +3378,7 @@ namespace MolecularWeightCalculator
             if (Information.Err().Number == 6)
             {
                 strMessage = LookupMessage(590);
-                if (mShowErrorMessageDialogs)
+                if (ShowErrorMessageDialogs)
                 {
                     Interaction.MsgBox(LookupMessage(590), MsgBoxStyle.OkOnly, LookupMessage(350));
                 }
@@ -3443,7 +3390,7 @@ namespace MolecularWeightCalculator
                 strMessage = LookupMessage(600) + ": " + Information.Err().Description + ControlChars.NewLine + " (" + strSourceForm + " handler)";
                 strMessage += ControlChars.NewLine + LookupMessage(605);
 
-                if (mShowErrorMessageDialogs)
+                if (ShowErrorMessageDialogs)
                 {
                     Interaction.MsgBox(strMessage, MsgBoxStyle.OkOnly, LookupMessage(350));
                 }
@@ -3453,12 +3400,12 @@ namespace MolecularWeightCalculator
 
                 // Make sure mShowErrorMessageDialogs is false when calling GeneralErrorHandler
 
-                var blnShowErrorMessageDialogsSaved = mShowErrorMessageDialogs;
-                mShowErrorMessageDialogs = false;
+                var blnShowErrorMessageDialogsSaved = ShowErrorMessageDialogs;
+                ShowErrorMessageDialogs = false;
 
                 GeneralErrorHandler(strSourceForm, Information.Err().Number);
 
-                mShowErrorMessageDialogs = blnShowErrorMessageDialogsSaved;
+                ShowErrorMessageDialogs = blnShowErrorMessageDialogsSaved;
             }
         }
 
@@ -3479,7 +3426,7 @@ namespace MolecularWeightCalculator
             mLogFolderPath = string.Empty;
             mLogFilePath = string.Empty;
 
-            mShowErrorMessageDialogs = false;
+            ShowErrorMessageDialogs = false;
         }
 
         private void InitializeAbbrevSymbolStack(ref udtAbbrevSymbolStackType udtAbbrevSymbolStack)
@@ -5616,7 +5563,7 @@ namespace MolecularWeightCalculator
 
         public void SetShowErrorMessageDialogs(bool blnValue)
         {
-            mShowErrorMessageDialogs = blnValue;
+            ShowErrorMessageDialogs = blnValue;
         }
 
         public void SortAbbreviationsInternal()

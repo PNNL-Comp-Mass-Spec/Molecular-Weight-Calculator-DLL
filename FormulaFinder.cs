@@ -81,12 +81,6 @@ namespace MolecularWeightCalculator
         private int mRecursiveCount;
         private int mMaxRecursiveCount;
 
-        /// <summary>
-        /// Percent complete, between 0 and 100
-        /// </summary>
-        /// <remarks></remarks>
-        private double mPercentComplete;
-
         #endregion
 
         #region "Properties"
@@ -99,10 +93,7 @@ namespace MolecularWeightCalculator
         /// <remarks>The values in the dictionary are target percent composition values; only used if you call FindMatchesByPercentComposition</remarks>
         public Dictionary<string, udtCandidateElementTolerances> CandidateElements
         {
-            get
-            {
-                return mCandidateElements;
-            }
+            get => mCandidateElements;
             set
             {
                 if (value != null)
@@ -119,10 +110,7 @@ namespace MolecularWeightCalculator
 
         public int MaximumHits
         {
-            get
-            {
-                return mMaximumHits;
-            }
+            get => mMaximumHits;
             set
             {
                 if (value < 1)
@@ -143,13 +131,7 @@ namespace MolecularWeightCalculator
         /// Percent complete, between 0 and 100
         /// </summary>
         /// <remarks></remarks>
-        public double PercentComplete
-        {
-            get
-            {
-                return mPercentComplete;
-            }
-        }
+        public double PercentComplete { get; private set; }
 
         #endregion
 
@@ -1936,14 +1918,14 @@ namespace MolecularWeightCalculator
                     {
                         if (searchOptions.ChargeMin == 0)
                         {
-                            mPercentComplete = j / (double)lstRanges[0].Max * 100d;
+                            PercentComplete = j / (double)lstRanges[0].Max * 100d;
                         }
                         else
                         {
-                            mPercentComplete = j / (double)lstRanges[0].Max * 100d * searchOptions.ChargeMax;
+                            PercentComplete = j / (double)lstRanges[0].Max * 100d * searchOptions.ChargeMax;
                         }
 
-                        Console.WriteLine("Bounded search: " + mPercentComplete.ToString("0") + "% complete");
+                        Console.WriteLine("Bounded search: " + PercentComplete.ToString("0") + "% complete");
                     }
                 }
             }
@@ -2299,7 +2281,7 @@ namespace MolecularWeightCalculator
 
             if (mRecursiveCount <= mMaxRecursiveCount)
             {
-                mPercentComplete = mRecursiveCount / (float)mMaxRecursiveCount * 100f;
+                PercentComplete = mRecursiveCount / (float)mMaxRecursiveCount * 100f;
             }
         }
 

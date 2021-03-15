@@ -174,23 +174,11 @@ namespace MwtWinDllTest
         #region "Processing Options Interface Functions"
         public bool ReadOnlyText
         {
-            get
-            {
-                return txtData.ReadOnly;
-            }
-            set
-            {
-                txtData.ReadOnly = value;
-            }
+            get => txtData.ReadOnly;
+            set => txtData.ReadOnly = value;
         }
 
-        public string GetText
-        {
-            get
-            {
-                return txtData.Text;
-            }
-        }
+        public string GetText => txtData.Text;
 
         public string SetText
         {
@@ -204,10 +192,7 @@ namespace MwtWinDllTest
 
         public float TextFontSize
         {
-            get
-            {
-                return txtData.Font.SizeInPoints;
-            }
+            get => txtData.Font.SizeInPoints;
             set
             {
                 if (value < 6f)

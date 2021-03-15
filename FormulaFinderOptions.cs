@@ -24,10 +24,7 @@
         /// <remarks></remarks>
         public bool FindCharge
         {
-            get
-            {
-                return mFindCharge;
-            }
+            get => mFindCharge;
             set
             {
                 mFindCharge = value;
@@ -49,10 +46,7 @@
         /// Setting this to False auto-sets FindTargetMZ to false</remarks>
         public bool LimitChargeRange
         {
-            get
-            {
-                return mLimitChargeRange;
-            }
+            get => mLimitChargeRange;
             set
             {
                 mLimitChargeRange = value;
@@ -85,10 +79,7 @@
         /// <remarks>Setting this to True auto-sets FindCharge and LimitChargeRange to True</remarks>
         public bool FindTargetMZ
         {
-            get
-            {
-                return mFindTargetMZ;
-            }
+            get => mFindTargetMZ;
             set
             {
                 mFindTargetMZ = value;

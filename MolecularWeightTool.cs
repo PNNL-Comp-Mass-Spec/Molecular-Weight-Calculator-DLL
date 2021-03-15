@@ -110,10 +110,7 @@ namespace MolecularWeightCalculator
         #region "Interface Functions"
         public arAbbrevRecognitionModeConstants AbbreviationRecognitionMode
         {
-            get
-            {
-                return mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode;
-            }
+            get => mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode;
             set
             {
                 if (value >= arAbbrevRecognitionModeConstants.arNormalOnly & value <= arAbbrevRecognitionModeConstants.arNoAbbreviations)
@@ -124,13 +121,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public string AppDate
-        {
-            get
-            {
-                return PROGRAM_DATE;
-            }
-        }
+        public string AppDate => PROGRAM_DATE;
 
         public string AppVersion
         {
@@ -152,22 +143,13 @@ namespace MolecularWeightCalculator
 
         public bool BracketsTreatedAsParentheses
         {
-            get
-            {
-                return mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses;
-            }
-            set
-            {
-                mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses = value;
-            }
+            get => mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses;
+            set => mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses = value;
         }
 
         public ElementAndMassTools.ccCaseConversionConstants CaseConversionMode
         {
-            get
-            {
-                return mElementAndMassRoutines.gComputationOptions.CaseConversion;
-            }
+            get => mElementAndMassRoutines.gComputationOptions.CaseConversion;
             set
             {
                 if (value >= ElementAndMassTools.ccCaseConversionConstants.ccConvertCaseUp & value <= ElementAndMassTools.ccCaseConversionConstants.ccSmartCase)
@@ -179,106 +161,43 @@ namespace MolecularWeightCalculator
 
         public char DecimalSeparator
         {
-            get
-            {
-                return mElementAndMassRoutines.gComputationOptions.DecimalSeparator;
-            }
-            set
-            {
-                mElementAndMassRoutines.gComputationOptions.DecimalSeparator = value;
-            }
+            get => mElementAndMassRoutines.gComputationOptions.DecimalSeparator;
+            set => mElementAndMassRoutines.gComputationOptions.DecimalSeparator = value;
         }
 
-        public string ErrorDescription
-        {
-            get
-            {
-                return mElementAndMassRoutines.GetErrorDescription();
-            }
-        }
+        public string ErrorDescription => mElementAndMassRoutines.GetErrorDescription();
 
-        public int ErrorID
-        {
-            get
-            {
-                return mElementAndMassRoutines.GetErrorID();
-            }
-        }
+        public int ErrorID => mElementAndMassRoutines.GetErrorID();
 
-        public string ErrorCharacter
-        {
-            get
-            {
-                return mElementAndMassRoutines.GetErrorCharacter();
-            }
-        }
+        public string ErrorCharacter => mElementAndMassRoutines.GetErrorCharacter();
 
-        public int ErrorPosition
-        {
-            get
-            {
-                return mElementAndMassRoutines.GetErrorPosition();
-            }
-        }
+        public int ErrorPosition => mElementAndMassRoutines.GetErrorPosition();
 
-        public string LogFilePath
-        {
-            get
-            {
-                return mElementAndMassRoutines.LogFilePath;
-            }
-        }
+        public string LogFilePath => mElementAndMassRoutines.LogFilePath;
 
         public string LogFolderPath
         {
-            get
-            {
-                return mElementAndMassRoutines.LogFolderPath;
-            }
-            set
-            {
-                mElementAndMassRoutines.LogFolderPath = value;
-            }
+            get => mElementAndMassRoutines.LogFolderPath;
+            set => mElementAndMassRoutines.LogFolderPath = value;
         }
 
         public bool LogMessagesToFile
         {
-            get
-            {
-                return mElementAndMassRoutines.LogMessagesToFile;
-            }
-            set
-            {
-                mElementAndMassRoutines.LogMessagesToFile = value;
-            }
+            get => mElementAndMassRoutines.LogMessagesToFile;
+            set => mElementAndMassRoutines.LogMessagesToFile = value;
         }
 
-        public virtual string ProgressStepDescription
-        {
-            get
-            {
-                return mElementAndMassRoutines.ProgressStepDescription;
-            }
-        }
+        public virtual string ProgressStepDescription => mElementAndMassRoutines.ProgressStepDescription;
 
         /// <summary>
         /// Percent complete: ranges from 0 to 100, but can contain decimal percentage values
         /// </summary>
         /// <returns></returns>
-        public float ProgressPercentComplete
-        {
-            get
-            {
-                return mElementAndMassRoutines.ProgressPercentComplete;
-            }
-        }
+        public float ProgressPercentComplete => mElementAndMassRoutines.ProgressPercentComplete;
 
         public string RtfFontName
         {
-            get
-            {
-                return mElementAndMassRoutines.gComputationOptions.RtfFontName;
-            }
+            get => mElementAndMassRoutines.gComputationOptions.RtfFontName;
             set
             {
                 if (Strings.Len(value) > 0)
@@ -290,10 +209,7 @@ namespace MolecularWeightCalculator
 
         public short RtfFontSize
         {
-            get
-            {
-                return mElementAndMassRoutines.gComputationOptions.RtfFontSize;
-            }
+            get => mElementAndMassRoutines.gComputationOptions.RtfFontSize;
             set
             {
                 if (value > 0)
@@ -305,22 +221,13 @@ namespace MolecularWeightCalculator
 
         public bool ShowErrorDialogs
         {
-            get
-            {
-                return mElementAndMassRoutines.ShowErrorMessageDialogs;
-            }
-            set
-            {
-                mElementAndMassRoutines.SetShowErrorMessageDialogs(value);
-            }
+            get => mElementAndMassRoutines.ShowErrorMessageDialogs;
+            set => mElementAndMassRoutines.SetShowErrorMessageDialogs(value);
         }
 
         public ElementAndMassTools.smStdDevModeConstants StdDevMode
         {
-            get
-            {
-                return mElementAndMassRoutines.gComputationOptions.StdDevMode;
-            }
+            get => mElementAndMassRoutines.gComputationOptions.StdDevMode;
             set
             {
                 if (value >= ElementAndMassTools.smStdDevModeConstants.smShort & value <= ElementAndMassTools.smStdDevModeConstants.smDecimal)
