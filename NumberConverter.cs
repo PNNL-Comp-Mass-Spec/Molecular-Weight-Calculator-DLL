@@ -2,7 +2,7 @@
 
 namespace MolecularWeightCalculator
 {
-    class NumberConverter
+    internal class NumberConverter
     {
         public static double CDblSafe(string strWork)
         {

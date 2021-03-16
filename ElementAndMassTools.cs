@@ -881,7 +881,7 @@ namespace MolecularWeightCalculator
                 strFormulaIn = strFormula;
 
                 // Reserve memory for IsoStats() array
-                var IsoStats = new udtIsoResultsByElementType[(intElementCount + 1)];
+                var IsoStats = new udtIsoResultsByElementType[intElementCount + 1];
 
                 // Step through udtComputationStats.Elements() again and copy info into IsoStats()
                 // In addition, determine minimum and maximum weight for the molecule
@@ -990,7 +990,7 @@ namespace MolecularWeightCalculator
                         return -1;
                     }
 
-                    var IsoCombos = new int[PredictedCombos + 1, (IsotopeCount + 1)];
+                    var IsoCombos = new int[PredictedCombos + 1, IsotopeCount + 1];
                     // 2D array: Holds the # of each isotope for each combination
                     // For example, Two chlorine atoms, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
                     // m1  m2  m3
@@ -1001,7 +1001,7 @@ namespace MolecularWeightCalculator
                     // 0   1   1
                     // 0   0   2
 
-                    var AtomTrackHistory = new int[(IsotopeCount + 1)];
+                    var AtomTrackHistory = new int[IsotopeCount + 1];
                     AtomTrackHistory[1] = AtomCount;
 
                     var CombosFound = FindCombosRecurse(ref IsoCombos, AtomCount, IsotopeCount, IsotopeCount, 1, 1, ref AtomTrackHistory);
@@ -1869,7 +1869,7 @@ namespace MolecularWeightCalculator
             udtComputationStats.Initialize();
 
             // Call ParseFormulaPublic to compute the formula's mass and fill udtComputationStats
-            double dblMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats);
+            var dblMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats);
 
             if (ErrorParams.ErrorID == 0)
             {
@@ -1911,7 +1911,7 @@ namespace MolecularWeightCalculator
                     }
 
                     // Only display the element if it's in the formula
-                    double dblThisElementCount = mComputationStatsSaved.Elements[intElementIndexToUse].Count;
+                    var dblThisElementCount = mComputationStatsSaved.Elements[intElementIndexToUse].Count;
                     if (Math.Abs(dblThisElementCount - 1.0d) < float.Epsilon)
                     {
                         strEmpiricalFormula += ElementStats[intElementIndexToUse].Symbol;
@@ -1940,7 +1940,7 @@ namespace MolecularWeightCalculator
             udtComputationStats.Initialize();
 
             // Call ExpandAbbreviationsInFormula to compute the formula's mass
-            double dblMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats, true);
+            var dblMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats, true);
 
             if (ErrorParams.ErrorID == 0)
             {
@@ -1957,8 +1957,8 @@ namespace MolecularWeightCalculator
             int AtomCount,
             ref udtIsotopeInfoType[] ThisElementsIsotopes)
         {
-            int workingMass = 0;
-            for (int IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
+            var workingMass = 0;
+            for (var IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                 workingMass = (int)Math.Round(workingMass + IsoCombos[ComboIndex, IsotopeIndex] * Math.Round(ThisElementsIsotopes[IsotopeIndex].Mass, 0));
 
             // (workingMass  - IsoStats(ElementIndex).StartingResultsMass) + 1
@@ -2172,7 +2172,7 @@ namespace MolecularWeightCalculator
 
                     for (var IsotopeIndex = 3; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
                     {
-                        int PreviousComputedValue = IsotopeIndex;
+                        var PreviousComputedValue = IsotopeIndex;
                         for (var AtomIndex = 2; AtomIndex <= AtomCount; AtomIndex++)
                         {
                             // Compute new count for this AtomIndex
@@ -2347,7 +2347,7 @@ namespace MolecularWeightCalculator
         /// <returns>ID if found, otherwise 0</returns>
         public int GetAbbreviationIDInternal(string strSymbol, bool blnAminoAcidsOnly)
         {
-            for (int index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 1; index <= AbbrevAllCount; index++)
             {
                 if ((AbbrevStats[index].Symbol?.ToLower() ?? "") == (strSymbol?.ToLower() ?? ""))
                 {
@@ -2443,7 +2443,7 @@ namespace MolecularWeightCalculator
 
             var strReturnSymbol = "";
             // Use AbbrevStats() array to lookup code
-            for (int index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 1; index <= AbbrevAllCount; index++)
             {
                 if (AbbrevStats[index].IsAminoAcid)
                 {
@@ -2909,7 +2909,7 @@ namespace MolecularWeightCalculator
                         mLogFilePath = System.IO.Path.Combine(mLogFolderPath, mLogFilePath);
                     }
 
-                    bool blnOpeningExistingFile = System.IO.File.Exists(mLogFilePath);
+                    var blnOpeningExistingFile = System.IO.File.Exists(mLogFilePath);
 
                     mLogFile = new System.IO.StreamWriter(new System.IO.FileStream(mLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read))
                     {
@@ -3370,7 +3370,7 @@ namespace MolecularWeightCalculator
         {
             ElementAlph = new string[104];
             ElementStats = new udtElementStatsType[104];
-            for (int i = 0; i <= ELEMENT_COUNT - 1; i++)
+            for (var i = 0; i <= ELEMENT_COUNT - 1; i++)
                 ElementStats[i].Initialize();
 
             AbbrevStats = new udtAbbrevStatsType[501];
@@ -3474,7 +3474,7 @@ namespace MolecularWeightCalculator
 
                 if (strFormula.Length > 0)
                 {
-                    int argCarbonOrSiliconReturnCount = 0;
+                    var argCarbonOrSiliconReturnCount = 0;
                     strFormula = ParseFormulaRecursive(strFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, blnExpandAbbreviations, ref dblStdDevSum, ref argCarbonOrSiliconReturnCount, dblValueForX);
                 }
 
@@ -3557,7 +3557,7 @@ namespace MolecularWeightCalculator
 
             var dblStdDevSumRightHalf = default(double);
             double dblCaretVal = default;
-            string strChar1 = string.Empty;
+            var strChar1 = string.Empty;
 
             short SymbolReference = default, PrevSymbolReference = default;
             int intParenthLevel = default;
@@ -4669,7 +4669,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         public void RecomputeAbbreviationMassesInternal()
         {
-            for (int index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 1; index <= AbbrevAllCount; index++)
             {
                 AbbrevStats[index].Mass = ComputeFormulaWeight(ref AbbrevStats[index].Formula);
             }
@@ -4697,7 +4697,7 @@ namespace MolecularWeightCalculator
 
             strAbbreviationSymbol = strAbbreviationSymbol?.ToLower();
 
-            for (int index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 1; index <= AbbrevAllCount; index++)
             {
                 if ((AbbrevStats[index].Symbol?.ToLower() ?? "") == (strAbbreviationSymbol ?? ""))
                 {
@@ -4725,7 +4725,7 @@ namespace MolecularWeightCalculator
 
             if (abbreviationID >= 1 && abbreviationID <= AbbrevAllCount)
             {
-                for (int indexRemove = abbreviationID; indexRemove < AbbrevAllCount; indexRemove++)
+                for (var indexRemove = abbreviationID; indexRemove < AbbrevAllCount; indexRemove++)
                     AbbrevStats[indexRemove] = AbbrevStats[indexRemove + 1];
 
                 AbbrevAllCount = (short)(AbbrevAllCount - 1);
@@ -4817,7 +4817,7 @@ namespace MolecularWeightCalculator
             // dblMass is the main number
             // dblStdDev is the standard deviation
 
-            string strResult = string.Empty;
+            var strResult = string.Empty;
 
             try
             {
@@ -5019,7 +5019,7 @@ namespace MolecularWeightCalculator
 
             // See if the abbreviation is already present
             var blnAlreadyPresent = false;
-            for (int index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 1; index <= AbbrevAllCount; index++)
             {
                 if ((AbbrevStats[index].Symbol?.ToUpper() ?? "") == (strSymbol?.ToUpper() ?? ""))
                 {
@@ -5159,8 +5159,8 @@ namespace MolecularWeightCalculator
                         {
                             // Make sure the abbreviation's formula is valid
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
-                            double argdblStdDevSum = 0d;
-                            int argCarbonOrSiliconReturnCount = 0;
+                            var argdblStdDevSum = 0d;
+                            var argCarbonOrSiliconReturnCount = 0;
                             strFormula = ParseFormulaRecursive(strFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, false, ref argdblStdDevSum, ref argCarbonOrSiliconReturnCount);
 
                             if (ErrorParams.ErrorID != 0)
@@ -5412,14 +5412,14 @@ namespace MolecularWeightCalculator
             var SymbolsStore = new string[highIndex + 1, 2];
 
             // MasterSymbolsList starts at lowIndex
-            for (int index = lowIndex; index <= highIndex; index++)
+            for (var index = lowIndex; index <= highIndex; index++)
                 PointerArray[index] = index;
 
             ShellSortSymbolsWork(ref PointerArray, lowIndex, highIndex);
 
             // Reassign MasterSymbolsList array according to PointerArray order
             // First, copy to a temporary array (I know it eats up memory, but I have no choice)
-            for (int index = lowIndex; index <= highIndex; index++)
+            for (var index = lowIndex; index <= highIndex; index++)
             {
                 SymbolsStore[index, 0] = MasterSymbolsList[index, 0];
                 SymbolsStore[index, 1] = MasterSymbolsList[index, 1];
@@ -5427,7 +5427,7 @@ namespace MolecularWeightCalculator
 
             // Now, put them back into the MasterSymbolsList() array in the correct order
             // Use PointerArray() for this
-            for (int index = lowIndex; index <= highIndex; index++)
+            for (var index = lowIndex; index <= highIndex; index++)
             {
                 MasterSymbolsList[index, 0] = SymbolsStore[PointerArray[index], 0];
                 MasterSymbolsList[index, 1] = SymbolsStore[PointerArray[index], 1];
@@ -5464,7 +5464,7 @@ namespace MolecularWeightCalculator
             while (incrementAmount > 0)
             {
                 // Sort by insertion in increments of incrementAmount
-                for (int index = lowIndex + incrementAmount; index <= highIndex; index++)
+                for (var index = lowIndex + incrementAmount; index <= highIndex; index++)
                 {
                     var pointerSwap = PointerArray[index];
                     int indexCompare;
@@ -5525,7 +5525,7 @@ namespace MolecularWeightCalculator
             while (incrementAmount > 0)
             {
                 // sort by insertion in increments of incrementAmount
-                for (int index = lowIndex + incrementAmount; index <= highIndex; index++)
+                for (var index = lowIndex + incrementAmount; index <= highIndex; index++)
                 {
                     var udtCompare = AbbrevStats[index];
                     int indexCompare;
@@ -5597,7 +5597,7 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         protected void UpdateProgress(string strProgressStepDescription, float sngPercentComplete)
         {
-            bool blnDescriptionChanged = !string.Equals(strProgressStepDescription, mProgressStepDescription);
+            var blnDescriptionChanged = !string.Equals(strProgressStepDescription, mProgressStepDescription);
 
             mProgressStepDescription = string.Copy(strProgressStepDescription);
             if (sngPercentComplete < 0f)

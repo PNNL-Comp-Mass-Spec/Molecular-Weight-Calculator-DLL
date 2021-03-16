@@ -118,7 +118,7 @@ namespace MolecularWeightCalculator
                 if (blnForceInit || IonMass == null)
                 {
                     IonMass = new double[5];
-                    ModificationIDs = new int[(MAX_MODIFICATIONS + 1)];
+                    ModificationIDs = new int[MAX_MODIFICATIONS + 1];
                 }
             }
         }
@@ -491,7 +491,7 @@ namespace MolecularWeightCalculator
 
             udtFragSpectrum = new udtFragmentationSpectrumDataType[lstFragSpectraData.Count + 1];
 
-            for (int intIndex = 0; intIndex < lstFragSpectraData.Count; intIndex++)
+            for (var intIndex = 0; intIndex < lstFragSpectraData.Count; intIndex++)
                 udtFragSpectrum[intIndex] = lstFragSpectraData[intIndex];
 
             return lstFragSpectraData.Count;
@@ -721,7 +721,7 @@ namespace MolecularWeightCalculator
 
         private string GetInternalResidues(int lngCurrentResidueIndex, itIonTypeConstants eIonType)
         {
-            bool blnPhosphorylated = false;
+            var blnPhosphorylated = false;
             return GetInternalResidues(lngCurrentResidueIndex, eIonType, out blnPhosphorylated);
         }
 
@@ -872,7 +872,7 @@ namespace MolecularWeightCalculator
                 // Need to use this in case the calling program is sending an array with fixed dimensions
                 try
                 {
-                    lngModificationIDsOneBased = new int[(residue.ModificationIDCount + 1)];
+                    lngModificationIDsOneBased = new int[residue.ModificationIDCount + 1];
                 }
                 catch
                 {
@@ -1893,7 +1893,7 @@ namespace MolecularWeightCalculator
             // Checks to see if strTestResidue matches one of the residues in strRuleResidues
             // Used to test by Rule Residues and Exception Residues
 
-            for (int intCharIndex = 0; intCharIndex < strRuleResidues.Length; intCharIndex++)
+            for (var intCharIndex = 0; intCharIndex < strRuleResidues.Length; intCharIndex++)
             {
                 var strCompareResidue = strRuleResidues.Substring(intCharIndex, 1).Trim();
                 if (strCompareResidue.Length > 0)

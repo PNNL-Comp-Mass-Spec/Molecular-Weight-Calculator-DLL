@@ -173,11 +173,11 @@ namespace MolecularWeightCalculator
                 {
                     if (mComputationStats.PercentCompositions[elementId].PercentComposition > 0d)
                     {
-                        string percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(
+                        var percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(
                             mComputationStats.PercentCompositions[elementId].PercentComposition,
                             mComputationStats.PercentCompositions[elementId].StdDeviation);
 
-                        string elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId);
+                        var elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId);
 
                         if (!percentCompositionByElement.ContainsKey(elementSymbol))
                         {
@@ -200,7 +200,7 @@ namespace MolecularWeightCalculator
 
             // Determine # of elements in formula
             short intTotalElements = 0;
-            for (int intElementIndex = 1; intElementIndex <= ElementAndMassTools.ELEMENT_COUNT; intElementIndex++)
+            for (var intElementIndex = 1; intElementIndex <= ElementAndMassTools.ELEMENT_COUNT; intElementIndex++)
             {
                 // Increment .TotalElements if element is present
                 if (mComputationStats.Elements[intElementIndex].Used)

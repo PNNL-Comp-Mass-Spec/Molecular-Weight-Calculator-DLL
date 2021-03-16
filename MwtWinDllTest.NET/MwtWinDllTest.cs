@@ -99,8 +99,8 @@ namespace MwtWinDllTest
         {
             mMwtWin.Compound.Formula = txtFormula.Text;
 
-            double dblPctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElement(6);
-            string strPctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElementAsString(6);
+            var dblPctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElement(6);
+            var strPctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElementAsString(6);
 
             var percentCompositionByElement = mMwtWin.Compound.GetPercentCompositionForAllElements();
 
@@ -250,7 +250,7 @@ namespace MwtWinDllTest
 
             // Test Abbreviations
             var lngItemCount = mMwtWin.GetAbbreviationCount();
-            for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
+            for (var intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
                 intResult = mMwtWin.GetAbbreviation(intIndex, out var strSymbol, out var strFormula, out var sngCharge, out var blnIsAminoAcid, out var strOneLetterSymbol, out var strComment);
                 Debug.Assert(intResult == 0, "");
@@ -262,7 +262,7 @@ namespace MwtWinDllTest
 
             // Test Caution statements
             lngItemCount = mMwtWin.GetCautionStatementCount();
-            for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
+            for (var intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
                 intResult = mMwtWin.GetCautionStatement(intIndex, out var strSymbol, out var strStatement);
                 Debug.Assert(intResult == 0, "");
@@ -274,7 +274,7 @@ namespace MwtWinDllTest
 
             // Test Element access
             lngItemCount = mMwtWin.GetElementCount();
-            for (int intIndex = 1; intIndex <= lngItemCount; intIndex++)
+            for (var intIndex = 1; intIndex <= lngItemCount; intIndex++)
             {
                 intResult = mMwtWin.GetElement((short)intIndex, out var strSymbol, out dblMass, out var dblUncertainty, out var sngCharge, out var intIsotopeCount);
                 Debug.Assert(intResult == 0, "");
@@ -466,22 +466,22 @@ namespace MwtWinDllTest
 
             objResults.AppendText(string.Empty);
 
-            string strResults = string.Empty;
+            var strResults = string.Empty;
             var ConvolutedMSDataCount = default(int);
 
             // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
             const short intChargeState = 1;
-            bool blnAddProtonChargeCarrier = true;
+            var blnAddProtonChargeCarrier = true;
             objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState);
 
             var ConvolutedMSData2DOneBased = new double[1, 2];
-            string argstrFormulaIn = "C1255H43O2Cl";
+            var argstrFormulaIn = "C1255H43O2Cl";
             var intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount);
             objResults.AppendText(strResults);
 
             objResults.AppendText("Convert isotopic distribution to gaussian");
             var lstXYVals = new List<KeyValuePair<double, double>>();
-            for (int intIndex = 1; intIndex <= ConvolutedMSDataCount; intIndex++)
+            for (var intIndex = 1; intIndex <= ConvolutedMSDataCount; intIndex++)
                 lstXYVals.Add(new KeyValuePair<double, double>(ConvolutedMSData2DOneBased[intIndex, 0], ConvolutedMSData2DOneBased[intIndex, 1]));
 
             const int intResolution = 2000;
@@ -492,7 +492,7 @@ namespace MwtWinDllTest
 
             var sbResults = new StringBuilder();
             sbResults.AppendLine("m/z" + "\t" + "Intensity");
-            for (int intIndex = 0; intIndex < lstGaussianData.Count; intIndex++)
+            for (var intIndex = 0; intIndex < lstGaussianData.Count; intIndex++)
             {
                 if (lstGaussianData[intIndex].Key >= 15175d && lstGaussianData[intIndex].Key < 15193d)
                 {
@@ -504,7 +504,7 @@ namespace MwtWinDllTest
 
             blnAddProtonChargeCarrier = false;
             objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
-            string argstrFormulaIn1 = "C1255H43O2Cl";
+            var argstrFormulaIn1 = "C1255H43O2Cl";
             intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn1, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, blnAddProtonChargeCarrier);
             objResults.AppendText(strResults);
         }
