@@ -972,7 +972,7 @@ namespace MolecularWeightCalculator
                 else
                 {
                     var strSymbol1Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol3Letter, false);
-                    if ((strSymbol1Letter ?? "") == (string.Empty ?? ""))
+                    if ((strSymbol1Letter ?? "") == string.Empty)
                         strSymbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER;
                     strSequence += strSymbol1Letter;
                 }
@@ -1461,7 +1461,7 @@ namespace MolecularWeightCalculator
                         short intCharLocInExceptionChars;
                         for (intCharLocInExceptionChars = 0; intCharLocInExceptionChars < intExceptionSuffixResidueCount; intCharLocInExceptionChars++)
                         {
-                            if ((strResidueFollowingCleavageResidue ?? "") == (strExceptionSuffixResidues.Substring(intCharLocInExceptionChars, 1) ?? ""))
+                            if ((strResidueFollowingCleavageResidue ?? "") == strExceptionSuffixResidues.Substring(intCharLocInExceptionChars, 1))
                             {
                                 // Exception char is the following character; can't count this as the cleavage point
 
@@ -1779,7 +1779,7 @@ namespace MolecularWeightCalculator
             }
 
             // Find the prefix residue and starting residue
-            if ((strSequence.Substring(1, 1) ?? "") == (strSeparationChar ?? ""))
+            if (strSequence.Substring(1, 1) == strSeparationChar)
             {
                 strPrefix = strSequence.Substring(0, 1);
                 strSequenceStart = strSequence.Substring(2, 1);
@@ -1790,7 +1790,7 @@ namespace MolecularWeightCalculator
             }
 
             // Find the suffix residue and the ending residue
-            if ((strSequence.Substring(strSequence.Length - 2, 1) ?? "") == (strSeparationChar ?? ""))
+            if (strSequence.Substring(strSequence.Length - 2, 1) == strSeparationChar)
             {
                 strSuffix = strSequence.Substring(strSequence.Length - 1);
                 strSequenceEnd = strSequence.Substring(strSequence.Length - 3, 1);
@@ -1800,12 +1800,12 @@ namespace MolecularWeightCalculator
                 strSequenceEnd = strSequence.Substring(strSequence.Length - 1);
             }
 
-            if ((strRuleResidues ?? "") == (strTerminiiSymbol ?? ""))
+            if (strRuleResidues == (strTerminiiSymbol ?? ""))
             {
                 // Peptide database rules
                 // See if prefix and suffix are "" or are strTerminiiSymbol
-                if ((strPrefix ?? "") == (strTerminiiSymbol ?? "") && (strSuffix ?? "") == (strTerminiiSymbol ?? "") ||
-                    (strPrefix ?? "") == (string.Empty ?? "") && (strSuffix ?? "") == (string.Empty ?? ""))
+                if (strPrefix == (strTerminiiSymbol ?? "") && strSuffix == (strTerminiiSymbol ?? "") ||
+                    strPrefix == string.Empty && strSuffix == string.Empty)
                 {
                     intRuleMatchCount = 2;
                     blnMatchesCleavageRule = true;
@@ -1832,7 +1832,7 @@ namespace MolecularWeightCalculator
                     if (intEndToCheck == 0)
                     {
                         strTestResidue = strPrefix;
-                        if ((strPrefix ?? "") == (strTerminiiSymbol ?? ""))
+                        if (strPrefix == (strTerminiiSymbol ?? ""))
                         {
                             intRuleMatchCount = (short)(intRuleMatchCount + 1);
                             blnSkipThisEnd = true;
@@ -1853,7 +1853,7 @@ namespace MolecularWeightCalculator
                     else
                     {
                         strTestResidue = strSequenceEnd;
-                        if ((strSuffix ?? "") == (strTerminiiSymbol ?? ""))
+                        if (strSuffix == (strTerminiiSymbol ?? ""))
                         {
                             intRuleMatchCount = (short)(intRuleMatchCount + 1);
                             blnSkipThisEnd = true;
@@ -1898,7 +1898,7 @@ namespace MolecularWeightCalculator
                 var strCompareResidue = strRuleResidues.Substring(intCharIndex, 1).Trim();
                 if (strCompareResidue.Length > 0)
                 {
-                    if ((strTestResidue ?? "") == (strCompareResidue ?? ""))
+                    if ((strTestResidue ?? "") == strCompareResidue)
                     {
                         // Match found
                         return true;
@@ -1989,8 +1989,6 @@ namespace MolecularWeightCalculator
                     }
                 }
             }
-
-            return;
         }
 
         private bool RemoveTrailingOH(ref string strWorkingSequence)
@@ -2981,7 +2979,7 @@ namespace MolecularWeightCalculator
                     {
                         if (residue.ModificationIDs[intModIndex] <= ModificationSymbolCount)
                         {
-                            residue.MassWithMods = residue.MassWithMods + ModificationSymbols[residue.ModificationIDs[intModIndex]].ModificationMass;
+                            residue.MassWithMods += ModificationSymbols[residue.ModificationIDs[intModIndex]].ModificationMass;
                             if (ModificationSymbols[residue.ModificationIDs[intModIndex]].IndicatesPhosphorylation)
                             {
                                 blnPhosphorylationMassAdded = true;
@@ -2999,7 +2997,7 @@ namespace MolecularWeightCalculator
                         // Only add a mass if none of the .ModificationIDs has .IndicatesPhosphorylation = True
                         if (!blnPhosphorylationMassAdded)
                         {
-                            residue.MassWithMods = residue.MassWithMods + dblPhosphorylationMass;
+                            residue.MassWithMods += dblPhosphorylationMass;
                         }
                     }
 

@@ -25,7 +25,7 @@ namespace MwtWinDllTestCS
             // Set the element mode (average, monoisotopic, or integer)
             mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
 
-            Peptide.udtFragmentationSpectrumOptionsType fragSpectrumOptions = default;
+            Peptide.udtFragmentationSpectrumOptionsType fragSpectrumOptions = new Peptide.udtFragmentationSpectrumOptionsType();
             fragSpectrumOptions.Initialize();
 
             // Initialize fragSpectrumOptions with the defaults
@@ -66,8 +66,7 @@ namespace MwtWinDllTestCS
             mMwtWin.Peptide.SetFragmentationSpectrumOptions(fragSpectrumOptions);
 
             // Get the fragmentation masses
-            Peptide.udtFragmentationSpectrumDataType[] fragSpectrum = null;
-            mMwtWin.Peptide.GetFragmentationMasses(out fragSpectrum);
+            mMwtWin.Peptide.GetFragmentationMasses(out var fragSpectrum);
 
             // Print the results to the console
             Console.WriteLine("Fragmentation spectrum for " + mMwtWin.Peptide.GetSequence(false, true, false, false));

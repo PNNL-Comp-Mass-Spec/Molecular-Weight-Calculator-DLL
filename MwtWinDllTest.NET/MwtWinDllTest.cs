@@ -44,12 +44,14 @@ namespace MwtWinDllTest
         private void AppendColumnToTableStyle(ref DataGridTableStyle tsTableStyle, string strMappingName, string strHeaderText, int intWidth = 75, bool blnIsReadOnly = false, bool blnIsDateTime = false, int intDecimalPlaces = -1)
         {
             // If intDecimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
-            var TextCol = new DataGridTextBoxColumn();
+            var TextCol = new DataGridTextBoxColumn
+            {
+                MappingName = strMappingName,
+                HeaderText = strHeaderText,
+                Width = intWidth,
+                ReadOnly = blnIsReadOnly
+            };
 
-            TextCol.MappingName = strMappingName;
-            TextCol.HeaderText = strHeaderText;
-            TextCol.Width = intWidth;
-            TextCol.ReadOnly = blnIsReadOnly;
             if (blnIsDateTime)
             {
                 TextCol.Format = "g";
@@ -68,12 +70,14 @@ namespace MwtWinDllTest
         private void AppendBoolColumnToTableStyle(ref DataGridTableStyle tsTableStyle, string strMappingName, string strHeaderText, int intWidth = 75, bool blnIsReadOnly = false, bool blnSourceIsTrueFalse = true)
         {
             // If intDecimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
-            var BoolCol = new DataGridBoolColumn();
+            var BoolCol = new DataGridBoolColumn
+            {
+                MappingName = strMappingName,
+                HeaderText = strHeaderText,
+                Width = intWidth,
+                ReadOnly = blnIsReadOnly
+            };
 
-            BoolCol.MappingName = strMappingName;
-            BoolCol.HeaderText = strHeaderText;
-            BoolCol.Width = intWidth;
-            BoolCol.ReadOnly = blnIsReadOnly;
             if (blnSourceIsTrueFalse)
             {
                 BoolCol.FalseValue = false;
@@ -778,7 +782,7 @@ namespace MwtWinDllTest
             lngIndex = 1;
             do
             {
-                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out var lngResidueStart, out var lngResidueEnd);
+                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out _, out _);
                 objResults.AppendText("Tryptic fragment " + lngIndex + ": " + strPeptideFragMwtWin);
                 lngIndex += 1;
             }

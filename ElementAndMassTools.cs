@@ -852,7 +852,7 @@ namespace MolecularWeightCalculator
                         blnExplicitIsotopesPresent = true;
                         ExplicitIsotopeCount += element.IsotopeCount;
                         for (var IsotopeIndex = 1; IsotopeIndex <= element.IsotopeCount; IsotopeIndex++)
-                            element.Count = element.Count - element.Isotopes[IsotopeIndex].Count;
+                            element.Count -= element.Isotopes[IsotopeIndex].Count;
                     }
                 }
 
@@ -2006,8 +2006,8 @@ namespace MolecularWeightCalculator
                 var result = ConvolutedAbundances[IndexToStoreResult];
                 if (NewAbundance > 0f)
                 {
-                    result.Abundance = result.Abundance + NewAbundance;
-                    result.Multiplicity = result.Multiplicity + 1;
+                    result.Abundance += NewAbundance;
+                    result.Multiplicity += 1;
                 }
             }
             else
@@ -3630,7 +3630,7 @@ namespace MolecularWeightCalculator
                                 if (Math.Abs(udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection) > float.Epsilon)
                                 {
                                     // This assertion is here simply because I want to check the code
-                                    element.IsotopicCorrection = element.IsotopicCorrection - udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection;
+                                    element.IsotopicCorrection -= udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection;
                                 }
                             }
                             else
@@ -3989,7 +3989,7 @@ namespace MolecularWeightCalculator
                                             {
                                                 dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
                                                 var element = udtComputationStats.Elements[SymbolReference];
-                                                element.Count = element.Count + dblAtomCountToAdd;
+                                                element.Count += dblAtomCountToAdd;
                                                 element.Used = true; // Element is present tag
                                                 dblStdDevSum += dblAtomCountToAdd * Math.Pow(ElementStats[SymbolReference].Uncertainty, 2d);
 
@@ -4055,7 +4055,7 @@ namespace MolecularWeightCalculator
                                                 dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * dblParenthMultiplier * dblDashMultiplier;
                                                 var element = udtComputationStats.Elements[SymbolReference];
                                                 // Increment element counting bin
-                                                element.Count = element.Count + dblAtomCountToAdd;
+                                                element.Count += dblAtomCountToAdd;
 
                                                 // Store information in .Isotopes()
                                                 // Increment the isotope counting bin
@@ -4067,11 +4067,11 @@ namespace MolecularWeightCalculator
                                                 }
 
                                                 var isotope = element.Isotopes[element.IsotopeCount];
-                                                isotope.Count = isotope.Count + dblAtomCountToAdd;
+                                                isotope.Count += dblAtomCountToAdd;
                                                 isotope.Mass = dblCaretVal;
 
                                                 // Add correction amount to udtComputationStats.elements(SymbolReference).IsotopicCorrection
-                                                element.IsotopicCorrection = element.IsotopicCorrection + (dblCaretVal * dblAtomCountToAdd - ElementStats[SymbolReference].Mass * dblAtomCountToAdd);
+                                                element.IsotopicCorrection += (dblCaretVal * dblAtomCountToAdd - ElementStats[SymbolReference].Mass * dblAtomCountToAdd);
 
                                                 // Set bit that element is present
                                                 element.Used = true;
@@ -4343,7 +4343,7 @@ namespace MolecularWeightCalculator
                     if (string.IsNullOrEmpty(strChar1))
                         strChar1 = EMPTY_STRING_CHAR.ToString();
                     ErrorParams.ErrorCharacter = strChar1;
-                    ErrorParams.ErrorPosition = ErrorParams.ErrorPosition + intCharCountPrior;
+                    ErrorParams.ErrorPosition += intCharCountPrior;
                 }
 
                 if (LoneCarbonOrSilicon > 1)
@@ -4505,7 +4505,7 @@ namespace MolecularWeightCalculator
 
             // ReSharper restore CommentTypo
 
-            if ((strWorkText ?? "") == (string.Empty ?? ""))
+            if ((strWorkText ?? "") == string.Empty)
             {
                 // Return a blank RTF string
                 return strRTF + "}";
@@ -5149,7 +5149,7 @@ namespace MolecularWeightCalculator
 
                         if (eSymbolMatchType == smtSymbolMatchTypeConstants.smtElement)
                         {
-                            if ((ElementStats[intSymbolReference].Symbol ?? "") == (strSymbol ?? ""))
+                            if ((ElementStats[intSymbolReference].Symbol ?? "") == strSymbol)
                             {
                                 blnInvalidSymbolOrFormula = true;
                             }
@@ -5215,7 +5215,7 @@ namespace MolecularWeightCalculator
                         // See if strSymbolCombo is present in CautionStatements[]
                         for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
                         {
-                            if ((CautionStatements[intIndex, 0] ?? "") == (strSymbolCombo ?? ""))
+                            if ((CautionStatements[intIndex, 0] ?? "") == strSymbolCombo)
                             {
                                 blnAlreadyPresent = true;
                                 break;
