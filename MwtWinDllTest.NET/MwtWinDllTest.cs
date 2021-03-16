@@ -4,7 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
 using MolecularWeightCalculator;
 
 namespace MwtWinDllTest
@@ -488,12 +487,12 @@ namespace MwtWinDllTest
             var lstGaussianData = mMwtWin.ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor);
 
             var sbResults = new StringBuilder();
-            sbResults.AppendLine("m/z" + ControlChars.Tab + "Intensity");
+            sbResults.AppendLine("m/z" + "\t" + "Intensity");
             for (int intIndex = 0; intIndex < lstGaussianData.Count; intIndex++)
             {
                 if (lstGaussianData[intIndex].Key >= 15175d && lstGaussianData[intIndex].Key < 15193d)
                 {
-                    sbResults.AppendLine(lstGaussianData[intIndex].Key.ToString("0.000") + ControlChars.Tab + lstGaussianData[intIndex].Value.ToString("0.000"));
+                    sbResults.AppendLine(lstGaussianData[intIndex].Key.ToString("0.000") + "\t" + lstGaussianData[intIndex].Value.ToString("0.000"));
                 }
             }
 
@@ -786,17 +785,16 @@ namespace MwtWinDllTest
             while (strPeptideFragMwtWin.Length > 0);
 
             objResults.AppendText(string.Empty);
-            VBMath.Randomize();
+            var random = new Random();
             for (lngMultipleIteration = 1; lngMultipleIteration <= ITERATIONS_TO_RUN; lngMultipleIteration++)
             {
                 // Generate random protein
-                var lngProteinLengthRand = (int)((MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) * VBMath.Rnd() + MIN_PROTEIN_LENGTH);
+                var lngProteinLengthRand = random.Next(MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) + MIN_PROTEIN_LENGTH;
 
                 strProtein = "";
-                float lngResidueRand;
-                for (lngResidueRand = 0f; lngResidueRand < lngProteinLengthRand; lngResidueRand++)
+                for (var lngResidueRand = 0; lngResidueRand < lngProteinLengthRand; lngResidueRand++)
                 {
-                    var strNewResidue = POSSIBLE_RESIDUES.Substring((int)Math.Round(POSSIBLE_RESIDUES.Length * VBMath.Rnd()), 1);
+                    var strNewResidue = POSSIBLE_RESIDUES.Substring(random.Next(POSSIBLE_RESIDUES.Length), 1);
                     strProtein += strNewResidue;
                 }
 

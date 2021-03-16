@@ -241,11 +241,11 @@ namespace MolecularWeightCalculator
         {
             try
             {
-                if (lngIonCount > Information.UBound(FragSpectrumWork))
+                if (lngIonCount >= FragSpectrumWork.Length)
                 {
                     // This shouldn't happen
-                    Console.WriteLine("In AppendDataToFragSpectrum, lngIonCount is greater than UBound(FragSpectrumWork); this is unexpected");
-                    Array.Resize(ref FragSpectrumWork, Information.UBound(FragSpectrumWork) + 10 + 1);
+                    Console.WriteLine("In AppendDataToFragSpectrum, lngIonCount is greater than FragSpectrumWork.Length - 1; this is unexpected");
+                    Array.Resize(ref FragSpectrumWork, FragSpectrumWork.Length + 10);
                 }
 
                 var fragIon = FragSpectrumWork[lngIonCount];

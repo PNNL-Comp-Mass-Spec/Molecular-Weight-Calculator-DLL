@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace MolecularWeightCalculator
 {
@@ -553,7 +552,7 @@ namespace MolecularWeightCalculator
             // the reference number in the master list
             // For example for Carbon, MasterSymbolsList[intIndex,0] = "C" and MasterSymbolsList[intIndex,1] = "E6"
 
-            // Look for match, stepping directly through MasterSymbolsList()
+            // Look for match, stepping directly through MasterSymbolsList[]
             // List is sorted by reverse length, so can do all at once
 
             for (intIndex = 0; intIndex < MasterSymbolsListCount; intIndex++)
@@ -580,7 +579,7 @@ namespace MolecularWeightCalculator
 
                         if (eSymbolMatchType != smtSymbolMatchTypeConstants.smtUnknown)
                         {
-                            symbolReference = (short)Math.Round(Conversion.Val(MasterSymbolsList[intIndex, 1].Substring(1)));
+                            symbolReference = (short)Math.Round(double.Parse(MasterSymbolsList[intIndex, 1].Substring(1)));
                         }
 
                         break;
@@ -588,7 +587,7 @@ namespace MolecularWeightCalculator
                 }
                 else
                 {
-                    Console.WriteLine("Zero-length entry found in MasterSymbolsList(); this is unexpected");
+                    Console.WriteLine("Zero-length entry found in MasterSymbolsList[]; this is unexpected");
                 }
             }
 
@@ -981,10 +980,10 @@ namespace MolecularWeightCalculator
 
                     if (PredictedCombos > 10000000)
                     {
-                        var strMessage = "Too many combinations necessary for prediction of isotopic distribution: " + PredictedCombos.ToString("#,##0") + ControlChars.NewLine + "Please use a simpler formula or reduce the isotopic range defined for the element (currently " + IsotopeCount + ")";
+                        var strMessage = "Too many combinations necessary for prediction of isotopic distribution: " + PredictedCombos.ToString("#,##0") + Environment.NewLine + "Please use a simpler formula or reduce the isotopic range defined for the element (currently " + IsotopeCount + ")";
                         if (ShowErrorMessageDialogs)
                         {
-                            Interaction.MsgBox(strMessage);
+                            MessageBox.Show(strMessage);
                         }
 
                         LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
@@ -1290,8 +1289,8 @@ namespace MolecularWeightCalculator
                     }
                 }
 
-                var strOutput = strHeaderIsotopicAbundances + " " + strFormula + ControlChars.NewLine;
-                strOutput = strOutput + SpacePad("  " + strHeaderMassToCharge, 12) + Constants.vbTab + SpacePad(strHeaderFraction, 9) + Constants.vbTab + strHeaderIntensity + ControlChars.NewLine;
+                var strOutput = strHeaderIsotopicAbundances + " " + strFormula + Environment.NewLine;
+                strOutput = strOutput + SpacePad("  " + strHeaderMassToCharge, 12) + "\t" + SpacePad(strHeaderFraction, 9) + "\t" + strHeaderIntensity + Environment.NewLine;
 
                 // Initialize ConvolutedMSData2DOneBased()
                 ConvolutedMSData2DOneBased = new double[ConvolutedMSDataCount + 1, 3];
@@ -1356,11 +1355,11 @@ namespace MolecularWeightCalculator
                 // Write to strOutput
                 for (var massIndex = 1; massIndex <= ConvolutedMSDataCount; massIndex++)
                 {
-                    strOutput = strOutput + SpacePadFront(ConvolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + Constants.vbTab;
-                    strOutput = strOutput + (ConvolutedMSData2DOneBased[massIndex, 1] * dblMaxAbundance / 100d).ToString("0.0000000") + Constants.vbTab;
-                    strOutput = strOutput + SpacePadFront(ConvolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + ControlChars.NewLine;
+                    strOutput = strOutput + SpacePadFront(ConvolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + "\t";
+                    strOutput = strOutput + (ConvolutedMSData2DOneBased[massIndex, 1] * dblMaxAbundance / 100d).ToString("0.0000000") + "\t";
+                    strOutput = strOutput + SpacePadFront(ConvolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + Environment.NewLine;
                     //ToDo: Fix Multiplicity
-                    //strOutput = strOutput + ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + ControlChars.NewLine
+                    //strOutput = strOutput + ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + Environment.NewLine
                 }
 
                 strResults = strOutput;
@@ -2068,7 +2067,7 @@ namespace MolecularWeightCalculator
         //    PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount)
 
         //    If PredictedCombos > 10000000 Then
-        //        strMessage = "Too many combinations necessary for prediction of isotopic distribution: " & PredictedCombos.ToString("#,##0") & ControlChars.NewLine & "Please use a simpler formula or reduce the isotopic range defined for the element (currently " & IsotopeCount & ")"
+        //        strMessage = "Too many combinations necessary for prediction of isotopic distribution: " & PredictedCombos.ToString("#,##0") & Environment.NewLine & "Please use a simpler formula or reduce the isotopic range defined for the element (currently " & IsotopeCount & ")"
         //        If mShowErrorMessageDialogs Then
         //            MsgBox(strMessage)
         //        End If
@@ -2091,7 +2090,7 @@ namespace MolecularWeightCalculator
 
         //            strHeader = CombosFound & " combos found for " & AtomCount & " atoms for element with " & IsotopeCount & " isotopes"
         //            If CombosFound > 5000 Then
-        //                strHeader = strHeader & ControlChars.NewLine & "Only displaying the first 5000 combinations"
+        //                strHeader = strHeader & Environment.NewLine & "Only displaying the first 5000 combinations"
         //            End If
 
         //            System.Diagnostics.Debug.WriteLine(strHeader)
@@ -2290,14 +2289,14 @@ namespace MolecularWeightCalculator
             var strMessage = "Error in " + strCallingProcedure + ": " + Conversion.ErrorToString(errorNumber) + " (#" + errorNumber + ")";
             if (!string.IsNullOrEmpty(strErrorDescriptionAdditional))
             {
-                strMessage += ControlChars.NewLine + strErrorDescriptionAdditional;
+                strMessage += Environment.NewLine + strErrorDescriptionAdditional;
             }
 
             LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
 
             if (ShowErrorMessageDialogs)
             {
-                Interaction.MsgBox(strMessage, MsgBoxStyle.Exclamation, "Error in MwtWinDll");
+                MessageBox.Show(strMessage, "Error in MwtWinDll", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
@@ -2312,7 +2311,7 @@ namespace MolecularWeightCalculator
                 // Open the file and append a new error entry
                 using (var srOutFile = new System.IO.StreamWriter(strErrorFilePath, true))
                 {
-                    srOutFile.WriteLine(DateTime.Now + " -- " + strMessage + ControlChars.NewLine);
+                    srOutFile.WriteLine(DateTime.Now + " -- " + strMessage + Environment.NewLine);
                 }
             }
             catch
@@ -2919,8 +2918,8 @@ namespace MolecularWeightCalculator
 
                     if (!blnOpeningExistingFile)
                     {
-                        mLogFile.WriteLine("Date" + ControlChars.Tab +
-                            "Type" + ControlChars.Tab +
+                        mLogFile.WriteLine("Date" + "\t" +
+                            "Type" + "\t" +
                             "Message");
                     }
                 }
@@ -2951,12 +2950,12 @@ namespace MolecularWeightCalculator
 
             if (mLogFile == null)
             {
-                Console.WriteLine(strMessageType + ControlChars.Tab + strMessage);
+                Console.WriteLine(strMessageType + "\t" + strMessage);
             }
             else
             {
-                mLogFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + ControlChars.Tab +
-                    strMessageType + ControlChars.Tab + strMessage);
+                mLogFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\t" +
+                    strMessageType + "\t" + strMessage);
             }
         }
 
@@ -3338,19 +3337,19 @@ namespace MolecularWeightCalculator
                 strMessage = LookupMessage(590);
                 if (ShowErrorMessageDialogs)
                 {
-                    Interaction.MsgBox(LookupMessage(590), MsgBoxStyle.OkOnly, LookupMessage(350));
+                    MessageBox.Show(LookupMessage(590), LookupMessage(350), MessageBoxButtons.OK);
                 }
 
                 LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
             }
             else
             {
-                strMessage = LookupMessage(600) + ": " + Information.Err().Description + ControlChars.NewLine + " (" + strSourceForm + " handler)";
-                strMessage += ControlChars.NewLine + LookupMessage(605);
+                strMessage = LookupMessage(600) + ": " + Information.Err().Description + Environment.NewLine + " (" + strSourceForm + " handler)";
+                strMessage += Environment.NewLine + LookupMessage(605);
 
                 if (ShowErrorMessageDialogs)
                 {
-                    Interaction.MsgBox(strMessage, MsgBoxStyle.OkOnly, LookupMessage(350));
+                    MessageBox.Show(strMessage, LookupMessage(350), MessageBoxButtons.OK);
                 }
 
                 // Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
@@ -3693,7 +3692,7 @@ namespace MolecularWeightCalculator
                             case 40:
                             case 123: // (    Record its position
                                 // See if a number is present just after the opening parenthesis
-                                if (Information.IsNumeric(strChar2) || strChar2 == ".")
+                                if (char.IsDigit(strChar2[0]) || strChar2 == ".")
                                 {
                                     // Misplaced number
                                     ErrorParams.ErrorID = 14;
@@ -4062,9 +4061,9 @@ namespace MolecularWeightCalculator
                                                 // Increment the isotope counting bin
                                                 element.IsotopeCount = (short)(element.IsotopeCount + 1);
 
-                                                if (Information.UBound(element.Isotopes) < element.IsotopeCount)
+                                                if (element.Isotopes.Length <= element.IsotopeCount)
                                                 {
-                                                    Array.Resize(ref element.Isotopes, Information.UBound(element.Isotopes) + 2 + 1);
+                                                    Array.Resize(ref element.Isotopes, element.Isotopes.Length + 2);
                                                 }
 
                                                 var isotope = element.Isotopes[element.IsotopeCount];
@@ -4415,7 +4414,7 @@ namespace MolecularWeightCalculator
             for (var intIndex = 0; intIndex < strWork.Length; intIndex++)
             {
                 var strWorking = strWork.Substring(intIndex, 1);
-                if (Information.IsNumeric(strWorking) || strWorking == gComputationOptions.DecimalSeparator.ToString() || blnAllowNegative == true && strWorking == "-")
+                if (char.IsDigit(strWorking[0]) || strWorking == gComputationOptions.DecimalSeparator.ToString() || blnAllowNegative == true && strWorking == "-")
                 {
                     strFoundNum += strWorking;
                 }
@@ -4605,7 +4604,7 @@ namespace MolecularWeightCalculator
                     // skip it, the tilde sign is used to add additional height to the formula line when isotopes are used
                     // If it's here from a previous time, we ignore it, adding it at the end if needed (if blnSuperFound = true)
                 }
-                else if (Information.IsNumeric(strWorkChar) || strWorkChar == gComputationOptions.DecimalSeparator.ToString())
+                else if (char.IsDigit(strWorkChar[0]) || strWorkChar == gComputationOptions.DecimalSeparator.ToString())
                 {
                     // Number or period, so super or subscript it if needed
                     if (intCharIndex == 1)
@@ -5480,7 +5479,7 @@ namespace MolecularWeightCalculator
                         // If same length, sort alphabetically
                         if (Length1 == Length2)
                         {
-                            if (Operators.CompareString(MasterSymbolsList[PointerArray[indexCompare], 0].ToUpper(), MasterSymbolsList[pointerSwap, 0].ToUpper(), false) <= 0)
+                            if (string.Compare(MasterSymbolsList[PointerArray[indexCompare], 0].ToUpper(), MasterSymbolsList[pointerSwap, 0].ToUpper(), StringComparison.Ordinal) <= 0)
                                 break;
                         }
 
@@ -5533,7 +5532,7 @@ namespace MolecularWeightCalculator
                     for (indexCompare = index - incrementAmount; indexCompare >= lowIndex; indexCompare += -incrementAmount)
                     {
                         // Use <= to sort ascending; Use > to sort descending
-                        if (Operators.CompareString(AbbrevStats[indexCompare].Symbol, udtCompare.Symbol, false) <= 0)
+                        if (string.Compare(AbbrevStats[indexCompare].Symbol, udtCompare.Symbol, StringComparison.Ordinal) <= 0)
                             break;
                         AbbrevStats[indexCompare + incrementAmount] = AbbrevStats[indexCompare];
                     }

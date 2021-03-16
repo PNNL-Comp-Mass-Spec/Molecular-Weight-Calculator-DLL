@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
 
 namespace MwtWinDllTest
 {
@@ -81,7 +80,7 @@ namespace MwtWinDllTest
 
         public void AppendText(string Value)
         {
-            txtData.Text += Value + ControlChars.NewLine;
+            txtData.Text += Value + Environment.NewLine;
             txtData.SelectionStart = txtData.TextLength;
             txtData.ScrollToCaret();
         }
