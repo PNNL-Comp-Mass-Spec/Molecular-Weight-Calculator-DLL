@@ -303,7 +303,7 @@ namespace MwtWinDllTest
             // Test m/z conversion
             // Switch to isotopic masses
 
-            mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+            mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
 
             mMwtWin.Compound.SetFormula("C19H36O5NH4");
             dblMass = mMwtWin.Compound.Mass;
@@ -322,48 +322,48 @@ namespace MwtWinDllTest
             // Test Capillary flow functions
             var capFlow = mMwtWin.CapFlow;
             capFlow.SetAutoComputeEnabled(false);
-            capFlow.SetBackPressure(2000d, CapillaryFlow.uprUnitsPressureConstants.uprPsi);
-            capFlow.SetColumnLength(40d, CapillaryFlow.ulnUnitsLengthConstants.ulnCM);
-            capFlow.SetColumnID(50d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
-            capFlow.SetSolventViscosity(0.0089d, CapillaryFlow.uviUnitsViscosityConstants.uviPoise);
+            capFlow.SetBackPressure(2000d, CapillaryFlow.UnitOfPressure.Psi);
+            capFlow.SetColumnLength(40d, CapillaryFlow.UnitOfLength.CM);
+            capFlow.SetColumnID(50d, CapillaryFlow.UnitOfLength.Microns);
+            capFlow.SetSolventViscosity(0.0089d, CapillaryFlow.UnitOfViscosity.Poise);
             capFlow.SetInterparticlePorosity(0.33d);
-            capFlow.SetParticleDiameter(2d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
+            capFlow.SetParticleDiameter(2d, CapillaryFlow.UnitOfLength.Microns);
             capFlow.SetAutoComputeEnabled(true);
 
             objResults.AppendText("");
             objResults.AppendText("Check capillary flow calcs");
-            objResults.AppendText("Linear Velocity: " + capFlow.ComputeLinearVelocity(CapillaryFlow.ulvUnitsLinearVelocityConstants.ulvCmPerSec));
-            objResults.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin) + "  (newly computed)");
+            objResults.AppendText("Linear Velocity: " + capFlow.ComputeLinearVelocity(CapillaryFlow.UnitOfLinearVelocity.CmPerSec));
+            objResults.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + "  (newly computed)");
 
             objResults.AppendText("Vol flow rate:   " + capFlow.GetVolFlowRate());
-            objResults.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi));
-            objResults.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.ulnUnitsLengthConstants.ulnCM));
-            objResults.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons));
-            objResults.AppendText("Column Volume:   " + capFlow.ComputeColumnVolume(CapillaryFlow.uvoUnitsVolumeConstants.uvoNL));
-            objResults.AppendText("Dead time:       " + capFlow.ComputeDeadTime(CapillaryFlow.utmUnitsTimeConstants.utmSeconds));
+            objResults.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.UnitOfPressure.Psi));
+            objResults.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.UnitOfLength.CM));
+            objResults.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.UnitOfLength.Microns));
+            objResults.AppendText("Column Volume:   " + capFlow.ComputeColumnVolume(CapillaryFlow.UnitOfVolume.NL));
+            objResults.AppendText("Dead time:       " + capFlow.ComputeDeadTime(CapillaryFlow.UnitOfTime.Seconds));
 
             objResults.AppendText("");
 
             objResults.AppendText("Repeat Computations, but in a different order (should give same results)");
-            objResults.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin));
-            objResults.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons));
-            objResults.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi));
-            objResults.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.ulnUnitsLengthConstants.ulnCM));
+            objResults.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin));
+            objResults.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.UnitOfLength.Microns));
+            objResults.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.UnitOfPressure.Psi));
+            objResults.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.UnitOfLength.CM));
 
             objResults.AppendText("");
 
-            objResults.AppendText("Old Dead time: " + capFlow.GetDeadTime(CapillaryFlow.utmUnitsTimeConstants.utmMinutes));
+            objResults.AppendText("Old Dead time: " + capFlow.GetDeadTime(CapillaryFlow.UnitOfTime.Minutes));
 
-            capFlow.SetAutoComputeMode(CapillaryFlow.acmAutoComputeModeConstants.acmVolFlowRateUsingDeadTime);
+            capFlow.SetAutoComputeMode(CapillaryFlow.AutoComputeMode.VolFlowRateUsingDeadTime);
 
-            capFlow.SetDeadTime(25d, CapillaryFlow.utmUnitsTimeConstants.utmMinutes);
+            capFlow.SetDeadTime(25d, CapillaryFlow.UnitOfTime.Minutes);
             objResults.AppendText("Dead time is now 25.0 minutes");
 
-            objResults.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate(CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin) + " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)");
+            objResults.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)");
 
             // Confirm that auto-compute worked
 
-            objResults.AppendText("Vol flow rate: " + capFlow.ComputeVolFlowRateUsingDeadTime(out var dblNewPressure, CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin, CapillaryFlow.uprUnitsPressureConstants.uprPsi) + "  (confirmation of computed volumetric flow rate)");
+            objResults.AppendText("Vol flow rate: " + capFlow.ComputeVolFlowRateUsingDeadTime(out var dblNewPressure, CapillaryFlow.UnitOfFlowRate.NLPerMin, CapillaryFlow.UnitOfPressure.Psi) + "  (confirmation of computed volumetric flow rate)");
             objResults.AppendText("New pressure: " + dblNewPressure);
 
             objResults.AppendText("");
@@ -374,39 +374,39 @@ namespace MwtWinDllTest
             capFlow.SetBackPressure(2000d);
             objResults.AppendText("Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure");
             objResults.AppendText("  was automatically changed back to pressure needed to give vol flow rate matching dead time");
-            objResults.AppendText("Pressure is now: " + capFlow.GetBackPressure(CapillaryFlow.uprUnitsPressureConstants.uprPsi) + " psi (thus, not 2000 as one might expect)");
+            objResults.AppendText("Pressure is now: " + capFlow.GetBackPressure(CapillaryFlow.UnitOfPressure.Psi) + " psi (thus, not 2000 as one might expect)");
 
-            capFlow.SetAutoComputeMode(CapillaryFlow.acmAutoComputeModeConstants.acmVolFlowRate);
+            capFlow.SetAutoComputeMode(CapillaryFlow.AutoComputeMode.VolFlowRate);
             objResults.AppendText("Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.");
 
-            capFlow.SetBackPressure(2000d, CapillaryFlow.uprUnitsPressureConstants.uprPsi);
+            capFlow.SetBackPressure(2000d, CapillaryFlow.UnitOfPressure.Psi);
 
             // Calling GetVolFlowRate will get the new computed vol flow rate (since auto-compute is on)
             objResults.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate());
 
             capFlow.SetMassRateSampleMass(1000d);
-            capFlow.SetMassRateConcentration(1d, CapillaryFlow.ucoUnitsConcentrationConstants.ucoMicroMolar);
-            capFlow.SetMassRateVolFlowRate(600d, CapillaryFlow.ufrUnitsFlowRateConstants.ufrNLPerMin);
-            capFlow.SetMassRateInjectionTime(5d, CapillaryFlow.utmUnitsTimeConstants.utmMinutes);
+            capFlow.SetMassRateConcentration(1d, CapillaryFlow.UnitOfConcentration.MicroMolar);
+            capFlow.SetMassRateVolFlowRate(600d, CapillaryFlow.UnitOfFlowRate.NLPerMin);
+            capFlow.SetMassRateInjectionTime(5d, CapillaryFlow.UnitOfTime.Minutes);
 
-            objResults.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.umfMassFlowRateConstants.umfFmolPerSec) + " fmol/sec");
-            objResults.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.umaMolarAmountConstants.umaFemtoMoles) + " fmoles");
+            objResults.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.UnitOfMassFlowRate.FmolPerSec) + " fmol/sec");
+            objResults.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.UnitOfMolarAmount.FemtoMoles) + " fmoles");
 
             capFlow.SetMassRateSampleMass(1234d);
-            capFlow.SetMassRateConcentration(1d, CapillaryFlow.ucoUnitsConcentrationConstants.ucoNgPerML);
+            capFlow.SetMassRateConcentration(1d, CapillaryFlow.UnitOfConcentration.NgPerML);
 
             objResults.AppendText("Computing mass flow rate for compound weighing 1234 g/mol and at 1 ng/mL concentration");
-            objResults.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.umfMassFlowRateConstants.umfAmolPerMin) + " amol/min");
-            objResults.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.umaMolarAmountConstants.umaFemtoMoles) + " fmoles");
+            objResults.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.UnitOfMassFlowRate.AmolPerMin) + " amol/min");
+            objResults.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.UnitOfMolarAmount.FemtoMoles) + " fmoles");
 
-            capFlow.SetExtraColumnBroadeningLinearVelocity(4d, CapillaryFlow.ulvUnitsLinearVelocityConstants.ulvCmPerMin);
-            capFlow.SetExtraColumnBroadeningDiffusionCoefficient(0.0003d, CapillaryFlow.udcDiffusionCoefficientConstants.udcCmSquaredPerMin);
-            capFlow.SetExtraColumnBroadeningOpenTubeLength(5d, CapillaryFlow.ulnUnitsLengthConstants.ulnCM);
-            capFlow.SetExtraColumnBroadeningOpenTubeID(250d, CapillaryFlow.ulnUnitsLengthConstants.ulnMicrons);
-            capFlow.SetExtraColumnBroadeningInitialPeakWidthAtBase(30d, CapillaryFlow.utmUnitsTimeConstants.utmSeconds);
+            capFlow.SetExtraColumnBroadeningLinearVelocity(4d, CapillaryFlow.UnitOfLinearVelocity.CmPerMin);
+            capFlow.SetExtraColumnBroadeningDiffusionCoefficient(0.0003d, CapillaryFlow.UnitOfDiffusionCoefficient.CmSquaredPerMin);
+            capFlow.SetExtraColumnBroadeningOpenTubeLength(5d, CapillaryFlow.UnitOfLength.CM);
+            capFlow.SetExtraColumnBroadeningOpenTubeID(250d, CapillaryFlow.UnitOfLength.Microns);
+            capFlow.SetExtraColumnBroadeningInitialPeakWidthAtBase(30d, CapillaryFlow.UnitOfTime.Seconds);
 
             objResults.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
-            objResults.AppendText(capFlow.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.utmUnitsTimeConstants.utmSeconds).ToString());
+            objResults.AppendText(capFlow.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.UnitOfTime.Seconds).ToString());
 
             var udtFragSpectrumOptions = new Peptide.udtFragmentationSpectrumOptionsType();
             udtFragSpectrumOptions.Initialize();
@@ -416,8 +416,8 @@ namespace MwtWinDllTest
             // .SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
 
             // Can change the terminii to various standard groups
-            peptide.SetNTerminusGroup(Peptide.ntgNTerminusGroupConstants.ntgCarbamyl);
-            peptide.SetCTerminusGroup(Peptide.ctgCTerminusGroupConstants.ctgAmide);
+            peptide.SetNTerminusGroup(Peptide.NTerminusGroupType.Carbamyl);
+            peptide.SetCTerminusGroup(Peptide.CTerminusGroupType.Amide);
 
             // Can change the terminii to any desired elements
             peptide.SetNTerminus("C2OH3"); // Acetyl group
@@ -433,13 +433,13 @@ namespace MwtWinDllTest
             objResults.AppendText(strNewSeq);
             peptide.SetSequence(strNewSeq);
 
-            peptide.SetSequence("K.TQPLE*VK.-", Peptide.ntgNTerminusGroupConstants.ntgHydrogenPlusProton, Peptide.ctgCTerminusGroupConstants.ctgHydroxyl, blnIs3LetterCode: false);
+            peptide.SetSequence("K.TQPLE*VK.-", Peptide.NTerminusGroupType.HydrogenPlusProton, Peptide.CTerminusGroupType.Hydroxyl, blnIs3LetterCode: false);
 
             objResults.AppendText(peptide.GetSequence(true, false, true, false));
             objResults.AppendText(peptide.GetSequence(false, true, false, false));
             objResults.AppendText(peptide.GetSequence(true, false, true, true));
 
-            peptide.SetCTerminusGroup(Peptide.ctgCTerminusGroupConstants.ctgNone);
+            peptide.SetCTerminusGroup(Peptide.CTerminusGroupType.None);
             objResults.AppendText(peptide.GetSequence(true, false, true, true));
 
             udtFragSpectrumOptions = peptide.GetFragmentationSpectrumOptions();
@@ -451,7 +451,7 @@ namespace MwtWinDllTest
             udtFragSpectrumOptions.TripleChargeIonsShow = true;
             udtFragSpectrumOptions.TripleChargeIonsThreshold = 400f;
 
-            udtFragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itAIon].ShowIon = true;
+            udtFragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.AIon].ShowIon = true;
 
             peptide.SetFragmentationSpectrumOptions(udtFragSpectrumOptions);
 
@@ -509,7 +509,7 @@ namespace MwtWinDllTest
         {
             var oMwtWin = new MolecularWeightTool();
 
-            oMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+            oMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
 
             oMwtWin.FormulaFinder.CandidateElements.Clear();
 
@@ -608,7 +608,7 @@ namespace MwtWinDllTest
 
         private void FormulaFinderTest6(MolecularWeightTool oMwtWin, FormulaFinderOptions searchOptions, string currentTask)
         {
-            searchOptions.SearchMode = FormulaFinderOptions.eSearchMode.Bounded;
+            searchOptions.SearchMode = FormulaFinderOptions.SearchModes.Bounded;
 
             // Search for 200 Da, +/- 250 ppm
             var lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
@@ -905,13 +905,13 @@ namespace MwtWinDllTest
             switch (cboStdDevMode.SelectedIndex)
             {
                 case 1:
-                    mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smScientific;
+                    mMwtWin.StdDevMode = ElementAndMassTools.StdDevMode.Scientific;
                     break;
                 case 2:
-                    mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smDecimal;
+                    mMwtWin.StdDevMode = ElementAndMassTools.StdDevMode.Decimal;
                     break;
                 default:
-                    mMwtWin.StdDevMode = ElementAndMassTools.smStdDevModeConstants.smShort;
+                    mMwtWin.StdDevMode = ElementAndMassTools.StdDevMode.Short;
                     break;
             }
         }
@@ -921,13 +921,13 @@ namespace MwtWinDllTest
             switch (cboWeightMode.SelectedIndex)
             {
                 case 1:
-                    mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+                    mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
                     break;
                 case 2:
-                    mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIntegerMass);
+                    mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Integer);
                     break;
                 default:
-                    mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emAverageMass);
+                    mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Average);
                     break;
             }
         }

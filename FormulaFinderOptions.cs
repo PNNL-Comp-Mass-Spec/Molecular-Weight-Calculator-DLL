@@ -3,7 +3,7 @@
     public class FormulaFinderOptions
     {
         #region "Constants and Enums"
-        public enum eSearchMode
+        public enum SearchModes
         {
             Thorough = 0,
             Bounded = 1
@@ -91,7 +91,7 @@
             }
         }
 
-        public eSearchMode SearchMode { get; set; }
+        public SearchModes SearchMode { get; set; }
 
         public bool VerifyHydrogens { get; set; }
 
@@ -108,7 +108,7 @@
             ChargeMin = -4;
             ChargeMax = 4;
             FindTargetMZ = false;
-            SearchMode = eSearchMode.Thorough;
+            SearchMode = SearchModes.Thorough;
             VerifyHydrogens = true;
         }
     }

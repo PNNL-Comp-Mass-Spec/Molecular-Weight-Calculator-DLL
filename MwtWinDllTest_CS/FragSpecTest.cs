@@ -23,7 +23,7 @@ namespace MwtWinDllTestCS
 
         public void TestAccessFunctions() {
             // Set the element mode (average, monoisotopic, or integer)
-            mMwtWin.SetElementMode(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+            mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
 
             var fragSpectrumOptions = new Peptide.udtFragmentationSpectrumOptionsType();
             fragSpectrumOptions.Initialize();
@@ -37,16 +37,16 @@ namespace MwtWinDllTestCS
             fragSpectrumOptions.DoubleChargeIonsThreshold = 400;
             fragSpectrumOptions.TripleChargeIonsThreshold = 400;
 
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itAIon].ShowIon = false;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itBIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.AIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.BIon].ShowIon = false;
 
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itYIon].ShowIon = true;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itYIon].NeutralLossAmmonia = false;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itYIon].NeutralLossPhosphate = false;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itYIon].NeutralLossWater = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.YIon].ShowIon = true;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.YIon].NeutralLossAmmonia = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.YIon].NeutralLossPhosphate = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.YIon].NeutralLossWater = false;
 
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itCIon].ShowIon = false;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.itIonTypeConstants.itZIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.CIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.ZIon].ShowIon = false;
 
             fragSpectrumOptions.IntensityOptions.BYIonShoulder = 0;
 

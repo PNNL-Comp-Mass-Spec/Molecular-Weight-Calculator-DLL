@@ -60,33 +60,33 @@ namespace MolecularWeightCalculator
 
         private readonly ElementAndMassTools ElementAndMassRoutines;
 
-        public enum ctgCTerminusGroupConstants
+        public enum CTerminusGroupType
         {
-            ctgHydroxyl = 0,
-            ctgAmide = 1,
-            ctgNone = 2
+            Hydroxyl = 0,
+            Amide = 1,
+            None = 2
         }
 
-        public enum ntgNTerminusGroupConstants
+        public enum NTerminusGroupType
         {
-            ntgHydrogen = 0,
-            ntgHydrogenPlusProton = 1,
-            ntgAcetyl = 2,
-            ntgPyroGlu = 3,
-            ntgCarbamyl = 4,
-            ntgPTC = 5,
-            ntgNone = 6
+            Hydrogen = 0,
+            HydrogenPlusProton = 1,
+            Acetyl = 2,
+            PyroGlu = 3,
+            Carbamyl = 4,
+            PTC = 5,
+            None = 6
         }
 
-        private const itIonTypeConstants ION_TYPE_MAX = itIonTypeConstants.itZIon;
+        private const IonType ION_TYPE_MAX = IonType.ZIon;
 
-        public enum itIonTypeConstants
+        public enum IonType
         {
-            itAIon = 0,
-            itBIon = 1,
-            itYIon = 2,
-            itCIon = 3,
-            itZIon = 4
+            AIon = 0,
+            BIon = 1,
+            YIon = 2,
+            CIon = 3,
+            ZIon = 4
         }
 
         private class udtModificationSymbolType
@@ -187,7 +187,7 @@ namespace MolecularWeightCalculator
             public int SourceResidueNumber; // The residue number that resulted in this mass
             public string SourceResidueSymbol3Letter; // The residue symbol that resulted in this mass
             public short Charge;
-            public itIonTypeConstants IonType;
+            public IonType IonType;
             public bool IsShoulderIon; // B and Y ions can have Shoulder ions at +-1
 
             public override string ToString()
@@ -237,7 +237,7 @@ namespace MolecularWeightCalculator
         private bool mDelayUpdateResidueMass;
         //
 
-        private void AppendDataToFragSpectrum(ref int lngIonCount, ref udtFragmentationSpectrumDataType[] FragSpectrumWork, float sngMass, float sngIntensity, string strIonSymbol, string strIonSymbolGeneric, int lngSourceResidue, string strSourceResidueSymbol3Letter, short intCharge, itIonTypeConstants eIonType, bool blnIsShoulderIon)
+        private void AppendDataToFragSpectrum(ref int lngIonCount, ref udtFragmentationSpectrumDataType[] FragSpectrumWork, float sngMass, float sngIntensity, string strIonSymbol, string strIonSymbolGeneric, int lngSourceResidue, string strSourceResidueSymbol3Letter, short intCharge, IonType eIonType, bool blnIsShoulderIon)
         {
             try
             {
@@ -381,15 +381,15 @@ namespace MolecularWeightCalculator
 
             short intIonCount = 0;
 
-            for (itIonTypeConstants eIonIndex = 0; eIonIndex <= ION_TYPE_MAX; eIonIndex++)
+            for (IonType eIonIndex = 0; eIonIndex <= ION_TYPE_MAX; eIonIndex++)
             {
                 if (mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex].ShowIon)
                 {
                     intIonCount = (short)(intIonCount + 1);
                     if (Math.Abs(mFragSpectrumOptions.IntensityOptions.BYIonShoulder) > 0d)
                     {
-                        if (eIonIndex == itIonTypeConstants.itBIon || eIonIndex == itIonTypeConstants.itYIon ||
-                            eIonIndex == itIonTypeConstants.itCIon || eIonIndex == itIonTypeConstants.itZIon)
+                        if (eIonIndex == IonType.BIon || eIonIndex == IonType.YIon ||
+                            eIonIndex == IonType.CIon || eIonIndex == IonType.ZIon)
                         {
                             intIonCount = (short)(intIonCount + 2);
                         }
@@ -511,7 +511,7 @@ namespace MolecularWeightCalculator
             var sngChargeThreshold = new float[4];
 
             // Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
-            for (itIonTypeConstants eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
+            for (IonType eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
                 sngIonIntensities[(int)eIonType] = (float)mFragSpectrumOptions.IntensityOptions.IonType[(int)eIonType];
 
             var sngIonShoulderIntensity = (float)mFragSpectrumOptions.IntensityOptions.BYIonShoulder;
@@ -545,11 +545,11 @@ namespace MolecularWeightCalculator
             {
                 var residue = Residues[lngResidueIndex];
 
-                for (itIonTypeConstants eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
+                for (IonType eIonType = 0; eIonType <= ION_TYPE_MAX; eIonType++)
                 {
                     if (mFragSpectrumOptions.IonTypeOptions[(int)eIonType].ShowIon)
                     {
-                        if ((lngResidueIndex == 1 || lngResidueIndex == ResidueCount) && (eIonType == itIonTypeConstants.itAIon || eIonType == itIonTypeConstants.itBIon || eIonType == itIonTypeConstants.itCIon))
+                        if ((lngResidueIndex == 1 || lngResidueIndex == ResidueCount) && (eIonType == IonType.AIon || eIonType == IonType.BIon || eIonType == IonType.CIon))
                         {
                             // Don't include a, b, or c ions in the output masses for this residue
                         }
@@ -590,7 +590,7 @@ namespace MolecularWeightCalculator
                                         // A, B, and C ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
                                         var strIonSymbolGeneric = LookupIonTypeString(eIonType);
                                         string strIonSymbol;
-                                        if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
+                                        if (eIonType == IonType.YIon || eIonType == IonType.ZIon)
                                         {
                                             strIonSymbol = strIonSymbolGeneric + (ResidueCount - lngResidueIndex + 1);
                                         }
@@ -610,7 +610,7 @@ namespace MolecularWeightCalculator
                                         // Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
                                         // Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
                                         float sngObservedMass;
-                                        if (Math.Abs(sngIonShoulderIntensity) > 0f && (eIonType == itIonTypeConstants.itBIon || eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itCIon || eIonType == itIonTypeConstants.itZIon))
+                                        if (Math.Abs(sngIonShoulderIntensity) > 0f && (eIonType == IonType.BIon || eIonType == IonType.YIon || eIonType == IonType.CIon || eIonType == IonType.ZIon))
                                         {
                                             for (var intShoulderIndex = -1; intShoulderIndex <= 1; intShoulderIndex += 2)
                                             {
@@ -712,13 +712,13 @@ namespace MolecularWeightCalculator
             return mTotalMass;
         }
 
-        private string GetInternalResidues(int lngCurrentResidueIndex, itIonTypeConstants eIonType)
+        private string GetInternalResidues(int lngCurrentResidueIndex, IonType eIonType)
         {
             var blnPhosphorylated = false;
             return GetInternalResidues(lngCurrentResidueIndex, eIonType, out blnPhosphorylated);
         }
 
-        private string GetInternalResidues(int lngCurrentResidueIndex, itIonTypeConstants eIonType, out bool blnPhosphorylated)
+        private string GetInternalResidues(int lngCurrentResidueIndex, IonType eIonType, out bool blnPhosphorylated)
         {
             // Determines the residues preceding or following the given residue (up to and including the current residue)
             // If eIonType is a, b, or c ions, then returns residues from the N terminus
@@ -729,7 +729,7 @@ namespace MolecularWeightCalculator
 
             var strInternalResidues = string.Empty;
             blnPhosphorylated = false;
-            if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
+            if (eIonType == IonType.YIon || eIonType == IonType.ZIon)
             {
                 for (var lngResidueIndex = lngCurrentResidueIndex; lngResidueIndex <= ResidueCount; lngResidueIndex++)
                 {
@@ -1907,19 +1907,19 @@ namespace MolecularWeightCalculator
             mFragSpectrumOptions.Initialize();
         }
 
-        public string LookupIonTypeString(itIonTypeConstants eIonType)
+        public string LookupIonTypeString(IonType eIonType)
         {
             switch (eIonType)
             {
-                case itIonTypeConstants.itAIon:
+                case IonType.AIon:
                     return "a";
-                case itIonTypeConstants.itBIon:
+                case IonType.BIon:
                     return "b";
-                case itIonTypeConstants.itYIon:
+                case IonType.YIon:
                     return "y";
-                case itIonTypeConstants.itCIon:
+                case IonType.CIon:
                     return "c";
-                case itIonTypeConstants.itZIon:
+                case IonType.ZIon:
                     return "z";
                 default:
                     return string.Empty;
@@ -2153,17 +2153,17 @@ namespace MolecularWeightCalculator
             return success;
         }
 
-        public int SetCTerminusGroup(ctgCTerminusGroupConstants eCTerminusGroup)
+        public int SetCTerminusGroup(CTerminusGroupType eCTerminusGroup)
         {
             return SetCTerminusGroup(eCTerminusGroup, "", true);
         }
 
-        public int SetCTerminusGroup(ctgCTerminusGroupConstants eCTerminusGroup, string strFollowingResidue)
+        public int SetCTerminusGroup(CTerminusGroupType eCTerminusGroup, string strFollowingResidue)
         {
             return SetCTerminusGroup(eCTerminusGroup, strFollowingResidue, true);
         }
 
-        public int SetCTerminusGroup(ctgCTerminusGroupConstants eCTerminusGroup,
+        public int SetCTerminusGroup(CTerminusGroupType eCTerminusGroup,
             string strFollowingResidue,
             bool blnUse3LetterCode)
         {
@@ -2171,13 +2171,13 @@ namespace MolecularWeightCalculator
             int lngError;
             switch (eCTerminusGroup)
             {
-                case ctgCTerminusGroupConstants.ctgHydroxyl:
+                case CTerminusGroupType.Hydroxyl:
                     lngError = SetCTerminus("OH", strFollowingResidue, blnUse3LetterCode);
                     break;
-                case ctgCTerminusGroupConstants.ctgAmide:
+                case CTerminusGroupType.Amide:
                     lngError = SetCTerminus("NH2", strFollowingResidue, blnUse3LetterCode);
                     break;
-                case ctgCTerminusGroupConstants.ctgNone:
+                case CTerminusGroupType.None:
                     lngError = SetCTerminus(string.Empty, strFollowingResidue, blnUse3LetterCode);
                     break;
                 default:
@@ -2221,22 +2221,22 @@ namespace MolecularWeightCalculator
             try
             {
                 var intensityOptions = mFragSpectrumOptions.IntensityOptions;
-                intensityOptions.IonType[(int)itIonTypeConstants.itAIon] = DEFAULT_A_ION_INTENSITY;
-                intensityOptions.IonType[(int)itIonTypeConstants.itBIon] = DEFAULT_BYCZ_ION_INTENSITY;
-                intensityOptions.IonType[(int)itIonTypeConstants.itYIon] = DEFAULT_BYCZ_ION_INTENSITY;
-                intensityOptions.IonType[(int)itIonTypeConstants.itCIon] = DEFAULT_BYCZ_ION_INTENSITY;
-                intensityOptions.IonType[(int)itIonTypeConstants.itZIon] = DEFAULT_BYCZ_ION_INTENSITY;
+                intensityOptions.IonType[(int)IonType.AIon] = DEFAULT_A_ION_INTENSITY;
+                intensityOptions.IonType[(int)IonType.BIon] = DEFAULT_BYCZ_ION_INTENSITY;
+                intensityOptions.IonType[(int)IonType.YIon] = DEFAULT_BYCZ_ION_INTENSITY;
+                intensityOptions.IonType[(int)IonType.CIon] = DEFAULT_BYCZ_ION_INTENSITY;
+                intensityOptions.IonType[(int)IonType.ZIon] = DEFAULT_BYCZ_ION_INTENSITY;
                 intensityOptions.BYIonShoulder = DEFAULT_B_Y_ION_SHOULDER_INTENSITY;
                 intensityOptions.NeutralLoss = DEFAULT_NEUTRAL_LOSS_ION_INTENSITY;
 
                 // A ions can have ammonia and phosphate loss, but not water loss
-                var aIonOption = mFragSpectrumOptions.IonTypeOptions[(int)itIonTypeConstants.itAIon];
+                var aIonOption = mFragSpectrumOptions.IonTypeOptions[(int)IonType.AIon];
                 aIonOption.ShowIon = true;
                 aIonOption.NeutralLossAmmonia = true;
                 aIonOption.NeutralLossPhosphate = true;
                 aIonOption.NeutralLossWater = false;
 
-                for (var eIonIndex = itIonTypeConstants.itBIon; eIonIndex <= itIonTypeConstants.itZIon; eIonIndex++)
+                for (var eIonIndex = IonType.BIon; eIonIndex <= IonType.ZIon; eIonIndex++)
                 {
                     var ionOption = mFragSpectrumOptions.IonTypeOptions[(int)eIonIndex];
                     ionOption.ShowIon = true;
@@ -2367,17 +2367,17 @@ namespace MolecularWeightCalculator
             return success;
         }
 
-        public int SetNTerminusGroup(ntgNTerminusGroupConstants eNTerminusGroup)
+        public int SetNTerminusGroup(NTerminusGroupType eNTerminusGroup)
         {
             return SetNTerminusGroup(eNTerminusGroup, "", true);
         }
 
-        public int SetNTerminusGroup(ntgNTerminusGroupConstants eNTerminusGroup, string strPrecedingResidue)
+        public int SetNTerminusGroup(NTerminusGroupType eNTerminusGroup, string strPrecedingResidue)
         {
             return SetNTerminusGroup(eNTerminusGroup, strPrecedingResidue, true);
         }
 
-        public int SetNTerminusGroup(ntgNTerminusGroupConstants eNTerminusGroup,
+        public int SetNTerminusGroup(NTerminusGroupType eNTerminusGroup,
             string strPrecedingResidue,
             bool blnUse3LetterCode)
         {
@@ -2386,25 +2386,25 @@ namespace MolecularWeightCalculator
 
             switch (eNTerminusGroup)
             {
-                case ntgNTerminusGroupConstants.ntgHydrogen:
+                case NTerminusGroupType.Hydrogen:
                     lngError = SetNTerminus("H", strPrecedingResidue, blnUse3LetterCode);
                     break;
-                case ntgNTerminusGroupConstants.ntgHydrogenPlusProton:
+                case NTerminusGroupType.HydrogenPlusProton:
                     lngError = SetNTerminus("HH", strPrecedingResidue, blnUse3LetterCode);
                     break;
-                case ntgNTerminusGroupConstants.ntgAcetyl:
+                case NTerminusGroupType.Acetyl:
                     lngError = SetNTerminus("C2OH3", strPrecedingResidue, blnUse3LetterCode);
                     break;
-                case ntgNTerminusGroupConstants.ntgPyroGlu:
+                case NTerminusGroupType.PyroGlu:
                     lngError = SetNTerminus("C5O2NH6", strPrecedingResidue, blnUse3LetterCode);
                     break;
-                case ntgNTerminusGroupConstants.ntgCarbamyl:
+                case NTerminusGroupType.Carbamyl:
                     lngError = SetNTerminus("CONH2", strPrecedingResidue, blnUse3LetterCode);
                     break;
-                case ntgNTerminusGroupConstants.ntgPTC:
+                case NTerminusGroupType.PTC:
                     lngError = SetNTerminus("C7H6NS", strPrecedingResidue, blnUse3LetterCode);
                     break;
-                case ntgNTerminusGroupConstants.ntgNone:
+                case NTerminusGroupType.None:
                     lngError = SetNTerminus(string.Empty, strPrecedingResidue, blnUse3LetterCode);
                     break;
                 default:
@@ -2542,8 +2542,8 @@ namespace MolecularWeightCalculator
         public int SetSequence(string strSequence)
         {
             return SetSequence(strSequence,
-                   ntgNTerminusGroupConstants.ntgHydrogen,
-                   ctgCTerminusGroupConstants.ctgHydroxyl,
+                   NTerminusGroupType.Hydrogen,
+                   CTerminusGroupType.Hydroxyl,
                    blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
@@ -2556,8 +2556,8 @@ namespace MolecularWeightCalculator
         public int SetSequence1LetterSymbol(string strSequence)
         {
             return SetSequence(strSequence,
-                ntgNTerminusGroupConstants.ntgHydrogen,
-                ctgCTerminusGroupConstants.ctgHydroxyl,
+                NTerminusGroupType.Hydrogen,
+                CTerminusGroupType.Hydroxyl,
                 blnIs3LetterCode: false, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
@@ -2573,7 +2573,7 @@ namespace MolecularWeightCalculator
             bool blnIs3LetterCode,
             bool bln1LetterCheckForPrefixAndSuffixResidues)
         {
-            return SetSequence(strSequence, ntgNTerminusGroupConstants.ntgHydrogen, ctgCTerminusGroupConstants.ctgHydroxyl,
+            return SetSequence(strSequence, NTerminusGroupType.Hydrogen, CTerminusGroupType.Hydroxyl,
                 blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
         }
 
@@ -2586,8 +2586,8 @@ namespace MolecularWeightCalculator
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence,
-            ntgNTerminusGroupConstants eNTerminus,
-            ctgCTerminusGroupConstants eCTerminus)
+            NTerminusGroupType eNTerminus,
+            CTerminusGroupType eCTerminus)
         {
             return SetSequence(strSequence, eNTerminus, eCTerminus,
                 blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
@@ -2603,8 +2603,8 @@ namespace MolecularWeightCalculator
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence,
-            ntgNTerminusGroupConstants eNTerminus,
-            ctgCTerminusGroupConstants eCTerminus,
+            NTerminusGroupType eNTerminus,
+            CTerminusGroupType eCTerminus,
             bool blnIs3LetterCode)
         {
             return SetSequence(strSequence, eNTerminus, eCTerminus,
@@ -2622,8 +2622,8 @@ namespace MolecularWeightCalculator
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence,
-            ntgNTerminusGroupConstants eNTerminus,
-            ctgCTerminusGroupConstants eCTerminus,
+            NTerminusGroupType eNTerminus,
+            CTerminusGroupType eCTerminus,
             bool blnIs3LetterCode,
             bool bln1LetterCheckForPrefixAndSuffixResidues)
         {
@@ -2643,8 +2643,8 @@ namespace MolecularWeightCalculator
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence,
-            ntgNTerminusGroupConstants eNTerminus,
-            ctgCTerminusGroupConstants eCTerminus,
+            NTerminusGroupType eNTerminus,
+            CTerminusGroupType eCTerminus,
             bool blnIs3LetterCode,
             bool bln1LetterCheckForPrefixAndSuffixResidues,
             bool bln3LetterCheckForPrefixHandSuffixOH)
@@ -2668,8 +2668,8 @@ namespace MolecularWeightCalculator
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string strSequence,
-            ntgNTerminusGroupConstants eNTerminus,
-            ctgCTerminusGroupConstants eCTerminus,
+            NTerminusGroupType eNTerminus,
+            CTerminusGroupType eCTerminus,
             bool blnIs3LetterCode,
             bool bln1LetterCheckForPrefixAndSuffixResidues,
             bool bln3LetterCheckForPrefixHandSuffixOH,
@@ -2980,11 +2980,11 @@ namespace MolecularWeightCalculator
 
                     dblRunningTotal += residue.MassWithMods;
 
-                    residue.IonMass[(int)itIonTypeConstants.itAIon] = dblRunningTotal - dblImmoniumMassDifference - dblChargeCarrierMass;
-                    residue.IonMass[(int)itIonTypeConstants.itBIon] = dblRunningTotal;
+                    residue.IonMass[(int)IonType.AIon] = dblRunningTotal - dblImmoniumMassDifference - dblChargeCarrierMass;
+                    residue.IonMass[(int)IonType.BIon] = dblRunningTotal;
 
                     // Add NH3 (ammonia) to the B ion mass to get the C ion mass
-                    residue.IonMass[(int)itIonTypeConstants.itCIon] = residue.IonMass[(int)itIonTypeConstants.itBIon] + dblNH3Mass;
+                    residue.IonMass[(int)IonType.CIon] = residue.IonMass[(int)IonType.BIon] + dblNH3Mass;
                 }
                 else
                 {
@@ -3015,26 +3015,26 @@ namespace MolecularWeightCalculator
             for (var lngIndex = ResidueCount; lngIndex >= 1; lngIndex -= 1)
             {
                 var residue = Residues[lngIndex];
-                if (residue.IonMass[(int)itIonTypeConstants.itAIon] > 0d)
+                if (residue.IonMass[(int)IonType.AIon] > 0d)
                 {
                     dblRunningTotal += residue.MassWithMods;
-                    residue.IonMass[(int)itIonTypeConstants.itYIon] = dblRunningTotal + dblChargeCarrierMass;
+                    residue.IonMass[(int)IonType.YIon] = dblRunningTotal + dblChargeCarrierMass;
                     if (lngIndex == 1)
                     {
                         // Add the N-terminus mass to highest y ion
-                        residue.IonMass[(int)itIonTypeConstants.itYIon] = residue.IonMass[(int)itIonTypeConstants.itYIon] + mNTerminus.Mass - dblChargeCarrierMass;
+                        residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] + mNTerminus.Mass - dblChargeCarrierMass;
                         if (blnProtonatedNTerminus)
                         {
                             // ntgHydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
                             // we need to subtract it out here
                             // However, we need to subtract out dblHydrogenMass, and not dblChargeCarrierMass since the current
                             // formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier
-                            residue.IonMass[(int)itIonTypeConstants.itYIon] = residue.IonMass[(int)itIonTypeConstants.itYIon] - dblHydrogenMass;
+                            residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] - dblHydrogenMass;
                         }
                     }
 
                     // Subtract NH2 (amide) from the Y ion mass to get the Z ion mass
-                    residue.IonMass[(int)itIonTypeConstants.itZIon] = residue.IonMass[(int)itIonTypeConstants.itYIon] - (dblNH3Mass - dblHydrogenMass);
+                    residue.IonMass[(int)IonType.ZIon] = residue.IonMass[(int)IonType.YIon] - (dblNH3Mass - dblHydrogenMass);
                 }
             }
         }
@@ -3045,7 +3045,7 @@ namespace MolecularWeightCalculator
             {
                 var eElementModeSaved = ElementAndMassRoutines.GetElementModeInternal();
 
-                ElementAndMassRoutines.SetElementModeInternal(ElementAndMassTools.emElementModeConstants.emIsotopicMass);
+                ElementAndMassRoutines.SetElementModeInternal(ElementAndMassTools.ElementMassMode.Isotopic);
 
                 dblChargeCarrierMass = ElementAndMassRoutines.GetChargeCarrierMassInternal();
 

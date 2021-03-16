@@ -102,7 +102,7 @@
         /// <param name="strElementNames"></param>
         /// <param name="dblElemVals"></param>
         public static void MemoryLoadElements(
-            ElementAndMassTools.emElementModeConstants eElementMode,
+            ElementAndMassTools.ElementMassMode eElementMode,
             out string[] strElementNames,
             out double[,] dblElemVals)
         {
@@ -335,7 +335,7 @@
             dblElemVals[103, 3] = 3d;
 
             // Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights
-            if (eElementMode == ElementAndMassTools.emElementModeConstants.emIsotopicMass || eElementMode == ElementAndMassTools.emElementModeConstants.emIntegerMass)
+            if (eElementMode == ElementAndMassTools.ElementMassMode.Isotopic || eElementMode == ElementAndMassTools.ElementMassMode.Integer)
             {
                 for (var intIndex = 1; intIndex <= ElementAndMassTools.ELEMENT_COUNT; intIndex++)
                     dblElemVals[intIndex, 2] = 0d;
@@ -343,7 +343,7 @@
 
             switch (eElementMode)
             {
-                case ElementAndMassTools.emElementModeConstants.emIntegerMass:
+                case ElementAndMassTools.ElementMassMode.Integer:
                     // Integer Isotopic Weights
                     dblElemVals[1, 1] = 1d;
                     dblElemVals[2, 1] = 4d;
@@ -453,7 +453,7 @@
                     // data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
                     break;
 
-                case ElementAndMassTools.emElementModeConstants.emIsotopicMass:
+                case ElementAndMassTools.ElementMassMode.Isotopic:
                     // isotopic Element Weights
                     dblElemVals[1, 1] = 1.0078246d;
                     dblElemVals[2, 1] = 4.0026029d;

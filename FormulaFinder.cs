@@ -53,7 +53,7 @@ namespace MolecularWeightCalculator
             public int Max;
         }
 
-        private enum eCalculationMode
+        private enum CalculationMode
         {
             MatchMolecularWeight = 0,
             MatchPercentComposition = 1
@@ -372,7 +372,7 @@ namespace MolecularWeightCalculator
             double maximumFormulaMass,
             FormulaFinderOptions searchOptions,
             bool ppmMode,
-            eCalculationMode calculationMode,
+            CalculationMode calculationMode,
             IList<FormulaFinderCandidateElement> sortedElementStats)
         {
             List<FormulaFinderResult> lstResults;
@@ -934,7 +934,7 @@ namespace MolecularWeightCalculator
 
             if (udtElementNum.C + udtElementNum.Si >= 1)
             {
-                if (udtElementNum.H > 0 && Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, MolecularWeightTool.esElementStatsConstants.esCharge) - 1d) < float.Epsilon)
+                if (udtElementNum.H > 0 && Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, MolecularWeightTool.ElementStatsType.Charge) - 1d) < float.Epsilon)
                 {
                     // Since carbon or silicon are present, assume the hydrogens should be negative
                     // Subtract udtElementNum.H * 2 since hydrogen is assigned a +1 charge if ElementStats(1).Charge = 1
@@ -1090,7 +1090,7 @@ namespace MolecularWeightCalculator
             bool ppmMode)
         {
             // Validate the Inputs
-            if (!ValidateSettings(eCalculationMode.MatchMolecularWeight))
+            if (!ValidateSettings(CalculationMode.MatchMolecularWeight))
             {
                 return new List<FormulaFinderResult>();
             }
@@ -1116,7 +1116,7 @@ namespace MolecularWeightCalculator
 
             var sortedElementStats = (from item in candidateElementsStats orderby item.Mass descending select item).ToList();
 
-            if (searchOptions.SearchMode == FormulaFinderOptions.eSearchMode.Thorough)
+            if (searchOptions.SearchMode == FormulaFinderOptions.SearchModes.Thorough)
             {
                 // Thorough search
 
@@ -1152,7 +1152,7 @@ namespace MolecularWeightCalculator
             const int maximumFormulaMass = 0;
 
             var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
-                searchOptions, ppmMode, eCalculationMode.MatchMolecularWeight,
+                searchOptions, ppmMode, CalculationMode.MatchMolecularWeight,
                 sortedElementStats);
 
             ComputeSortKeys(boundedSearchResults);
@@ -1166,7 +1166,7 @@ namespace MolecularWeightCalculator
             FormulaFinderOptions searchOptions)
         {
             // Validate the Inputs
-            if (!ValidateSettings(eCalculationMode.MatchPercentComposition))
+            if (!ValidateSettings(CalculationMode.MatchPercentComposition))
             {
                 return new List<FormulaFinderResult>();
             }
@@ -1192,7 +1192,7 @@ namespace MolecularWeightCalculator
 
             var sortedElementStats = (from item in candidateElementsStats orderby item.Mass descending select item).ToList();
 
-            if (searchOptions.SearchMode == FormulaFinderOptions.eSearchMode.Thorough)
+            if (searchOptions.SearchMode == FormulaFinderOptions.SearchModes.Thorough)
             {
                 // Thorough search
 
@@ -1216,7 +1216,7 @@ namespace MolecularWeightCalculator
             const bool ppmMode = false;
 
             var boundedSearchResults = BoundedSearch(targetMass, massToleranceDa, maximumFormulaMass,
-                searchOptions, ppmMode, eCalculationMode.MatchPercentComposition,
+                searchOptions, ppmMode, CalculationMode.MatchPercentComposition,
                 sortedElementStats);
 
             ComputeSortKeys(boundedSearchResults);
@@ -1553,7 +1553,7 @@ namespace MolecularWeightCalculator
         private List<FormulaFinderResult> OldFormulaFinder(
             FormulaFinderOptions searchOptions,
             bool ppmMode,
-            eCalculationMode calculationMode,
+            CalculationMode calculationMode,
             IList<FormulaFinderCandidateElement> sortedElementStats,
             double targetMass,
             double massToleranceDa,
@@ -1673,7 +1673,7 @@ namespace MolecularWeightCalculator
                                                             }
                                                         }
 
-                                                        if (calculationMode == eCalculationMode.MatchPercentComposition)
+                                                        if (calculationMode == CalculationMode.MatchPercentComposition)
                                                         {
                                                             // Matching Percent Compositions
                                                             if (totalMass > 0d && totalMass <= maximumFormulaMass)
@@ -1904,7 +1904,7 @@ namespace MolecularWeightCalculator
 
         [Obsolete("Deprecated")]
         private void SortCandidateElements(
-            eCalculationMode calculationMode,
+            CalculationMode calculationMode,
             int potentialElementCount,
             double[,] dblPotentialElementStats,
             IList<string> strPotentialElements,
@@ -1935,7 +1935,7 @@ namespace MolecularWeightCalculator
                         dblPotentialElementStats[x, 1] = dblPotentialElementStats[x + 1, 1];
                         dblPotentialElementStats[x + 1, 1] = dblSwapVal;
 
-                        if (calculationMode == eCalculationMode.MatchPercentComposition)
+                        if (calculationMode == CalculationMode.MatchPercentComposition)
                         {
                             // and the dblTargetPercents array
                             dblSwapVal = dblTargetPercents[x, 0];
@@ -2280,7 +2280,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        private bool ValidateSettings(eCalculationMode calculationMode)
+        private bool ValidateSettings(CalculationMode calculationMode)
         {
             if (mCandidateElements.Count == 0)
             {
@@ -2290,7 +2290,7 @@ namespace MolecularWeightCalculator
 
             ValidateBoundedSearchValues();
 
-            if (calculationMode == eCalculationMode.MatchPercentComposition)
+            if (calculationMode == CalculationMode.MatchPercentComposition)
             {
                 var totalTargetPercentComp = GetTotalPercentComposition();
 

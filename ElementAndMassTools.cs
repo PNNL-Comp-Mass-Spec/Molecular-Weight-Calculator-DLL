@@ -47,38 +47,38 @@ namespace MolecularWeightCalculator
         private const char EMPTY_STRING_CHAR = '~';
         private const char RTF_HEIGHT_ADJUST_CHAR = '~'; // A hidden character to adjust the height of Rtf Text Boxes when using superscripts
 
-        public enum emElementModeConstants
+        public enum ElementMassMode
         {
-            emAverageMass = 1,
-            emIsotopicMass = 2,
-            emIntegerMass = 3
+            Average = 1,
+            Isotopic = 2,
+            Integer = 3
         }
 
-        public enum smStdDevModeConstants
+        public enum StdDevMode
         {
-            smShort = 0,
-            smScientific = 1,
-            smDecimal = 2
+            Short = 0,
+            Scientific = 1,
+            Decimal = 2
         }
 
-        public enum ccCaseConversionConstants
+        public enum CaseConversionMode
         {
-            ccConvertCaseUp = 0,
-            ccExactCase = 1,
-            ccSmartCase = 2
+            ConvertCaseUp = 0,
+            ExactCase = 1,
+            SmartCase = 2
         }
 
-        private enum smtSymbolMatchTypeConstants
+        private enum SymbolMatchMode
         {
-            smtUnknown = 0,
-            smtElement = 1,
-            smtAbbreviation = 2
+            Unknown = 0,
+            Element = 1,
+            Abbreviation = 2
         }
 
-        protected enum eMessageTypeConstants
+        protected enum MessageType
         {
             Normal = 0,
-            ErrorMsg = 1,
+            Error = 1,
             Warning = 2
         }
 
@@ -88,13 +88,13 @@ namespace MolecularWeightCalculator
 
         public class udtOptionsType
         {
-            public MolecularWeightTool.arAbbrevRecognitionModeConstants AbbrevRecognitionMode;
+            public MolecularWeightTool.AbbrevRecognitionMode AbbrevRecognitionMode;
             public bool BracketsAsParentheses;
-            public ccCaseConversionConstants CaseConversion;
+            public CaseConversionMode CaseConversion;
             public char DecimalSeparator;
             public string RtfFontName;
             public short RtfFontSize;
-            public smStdDevModeConstants StdDevMode; // Can be 0, 1, or 2 (see smStdDevModeConstants)
+            public StdDevMode StdDevMode; // Can be 0, 1, or 2 (see smStdDevModeConstants)
         }
 
         public class usrIsotopicAtomInfoType
@@ -315,7 +315,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         private double mChargeCarrierMass;
 
-        private emElementModeConstants mCurrentElementMode;
+        private ElementMassMode mCurrentElementMode;
         private string mStrCautionDescription;
         private udtComputationStatsType mComputationStatsSaved = new udtComputationStatsType();
 
@@ -366,7 +366,7 @@ namespace MolecularWeightCalculator
             set => mAbortProcessing = value;
         }
 
-        public emElementModeConstants ElementModeInternal
+        public ElementMassMode ElementModeInternal
         {
             get => mCurrentElementMode;
             set => SetElementModeInternal(value);
@@ -539,9 +539,9 @@ namespace MolecularWeightCalculator
         /// smtAbbreviation if matched an abbreviation or amino acid
         /// smtUnknown if no match
         /// </returns>
-        private smtSymbolMatchTypeConstants CheckElemAndAbbrev(string strFormulaExcerpt, ref short symbolReference)
+        private SymbolMatchMode CheckElemAndAbbrev(string strFormulaExcerpt, ref short symbolReference)
         {
-            var eSymbolMatchType = default(smtSymbolMatchTypeConstants);
+            var eSymbolMatchType = default(SymbolMatchMode);
 
             // MasterSymbolsList[] stores the element symbols, abbreviations, & amino acids in order of longest length to
             // shortest length, non-alphabetized, for use in symbol matching when parsing a formula
@@ -564,19 +564,19 @@ namespace MolecularWeightCalculator
                         switch (MasterSymbolsList[intIndex, 1].Substring(0, 1).ToUpper())
                         {
                             case "E": // An element
-                                eSymbolMatchType = smtSymbolMatchTypeConstants.smtElement;
+                                eSymbolMatchType = SymbolMatchMode.Element;
                                 break;
                             case "A": // An abbreviation or amino acid
-                                eSymbolMatchType = smtSymbolMatchTypeConstants.smtAbbreviation;
+                                eSymbolMatchType = SymbolMatchMode.Abbreviation;
                                 break;
                             default:
                                 // error
-                                eSymbolMatchType = smtSymbolMatchTypeConstants.smtUnknown;
+                                eSymbolMatchType = SymbolMatchMode.Unknown;
                                 symbolReference = -1;
                                 break;
                         }
 
-                        if (eSymbolMatchType != smtSymbolMatchTypeConstants.smtUnknown)
+                        if (eSymbolMatchType != SymbolMatchMode.Unknown)
                         {
                             symbolReference = (short)Math.Round(double.Parse(MasterSymbolsList[intIndex, 1].Substring(1)));
                         }
@@ -984,7 +984,7 @@ namespace MolecularWeightCalculator
                             MessageBox.Show(strMessage);
                         }
 
-                        LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
+                        LogMessage(strMessage, MessageType.Error);
                         return -1;
                     }
 
@@ -1716,10 +1716,10 @@ namespace MolecularWeightCalculator
             MasterSymbolsListCount = ELEMENT_COUNT;
 
             // Note: AbbrevStats is 1-based
-            if (gComputationOptions.AbbrevRecognitionMode != MolecularWeightTool.arAbbrevRecognitionModeConstants.arNoAbbreviations)
+            if (gComputationOptions.AbbrevRecognitionMode != MolecularWeightTool.AbbrevRecognitionMode.NoAbbreviations)
             {
                 bool blnIncludeAmino;
-                if (gComputationOptions.AbbrevRecognitionMode == MolecularWeightTool.arAbbrevRecognitionModeConstants.arNormalPlusAminoAcids)
+                if (gComputationOptions.AbbrevRecognitionMode == MolecularWeightTool.AbbrevRecognitionMode.NormalPlusAminoAcids)
                 {
                     blnIncludeAmino = true;
                 }
@@ -2283,7 +2283,7 @@ namespace MolecularWeightCalculator
                 strMessage += Environment.NewLine + strErrorDescriptionAdditional;
             }
 
-            LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
+            LogMessage(strMessage, MessageType.Error);
 
             if (ShowErrorMessageDialogs)
             {
@@ -2294,7 +2294,7 @@ namespace MolecularWeightCalculator
                 Console.WriteLine(strMessage);
             }
 
-            LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
+            LogMessage(strMessage, MessageType.Error);
             try
             {
                 var strErrorFilePath = System.IO.Path.Combine(Environment.CurrentDirectory, "ErrorLog.txt");
@@ -2617,7 +2617,7 @@ namespace MolecularWeightCalculator
         /// emIsotopicMass = 2
         /// emIntegerMass  = 3
         /// </returns>
-        public emElementModeConstants GetElementModeInternal()
+        public ElementMassMode GetElementModeInternal()
         {
             return mCurrentElementMode;
         }
@@ -2650,17 +2650,17 @@ namespace MolecularWeightCalculator
         /// <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
         /// <returns></returns>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
-        public double GetElementStatInternal(short intElementID, MolecularWeightTool.esElementStatsConstants eElementStat)
+        public double GetElementStatInternal(short intElementID, MolecularWeightTool.ElementStatsType eElementStat)
         {
             if (intElementID >= 1 && intElementID <= ELEMENT_COUNT)
             {
                 switch (eElementStat)
                 {
-                    case MolecularWeightTool.esElementStatsConstants.esMass:
+                    case MolecularWeightTool.ElementStatsType.Mass:
                         return ElementStats[intElementID].Mass;
-                    case MolecularWeightTool.esElementStatsConstants.esCharge:
+                    case MolecularWeightTool.ElementStatsType.Charge:
                         return ElementStats[intElementID].Charge;
-                    case MolecularWeightTool.esElementStatsConstants.esUncertainty:
+                    case MolecularWeightTool.ElementStatsType.Uncertainty:
                         return ElementStats[intElementID].Uncertainty;
                     default:
                         return 0d;
@@ -2857,10 +2857,10 @@ namespace MolecularWeightCalculator
 
         protected void LogMessage(string strMessage)
         {
-            LogMessage(strMessage, eMessageTypeConstants.Normal);
+            LogMessage(strMessage, MessageType.Normal);
         }
 
-        protected void LogMessage(string strMessage, eMessageTypeConstants eMessageType)
+        protected void LogMessage(string strMessage, MessageType eMessageType)
         {
             // Note that CleanupFilePaths() will update mOutputFolderPath, which is used here if mLogFolderPath is blank
             // Thus, be sure to call CleanupFilePaths (or update mLogFolderPath) before the first call to LogMessage
@@ -2921,13 +2921,13 @@ namespace MolecularWeightCalculator
 
             switch (eMessageType)
             {
-                case eMessageTypeConstants.Normal:
+                case MessageType.Normal:
                     strMessageType = "Normal";
                     break;
-                case eMessageTypeConstants.ErrorMsg:
+                case MessageType.Error:
                     strMessageType = "Error";
                     break;
-                case eMessageTypeConstants.Warning:
+                case MessageType.Warning:
                     strMessageType = "Warning";
                     break;
                 default:
@@ -3011,7 +3011,7 @@ namespace MolecularWeightCalculator
             // messageID's 1 and 18 may need to have an addendum added
             if (messageID == 1)
             {
-                if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccExactCase)
+                if (gComputationOptions.CaseConversion == CaseConversionMode.ExactCase)
                 {
                     strMessage = strMessage + " (" + LookupMessage(680) + ")";
                 }
@@ -3071,7 +3071,7 @@ namespace MolecularWeightCalculator
             return ConvoluteMassInternal(dblMonoisotopicMass + dblChargeCarrierMass, 1, intCharge, dblChargeCarrierMass);
         }
 
-        public void MemoryLoadAll(emElementModeConstants eElementMode)
+        public void MemoryLoadAll(ElementMassMode eElementMode)
         {
             MemoryLoadElements(eElementMode);
 
@@ -3194,9 +3194,9 @@ namespace MolecularWeightCalculator
             CautionStatementCount = ElementAndMassInMemoryData.MemoryLoadCautionStatementsEnglish(ref CautionStatements);
         }
 
-        public void MemoryLoadElements(emElementModeConstants eElementMode)
+        public void MemoryLoadElements(ElementMassMode eElementMode)
         {
-            MemoryLoadElements(eElementMode, 0, MolecularWeightTool.esElementStatsConstants.esMass);
+            MemoryLoadElements(eElementMode, 0, MolecularWeightTool.ElementStatsType.Mass);
         }
 
         /// <summary>
@@ -3210,9 +3210,9 @@ namespace MolecularWeightCalculator
         /// nonzero intSpecificElement and intSpecificElementProperty values will set just that specific value to the default
         /// </remarks>
         public void MemoryLoadElements(
-            emElementModeConstants eElementMode,
+            ElementMassMode eElementMode,
             short intSpecificElement,
-            MolecularWeightTool.esElementStatsConstants eSpecificStatToReset)
+            MolecularWeightTool.ElementStatsType eSpecificStatToReset)
         {
             const double DEFAULT_CHARGE_CARRIER_MASS_AVG = 1.00739d;
             const double DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649d;
@@ -3229,7 +3229,7 @@ namespace MolecularWeightCalculator
             // For example, for No, MW = 259.1009 (±0.0005)
 
             // Define the charge carrier mass
-            if (eElementMode == emElementModeConstants.emAverageMass)
+            if (eElementMode == ElementMassMode.Average)
             {
                 SetChargeCarrierMassInternal(DEFAULT_CHARGE_CARRIER_MASS_AVG);
             }
@@ -3282,13 +3282,13 @@ namespace MolecularWeightCalculator
                 var stats = ElementStats[intSpecificElement];
                 switch (eSpecificStatToReset)
                 {
-                    case MolecularWeightTool.esElementStatsConstants.esMass:
+                    case MolecularWeightTool.ElementStatsType.Mass:
                         stats.Mass = dblElemVals[intSpecificElement, 1];
                         break;
-                    case MolecularWeightTool.esElementStatsConstants.esUncertainty:
+                    case MolecularWeightTool.ElementStatsType.Uncertainty:
                         stats.Uncertainty = dblElemVals[intSpecificElement, 2];
                         break;
-                    case MolecularWeightTool.esElementStatsConstants.esCharge:
+                    case MolecularWeightTool.ElementStatsType.Charge:
                         stats.Charge = (float)dblElemVals[intSpecificElement, 3];
                         break;
                     default:
@@ -3323,7 +3323,7 @@ namespace MolecularWeightCalculator
                     MessageBox.Show(LookupMessage(590), LookupMessage(350), MessageBoxButtons.OK);
                 }
 
-                LogMessage(strMessage, eMessageTypeConstants.ErrorMsg);
+                LogMessage(strMessage, MessageType.Error);
             }
             else
             {
@@ -3641,7 +3641,7 @@ namespace MolecularWeightCalculator
                         var strChar2 = strFormula.Substring(intCharIndex + 1, 1);
                         var strChar3 = strFormula.Substring(intCharIndex + 2, 1);
                         var strCharRemain = strFormula.Substring(intCharIndex + 3);
-                        if (gComputationOptions.CaseConversion != ccCaseConversionConstants.ccExactCase)
+                        if (gComputationOptions.CaseConversion != CaseConversionMode.ExactCase)
                             strChar1 = strChar1.ToUpper();
 
                         if (gComputationOptions.BracketsAsParentheses)
@@ -3936,7 +3936,7 @@ namespace MolecularWeightCalculator
 
                                 switch (eSymbolMatchType)
                                 {
-                                    case smtSymbolMatchTypeConstants.smtElement:
+                                    case SymbolMatchMode.Element:
                                         // Found an element
                                         // SymbolReference is the elemental number
                                         intSymbolLength = ElementStats[SymbolReference].Symbol.Length;
@@ -4064,7 +4064,7 @@ namespace MolecularWeightCalculator
                                                 blnCaretPresent = false;
                                             }
 
-                                            if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccConvertCaseUp)
+                                            if (gComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
                                             {
                                                 strFormula = strFormula.Substring(0, intCharIndex - 1) + strFormula.Substring(intCharIndex, 1).ToUpper() + strFormula.Substring(intCharIndex + 1);
                                             }
@@ -4074,7 +4074,7 @@ namespace MolecularWeightCalculator
 
                                         break;
 
-                                    case smtSymbolMatchTypeConstants.smtAbbreviation:
+                                    case SymbolMatchMode.Abbreviation:
                                         // Found an abbreviation or amino acid
                                         // SymbolReference is the abbrev or amino acid number
 
@@ -4195,7 +4195,7 @@ namespace MolecularWeightCalculator
                                                     }
                                                 }
 
-                                                if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccConvertCaseUp)
+                                                if (gComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
                                                 {
                                                     strFormula = strFormula.Substring(0, intCharIndex - 1) + strFormula.Substring(intCharIndex, 1).ToUpper() + strFormula.Substring(intCharIndex + 1);
                                                 }
@@ -4842,7 +4842,7 @@ namespace MolecularWeightCalculator
 
                     strWork = dblRoundedMain.ToString("0.0##E+00");
 
-                    if (gComputationOptions.StdDevMode == smStdDevModeConstants.smShort)
+                    if (gComputationOptions.StdDevMode == StdDevMode.Short)
                     {
                         // StdDevType Short (Type 0)
                         strResult = dblRoundedMain.ToString();
@@ -4853,7 +4853,7 @@ namespace MolecularWeightCalculator
 
                         strResult += strPctSign;
                     }
-                    else if (gComputationOptions.StdDevMode == smStdDevModeConstants.smScientific)
+                    else if (gComputationOptions.StdDevMode == StdDevMode.Scientific)
                     {
                         // StdDevType Scientific (Type 1)
                         strResult = dblRoundedMain + strPctSign;
@@ -5129,7 +5129,7 @@ namespace MolecularWeightCalculator
                         // Make sure the abbreviation doesn't match one of the standard elements
                         var eSymbolMatchType = CheckElemAndAbbrev(strSymbol, ref intSymbolReference);
 
-                        if (eSymbolMatchType == smtSymbolMatchTypeConstants.smtElement)
+                        if (eSymbolMatchType == SymbolMatchMode.Element)
                         {
                             if ((ElementStats[intSymbolReference].Symbol ?? "") == strSymbol)
                             {
@@ -5329,7 +5329,7 @@ namespace MolecularWeightCalculator
             return 1;
         }
 
-        public void SetElementModeInternal(emElementModeConstants NewElementMode)
+        public void SetElementModeInternal(ElementMassMode NewElementMode)
         {
             SetElementModeInternal(NewElementMode, true);
         }
@@ -5344,11 +5344,11 @@ namespace MolecularWeightCalculator
         /// manually setting element weight values, but want to let the software know that
         /// they're average, isotopic, or integer values
         /// </remarks>
-        public void SetElementModeInternal(emElementModeConstants NewElementMode, bool blnMemoryLoadElementValues)
+        public void SetElementModeInternal(ElementMassMode NewElementMode, bool blnMemoryLoadElementValues)
         {
             try
             {
-                if (NewElementMode >= emElementModeConstants.emAverageMass && NewElementMode <= emElementModeConstants.emIntegerMass)
+                if (NewElementMode >= ElementMassMode.Average && NewElementMode <= ElementMassMode.Integer)
                 {
                     if (NewElementMode != mCurrentElementMode || blnMemoryLoadElementValues)
                     {

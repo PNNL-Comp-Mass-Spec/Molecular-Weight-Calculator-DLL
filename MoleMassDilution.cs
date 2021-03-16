@@ -32,78 +32,78 @@ namespace MolecularWeightCalculator
 
         #region "Enums"
 
-        public enum acdAutoComputeDilutionModeConstants
+        public enum AutoComputeDilutionMode
         {
-            acdFindRequiredDilutionVolumes = 0,
-            acdFindRequiredTotalVolume,
-            acdFindFinalConcentration,
-            acdFindInitialConcentration
+            FindRequiredDilutionVolumes = 0,
+            FindRequiredTotalVolume,
+            FindFinalConcentration,
+            FindInitialConcentration
         }
 
-        public enum acqAutoComputeQuantityModeConstants
+        public enum AutoComputeQuantityMode
         {
-            acqFindAmount = 0,
-            acqFindVolume,
-            acqFindConcentration
+            FindAmount = 0,
+            FindVolume,
+            FindConcentration
         }
 
-        private const uamUnitsAmountConstants AMOUNT_UNITS_VOLUME_INDEX_START = uamUnitsAmountConstants.uamLiters;
-        private const uamUnitsAmountConstants AMOUNT_UNITS_LIST_INDEX_MAX = uamUnitsAmountConstants.uamPints;
+        private const Unit AMOUNT_UNITS_VOLUME_INDEX_START = Unit.Liters;
+        private const Unit AMOUNT_UNITS_LIST_INDEX_MAX = Unit.Pints;
 
-        public enum uamUnitsAmountConstants
+        public enum Unit
         {
-            uamMoles = 0,
-            uamMillimoles,
-            uamMicroMoles,
-            uamNanoMoles,
-            uamPicoMoles,
-            uamFemtoMoles,
-            uamAttoMoles,
-            uamKilograms,
-            uamGrams,
-            uamMilligrams,
-            uamMicrograms,
-            uamPounds,
-            uamOunces,
-            uamLiters,
-            uamDeciLiters,
-            uamMilliLiters,
-            uamMicroLiters,
-            uamNanoLiters,
-            uamPicoLiters,
-            uamGallons,
-            uamQuarts,
-            uamPints
+            Moles = 0,
+            Millimoles,
+            MicroMoles,
+            NanoMoles,
+            PicoMoles,
+            FemtoMoles,
+            AttoMoles,
+            Kilograms,
+            Grams,
+            Milligrams,
+            Micrograms,
+            Pounds,
+            Ounces,
+            Liters,
+            DeciLiters,
+            MilliLiters,
+            MicroLiters,
+            NanoLiters,
+            PicoLiters,
+            Gallons,
+            Quarts,
+            Pints
         }
 
-        public enum uevUnitsExtendedVolumeConstants
+        public enum UnitOfExtendedVolume
         {
-            uevL = 0,
-            uevDL,
-            uevML,
-            uevUL,
-            uevNL,
-            uevPL,
-            uevGallons,
-            uevQuarts,
-            uevPints
+            L = 0,
+            DL,
+            ML,
+            UL,
+            NL,
+            PL,
+            Gallons,
+            Quarts,
+            Pints
         }
 
-        public enum ummcUnitsMoleMassConcentrationConstants
+        public enum UnitOfMoleMassConcentration
         {
-            ummcMolar = 0,
-            ummcMilliMolar,
-            ummcMicroMolar,
-            ummcNanoMolar,
-            ummcPicoMolar,
-            ummcFemtoMolar,
-            ummcAttoMolar,
-            ummcMgPerDL,
-            ummcMgPerML,
-            ummcUgPerML,
-            ummcNgPerML,
-            ummcUgPerUL,
-            ummcNgPerUL
+            Molar = 0,
+            MilliMolar,
+            MicroMolar,
+            NanoMolar,
+            PicoMolar,
+            FemtoMolar,
+            AttoMolar,
+            MgPerDL,
+            MgPerML,
+            UgPerML,
+            NgPerML,
+            UgPerUL,
+            NgPerUL
         }
 
 
@@ -137,10 +137,10 @@ namespace MolecularWeightCalculator
         private readonly udtMoleMassDilutionValuesType mDilutionValues = new udtMoleMassDilutionValuesType();
 
         private bool mAutoComputeDilution; // When true, automatically compute dilution results whenever any value changes
-        private acdAutoComputeDilutionModeConstants mAutoComputeDilutionMode; // The value to compute when mAutoComputeDilution is true
+        private AutoComputeDilutionMode mAutoComputeDilutionMode; // The value to compute when mAutoComputeDilution is true
 
         private bool mAutoComputeQuantity; // When true, automatically compute quantities whenever any value changes
-        private acqAutoComputeQuantityModeConstants mAutoComputeQuantityMode; // The value to compute when mAutoComputeQuantity is true
+        private AutoComputeQuantityMode mAutoComputeQuantityMode; // The value to compute when mAutoComputeQuantity is true
 
         /// <summary>
         /// Checks if AutoCompute Dilution is enabled
@@ -152,13 +152,13 @@ namespace MolecularWeightCalculator
             {
                 switch (mAutoComputeDilutionMode)
                 {
-                    case acdAutoComputeDilutionModeConstants.acdFindRequiredTotalVolume:
+                    case AutoComputeDilutionMode.FindRequiredTotalVolume:
                         ComputeDilutionTotalVolume(out _);
                         break;
-                    case acdAutoComputeDilutionModeConstants.acdFindFinalConcentration:
+                    case AutoComputeDilutionMode.FindFinalConcentration:
                         ComputeDilutionFinalConcentration();
                         break;
-                    case acdAutoComputeDilutionModeConstants.acdFindInitialConcentration:
+                    case AutoComputeDilutionMode.FindInitialConcentration:
                         ComputeDilutionInitialConcentration();
                         break;
                     default:
@@ -179,10 +179,10 @@ namespace MolecularWeightCalculator
             {
                 switch (mAutoComputeQuantityMode)
                 {
-                    case acqAutoComputeQuantityModeConstants.acqFindVolume:
+                    case AutoComputeQuantityMode.FindVolume:
                         ComputeQuantityVolume();
                         break;
-                    case acqAutoComputeQuantityModeConstants.acqFindConcentration:
+                    case AutoComputeQuantityMode.FindConcentration:
                         ComputeQuantityConcentration();
                         break;
                     default:
@@ -198,7 +198,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="eUnits"></param>
         /// <returns></returns>
-        public double ComputeDilutionFinalConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public double ComputeDilutionFinalConcentration(UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
             if (Math.Abs(mDilutionValues.TotalFinalVolume) > float.Epsilon)
             {
@@ -213,7 +213,7 @@ namespace MolecularWeightCalculator
             if (mDilutionValues.DilutingSolventVolume < 0d)
                 mDilutionValues.DilutingSolventVolume = -1;
 
-            return ConvertConcentration(mDilutionValues.FinalConcentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
+            return ConvertConcentration(mDilutionValues.FinalConcentration, UnitOfMoleMassConcentration.Molar, eUnits);
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="eUnits"></param>
         /// <returns></returns>
-        public double ComputeDilutionInitialConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public double ComputeDilutionInitialConcentration(UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
             if (Math.Abs(mDilutionValues.StockSolutionVolume) > float.Epsilon)
             {
@@ -236,7 +236,7 @@ namespace MolecularWeightCalculator
             if (mDilutionValues.DilutingSolventVolume < 0d)
                 mDilutionValues.DilutingSolventVolume = -1;
 
-            return ConvertConcentration(mDilutionValues.InitialConcentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
+            return ConvertConcentration(mDilutionValues.InitialConcentration, UnitOfMoleMassConcentration.Molar, eUnits);
         }
 
         /// <summary>
@@ -250,8 +250,8 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public double ComputeDilutionRequiredStockAndDilutingSolventVolumes(
             out double dblNewDilutingSolventVolume,
-            uevUnitsExtendedVolumeConstants eStockSolutionUnits = uevUnitsExtendedVolumeConstants.uevML,
-            uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
+            UnitOfExtendedVolume eStockSolutionUnits = UnitOfExtendedVolume.ML,
+            UnitOfExtendedVolume eDilutingSolventUnits = UnitOfExtendedVolume.ML)
         {
             if (Math.Abs(mDilutionValues.InitialConcentration) > float.Epsilon)
             {
@@ -270,9 +270,9 @@ namespace MolecularWeightCalculator
                 mDilutionValues.StockSolutionVolume = -1;
             }
 
-            dblNewDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, uevUnitsExtendedVolumeConstants.uevL, eDilutingSolventUnits);
+            dblNewDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, UnitOfExtendedVolume.L, eDilutingSolventUnits);
 
-            return ConvertVolumeExtended(mDilutionValues.StockSolutionVolume, uevUnitsExtendedVolumeConstants.uevL, eStockSolutionUnits);
+            return ConvertVolumeExtended(mDilutionValues.StockSolutionVolume, UnitOfExtendedVolume.L, eStockSolutionUnits);
         }
 
         /// <summary>
@@ -284,8 +284,8 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public double ComputeDilutionTotalVolume(
             out double dblNewDilutingSolventVolume,
-            uevUnitsExtendedVolumeConstants eTotalVolumeUnits = uevUnitsExtendedVolumeConstants.uevML,
-            uevUnitsExtendedVolumeConstants eDilutingSolventUnits = uevUnitsExtendedVolumeConstants.uevML)
+            UnitOfExtendedVolume eTotalVolumeUnits = UnitOfExtendedVolume.ML,
+            UnitOfExtendedVolume eDilutingSolventUnits = UnitOfExtendedVolume.ML)
         {
             if (mDilutionValues.InitialConcentration > 0d && mDilutionValues.FinalConcentration > 0d)
             {
@@ -304,9 +304,9 @@ namespace MolecularWeightCalculator
             if (mDilutionValues.DilutingSolventVolume < 0d)
                 mDilutionValues.DilutingSolventVolume = -1;
 
-            dblNewDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, uevUnitsExtendedVolumeConstants.uevL, eDilutingSolventUnits);
+            dblNewDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, UnitOfExtendedVolume.L, eDilutingSolventUnits);
 
-            return ConvertVolumeExtended(mDilutionValues.TotalFinalVolume, uevUnitsExtendedVolumeConstants.uevL, eTotalVolumeUnits);
+            return ConvertVolumeExtended(mDilutionValues.TotalFinalVolume, UnitOfExtendedVolume.L, eTotalVolumeUnits);
         }
 
         /// <summary>
@@ -314,11 +314,11 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="eUnits"></param>
         /// <returns>mQuantity.Amount, with the specified units</returns>
-        public double ComputeQuantityAmount(uamUnitsAmountConstants eUnits = uamUnitsAmountConstants.uamMoles)
+        public double ComputeQuantityAmount(Unit eUnits = Unit.Moles)
         {
             mQuantity.Amount = mQuantity.Concentration * mQuantity.Volume;
 
-            return ConvertAmount(mQuantity.Amount, uamUnitsAmountConstants.uamMoles, eUnits);
+            return ConvertAmount(mQuantity.Amount, Unit.Moles, eUnits);
         }
 
         /// <summary>
@@ -326,7 +326,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="eUnits"></param>
         /// <returns>mQuantity.Concentration, with the specified units</returns>
-        public double ComputeQuantityConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public double ComputeQuantityConcentration(UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
             if (Math.Abs(mQuantity.Volume) > float.Epsilon)
             {
@@ -337,7 +337,7 @@ namespace MolecularWeightCalculator
                 mQuantity.Concentration = 0d;
             }
 
-            return ConvertConcentration(mQuantity.Concentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
+            return ConvertConcentration(mQuantity.Concentration, UnitOfMoleMassConcentration.Molar, eUnits);
         }
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="eUnits"></param>
         /// <returns>mQuantity.Volume, with the specified units</returns>
-        public double ComputeQuantityVolume(uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevL)
+        public double ComputeQuantityVolume(UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.L)
         {
             if (Math.Abs(mQuantity.Concentration) > float.Epsilon)
             {
@@ -356,7 +356,7 @@ namespace MolecularWeightCalculator
                 mQuantity.Volume = 0d;
             }
 
-            return ConvertVolumeExtended(mQuantity.Volume, uevUnitsExtendedVolumeConstants.uevL, eUnits);
+            return ConvertVolumeExtended(mQuantity.Volume, UnitOfExtendedVolume.L, eUnits);
         }
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace MolecularWeightCalculator
         /// <param name="eCurrentUnits"></param>
         /// <param name="eNewUnits"></param>
         /// <returns></returns>
-        public double ConvertAmount(double dblAmountIn, uamUnitsAmountConstants eCurrentUnits, uamUnitsAmountConstants eNewUnits)
+        public double ConvertAmount(double dblAmountIn, Unit eCurrentUnits, Unit eNewUnits)
         {
             if (eCurrentUnits == eNewUnits)
             {
@@ -379,8 +379,8 @@ namespace MolecularWeightCalculator
                 // Converting from one volume unit to another volume unit
                 // No need to explicitly specify mass or density
 
-                var eCurrentVolumeUnits = (uevUnitsExtendedVolumeConstants)((int)eCurrentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
-                var eNewVolumeUnits = (uevUnitsExtendedVolumeConstants)((int)eNewUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+                var eCurrentVolumeUnits = (UnitOfExtendedVolume)((int)eCurrentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+                var eNewVolumeUnits = (UnitOfExtendedVolume)((int)eNewUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
 
                 return ConvertVolumeExtended(dblAmountIn, eCurrentVolumeUnits, eNewVolumeUnits);
             }
@@ -413,7 +413,7 @@ namespace MolecularWeightCalculator
         /// <param name="eNewUnits"></param>
         /// <returns></returns>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
-        public double ConvertConcentration(double dblConcentrationIn, ummcUnitsMoleMassConcentrationConstants eCurrentUnits, ummcUnitsMoleMassConcentrationConstants eNewUnits)
+        public double ConvertConcentration(double dblConcentrationIn, UnitOfMoleMassConcentration eCurrentUnits, UnitOfMoleMassConcentration eNewUnits)
         {
             if (eCurrentUnits == eNewUnits)
             {
@@ -439,7 +439,7 @@ namespace MolecularWeightCalculator
             return dblValue / dblFactor;
         }
 
-        public double ConvertVolumeExtended(double dblVolume, uevUnitsExtendedVolumeConstants eCurrentUnits, uevUnitsExtendedVolumeConstants eNewUnits)
+        public double ConvertVolumeExtended(double dblVolume, UnitOfExtendedVolume eCurrentUnits, UnitOfExtendedVolume eNewUnits)
         {
             if (eCurrentUnits == eNewUnits)
             {
@@ -471,7 +471,7 @@ namespace MolecularWeightCalculator
         /// <param name="dblSampleDensity">required for volume-based units</param>
         /// <returns></returns>
         private double FactorAmount(
-            uamUnitsAmountConstants eUnits,
+            Unit eUnits,
             double dblSampleMass = -1,
             double dblSampleDensity = 0d)
         {
@@ -486,71 +486,71 @@ namespace MolecularWeightCalculator
                 // Determine the Amount multiplication dblFactor
                 switch (eUnits)
                 {
-                    case uamUnitsAmountConstants.uamMoles:
+                    case Unit.Moles:
                         dblFactor = 1d;
                         break;
-                    case uamUnitsAmountConstants.uamMillimoles:
+                    case Unit.Millimoles:
                         dblFactor = 1d / 1000.0d;
                         break;
-                    case uamUnitsAmountConstants.uamMicroMoles:
+                    case Unit.MicroMoles:
                         dblFactor = 1d / 1000000.0d;
                         break;
-                    case uamUnitsAmountConstants.uamNanoMoles:
+                    case Unit.NanoMoles:
                         dblFactor = 1d / 1000000000.0d;
                         break;
-                    case uamUnitsAmountConstants.uamPicoMoles:
+                    case Unit.PicoMoles:
                         dblFactor = 1d / 1000000000000.0d;
                         break;
-                    case uamUnitsAmountConstants.uamFemtoMoles:
+                    case Unit.FemtoMoles:
                         dblFactor = 1d / 1.0E+15d;
                         break;
-                    case uamUnitsAmountConstants.uamAttoMoles:
+                    case Unit.AttoMoles:
                         dblFactor = 1d / 1.0E+18d;
                         break;
-                    case uamUnitsAmountConstants.uamKilograms:
+                    case Unit.Kilograms:
                         dblFactor = 1000.0d / dblSampleMass;
                         break;
-                    case uamUnitsAmountConstants.uamGrams:
+                    case Unit.Grams:
                         dblFactor = 1d / dblSampleMass;
                         break;
-                    case uamUnitsAmountConstants.uamMilligrams:
+                    case Unit.Milligrams:
                         dblFactor = 1d / (dblSampleMass * 1000.0d);
                         break;
-                    case uamUnitsAmountConstants.uamMicrograms:
+                    case Unit.Micrograms:
                         dblFactor = 1d / (dblSampleMass * 1000000.0d);
                         break;
-                    case uamUnitsAmountConstants.uamPounds:
+                    case Unit.Pounds:
                         dblFactor = 1000.0d / (dblSampleMass * POUNDS_PER_KG);
                         break;
-                    case uamUnitsAmountConstants.uamOunces:
+                    case Unit.Ounces:
                         dblFactor = 1000.0d / (dblSampleMass * POUNDS_PER_KG * 16d);
                         break;
-                    case uamUnitsAmountConstants.uamLiters:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevL);
+                    case Unit.Liters:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.L);
                         break;
-                    case uamUnitsAmountConstants.uamDeciLiters:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevDL);
+                    case Unit.DeciLiters:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.DL);
                         break;
-                    case uamUnitsAmountConstants.uamMilliLiters:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevML);
+                    case Unit.MilliLiters:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.ML);
                         break;
-                    case uamUnitsAmountConstants.uamMicroLiters:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevUL);
+                    case Unit.MicroLiters:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.UL);
                         break;
-                    case uamUnitsAmountConstants.uamNanoLiters:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevNL);
+                    case Unit.NanoLiters:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.NL);
                         break;
-                    case uamUnitsAmountConstants.uamPicoLiters:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevPL);
+                    case Unit.PicoLiters:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.PL);
                         break;
-                    case uamUnitsAmountConstants.uamGallons:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevGallons);
+                    case Unit.Gallons:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Gallons);
                         break;
-                    case uamUnitsAmountConstants.uamQuarts:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevQuarts);
+                    case Unit.Quarts:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Quarts);
                         break;
-                    case uamUnitsAmountConstants.uamPints:
-                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(uevUnitsExtendedVolumeConstants.uevPints);
+                    case Unit.Pints:
+                        dblFactor = dblSampleDensity / dblSampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Pints);
                         break;
                     default:
                         dblFactor = -1;
@@ -568,7 +568,7 @@ namespace MolecularWeightCalculator
         /// <param name="dblSampleMass">required for mass-based units</param>
         /// <returns></returns>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
-        private double FactorConcentration(ummcUnitsMoleMassConcentrationConstants eUnits, double dblSampleMass = 0d)
+        private double FactorConcentration(UnitOfMoleMassConcentration eUnits, double dblSampleMass = 0d)
         {
             double dblFactor;
 
@@ -580,43 +580,43 @@ namespace MolecularWeightCalculator
             {
                 switch (eUnits)
                 {
-                    case ummcUnitsMoleMassConcentrationConstants.ummcMolar:
+                    case UnitOfMoleMassConcentration.Molar:
                         dblFactor = 1.0d;
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcMilliMolar:
+                    case UnitOfMoleMassConcentration.MilliMolar:
                         dblFactor = 1d / 1000.0d;
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcMicroMolar:
+                    case UnitOfMoleMassConcentration.MicroMolar:
                         dblFactor = 1d / 1000000.0d;
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcNanoMolar:
+                    case UnitOfMoleMassConcentration.NanoMolar:
                         dblFactor = 1d / 1000000000.0d;
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcPicoMolar:
+                    case UnitOfMoleMassConcentration.PicoMolar:
                         dblFactor = 1d / 1000000000000.0d;
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcFemtoMolar:
+                    case UnitOfMoleMassConcentration.FemtoMolar:
                         dblFactor = 1d / 1.0E+15d;
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcAttoMolar:
+                    case UnitOfMoleMassConcentration.AttoMolar:
                         dblFactor = 1d / 1.0E+18d;
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcMgPerDL:
+                    case UnitOfMoleMassConcentration.MgPerDL:
                         dblFactor = 1d / dblSampleMass / 100.0d; // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcMgPerML:
+                    case UnitOfMoleMassConcentration.MgPerML:
                         dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcUgPerML:
+                    case UnitOfMoleMassConcentration.UgPerML:
                         dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcNgPerML:
+                    case UnitOfMoleMassConcentration.NgPerML:
                         dblFactor = 1d / (dblSampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcUgPerUL:
+                    case UnitOfMoleMassConcentration.UgPerUL:
                         dblFactor = 1d / dblSampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
                         break;
-                    case ummcUnitsMoleMassConcentrationConstants.ummcNgPerUL:
+                    case UnitOfMoleMassConcentration.NgPerUL:
                         dblFactor = 1d / (dblSampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
                         break;
                     default:
@@ -634,38 +634,38 @@ namespace MolecularWeightCalculator
         /// <param name="eUnits"></param>
         /// <returns></returns>
         /// <remarks>An extended version of the FactorVolume function in CapillaryFlow</remarks>
-        private double FactorVolumeExtended(uevUnitsExtendedVolumeConstants eUnits)
+        private double FactorVolumeExtended(UnitOfExtendedVolume eUnits)
         {
             double dblFactor;
 
             // Note: 4 quarts per gallon, 2 pints per quart
             switch (eUnits)
             {
-                case uevUnitsExtendedVolumeConstants.uevL:
+                case UnitOfExtendedVolume.L:
                     dblFactor = 1d * 1000.0d;
                     break;
-                case uevUnitsExtendedVolumeConstants.uevDL:
+                case UnitOfExtendedVolume.DL:
                     dblFactor = 1d * 100.0d;
                     break;
-                case uevUnitsExtendedVolumeConstants.uevML:
+                case UnitOfExtendedVolume.ML:
                     dblFactor = 1.0d;
                     break;
-                case uevUnitsExtendedVolumeConstants.uevUL:
+                case UnitOfExtendedVolume.UL:
                     dblFactor = 1d / 1000.0d;
                     break;
-                case uevUnitsExtendedVolumeConstants.uevNL:
+                case UnitOfExtendedVolume.NL:
                     dblFactor = 1d / 1000000.0d;
                     break;
-                case uevUnitsExtendedVolumeConstants.uevPL:
+                case UnitOfExtendedVolume.PL:
                     dblFactor = 1d / 1000000000.0d;
                     break;
-                case uevUnitsExtendedVolumeConstants.uevGallons:
+                case UnitOfExtendedVolume.Gallons:
                     dblFactor = 1000.0d / GALLONS_PER_L;
                     break;
-                case uevUnitsExtendedVolumeConstants.uevQuarts:
+                case UnitOfExtendedVolume.Quarts:
                     dblFactor = 1000.0d / GALLONS_PER_L / 4.0d;
                     break;
-                case uevUnitsExtendedVolumeConstants.uevPints:
+                case UnitOfExtendedVolume.Pints:
                     dblFactor = 1000.0d / GALLONS_PER_L / 8.0d;
                     break;
                 default:
@@ -687,7 +687,7 @@ namespace MolecularWeightCalculator
             return mAutoComputeDilution;
         }
 
-        public acdAutoComputeDilutionModeConstants GetAutoComputeDilutionMode()
+        public AutoComputeDilutionMode GetAutoComputeDilutionMode()
         {
             return mAutoComputeDilutionMode;
         }
@@ -697,49 +697,49 @@ namespace MolecularWeightCalculator
             return mAutoComputeQuantity;
         }
 
-        public acqAutoComputeQuantityModeConstants GetAutoComputeQuantityMode()
+        public AutoComputeQuantityMode GetAutoComputeQuantityMode()
         {
             return mAutoComputeQuantityMode;
         }
 
-        public double GetDilutionFinalConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public double GetDilutionFinalConcentration(UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
-            return ConvertConcentration(mDilutionValues.FinalConcentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
+            return ConvertConcentration(mDilutionValues.FinalConcentration, UnitOfMoleMassConcentration.Molar, eUnits);
         }
 
-        public double GetDilutionInitialConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public double GetDilutionInitialConcentration(UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
-            return ConvertConcentration(mDilutionValues.InitialConcentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
+            return ConvertConcentration(mDilutionValues.InitialConcentration, UnitOfMoleMassConcentration.Molar, eUnits);
         }
 
-        public double GetDilutionTotalFinalVolume(uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public double GetDilutionTotalFinalVolume(UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.ML)
         {
-            return ConvertVolumeExtended(mDilutionValues.TotalFinalVolume, uevUnitsExtendedVolumeConstants.uevL, eUnits);
+            return ConvertVolumeExtended(mDilutionValues.TotalFinalVolume, UnitOfExtendedVolume.L, eUnits);
         }
 
-        public double GetDilutionVolumeDilutingSolvent(uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public double GetDilutionVolumeDilutingSolvent(UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.ML)
         {
-            return ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, uevUnitsExtendedVolumeConstants.uevL, eUnits);
+            return ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, UnitOfExtendedVolume.L, eUnits);
         }
 
-        public double GetDilutionVolumeStockSolution(uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public double GetDilutionVolumeStockSolution(UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.ML)
         {
-            return ConvertVolumeExtended(mDilutionValues.StockSolutionVolume, uevUnitsExtendedVolumeConstants.uevL, eUnits);
+            return ConvertVolumeExtended(mDilutionValues.StockSolutionVolume, UnitOfExtendedVolume.L, eUnits);
         }
 
-        public double GetQuantityAmount(uamUnitsAmountConstants eUnits = uamUnitsAmountConstants.uamMoles)
+        public double GetQuantityAmount(Unit eUnits = Unit.Moles)
         {
-            return ConvertAmount(mQuantity.Amount, uamUnitsAmountConstants.uamMoles, eUnits);
+            return ConvertAmount(mQuantity.Amount, Unit.Moles, eUnits);
         }
 
-        public double GetQuantityConcentration(ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public double GetQuantityConcentration(UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
-            return ConvertConcentration(mQuantity.Concentration, ummcUnitsMoleMassConcentrationConstants.ummcMolar, eUnits);
+            return ConvertConcentration(mQuantity.Concentration, UnitOfMoleMassConcentration.Molar, eUnits);
         }
 
-        public double GetQuantityVolume(uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public double GetQuantityVolume(UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.ML)
         {
-            return ConvertVolumeExtended(mQuantity.Volume, uevUnitsExtendedVolumeConstants.uevL, eUnits);
+            return ConvertVolumeExtended(mQuantity.Volume, UnitOfExtendedVolume.L, eUnits);
         }
 
         public double GetSampleDensity()
@@ -762,9 +762,9 @@ namespace MolecularWeightCalculator
             mAutoComputeDilution = blnAutoCompute;
         }
 
-        public void SetAutoComputeDilutionMode(acdAutoComputeDilutionModeConstants eAutoComputeMode)
+        public void SetAutoComputeDilutionMode(AutoComputeDilutionMode eAutoComputeMode)
         {
-            if (eAutoComputeMode >= acdAutoComputeDilutionModeConstants.acdFindRequiredDilutionVolumes && eAutoComputeMode <= acdAutoComputeDilutionModeConstants.acdFindFinalConcentration)
+            if (eAutoComputeMode >= AutoComputeDilutionMode.FindRequiredDilutionVolumes && eAutoComputeMode <= AutoComputeDilutionMode.FindFinalConcentration)
             {
                 mAutoComputeDilutionMode = eAutoComputeMode;
             }
@@ -775,59 +775,59 @@ namespace MolecularWeightCalculator
             mAutoComputeQuantity = blnAutoCompute;
         }
 
-        public void SetAutoComputeQuantityMode(acqAutoComputeQuantityModeConstants eAutoComputeMode)
+        public void SetAutoComputeQuantityMode(AutoComputeQuantityMode eAutoComputeMode)
         {
-            if (eAutoComputeMode >= acqAutoComputeQuantityModeConstants.acqFindAmount && eAutoComputeMode <= acqAutoComputeQuantityModeConstants.acqFindConcentration)
+            if (eAutoComputeMode >= AutoComputeQuantityMode.FindAmount && eAutoComputeMode <= AutoComputeQuantityMode.FindConcentration)
             {
                 mAutoComputeQuantityMode = eAutoComputeMode;
             }
         }
 
-        public void SetDilutionFinalConcentration(double dblConcentration, ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public void SetDilutionFinalConcentration(double dblConcentration, UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
-            mDilutionValues.FinalConcentration = ConvertConcentration(dblConcentration, eUnits, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
+            mDilutionValues.FinalConcentration = ConvertConcentration(dblConcentration, eUnits, UnitOfMoleMassConcentration.Molar);
             CheckAutoComputeDilution();
         }
 
-        public void SetDilutionInitialConcentration(double dblConcentration, ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public void SetDilutionInitialConcentration(double dblConcentration, UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
-            mDilutionValues.InitialConcentration = ConvertConcentration(dblConcentration, eUnits, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
+            mDilutionValues.InitialConcentration = ConvertConcentration(dblConcentration, eUnits, UnitOfMoleMassConcentration.Molar);
             CheckAutoComputeDilution();
         }
 
-        public void SetDilutionTotalFinalVolume(double dblVolume, uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public void SetDilutionTotalFinalVolume(double dblVolume, UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.ML)
         {
-            mDilutionValues.TotalFinalVolume = ConvertVolumeExtended(dblVolume, eUnits, uevUnitsExtendedVolumeConstants.uevL);
+            mDilutionValues.TotalFinalVolume = ConvertVolumeExtended(dblVolume, eUnits, UnitOfExtendedVolume.L);
             CheckAutoComputeDilution();
         }
 
-        public void SetDilutionVolumeDilutingSolvent(double dblVolume, uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public void SetDilutionVolumeDilutingSolvent(double dblVolume, UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.ML)
         {
-            mDilutionValues.DilutingSolventVolume = ConvertVolumeExtended(dblVolume, eUnits, uevUnitsExtendedVolumeConstants.uevL);
+            mDilutionValues.DilutingSolventVolume = ConvertVolumeExtended(dblVolume, eUnits, UnitOfExtendedVolume.L);
             CheckAutoComputeDilution();
         }
 
-        public void SetDilutionVolumeStockSolution(double dblVolume, uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public void SetDilutionVolumeStockSolution(double dblVolume, UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.ML)
         {
-            mDilutionValues.StockSolutionVolume = ConvertVolumeExtended(dblVolume, eUnits, uevUnitsExtendedVolumeConstants.uevL);
+            mDilutionValues.StockSolutionVolume = ConvertVolumeExtended(dblVolume, eUnits, UnitOfExtendedVolume.L);
             CheckAutoComputeDilution();
         }
 
-        public void SetQuantityAmount(double dblAmount, uamUnitsAmountConstants eUnits = uamUnitsAmountConstants.uamMoles)
+        public void SetQuantityAmount(double dblAmount, Unit eUnits = Unit.Moles)
         {
-            mQuantity.Amount = ConvertAmount(dblAmount, eUnits, uamUnitsAmountConstants.uamMoles);
+            mQuantity.Amount = ConvertAmount(dblAmount, eUnits, Unit.Moles);
             CheckAutoComputeQuantity();
         }
 
-        public void SetQuantityConcentration(double dblConcentration, ummcUnitsMoleMassConcentrationConstants eUnits = ummcUnitsMoleMassConcentrationConstants.ummcMolar)
+        public void SetQuantityConcentration(double dblConcentration, UnitOfMoleMassConcentration eUnits = UnitOfMoleMassConcentration.Molar)
         {
-            mQuantity.Concentration = ConvertConcentration(dblConcentration, eUnits, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
+            mQuantity.Concentration = ConvertConcentration(dblConcentration, eUnits, UnitOfMoleMassConcentration.Molar);
             CheckAutoComputeQuantity();
         }
 
-        public void SetQuantityVolume(double dblVolume, uevUnitsExtendedVolumeConstants eUnits = uevUnitsExtendedVolumeConstants.uevML)
+        public void SetQuantityVolume(double dblVolume, UnitOfExtendedVolume eUnits = UnitOfExtendedVolume.ML)
         {
-            mQuantity.Volume = ConvertVolumeExtended(dblVolume, eUnits, uevUnitsExtendedVolumeConstants.uevL);
+            mQuantity.Volume = ConvertVolumeExtended(dblVolume, eUnits, UnitOfExtendedVolume.L);
         }
 
         public void SetSampleDensity(double dblDensityInGramsPerML)
@@ -863,19 +863,19 @@ namespace MolecularWeightCalculator
             SetAutoComputeDilutionEnabled(false);
             SetAutoComputeQuantityEnabled(false);
 
-            SetAutoComputeDilutionMode(acdAutoComputeDilutionModeConstants.acdFindRequiredDilutionVolumes);
+            SetAutoComputeDilutionMode(AutoComputeDilutionMode.FindRequiredDilutionVolumes);
 
-            SetAutoComputeQuantityMode(acqAutoComputeQuantityModeConstants.acqFindConcentration);
+            SetAutoComputeQuantityMode(AutoComputeQuantityMode.FindConcentration);
 
-            SetQuantityAmount(1d, uamUnitsAmountConstants.uamMoles);
-            SetQuantityVolume(100d, uevUnitsExtendedVolumeConstants.uevML);
-            SetQuantityConcentration(1d, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
+            SetQuantityAmount(1d, Unit.Moles);
+            SetQuantityVolume(100d, UnitOfExtendedVolume.ML);
+            SetQuantityConcentration(1d, UnitOfMoleMassConcentration.Molar);
 
-            SetDilutionInitialConcentration(10d, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
-            SetDilutionVolumeStockSolution(3d, uevUnitsExtendedVolumeConstants.uevML);
-            SetDilutionFinalConcentration(2d, ummcUnitsMoleMassConcentrationConstants.ummcMolar);
-            SetDilutionVolumeDilutingSolvent(12d, uevUnitsExtendedVolumeConstants.uevML);
-            SetDilutionTotalFinalVolume(15d, uevUnitsExtendedVolumeConstants.uevML);
+            SetDilutionInitialConcentration(10d, UnitOfMoleMassConcentration.Molar);
+            SetDilutionVolumeStockSolution(3d, UnitOfExtendedVolume.ML);
+            SetDilutionFinalConcentration(2d, UnitOfMoleMassConcentration.Molar);
+            SetDilutionVolumeDilutingSolvent(12d, UnitOfExtendedVolume.ML);
+            SetDilutionTotalFinalVolume(15d, UnitOfExtendedVolume.ML);
 
             // Recompute
             ComputeQuantityAmount();

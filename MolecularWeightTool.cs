@@ -58,25 +58,25 @@ namespace MolecularWeightCalculator
         /// Constructor where the element mode can be defined
         /// </summary>
         /// <param name="elementMode">Mass mode for elements (average, monoisotopic, or integer)</param>
-        public MolecularWeightTool(ElementAndMassTools.emElementModeConstants elementMode) : this()
+        public MolecularWeightTool(ElementAndMassTools.ElementMassMode elementMode) : this()
         {
             SetElementMode(elementMode);
         }
 
         #region "Constants and Enums"
 
-        public enum arAbbrevRecognitionModeConstants
+        public enum AbbrevRecognitionMode
         {
-            arNormalOnly = 0,
-            arNormalPlusAminoAcids = 1,
-            arNoAbbreviations = 2
+            NormalOnly = 0,
+            NormalPlusAminoAcids = 1,
+            NoAbbreviations = 2
         }
 
-        public enum esElementStatsConstants
+        public enum ElementStatsType
         {
-            esMass = 0,
-            esUncertainty = 1,
-            esCharge = 2
+            Mass = 0,
+            Uncertainty = 1,
+            Charge = 2
         }
 
         #endregion
@@ -106,12 +106,12 @@ namespace MolecularWeightCalculator
         #endregion
 
         #region "Interface Functions"
-        public arAbbrevRecognitionModeConstants AbbreviationRecognitionMode
+        public AbbrevRecognitionMode AbbreviationRecognitionMode
         {
             get => mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode;
             set
             {
-                if (value >= arAbbrevRecognitionModeConstants.arNormalOnly & value <= arAbbrevRecognitionModeConstants.arNoAbbreviations)
+                if (value >= AbbrevRecognitionMode.NormalOnly & value <= AbbrevRecognitionMode.NoAbbreviations)
                 {
                     mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode = value;
                     mElementAndMassRoutines.ConstructMasterSymbolsList();
@@ -145,12 +145,12 @@ namespace MolecularWeightCalculator
             set => mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses = value;
         }
 
-        public ElementAndMassTools.ccCaseConversionConstants CaseConversionMode
+        public ElementAndMassTools.CaseConversionMode CaseConversionMode
         {
             get => mElementAndMassRoutines.gComputationOptions.CaseConversion;
             set
             {
-                if (value >= ElementAndMassTools.ccCaseConversionConstants.ccConvertCaseUp & value <= ElementAndMassTools.ccCaseConversionConstants.ccSmartCase)
+                if (value >= ElementAndMassTools.CaseConversionMode.ConvertCaseUp & value <= ElementAndMassTools.CaseConversionMode.SmartCase)
                 {
                     mElementAndMassRoutines.gComputationOptions.CaseConversion = value;
                 }
@@ -223,12 +223,12 @@ namespace MolecularWeightCalculator
             set => mElementAndMassRoutines.SetShowErrorMessageDialogs(value);
         }
 
-        public ElementAndMassTools.smStdDevModeConstants StdDevMode
+        public ElementAndMassTools.StdDevMode StdDevMode
         {
             get => mElementAndMassRoutines.gComputationOptions.StdDevMode;
             set
             {
-                if (value >= ElementAndMassTools.smStdDevModeConstants.smShort & value <= ElementAndMassTools.smStdDevModeConstants.smDecimal)
+                if (value >= ElementAndMassTools.StdDevMode.Short & value <= ElementAndMassTools.StdDevMode.Decimal)
                 {
                     mElementAndMassRoutines.gComputationOptions.StdDevMode = value;
                 }
@@ -641,7 +641,7 @@ namespace MolecularWeightCalculator
         /// emIsotopicMass = 2
         /// emIntegerMass  = 3
         /// </returns>
-        public ElementAndMassTools.emElementModeConstants GetElementMode()
+        public ElementAndMassTools.ElementMassMode GetElementMode()
         {
             return mElementAndMassRoutines.GetElementModeInternal();
         }
@@ -664,7 +664,7 @@ namespace MolecularWeightCalculator
         /// <param name="eElementStat">Value to obtain: mass, charge, or uncertainty</param>
         /// <returns></returns>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
-        public double GetElementStat(short intElementID, esElementStatsConstants eElementStat)
+        public double GetElementStat(short intElementID, ElementStatsType eElementStat)
         {
             return mElementAndMassRoutines.GetElementStatInternal(intElementID, eElementStat);
         }
@@ -711,16 +711,16 @@ namespace MolecularWeightCalculator
 
         private void LoadDefaults()
         {
-            mElementAndMassRoutines.MemoryLoadAll(ElementAndMassTools.emElementModeConstants.emAverageMass);
+            mElementAndMassRoutines.MemoryLoadAll(ElementAndMassTools.ElementMassMode.Average);
 
-            SetElementMode(ElementAndMassTools.emElementModeConstants.emAverageMass);
-            AbbreviationRecognitionMode = arAbbrevRecognitionModeConstants.arNormalPlusAminoAcids;
+            SetElementMode(ElementAndMassTools.ElementMassMode.Average);
+            AbbreviationRecognitionMode = AbbrevRecognitionMode.NormalPlusAminoAcids;
             BracketsTreatedAsParentheses = true;
-            CaseConversionMode = ElementAndMassTools.ccCaseConversionConstants.ccConvertCaseUp;
+            CaseConversionMode = ElementAndMassTools.CaseConversionMode.ConvertCaseUp;
             DecimalSeparator = '.';
             RtfFontName = "Arial";
             RtfFontSize = 10;
-            StdDevMode = ElementAndMassTools.smStdDevModeConstants.smDecimal;
+            StdDevMode = ElementAndMassTools.StdDevMode.Decimal;
 
             mElementAndMassRoutines.gComputationOptions.DecimalSeparator = DetermineDecimalPoint();
 
@@ -789,7 +789,7 @@ namespace MolecularWeightCalculator
             mElementAndMassRoutines.MemoryLoadCautionStatements();
         }
 
-        public void ResetElement(short intElementID, esElementStatsConstants eSpecificStatToReset)
+        public void ResetElement(short intElementID, ElementStatsType eSpecificStatToReset)
         {
             mElementAndMassRoutines.MemoryLoadElements(GetElementMode(), intElementID, eSpecificStatToReset);
         }
@@ -916,12 +916,12 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.SetElementIsotopesInternal(strSymbol, intIsotopeCount, ref dblIsotopeMassesOneBased, ref sngIsotopeAbundancesOneBased);
         }
 
-        public void SetElementMode(ElementAndMassTools.emElementModeConstants elementMode)
+        public void SetElementMode(ElementAndMassTools.ElementMassMode elementMode)
         {
             SetElementMode(elementMode, true);
         }
 
-        public void SetElementMode(ElementAndMassTools.emElementModeConstants elementMode, bool blnMemoryLoadElementValues)
+        public void SetElementMode(ElementAndMassTools.ElementMassMode elementMode, bool blnMemoryLoadElementValues)
         {
             mElementAndMassRoutines.SetElementModeInternal(elementMode, blnMemoryLoadElementValues);
         }
