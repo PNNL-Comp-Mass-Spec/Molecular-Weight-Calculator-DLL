@@ -86,7 +86,7 @@ namespace MolecularWeightCalculator
 
         #region "Data classes"
 
-        public class udtOptionsType
+        public class Options
         {
             public MolecularWeightTool.AbbrevRecognitionMode AbbrevRecognitionMode;
             public bool BracketsAsParentheses;
@@ -97,22 +97,22 @@ namespace MolecularWeightCalculator
             public StdDevMode StdDevMode; // Can be 0, 1, or 2 (see smStdDevModeConstants)
         }
 
-        public class usrIsotopicAtomInfoType
+        public class IsotopicAtomInfo
         {
             public double Count; // Can have non-integer counts of atoms, eg. ^13C5.5
             public double Mass;
         }
 
-        public class udtElementUseStatsType
+        public class ElementUseStats
         {
             public bool Used;
             public double Count; // Can have non-integer counts of atoms, eg. C5.5
             public double IsotopicCorrection;
             public short IsotopeCount; // Number of specific isotopes defined
-            public usrIsotopicAtomInfoType[] Isotopes;
+            public IsotopicAtomInfo[] Isotopes;
         }
 
-        public class udtPctCompType
+        public class PercentCompositionInfo
         {
             public double PercentComposition;
             public double StdDeviation;
@@ -123,23 +123,23 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public class udtComputationStatsType
+        public class ComputationStats
         {
-            public udtElementUseStatsType[] Elements;        // 1-based array, ranging from 1 to ELEMENT_COUNT
+            public ElementUseStats[] Elements;        // 1-based array, ranging from 1 to ELEMENT_COUNT
             public double TotalMass;
-            public udtPctCompType[] PercentCompositions;     // 1-based array, ranging from 1 to ELEMENT_COUNT
+            public PercentCompositionInfo[] PercentCompositions;     // 1-based array, ranging from 1 to ELEMENT_COUNT
             public float Charge;
             public double StandardDeviation;
 
             // Note: "Initialize" must be called to initialize instances of this structure
             public void Initialize()
             {
-                Elements = new udtElementUseStatsType[104];
-                PercentCompositions = new udtPctCompType[104];
+                Elements = new ElementUseStats[104];
+                PercentCompositions = new PercentCompositionInfo[104];
             }
         }
 
-        public class udtIsotopeInfoType
+        public class IsotopeInfo
         {
             public double Mass;
             public float Abundance;
@@ -150,19 +150,19 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public class udtElementStatsType
+        public class ElementInfo
         {
             public string Symbol;
             public double Mass;
             public double Uncertainty;
             public float Charge;
             public short IsotopeCount; // # of isotopes an element has
-            public udtIsotopeInfoType[] Isotopes; // Masses and Abundances of the isotopes; 1-based array, ranging from 1 to MAX_Isotopes
+            public IsotopeInfo[] Isotopes; // Masses and Abundances of the isotopes; 1-based array, ranging from 1 to MAX_Isotopes
 
             // Note: "Initialize" must be called to initialize instances of this structure
             public void Initialize()
             {
-                Isotopes = new udtIsotopeInfoType[ElementAndMassTools.MAX_ISOTOPES + 1];
+                Isotopes = new IsotopeInfo[ElementAndMassTools.MAX_ISOTOPES + 1];
             }
 
             public override string ToString()
@@ -171,7 +171,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public class udtAbbrevStatsType
+        public class AbbrevStatsData
         {
             /// <summary>
             /// The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
@@ -220,7 +220,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        private class udtErrorDescriptionType
+        private class ErrorDescription
         {
             public int ErrorID; // Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
             public int ErrorPosition;
@@ -232,7 +232,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        private class udtIsoResultsByElementType
+        private class IsoResultsByElement
         {
             public short ElementIndex; // Index of element in ElementStats() array; look in ElementStats() to get information on its isotopes
             public bool boolExplicitIsotope; // True if an explicitly defined isotope
@@ -243,19 +243,19 @@ namespace MolecularWeightCalculator
             public float[] MassAbundances; // Abundance of each mass, starting with StartingResultsMass
         }
 
-        private class udtIsoResultsOverallType
+        private class IsoResultsOverallData
         {
             public float Abundance;
             public int Multiplicity;
         }
 
-        private class udtAbbrevSymbolStackType
+        private class AbbrevSymbolStack
         {
             public short Count;
             public short[] SymbolReferenceStack; // 0-based array
         }
 
-        private class udtXYDataType
+        private class XYData
         {
             public double X;
             public double Y;
@@ -264,7 +264,7 @@ namespace MolecularWeightCalculator
 
         #region "Classwide Variables"
 
-        public udtOptionsType gComputationOptions = new udtOptionsType();
+        public Options gComputationOptions = new Options();
 
         /// <summary>
         /// Stores the elements in alphabetical order
@@ -277,7 +277,7 @@ namespace MolecularWeightCalculator
         /// Element stats
         /// 1 to ELEMENT_COUNT
         /// </summary>
-        private udtElementStatsType[] ElementStats;
+        private ElementInfo[] ElementStats;
 
         /// <summary>
         /// Stores the element symbols, abbreviations, and amino acids in order of longest symbol length to shortest length, non-alphabetized,
@@ -291,7 +291,7 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Includes both abbreviations and amino acids; 1-based array
         /// </summary>
-        private udtAbbrevStatsType[] AbbrevStats;
+        private AbbrevStatsData[] AbbrevStats;
         private short AbbrevAllCount;
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace MolecularWeightCalculator
         private string[] MessageStatements;
         private int MessageStatementCount;
 
-        private readonly udtErrorDescriptionType ErrorParams = new udtErrorDescriptionType();
+        private readonly ErrorDescription ErrorParams = new ErrorDescription();
 
         /// <summary>
         /// Charge carrier mass
@@ -317,7 +317,7 @@ namespace MolecularWeightCalculator
 
         private ElementMassMode mCurrentElementMode;
         private string mStrCautionDescription;
-        private udtComputationStatsType mComputationStatsSaved = new udtComputationStatsType();
+        private ComputationStats mComputationStatsSaved = new ComputationStats();
 
         protected bool mAbortProcessing;
 
@@ -403,7 +403,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="udtAbbrevSymbolStack">Symbol stack; updated by this method</param>
         /// <param name="symbolReference"></param>
-        private void AbbrevSymbolStackAdd(ref udtAbbrevSymbolStackType udtAbbrevSymbolStack, short symbolReference)
+        private void AbbrevSymbolStackAdd(ref AbbrevSymbolStack udtAbbrevSymbolStack, short symbolReference)
         {
             try
             {
@@ -421,7 +421,7 @@ namespace MolecularWeightCalculator
         /// Update the abbreviation symbol stack
         /// </summary>
         /// <param name="udtAbbrevSymbolStack">Symbol stack; updated by this method</param>
-        private void AbbrevSymbolStackAddRemoveMostRecent(ref udtAbbrevSymbolStackType udtAbbrevSymbolStack)
+        private void AbbrevSymbolStackAddRemoveMostRecent(ref AbbrevSymbolStack udtAbbrevSymbolStack)
         {
             if (udtAbbrevSymbolStack.Count > 0)
             {
@@ -612,7 +612,7 @@ namespace MolecularWeightCalculator
         /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(ref string strFormula)
         {
-            var udtComputationStats = new udtComputationStatsType();
+            var udtComputationStats = new ComputationStats();
             udtComputationStats.Initialize();
 
             ParseFormulaPublic(ref strFormula, ref udtComputationStats, false);
@@ -719,7 +719,7 @@ namespace MolecularWeightCalculator
             bool blnUseFactorials,
             bool blnAddProtonChargeCarrier)
         {
-            var udtComputationStats = new udtComputationStatsType();
+            var udtComputationStats = new ComputationStats();
             udtComputationStats.Initialize();
 
             double dblNextComboFractionalAbundance = default;
@@ -878,8 +878,12 @@ namespace MolecularWeightCalculator
                 // The formula seems valid, so update strFormulaIn
                 strFormulaIn = strFormula;
 
-                // Reserve memory for IsoStats() array
-                var IsoStats = new udtIsoResultsByElementType[intElementCount + 1];
+                // Reserve memory for IsoStats[] array
+                var IsoStats = new IsoResultsByElement[intElementCount + 1];
+                for (var i = 0; i < IsoStats.Length; i++)
+                {
+                    IsoStats[i] = new IsoResultsByElement();
+                }
 
                 // Step through udtComputationStats.Elements() again and copy info into IsoStats()
                 // In addition, determine minimum and maximum weight for the molecule
@@ -935,7 +939,7 @@ namespace MolecularWeightCalculator
                 // Create an array to hold the Fractional Abundances for all the masses
                 ConvolutedMSDataCount = MaxWeight - MinWeight + 1;
                 var ConvolutedAbundanceStartMass = MinWeight;
-                var ConvolutedAbundances = new udtIsoResultsOverallType[ConvolutedMSDataCount + 1]; // Fractional abundance at each mass; 1-based array
+                var ConvolutedAbundances = new IsoResultsOverallData[ConvolutedMSDataCount + 1]; // Fractional abundance at each mass; 1-based array
 
                 // Predict the total number of computations required; show progress if necessary
                 var PredictedTotalComboCalcs = 0;
@@ -1377,7 +1381,7 @@ namespace MolecularWeightCalculator
         /// Compute percent composition of the elements defined in udtComputationStats
         /// </summary>
         /// <param name="udtComputationStats">Input/output</param>
-        public void ComputePercentComposition(ref udtComputationStatsType udtComputationStats)
+        public void ComputePercentComposition(ref ComputationStats udtComputationStats)
         {
             // Determine the number of elements in the formula
             for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
@@ -1437,7 +1441,7 @@ namespace MolecularWeightCalculator
             const int MAX_DATA_POINTS = 1000000;
             const short MASS_PRECISION = 7;
 
-            var udtThisDataPoint = new udtXYDataType();
+            var udtThisDataPoint = new XYData();
 
             var lstGaussianData = new List<KeyValuePair<double, double>>();
 
@@ -1449,7 +1453,7 @@ namespace MolecularWeightCalculator
                     return lstGaussianData;
                 }
 
-                var lstXYSummation = new List<udtXYDataType>(XYVals.Count * 10);
+                var lstXYSummation = new List<XYData>(XYVals.Count * 10);
 
                 // Determine the data range for dblXVals() and dblYVals()
                 if (XYVals.Count > 1)
@@ -1506,7 +1510,7 @@ namespace MolecularWeightCalculator
                     intDataToAddCount += 1;
                 }
 
-                var lstDataToAdd = new List<udtXYDataType>(intDataToAddCount);
+                var lstDataToAdd = new List<XYData>(intDataToAddCount);
                 var intMidPointIndex = (int)Math.Round((intDataToAddCount + 1) / 2d - 1d);
 
                 // Compute the Gaussian data for each point in dblXVals()
@@ -1576,7 +1580,7 @@ namespace MolecularWeightCalculator
                         // Use index, .YVal, and DeltaX
                         var dblXOffSet = (intMidPointIndex - index) * DeltaX;
 
-                        var udtNewPoint = new udtXYDataType()
+                        var udtNewPoint = new XYData()
                         {
                             X = udtThisDataPoint.X - dblXOffSet,
                             Y = udtThisDataPoint.Y * Math.Exp(-Math.Pow(dblXOffSet, 2d) / (2d * Math.Pow(dblSigma, 2d)))
@@ -1671,7 +1675,7 @@ namespace MolecularWeightCalculator
                         }
 
                         // The new .YVal is the average of that at intSummationIndex and that at intSummationIndex + 1
-                        var udtNewDataPoint = new udtXYDataType()
+                        var udtNewDataPoint = new XYData()
                         {
                             X = lstXYSummation[intSummationIndex].X + dblRangeWork,
                             Y = (lstXYSummation[intSummationIndex].Y + lstXYSummation[intSummationIndex + 1].Y) / 2d
@@ -1856,7 +1860,7 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public string ConvertFormulaToEmpirical(string strFormula)
         {
-            var udtComputationStats = new udtComputationStatsType();
+            var udtComputationStats = new ComputationStats();
             udtComputationStats.Initialize();
 
             // Call ParseFormulaPublic to compute the formula's mass and fill udtComputationStats
@@ -1927,7 +1931,7 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public string ExpandAbbreviationsInFormula(string strFormula)
         {
-            var udtComputationStats = new udtComputationStatsType();
+            var udtComputationStats = new ComputationStats();
             udtComputationStats.Initialize();
 
             // Call ExpandAbbreviationsInFormula to compute the formula's mass
@@ -1946,7 +1950,7 @@ namespace MolecularWeightCalculator
             int ComboIndex,
             short IsotopeCount,
             int AtomCount,
-            ref udtIsotopeInfoType[] ThisElementsIsotopes)
+            ref IsotopeInfo[] ThisElementsIsotopes)
         {
             var workingMass = 0;
             for (var IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
@@ -1969,13 +1973,13 @@ namespace MolecularWeightCalculator
         /// <param name="ElementCount"></param>
         /// <param name="Iterations"></param>
         private void ConvoluteMasses(
-            ref udtIsoResultsOverallType[] ConvolutedAbundances,
+            ref IsoResultsOverallData[] ConvolutedAbundances,
             int ConvolutedAbundanceStartMass,
             int WorkingRow,
             float WorkingAbundance,
             int WorkingMassTotal,
             short ElementTrack,
-            ref udtIsoResultsByElementType[] IsoStats,
+            ref IsoResultsByElement[] IsoStats,
             short ElementCount,
             ref long Iterations)
         {
@@ -2638,7 +2642,7 @@ namespace MolecularWeightCalculator
             return "";
         }
 
-        public List<udtElementStatsType> GetElements()
+        public List<ElementInfo> GetElements()
         {
             return ElementStats.ToList();
         }
@@ -2750,7 +2754,7 @@ namespace MolecularWeightCalculator
         /// <param name="udtAbbrevSymbolStack"></param>
         /// <param name="SymbolReference"></param>
         /// <returns></returns>
-        private bool IsPresentInAbbrevSymbolStack(ref udtAbbrevSymbolStackType udtAbbrevSymbolStack, short SymbolReference)
+        private bool IsPresentInAbbrevSymbolStack(ref AbbrevSymbolStack udtAbbrevSymbolStack, short SymbolReference)
         {
             try
             {
@@ -3352,11 +3356,11 @@ namespace MolecularWeightCalculator
         private void Initialize()
         {
             ElementAlph = new string[104];
-            ElementStats = new udtElementStatsType[104];
+            ElementStats = new ElementInfo[104];
             for (var i = 0; i <= ELEMENT_COUNT - 1; i++)
                 ElementStats[i].Initialize();
 
-            AbbrevStats = new udtAbbrevStatsType[501];
+            AbbrevStats = new AbbrevStatsData[501];
             CautionStatements = new string[101, 3];
             MessageStatements = new string[1601];
 
@@ -3369,13 +3373,13 @@ namespace MolecularWeightCalculator
             ShowErrorMessageDialogs = false;
         }
 
-        private void InitializeAbbrevSymbolStack(ref udtAbbrevSymbolStackType udtAbbrevSymbolStack)
+        private void InitializeAbbrevSymbolStack(ref AbbrevSymbolStack udtAbbrevSymbolStack)
         {
             udtAbbrevSymbolStack.Count = 0;
             udtAbbrevSymbolStack.SymbolReferenceStack = new short[1];
         }
 
-        private void InitializeComputationStats(ref udtComputationStatsType udtComputationStats)
+        private void InitializeComputationStats(ref ComputationStats udtComputationStats)
         {
             udtComputationStats.Initialize();
             udtComputationStats.Charge = 0.0f;
@@ -3389,7 +3393,7 @@ namespace MolecularWeightCalculator
                 element.Count = 0d; // # of each element
                 element.IsotopicCorrection = 0d; // isotopic correction
                 element.IsotopeCount = 0; // Count of the number of atoms defined as specific isotopes
-                element.Isotopes = new usrIsotopicAtomInfoType[3]; // Default to have room for 2 explicitly defined isotopes
+                element.Isotopes = new IsotopicAtomInfo[3]; // Default to have room for 2 explicitly defined isotopes
             }
         }
 
@@ -3401,7 +3405,7 @@ namespace MolecularWeightCalculator
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         public double ParseFormulaPublic(
             ref string strFormula,
-            ref udtComputationStatsType udtComputationStats)
+            ref ComputationStats udtComputationStats)
         {
             return ParseFormulaPublic(ref strFormula, ref udtComputationStats, false, 1);
         }
@@ -3415,7 +3419,7 @@ namespace MolecularWeightCalculator
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         public double ParseFormulaPublic(
             ref string strFormula,
-            ref udtComputationStatsType udtComputationStats,
+            ref ComputationStats udtComputationStats,
             bool blnExpandAbbreviations)
         {
             return ParseFormulaPublic(ref strFormula, ref udtComputationStats, blnExpandAbbreviations, 1);
@@ -3435,11 +3439,11 @@ namespace MolecularWeightCalculator
         /// </remarks>
         public double ParseFormulaPublic(
             ref string strFormula,
-            ref udtComputationStatsType udtComputationStats,
+            ref ComputationStats udtComputationStats,
             bool blnExpandAbbreviations,
             double dblValueForX)
         {
-            var udtAbbrevSymbolStack = new udtAbbrevSymbolStackType();
+            var udtAbbrevSymbolStack = new AbbrevSymbolStack();
             try
             {
                 // Initialize the UDTs
@@ -3509,8 +3513,8 @@ namespace MolecularWeightCalculator
         /// <returns>Formatted formula</returns>
         private string ParseFormulaRecursive(
             string strFormula,
-            ref udtComputationStatsType udtComputationStats,
-            ref udtAbbrevSymbolStackType udtAbbrevSymbolStack,
+            ref ComputationStats udtComputationStats,
+            ref AbbrevSymbolStack udtAbbrevSymbolStack,
             bool blnExpandAbbreviations,
             ref double dblStdDevSum,
             ref int CarbonOrSiliconReturnCount,
@@ -3532,10 +3536,10 @@ namespace MolecularWeightCalculator
             int intSymbolLength = default;
             var blnCaretPresent = default(bool);
 
-            var udtComputationStatsRightHalf = new udtComputationStatsType();
+            var udtComputationStatsRightHalf = new ComputationStats();
             udtComputationStatsRightHalf.Initialize();
 
-            var udtAbbrevSymbolStackRightHalf = new udtAbbrevSymbolStackType();
+            var udtAbbrevSymbolStackRightHalf = new AbbrevSymbolStack();
 
             var dblStdDevSumRightHalf = default(double);
             double dblCaretVal = default;
@@ -5078,10 +5082,10 @@ namespace MolecularWeightCalculator
             string strComment,
             bool blnValidateFormula)
         {
-            var udtComputationStats = new udtComputationStatsType();
+            var udtComputationStats = new ComputationStats();
             udtComputationStats.Initialize();
 
-            var udtAbbrevSymbolStack = new udtAbbrevSymbolStackType();
+            var udtAbbrevSymbolStack = new AbbrevSymbolStack();
             var blnInvalidSymbolOrFormula = default(bool);
             var intSymbolReference = default(short);
 

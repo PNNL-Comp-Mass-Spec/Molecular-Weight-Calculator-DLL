@@ -25,7 +25,7 @@ namespace MwtWinDllTestCS
             // Set the element mode (average, monoisotopic, or integer)
             mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
 
-            var fragSpectrumOptions = new Peptide.udtFragmentationSpectrumOptionsType();
+            var fragSpectrumOptions = new Peptide.FragmentationSpectrumOptions();
             fragSpectrumOptions.Initialize();
 
             // Initialize fragSpectrumOptions with the defaults

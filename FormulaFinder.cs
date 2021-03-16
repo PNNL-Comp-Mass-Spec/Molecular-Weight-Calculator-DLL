@@ -24,14 +24,14 @@ namespace MolecularWeightCalculator
         /// Target percent composition values must be between 0 and 100; they are only used when calling FindMatchesByPercentComposition
         /// MinimumCount and MaximumCount are only used when the search mode is Bounded; they are ignored for Thorough search
         /// </remarks>
-        public class udtCandidateElementTolerances
+        public class CandidateElementTolerances
         {
             public double TargetPercentComposition;
             public int MinimumCount;
             public int MaximumCount;
         }
 
-        private class udtElementNumType
+        private class ElementNum
         {
             public int H;
             public int C;
@@ -47,7 +47,7 @@ namespace MolecularWeightCalculator
             public int Other;
         }
 
-        private class udtBoundedSearchRangeType
+        private class BoundedSearchRange
         {
             public int Min;
             public int Max;
@@ -70,7 +70,7 @@ namespace MolecularWeightCalculator
         /// Values are target percent composition values, between 0 and 100
         /// </summary>
         /// <remarks>The target percent composition values are only used when FindMatchesByPercentComposition is called</remarks>
-        private Dictionary<string, udtCandidateElementTolerances> mCandidateElements;
+        private Dictionary<string, CandidateElementTolerances> mCandidateElements;
 
         private readonly ElementAndMassTools mElementAndMassRoutines;
 
@@ -89,7 +89,7 @@ namespace MolecularWeightCalculator
         /// <value></value>
         /// <returns></returns>
         /// <remarks>The values in the dictionary are target percent composition values; only used if you call FindMatchesByPercentComposition</remarks>
-        public Dictionary<string, udtCandidateElementTolerances> CandidateElements
+        public Dictionary<string, CandidateElementTolerances> CandidateElements
         {
             get => mCandidateElements;
             set
@@ -154,7 +154,7 @@ namespace MolecularWeightCalculator
         public FormulaFinder(ElementAndMassTools oElementAndMassTools)
         {
             mElementAndMassRoutines = oElementAndMassTools;
-            mCandidateElements = new Dictionary<string, udtCandidateElementTolerances>();
+            mCandidateElements = new Dictionary<string, CandidateElementTolerances>();
 
             EchoMessagesToConsole = true;
 
@@ -215,7 +215,7 @@ namespace MolecularWeightCalculator
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
         /// <param name="udtElementTolerances">Search tolerances, including % composition range and Min/Max count when using a bounded search</param>
         /// <remarks></remarks>
-        public void AddCandidateElement(string elementSymbolAbbrevOrMass, udtCandidateElementTolerances udtElementTolerances)
+        public void AddCandidateElement(string elementSymbolAbbrevOrMass, CandidateElementTolerances udtElementTolerances)
         {
             if (mCandidateElements.ContainsKey(elementSymbolAbbrevOrMass))
             {
@@ -765,7 +765,7 @@ namespace MolecularWeightCalculator
             // Verify that the formula does not have too many hydrogens
 
             // Counters for elements of interest (hydrogen, carbon, silicon, nitrogen, phosphorus, chlorine, iodine, florine, bromine, and other)
-            var udtElementNum = new udtElementNumType();
+            var udtElementNum = new ElementNum();
 
             // Determine number of C, Si, N, P, O, S, Cl, I, F, Br and H atoms
             foreach (var item in empiricalResultSymbols)
@@ -927,7 +927,7 @@ namespace MolecularWeightCalculator
         private double CorrectChargeEmpirical(
             FormulaFinderOptions searchOptions,
             double totalCharge,
-            udtElementNumType udtElementNum,
+            ElementNum udtElementNum,
             out bool chargeOK)
         {
             var correctedCharge = totalCharge;
@@ -1416,14 +1416,14 @@ namespace MolecularWeightCalculator
             return potentialElementCount;
         }
 
-        private udtCandidateElementTolerances GetDefaultCandidateElementTolerance()
+        private CandidateElementTolerances GetDefaultCandidateElementTolerance()
         {
             return GetDefaultCandidateElementTolerance(0d);
         }
 
-        private udtCandidateElementTolerances GetDefaultCandidateElementTolerance(int minimumCount, int maximumCount)
+        private CandidateElementTolerances GetDefaultCandidateElementTolerance(int minimumCount, int maximumCount)
         {
-            var udtElementTolerances = new udtCandidateElementTolerances()
+            var udtElementTolerances = new CandidateElementTolerances()
             {
                 MinimumCount = minimumCount,    // Only used with the Bounded search mode
                 MaximumCount = maximumCount,    // Only used with the Bounded search mode
@@ -1433,9 +1433,9 @@ namespace MolecularWeightCalculator
             return udtElementTolerances;
         }
 
-        private udtCandidateElementTolerances GetDefaultCandidateElementTolerance(double targetPercentComposition)
+        private CandidateElementTolerances GetDefaultCandidateElementTolerance(double targetPercentComposition)
         {
-            var udtElementTolerances = new udtCandidateElementTolerances()
+            var udtElementTolerances = new CandidateElementTolerances()
             {
                 MinimumCount = 0,               // Only used with the Bounded search mode
                 MaximumCount = 10,              // Only used with the Bounded search mode
@@ -1571,11 +1571,11 @@ namespace MolecularWeightCalculator
 
                 var sbEmpiricalFormula = new StringBuilder();
 
-                var lstRanges = new List<udtBoundedSearchRangeType>();
+                var lstRanges = new List<BoundedSearchRange>();
 
                 for (var elementIndex = 0; elementIndex < sortedElementStats.Count; elementIndex++)
                 {
-                    var udtBoundedSearchRange = new udtBoundedSearchRangeType()
+                    var udtBoundedSearchRange = new BoundedSearchRange()
                     {
                         Min = sortedElementStats[elementIndex].CountMinimum,
                         Max = sortedElementStats[elementIndex].CountMaximum
@@ -1585,7 +1585,7 @@ namespace MolecularWeightCalculator
 
                 while (lstRanges.Count < MAX_MATCHING_ELEMENTS)
                 {
-                    var udtBoundedSearchRange = new udtBoundedSearchRangeType()
+                    var udtBoundedSearchRange = new BoundedSearchRange()
                     {
                         Min = 0,
                         Max = 0

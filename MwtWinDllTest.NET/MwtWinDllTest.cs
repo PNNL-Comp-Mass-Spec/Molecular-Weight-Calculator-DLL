@@ -145,7 +145,7 @@ namespace MwtWinDllTest
             PopulateComboBoxes();
         }
 
-        private void MakeDataSet(int lngIonCount, Peptide.udtFragmentationSpectrumDataType[] udtFragSpectrum)
+        private void MakeDataSet(int lngIonCount, Peptide.FragmentationSpectrumData[] udtFragSpectrum)
         {
             // Create a DataSet.
             myDataSet = new DataSet("myDataSet");
@@ -408,7 +408,7 @@ namespace MwtWinDllTest
             objResults.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
             objResults.AppendText(capFlow.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.UnitOfTime.Seconds).ToString());
 
-            var udtFragSpectrumOptions = new Peptide.udtFragmentationSpectrumOptionsType();
+            var udtFragSpectrumOptions = new Peptide.FragmentationSpectrumOptions();
             udtFragSpectrumOptions.Initialize();
 
             var peptide = mMwtWin.Peptide;

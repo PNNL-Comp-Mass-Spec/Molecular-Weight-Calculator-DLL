@@ -110,7 +110,7 @@ namespace MolecularWeightCalculator
         #endregion
 
         #region "Data classes"
-        private class udtMoleMassQuantityType
+        private class MoleMassQuantity
         {
             public double Amount; // In Moles
             public double Volume; // In L
@@ -119,7 +119,7 @@ namespace MolecularWeightCalculator
             public double SampleDensity; // In g/mL
         }
 
-        private class udtMoleMassDilutionValuesType
+        private class MoleMassDilutionValues
         {
             public double InitialConcentration; // In Molar
             public double StockSolutionVolume; // In L
@@ -133,8 +133,8 @@ namespace MolecularWeightCalculator
         private const float POUNDS_PER_KG = 2.20462262f;
         private const float GALLONS_PER_L = 0.264172052f;
 
-        private readonly udtMoleMassQuantityType mQuantity = new udtMoleMassQuantityType();
-        private readonly udtMoleMassDilutionValuesType mDilutionValues = new udtMoleMassDilutionValuesType();
+        private readonly MoleMassQuantity mQuantity = new MoleMassQuantity();
+        private readonly MoleMassDilutionValues mDilutionValues = new MoleMassDilutionValues();
 
         private bool mAutoComputeDilution; // When true, automatically compute dilution results whenever any value changes
         private AutoComputeDilutionMode mAutoComputeDilutionMode; // The value to compute when mAutoComputeDilution is true

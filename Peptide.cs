@@ -89,7 +89,7 @@ namespace MolecularWeightCalculator
             ZIon = 4
         }
 
-        private class udtModificationSymbolType
+        private class ModificationSymbol
         {
             public string Symbol; // Symbol used for modification in formula; may be 1 or more characters; for example: + ++ * ** etc.
             public double ModificationMass; // Normally positive, but could be negative
@@ -97,7 +97,7 @@ namespace MolecularWeightCalculator
             public string Comment;
         }
 
-        private class udtResidueType
+        private class Residue
         {
             public string Symbol; // 3 letter symbol
             public double Mass; // The mass of the residue alone (excluding any modification)
@@ -123,12 +123,12 @@ namespace MolecularWeightCalculator
             }
         }
 
-        private class udtTerminusType
+        private class Terminus
         {
             public string Formula;
             public double Mass;
-            public udtResidueType PrecedingResidue = new udtResidueType(); // If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
-            public udtResidueType FollowingResidue = new udtResidueType(); // If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
+            public Residue PrecedingResidue = new Residue(); // If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
+            public Residue FollowingResidue = new Residue(); // If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
 
             // Note: "Initialize" must be called to initialize instances of this structure
             public void Initialize()
@@ -138,7 +138,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public class udtFragmentationSpectrumIntensitiesType
+        public class FragmentationSpectrumIntensities
         {
             public double[] IonType; // 0-based array
             public double BYIonShoulder; // If > 0 then shoulder ions will be created by B and Y ions
@@ -153,7 +153,7 @@ namespace MolecularWeightCalculator
 
         // Note: A ions can have ammonia and phosphate loss, but not water loss, so this is set to false by default
         // The graphical version of MwtWin does not allow this to be overridden, but a programmer could do so via a call to this Dll
-        public class udtIonTypeOptionsType
+        public class IonTypeOptions
         {
             public bool ShowIon;
             public bool NeutralLossWater;
@@ -161,10 +161,10 @@ namespace MolecularWeightCalculator
             public bool NeutralLossPhosphate;
         }
 
-        public class udtFragmentationSpectrumOptionsType
+        public class FragmentationSpectrumOptions
         {
-            public udtFragmentationSpectrumIntensitiesType IntensityOptions = new udtFragmentationSpectrumIntensitiesType();
-            public udtIonTypeOptionsType[] IonTypeOptions;
+            public FragmentationSpectrumIntensities IntensityOptions = new FragmentationSpectrumIntensities();
+            public IonTypeOptions[] IonTypeOptions;
             public bool DoubleChargeIonsShow;
             public float DoubleChargeIonsThreshold;
             public bool TripleChargeIonsShow;
@@ -174,11 +174,11 @@ namespace MolecularWeightCalculator
             public void Initialize()
             {
                 IntensityOptions.Initialize();
-                IonTypeOptions = new udtIonTypeOptionsType[5];
+                IonTypeOptions = new IonTypeOptions[5];
             }
         }
 
-        public class udtFragmentationSpectrumDataType
+        public class FragmentationSpectrumData
         {
             public double Mass;
             public double Intensity;
@@ -198,28 +198,28 @@ namespace MolecularWeightCalculator
 
         // Note: A peptide goes from N to C, eg. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
         // Residue 1 would be Gly, Residue 2 would be Leu, Residue 3 would be Tyr
-        private udtResidueType[] Residues; // 1-based array
+        private Residue[] Residues; // 1-based array
         private int ResidueCount;
         private int ResidueCountDimmed;
 
         // ModificationSymbols() holds a list of the potential modification symbols and the mass of each modification
         // Modification symbols can be 1 or more letters long
-        private udtModificationSymbolType[] ModificationSymbols; // 1-based array
+        private ModificationSymbol[] ModificationSymbols; // 1-based array
         private int ModificationSymbolCount;
         private int ModificationSymbolCountDimmed;
 
         // ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
-        private readonly udtTerminusType mNTerminus = new udtTerminusType(); // Formula on the N-Terminus
+        private readonly Terminus mNTerminus = new Terminus(); // Formula on the N-Terminus
 
         // ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
-        private readonly udtTerminusType mCTerminus = new udtTerminusType(); // Formula on the C-Terminus
+        private readonly Terminus mCTerminus = new Terminus(); // Formula on the C-Terminus
         private double mTotalMass;
 
         private string mWaterLossSymbol; // -H2O
         private string mAmmoniaLossSymbol; // -NH3
         private string mPhosphoLossSymbol; // -H3PO4
 
-        private udtFragmentationSpectrumOptionsType mFragSpectrumOptions = new udtFragmentationSpectrumOptionsType();
+        private FragmentationSpectrumOptions mFragSpectrumOptions = new FragmentationSpectrumOptions();
 
         private double dblHOHMass;
         private double dblNH3Mass;
@@ -237,7 +237,7 @@ namespace MolecularWeightCalculator
         private bool mDelayUpdateResidueMass;
         //
 
-        private void AppendDataToFragSpectrum(ref int lngIonCount, ref udtFragmentationSpectrumDataType[] FragSpectrumWork, float sngMass, float sngIntensity, string strIonSymbol, string strIonSymbolGeneric, int lngSourceResidue, string strSourceResidueSymbol3Letter, short intCharge, IonType eIonType, bool blnIsShoulderIon)
+        private void AppendDataToFragSpectrum(ref int lngIonCount, ref FragmentationSpectrumData[] FragSpectrumWork, float sngMass, float sngIntensity, string strIonSymbol, string strIonSymbolGeneric, int lngSourceResidue, string strSourceResidueSymbol3Letter, short intCharge, IonType eIonType, bool blnIsShoulderIon)
         {
             try
             {
@@ -418,13 +418,13 @@ namespace MolecularWeightCalculator
             return intIonCount;
         }
 
-        private udtResidueType FillResidueStructureUsingSymbol(string strSymbol, bool blnUse3LetterCode = true)
+        private Residue FillResidueStructureUsingSymbol(string strSymbol, bool blnUse3LetterCode = true)
         {
             // Returns a variable of type udtResidueType containing strSymbol as the residue symbol
             // If strSymbol is a valid amino acid type, then also updates udtResidue with the default information
 
             int lngAbbrevID;
-            var udtResidue = new udtResidueType();
+            var udtResidue = new Residue();
 
             // Initialize the UDTs
             udtResidue.Initialize();
@@ -475,7 +475,7 @@ namespace MolecularWeightCalculator
         /// <param name="udtFragSpectrum"></param>
         /// <returns>The number of ions in udtFragSpectrum()</returns>
         /// <remarks></remarks>
-        public int GetFragmentationMasses(out udtFragmentationSpectrumDataType[] udtFragSpectrum)
+        public int GetFragmentationMasses(out FragmentationSpectrumData[] udtFragSpectrum)
         {
             // Old: Func GetFragmentationMasses(lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
 
@@ -483,11 +483,11 @@ namespace MolecularWeightCalculator
 
             if (lstFragSpectraData.Count == 0)
             {
-                udtFragSpectrum = new udtFragmentationSpectrumDataType[1];
+                udtFragSpectrum = new FragmentationSpectrumData[1];
                 return 0;
             }
 
-            udtFragSpectrum = new udtFragmentationSpectrumDataType[lstFragSpectraData.Count + 1];
+            udtFragSpectrum = new FragmentationSpectrumData[lstFragSpectraData.Count + 1];
 
             for (var intIndex = 0; intIndex < lstFragSpectraData.Count; intIndex++)
                 udtFragSpectrum[intIndex] = lstFragSpectraData[intIndex];
@@ -495,7 +495,7 @@ namespace MolecularWeightCalculator
             return lstFragSpectraData.Count;
         }
 
-        public List<udtFragmentationSpectrumDataType> GetFragmentationMasses()
+        public List<FragmentationSpectrumData> GetFragmentationMasses()
         {
             const int MAX_CHARGE = 3;
 
@@ -504,7 +504,7 @@ namespace MolecularWeightCalculator
             if (ResidueCount == 0)
             {
                 // No residues
-                return new List<udtFragmentationSpectrumDataType>();
+                return new List<FragmentationSpectrumData>();
             }
 
             var blnShowCharge = new bool[4];
@@ -535,7 +535,7 @@ namespace MolecularWeightCalculator
 
             if (lngPredictedIonCount == 0)
                 lngPredictedIonCount = ResidueCount;
-            var FragSpectrumWork = new udtFragmentationSpectrumDataType[lngPredictedIonCount + 1];
+            var FragSpectrumWork = new FragmentationSpectrumData[lngPredictedIonCount + 1];
 
             // Need to update the residue masses in case the modifications have changed
             UpdateResidueMasses();
@@ -670,7 +670,7 @@ namespace MolecularWeightCalculator
             ShellSortFragSpectrum(ref FragSpectrumWork, ref PointerArray, 0, lngIonCount - 1);
 
             // Copy the data from FragSpectrumWork() to lstFragSpectraData
-            var lstFragSpectraData = new List<udtFragmentationSpectrumDataType>(lngIonCount);
+            var lstFragSpectraData = new List<FragmentationSpectrumData>(lngIonCount);
 
             for (var lngIndex = 0; lngIndex <= lngIonCount; lngIndex++)
                 lstFragSpectraData.Add(FragSpectrumWork[PointerArray[lngIndex]]);
@@ -685,7 +685,7 @@ namespace MolecularWeightCalculator
             return ResidueCount * ComputeMaxIonsPerResidue();
         }
 
-        public udtFragmentationSpectrumOptionsType GetFragmentationSpectrumOptions()
+        public FragmentationSpectrumOptions GetFragmentationSpectrumOptions()
         {
             try
             {
@@ -696,7 +696,7 @@ namespace MolecularWeightCalculator
                 ElementAndMassRoutines.GeneralErrorHandler("Peptide.GetFragmentationSpectrumOptions", ex);
             }
 
-            var udtDefaultOptions = new udtFragmentationSpectrumOptionsType();
+            var udtDefaultOptions = new FragmentationSpectrumOptions();
             udtDefaultOptions.Initialize();
 
             return udtDefaultOptions;
@@ -2092,7 +2092,7 @@ namespace MolecularWeightCalculator
                 }
                 else
                 {
-                    Residues = new udtResidueType[ResidueCountDimmed + 1];
+                    Residues = new Residue[ResidueCountDimmed + 1];
                     for (var intIndex = 0; intIndex <= ResidueCountDimmed; intIndex++)
                         Residues[intIndex].Initialize(true);
                 }
@@ -2110,7 +2110,7 @@ namespace MolecularWeightCalculator
                 }
                 else
                 {
-                    ModificationSymbols = new udtModificationSymbolType[ModificationSymbolCountDimmed + 1];
+                    ModificationSymbols = new ModificationSymbol[ModificationSymbolCountDimmed + 1];
                 }
             }
         }
@@ -2265,7 +2265,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public void SetFragmentationSpectrumOptions(udtFragmentationSpectrumOptionsType udtNewFragSpectrumOptions)
+        public void SetFragmentationSpectrumOptions(FragmentationSpectrumOptions udtNewFragSpectrumOptions)
         {
             mFragSpectrumOptions = udtNewFragSpectrumOptions;
         }
@@ -2872,7 +2872,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        private void ShellSortFragSpectrum(ref udtFragmentationSpectrumDataType[] FragSpectrumWork, ref int[] PointerArray, int lngLowIndex, int lngHighIndex)
+        private void ShellSortFragSpectrum(ref FragmentationSpectrumData[] FragSpectrumWork, ref int[] PointerArray, int lngLowIndex, int lngHighIndex)
         {
             // Sort the list using a shell sort
 

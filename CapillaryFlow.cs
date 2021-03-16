@@ -163,7 +163,7 @@ namespace MolecularWeightCalculator
 
         #region "Data classes"
 
-        private class udtCapillaryFlowParametersType
+        private class CapillaryFlowParameters
         {
             public CapillaryType CapillaryType;
 
@@ -210,7 +210,7 @@ namespace MolecularWeightCalculator
             public double InterparticlePorosity;
         }
 
-        private class udtMassRateParametersType
+        private class MassRateParameters
         {
             /// <summary>
             /// Units: Molar
@@ -243,7 +243,7 @@ namespace MolecularWeightCalculator
             public double MolesInjected;
         }
 
-        private class udtExtraColumnBroadeningParametersType
+        private class ExtraColumnBroadeningParameters
         {
             /// <summary>
             /// Units: cm/min
@@ -292,9 +292,9 @@ namespace MolecularWeightCalculator
         private const float CM_PER_INCH = 2.54f;
         private const double PI = 3.14159265359d;
 
-        private readonly udtCapillaryFlowParametersType mCapillaryFlowParameters = new udtCapillaryFlowParametersType();
-        private readonly udtMassRateParametersType mMassRateParameters = new udtMassRateParametersType();
-        private readonly udtExtraColumnBroadeningParametersType mExtraColumnBroadeningParameters = new udtExtraColumnBroadeningParametersType();
+        private readonly CapillaryFlowParameters mCapillaryFlowParameters = new CapillaryFlowParameters();
+        private readonly MassRateParameters mMassRateParameters = new MassRateParameters();
+        private readonly ExtraColumnBroadeningParameters mExtraColumnBroadeningParameters = new ExtraColumnBroadeningParameters();
 
         /// <summary>
         /// When true, automatically compute results whenever any value changes

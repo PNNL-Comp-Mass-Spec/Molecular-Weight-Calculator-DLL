@@ -783,7 +783,7 @@
         /// <summary>
         /// Stores isotope information in elementStats[]
         /// </summary>
-        internal static void MemoryLoadIsotopes(ref ElementAndMassTools.udtElementStatsType[] elementStats)
+        internal static void MemoryLoadIsotopes(ref ElementAndMassTools.ElementInfo[] elementStats)
         {
             // The dblIsoMasses[] array holds the mass of each isotope
             // starting with dblIsoMasses[x,1], dblIsoMasses[x, 2], etc.
