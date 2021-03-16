@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace MolecularWeightCalculator
@@ -256,7 +257,7 @@ namespace MolecularWeightCalculator
                 return false;
             }
 
-            var intCharLoc = (short)mStrFormattedFormula.ToLower().IndexOf("[x");
+            var intCharLoc = (short)mStrFormattedFormula.ToLower().IndexOf("[x", StringComparison.OrdinalIgnoreCase);
             if (intCharLoc >= 0)
             {
                 if (mStrFormattedFormula.Substring(intCharLoc + 1, 1) != "e")

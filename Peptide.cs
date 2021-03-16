@@ -1143,11 +1143,11 @@ namespace MolecularWeightCalculator
 
             if (lngProteinSearchStartLoc <= 0)
             {
-                intStartLoc = strProteinResidues.IndexOf(strPeptideResidues);
+                intStartLoc = strProteinResidues.IndexOf(strPeptideResidues, StringComparison.Ordinal);
             }
             else
             {
-                intStartLoc = strProteinResidues.Substring(lngProteinSearchStartLoc).IndexOf(strPeptideResidues);
+                intStartLoc = strProteinResidues.Substring(lngProteinSearchStartLoc).IndexOf(strPeptideResidues, StringComparison.Ordinal);
                 if (intStartLoc >= 0)
                 {
                     intStartLoc = intStartLoc + lngProteinSearchStartLoc - 1;
@@ -1435,7 +1435,7 @@ namespace MolecularWeightCalculator
             var lngMinCharLoc = -1;
             for (var intCharLocInSearchChars = 0; intCharLocInSearchChars < strSearchChars.Length; intCharLocInSearchChars++)
             {
-                var lngCharLoc = strSearchResidues.Substring(lngStartChar).IndexOf(strSearchChars.Substring(intCharLocInSearchChars, 1));
+                var lngCharLoc = strSearchResidues.Substring(lngStartChar).IndexOf(strSearchChars.Substring(intCharLocInSearchChars, 1), StringComparison.Ordinal);
 
                 if (lngCharLoc >= 0)
                 {

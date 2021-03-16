@@ -3578,7 +3578,7 @@ namespace MolecularWeightCalculator
 
                 // Look for the > symbol
                 // If found, this means take First Part minus the Second Part
-                var intMinusSymbolLoc = strFormula.IndexOf(">");
+                var intMinusSymbolLoc = strFormula.IndexOf(">", StringComparison.Ordinal);
                 if (intMinusSymbolLoc >= 0)
                 {
                     // Look for the first occurrence of >
@@ -4176,7 +4176,7 @@ namespace MolecularWeightCalculator
                                                     dblAdjacentNum = ParseNum(strFormula.Substring(intCharIndex + intSymbolLength), out intNumLength);
                                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
-                                                    if (strReplace.IndexOf(">") >= 0)
+                                                    if (strReplace.IndexOf(">", StringComparison.Ordinal) >= 0)
                                                     {
                                                         // The > symbol means take First Part minus the Second Part
                                                         // If we are parsing a sub formula inside parentheses, or if there are

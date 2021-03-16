@@ -767,7 +767,7 @@ namespace MwtWinDllTest
                     // Make sure lngResidueStart and lngResidueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
                     var strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, strProtein.Substring(lngResidueStart, lngResidueEnd - lngResidueStart + 1));
-                    Debug.Assert(strPeptideName.IndexOf("t" + lngIndex) >= 0, "");
+                    Debug.Assert(strPeptideName.IndexOf("t" + lngIndex, StringComparison.Ordinal) >= 0, "");
                 }
             }
 
