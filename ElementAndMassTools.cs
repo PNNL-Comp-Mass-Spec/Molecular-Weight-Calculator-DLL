@@ -545,25 +545,25 @@ namespace MolecularWeightCalculator
             short intIndex;
             var eSymbolMatchType = default(smtSymbolMatchTypeConstants);
 
-            // MasterSymbolsList() stores the element symbols, abbreviations, & amino acids in order of longest length to
+            // MasterSymbolsList[] stores the element symbols, abbreviations, & amino acids in order of longest length to
             // shortest length, non-alphabetized, for use in symbol matching when parsing a formula
 
-            // MasterSymbolsList(intIndex,0) contains the symbol to be matched
-            // MasterSymbolsList(intIndex,1) contains E for element, A for amino acid, or N for normal abbreviation, followed by
+            // MasterSymbolsList[intIndex,0] contains the symbol to be matched
+            // MasterSymbolsList[intIndex,1] contains E for element, A for amino acid, or N for normal abbreviation, followed by
             // the reference number in the master list
-            // For example for Carbon, MasterSymbolsList(intIndex,0) = "C" and MasterSymbolsList(intIndex,1) = "E6"
+            // For example for Carbon, MasterSymbolsList[intIndex,0] = "C" and MasterSymbolsList[intIndex,1] = "E6"
 
             // Look for match, stepping directly through MasterSymbolsList()
             // List is sorted by reverse length, so can do all at once
 
-            for (intIndex = 1; intIndex <= MasterSymbolsListCount; intIndex++)
+            for (intIndex = 0; intIndex < MasterSymbolsListCount; intIndex++)
             {
                 if (MasterSymbolsList[intIndex, 0].Length > 0)
                 {
-                    if ((Strings.Left(strFormulaExcerpt, MasterSymbolsList[intIndex, 0].Length) ?? "") == (MasterSymbolsList[intIndex, 0] ?? ""))
+                    if (strFormulaExcerpt.Substring(0, Math.Min(strFormulaExcerpt.Length, MasterSymbolsList[intIndex, 0].Length)) == (MasterSymbolsList[intIndex, 0] ?? ""))
                     {
                         // Matched a symbol
-                        switch (Strings.Left(MasterSymbolsList[intIndex, 1], 1).ToUpper())
+                        switch (MasterSymbolsList[intIndex, 1].Substring(0, 1).ToUpper())
                         {
                             case "E": // An element
                                 eSymbolMatchType = smtSymbolMatchTypeConstants.smtElement;
@@ -580,7 +580,7 @@ namespace MolecularWeightCalculator
 
                         if (eSymbolMatchType != smtSymbolMatchTypeConstants.smtUnknown)
                         {
-                            symbolReference = (short)Math.Round(Conversion.Val(Strings.Mid(MasterSymbolsList[intIndex, 1], 2)));
+                            symbolReference = (short)Math.Round(Conversion.Val(MasterSymbolsList[intIndex, 1].Substring(1)));
                         }
 
                         break;
@@ -782,19 +782,19 @@ namespace MolecularWeightCalculator
                 {
                     // Deuterium is present
                     var strModifiedFormula = "";
-                    short intIndex = 1;
+                    short intIndex = 0;
                     while (intIndex <= strFormula.Length)
                     {
                         var blnReplaceDeuterium = false;
-                        if (Strings.Mid(strFormula, intIndex, 1) == "D")
+                        if (strFormula.Substring(intIndex, 1) == "D")
                         {
-                            if (intIndex == strFormula.Length)
+                            if (intIndex == strFormula.Length - 1)
                             {
                                 blnReplaceDeuterium = true;
                             }
                             else
                             {
-                                var intAsciiOfNext = (int)Strings.Mid(strFormula, intIndex + 1, 1)[0];
+                                var intAsciiOfNext = (int)strFormula.Substring(intIndex + 1, 1)[0];
                                 if (intAsciiOfNext < 97 || intAsciiOfNext > 122)
                                 {
                                     blnReplaceDeuterium = true;
@@ -803,15 +803,15 @@ namespace MolecularWeightCalculator
 
                             if (blnReplaceDeuterium)
                             {
-                                if (intIndex > 1)
+                                if (intIndex > 0)
                                 {
-                                    strModifiedFormula = Strings.Left(strFormula, intIndex - 1);
+                                    strModifiedFormula = strFormula.Substring(0, Math.Min(strFormula.Length, intIndex - 1));
                                 }
 
                                 strModifiedFormula += strDeuteriumEquiv;
-                                if (intIndex < strFormula.Length)
+                                if (intIndex < strFormula.Length - 1)
                                 {
-                                    strModifiedFormula += Strings.Mid(strFormula, intIndex + 1);
+                                    strModifiedFormula += strFormula.Substring(intIndex + 1);
                                 }
 
                                 strFormula = strModifiedFormula;
@@ -819,7 +819,7 @@ namespace MolecularWeightCalculator
                             }
                         }
 
-                        intIndex = (short)(intIndex + 1);
+                        intIndex++;
                     }
 
                     // Re-Parse Formula since D's are now ^2.014H
@@ -2845,7 +2845,7 @@ namespace MolecularWeightCalculator
             var blnAllLetters = true;
             for (intIndex = 0; intIndex < strTest.Length; intIndex++)
             {
-                if (!char.IsLetter(Strings.Mid(strTest, intIndex, 1)[0]))
+                if (!char.IsLetter(strTest[intIndex]))
                 {
                     blnAllLetters = false;
                     break;
@@ -3579,19 +3579,19 @@ namespace MolecularWeightCalculator
 
                 // Look for the > symbol
                 // If found, this means take First Part minus the Second Part
-                var intMinusSymbolLoc = Strings.InStr(strFormula, ">");
-                if (intMinusSymbolLoc > 0)
+                var intMinusSymbolLoc = strFormula.IndexOf(">");
+                if (intMinusSymbolLoc >= 0)
                 {
                     // Look for the first occurrence of >
-                    intCharIndex = 1;
+                    intCharIndex = 0;
                     var blnMatchFound = false;
                     do
                     {
-                        if (Strings.Mid(strFormula, intCharIndex, 1) == ">")
+                        if (strFormula.Substring(intCharIndex, 1) == ">")
                         {
                             blnMatchFound = true;
-                            var strLeftHalf = Strings.Left(strFormula, intCharIndex - 1);
-                            var strRightHalf = Strings.Mid(strFormula, intCharIndex + 1);
+                            var strLeftHalf = strFormula.Substring(0, Math.Min(strFormula.Length, intCharIndex - 1));
+                            var strRightHalf = strFormula.Substring(intCharIndex + 1);
 
                             // Parse the first half
                             strNewFormula = ParseFormulaRecursive(strLeftHalf, ref udtComputationStats, ref udtAbbrevSymbolStack, blnExpandAbbreviations, ref dblStdDevSum, ref CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior, dblParenthMultiplier, dblDashMultiplier, dblBracketMultiplier, intParenthLevelPrevious);
@@ -3604,9 +3604,9 @@ namespace MolecularWeightCalculator
                             break;
                         }
 
-                        intCharIndex += 1;
+                        intCharIndex++;
                     }
-                    while (intCharIndex <= strFormula.Length);
+                    while (intCharIndex < strFormula.Length);
 
                     if (blnMatchFound)
                     {
@@ -3656,10 +3656,10 @@ namespace MolecularWeightCalculator
                     intCharIndex = 0;
                     do
                     {
-                        strChar1 = Strings.Mid(strFormula, intCharIndex, 1);
-                        var strChar2 = Strings.Mid(strFormula, intCharIndex + 1, 1);
-                        var strChar3 = Strings.Mid(strFormula, intCharIndex + 2, 1);
-                        var strCharRemain = Strings.Mid(strFormula, intCharIndex + 3);
+                        strChar1 = strFormula.Substring(intCharIndex, 1);
+                        var strChar2 = strFormula.Substring(intCharIndex + 1, 1);
+                        var strChar3 = strFormula.Substring(intCharIndex + 2, 1);
+                        var strCharRemain = strFormula.Substring(intCharIndex + 3);
                         if (gComputationOptions.CaseConversion != ccCaseConversionConstants.ccExactCase)
                             strChar1 = strChar1.ToUpper();
 
@@ -3706,14 +3706,14 @@ namespace MolecularWeightCalculator
                                     intParenthLevel = 1;
                                     for (var intParenthClose = intCharIndex + 1; intParenthClose < strFormula.Length; intParenthClose++)
                                     {
-                                        switch (Strings.Mid(strFormula, intParenthClose, 1) ?? "")
+                                        switch (strFormula.Substring(intParenthClose, 1) ?? "")
                                         {
                                             case "(":
                                             case "{":
                                             case "[":
                                                 // Another opening parentheses
                                                 // increment parenthLevel
-                                                if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "[")
+                                                if (!gComputationOptions.BracketsAsParentheses && strFormula.Substring(intParenthClose, 1) == "[")
                                                 {
                                                     // Do not count the bracket
                                                 }
@@ -3727,7 +3727,7 @@ namespace MolecularWeightCalculator
                                             case ")":
                                             case "}":
                                             case "]":
-                                                if (!gComputationOptions.BracketsAsParentheses && Strings.Mid(strFormula, intParenthClose, 1) == "]")
+                                                if (!gComputationOptions.BracketsAsParentheses && strFormula.Substring(intParenthClose, 1) == "]")
                                                 {
                                                     // Do not count the bracket
                                                 }
@@ -3736,7 +3736,7 @@ namespace MolecularWeightCalculator
                                                     intParenthLevel -= 1;
                                                     if (intParenthLevel == 0)
                                                     {
-                                                        dblAdjacentNum = ParseNum(Strings.Mid(strFormula, intParenthClose + 1), out intNumLength);
+                                                        dblAdjacentNum = ParseNum(strFormula.Substring(intParenthClose + 1), out intNumLength);
                                                         CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                                         if (dblAdjacentNum < 0d)
@@ -3749,7 +3749,7 @@ namespace MolecularWeightCalculator
                                                             intAddonCount = intNumLength;
                                                         }
 
-                                                        var strSubFormula = Strings.Mid(strFormula, intCharIndex + 1, intParenthClose - (intCharIndex + 1));
+                                                        var strSubFormula = strFormula.Substring(intCharIndex + 1, intParenthClose - (intCharIndex + 1));
 
                                                         // Note, must pass dblParenthMultiplier * dblAdjacentNum to preserve previous parentheses stuff
                                                         strNewFormula = ParseFormulaRecursive(strSubFormula, ref udtComputationStats, ref udtAbbrevSymbolStack, blnExpandAbbreviations, ref dblStdDevSum, ref CarbonOrSiliconReturnCount, dblValueForX, intCharCountPrior + intCharIndex, dblParenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, (short)(intParenthLevelPrevious + 1));
@@ -3758,7 +3758,7 @@ namespace MolecularWeightCalculator
                                                         var intExpandAbbrevAdd = strNewFormula.Length - strSubFormula.Length;
 
                                                         // Must replace the part of the formula parsed with the strNewFormula part, in case the formula was expanded or elements were capitalized
-                                                        strFormula = Strings.Left(strFormula, intCharIndex) + strNewFormula + Strings.Mid(strFormula, intParenthClose);
+                                                        strFormula = strFormula.Substring(0, intCharIndex) + strNewFormula + strFormula.Substring(intParenthClose);
                                                         intCharIndex = intParenthClose + intAddonCount + intExpandAbbrevAdd;
 
                                                         // Correct charge
@@ -3831,7 +3831,7 @@ namespace MolecularWeightCalculator
                             case var @case when 48 <= @case && @case <= 57: // . or , and Numbers 0 to 9
                                 // They should only be encountered as a leading coefficient
                                 // Should have been bypassed when the coefficient was processed
-                                if (intCharIndex == 1)
+                                if (intCharIndex == 0)
                                 {
                                     // Formula starts with a number -- multiply section by number (until next dash)
                                     dblAdjacentNum = ParseNum(strFormulaExcerpt, out intNumLength);
@@ -3851,7 +3851,7 @@ namespace MolecularWeightCalculator
                                         dblDashMultiplier = dblDashMultiplierPrior;
                                     }
                                 }
-                                else if (NumberConverter.CDblSafe(Strings.Mid(strFormula, intCharIndex - 1, 1)) > 0d)
+                                else if (NumberConverter.CDblSafe(strFormula.Substring(intCharIndex - 1, 1)) > 0d)
                                 {
                                     // Number too large
                                     ErrorParams.ErrorID = 7;
@@ -3966,7 +3966,7 @@ namespace MolecularWeightCalculator
                                             intSymbolLength = 1;
                                         }
                                         // Look for number after element
-                                        dblAdjacentNum = ParseNum(Strings.Mid(strFormula, intCharIndex + intSymbolLength), out intNumLength);
+                                        dblAdjacentNum = ParseNum(strFormula.Substring(intCharIndex + intSymbolLength), out intNumLength);
                                         CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                         if (dblAdjacentNum < 0d)
@@ -4085,7 +4085,7 @@ namespace MolecularWeightCalculator
 
                                             if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccConvertCaseUp)
                                             {
-                                                strFormula = Strings.Left(strFormula, intCharIndex - 1) + Strings.Mid(strFormula, intCharIndex, 1).ToUpper() + Strings.Mid(strFormula, intCharIndex + 1);
+                                                strFormula = strFormula.Substring(0, intCharIndex - 1) + strFormula.Substring(intCharIndex, 1).ToUpper() + strFormula.Substring(intCharIndex + 1);
                                             }
 
                                             intCharIndex += intAddonCount;
@@ -4132,7 +4132,7 @@ namespace MolecularWeightCalculator
                                             intSymbolLength = AbbrevStats[SymbolReference].Symbol.Length;
 
                                             // Look for number after abbrev/amino
-                                            dblAdjacentNum = ParseNum(Strings.Mid(strFormula, intCharIndex + intSymbolLength), out intNumLength);
+                                            dblAdjacentNum = ParseNum(strFormula.Substring(intCharIndex + intSymbolLength), out intNumLength);
                                             CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                             if (dblAdjacentNum < 0d)
@@ -4174,7 +4174,7 @@ namespace MolecularWeightCalculator
                                                     var strReplace = AbbrevStats[SymbolReference].Formula;
 
                                                     // Look for a number after the abbreviation or amino acid
-                                                    dblAdjacentNum = ParseNum(Strings.Mid(strFormula, intCharIndex + intSymbolLength), out intNumLength);
+                                                    dblAdjacentNum = ParseNum(strFormula.Substring(intCharIndex + intSymbolLength), out intNumLength);
                                                     CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
 
                                                     if (strReplace.IndexOf(">") >= 0)
@@ -4198,7 +4198,7 @@ namespace MolecularWeightCalculator
                                                     if (dblAdjacentNum < 0d)
                                                     {
                                                         // No number after abbreviation
-                                                        strFormula = Strings.Left(strFormula, intCharIndex - 1) + strReplace + Strings.Mid(strFormula, intCharIndex + intSymbolLength);
+                                                        strFormula = strFormula.Substring(0, intCharIndex - 1) + strReplace + strFormula.Substring(intCharIndex + intSymbolLength);
                                                         intSymbolLength = strReplace.Length;
                                                         dblAdjacentNum = 1d;
                                                         intAddonCount = intSymbolLength - 1;
@@ -4208,7 +4208,7 @@ namespace MolecularWeightCalculator
                                                         // Number after abbreviation -- must put abbreviation in parentheses
                                                         // Parentheses can handle integer or decimal number
                                                         strReplace = "(" + strReplace + ")";
-                                                        strFormula = Strings.Left(strFormula, intCharIndex - 1) + strReplace + Strings.Mid(strFormula, intCharIndex + intSymbolLength);
+                                                        strFormula = strFormula.Substring(0, intCharIndex - 1) + strReplace + strFormula.Substring(intCharIndex + intSymbolLength);
                                                         intSymbolLength = strReplace.Length;
                                                         intAddonCount = intNumLength + intSymbolLength - 1;
                                                     }
@@ -4216,7 +4216,7 @@ namespace MolecularWeightCalculator
 
                                                 if (gComputationOptions.CaseConversion == ccCaseConversionConstants.ccConvertCaseUp)
                                                 {
-                                                    strFormula = Strings.Left(strFormula, intCharIndex - 1) + Strings.Mid(strFormula, intCharIndex, 1).ToUpper() + Strings.Mid(strFormula, intCharIndex + 1);
+                                                    strFormula = strFormula.Substring(0, intCharIndex - 1) + strFormula.Substring(intCharIndex, 1).ToUpper() + strFormula.Substring(intCharIndex + 1);
                                                 }
                                             }
                                         }
@@ -4254,7 +4254,7 @@ namespace MolecularWeightCalculator
                                 else
                                 {
                                     int intCharAsc;
-                                    var strCharVal = Strings.Mid(strFormula, intCharIndex + 1 + intNumLength, 1);
+                                    var strCharVal = strFormula.Substring(intCharIndex + 1 + intNumLength, 1);
                                     if (strCharVal.Length > 0)
                                         intCharAsc = strCharVal[0];
                                     else
@@ -4279,7 +4279,7 @@ namespace MolecularWeightCalculator
                                         // Adjacent number is < 0 or not present
                                         // Record error
                                         blnCaretPresent = false;
-                                        if (Strings.Mid(strFormula, intCharIndex + 1, 1) == "-")
+                                        if (strFormula.Substring(intCharIndex + 1, 1) == "-")
                                         {
                                             // Negative number following caret
                                             ErrorParams.ErrorID = 23;
@@ -4301,7 +4301,7 @@ namespace MolecularWeightCalculator
                                 break;
                         }
 
-                        if (intCharIndex == strFormula.Length)
+                        if (intCharIndex == strFormula.Length - 1)
                         {
                             // Need to make sure compounds are present after a leading coefficient after a dash
                             if (dblDashMultiplier > 0d)
@@ -4324,9 +4324,9 @@ namespace MolecularWeightCalculator
                             intCharIndex = strFormula.Length;
                         }
 
-                        intCharIndex += 1;
+                        intCharIndex ++;
                     }
-                    while (intCharIndex <= strFormula.Length);
+                    while (intCharIndex < strFormula.Length);
                 }
 
                 if (blnInsideBrackets)
@@ -4405,7 +4405,7 @@ namespace MolecularWeightCalculator
 
             if (string.IsNullOrEmpty(strWork))
                 strWork = EMPTY_STRING_CHAR.ToString();
-            if ((Strings.Left(strWork, 1)[0] < 48 || Strings.Left(strWork, 1)[0] > 57) && Strings.Left(strWork, 1) != gComputationOptions.DecimalSeparator.ToString() && !(Strings.Left(strWork, 1) == "-" && blnAllowNegative == true))
+            if ((strWork[0] < 48 || strWork[0] > 57) && strWork.Substring(0, 1) != gComputationOptions.DecimalSeparator.ToString() && !(strWork.Substring(0, 1) == "-" && blnAllowNegative == true))
             {
                 intNumLength = 0; // No number found
                 return -1;
@@ -4414,7 +4414,7 @@ namespace MolecularWeightCalculator
             // Start of string is a number or a decimal point, or (if allowed) a negative sign
             for (var intIndex = 0; intIndex < strWork.Length; intIndex++)
             {
-                var strWorking = Strings.Mid(strWork, intIndex, 1);
+                var strWorking = strWork.Substring(intIndex, 1);
                 if (Information.IsNumeric(strWorking) || strWorking == gComputationOptions.DecimalSeparator.ToString() || blnAllowNegative == true && strWorking == "-")
                 {
                     strFoundNum += strWorking;
@@ -4437,7 +4437,7 @@ namespace MolecularWeightCalculator
                 var intDecPtCount = 0;
                 for (var intIndex = 0; intIndex < strFoundNum.Length; intIndex++)
                 {
-                    if (Strings.Mid(strFoundNum, intIndex, 1) == gComputationOptions.DecimalSeparator.ToString())
+                    if (strFoundNum.Substring(intIndex, 1) == gComputationOptions.DecimalSeparator.ToString())
                         intDecPtCount = (short)(intDecPtCount + 1);
                 }
 
@@ -4516,12 +4516,12 @@ namespace MolecularWeightCalculator
             var strWorkCharPrev = "";
             for (var intCharIndex = 0; intCharIndex < strWorkText.Length; intCharIndex++)
             {
-                var strWorkChar = Strings.Mid(strWorkText, intCharIndex, 1);
+                var strWorkChar = strWorkText.Substring(intCharIndex, 1);
                 if (strWorkChar == "%" && blnHighlightCharFollowingPercentSign)
                 {
                     // An error was found and marked by a % sign
                     // Highlight the character at the % sign, and remove the % sign
-                    if (intCharIndex == strWorkText.Length)
+                    if (intCharIndex == strWorkText.Length - 1)
                     {
                         // At end of line
                         int errorID;
@@ -4538,17 +4538,17 @@ namespace MolecularWeightCalculator
                         {
                             case var @case when 2 <= @case && @case <= 4:
                                 // Error involves a parentheses, find last opening parenthesis, (, or opening curly bracket, {
-                                for (var intCharIndex2 = strRTF.Length; intCharIndex2 >= 2; intCharIndex2 -= 1)
+                                for (var intCharIndex2 = strRTF.Length - 1; intCharIndex2 >= 2; intCharIndex2 -= 1)
                                 {
-                                    if (Strings.Mid(strRTF, intCharIndex2, 1) == "(")
+                                    if (strRTF.Substring(intCharIndex2, 1) == "(")
                                     {
-                                        strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 (}" + Strings.Mid(strRTF, intCharIndex2 + 1);
+                                        strRTF = strRTF.Substring(0, intCharIndex2 - 1) + @"{\cf1 (}" + strRTF.Substring(intCharIndex2 + 1);
                                         break;
                                     }
 
-                                    if (Strings.Mid(strRTF, intCharIndex2, 1) == "{")
+                                    if (strRTF.Substring(intCharIndex2, 1) == "{")
                                     {
-                                        strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 \{}" + Strings.Mid(strRTF, intCharIndex2 + 1);
+                                        strRTF = strRTF.Substring(0, intCharIndex2 - 1) + @"{\cf1 \{}" + strRTF.Substring(intCharIndex2 + 1);
                                         break;
                                     }
                                 }
@@ -4558,11 +4558,11 @@ namespace MolecularWeightCalculator
                             case 13:
                             case 15:
                                 // Error involves a bracket, find last opening bracket, [
-                                for (var intCharIndex2 = strRTF.Length; intCharIndex2 >= 2; intCharIndex2 -= 1)
+                                for (var intCharIndex2 = strRTF.Length - 1; intCharIndex2 >= 2; intCharIndex2 -= 1)
                                 {
-                                    if (Strings.Mid(strRTF, intCharIndex2, 1) == "[")
+                                    if (strRTF.Substring(intCharIndex2, 1) == "[")
                                     {
-                                        strRTF = Strings.Left(strRTF, intCharIndex2 - 1) + @"{\cf1 [}" + Strings.Mid(strRTF, intCharIndex2 + 1);
+                                        strRTF = strRTF.Substring(0, intCharIndex2 - 1) + @"{\cf1 [}" + strRTF.Substring(intCharIndex2 + 1);
                                         break;
                                     }
                                 }
@@ -4577,12 +4577,12 @@ namespace MolecularWeightCalculator
                     else
                     {
                         // Highlight next character and skip % sign
-                        strWorkChar = Strings.Mid(strWorkText, intCharIndex + 1, 1);
+                        strWorkChar = strWorkText.Substring(intCharIndex + 1, 1);
                         // Handle curly brackets
                         if (strWorkChar == "{" || strWorkChar == "}")
                             strWorkChar = @"\" + strWorkChar;
                         strRTF = strRTF + @"{\cf1 " + strWorkChar + "}";
-                        intCharIndex += 1;
+                        intCharIndex++;
                     }
                 }
                 else if (strWorkChar == "^")
@@ -4613,7 +4613,7 @@ namespace MolecularWeightCalculator
                         // at beginning of line, so leave it alone. Probably out of place
                         strRTF += strWorkChar;
                     }
-                    else if (!calculatorMode && (char.IsLetter(strWorkCharPrev[0]) || strWorkCharPrev == ")" || strWorkCharPrev == @"\}" || strWorkCharPrev == "+" || strWorkCharPrev == "_" || Strings.Left(Strings.Right(strRTF, 6), 3) == "sub"))
+                    else if (!calculatorMode && (char.IsLetter(strWorkCharPrev[0]) || strWorkCharPrev == ")" || strWorkCharPrev == @"\}" || strWorkCharPrev == "+" || strWorkCharPrev == "_" || strRTF.Substring(strRTF.Length - 6, 3) == "sub"))
                     {
                         // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
                         // But, don't use subscripts in calculator
@@ -4624,7 +4624,7 @@ namespace MolecularWeightCalculator
                         // only subscript after closing bracket, ], if brackets are being treated as parentheses
                         strRTF = strRTF + @"{\sub " + strWorkChar + "}";
                     }
-                    else if (Strings.Left(Strings.Right(strRTF, 8), 5) == "super")
+                    else if (strRTF.Substring(strRTF.Length - 8, 5) == "super")
                     {
                         // if previous character was superscripted, then superscript this number too
                         strRTF = strRTF + @"{\super " + strWorkChar + "}";
@@ -4852,9 +4852,9 @@ namespace MolecularWeightCalculator
                     // Next round
                     // Now multiply to get back the rounded dblMass
                     var strWork = dblStdDev.ToString("0E+000");
-                    var strStdDevShort = Strings.Left(strWork, 1);
+                    var strStdDevShort = strWork.Substring(0, 1);
 
-                    var intExponentValue = NumberConverter.CShortSafe(Strings.Right(strWork, 4));
+                    var intExponentValue = NumberConverter.CShortSafe(strWork.Substring(strWork.Length - 4));
                     var dblWork = dblMass / Math.Pow(10d, intExponentValue);
                     dblWork = Math.Round(dblWork, 0);
                     dblRoundedMain = dblWork * Math.Pow(10d, intExponentValue);
@@ -4911,7 +4911,7 @@ namespace MolecularWeightCalculator
             // Round to nearest 1, 2, or 5 (or multiple of 10 thereof)
             // First, find the exponent of dblThisNum
             var strWork = dblThisNum.ToString("0E+000");
-            var intExponentValue = NumberConverter.CIntSafe(Strings.Right(strWork, 4));
+            var intExponentValue = NumberConverter.CIntSafe(strWork.Substring(strWork.Length - 4));
             var dblWork = dblThisNum / Math.Pow(10d, intExponentValue);
             dblWork = NumberConverter.CIntSafe(dblWork);
 
@@ -4940,7 +4940,7 @@ namespace MolecularWeightCalculator
         {
             // Find the exponent of MultipleValue
             var strWork = MultipleValue.ToString("0E+000");
-            var intExponentValue = NumberConverter.CIntSafe(Strings.Right(strWork, 4));
+            var intExponentValue = NumberConverter.CIntSafe(strWork.Substring(strWork.Length - 4));
 
             var intLoopCount = 0;
             while ((dblValueToRound / MultipleValue).ToString() != Math.Round(dblValueToRound / MultipleValue, 0).ToString())
@@ -5125,7 +5125,7 @@ namespace MolecularWeightCalculator
                 if (strFormula.Length > 0)
                 {
                     // Convert symbol to proper case mode
-                    strSymbol = Strings.Left(strSymbol, 1).ToUpper() + Strings.Mid(strSymbol, 2).ToLower();
+                    strSymbol = strSymbol.Substring(0, 1).ToUpper() + strSymbol.Substring(1).ToLower();
 
                     // If intAbbrevID is < 1 or larger than AbbrevAllCount, then define it
                     if (intAbbrevID < 1 || intAbbrevID > AbbrevAllCount + 1)

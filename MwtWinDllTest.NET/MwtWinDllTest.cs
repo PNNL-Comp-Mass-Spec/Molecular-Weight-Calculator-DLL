@@ -756,7 +756,7 @@ namespace MwtWinDllTest
 
             objResults.AppendText(string.Empty);
             objResults.AppendText("Testing GetTrypticPeptideByFragmentNumber function");
-            for (lngIndex = 1; lngIndex <= 43; lngIndex++)
+            for (lngIndex = 0; lngIndex < 43; lngIndex++)
             {
                 strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out var lngResidueStart, out var lngResidueEnd);
                 //strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(lngIndex))
@@ -767,8 +767,8 @@ namespace MwtWinDllTest
                 {
                     // Make sure lngResidueStart and lngResidueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
-                    var strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, Strings.Mid(strProtein, lngResidueStart, lngResidueEnd - lngResidueStart + 1));
-                    Debug.Assert(Strings.InStr(strPeptideName, "t" + lngIndex) > 0, "");
+                    var strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, strProtein.Substring(lngResidueStart, lngResidueEnd - lngResidueStart + 1));
+                    Debug.Assert(strPeptideName.IndexOf("t" + lngIndex) >= 0, "");
                 }
             }
 
@@ -794,9 +794,9 @@ namespace MwtWinDllTest
 
                 strProtein = "";
                 float lngResidueRand;
-                for (lngResidueRand = 1f; lngResidueRand <= lngProteinLengthRand; lngResidueRand++)
+                for (lngResidueRand = 0f; lngResidueRand < lngProteinLengthRand; lngResidueRand++)
                 {
-                    var strNewResidue = Strings.Mid(POSSIBLE_RESIDUES, (int)Math.Round(POSSIBLE_RESIDUES.Length * VBMath.Rnd() + 1f), 1);
+                    var strNewResidue = POSSIBLE_RESIDUES.Substring((int)Math.Round(POSSIBLE_RESIDUES.Length * VBMath.Rnd()), 1);
                     strProtein += strNewResidue;
                 }
 
@@ -820,7 +820,7 @@ namespace MwtWinDllTest
                             break;
                         }
 
-                        var strPeptideResidues = Strings.Mid(strProtein, lngResidueStart, lngResidueEnd);
+                        var strPeptideResidues = strProtein.Substring(lngResidueStart, lngResidueEnd);
                         strPeptideNameMwtWin[lngMwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(strProtein, strPeptideResidues, out _, out _, true);
 
                         lngMwtWinResultCount += 1;
