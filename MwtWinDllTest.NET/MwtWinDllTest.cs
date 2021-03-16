@@ -59,8 +59,7 @@ namespace MwtWinDllTest
             else if (intDecimalPlaces >= 0)
             {
                 TextCol.Format = "0.";
-                int i;
-                for (i = 0; i < intDecimalPlaces; i++)
+                for (var i = 0; i < intDecimalPlaces; i++)
                     TextCol.Format += "0";
             }
 
@@ -166,9 +165,7 @@ namespace MwtWinDllTest
             myDataSet.Tables.Add(tDataTable);
 
             // Append rows to the table.
-            int lngIndex;
-
-            for (lngIndex = 0; lngIndex < lngIonCount; lngIndex++)
+            for (var lngIndex = 0; lngIndex < lngIonCount; lngIndex++)
             {
                 // Populates the table.
                 var newRow = tDataTable.NewRow();
@@ -238,7 +235,6 @@ namespace MwtWinDllTest
         public void TestAccessFunctions()
         {
             int intResult;
-            int lngIndex;
             double dblMass;
 
             var objResults = new frmTextbrowser();
@@ -297,7 +293,7 @@ namespace MwtWinDllTest
 
             // Test Message Statements access
             lngItemCount = mMwtWin.GetMessageStatementCount();
-            for (lngIndex = 1; lngIndex <= lngItemCount; lngIndex++)
+            for (var lngIndex = 1; lngIndex <= lngItemCount; lngIndex++)
             {
                 var strStatement = mMwtWin.GetMessageStatement(lngIndex);
 
@@ -718,9 +714,6 @@ namespace MwtWinDllTest
             const short MAX_PROTEIN_LENGTH = 200;
             const string POSSIBLE_RESIDUES = "ACDEFGHIKLMNPQRSTVWY";
 
-            int lngMultipleIteration;
-            int lngIndex;
-
             string strPeptideFragMwtWin;
             const int lngMatchCount = default(int);
 
@@ -759,10 +752,10 @@ namespace MwtWinDllTest
 
             objResults.AppendText(string.Empty);
             objResults.AppendText("Testing GetTrypticPeptideByFragmentNumber function");
-            for (lngIndex = 0; lngIndex < 43; lngIndex++)
+            for (var index = 0; index < 43; index++)
             {
-                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out var lngResidueStart, out var lngResidueEnd);
-                //strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(lngIndex))
+                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)index, out var lngResidueStart, out var lngResidueEnd);
+                //strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(index))
                 //
                 //Debug.Assert strPeptideFragMwtWin = strPeptideFragIcr2ls
 
@@ -771,7 +764,7 @@ namespace MwtWinDllTest
                     // Make sure lngResidueStart and lngResidueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
                     var strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, strProtein.Substring(lngResidueStart, lngResidueEnd - lngResidueStart + 1));
-                    Debug.Assert(strPeptideName.IndexOf("t" + lngIndex, StringComparison.Ordinal) >= 0, "");
+                    Debug.Assert(strPeptideName.IndexOf("t" + index, StringComparison.Ordinal) >= 0, "");
                 }
             }
 
@@ -779,7 +772,7 @@ namespace MwtWinDllTest
             objResults.AppendText(string.Empty);
 
             objResults.AppendText("Test tryptic digest of: " + strProtein);
-            lngIndex = 1;
+            var lngIndex = 1;
             do
             {
                 strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out _, out _);
@@ -790,7 +783,7 @@ namespace MwtWinDllTest
 
             objResults.AppendText(string.Empty);
             var random = new Random();
-            for (lngMultipleIteration = 1; lngMultipleIteration <= ITERATIONS_TO_RUN; lngMultipleIteration++)
+            for (var lngMultipleIteration = 1; lngMultipleIteration <= ITERATIONS_TO_RUN; lngMultipleIteration++)
             {
                 // Generate random protein
                 var lngProteinLengthRand = random.Next(MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) + MIN_PROTEIN_LENGTH;

@@ -169,7 +169,7 @@ namespace MolecularWeightCalculator
             {
                 ElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
 
-                for (short elementId = 1; elementId <= ElementAndMassTools.ELEMENT_COUNT; elementId++)
+                for (var elementId = 1; elementId <= ElementAndMassTools.ELEMENT_COUNT; elementId++)
                 {
                     if (mComputationStats.PercentCompositions[elementId].PercentComposition > 0d)
                     {
@@ -177,7 +177,7 @@ namespace MolecularWeightCalculator
                             mComputationStats.PercentCompositions[elementId].PercentComposition,
                             mComputationStats.PercentCompositions[elementId].StdDeviation);
 
-                        var elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId);
+                        var elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal((short)elementId);
 
                         if (!percentCompositionByElement.ContainsKey(elementSymbol))
                         {

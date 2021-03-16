@@ -541,7 +541,6 @@ namespace MolecularWeightCalculator
         /// </returns>
         private smtSymbolMatchTypeConstants CheckElemAndAbbrev(string strFormulaExcerpt, ref short symbolReference)
         {
-            short intIndex;
             var eSymbolMatchType = default(smtSymbolMatchTypeConstants);
 
             // MasterSymbolsList[] stores the element symbols, abbreviations, & amino acids in order of longest length to
@@ -555,7 +554,7 @@ namespace MolecularWeightCalculator
             // Look for match, stepping directly through MasterSymbolsList[]
             // List is sorted by reverse length, so can do all at once
 
-            for (intIndex = 0; intIndex < MasterSymbolsListCount; intIndex++)
+            for (var intIndex = 0; intIndex < MasterSymbolsListCount; intIndex++)
             {
                 if (MasterSymbolsList[intIndex, 0].Length > 0)
                 {
@@ -752,7 +751,6 @@ namespace MolecularWeightCalculator
                 int PredictedCombos;
                 int AtomCount;
                 short IsotopeCount;
-                int rowIndex;
                 // Change strHeaderMassToCharge to "Neutral Mass" if intChargeState = 0 and strHeaderMassToCharge is "Mass/Charge"
                 if (intChargeState == 0)
                 {
@@ -1208,15 +1206,15 @@ namespace MolecularWeightCalculator
                 for (var intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
                 {
                     var stats = IsoStats[intElementIndex];
-                    rowIndex = stats.ResultsCount;
-                    while (stats.MassAbundances[rowIndex] < MIN_ABUNDANCE_TO_KEEP)
+                    var index = stats.ResultsCount;
+                    while (stats.MassAbundances[index] < MIN_ABUNDANCE_TO_KEEP)
                     {
-                        rowIndex -= 1;
-                        if (rowIndex == 1)
+                        index -= 1;
+                        if (index == 1)
                             break;
                     }
 
-                    stats.ResultsCount = rowIndex;
+                    stats.ResultsCount = index;
                 }
 
                 // Examine IsoStats() to predict the number of ConvolutionIterations
@@ -1228,11 +1226,11 @@ namespace MolecularWeightCalculator
 
                 // Convolute the results for each element using a recursive convolution routine
                 var ConvolutionIterations = 0L;
-                for (rowIndex = 1; rowIndex <= IsoStats[1].ResultsCount; rowIndex++)
+                for (var index = 1; index <= IsoStats[1].ResultsCount; index++)
                 {
-                    ConvoluteMasses(ref ConvolutedAbundances, ConvolutedAbundanceStartMass, rowIndex, 1f, 0, 1, ref IsoStats, intElementCount, ref ConvolutionIterations);
+                    ConvoluteMasses(ref ConvolutedAbundances, ConvolutedAbundanceStartMass, index, 1f, 0, 1, ref IsoStats, intElementCount, ref ConvolutionIterations);
 
-                    sngPercentComplete = rowIndex / (float)IsoStats[1].ResultsCount * 100f;
+                    sngPercentComplete = index / (float)IsoStats[1].ResultsCount * 100f;
                     UpdateProgress(sngPercentComplete);
                 }
 
@@ -1330,7 +1328,7 @@ namespace MolecularWeightCalculator
 
                 // Step through ConvolutedMSData2DOneBased() from the beginning to find the
                 // first value greater than MIN_ABUNDANCE_TO_KEEP
-                rowIndex = 1;
+                var rowIndex = 1;
                 while (ConvolutedMSData2DOneBased[rowIndex, 1] < MIN_ABUNDANCE_TO_KEEP)
                 {
                     rowIndex += 1;
@@ -1381,10 +1379,8 @@ namespace MolecularWeightCalculator
         /// <param name="udtComputationStats">Input/output</param>
         public void ComputePercentComposition(ref udtComputationStatsType udtComputationStats)
         {
-            short intElementIndex;
-
             // Determine the number of elements in the formula
-            for (intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+            for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
             {
                 if (udtComputationStats.TotalMass > 0d)
                 {
@@ -1514,7 +1510,6 @@ namespace MolecularWeightCalculator
                 var intMidPointIndex = (int)Math.Round((intDataToAddCount + 1) / 2d - 1d);
 
                 // Compute the Gaussian data for each point in dblXVals()
-                int intSummationIndex;
                 for (var intStickIndex = 0; intStickIndex < XYVals.Count; intStickIndex++)
                 {
                     if (intStickIndex % 25 == 0)
@@ -1548,6 +1543,7 @@ namespace MolecularWeightCalculator
                         }
                         else
                         {
+                            int intSummationIndex;
                             for (intSummationIndex = 0; intSummationIndex < lstXYSummation.Count; intSummationIndex++)
                             {
                                 if (lstXYSummation[intSummationIndex].X >= dblMinimalXValOfWindow)
@@ -1574,12 +1570,11 @@ namespace MolecularWeightCalculator
                     // If .XVal is not an even multiple of DeltaX then bump up .XVal until it is
                     udtThisDataPoint.X = RoundToEvenMultiple(udtThisDataPoint.X, DeltaX, true);
 
-                    int intDataIndex;
-                    for (intDataIndex = 0; intDataIndex < intDataToAddCount; intDataIndex++)
+                    for (var index = 0; index < intDataToAddCount; index++)
                     {
                         // Equation for Gaussian is: Amplitude * Exp[ -(x - mu)^2 / (2*dblSigma^2) ]
-                        // Use intDataIndex, .YVal, and DeltaX
-                        var dblXOffSet = (intMidPointIndex - intDataIndex) * DeltaX;
+                        // Use index, .YVal, and DeltaX
+                        var dblXOffSet = (intMidPointIndex - index) * DeltaX;
 
                         var udtNewPoint = new udtXYDataType()
                         {
@@ -1594,7 +1589,7 @@ namespace MolecularWeightCalculator
                     // XValues in lstDataToAdd and those in lstXYSummation have the same DeltaX value
                     // The XValues in lstDataToAdd might overlap partially with those in lstXYSummation
 
-                    intDataIndex = 0;
+                    var intDataIndex = 0;
                     bool blnAppendNewData;
 
                     // First, see if the first XValue in lstDataToAdd is larger than the last XValue in lstXYSummation
@@ -1611,7 +1606,7 @@ namespace MolecularWeightCalculator
                         blnAppendNewData = false;
                         // Step through lstXYSummation starting at intMinimalSummationIndex, looking for
                         // the index to start combining data at
-                        for (intSummationIndex = intMinimalSummationIndex; intSummationIndex < lstXYSummation.Count; intSummationIndex++)
+                        for (var intSummationIndex = intMinimalSummationIndex; intSummationIndex < lstXYSummation.Count; intSummationIndex++)
                         {
                             if (Math.Round(lstDataToAdd[intDataIndex].X, MASS_PRECISION) <= Math.Round(lstXYSummation[intSummationIndex].X, MASS_PRECISION))
                             {
@@ -1658,8 +1653,7 @@ namespace MolecularWeightCalculator
                 // Probably need to add data, but may need to remove some
                 var dblMinimalXValSpacing = dblXValRange / 100d;
 
-                intSummationIndex = 0;
-                while (intSummationIndex < lstXYSummation.Count - 1)
+                for (var intSummationIndex = 0; intSummationIndex < lstXYSummation.Count - 1; intSummationIndex++)
                 {
                     if (lstXYSummation[intSummationIndex].X + dblMinimalXValSpacing < lstXYSummation[intSummationIndex + 1].X)
                     {
@@ -1685,8 +1679,6 @@ namespace MolecularWeightCalculator
 
                         lstXYSummation.Insert(intSummationIndex + 1, udtNewDataPoint);
                     }
-
-                    intSummationIndex += 1;
                 }
 
                 // Copy data from lstXYSummation to lstGaussianData
@@ -1708,7 +1700,6 @@ namespace MolecularWeightCalculator
             // Call after loading or setting abbreviation mode
 
             MasterSymbolsList = new string[ELEMENT_COUNT + AbbrevAllCount + 1, 2];
-            short intIndex;
 
             // MasterSymbolsList(,0) contains the symbol to be matched
             // MasterSymbolsList(,1) contains E for element, A for amino acid, or N for normal abbreviation, followed by
@@ -1716,7 +1707,7 @@ namespace MolecularWeightCalculator
             // For example for Carbon, MasterSymbolsList(intIndex,0) = "C" and MasterSymbolsList(intIndex,1) = "E6"
 
             // Construct search list
-            for (intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
+            for (var intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
             {
                 MasterSymbolsList[intIndex, 0] = ElementStats[intIndex].Symbol;
                 MasterSymbolsList[intIndex, 1] = "E" + intIndex;
@@ -1737,7 +1728,7 @@ namespace MolecularWeightCalculator
                     blnIncludeAmino = false;
                 }
 
-                for (intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
+                for (var intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
                 {
                     var stats = AbbrevStats[intIndex];
                     // If blnIncludeAmino = False then do not include amino acids
@@ -2581,13 +2572,11 @@ namespace MolecularWeightCalculator
         /// <returns>ID if found, otherwise 0</returns>
         public short GetElementIDInternal(string strSymbol)
         {
-            short intIndex;
-
-            for (intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
+            for (var intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
             {
                 if (string.Equals(ElementStats[intIndex].Symbol, strSymbol, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return intIndex;
+                    return (short)intIndex;
                 }
             }
 
@@ -2838,11 +2827,9 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private bool IsStringAllLetters(string strTest)
         {
-            short intIndex;
-
             // Assume true until proven otherwise
             var blnAllLetters = true;
-            for (intIndex = 0; intIndex < strTest.Length; intIndex++)
+            for (var intIndex = 0; intIndex < strTest.Length; intIndex++)
             {
                 if (!char.IsLetter(strTest[intIndex]))
                 {
@@ -2961,9 +2948,7 @@ namespace MolecularWeightCalculator
 
         private string LookupCautionStatement(string strCompareText)
         {
-            short intIndex;
-
-            for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
+            for (var intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
             {
                 if ((strCompareText ?? "") == (CautionStatements[intIndex, 0] ?? ""))
                 {
@@ -3107,13 +3092,11 @@ namespace MolecularWeightCalculator
 
         public void MemoryLoadAbbreviations()
         {
-            short intIndex;
-
             // Symbol                            Formula            1 letter abbreviation
             const short AminoAbbrevCount = 28;
 
             AbbrevAllCount = AminoAbbrevCount;
-            for (intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
+            for (var intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
                 AbbrevStats[intIndex].IsAminoAcid = true;
 
             AddAbbreviationWork(1, "Ala", "C3H5NO", 0f, true, "A", "Alanine");
@@ -3147,7 +3130,7 @@ namespace MolecularWeightCalculator
 
             const short NormalAbbrevCount = 16;
             AbbrevAllCount += NormalAbbrevCount;
-            for (intIndex = AminoAbbrevCount + 1; intIndex <= AbbrevAllCount; intIndex++)
+            for (var intIndex = AminoAbbrevCount + 1; intIndex <= AbbrevAllCount; intIndex++)
                 AbbrevStats[intIndex].IsAminoAcid = false;
 
             AddAbbreviationWork(AminoAbbrevCount + 1, "Bpy", "C10H8N2", 0f, false, "", "Bipyridine");
@@ -3394,13 +3377,12 @@ namespace MolecularWeightCalculator
 
         private void InitializeComputationStats(ref udtComputationStatsType udtComputationStats)
         {
-            short intElementIndex;
             udtComputationStats.Initialize();
             udtComputationStats.Charge = 0.0f;
             udtComputationStats.StandardDeviation = 0.0d;
             udtComputationStats.TotalMass = 0.0d;
 
-            for (intElementIndex = 0; intElementIndex <= ELEMENT_COUNT - 1; intElementIndex++)
+            for (var intElementIndex = 0; intElementIndex <= ELEMENT_COUNT - 1; intElementIndex++)
             {
                 var element = udtComputationStats.Elements[intElementIndex];
                 element.Used = false; // whether element is present
@@ -5288,10 +5270,9 @@ namespace MolecularWeightCalculator
             double dblUncertainty, float sngCharge,
             bool blnRecomputeAbbreviationMasses)
         {
-            short intIndex;
             var blnFound = default(bool);
 
-            for (intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
+            for (var intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
             {
                 if ((strSymbol?.ToLower() ?? "") == (ElementStats[intIndex].Symbol?.ToLower() ?? ""))
                 {
@@ -5638,10 +5619,9 @@ namespace MolecularWeightCalculator
         /// <returns>Count of the number of invalid abbreviations found</returns>
         public int ValidateAllAbbreviationsInternal()
         {
-            short intAbbrevIndex;
             var intInvalidAbbreviationCount = default(short);
 
-            for (intAbbrevIndex = 1; intAbbrevIndex <= AbbrevAllCount; intAbbrevIndex++)
+            for (short intAbbrevIndex = 1; intAbbrevIndex <= AbbrevAllCount; intAbbrevIndex++)
             {
                 var stats = AbbrevStats[intAbbrevIndex];
                 SetAbbreviationByIDInternal(intAbbrevIndex, stats.Symbol, stats.Formula, stats.Charge, stats.IsAminoAcid, stats.OneLetterSymbol, stats.Comment, true);
