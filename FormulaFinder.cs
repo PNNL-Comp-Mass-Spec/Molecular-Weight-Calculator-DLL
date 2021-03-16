@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace MolecularWeightCalculator
@@ -463,11 +462,11 @@ namespace MolecularWeightCalculator
                     {
                         // 65 is the ascii code for the letter a
                         // Thus, 65-55 = 10
-                        int asciiValue = Strings.Asc(strCurrentLetter);
+                        int asciiValue = strCurrentLetter;
                         sbCodeString.Append((char)(asciiValue - 55));
                     }
                 }
-                else if (Conversions.ToString(strCurrentLetter) != "_")
+                else if (strCurrentLetter.ToString() != "_")
                 {
                     // At a number, since empirical formulas can only have letters or numbers or underscores
 
@@ -475,7 +474,7 @@ namespace MolecularWeightCalculator
                     while (endIndex + 1 < formulaLength)
                     {
                         char nextChar = empiricalFormula[endIndex + 1];
-                        if (!int.TryParse(Conversions.ToString(nextChar), out parsedValue))
+                        if (!int.TryParse(nextChar.ToString(), out parsedValue))
                         {
                             break;
                         }
@@ -1097,7 +1096,7 @@ namespace MolecularWeightCalculator
                 return new List<FormulaFinderResult>();
             }
 
-            if (Conversion.Val(targetMass) <= 0d)
+            if (targetMass <= 0d)
             {
                 ReportError("Target molecular weight must be greater than 0");
                 return new List<FormulaFinderResult>();
@@ -1173,7 +1172,7 @@ namespace MolecularWeightCalculator
                 return new List<FormulaFinderResult>();
             }
 
-            if (Conversion.Val(maximumFormulaMass) <= 0d)
+            if (maximumFormulaMass <= 0d)
             {
                 ReportError("Maximum molecular weight must be greater than 0");
                 return new List<FormulaFinderResult>();
@@ -1275,7 +1274,7 @@ namespace MolecularWeightCalculator
 
                         foreach (var currentChar in abbrevSymbol)
                         {
-                            if (!(char.IsLetter(currentChar) || Conversions.ToString(currentChar) == "+" || Conversions.ToString(currentChar) == "_"))
+                            if (!(char.IsLetter(currentChar) || currentChar.ToString() == "+" || currentChar.ToString() == "_"))
                             {
                                 ReportError("Custom elemental weights must contain only numbers or only letters; if letters are used, they must be for a single valid elemental symbol or abbreviation");
                                 return new List<FormulaFinderCandidateElement>();
@@ -1370,7 +1369,7 @@ namespace MolecularWeightCalculator
 
                         foreach (var currentChar in abbrevSymbol)
                         {
-                            if (!(char.IsLetter(currentChar) || Conversions.ToString(currentChar) == "+" || Conversions.ToString(currentChar) == "_"))
+                            if (!(char.IsLetter(currentChar) || currentChar.ToString() == "+" || currentChar.ToString() == "_"))
                             {
                                 ReportError("Custom elemental weights must contain only numbers or only letters; if letters are used, they must be for a single valid elemental symbol or abbreviation");
                                 return 0;

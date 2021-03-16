@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace MolecularWeightCalculator
@@ -381,8 +380,8 @@ namespace MolecularWeightCalculator
                 // Converting from one volume unit to another volume unit
                 // No need to explicitly specify mass or density
 
-                var eCurrentVolumeUnits = (uevUnitsExtendedVolumeConstants)Conversions.ToInteger((int)eCurrentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
-                var eNewVolumeUnits = (uevUnitsExtendedVolumeConstants)Conversions.ToInteger((int)eNewUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+                var eCurrentVolumeUnits = (uevUnitsExtendedVolumeConstants)((int)eCurrentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+                var eNewVolumeUnits = (uevUnitsExtendedVolumeConstants)((int)eNewUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
 
                 return ConvertVolumeExtended(dblAmountIn, eCurrentVolumeUnits, eNewVolumeUnits);
             }
@@ -887,10 +886,10 @@ namespace MolecularWeightCalculator
             SetAutoComputeQuantityEnabled(true);
         }
 
-        public short AmountsUnitListCount => Conversions.ToShort((int)AMOUNT_UNITS_LIST_INDEX_MAX + 1);
+        public short AmountsUnitListCount => (short)AMOUNT_UNITS_LIST_INDEX_MAX + 1;
 
-        public short AmountsUnitListVolumeIndexStart => Conversions.ToShort(AMOUNT_UNITS_VOLUME_INDEX_START);
+        public short AmountsUnitListVolumeIndexStart => (short)AMOUNT_UNITS_VOLUME_INDEX_START;
 
-        public short AmountsUnitListVolumeIndexEnd => (short)Conversions.ToInteger(AMOUNT_UNITS_LIST_INDEX_MAX);
+        public short AmountsUnitListVolumeIndexEnd => (short)AMOUNT_UNITS_LIST_INDEX_MAX;
     }
 }

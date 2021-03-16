@@ -599,11 +599,11 @@ namespace MolecularWeightCalculator
                                         string strIonSymbol;
                                         if (eIonType == itIonTypeConstants.itYIon || eIonType == itIonTypeConstants.itZIon)
                                         {
-                                            strIonSymbol = strIonSymbolGeneric + Strings.Trim(Conversion.Str(ResidueCount - lngResidueIndex + 1));
+                                            strIonSymbol = strIonSymbolGeneric + (ResidueCount - lngResidueIndex + 1);
                                         }
                                         else
                                         {
-                                            strIonSymbol = strIonSymbolGeneric + Strings.Trim(Conversion.Str(lngResidueIndex));
+                                            strIonSymbol = strIonSymbolGeneric + lngResidueIndex;
                                         }
 
                                         if (intChargeIndex > 1)
@@ -1138,8 +1138,8 @@ namespace MolecularWeightCalculator
 
             if (blnIgnoreCase)
             {
-                strProteinResidues = Strings.UCase(strProteinResidues);
-                strPeptideResidues = Strings.UCase(strPeptideResidues);
+                strProteinResidues = strProteinResidues.ToUpper();
+                strPeptideResidues = strPeptideResidues.ToUpper();
             }
 
             if (lngProteinSearchStartLoc <= 1)
@@ -1155,9 +1155,9 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            var lngPeptideResiduesLength = Strings.Len(strPeptideResidues);
+            var lngPeptideResiduesLength = strPeptideResidues.Length;
 
-            if (intStartLoc > 0 && Strings.Len(strProteinResidues) > 0 && lngPeptideResiduesLength > 0)
+            if (intStartLoc > 0 && strProteinResidues.Length > 0 && lngPeptideResiduesLength > 0)
             {
                 var intEndLoc = intStartLoc + lngPeptideResiduesLength - 1;
 
@@ -1174,7 +1174,7 @@ namespace MolecularWeightCalculator
                 }
 
                 string strSuffix;
-                if (intEndLoc == Strings.Len(strProteinResidues))
+                if (intEndLoc == strProteinResidues.Length)
                 {
                     strSuffix = strTerminiiSymbol;
                 }
@@ -1235,19 +1235,19 @@ namespace MolecularWeightCalculator
                     }
                     while (lngRuleResidueLoc > 0 && lngRuleResidueLoc < lngPeptideResiduesLength);
 
-                    strTrypticName = "t" + Strings.Trim(Conversion.Str(intTrypticResidueNumber));
+                    strTrypticName = "t" + intTrypticResidueNumber;
                     if (intRuleResidueMatchCount > 1)
                     {
-                        strTrypticName = strTrypticName + "." + Strings.Trim(Conversion.Str(intRuleResidueMatchCount));
+                        strTrypticName = strTrypticName + "." + intRuleResidueMatchCount;
                     }
                 }
                 else if (blnICR2LSCompatible)
                 {
-                    strTrypticName = Strings.Trim(Conversion.Str(intStartLoc)) + "." + Strings.Trim(Conversion.Str(intEndLoc + 1));
+                    strTrypticName = intStartLoc + "." + (intEndLoc + 1);
                 }
                 else
                 {
-                    strTrypticName = Strings.Trim(Conversion.Str(intStartLoc)) + "." + Strings.Trim(Conversion.Str(intEndLoc));
+                    strTrypticName = intStartLoc + "." + intEndLoc;
                 }
 
                 lngReturnResidueStart = intStartLoc;
@@ -1375,7 +1375,7 @@ namespace MolecularWeightCalculator
             {
                 var strCurrentName = GetTrypticName(strProteinResidues, strPeptideResidues, out var lngCurrentResidueStart, out var lngCurrentResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, blnIgnoreCase, lngCurrentSearchLoc);
 
-                if (Strings.Len(strCurrentName) > 0)
+                if (strCurrentName.Length > 0)
                 {
                     if (strNameList.Length > 0)
                     {
@@ -1393,7 +1393,7 @@ namespace MolecularWeightCalculator
 
                     lngReturnResidueEnd = lngCurrentResidueEnd;
 
-                    if (lngCurrentSearchLoc > Strings.Len(strProteinResidues))
+                    if (lngCurrentSearchLoc > strProteinResidues.Length)
                         break;
                 }
                 else
@@ -1433,7 +1433,7 @@ namespace MolecularWeightCalculator
 
             short intCharLocInSearchChars;
 
-            var intExceptionSuffixResidueCount = (short)Strings.Len(strExceptionSuffixResidues);
+            var intExceptionSuffixResidueCount = (short)strExceptionSuffixResidues.Length;
 
             var lngMinCharLoc = -1;
             for (intCharLocInSearchChars = 0; intCharLocInSearchChars < strSearchChars.Length; intCharLocInSearchChars++)
@@ -1449,7 +1449,7 @@ namespace MolecularWeightCalculator
                         // Make sure strSuffixResidue does not match strExceptionSuffixResidues
                         int lngExceptionCharLocInSearchResidues;
                         string strResidueFollowingCleavageResidue;
-                        if (lngCharLoc < Strings.Len(strSearchResidues))
+                        if (lngCharLoc < strSearchResidues.Length)
                         {
                             lngExceptionCharLocInSearchResidues = lngCharLoc + 1;
                             strResidueFollowingCleavageResidue = Strings.Mid(strSearchResidues, lngExceptionCharLocInSearchResidues, 1);
@@ -1457,7 +1457,7 @@ namespace MolecularWeightCalculator
                         else
                         {
                             // Matched the last residue in strSearchResidues
-                            lngExceptionCharLocInSearchResidues = Strings.Len(strSearchResidues) + 1;
+                            lngExceptionCharLocInSearchResidues = strSearchResidues.Length + 1;
                             strResidueFollowingCleavageResidue = strResidueFollowingSearchResidues;
                         }
 
@@ -1468,7 +1468,7 @@ namespace MolecularWeightCalculator
                             {
                                 // Exception char is the following character; can't count this as the cleavage point
 
-                                if (lngExceptionCharLocInSearchResidues < Strings.Len(strSearchResidues))
+                                if (lngExceptionCharLocInSearchResidues < strSearchResidues.Length)
                                 {
                                     // Recursively call this function to find the next cleavage position, using an updated lngStartChar position
                                     var lngCharLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(strSearchResidues, strResidueFollowingSearchResidues, lngExceptionCharLocInSearchResidues, strSearchChars, strExceptionSuffixResidues, strTerminiiSymbol);
@@ -1546,7 +1546,7 @@ namespace MolecularWeightCalculator
             if (lngSearchStartLoc < 1)
                 lngSearchStartLoc = 1;
 
-            var lngProteinResiduesLength = Strings.Len(strProteinResidues);
+            var lngProteinResiduesLength = strProteinResidues.Length;
             if (lngSearchStartLoc > lngProteinResiduesLength)
             {
                 return string.Empty;
@@ -1628,10 +1628,10 @@ namespace MolecularWeightCalculator
 
             if (blnIgnoreCase)
             {
-                strProteinResidues = Strings.UCase(strProteinResidues);
+                strProteinResidues = strProteinResidues.ToUpper();
             }
 
-            var lngProteinResiduesLength = Strings.Len(strProteinResidues);
+            var lngProteinResiduesLength = strProteinResidues.Length;
 
             var lngStartLoc = 1;
             short intCurrentTrypticPeptideNumber = 0;
@@ -1660,7 +1660,7 @@ namespace MolecularWeightCalculator
 
             if (intCurrentTrypticPeptideNumber > 0 && lngPrevStartLoc > 0)
             {
-                if (lngPrevStartLoc > Strings.Len(strProteinResidues))
+                if (lngPrevStartLoc > strProteinResidues.Length)
                 {
                     // User requested a peptide number that is too high
                     lngReturnResidueStart = 0;
@@ -1778,7 +1778,7 @@ namespace MolecularWeightCalculator
 
             if (blnIgnoreCase)
             {
-                strSequence = Strings.UCase(strSequence);
+                strSequence = strSequence.ToUpper();
             }
 
             // Find the prefix residue and starting residue
@@ -1793,10 +1793,10 @@ namespace MolecularWeightCalculator
             }
 
             // Find the suffix residue and the ending residue
-            if ((Strings.Mid(strSequence, Strings.Len(strSequence) - 1, 1) ?? "") == (strSeparationChar ?? ""))
+            if ((Strings.Mid(strSequence, strSequence.Length - 1, 1) ?? "") == (strSeparationChar ?? ""))
             {
                 strSuffix = Strings.Right(strSequence, 1);
-                strSequenceEnd = Strings.Mid(strSequence, Strings.Len(strSequence) - 2, 1);
+                strSequenceEnd = Strings.Mid(strSequence, strSequence.Length - 2, 1);
             }
             else
             {
@@ -1822,7 +1822,7 @@ namespace MolecularWeightCalculator
             {
                 if (blnIgnoreCase)
                 {
-                    strRuleResidues = Strings.UCase(strRuleResidues);
+                    strRuleResidues = strRuleResidues.ToUpper();
                 }
 
                 // Test each character in strRuleResidues against both strPrefix and strSequenceEnd
@@ -2001,17 +2001,17 @@ namespace MolecularWeightCalculator
             // Returns True if a trailing OH is removed
 
             var blnOHRemoved = false;
-            var lngStringLength = Strings.Len(strWorkingSequence);
+            var lngStringLength = strWorkingSequence.Length;
             if (strWorkingSequence.Length >= 5 && strWorkingSequence.ToUpper().EndsWith("OH"))
             {
                 // If previous character is not a character, then remove the OH
-                if (!char.IsLetter(Conversions.ToChar(Strings.Mid(strWorkingSequence, lngStringLength - 2, 1))))
+                if (!char.IsLetter(Strings.Mid(strWorkingSequence, lngStringLength - 2, 1)[0]))
                 {
                     strWorkingSequence = Strings.Left(strWorkingSequence, lngStringLength - 3);
                     blnOHRemoved = true;
                 }
                 // Otherwise, see if previous three characters are letters
-                else if (char.IsLetter(Conversions.ToChar(Strings.Mid(strWorkingSequence, lngStringLength - 2, 1))))
+                else if (char.IsLetter(Strings.Mid(strWorkingSequence, lngStringLength - 2, 1)[0]))
                 {
                     // Formula ends with 3 characters and the last two are OH, see if the last 3 characters are a valid amino acid code
                     var lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(Strings.Mid(strWorkingSequence, lngStringLength - 2, 3), true);
@@ -2309,7 +2309,7 @@ namespace MolecularWeightCalculator
             // Returns 0 if successful, otherwise, returns -1
 
             var lngErrorID = 0;
-            if (Strings.Len(strModSymbol) < 1)
+            if (strModSymbol.Length < 1)
             {
                 lngErrorID = -1;
             }
@@ -2490,7 +2490,7 @@ namespace MolecularWeightCalculator
                 str3LetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, true);
             }
 
-            if (Strings.Len(str3LetterSymbol) == 0)
+            if (str3LetterSymbol.Length == 0)
             {
                 residue.Symbol = UNKNOWN_SYMBOL;
             }
@@ -2702,9 +2702,9 @@ namespace MolecularWeightCalculator
         {
             try
             {
-                strSequence = Strings.Trim(strSequence);
+                strSequence = strSequence.Trim();
 
-                var lngSequenceStrLength = Strings.Len(strSequence);
+                var lngSequenceStrLength = strSequence.Length;
                 if (lngSequenceStrLength == 0)
                 {
                     return AssureNonZero(0);
@@ -2730,7 +2730,7 @@ namespace MolecularWeightCalculator
                             if (Strings.Mid(strSequence, 2, 1) == ".")
                             {
                                 strSequence = Strings.Mid(strSequence, 3);
-                                lngSequenceStrLength = Strings.Len(strSequence);
+                                lngSequenceStrLength = strSequence.Length;
                             }
 
                             if (Strings.Mid(strSequence, lngSequenceStrLength - 1, 1) == ".")
@@ -2746,24 +2746,24 @@ namespace MolecularWeightCalculator
 
                             if (Strings.Right(strSequence, 1) == ".")
                             {
-                                strSequence = Strings.Left(strSequence, Strings.Len(strSequence) - 1);
+                                strSequence = Strings.Left(strSequence, strSequence.Length - 1);
                             }
 
-                            lngSequenceStrLength = Strings.Len(strSequence);
+                            lngSequenceStrLength = strSequence.Length;
                         }
                     }
 
                     for (lngIndex = 0; lngIndex < lngSequenceStrLength; lngIndex++)
                     {
                         var str1LetterSymbol = Strings.Mid(strSequence, lngIndex, 1);
-                        if (char.IsLetter(Conversions.ToChar(str1LetterSymbol)))
+                        if (char.IsLetter(str1LetterSymbol[0]))
                         {
                             // Character found
                             // Look up 3 letter symbol
                             // If none is found, this will return an empty string
                             str3LetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(str1LetterSymbol, true);
 
-                            if (Strings.Len(str3LetterSymbol) == 0)
+                            if (str3LetterSymbol.Length == 0)
                                 str3LetterSymbol = UNKNOWN_SYMBOL;
 
                             SetSequenceAddResidue(str3LetterSymbol);
@@ -2794,17 +2794,17 @@ namespace MolecularWeightCalculator
                         RemoveTrailingOH(ref strSequence);
 
                         // Recompute sequence length
-                        lngSequenceStrLength = Strings.Len(strSequence);
+                        lngSequenceStrLength = strSequence.Length;
                     }
 
                     while (lngIndex <= lngSequenceStrLength - 2)
                     {
                         var strFirstChar = Strings.Mid(strSequence, lngIndex, 1);
-                        if (char.IsLetter(Conversions.ToChar(strFirstChar)))
+                        if (char.IsLetter(strFirstChar[0]))
                         {
-                            if (char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 1, 1))) && char.IsLetter(Conversions.ToChar(Strings.Mid(strSequence, lngIndex + 2, 1))))
+                            if (char.IsLetter(Strings.Mid(strSequence, lngIndex + 1, 1)[0]) && char.IsLetter(Strings.Mid(strSequence, lngIndex + 2, 1)[0]))
                             {
-                                str3LetterSymbol = Strings.UCase(strFirstChar) + Strings.LCase(Strings.Mid(strSequence, lngIndex + 1, 2));
+                                str3LetterSymbol = strFirstChar.ToUpper() + Strings.Mid(strSequence, lngIndex + 1, 2).ToLower();
 
                                 if (ElementAndMassRoutines.GetAbbreviationIDInternal(str3LetterSymbol, true) == 0)
                                 {
@@ -2954,7 +2954,7 @@ namespace MolecularWeightCalculator
 
             // The N-terminus ions are the basis for the running total
             var dblRunningTotal = mNTerminus.Mass;
-            if (Strings.UCase(mNTerminus.Formula) == "HH")
+            if (mNTerminus.Formula.ToUpper() == "HH")
             {
                 // ntgHydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
                 // we need to subtract it out here

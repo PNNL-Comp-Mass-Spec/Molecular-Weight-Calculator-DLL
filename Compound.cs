@@ -257,7 +257,7 @@ namespace MolecularWeightCalculator
                 return false;
             }
 
-            var intCharLoc = (short)Strings.InStr(Strings.LCase(mStrFormattedFormula), "[x");
+            var intCharLoc = (short)Strings.InStr(mStrFormattedFormula.ToLower(), "[x");
             if (intCharLoc > 0)
             {
                 if (Strings.Mid(mStrFormattedFormula, intCharLoc + 1, 1) != "e")

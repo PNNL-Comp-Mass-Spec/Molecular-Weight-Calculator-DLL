@@ -310,7 +310,7 @@ namespace MwtWinDllTest
             dblMass = mMwtWin.Compound.Mass;
             objResults.AppendText("Mass of " + mMwtWin.Compound.FormulaCapitalized + ": " + dblMass);
             for (short intCharge = 1; intCharge <= 4; intCharge++)
-                objResults.AppendText("  m/z of " + intCharge.ToString() + "+: " + mMwtWin.ConvoluteMass(dblMass, 0, intCharge));
+                objResults.AppendText("  m/z of " + intCharge + "+: " + mMwtWin.ConvoluteMass(dblMass, 0, intCharge));
 
             objResults.AppendText("");
 
@@ -318,7 +318,7 @@ namespace MwtWinDllTest
             dblMass = mMwtWin.Compound.Mass;
             objResults.AppendText("m/z values if we first lose a hydrogen before adding a proton");
             for (short intCharge = 1; intCharge <= 4; intCharge++)
-                objResults.AppendText("  m/z of " + intCharge.ToString() + "+: " + mMwtWin.ConvoluteMass(dblMass, 0, intCharge));
+                objResults.AppendText("  m/z of " + intCharge + "+: " + mMwtWin.ConvoluteMass(dblMass, 0, intCharge));
 
             // Test Capillary flow functions
             var capFlow = mMwtWin.CapFlow;
@@ -763,12 +763,12 @@ namespace MwtWinDllTest
                 //
                 //Debug.Assert strPeptideFragMwtWin = strPeptideFragIcr2ls
 
-                if (Strings.Len(strPeptideFragMwtWin) > 1)
+                if (strPeptideFragMwtWin.Length > 1)
                 {
                     // Make sure lngResidueStart and lngResidueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
                     var strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, Strings.Mid(strProtein, lngResidueStart, lngResidueEnd - lngResidueStart + 1));
-                    Debug.Assert(Strings.InStr(strPeptideName, "t" + Strings.Trim(Conversion.Str(lngIndex))) > 0, "");
+                    Debug.Assert(Strings.InStr(strPeptideName, "t" + lngIndex) > 0, "");
                 }
             }
 
@@ -780,23 +780,23 @@ namespace MwtWinDllTest
             do
             {
                 strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out var lngResidueStart, out var lngResidueEnd);
-                objResults.AppendText("Tryptic fragment " + Strings.Trim(lngIndex.ToString()) + ": " + strPeptideFragMwtWin);
+                objResults.AppendText("Tryptic fragment " + lngIndex + ": " + strPeptideFragMwtWin);
                 lngIndex += 1;
             }
-            while (Strings.Len(strPeptideFragMwtWin) > 0);
+            while (strPeptideFragMwtWin.Length > 0);
 
             objResults.AppendText(string.Empty);
             VBMath.Randomize();
             for (lngMultipleIteration = 1; lngMultipleIteration <= ITERATIONS_TO_RUN; lngMultipleIteration++)
             {
                 // Generate random protein
-                var lngProteinLengthRand = Conversion.Int((MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) * VBMath.Rnd() + MIN_PROTEIN_LENGTH);
+                var lngProteinLengthRand = (int)((MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) * VBMath.Rnd() + MIN_PROTEIN_LENGTH);
 
                 strProtein = "";
                 float lngResidueRand;
                 for (lngResidueRand = 1f; lngResidueRand <= lngProteinLengthRand; lngResidueRand++)
                 {
-                    var strNewResidue = Strings.Mid(POSSIBLE_RESIDUES, (int)Math.Round(Conversion.Int(Strings.Len(POSSIBLE_RESIDUES)) * VBMath.Rnd() + 1f), 1);
+                    var strNewResidue = Strings.Mid(POSSIBLE_RESIDUES, (int)Math.Round(POSSIBLE_RESIDUES.Length * VBMath.Rnd() + 1f), 1);
                     strProtein += strNewResidue;
                 }
 

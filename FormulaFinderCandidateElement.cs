@@ -25,10 +25,10 @@
         {
             if ((Symbol ?? "") == (OriginalName ?? ""))
             {
-                return Symbol + ": " + Mass.ToString("0.0000") + " Da, charge " + Charge.ToString();
+                return Symbol + ": " + Mass.ToString("0.0000") + " Da, charge " + Charge;
             }
 
-            return OriginalName + "(" + Symbol + "): " + Mass.ToString("0.0000") + " Da, charge " + Charge.ToString();
+            return OriginalName + "(" + Symbol + "): " + Mass.ToString("0.0000") + " Da, charge " + Charge;
         }
     }
 }

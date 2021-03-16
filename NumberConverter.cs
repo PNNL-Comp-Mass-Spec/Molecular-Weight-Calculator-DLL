@@ -84,7 +84,7 @@ namespace MolecularWeightCalculator
                 {
                     return string.Empty;
                 }
-                return Conversions.ToString(Item);
+                return Item.ToString();
             }
             catch
             {

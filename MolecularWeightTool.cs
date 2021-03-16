@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace MolecularWeightCalculator
@@ -200,7 +199,7 @@ namespace MolecularWeightCalculator
             get => mElementAndMassRoutines.gComputationOptions.RtfFontName;
             set
             {
-                if (Strings.Len(value) > 0)
+                if (value.Length > 0)
                 {
                     mElementAndMassRoutines.gComputationOptions.RtfFontName = value;
                 }
@@ -443,7 +442,7 @@ namespace MolecularWeightCalculator
             {
                 // Determine what locale we're in (. or , for decimal point)
                 const string strTestNumber = "5,500";
-                var sglConversionResult = Conversions.ToDouble(strTestNumber);
+                var sglConversionResult = double.Parse(strTestNumber);
                 if (Math.Abs(sglConversionResult - 5.5d) < float.Epsilon)
                 {
                     // Use comma as Decimal point
