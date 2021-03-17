@@ -175,6 +175,10 @@ namespace MolecularWeightCalculator
             {
                 IntensityOptions.Initialize();
                 IonTypeOptions = new IonTypeOptions[5];
+                for (var i = 0; i < IonTypeOptions.Length; i++)
+                {
+                    IonTypeOptions[i] = new IonTypeOptions();
+                }
             }
         }
 
@@ -484,6 +488,7 @@ namespace MolecularWeightCalculator
             if (lstFragSpectraData.Count == 0)
             {
                 udtFragSpectrum = new FragmentationSpectrumData[1];
+                udtFragSpectrum[0] = new FragmentationSpectrumData();
                 return 0;
             }
 
@@ -536,6 +541,10 @@ namespace MolecularWeightCalculator
             if (lngPredictedIonCount == 0)
                 lngPredictedIonCount = ResidueCount;
             var FragSpectrumWork = new FragmentationSpectrumData[lngPredictedIonCount + 1];
+            for (var i = 0; i < FragSpectrumWork.Length; i++)
+            {
+                FragSpectrumWork[i] = new FragmentationSpectrumData();
+            }
 
             // Need to update the residue masses in case the modifications have changed
             UpdateResidueMasses();
@@ -2094,7 +2103,10 @@ namespace MolecularWeightCalculator
                 {
                     Residues = new Residue[ResidueCountDimmed + 1];
                     for (var intIndex = 0; intIndex <= ResidueCountDimmed; intIndex++)
+                    {
+                        Residues[intIndex] = new Residue();
                         Residues[intIndex].Initialize(true);
+                    }
                 }
             }
         }
@@ -2111,6 +2123,11 @@ namespace MolecularWeightCalculator
                 else
                 {
                     ModificationSymbols = new ModificationSymbol[ModificationSymbolCountDimmed + 1];
+                }
+
+                for (var i = 0; i < ModificationSymbols.Length; i++)
+                {
+                    ModificationSymbols[i] = new ModificationSymbol();
                 }
             }
         }

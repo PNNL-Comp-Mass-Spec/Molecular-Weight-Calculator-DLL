@@ -134,8 +134,15 @@ namespace MolecularWeightCalculator
             // Note: "Initialize" must be called to initialize instances of this structure
             public void Initialize()
             {
-                Elements = new ElementUseStats[104];
-                PercentCompositions = new PercentCompositionInfo[104];
+                const int elementCount = 104;
+                Elements = new ElementUseStats[elementCount];
+                PercentCompositions = new PercentCompositionInfo[elementCount];
+
+                for (var i = 0; i < elementCount; i++)
+                {
+                    Elements[i] = new ElementUseStats();
+                    PercentCompositions[i] = new PercentCompositionInfo();
+                }
             }
         }
 
@@ -163,6 +170,11 @@ namespace MolecularWeightCalculator
             public void Initialize()
             {
                 Isotopes = new IsotopeInfo[ElementAndMassTools.MAX_ISOTOPES + 1];
+
+                for (var i = 0; i < Isotopes.Length; i++)
+                {
+                    Isotopes[i] = new IsotopeInfo();
+                }
             }
 
             public override string ToString()
@@ -940,6 +952,11 @@ namespace MolecularWeightCalculator
                 ConvolutedMSDataCount = MaxWeight - MinWeight + 1;
                 var ConvolutedAbundanceStartMass = MinWeight;
                 var ConvolutedAbundances = new IsoResultsOverallData[ConvolutedMSDataCount + 1]; // Fractional abundance at each mass; 1-based array
+
+                for (var i = 0; i < ConvolutedAbundances.Length; i++)
+                {
+                    ConvolutedAbundances[i] = new IsoResultsOverallData();
+                }
 
                 // Predict the total number of computations required; show progress if necessary
                 var PredictedTotalComboCalcs = 0;
@@ -3358,9 +3375,17 @@ namespace MolecularWeightCalculator
             ElementAlph = new string[104];
             ElementStats = new ElementInfo[104];
             for (var i = 0; i <= ELEMENT_COUNT - 1; i++)
+            {
+                ElementStats[i] = new ElementInfo();
                 ElementStats[i].Initialize();
+            }
 
             AbbrevStats = new AbbrevStatsData[501];
+            for (var i = 0; i < AbbrevStats.Length; i++)
+            {
+                AbbrevStats[i] = new AbbrevStatsData();
+            }
+
             CautionStatements = new string[101, 3];
             MessageStatements = new string[1601];
 
@@ -3394,6 +3419,10 @@ namespace MolecularWeightCalculator
                 element.IsotopicCorrection = 0d; // isotopic correction
                 element.IsotopeCount = 0; // Count of the number of atoms defined as specific isotopes
                 element.Isotopes = new IsotopicAtomInfo[3]; // Default to have room for 2 explicitly defined isotopes
+                for (var i = 0; i < element.Isotopes.Length; i++)
+                {
+                    element.Isotopes[i] = new IsotopicAtomInfo();
+                }
             }
         }
 
