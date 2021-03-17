@@ -364,6 +364,7 @@ namespace MolecularWeightCalculator
         /// <param name="searchOptions"></param>
         /// <param name="ppmMode"></param>
         /// <param name="calculationMode"></param>
+        /// <param name="sortedElementStats"></param>
         /// <returns></returns>
         /// <remarks></remarks>
         private List<FormulaFinderResult> BoundedSearch(
@@ -578,11 +579,14 @@ namespace MolecularWeightCalculator
         /// <param name="count8"></param>
         /// <param name="count9"></param>
         /// <param name="count10"></param>
+        /// <param name="sortedElementStats"></param>
         /// <param name="totalMass"></param>
         /// <param name="targetMass">Only used when searchOptions.FindTargetMZ is true, and that is only valid when matching a target mass, not when matching percent composition values</param>
         /// <param name="massToleranceDa">Only used when searchOptions.FindTargetMZ is true</param>
         /// <param name="totalCharge"></param>
         /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 1; otherwise, the current charge being searched for</param>
+        /// <param name="empiricalResultSymbols"></param>
+        /// <param name="correctedCharge"></param>
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
         /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompound(
@@ -651,12 +655,15 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="searchOptions"></param>
         /// <param name="sbEmpiricalFormula"></param>
+        /// <param name="sortedElementStats"></param>
         /// <param name="lstPotentialElementPointers"></param>
         /// <param name="totalMass"></param>
         /// <param name="targetMass">Only used when searchOptions.FindTargetMZ is true, and that is only valid when matching a target mass, not when matching percent composition values</param>
         /// <param name="massToleranceDa">Only used when searchOptions.FindTargetMZ is true</param>
         /// <param name="totalCharge"></param>
         /// <param name="intMultipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
+        /// <param name="empiricalResultSymbols"></param>
+        /// <param name="correctedCharge"></param>
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
         /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompoundRecursive(
@@ -1423,7 +1430,7 @@ namespace MolecularWeightCalculator
 
         private CandidateElementTolerances GetDefaultCandidateElementTolerance(int minimumCount, int maximumCount)
         {
-            var udtElementTolerances = new CandidateElementTolerances()
+            var udtElementTolerances = new CandidateElementTolerances
             {
                 MinimumCount = minimumCount,    // Only used with the Bounded search mode
                 MaximumCount = maximumCount,    // Only used with the Bounded search mode
@@ -1435,7 +1442,7 @@ namespace MolecularWeightCalculator
 
         private CandidateElementTolerances GetDefaultCandidateElementTolerance(double targetPercentComposition)
         {
-            var udtElementTolerances = new CandidateElementTolerances()
+            var udtElementTolerances = new CandidateElementTolerances
             {
                 MinimumCount = 0,               // Only used with the Bounded search mode
                 MaximumCount = 10,              // Only used with the Bounded search mode
@@ -1454,6 +1461,7 @@ namespace MolecularWeightCalculator
         /// <param name="totalMass">If 0 or negative, means matching percent compositions, so don't want to add dm= to line</param>
         /// <param name="targetMass"></param>
         /// <param name="totalCharge"></param>
+        /// <param name="empiricalResultSymbols"></param>
         /// <remarks></remarks>
         private FormulaFinderResult GetSearchResult(
             FormulaFinderOptions searchOptions,
@@ -1519,6 +1527,8 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="potentialElementCount"></param>
         /// <param name="searchOptions"></param>
+        /// <param name="mzSearchChargeMin"></param>
+        /// <param name="mzSearchChargeMax"></param>
         /// <remarks>searchOptions is passed ByRef because it is a value type and .MzChargeMin and .MzChargeMax are updated</remarks>
         private void MultipleSearchMath(
             int potentialElementCount,
@@ -1545,6 +1555,7 @@ namespace MolecularWeightCalculator
         /// <param name="searchOptions"></param>
         /// <param name="ppmMode"></param>
         /// <param name="calculationMode"></param>
+        /// <param name="sortedElementStats"></param>
         /// <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
         /// <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
         /// <param name="maximumFormulaMass">Only used when calculationMode is MatchPercentComposition</param>
@@ -1571,11 +1582,11 @@ namespace MolecularWeightCalculator
 
                 var sbEmpiricalFormula = new StringBuilder();
 
-                var lstRanges = new List<BoundedSearchRange>();
+                var lstRanges = new List<BoundedSearchRange>(MAX_MATCHING_ELEMENTS);
 
                 for (var elementIndex = 0; elementIndex < sortedElementStats.Count; elementIndex++)
                 {
-                    var udtBoundedSearchRange = new BoundedSearchRange()
+                    var udtBoundedSearchRange = new BoundedSearchRange
                     {
                         Min = sortedElementStats[elementIndex].CountMinimum,
                         Max = sortedElementStats[elementIndex].CountMaximum
@@ -1585,7 +1596,7 @@ namespace MolecularWeightCalculator
 
                 while (lstRanges.Count < MAX_MATCHING_ELEMENTS)
                 {
-                    var udtBoundedSearchRange = new BoundedSearchRange()
+                    var udtBoundedSearchRange = new BoundedSearchRange
                     {
                         Min = 0,
                         Max = 0
@@ -1956,6 +1967,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="lstResults"></param>
         /// <param name="searchOptions"></param>
+        /// <param name="ppmMode"></param>
         /// <param name="sortedElementStats">Candidate elements, including mass and charge. Sorted by de</param>
         /// <param name="intStartIndex">Index in candidateElementsStats to start at</param>
         /// <param name="lstPotentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
@@ -2011,7 +2023,7 @@ namespace MolecularWeightCalculator
                         if (lstPotentialElementPointers.Count >= 3)
                         {
                             var empiricalResultSymbols = ConvertElementPointersToElementStats(sortedElementStats, lstPotentialElementPointers);
-                            var debugCompound = new Dictionary<string, int>()
+                            var debugCompound = new Dictionary<string, int>
                             {
                                 { "C", 7 },
                                 { "H", 4 },
@@ -2087,11 +2099,13 @@ namespace MolecularWeightCalculator
         /// Recursively search for target percent composition values
         /// </summary>
         /// <param name="lstResults"></param>
+        /// <param name="sortedElementStats"></param>
         /// <param name="intStartIndex"></param>
         /// <param name="lstPotentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
         /// <param name="dblPotentialMassTotal">>Weight of the potential formula</param>
         /// <param name="maximumFormulaMass"></param>
         /// <param name="potentialChargeTotal"></param>
+        /// <param name="searchOptions"></param>
         /// <remarks></remarks>
         private void RecursivePCompFinder(
             ICollection<FormulaFinderResult> lstResults,

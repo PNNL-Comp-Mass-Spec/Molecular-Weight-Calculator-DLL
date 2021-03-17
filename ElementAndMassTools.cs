@@ -1597,7 +1597,7 @@ namespace MolecularWeightCalculator
                         // Use index, .YVal, and DeltaX
                         var dblXOffSet = (intMidPointIndex - index) * DeltaX;
 
-                        var udtNewPoint = new XYData()
+                        var udtNewPoint = new XYData
                         {
                             X = udtThisDataPoint.X - dblXOffSet,
                             Y = udtThisDataPoint.Y * Math.Exp(-Math.Pow(dblXOffSet, 2d) / (2d * Math.Pow(dblSigma, 2d)))
@@ -1692,7 +1692,7 @@ namespace MolecularWeightCalculator
                         }
 
                         // The new .YVal is the average of that at intSummationIndex and that at intSummationIndex + 1
-                        var udtNewDataPoint = new XYData()
+                        var udtNewDataPoint = new XYData
                         {
                             X = lstXYSummation[intSummationIndex].X + dblRangeWork,
                             Y = (lstXYSummation[intSummationIndex].Y + lstXYSummation[intSummationIndex + 1].Y) / 2d

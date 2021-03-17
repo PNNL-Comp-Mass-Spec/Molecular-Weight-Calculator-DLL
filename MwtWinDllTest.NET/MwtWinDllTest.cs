@@ -136,7 +136,7 @@ namespace MwtWinDllTest
 
         private void InitializeControls()
         {
-            mMwtWin = new MolecularWeightTool() { ShowErrorDialogs = true };
+            mMwtWin = new MolecularWeightTool { ShowErrorDialogs = true };
             mMwtWin.ProgressChanged += mMwtWin_ProgressChanged;
             mMwtWin.ProgressComplete += mMwtWin_ProgressComplete;
             mMwtWin.ProgressReset += mMwtWin_ProgressReset;
@@ -521,7 +521,7 @@ namespace MwtWinDllTest
             // Abbreviations are supported, for example Serine
             oMwtWin.FormulaFinder.AddCandidateElement("Ser");
 
-            var searchOptions = new FormulaFinderOptions()
+            var searchOptions = new FormulaFinderOptions
             {
                 LimitChargeRange = false,
                 ChargeMin = 1,

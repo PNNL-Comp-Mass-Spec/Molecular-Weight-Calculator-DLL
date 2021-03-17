@@ -27,13 +27,13 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        public Peptide() : base()
+        public Peptide()
         {
             ElementAndMassRoutines = new ElementAndMassTools();
             InitializeClass();
         }
 
-        public Peptide(ElementAndMassTools objElementAndMassTools) : base()
+        public Peptide(ElementAndMassTools objElementAndMassTools)
         {
             ElementAndMassRoutines = objElementAndMassTools;
             InitializeClass();

@@ -25,7 +25,7 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        public MoleMassDilution() : base()
+        public MoleMassDilution()
         {
             InitializeClass();
         }

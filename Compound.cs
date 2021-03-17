@@ -35,13 +35,13 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        public Compound() : base()
+        public Compound()
         {
             ElementAndMassRoutines = new ElementAndMassTools();
             InitializeClass();
         }
 
-        public Compound(ElementAndMassTools objElementAndMassTools) : base()
+        public Compound(ElementAndMassTools objElementAndMassTools)
         {
             ElementAndMassRoutines = objElementAndMassTools;
             InitializeClass();
