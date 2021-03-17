@@ -4,9 +4,9 @@ namespace MolecularWeightCalculator
 {
     internal class NumberConverter
     {
-        public static double CDblSafe(string strWork)
+        public static double CDblSafe(string work)
         {
-            if (double.TryParse(strWork, out var dblValue))
+            if (double.TryParse(work, out var dblValue))
             {
                 return dblValue;
             }
@@ -14,76 +14,76 @@ namespace MolecularWeightCalculator
             return 0d;
         }
 
-        public static short CShortSafe(double dblWork)
+        public static short CShortSafe(double work)
         {
-            if (dblWork <= 32767d && dblWork >= -32767)
+            if (work <= 32767d && work >= -32767)
             {
-                return (short)Math.Round(dblWork);
+                return (short)Math.Round(work);
             }
 
-            if (dblWork < 0d)
+            if (work < 0d)
             {
                 return -32767;
             }
             return 32767;
         }
 
-        public static short CShortSafe(string strWork)
+        public static short CShortSafe(string work)
         {
-            if (double.TryParse(strWork, out var dblValue))
+            if (double.TryParse(work, out var dblValue))
             {
                 return CShortSafe(dblValue);
             }
 
-            if (strWork.ToLower() == "true")
+            if (work.ToLower() == "true")
             {
                 return -1;
             }
             return 0;
         }
 
-        public static int CIntSafe(double dblWork)
+        public static int CIntSafe(double work)
         {
-            if (dblWork <= int.MaxValue && dblWork >= int.MinValue)
+            if (work <= int.MaxValue && work >= int.MinValue)
             {
-                return (int)Math.Round(dblWork);
+                return (int)Math.Round(work);
             }
 
-            if (dblWork < 0d)
+            if (work < 0d)
             {
                 return int.MinValue;
             }
             return int.MaxValue;
         }
 
-        public static int CIntSafe(string strWork)
+        public static int CIntSafe(string work)
         {
-            if (double.TryParse(strWork, out var dblValue))
+            if (double.TryParse(work, out var dblValue))
             {
                 return CIntSafe(dblValue);
             }
 
-            if (strWork.ToLower() == "true")
+            if (work.ToLower() == "true")
             {
                 return -1;
             }
             return 0;
         }
 
-        public static string CStrSafe(object Item)
+        public static string CStrSafe(object item)
         {
             try
             {
-                if (Item == null)
+                if (item == null)
                 {
                     return string.Empty;
                 }
 
-                if (Convert.IsDBNull(Item))
+                if (Convert.IsDBNull(item))
                 {
                     return string.Empty;
                 }
-                return Item.ToString();
+                return item.ToString();
             }
             catch
             {
@@ -91,11 +91,11 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public static bool IsNumber(string strValue)
+        public static bool IsNumber(string value)
         {
             try
             {
-                return double.TryParse(strValue, out _);
+                return double.TryParse(value, out _);
             }
             catch
             {

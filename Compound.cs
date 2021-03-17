@@ -41,9 +41,9 @@ namespace MolecularWeightCalculator
             InitializeClass();
         }
 
-        public Compound(ElementAndMassTools objElementAndMassTools)
+        public Compound(ElementAndMassTools elementAndMassTools)
         {
-            ElementAndMassRoutines = objElementAndMassTools;
+            ElementAndMassRoutines = elementAndMassTools;
             InitializeClass();
         }
 
@@ -73,12 +73,12 @@ namespace MolecularWeightCalculator
             return ErrorDescription;
         }
 
-        public bool ElementPresent(short elementID)
+        public bool ElementPresent(short elementId)
         {
             // Returns True if the element is present
-            if (elementID >= 1 && elementID <= ElementAndMassTools.ELEMENT_COUNT)
+            if (elementId >= 1 && elementId <= ElementAndMassTools.ELEMENT_COUNT)
             {
-                return mComputationStats.Elements[elementID].Used;
+                return mComputationStats.Elements[elementId].Used;
             }
 
             return false;
@@ -100,27 +100,27 @@ namespace MolecularWeightCalculator
             return ErrorDescription;
         }
 
-        public double GetAtomCountForElement(short intElementID)
+        public double GetAtomCountForElement(short elementId)
         {
             // Return the number of atoms of a given element that are present in the formula
             // Note that the number of atoms is not necessarily an integer (e.g. C5.5)
 
-            if (intElementID >= 1 && intElementID <= ElementAndMassTools.ELEMENT_COUNT)
+            if (elementId >= 1 && elementId <= ElementAndMassTools.ELEMENT_COUNT)
             {
-                return mComputationStats.Elements[intElementID].Count;
+                return mComputationStats.Elements[elementId].Count;
             }
 
             return 0d;
         }
 
-        public double GetPercentCompositionForElement(short intElementID)
+        public double GetPercentCompositionForElement(short elementId)
         {
             // Returns the percent composition for element
             // Returns -1 if an invalid ID
 
-            if (intElementID >= 1 && intElementID <= ElementAndMassTools.ELEMENT_COUNT)
+            if (elementId >= 1 && elementId <= ElementAndMassTools.ELEMENT_COUNT)
             {
-                return mComputationStats.PercentCompositions[intElementID].PercentComposition;
+                return mComputationStats.PercentCompositions[elementId].PercentComposition;
             }
 
             return -1;
@@ -131,7 +131,7 @@ namespace MolecularWeightCalculator
             return GetPercentCompositionForElementAsString(elementId, true);
         }
 
-        public string GetPercentCompositionForElementAsString(short elementId, bool blnIncludeStandardDeviation)
+        public string GetPercentCompositionForElementAsString(short elementId, bool includeStandardDeviation)
         {
             // Returns the percent composition and standard deviation for element
             // Returns "" if an invalid ID
@@ -140,7 +140,7 @@ namespace MolecularWeightCalculator
             {
                 var compStats = mComputationStats.PercentCompositions[elementId];
                 var strElementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) + ":";
-                var strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(compStats.PercentComposition, compStats.StdDeviation, blnIncludeStandardDeviation, true);
+                var strPctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(compStats.PercentComposition, compStats.StdDeviation, includeStandardDeviation, true);
                 if (compStats.PercentComposition < 10d)
                 {
                     strPctComposition = " " + strPctComposition;
@@ -218,12 +218,12 @@ namespace MolecularWeightCalculator
             ValueForX = 1.0d;
         }
 
-        public int SetFormula(string strNewFormula)
+        public int SetFormula(string newFormula)
         {
             // Provides an alternate method for setting the formula
             // Returns ErrorID (0 if no error)
 
-            Formula = strNewFormula;
+            Formula = newFormula;
 
             return ErrorID;
         }
@@ -302,18 +302,18 @@ namespace MolecularWeightCalculator
 
         public double Mass => get_Mass(true);
 
-        public double get_Mass(bool blnRecomputeMass)
+        public double get_Mass(bool recomputeMass)
         {
-            if (blnRecomputeMass)
+            if (recomputeMass)
                 UpdateMass();
             return mComputationStats.TotalMass;
         }
 
         public string MassAndStdDevString => get_MassAndStdDevString(true);
 
-        public string get_MassAndStdDevString(bool blnRecomputeMass)
+        public string get_MassAndStdDevString(bool recomputeMass)
         {
-            if (blnRecomputeMass)
+            if (recomputeMass)
                 UpdateMass();
 
             return ElementAndMassRoutines.ReturnFormattedMassAndStdDev(mComputationStats.TotalMass, mComputationStats.StandardDeviation);

@@ -241,29 +241,29 @@ namespace MolecularWeightCalculator
         private bool mDelayUpdateResidueMass;
         //
 
-        private void AppendDataToFragSpectrum(ref int lngIonCount, ref FragmentationSpectrumData[] FragSpectrumWork, float sngMass, float sngIntensity, string strIonSymbol, string strIonSymbolGeneric, int lngSourceResidue, string strSourceResidueSymbol3Letter, short intCharge, IonType eIonType, bool blnIsShoulderIon)
+        private void AppendDataToFragSpectrum(ref int ionCount, ref FragmentationSpectrumData[] fragSpectrumWork, float mass, float intensity, string ionSymbol, string ionSymbolGeneric, int sourceResidue, string sourceResidueSymbol3Letter, short charge, IonType ionType, bool isShoulderIon)
         {
             try
             {
-                if (lngIonCount >= FragSpectrumWork.Length)
+                if (ionCount >= fragSpectrumWork.Length)
                 {
                     // This shouldn't happen
                     Console.WriteLine("In AppendDataToFragSpectrum, lngIonCount is greater than FragSpectrumWork.Length - 1; this is unexpected");
-                    Array.Resize(ref FragSpectrumWork, FragSpectrumWork.Length + 10);
+                    Array.Resize(ref fragSpectrumWork, fragSpectrumWork.Length + 10);
                 }
 
-                var fragIon = FragSpectrumWork[lngIonCount];
-                fragIon.Mass = sngMass;
-                fragIon.Intensity = sngIntensity;
-                fragIon.Symbol = strIonSymbol;
-                fragIon.SymbolGeneric = strIonSymbolGeneric;
-                fragIon.SourceResidueNumber = lngSourceResidue;
-                fragIon.SourceResidueSymbol3Letter = strSourceResidueSymbol3Letter;
-                fragIon.Charge = intCharge;
-                fragIon.IonType = eIonType;
-                fragIon.IsShoulderIon = blnIsShoulderIon;
+                var fragIon = fragSpectrumWork[ionCount];
+                fragIon.Mass = mass;
+                fragIon.Intensity = intensity;
+                fragIon.Symbol = ionSymbol;
+                fragIon.SymbolGeneric = ionSymbolGeneric;
+                fragIon.SourceResidueNumber = sourceResidue;
+                fragIon.SourceResidueSymbol3Letter = sourceResidueSymbol3Letter;
+                fragIon.Charge = charge;
+                fragIon.IonType = ionType;
+                fragIon.IsShoulderIon = isShoulderIon;
 
-                lngIonCount += 1;
+                ionCount += 1;
             }
             catch
             {
@@ -271,18 +271,18 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public int AssureNonZero(int lngNumber)
+        public int AssureNonZero(int number)
         {
             // Returns a non-zero number, either -1 if lngNumber = 0 or lngNumber if it's nonzero
-            if (lngNumber == 0)
+            if (number == 0)
             {
                 return -1;
             }
 
-            return lngNumber;
+            return number;
         }
 
-        private int CheckForModifications(string strPartialSequence, int intResidueNumber, bool blnAddMissingModificationSymbols = false)
+        private int CheckForModifications(string partialSequence, int residueNumber, bool addMissingModificationSymbols = false)
         {
             // Looks at strPartialSequence to see if it contains 1 or more modifications
             // If any modification symbols are found, the modification is recorded in .ModificationIDs()
@@ -290,14 +290,14 @@ namespace MolecularWeightCalculator
             // is added to ModificationSymbols()
             // Returns the total length of all modifications found
 
-            var intSequenceStrLength = strPartialSequence.Length;
+            var intSequenceStrLength = partialSequence.Length;
 
             // Find the entire group of potential modification symbols
             var strModSymbolGroup = string.Empty;
             var intCompareIndex = 0;
             while (intCompareIndex < intSequenceStrLength)
             {
-                var strTestChar = strPartialSequence.Substring(intCompareIndex, 1);
+                var strTestChar = partialSequence.Substring(intCompareIndex, 1);
                 if (ElementAndMassRoutines.IsModSymbolInternal(strTestChar))
                 {
                     strModSymbolGroup += strTestChar;
@@ -332,7 +332,7 @@ namespace MolecularWeightCalculator
 
                 if (!blnMatchFound)
                 {
-                    if (blnAddMissingModificationSymbols)
+                    if (addMissingModificationSymbols)
                     {
                         // Add strModSymbolGroup as a new modification, using a mass of 0 since we don't know the modification mass
                         SetModificationSymbol(strModSymbolGroup, 0d);
@@ -350,7 +350,7 @@ namespace MolecularWeightCalculator
                 if (blnMatchFound)
                 {
                     // Record the modification for this residue
-                    var residue = Residues[intResidueNumber];
+                    var residue = Residues[residueNumber];
                     if (residue.ModificationIDCount < MAX_MODIFICATIONS)
                     {
                         residue.ModificationIDCount = (short)(residue.ModificationIDCount + 1);
@@ -422,7 +422,7 @@ namespace MolecularWeightCalculator
             return intIonCount;
         }
 
-        private Residue FillResidueStructureUsingSymbol(string strSymbol, bool blnUse3LetterCode = true)
+        private Residue FillResidueStructureUsingSymbol(string symbol, bool use3LetterCode = true)
         {
             // Returns a variable of type udtResidueType containing strSymbol as the residue symbol
             // If strSymbol is a valid amino acid type, then also updates udtResidue with the default information
@@ -434,18 +434,18 @@ namespace MolecularWeightCalculator
             udtResidue.Initialize();
             var strSymbol3Letter = string.Empty;
 
-            if (strSymbol.Length > 0)
+            if (symbol.Length > 0)
             {
-                if (blnUse3LetterCode)
+                if (use3LetterCode)
                 {
-                    strSymbol3Letter = strSymbol;
+                    strSymbol3Letter = symbol;
                 }
                 else
                 {
-                    strSymbol3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, true);
+                    strSymbol3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, true);
                     if (strSymbol3Letter.Length == 0)
                     {
-                        strSymbol3Letter = strSymbol;
+                        strSymbol3Letter = symbol;
                     }
                 }
 
@@ -476,10 +476,10 @@ namespace MolecularWeightCalculator
         /// <summary>
         ///
         /// </summary>
-        /// <param name="udtFragSpectrum"></param>
+        /// <param name="fragSpectrum"></param>
         /// <returns>The number of ions in udtFragSpectrum()</returns>
         /// <remarks></remarks>
-        public int GetFragmentationMasses(out FragmentationSpectrumData[] udtFragSpectrum)
+        public int GetFragmentationMasses(out FragmentationSpectrumData[] fragSpectrum)
         {
             // Old: Func GetFragmentationMasses(lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
 
@@ -487,15 +487,15 @@ namespace MolecularWeightCalculator
 
             if (lstFragSpectraData.Count == 0)
             {
-                udtFragSpectrum = new FragmentationSpectrumData[1];
-                udtFragSpectrum[0] = new FragmentationSpectrumData();
+                fragSpectrum = new FragmentationSpectrumData[1];
+                fragSpectrum[0] = new FragmentationSpectrumData();
                 return 0;
             }
 
-            udtFragSpectrum = new FragmentationSpectrumData[lstFragSpectraData.Count + 1];
+            fragSpectrum = new FragmentationSpectrumData[lstFragSpectraData.Count + 1];
 
             for (var intIndex = 0; intIndex < lstFragSpectraData.Count; intIndex++)
-                udtFragSpectrum[intIndex] = lstFragSpectraData[intIndex];
+                fragSpectrum[intIndex] = lstFragSpectraData[intIndex];
 
             return lstFragSpectraData.Count;
         }
@@ -721,13 +721,13 @@ namespace MolecularWeightCalculator
             return mTotalMass;
         }
 
-        private string GetInternalResidues(int lngCurrentResidueIndex, IonType eIonType)
+        private string GetInternalResidues(int currentResidueIndex, IonType ionType)
         {
             var blnPhosphorylated = false;
-            return GetInternalResidues(lngCurrentResidueIndex, eIonType, out blnPhosphorylated);
+            return GetInternalResidues(currentResidueIndex, ionType, out blnPhosphorylated);
         }
 
-        private string GetInternalResidues(int lngCurrentResidueIndex, IonType eIonType, out bool blnPhosphorylated)
+        private string GetInternalResidues(int currentResidueIndex, IonType ionType, out bool phosphorylated)
         {
             // Determines the residues preceding or following the given residue (up to and including the current residue)
             // If eIonType is a, b, or c ions, then returns residues from the N terminus
@@ -737,49 +737,49 @@ namespace MolecularWeightCalculator
             // Note that the residue symbols are separated by a space to avoid accidental matching by the InStr() function
 
             var strInternalResidues = string.Empty;
-            blnPhosphorylated = false;
-            if (eIonType == IonType.YIon || eIonType == IonType.ZIon)
+            phosphorylated = false;
+            if (ionType == IonType.YIon || ionType == IonType.ZIon)
             {
-                for (var lngResidueIndex = lngCurrentResidueIndex; lngResidueIndex <= ResidueCount; lngResidueIndex++)
+                for (var lngResidueIndex = currentResidueIndex; lngResidueIndex <= ResidueCount; lngResidueIndex++)
                 {
                     strInternalResidues = strInternalResidues + Residues[lngResidueIndex].Symbol + " ";
                     if (Residues[lngResidueIndex].Phosphorylated)
-                        blnPhosphorylated = true;
+                        phosphorylated = true;
                 }
             }
             else
             {
-                for (var lngResidueIndex = 1; lngResidueIndex <= lngCurrentResidueIndex; lngResidueIndex++)
+                for (var lngResidueIndex = 1; lngResidueIndex <= currentResidueIndex; lngResidueIndex++)
                 {
                     strInternalResidues = strInternalResidues + Residues[lngResidueIndex].Symbol + " ";
                     if (Residues[lngResidueIndex].Phosphorylated)
-                        blnPhosphorylated = true;
+                        phosphorylated = true;
                 }
             }
 
             return strInternalResidues;
         }
 
-        public int GetModificationSymbol(int lngModificationID, out string strModSymbol, out double dblModificationMass, out bool blnIndicatesPhosphorylation, out string strComment)
+        public int GetModificationSymbol(int modificationId, out string modSymbol, out double modificationMass, out bool indicatesPhosphorylation, out string comment)
         {
             // Returns information on the modification with lngModificationID
             // Returns 0 if success, 1 if failure
 
-            if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
+            if (modificationId >= 1 && modificationId <= ModificationSymbolCount)
             {
-                var mod = ModificationSymbols[lngModificationID];
-                strModSymbol = mod.Symbol;
-                dblModificationMass = mod.ModificationMass;
-                blnIndicatesPhosphorylation = mod.IndicatesPhosphorylation;
-                strComment = mod.Comment;
+                var mod = ModificationSymbols[modificationId];
+                modSymbol = mod.Symbol;
+                modificationMass = mod.ModificationMass;
+                indicatesPhosphorylation = mod.IndicatesPhosphorylation;
+                comment = mod.Comment;
 
                 return 0;
             }
 
-            strModSymbol = string.Empty;
-            dblModificationMass = 0d;
-            blnIndicatesPhosphorylation = false;
-            strComment = string.Empty;
+            modSymbol = string.Empty;
+            modificationMass = 0d;
+            indicatesPhosphorylation = false;
+            comment = string.Empty;
             return 1;
         }
 
@@ -790,7 +790,7 @@ namespace MolecularWeightCalculator
             return ModificationSymbolCount;
         }
 
-        public int GetModificationSymbolID(string strModSymbol)
+        public int GetModificationSymbolID(string modSymbol)
         {
             // Returns the ID for a given modification
             // Returns 0 if not found, the ID if found
@@ -799,7 +799,7 @@ namespace MolecularWeightCalculator
 
             for (var intIndex = 1; intIndex <= ModificationSymbolCount; intIndex++)
             {
-                if ((ModificationSymbols[intIndex].Symbol ?? "") == (strModSymbol ?? ""))
+                if ((ModificationSymbols[intIndex].Symbol ?? "") == (modSymbol ?? ""))
                 {
                     lngModificationIDMatch = intIndex;
                     break;
@@ -809,16 +809,16 @@ namespace MolecularWeightCalculator
             return lngModificationIDMatch;
         }
 
-        public int GetResidue(int lngResidueNumber, ref string strSymbol, ref double dblMass, ref bool blnIsModified, ref short intModificationCount)
+        public int GetResidue(int residueNumber, ref string symbol, ref double mass, ref bool isModified, ref short modificationCount)
         {
             // Returns 0 if success, 1 if failure
-            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
+            if (residueNumber >= 1 && residueNumber <= ResidueCount)
             {
-                var residue = Residues[lngResidueNumber];
-                strSymbol = residue.Symbol;
-                dblMass = residue.Mass;
-                blnIsModified = residue.ModificationIDCount > 0;
-                intModificationCount = residue.ModificationIDCount;
+                var residue = Residues[residueNumber];
+                symbol = residue.Symbol;
+                mass = residue.Mass;
+                isModified = residue.ModificationIDCount > 0;
+                modificationCount = residue.ModificationIDCount;
 
                 return 0;
             }
@@ -831,19 +831,19 @@ namespace MolecularWeightCalculator
             return ResidueCount;
         }
 
-        public int GetResidueCountSpecificResidue(string strResidueSymbol, bool blnUse3LetterCode)
+        public int GetResidueCountSpecificResidue(string residueSymbol, bool use3LetterCode)
         {
             // Returns the number of occurrences of the given residue in the loaded sequence
 
             string strSearchResidue3Letter;
 
-            if (blnUse3LetterCode)
+            if (use3LetterCode)
             {
-                strSearchResidue3Letter = strResidueSymbol;
+                strSearchResidue3Letter = residueSymbol;
             }
             else
             {
-                strSearchResidue3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strResidueSymbol, true);
+                strSearchResidue3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(residueSymbol, true);
             }
 
             var lngResidueCount = 0;
@@ -858,19 +858,19 @@ namespace MolecularWeightCalculator
             return lngResidueCount;
         }
 
-        public int GetResidueModificationIDs(int lngResidueNumber, ref int[] lngModificationIDsOneBased)
+        public int GetResidueModificationIDs(int residueNumber, ref int[] modificationIDsOneBased)
         {
             // Returns the number of Modifications
             // ReDims lngModificationIDsOneBased() to hold the values
 
-            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
+            if (residueNumber >= 1 && residueNumber <= ResidueCount)
             {
-                var residue = Residues[lngResidueNumber];
+                var residue = Residues[residueNumber];
 
                 // Need to use this in case the calling program is sending an array with fixed dimensions
                 try
                 {
-                    lngModificationIDsOneBased = new int[residue.ModificationIDCount + 1];
+                    modificationIDsOneBased = new int[residue.ModificationIDCount + 1];
                 }
                 catch
                 {
@@ -878,7 +878,7 @@ namespace MolecularWeightCalculator
                 }
 
                 for (var intIndex = 1; intIndex <= residue.ModificationIDCount; intIndex++)
-                    lngModificationIDsOneBased[intIndex] = residue.ModificationIDs[intIndex];
+                    modificationIDsOneBased[intIndex] = residue.ModificationIDs[intIndex];
 
                 return residue.ModificationIDCount;
             }
@@ -886,17 +886,17 @@ namespace MolecularWeightCalculator
             return 0;
         }
 
-        public string GetResidueSymbolOnly(int lngResidueNumber, bool blnUse3LetterCode)
+        public string GetResidueSymbolOnly(int residueNumber, bool use3LetterCode)
         {
             // Returns the symbol at the given residue number, or string.empty if an invalid residue number
 
             string strSymbol;
 
-            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
+            if (residueNumber >= 1 && residueNumber <= ResidueCount)
             {
-                strSymbol = Residues[lngResidueNumber].Symbol;
+                strSymbol = Residues[residueNumber].Symbol;
 
-                if (!blnUse3LetterCode)
+                if (!use3LetterCode)
                     strSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, false);
             }
             else
@@ -909,51 +909,51 @@ namespace MolecularWeightCalculator
 
         public string GetSequence()
         {
-            return GetSequence(blnUse3LetterCode: true, blnAddSpaceEvery10Residues: false, blnSeparateResiduesWithDash: false, blnIncludeNAndCTerminii: false, blnIncludeModificationSymbols: true);
+            return GetSequence(use3LetterCode: true, addSpaceEvery10Residues: false, separateResiduesWithDash: false, includeNAndCTerminii: false, includeModificationSymbols: true);
         }
 
         public string GetSequence1LetterCode()
         {
-            return GetSequence(blnUse3LetterCode: false, blnAddSpaceEvery10Residues: false, blnSeparateResiduesWithDash: false, blnIncludeNAndCTerminii: false, blnIncludeModificationSymbols: true);
+            return GetSequence(use3LetterCode: false, addSpaceEvery10Residues: false, separateResiduesWithDash: false, includeNAndCTerminii: false, includeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode)
+        public string GetSequence(bool use3LetterCode)
         {
-            return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues: false, blnSeparateResiduesWithDash: false, blnIncludeNAndCTerminii: false, blnIncludeModificationSymbols: true);
+            return GetSequence(use3LetterCode, addSpaceEvery10Residues: false, separateResiduesWithDash: false, includeNAndCTerminii: false, includeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode,
-            bool blnAddSpaceEvery10Residues)
+        public string GetSequence(bool use3LetterCode,
+            bool addSpaceEvery10Residues)
         {
-            return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash: false, blnIncludeNAndCTerminii: false, blnIncludeModificationSymbols: true);
+            return GetSequence(use3LetterCode, addSpaceEvery10Residues, separateResiduesWithDash: false, includeNAndCTerminii: false, includeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode,
-            bool blnAddSpaceEvery10Residues,
-            bool blnSeparateResiduesWithDash)
+        public string GetSequence(bool use3LetterCode,
+            bool addSpaceEvery10Residues,
+            bool separateResiduesWithDash)
         {
-            return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNAndCTerminii: false, blnIncludeModificationSymbols: true);
+            return GetSequence(use3LetterCode, addSpaceEvery10Residues, separateResiduesWithDash, includeNAndCTerminii: false, includeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode,
-            bool blnAddSpaceEvery10Residues,
-            bool blnSeparateResiduesWithDash,
-            bool blnIncludeNAndCTerminii)
+        public string GetSequence(bool use3LetterCode,
+            bool addSpaceEvery10Residues,
+            bool separateResiduesWithDash,
+            bool includeNAndCTerminii)
         {
-            return GetSequence(blnUse3LetterCode, blnAddSpaceEvery10Residues, blnSeparateResiduesWithDash, blnIncludeNAndCTerminii, blnIncludeModificationSymbols: true);
+            return GetSequence(use3LetterCode, addSpaceEvery10Residues, separateResiduesWithDash, includeNAndCTerminii, includeModificationSymbols: true);
         }
 
-        public string GetSequence(bool blnUse3LetterCode,
-            bool blnAddSpaceEvery10Residues,
-            bool blnSeparateResiduesWithDash,
-            bool blnIncludeNAndCTerminii,
-            bool blnIncludeModificationSymbols)
+        public string GetSequence(bool use3LetterCode,
+            bool addSpaceEvery10Residues,
+            bool separateResiduesWithDash,
+            bool includeNAndCTerminii,
+            bool includeModificationSymbols)
         {
             // Construct a text sequence using Residues() and the N and C Terminus info
 
             string strDashAdd;
 
-            if (blnSeparateResiduesWithDash)
+            if (separateResiduesWithDash)
                 strDashAdd = "-";
             else
                 strDashAdd = string.Empty;
@@ -963,7 +963,7 @@ namespace MolecularWeightCalculator
             {
                 var residue = Residues[lngIndex];
                 var strSymbol3Letter = residue.Symbol;
-                if (blnUse3LetterCode)
+                if (use3LetterCode)
                 {
                     strSequence += strSymbol3Letter;
                 }
@@ -975,7 +975,7 @@ namespace MolecularWeightCalculator
                     strSequence += strSymbol1Letter;
                 }
 
-                if (blnIncludeModificationSymbols)
+                if (includeModificationSymbols)
                 {
                     for (var intModIndex = 1; intModIndex <= residue.ModificationIDCount; intModIndex++)
                     {
@@ -993,7 +993,7 @@ namespace MolecularWeightCalculator
 
                 if (lngIndex != ResidueCount)
                 {
-                    if (blnAddSpaceEvery10Residues)
+                    if (addSpaceEvery10Residues)
                     {
                         if (lngIndex % 10 == 0)
                         {
@@ -1011,7 +1011,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            if (blnIncludeNAndCTerminii)
+            if (includeNAndCTerminii)
             {
                 strSequence = mNTerminus.Formula + strDashAdd + strSequence + strDashAdd + mCTerminus.Formula;
             }
@@ -1034,74 +1034,74 @@ namespace MolecularWeightCalculator
             return mAmmoniaLossSymbol;
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues)
+        public string GetTrypticName(string proteinResidues, string peptideResidues)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, out _, out _, false,
+            return GetTrypticName(proteinResidues, peptideResidues, out _, out _, false,
                                   TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            int lngProteinSearchStartLoc)
+        public string GetTrypticName(string proteinResidues, string peptideResidues,
+            int proteinSearchStartLoc)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, out _, out _, false,
-                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, lngProteinSearchStartLoc);
+            return GetTrypticName(proteinResidues, peptideResidues, out _, out _, false,
+                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, proteinSearchStartLoc);
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd)
+        public string GetTrypticName(string proteinResidues, string peptideResidues,
+            out int returnResidueStart,
+            out int returnResidueEnd)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, out lngReturnResidueStart, out lngReturnResidueEnd, false,
+            return GetTrypticName(proteinResidues, peptideResidues, out returnResidueStart, out returnResidueEnd, false,
                                   TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd,
-            bool blnICR2LSCompatible)
+        public string GetTrypticName(string proteinResidues, string peptideResidues,
+            out int returnResidueStart,
+            out int returnResidueEnd,
+            bool ICR2LSCompatible)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, out lngReturnResidueStart, out lngReturnResidueEnd, blnICR2LSCompatible,
+            return GetTrypticName(proteinResidues, peptideResidues, out returnResidueStart, out returnResidueEnd, ICR2LSCompatible,
                                   TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
         }
 
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd,
-            bool blnICR2LSCompatible,
-            string strRuleResidues,
-            string strExceptionResidues,
-            string strTerminiiSymbol)
+        public string GetTrypticName(string proteinResidues, string peptideResidues,
+            out int returnResidueStart,
+            out int returnResidueEnd,
+            bool ICR2LSCompatible,
+            string ruleResidues,
+            string exceptionResidues,
+            string terminiiSymbol)
         {
-            return GetTrypticName(strProteinResidues, strPeptideResidues, out lngReturnResidueStart, out lngReturnResidueEnd, blnICR2LSCompatible,
-                                  strRuleResidues, strExceptionResidues, strTerminiiSymbol, true, 1);
+            return GetTrypticName(proteinResidues, peptideResidues, out returnResidueStart, out returnResidueEnd, ICR2LSCompatible,
+                                  ruleResidues, exceptionResidues, terminiiSymbol, true, 1);
         }
 
         /// <summary>
-        /// Examines strPeptideResidues to see where they exist in strProteinResidues
+        /// Examines <paramref name="peptideResidues"/> to see where they exist in <paramref name="proteinResidues"/>
         /// Constructs a name string based on their position and based on whether the fragment is truly tryptic
-        /// In addition, returns the position of the first and last residue in lngReturnResidueStart and lngReturnResidueEnd
+        /// In addition, returns the position of the first and last residue in <paramref name="returnResidueStart"/> and <paramref name="returnResidueEnd"/>
         /// </summary>
-        /// <param name="strProteinResidues"></param>
-        /// <param name="strPeptideResidues"></param>
-        /// <param name="lngReturnResidueStart">Output: start peptides of the peptide residues in the protein</param>
-        /// <param name="lngReturnResidueEnd">Output: end peptides of the peptide residues in the protein</param>
-        /// <param name="blnICR2LSCompatible"></param>
-        /// <param name="strRuleResidues"></param>
-        /// <param name="strExceptionResidues"></param>
-        /// <param name="strTerminiiSymbol"></param>
-        /// <param name="blnIgnoreCase"></param>
-        /// <param name="lngProteinSearchStartLoc"></param>
+        /// <param name="proteinResidues"></param>
+        /// <param name="peptideResidues"></param>
+        /// <param name="returnResidueStart">Output: start peptides of the peptide residues in the protein</param>
+        /// <param name="returnResidueEnd">Output: end peptides of the peptide residues in the protein</param>
+        /// <param name="ICR2LSCompatible"></param>
+        /// <param name="ruleResidues"></param>
+        /// <param name="exceptionResidues"></param>
+        /// <param name="terminiiSymbol"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="proteinSearchStartLoc"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public string GetTrypticName(string strProteinResidues, string strPeptideResidues,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd,
-            bool blnICR2LSCompatible,
-            string strRuleResidues,
-            string strExceptionResidues,
-            string strTerminiiSymbol,
-            bool blnIgnoreCase,
-            int lngProteinSearchStartLoc)
+        public string GetTrypticName(string proteinResidues, string peptideResidues,
+            out int returnResidueStart,
+            out int returnResidueEnd,
+            bool ICR2LSCompatible,
+            string ruleResidues,
+            string exceptionResidues,
+            string terminiiSymbol,
+            bool ignoreCase,
+            int proteinSearchStartLoc)
         {
             // The tryptic name in the following format
             // t1  indicates tryptic peptide 1
@@ -1110,50 +1110,50 @@ namespace MolecularWeightCalculator
             // t5.2  indicates tryptic peptide 5, plus one more tryptic peptide, i.e. t5 and t6
             // t5.3  indicates tryptic peptide 5, plus two more tryptic peptides, i.e. t5, t6, and t7
             // 40.52  means that the residues are not tryptic, and simply range from residue 40 to 52
-            // If the peptide residues are not present in strProteinResidues, then returns ""
-            // Since a peptide can occur multiple times in a protein, one can set lngProteinSearchStartLoc to a value larger than 1 to ignore previous hits
+            // If the peptide residues are not present in proteinResidues, then returns ""
+            // Since a peptide can occur multiple times in a protein, one can set proteinSearchStartLoc to a value larger than 1 to ignore previous hits
 
-            // If blnICR2LSCompatible is True, then the values returned when a peptide is not tryptic are modified to
+            // If ICR2LSCompatible is True, then the values returned when a peptide is not tryptic are modified to
             // range from the starting residue, to the ending residue +1
-            // lngReturnResidueEnd is always equal to the position of the final residue, regardless of blnICR2LSCompatible
+            // returnResidueEnd is always equal to the position of the final residue, regardless of ICR2LSCompatible
 
-            // For example, if strProteinResidues = "IGKANR"
-            // Then when strPeptideResidues = "IGK", the TrypticName is t1
-            // Then when strPeptideResidues = "ANR", the TrypticName is t2
-            // Then when strPeptideResidues = "IGKANR", the TrypticName is t1.2
-            // Then when strPeptideResidues = "IG", the TrypticName is 1.2
-            // Then when strPeptideResidues = "KANR", the TrypticName is 3.6
-            // Then when strPeptideResidues = "NR", the TrypticName is 5.6
+            // For example, if proteinResidues = "IGKANR"
+            // Then when peptideResidues = "IGK", the TrypticName is t1
+            // Then when peptideResidues = "ANR", the TrypticName is t2
+            // Then when peptideResidues = "IGKANR", the TrypticName is t1.2
+            // Then when peptideResidues = "IG", the TrypticName is 1.2
+            // Then when peptideResidues = "KANR", the TrypticName is 3.6
+            // Then when peptideResidues = "NR", the TrypticName is 5.6
 
-            // However, if blnICR2LSCompatible = True, then the last three are changed to:
-            // Then when strPeptideResidues = "IG", the TrypticName is 1.3
-            // Then when strPeptideResidues = "KANR", the TrypticName is 3.7
-            // Then when strPeptideResidues = "NR", the TrypticName is 5.7
+            // However, if ICR2LSCompatible = True, then the last three are changed to:
+            // Then when peptideResidues = "IG", the TrypticName is 1.3
+            // Then when peptideResidues = "KANR", the TrypticName is 3.7
+            // Then when peptideResidues = "NR", the TrypticName is 5.7
 
             int intStartLoc;
 
-            if (blnIgnoreCase)
+            if (ignoreCase)
             {
-                strProteinResidues = strProteinResidues.ToUpper();
-                strPeptideResidues = strPeptideResidues.ToUpper();
+                proteinResidues = proteinResidues.ToUpper();
+                peptideResidues = peptideResidues.ToUpper();
             }
 
-            if (lngProteinSearchStartLoc <= 0)
+            if (proteinSearchStartLoc <= 0)
             {
-                intStartLoc = strProteinResidues.IndexOf(strPeptideResidues, StringComparison.Ordinal);
+                intStartLoc = proteinResidues.IndexOf(peptideResidues, StringComparison.Ordinal);
             }
             else
             {
-                intStartLoc = strProteinResidues.Substring(lngProteinSearchStartLoc).IndexOf(strPeptideResidues, StringComparison.Ordinal);
+                intStartLoc = proteinResidues.Substring(proteinSearchStartLoc).IndexOf(peptideResidues, StringComparison.Ordinal);
                 if (intStartLoc >= 0)
                 {
-                    intStartLoc = intStartLoc + lngProteinSearchStartLoc - 1;
+                    intStartLoc = intStartLoc + proteinSearchStartLoc - 1;
                 }
             }
 
-            var lngPeptideResiduesLength = strPeptideResidues.Length;
+            var lngPeptideResiduesLength = peptideResidues.Length;
 
-            if (intStartLoc >= 0 && strProteinResidues.Length > 0 && lngPeptideResiduesLength > 0)
+            if (intStartLoc >= 0 && proteinResidues.Length > 0 && lngPeptideResiduesLength > 0)
             {
                 var intEndLoc = intStartLoc + lngPeptideResiduesLength - 1;
 
@@ -1162,37 +1162,37 @@ namespace MolecularWeightCalculator
                 string strPrefix;
                 if (intStartLoc > 0)
                 {
-                    strPrefix = strProteinResidues.Substring(intStartLoc - 1, 1);
+                    strPrefix = proteinResidues.Substring(intStartLoc - 1, 1);
                 }
                 else
                 {
-                    strPrefix = strTerminiiSymbol;
+                    strPrefix = terminiiSymbol;
                 }
 
                 string strSuffix;
-                if (intEndLoc == strProteinResidues.Length - 1)
+                if (intEndLoc == proteinResidues.Length - 1)
                 {
-                    strSuffix = strTerminiiSymbol;
+                    strSuffix = terminiiSymbol;
                 }
                 else
                 {
-                    strSuffix = strProteinResidues.Substring(intEndLoc + 1, 1);
+                    strSuffix = proteinResidues.Substring(intEndLoc + 1, 1);
                 }
 
-                var blnMatchesCleavageRule = CheckSequenceAgainstCleavageRule(strPrefix + "." + strPeptideResidues + "." + strSuffix,
-                    strRuleResidues,
-                    strExceptionResidues,
+                var blnMatchesCleavageRule = CheckSequenceAgainstCleavageRule(strPrefix + "." + peptideResidues + "." + strSuffix,
+                    ruleResidues,
+                    exceptionResidues,
                     false,
                     ".",
-                    strTerminiiSymbol,
-                    blnIgnoreCase);
+                    terminiiSymbol,
+                    ignoreCase);
 
                 string strTrypticName;
                 if (blnMatchesCleavageRule)
                 {
                     // Construct strTrypticName
 
-                    // Determine which tryptic residue strPeptideResidues is
+                    // Determine which tryptic residue peptideResidues is
                     short intTrypticResidueNumber;
                     int lngRuleResidueLoc;
                     if (intStartLoc == 0)
@@ -1201,13 +1201,13 @@ namespace MolecularWeightCalculator
                     }
                     else
                     {
-                        var strProteinResiduesBeforeStartLoc = strProteinResidues.Substring(0, intStartLoc - 1);
-                        var strResidueFollowingSearchResidues = strPeptideResidues.Substring(0, 1);
+                        var strProteinResiduesBeforeStartLoc = proteinResidues.Substring(0, intStartLoc - 1);
+                        var strResidueFollowingSearchResidues = peptideResidues.Substring(0, 1);
                         intTrypticResidueNumber = 0;
                         lngRuleResidueLoc = -1;
                         do
                         {
-                            lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResiduesBeforeStartLoc, strResidueFollowingSearchResidues, lngRuleResidueLoc + 1, strRuleResidues, strExceptionResidues, strTerminiiSymbol);
+                            lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResiduesBeforeStartLoc, strResidueFollowingSearchResidues, lngRuleResidueLoc + 1, ruleResidues, exceptionResidues, terminiiSymbol);
                             if (lngRuleResidueLoc >= 0)
                             {
                                 intTrypticResidueNumber = (short)(intTrypticResidueNumber + 1);
@@ -1217,13 +1217,13 @@ namespace MolecularWeightCalculator
                         intTrypticResidueNumber = (short)(intTrypticResidueNumber + 1);
                     }
 
-                    // Determine number of K or R residues in strPeptideResidues
+                    // Determine number of K or R residues in peptideResidues
                     // Ignore K or R residues followed by Proline
                     short intRuleResidueMatchCount = 0;
                     lngRuleResidueLoc = -1;
                     do
                     {
-                        lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strPeptideResidues, strSuffix, lngRuleResidueLoc + 1, strRuleResidues, strExceptionResidues, strTerminiiSymbol);
+                        lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(peptideResidues, strSuffix, lngRuleResidueLoc + 1, ruleResidues, exceptionResidues, terminiiSymbol);
                         if (lngRuleResidueLoc >= 0)
                         {
                             intRuleResidueMatchCount = (short)(intRuleResidueMatchCount + 1);
@@ -1237,7 +1237,7 @@ namespace MolecularWeightCalculator
                         strTrypticName = strTrypticName + "." + intRuleResidueMatchCount;
                     }
                 }
-                else if (blnICR2LSCompatible)
+                else if (ICR2LSCompatible)
                 {
                     strTrypticName = intStartLoc + "." + (intEndLoc + 1);
                 }
@@ -1246,150 +1246,150 @@ namespace MolecularWeightCalculator
                     strTrypticName = intStartLoc + "." + intEndLoc;
                 }
 
-                lngReturnResidueStart = intStartLoc;
-                lngReturnResidueEnd = intEndLoc;
+                returnResidueStart = intStartLoc;
+                returnResidueEnd = intEndLoc;
                 return strTrypticName;
             }
 
             // Residues not found
-            lngReturnResidueStart = 0;
-            lngReturnResidueEnd = 0;
+            returnResidueStart = 0;
+            returnResidueEnd = 0;
             return string.Empty;
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues,
-            string strPeptideResidues)
+        public string GetTrypticNameMultipleMatches(string proteinResidues,
+            string peptideResidues)
         {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
+            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
                                                  out _, out _, out _, false,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues,
-            string strPeptideResidues,
-            int lngProteinSearchStartLoc)
+        public string GetTrypticNameMultipleMatches(string proteinResidues,
+            string peptideResidues,
+            int proteinSearchStartLoc)
         {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 out _, out _, out _, false,
-                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
-                                                 lngProteinSearchStartLoc, ", ");
-        }
-
-        public string GetTrypticNameMultipleMatches(string strProteinResidues,
-            string strPeptideResidues,
-            int lngProteinSearchStartLoc,
-            string strListDelimiter)
-        {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
+            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
                                                  out _, out _, out _, false,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
-                                                 lngProteinSearchStartLoc, strListDelimiter);
+                                                 proteinSearchStartLoc, ", ");
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues,
-            string strPeptideResidues,
-            out int lngReturnMatchCount,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd)
+        public string GetTrypticNameMultipleMatches(string proteinResidues,
+            string peptideResidues,
+            int proteinSearchStartLoc,
+            string listDelimiter)
         {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 out lngReturnMatchCount, out lngReturnResidueStart, out lngReturnResidueEnd, false,
+            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
+                                                 out _, out _, out _, false,
+                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
+                                                 proteinSearchStartLoc, listDelimiter);
+        }
+
+        public string GetTrypticNameMultipleMatches(string proteinResidues,
+            string peptideResidues,
+            out int returnMatchCount,
+            out int returnResidueStart,
+            out int returnResidueEnd)
+        {
+            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
+                                                 out returnMatchCount, out returnResidueStart, out returnResidueEnd, false,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues,
-            string strPeptideResidues,
-            out int lngReturnMatchCount,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd,
-            bool blnICR2LSCompatible)
+        public string GetTrypticNameMultipleMatches(string proteinResidues,
+            string peptideResidues,
+            out int returnMatchCount,
+            out int returnResidueStart,
+            out int returnResidueEnd,
+            bool ICR2LSCompatible)
         {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 out lngReturnMatchCount, out lngReturnResidueStart, out lngReturnResidueEnd, blnICR2LSCompatible,
+            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
+                                                 out returnMatchCount, out returnResidueStart, out returnResidueEnd, ICR2LSCompatible,
                                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
         }
 
-        public string GetTrypticNameMultipleMatches(string strProteinResidues,
-            string strPeptideResidues,
-            out int lngReturnMatchCount,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd,
-            bool blnICR2LSCompatible,
-            string strRuleResidues,
-            string strExceptionResidues,
-            string strTerminiiSymbol)
+        public string GetTrypticNameMultipleMatches(string proteinResidues,
+            string peptideResidues,
+            out int returnMatchCount,
+            out int returnResidueStart,
+            out int returnResidueEnd,
+            bool ICR2LSCompatible,
+            string ruleResidues,
+            string exceptionResidues,
+            string terminiiSymbol)
         {
-            return GetTrypticNameMultipleMatches(strProteinResidues, strPeptideResidues,
-                                                 out lngReturnMatchCount, out lngReturnResidueStart, out lngReturnResidueEnd, blnICR2LSCompatible,
-                                                 strRuleResidues, strExceptionResidues, strTerminiiSymbol, true, 1, ", ");
+            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
+                                                 out returnMatchCount, out returnResidueStart, out returnResidueEnd, ICR2LSCompatible,
+                                                 ruleResidues, exceptionResidues, terminiiSymbol, true, 1, ", ");
         }
 
         /// <summary>
-        /// Examines strPeptideResidues to see where they exist in strProteinResidues
+        /// Examines <paramref name="peptideResidues"/> to see where they exist in <paramref name="proteinResidues"/>
         /// Looks for all possible matches, returning them as a comma separated list
         /// </summary>
-        /// <param name="strProteinResidues"></param>
-        /// <param name="strPeptideResidues"></param>
-        /// <param name="lngReturnMatchCount"></param>
-        /// <param name="lngReturnResidueStart"></param>
-        /// <param name="lngReturnResidueEnd"></param>
-        /// <param name="blnICR2LSCompatible"></param>
-        /// <param name="strRuleResidues"></param>
-        /// <param name="strExceptionResidues"></param>
-        /// <param name="strTerminiiSymbol"></param>
-        /// <param name="blnIgnoreCase"></param>
-        /// <param name="lngProteinSearchStartLoc"></param>
-        /// <param name="strListDelimiter"></param>
+        /// <param name="proteinResidues"></param>
+        /// <param name="peptideResidues"></param>
+        /// <param name="returnMatchCount"></param>
+        /// <param name="returnResidueStart"></param>
+        /// <param name="returnResidueEnd"></param>
+        /// <param name="ICR2LSCompatible"></param>
+        /// <param name="ruleResidues"></param>
+        /// <param name="exceptionResidues"></param>
+        /// <param name="terminiiSymbol"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="proteinSearchStartLoc"></param>
+        /// <param name="listDelimiter"></param>
         /// <returns>The number of matches</returns>
         /// <remarks></remarks>
-        public string GetTrypticNameMultipleMatches(string strProteinResidues,
-            string strPeptideResidues,
-            out int lngReturnMatchCount,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd,
-            bool blnICR2LSCompatible,
-            string strRuleResidues,
-            string strExceptionResidues,
-            string strTerminiiSymbol,
-            bool blnIgnoreCase,
-            int lngProteinSearchStartLoc,
-            string strListDelimiter)
+        public string GetTrypticNameMultipleMatches(string proteinResidues,
+            string peptideResidues,
+            out int returnMatchCount,
+            out int returnResidueStart,
+            out int returnResidueEnd,
+            bool ICR2LSCompatible,
+            string ruleResidues,
+            string exceptionResidues,
+            string terminiiSymbol,
+            bool ignoreCase,
+            int proteinSearchStartLoc,
+            string listDelimiter)
         {
-            // Returns the number of matches in lngReturnMatchCount
-            // lngReturnResidueStart contains the residue number of the start of the first match
-            // lngReturnResidueEnd contains the residue number of the end of the last match
+            // Returns the number of matches in returnMatchCount
+            // returnResidueStart contains the residue number of the start of the first match
+            // returnResidueEnd contains the residue number of the end of the last match
 
             // See GetTrypticName for additional information
 
-            var lngCurrentSearchLoc = lngProteinSearchStartLoc;
-            lngReturnMatchCount = 0;
-            lngReturnResidueStart = 0;
-            lngReturnResidueEnd = 0;
+            var lngCurrentSearchLoc = proteinSearchStartLoc;
+            returnMatchCount = 0;
+            returnResidueStart = 0;
+            returnResidueEnd = 0;
             var strNameList = string.Empty;
 
             do
             {
-                var strCurrentName = GetTrypticName(strProteinResidues, strPeptideResidues, out var lngCurrentResidueStart, out var lngCurrentResidueEnd, blnICR2LSCompatible, strRuleResidues, strExceptionResidues, strTerminiiSymbol, blnIgnoreCase, lngCurrentSearchLoc);
+                var strCurrentName = GetTrypticName(proteinResidues, peptideResidues, out var lngCurrentResidueStart, out var lngCurrentResidueEnd, ICR2LSCompatible, ruleResidues, exceptionResidues, terminiiSymbol, ignoreCase, lngCurrentSearchLoc);
 
                 if (strCurrentName.Length > 0)
                 {
                     if (strNameList.Length > 0)
                     {
-                        strNameList += strListDelimiter;
+                        strNameList += listDelimiter;
                     }
 
                     strNameList += strCurrentName;
                     lngCurrentSearchLoc = lngCurrentResidueEnd + 1;
-                    lngReturnMatchCount += 1;
+                    returnMatchCount += 1;
 
-                    if (lngReturnMatchCount == 1)
+                    if (returnMatchCount == 1)
                     {
-                        lngReturnResidueStart = lngCurrentResidueStart;
+                        returnResidueStart = lngCurrentResidueStart;
                     }
 
-                    lngReturnResidueEnd = lngCurrentResidueEnd;
+                    returnResidueEnd = lngCurrentResidueEnd;
 
-                    if (lngCurrentSearchLoc > strProteinResidues.Length)
+                    if (lngCurrentSearchLoc > proteinResidues.Length)
                         break;
                 }
                 else
@@ -1401,70 +1401,70 @@ namespace MolecularWeightCalculator
             return strNameList;
         }
 
-        private int GetTrypticNameFindNextCleavageLoc(string strSearchResidues, string strResidueFollowingSearchResidues,
-            int lngStartChar,
-            string strSearchChars = TRYPTIC_RULE_RESIDUES,
-            string strExceptionSuffixResidues = TRYPTIC_EXCEPTION_RESIDUES,
-            string strTerminiiSymbol = TERMINII_SYMBOL)
+        private int GetTrypticNameFindNextCleavageLoc(string searchResidues, string residueFollowingSearchResidues,
+            int startChar,
+            string searchChars = TRYPTIC_RULE_RESIDUES,
+            string exceptionSuffixResidues = TRYPTIC_EXCEPTION_RESIDUES,
+            string terminiiSymbol = TERMINII_SYMBOL)
         {
-            // Finds the location of the next strSearchChar in strSearchResidues (K or R by default)
-            // Assumes strSearchResidues are already upper case
+            // Finds the location of the next strSearchChar in searchResidues (K or R by default)
+            // Assumes searchResidues are already upper case
             // Examines the residue following the matched residue
-            // If it matches one of the characters in strExceptionSuffixResidues, then the match is not counted
-            // Note that strResidueFollowingSearchResidues is necessary in case the potential cleavage residue is the final residue in strSearchResidues
+            // If it matches one of the characters in exceptionSuffixResidues, then the match is not counted
+            // Note that residueFollowingSearchResidues is necessary in case the potential cleavage residue is the final residue in searchResidues
             // We need to know the next residue to determine if it matches an exception residue
 
             // ReSharper disable CommentTypo
 
-            // For example, if strSearchResidues =      "IGASGEHIFIIGVDKPNR"
+            // For example, if searchResidues =      "IGASGEHIFIIGVDKPNR"
             // and the protein it is part of is: TNSANFRIGASGEHIFIIGVDKPNRQPDS
-            // and strSearchChars = "KR while strExceptionSuffixResidues  = "P"
+            // and searchChars = "KR while exceptionSuffixResidues  = "P"
             // Then the K in IGASGEHIFIIGVDKPNR is ignored because the following residue is P,
-            // while the R in IGASGEHIFIIGVDKPNR is OK because strResidueFollowingSearchResidues is Q
+            // while the R in IGASGEHIFIIGVDKPNR is OK because residueFollowingSearchResidues is Q
 
             // ReSharper restore CommentTypo
 
-            // It is the calling function's responsibility to assign the correct residue to strResidueFollowingSearchResidues
-            // If no match is found, but strResidueFollowingSearchResidues is "-", then the cleavage location returned is Len(strSearchResidues) + 1
+            // It is the calling function's responsibility to assign the correct residue to residueFollowingSearchResidues
+            // If no match is found, but residueFollowingSearchResidues is "-", then the cleavage location returned is Len(searchResidues) + 1
 
-            var intExceptionSuffixResidueCount = (short)strExceptionSuffixResidues.Length;
+            var intExceptionSuffixResidueCount = (short)exceptionSuffixResidues.Length;
 
             var lngMinCharLoc = -1;
-            for (var intCharLocInSearchChars = 0; intCharLocInSearchChars < strSearchChars.Length; intCharLocInSearchChars++)
+            for (var intCharLocInSearchChars = 0; intCharLocInSearchChars < searchChars.Length; intCharLocInSearchChars++)
             {
-                var lngCharLoc = strSearchResidues.Substring(lngStartChar).IndexOf(strSearchChars.Substring(intCharLocInSearchChars, 1), StringComparison.Ordinal);
+                var lngCharLoc = searchResidues.Substring(startChar).IndexOf(searchChars.Substring(intCharLocInSearchChars, 1), StringComparison.Ordinal);
 
                 if (lngCharLoc >= 0)
                 {
-                    lngCharLoc = lngCharLoc + lngStartChar - 1;
+                    lngCharLoc = lngCharLoc + startChar - 1;
 
                     if (intExceptionSuffixResidueCount > 0)
                     {
-                        // Make sure strSuffixResidue does not match strExceptionSuffixResidues
+                        // Make sure strSuffixResidue does not match exceptionSuffixResidues
                         int lngExceptionCharLocInSearchResidues;
                         string strResidueFollowingCleavageResidue;
-                        if (lngCharLoc < strSearchResidues.Length - 1)
+                        if (lngCharLoc < searchResidues.Length - 1)
                         {
                             lngExceptionCharLocInSearchResidues = lngCharLoc + 1;
-                            strResidueFollowingCleavageResidue = strSearchResidues.Substring(lngExceptionCharLocInSearchResidues, 1);
+                            strResidueFollowingCleavageResidue = searchResidues.Substring(lngExceptionCharLocInSearchResidues, 1);
                         }
                         else
                         {
-                            // Matched the last residue in strSearchResidues
-                            lngExceptionCharLocInSearchResidues = strSearchResidues.Length + 1;
-                            strResidueFollowingCleavageResidue = strResidueFollowingSearchResidues;
+                            // Matched the last residue in searchResidues
+                            lngExceptionCharLocInSearchResidues = searchResidues.Length + 1;
+                            strResidueFollowingCleavageResidue = residueFollowingSearchResidues;
                         }
 
                         for (var intCharLocInExceptionChars = 0; intCharLocInExceptionChars < intExceptionSuffixResidueCount; intCharLocInExceptionChars++)
                         {
-                            if ((strResidueFollowingCleavageResidue ?? "") == strExceptionSuffixResidues.Substring(intCharLocInExceptionChars, 1))
+                            if ((strResidueFollowingCleavageResidue ?? "") == exceptionSuffixResidues.Substring(intCharLocInExceptionChars, 1))
                             {
                                 // Exception char is the following character; can't count this as the cleavage point
 
-                                if (lngExceptionCharLocInSearchResidues < strSearchResidues.Length - 1)
+                                if (lngExceptionCharLocInSearchResidues < searchResidues.Length - 1)
                                 {
-                                    // Recursively call this function to find the next cleavage position, using an updated lngStartChar position
-                                    var lngCharLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(strSearchResidues, strResidueFollowingSearchResidues, lngExceptionCharLocInSearchResidues, strSearchChars, strExceptionSuffixResidues, strTerminiiSymbol);
+                                    // Recursively call this function to find the next cleavage position, using an updated startChar position
+                                    var lngCharLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(searchResidues, residueFollowingSearchResidues, lngExceptionCharLocInSearchResidues, searchChars, exceptionSuffixResidues, terminiiSymbol);
 
                                     if (lngCharLocViaRecursiveSearch > 0)
                                     {
@@ -1500,9 +1500,9 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            if (lngMinCharLoc < 0 && (strResidueFollowingSearchResidues ?? "") == (strTerminiiSymbol ?? ""))
+            if (lngMinCharLoc < 0 && (residueFollowingSearchResidues ?? "") == (terminiiSymbol ?? ""))
             {
-                lngMinCharLoc = strSearchResidues.Length + 1;
+                lngMinCharLoc = searchResidues.Length + 1;
             }
 
             if (lngMinCharLoc < 0)
@@ -1513,90 +1513,90 @@ namespace MolecularWeightCalculator
             return lngMinCharLoc;
         }
 
-        public string GetTrypticPeptideNext(string strProteinResidues,
-            int lngSearchStartLoc)
+        public string GetTrypticPeptideNext(string proteinResidues,
+            int searchStartLoc)
         {
-            return GetTrypticPeptideNext(strProteinResidues, lngSearchStartLoc, out _, out _, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL);
+            return GetTrypticPeptideNext(proteinResidues, searchStartLoc, out _, out _, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL);
         }
 
-        public string GetTrypticPeptideNext(string strProteinResidues,
-            int lngSearchStartLoc,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd,
-            string strRuleResidues,
-            string strExceptionResidues,
-            string strTerminiiSymbol)
+        public string GetTrypticPeptideNext(string proteinResidues,
+            int searchStartLoc,
+            out int returnResidueStart,
+            out int returnResidueEnd,
+            string ruleResidues,
+            string exceptionResidues,
+            string terminiiSymbol)
         {
-            // Returns the next tryptic peptide in strProteinResidues, starting the search as lngSearchStartLoc
+            // Returns the next tryptic peptide in proteinResidues, starting the search as searchStartLoc
             // Useful when obtaining all of the tryptic peptides for a protein, since this function will operate
             // much faster than repeatedly calling GetTrypticPeptideByFragmentNumber()
 
-            // Returns the position of the start and end residues using lngReturnResidueStart and lngReturnResidueEnd
+            // Returns the position of the start and end residues using returnResidueStart and returnResidueEnd
 
-            lngReturnResidueStart = 1;
-            lngReturnResidueEnd = 1;
+            returnResidueStart = 1;
+            returnResidueEnd = 1;
 
-            if (lngSearchStartLoc < 0)
-                lngSearchStartLoc = 0;
+            if (searchStartLoc < 0)
+                searchStartLoc = 0;
 
-            var lngProteinResiduesLength = strProteinResidues.Length;
-            if (lngSearchStartLoc >= lngProteinResiduesLength)
+            var lngProteinResiduesLength = proteinResidues.Length;
+            if (searchStartLoc >= lngProteinResiduesLength)
             {
                 return string.Empty;
             }
 
-            var lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResidues, strTerminiiSymbol, lngSearchStartLoc, strRuleResidues, strExceptionResidues, strTerminiiSymbol);
+            var lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(proteinResidues, terminiiSymbol, searchStartLoc, ruleResidues, exceptionResidues, terminiiSymbol);
             if (lngRuleResidueLoc >= 0)
             {
-                lngReturnResidueStart = lngSearchStartLoc;
+                returnResidueStart = searchStartLoc;
                 if (lngRuleResidueLoc >= lngProteinResiduesLength)
                 {
-                    lngReturnResidueEnd = lngProteinResiduesLength;
+                    returnResidueEnd = lngProteinResiduesLength;
                 }
                 else
                 {
-                    lngReturnResidueEnd = lngRuleResidueLoc;
+                    returnResidueEnd = lngRuleResidueLoc;
                 }
 
-                return strProteinResidues.Substring(lngReturnResidueStart, lngReturnResidueEnd - lngReturnResidueStart + 1);
+                return proteinResidues.Substring(returnResidueStart, returnResidueEnd - returnResidueStart + 1);
             }
 
-            lngReturnResidueStart = 1;
-            lngReturnResidueEnd = lngProteinResiduesLength;
-            return strProteinResidues;
+            returnResidueStart = 1;
+            returnResidueEnd = lngProteinResiduesLength;
+            return proteinResidues;
         }
 
-        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
-            short intDesiredPeptideNumber)
+        public string GetTrypticPeptideByFragmentNumber(string proteinResidues,
+            short desiredPeptideNumber)
         {
-            return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber, out _, out _,
+            return GetTrypticPeptideByFragmentNumber(proteinResidues, desiredPeptideNumber, out _, out _,
                                                      TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
         }
 
-        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
-            short intDesiredPeptideNumber,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd)
+        public string GetTrypticPeptideByFragmentNumber(string proteinResidues,
+            short desiredPeptideNumber,
+            out int returnResidueStart,
+            out int returnResidueEnd)
         {
-            return GetTrypticPeptideByFragmentNumber(strProteinResidues, intDesiredPeptideNumber,
-                                                     out lngReturnResidueStart, out lngReturnResidueEnd,
+            return GetTrypticPeptideByFragmentNumber(proteinResidues, desiredPeptideNumber,
+                                                     out returnResidueStart, out returnResidueEnd,
                                                      TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
         }
 
-        public string GetTrypticPeptideByFragmentNumber(string strProteinResidues,
-            short intDesiredPeptideNumber,
-            out int lngReturnResidueStart,
-            out int lngReturnResidueEnd,
-            string strRuleResidues,
-            string strExceptionResidues,
-            string strTerminiiSymbol,
-            bool blnIgnoreCase)
+        public string GetTrypticPeptideByFragmentNumber(string proteinResidues,
+            short desiredPeptideNumber,
+            out int returnResidueStart,
+            out int returnResidueEnd,
+            string ruleResidues,
+            string exceptionResidues,
+            string terminiiSymbol,
+            bool ignoreCase)
         {
-            // Returns the desired tryptic peptide from strProteinResidues
+            // Returns the desired tryptic peptide from proteinResidues
 
             // ReSharper disable CommentTypo
 
-            // For example, if strProteinResidues = "IGKANRMTFGL" then
+            // For example, if proteinResidues = "IGKANRMTFGL" then
             // when intDesiredPeptideNumber = 1, returns "IGK"
             // when intDesiredPeptideNumber = 2, returns "ANR"
             // when intDesiredPeptideNumber = 3, returns "MTFGL"
@@ -1604,33 +1604,33 @@ namespace MolecularWeightCalculator
             // ReSharper enable CommentTypo
 
             // Optionally, returns the position of the start and end residues
-            // using lngReturnResidueStart and lngReturnResidueEnd
+            // using returnResidueStart and returnResidueEnd
 
             int lngRuleResidueLoc;
             var lngPrevStartLoc = default(int);
 
             string strMatchingFragment;
 
-            lngReturnResidueStart = 0;
-            lngReturnResidueEnd = 0;
+            returnResidueStart = 0;
+            returnResidueEnd = 0;
 
-            if (intDesiredPeptideNumber < 1)
+            if (desiredPeptideNumber < 1)
             {
                 return string.Empty;
             }
 
-            if (blnIgnoreCase)
+            if (ignoreCase)
             {
-                strProteinResidues = strProteinResidues.ToUpper();
+                proteinResidues = proteinResidues.ToUpper();
             }
 
-            var lngProteinResiduesLength = strProteinResidues.Length;
+            var lngProteinResiduesLength = proteinResidues.Length;
 
             var lngStartLoc = 0;
             short intCurrentTrypticPeptideNumber = 0;
             do
             {
-                lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(strProteinResidues, strTerminiiSymbol, lngStartLoc, strRuleResidues, strExceptionResidues, strTerminiiSymbol);
+                lngRuleResidueLoc = GetTrypticNameFindNextCleavageLoc(proteinResidues, terminiiSymbol, lngStartLoc, ruleResidues, exceptionResidues, terminiiSymbol);
                 if (lngRuleResidueLoc >= 0)
                 {
                     intCurrentTrypticPeptideNumber = (short)(intCurrentTrypticPeptideNumber + 1);
@@ -1649,161 +1649,161 @@ namespace MolecularWeightCalculator
                     break;
                 }
             }
-            while (intCurrentTrypticPeptideNumber < intDesiredPeptideNumber);
+            while (intCurrentTrypticPeptideNumber < desiredPeptideNumber);
 
             if (intCurrentTrypticPeptideNumber > 0 && lngPrevStartLoc >= 0)
             {
-                if (lngPrevStartLoc >= strProteinResidues.Length)
+                if (lngPrevStartLoc >= proteinResidues.Length)
                 {
                     // User requested a peptide number that is too high
-                    lngReturnResidueStart = 0;
-                    lngReturnResidueEnd = 0;
+                    returnResidueStart = 0;
+                    returnResidueEnd = 0;
                     strMatchingFragment = string.Empty;
                 }
                 else
                 {
                     // Match found, find the extent of this peptide
-                    lngReturnResidueStart = lngPrevStartLoc;
+                    returnResidueStart = lngPrevStartLoc;
                     if (lngRuleResidueLoc >= lngProteinResiduesLength)
                     {
-                        lngReturnResidueEnd = lngProteinResiduesLength;
+                        returnResidueEnd = lngProteinResiduesLength;
                     }
                     else
                     {
-                        lngReturnResidueEnd = lngRuleResidueLoc;
+                        returnResidueEnd = lngRuleResidueLoc;
                     }
 
-                    strMatchingFragment = strProteinResidues.Substring(lngPrevStartLoc, lngRuleResidueLoc - lngPrevStartLoc + 1);
+                    strMatchingFragment = proteinResidues.Substring(lngPrevStartLoc, lngRuleResidueLoc - lngPrevStartLoc + 1);
                 }
             }
             else
             {
-                lngReturnResidueStart = 0;
-                lngReturnResidueEnd = lngProteinResiduesLength - 1;
-                strMatchingFragment = strProteinResidues;
+                returnResidueStart = 0;
+                returnResidueEnd = lngProteinResiduesLength - 1;
+                strMatchingFragment = proteinResidues;
             }
 
             return strMatchingFragment;
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string strSequence,
-            string strRuleResidues,
-            string strExceptionSuffixResidues,
-            bool blnAllowPartialCleavage)
+        public bool CheckSequenceAgainstCleavageRule(string sequence,
+            string ruleResidues,
+            string exceptionSuffixResidues,
+            bool allowPartialCleavage)
         {
-            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
-                                                    blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, out _);
+            return CheckSequenceAgainstCleavageRule(sequence, ruleResidues, exceptionSuffixResidues,
+                                                    allowPartialCleavage, ".", TERMINII_SYMBOL, true, out _);
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string strSequence,
-            string strRuleResidues,
-            string strExceptionSuffixResidues,
-            bool blnAllowPartialCleavage,
-            out short intRuleMatchCount)
+        public bool CheckSequenceAgainstCleavageRule(string sequence,
+            string ruleResidues,
+            string exceptionSuffixResidues,
+            bool allowPartialCleavage,
+            out short ruleMatchCount)
         {
-            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
-                                                    blnAllowPartialCleavage, ".", TERMINII_SYMBOL, true, out intRuleMatchCount);
+            return CheckSequenceAgainstCleavageRule(sequence, ruleResidues, exceptionSuffixResidues,
+                                                    allowPartialCleavage, ".", TERMINII_SYMBOL, true, out ruleMatchCount);
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string strSequence,
-            string strRuleResidues,
-            string strExceptionSuffixResidues,
-            bool blnAllowPartialCleavage,
-            string strSeparationChar,
-            string strTerminiiSymbol,
-            bool blnIgnoreCase)
+        public bool CheckSequenceAgainstCleavageRule(string sequence,
+            string ruleResidues,
+            string exceptionSuffixResidues,
+            bool allowPartialCleavage,
+            string separationChar,
+            string terminiiSymbol,
+            bool ignoreCase)
         {
-            return CheckSequenceAgainstCleavageRule(strSequence, strRuleResidues, strExceptionSuffixResidues,
-                                                    blnAllowPartialCleavage, strSeparationChar, strTerminiiSymbol, blnIgnoreCase, out _);
+            return CheckSequenceAgainstCleavageRule(sequence, ruleResidues, exceptionSuffixResidues,
+                                                    allowPartialCleavage, separationChar, terminiiSymbol, ignoreCase, out _);
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string strSequence,
-            string strRuleResidues,
-            string strExceptionSuffixResidues,
-            bool blnAllowPartialCleavage,
-            string strSeparationChar,
-            string strTerminiiSymbol,
-            bool blnIgnoreCase,
-            out short intRuleMatchCount)
+        public bool CheckSequenceAgainstCleavageRule(string sequence,
+            string ruleResidues,
+            string exceptionSuffixResidues,
+            bool allowPartialCleavage,
+            string separationChar,
+            string terminiiSymbol,
+            bool ignoreCase,
+            out short ruleMatchCount)
         {
-            // Checks strSequence to see if it matches the cleavage rule
+            // Checks sequence to see if it matches the cleavage rule
             // Returns True if valid, False if invalid
             // Returns True if doesn't contain any periods, and thus, can't be examined
             // The ByRef variable intRuleMatchCount can be used to retrieve the number of ends that matched the rule (0, 1, or 2); terminii are counted as rule matches
 
-            // The residues in strRuleResidues specify the cleavage rule
+            // The residues in ruleResidues specify the cleavage rule
             // The peptide must end in one of the residues, or in -
             // The preceding residue must be one of the residues or be -
-            // EXCEPTION: if blnAllowPartialCleavage = True then the rules need only apply to one end
-            // Finally, the suffix residue cannot match any of the residues in strExceptionSuffixResidues
+            // EXCEPTION: if allowPartialCleavage = True then the rules need only apply to one end
+            // Finally, the suffix residue cannot match any of the residues in exceptionSuffixResidues
 
-            // For example, if strRuleResidues = "KR" and strExceptionSuffixResidues = "P"
-            // Then if strSequence = "R.AEQDDLANYGPGNGVLPSAGSSISMEK.L" then blnMatchesCleavageRule = True
-            // However, if strSequence = "R.IGASGEHIFIIGVDK.P" then blnMatchesCleavageRule = False since strSuffix = "P"
-            // Finally, if strSequence = "R.IGASGEHIFIIGVDKPNR.Q" then blnMatchesCleavageRule = True since K is ignored, but the final R.Q is valid
+            // For example, if ruleResidues = "KR" and exceptionSuffixResidues = "P"
+            // Then if sequence = "R.AEQDDLANYGPGNGVLPSAGSSISMEK.L" then blnMatchesCleavageRule = True
+            // However, if sequence = "R.IGASGEHIFIIGVDK.P" then blnMatchesCleavageRule = False since strSuffix = "P"
+            // Finally, if sequence = "R.IGASGEHIFIIGVDKPNR.Q" then blnMatchesCleavageRule = True since K is ignored, but the final R.Q is valid
 
             string strSequenceStart, strSequenceEnd;
             bool blnMatchesCleavageRule = default;
 
             // Need to reset this to zero since passed ByRef
-            intRuleMatchCount = 0;
+            ruleMatchCount = 0;
             var strPrefix = string.Empty;
             var strSuffix = string.Empty;
 
             // First, make sure the sequence is in the form A.BCDEFG.H or A.BCDEFG or BCDEFG.H
             // If it isn't, then we can't check it (we'll return true)
 
-            if (string.IsNullOrEmpty(strRuleResidues))
+            if (string.IsNullOrEmpty(ruleResidues))
             {
                 // No rule residues
                 return true;
             }
 
-            if (strSeparationChar == null)
-                strSeparationChar = ".";
+            if (separationChar == null)
+                separationChar = ".";
 
-            if (!strSequence.Contains(strSeparationChar))
+            if (!sequence.Contains(separationChar))
             {
                 // No periods, can't check
-                Console.WriteLine("Warning: strSequence does not contain " + strSeparationChar + "; unable to determine cleavage state");
+                Console.WriteLine("Warning: strSequence does not contain " + separationChar + "; unable to determine cleavage state");
                 return true;
             }
 
-            if (blnIgnoreCase)
+            if (ignoreCase)
             {
-                strSequence = strSequence.ToUpper();
+                sequence = sequence.ToUpper();
             }
 
             // Find the prefix residue and starting residue
-            if (strSequence.Substring(1, 1) == strSeparationChar)
+            if (sequence.Substring(1, 1) == separationChar)
             {
-                strPrefix = strSequence.Substring(0, 1);
-                strSequenceStart = strSequence.Substring(2, 1);
+                strPrefix = sequence.Substring(0, 1);
+                strSequenceStart = sequence.Substring(2, 1);
             }
             else
             {
-                strSequenceStart = strSequence.Substring(0, 1);
+                strSequenceStart = sequence.Substring(0, 1);
             }
 
             // Find the suffix residue and the ending residue
-            if (strSequence.Substring(strSequence.Length - 2, 1) == strSeparationChar)
+            if (sequence.Substring(sequence.Length - 2, 1) == separationChar)
             {
-                strSuffix = strSequence.Substring(strSequence.Length - 1);
-                strSequenceEnd = strSequence.Substring(strSequence.Length - 3, 1);
+                strSuffix = sequence.Substring(sequence.Length - 1);
+                strSequenceEnd = sequence.Substring(sequence.Length - 3, 1);
             }
             else
             {
-                strSequenceEnd = strSequence.Substring(strSequence.Length - 1);
+                strSequenceEnd = sequence.Substring(sequence.Length - 1);
             }
 
-            if (strRuleResidues == (strTerminiiSymbol ?? ""))
+            if (ruleResidues == (terminiiSymbol ?? ""))
             {
                 // Peptide database rules
-                // See if prefix and suffix are "" or are strTerminiiSymbol
-                if (strPrefix == (strTerminiiSymbol ?? "") && strSuffix == (strTerminiiSymbol ?? "") ||
+                // See if prefix and suffix are "" or are terminiiSymbol
+                if (strPrefix == (terminiiSymbol ?? "") && strSuffix == (terminiiSymbol ?? "") ||
                     strPrefix == string.Empty && strSuffix == string.Empty)
                 {
-                    intRuleMatchCount = 2;
+                    ruleMatchCount = 2;
                     blnMatchesCleavageRule = true;
                 }
                 else
@@ -1813,13 +1813,13 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                if (blnIgnoreCase)
+                if (ignoreCase)
                 {
-                    strRuleResidues = strRuleResidues.ToUpper();
+                    ruleResidues = ruleResidues.ToUpper();
                 }
 
-                // Test each character in strRuleResidues against both strPrefix and strSequenceEnd
-                // Make sure strSuffix does not match strExceptionSuffixResidues
+                // Test each character in ruleResidues against both strPrefix and strSequenceEnd
+                // Make sure strSuffix does not match exceptionSuffixResidues
                 for (var intEndToCheck = 0; intEndToCheck <= 1; intEndToCheck++)
                 {
                     var blnSkipThisEnd = false;
@@ -1827,18 +1827,18 @@ namespace MolecularWeightCalculator
                     if (intEndToCheck == 0)
                     {
                         strTestResidue = strPrefix;
-                        if (strPrefix == (strTerminiiSymbol ?? ""))
+                        if (strPrefix == (terminiiSymbol ?? ""))
                         {
-                            intRuleMatchCount = (short)(intRuleMatchCount + 1);
+                            ruleMatchCount = (short)(ruleMatchCount + 1);
                             blnSkipThisEnd = true;
                         }
                         // See if strSequenceStart matches one of the exception residues
                         // If it does, make sure strPrefix does not match one of the rule residues
-                        else if (CheckSequenceAgainstCleavageRuleMatchTestResidue(strSequenceStart, strExceptionSuffixResidues))
+                        else if (CheckSequenceAgainstCleavageRuleMatchTestResidue(strSequenceStart, exceptionSuffixResidues))
                         {
                             // Match found
                             // Make sure strPrefix does not match one of the rule residues
-                            if (CheckSequenceAgainstCleavageRuleMatchTestResidue(strPrefix, strRuleResidues))
+                            if (CheckSequenceAgainstCleavageRuleMatchTestResidue(strPrefix, ruleResidues))
                             {
                                 // Match found; thus does not match cleavage rule
                                 blnSkipThisEnd = true;
@@ -1848,13 +1848,13 @@ namespace MolecularWeightCalculator
                     else
                     {
                         strTestResidue = strSequenceEnd;
-                        if (strSuffix == (strTerminiiSymbol ?? ""))
+                        if (strSuffix == (terminiiSymbol ?? ""))
                         {
-                            intRuleMatchCount = (short)(intRuleMatchCount + 1);
+                            ruleMatchCount = (short)(ruleMatchCount + 1);
                             blnSkipThisEnd = true;
                         }
-                        // Make sure strSuffix does not match strExceptionSuffixResidues
-                        else if (CheckSequenceAgainstCleavageRuleMatchTestResidue(strSuffix, strExceptionSuffixResidues))
+                        // Make sure strSuffix does not match exceptionSuffixResidues
+                        else if (CheckSequenceAgainstCleavageRuleMatchTestResidue(strSuffix, exceptionSuffixResidues))
                         {
                             // Match found; thus does not match cleavage rule
                             blnSkipThisEnd = true;
@@ -1863,18 +1863,18 @@ namespace MolecularWeightCalculator
 
                     if (!blnSkipThisEnd)
                     {
-                        if (CheckSequenceAgainstCleavageRuleMatchTestResidue(strTestResidue, strRuleResidues))
+                        if (CheckSequenceAgainstCleavageRuleMatchTestResidue(strTestResidue, ruleResidues))
                         {
-                            intRuleMatchCount = (short)(intRuleMatchCount + 1);
+                            ruleMatchCount = (short)(ruleMatchCount + 1);
                         }
                     }
                 }
 
-                if (intRuleMatchCount == 2)
+                if (ruleMatchCount == 2)
                 {
                     blnMatchesCleavageRule = true;
                 }
-                else if (intRuleMatchCount >= 1 && blnAllowPartialCleavage)
+                else if (ruleMatchCount >= 1 && allowPartialCleavage)
                 {
                     blnMatchesCleavageRule = true;
                 }
@@ -1883,17 +1883,17 @@ namespace MolecularWeightCalculator
             return blnMatchesCleavageRule;
         }
 
-        private bool CheckSequenceAgainstCleavageRuleMatchTestResidue(string strTestResidue, string strRuleResidues)
+        private bool CheckSequenceAgainstCleavageRuleMatchTestResidue(string testResidue, string ruleResidues)
         {
-            // Checks to see if strTestResidue matches one of the residues in strRuleResidues
+            // Checks to see if strTestResidue matches one of the residues in ruleResidues
             // Used to test by Rule Residues and Exception Residues
 
-            for (var intCharIndex = 0; intCharIndex < strRuleResidues.Length; intCharIndex++)
+            for (var intCharIndex = 0; intCharIndex < ruleResidues.Length; intCharIndex++)
             {
-                var strCompareResidue = strRuleResidues.Substring(intCharIndex, 1).Trim();
+                var strCompareResidue = ruleResidues.Substring(intCharIndex, 1).Trim();
                 if (strCompareResidue.Length > 0)
                 {
-                    if ((strTestResidue ?? "") == strCompareResidue)
+                    if ((testResidue ?? "") == strCompareResidue)
                     {
                         // Match found
                         return true;
@@ -1904,9 +1904,9 @@ namespace MolecularWeightCalculator
             return false;
         }
 
-        public double ComputeImmoniumMass(double dblResidueMass)
+        public double ComputeImmoniumMass(double residueMass)
         {
-            return dblResidueMass - dblImmoniumMassDifference;
+            return residueMass - dblImmoniumMassDifference;
         }
 
         private void InitializeArrays()
@@ -1916,9 +1916,9 @@ namespace MolecularWeightCalculator
             mFragSpectrumOptions.Initialize();
         }
 
-        public string LookupIonTypeString(IonType eIonType)
+        public string LookupIonTypeString(IonType ionType)
         {
-            switch (eIonType)
+            switch (ionType)
             {
                 case IonType.AIon:
                     return "a";
@@ -1959,57 +1959,57 @@ namespace MolecularWeightCalculator
             return 0;
         }
 
-        private void RemoveLeadingH(ref string strWorkingSequence)
+        private void RemoveLeadingH(ref string workingSequence)
         {
             // Returns True if a leading H is removed
 
-            if (strWorkingSequence.Length >= 4 && strWorkingSequence.ToUpper().StartsWith("H"))
+            if (workingSequence.Length >= 4 && workingSequence.ToUpper().StartsWith("H"))
             {
                 // If next character is not a character, then remove the H and the non-letter character
-                if (!char.IsLetter(strWorkingSequence[1]))
+                if (!char.IsLetter(workingSequence[1]))
                 {
                     // Remove the leading H
-                    strWorkingSequence = strWorkingSequence.Substring(2);
+                    workingSequence = workingSequence.Substring(2);
                 }
                 // Otherwise, see if next three characters are letters
-                else if (char.IsLetter(strWorkingSequence[1]) && char.IsLetter(strWorkingSequence[2]) && char.IsLetter(strWorkingSequence[3]))
+                else if (char.IsLetter(workingSequence[1]) && char.IsLetter(workingSequence[2]) && char.IsLetter(workingSequence[3]))
                 {
                     // Formula starts with 4 characters and the first is H, see if the first 3 characters are a valid amino acid code
-                    var lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strWorkingSequence.Substring(0, 3), true);
+                    var lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(workingSequence.Substring(0, 3), true);
 
                     if (lngAbbrevID <= 0)
                     {
                         // Doesn't start with a valid amino acid 3 letter abbreviation, so remove the initial H
-                        strWorkingSequence = strWorkingSequence.Substring(1);
+                        workingSequence = workingSequence.Substring(1);
                     }
                 }
             }
         }
 
-        private bool RemoveTrailingOH(ref string strWorkingSequence)
+        private bool RemoveTrailingOH(ref string workingSequence)
         {
             // Returns True if a trailing OH is removed
 
             var blnOHRemoved = false;
-            var lngStringLength = strWorkingSequence.Length;
-            if (strWorkingSequence.Length >= 5 && strWorkingSequence.ToUpper().EndsWith("OH"))
+            var lngStringLength = workingSequence.Length;
+            if (workingSequence.Length >= 5 && workingSequence.ToUpper().EndsWith("OH"))
             {
                 // If previous character is not a character, then remove the OH
-                if (!char.IsLetter(strWorkingSequence[lngStringLength - 3]))
+                if (!char.IsLetter(workingSequence[lngStringLength - 3]))
                 {
-                    strWorkingSequence = strWorkingSequence.Substring(0, lngStringLength - 3);
+                    workingSequence = workingSequence.Substring(0, lngStringLength - 3);
                     blnOHRemoved = true;
                 }
                 // Otherwise, see if previous three characters are letters
-                else if (char.IsLetter(strWorkingSequence[lngStringLength - 3]))
+                else if (char.IsLetter(workingSequence[lngStringLength - 3]))
                 {
                     // Formula ends with 3 characters and the last two are OH, see if the last 3 characters are a valid amino acid code
-                    var lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(strWorkingSequence.Substring(lngStringLength - 3, 3), true);
+                    var lngAbbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(workingSequence.Substring(lngStringLength - 3, 3), true);
 
                     if (lngAbbrevID <= 0)
                     {
                         // Doesn't end with a valid amino acid 3 letter abbreviation, so remove the trailing OH
-                        strWorkingSequence = strWorkingSequence.Substring(0, lngStringLength - 2);
+                        workingSequence = workingSequence.Substring(0, lngStringLength - 2);
                         blnOHRemoved = true;
                     }
                 }
@@ -2018,7 +2018,7 @@ namespace MolecularWeightCalculator
             return blnOHRemoved;
         }
 
-        public int RemoveModification(ref string strModSymbol)
+        public int RemoveModification(ref string modSymbol)
         {
             // Returns 0 if found and removed; 1 if error
 
@@ -2026,7 +2026,7 @@ namespace MolecularWeightCalculator
 
             for (var lngIndex = 1; lngIndex <= ModificationSymbolCount; lngIndex++)
             {
-                if ((ModificationSymbols[lngIndex].Symbol ?? "") == (strModSymbol ?? ""))
+                if ((ModificationSymbols[lngIndex].Symbol ?? "") == (modSymbol ?? ""))
                 {
                     RemoveModificationByID(lngIndex);
                     blnRemoved = true;
@@ -2041,15 +2041,15 @@ namespace MolecularWeightCalculator
             return 1;
         }
 
-        public int RemoveModificationByID(int lngModificationID)
+        public int RemoveModificationByID(int modificationID)
         {
             // Returns 0 if found and removed; 1 if error
 
             bool blnRemoved;
 
-            if (lngModificationID >= 1 && lngModificationID <= ModificationSymbolCount)
+            if (modificationID >= 1 && modificationID <= ModificationSymbolCount)
             {
-                for (var lngIndex = lngModificationID; lngIndex < ModificationSymbolCount; lngIndex++)
+                for (var lngIndex = modificationID; lngIndex < ModificationSymbolCount; lngIndex++)
                     ModificationSymbols[lngIndex] = ModificationSymbols[lngIndex + 1];
 
                 ModificationSymbolCount -= 1;
@@ -2068,13 +2068,13 @@ namespace MolecularWeightCalculator
             return 1;
         }
 
-        public int RemoveResidue(int lngResidueNumber)
+        public int RemoveResidue(int residueNumber)
         {
             // Returns 0 if found and removed; 1 if error
 
-            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount)
+            if (residueNumber >= 1 && residueNumber <= ResidueCount)
             {
-                for (var lngIndex = lngResidueNumber; lngIndex < ResidueCount; lngIndex++)
+                for (var lngIndex = residueNumber; lngIndex < ResidueCount; lngIndex++)
                     Residues[lngIndex] = Residues[lngIndex + 1];
 
                 ResidueCount -= 1;
@@ -2084,15 +2084,15 @@ namespace MolecularWeightCalculator
             return 1;
         }
 
-        private void ReserveMemoryForResidues(int lngNewResidueCount, bool blnPreserveContents)
+        private void ReserveMemoryForResidues(int newResidueCount, bool preserveContents)
         {
             // Only reserves the memory if necessary
-            // Thus, do not use this sub to clear Residues()
+            // Thus, do not use this sub to clear Residues[]
 
-            if (lngNewResidueCount > ResidueCountDimmed)
+            if (newResidueCount > ResidueCountDimmed)
             {
-                ResidueCountDimmed = lngNewResidueCount + RESIDUE_DIM_CHUNK;
-                if (blnPreserveContents && Residues != null)
+                ResidueCountDimmed = newResidueCount + RESIDUE_DIM_CHUNK;
+                if (preserveContents && Residues != null)
                 {
                     var intOldIndexEnd = Residues.Length - 1;
                     Array.Resize(ref Residues, ResidueCountDimmed + 1);
@@ -2111,12 +2111,12 @@ namespace MolecularWeightCalculator
             }
         }
 
-        private void ReserveMemoryForModifications(int lngNewModificationCount, bool blnPreserveContents)
+        private void ReserveMemoryForModifications(int newModificationCount, bool preserveContents)
         {
-            if (lngNewModificationCount > ModificationSymbolCountDimmed)
+            if (newModificationCount > ModificationSymbolCountDimmed)
             {
-                ModificationSymbolCountDimmed = lngNewModificationCount + 10;
-                if (blnPreserveContents)
+                ModificationSymbolCountDimmed = newModificationCount + 10;
+                if (preserveContents)
                 {
                     Array.Resize(ref ModificationSymbols, ModificationSymbolCountDimmed + 1);
                 }
@@ -2132,17 +2132,17 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public int SetCTerminus(string strFormula)
+        public int SetCTerminus(string formula)
         {
-            return SetCTerminus(strFormula, "", true);
+            return SetCTerminus(formula, "", true);
         }
 
-        public int SetCTerminus(string strFormula, string strFollowingResidue)
+        public int SetCTerminus(string formula, string followingResidue)
         {
-            return SetCTerminus(strFormula, strFollowingResidue, true);
+            return SetCTerminus(formula, followingResidue, true);
         }
 
-        public int SetCTerminus(string strFormula, string strFollowingResidue, bool blnUse3LetterCode)
+        public int SetCTerminus(string formula, string followingResidue, bool use3LetterCode)
         {
             // Returns 0 if success; 1 if error
             var success = 0;
@@ -2151,7 +2151,7 @@ namespace MolecularWeightCalculator
             // Free Acid = OH
             // Amide = NH2
 
-            mCTerminus.Formula = strFormula;
+            mCTerminus.Formula = formula;
             mCTerminus.Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref mCTerminus.Formula);
             if (mCTerminus.Mass < 0d)
             {
@@ -2164,38 +2164,38 @@ namespace MolecularWeightCalculator
             }
 
             mCTerminus.PrecedingResidue = FillResidueStructureUsingSymbol(string.Empty);
-            mCTerminus.FollowingResidue = FillResidueStructureUsingSymbol(strFollowingResidue, blnUse3LetterCode);
+            mCTerminus.FollowingResidue = FillResidueStructureUsingSymbol(followingResidue, use3LetterCode);
 
             UpdateResidueMasses();
             return success;
         }
 
-        public int SetCTerminusGroup(CTerminusGroupType eCTerminusGroup)
+        public int SetCTerminusGroup(CTerminusGroupType cTerminusGroup)
         {
-            return SetCTerminusGroup(eCTerminusGroup, "", true);
+            return SetCTerminusGroup(cTerminusGroup, "", true);
         }
 
-        public int SetCTerminusGroup(CTerminusGroupType eCTerminusGroup, string strFollowingResidue)
+        public int SetCTerminusGroup(CTerminusGroupType cTerminusGroup, string followingResidue)
         {
-            return SetCTerminusGroup(eCTerminusGroup, strFollowingResidue, true);
+            return SetCTerminusGroup(cTerminusGroup, followingResidue, true);
         }
 
-        public int SetCTerminusGroup(CTerminusGroupType eCTerminusGroup,
-            string strFollowingResidue,
-            bool blnUse3LetterCode)
+        public int SetCTerminusGroup(CTerminusGroupType cTerminusGroup,
+            string followingResidue,
+            bool use3LetterCode)
         {
             // Returns 0 if success; 1 if error
             int lngError;
-            switch (eCTerminusGroup)
+            switch (cTerminusGroup)
             {
                 case CTerminusGroupType.Hydroxyl:
-                    lngError = SetCTerminus("OH", strFollowingResidue, blnUse3LetterCode);
+                    lngError = SetCTerminus("OH", followingResidue, use3LetterCode);
                     break;
                 case CTerminusGroupType.Amide:
-                    lngError = SetCTerminus("NH2", strFollowingResidue, blnUse3LetterCode);
+                    lngError = SetCTerminus("NH2", followingResidue, use3LetterCode);
                     break;
                 case CTerminusGroupType.None:
-                    lngError = SetCTerminus(string.Empty, strFollowingResidue, blnUse3LetterCode);
+                    lngError = SetCTerminus(string.Empty, followingResidue, use3LetterCode);
                     break;
                 default:
                     lngError = 1;
@@ -2282,37 +2282,37 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public void SetFragmentationSpectrumOptions(FragmentationSpectrumOptions udtNewFragSpectrumOptions)
+        public void SetFragmentationSpectrumOptions(FragmentationSpectrumOptions newFragSpectrumOptions)
         {
-            mFragSpectrumOptions = udtNewFragSpectrumOptions;
+            mFragSpectrumOptions = newFragSpectrumOptions;
         }
 
-        public void SetModificationSymbol(string strModSymbol, double dblModificationMass)
+        public void SetModificationSymbol(string modSymbol, double modificationMass)
         {
-            SetModificationSymbol(strModSymbol, dblModificationMass, blnIndicatesPhosphorylation: false, strComment: string.Empty);
+            SetModificationSymbol(modSymbol, modificationMass, indicatesPhosphorylation: false, comment: string.Empty);
         }
 
-        public void SetModificationSymbol(string strModSymbol, double dblModificationMass, string strComment)
+        public void SetModificationSymbol(string modSymbol, double modificationMass, string comment)
         {
-            SetModificationSymbol(strModSymbol, dblModificationMass, blnIndicatesPhosphorylation: false, strComment: strComment);
+            SetModificationSymbol(modSymbol, modificationMass, indicatesPhosphorylation: false, comment: comment);
         }
 
-        public int SetModificationSymbol(string strModSymbol, double dblModificationMass, bool blnIndicatesPhosphorylation, string strComment)
+        public int SetModificationSymbol(string modSymbol, double modificationMass, bool indicatesPhosphorylation, string comment)
         {
-            // Adds a new modification or updates an existing one (based on strModSymbol)
+            // Adds a new modification or updates an existing one (based on modSymbol)
             // Returns 0 if successful, otherwise, returns -1
 
             var lngErrorID = 0;
-            if (strModSymbol.Length < 1)
+            if (modSymbol.Length < 1)
             {
                 lngErrorID = -1;
             }
             else
             {
-                // Make sure strModSymbol contains no letters, numbers, spaces, dashes, or periods
-                for (var lngIndex = 0; lngIndex < strModSymbol.Length; lngIndex++)
+                // Make sure modSymbol contains no letters, numbers, spaces, dashes, or periods
+                for (var lngIndex = 0; lngIndex < modSymbol.Length; lngIndex++)
                 {
-                    var strTestChar = strModSymbol.Substring(lngIndex, 1);
+                    var strTestChar = modSymbol.Substring(lngIndex, 1);
                     if (!ElementAndMassRoutines.IsModSymbolInternal(strTestChar))
                     {
                         lngErrorID = -1;
@@ -2322,7 +2322,7 @@ namespace MolecularWeightCalculator
                 if (lngErrorID == 0)
                 {
                     // See if the modification is alrady present
-                    var lngIndexToUse = GetModificationSymbolID(strModSymbol);
+                    var lngIndexToUse = GetModificationSymbolID(modSymbol);
 
                     if (lngIndexToUse == 0)
                     {
@@ -2333,27 +2333,27 @@ namespace MolecularWeightCalculator
                     }
 
                     var mod = ModificationSymbols[lngIndexToUse];
-                    mod.Symbol = strModSymbol;
-                    mod.ModificationMass = dblModificationMass;
-                    mod.IndicatesPhosphorylation = blnIndicatesPhosphorylation;
-                    mod.Comment = strComment;
+                    mod.Symbol = modSymbol;
+                    mod.ModificationMass = modificationMass;
+                    mod.IndicatesPhosphorylation = indicatesPhosphorylation;
+                    mod.Comment = comment;
                 }
             }
 
             return lngErrorID;
         }
 
-        public int SetNTerminus(string strFormula)
+        public int SetNTerminus(string formula)
         {
-            return SetNTerminus(strFormula, "", true);
+            return SetNTerminus(formula, "", true);
         }
 
-        public int SetNTerminus(string strFormula, string strPrecedingResidue)
+        public int SetNTerminus(string formula, string precedingResidue)
         {
-            return SetNTerminus(strFormula, strPrecedingResidue, true);
+            return SetNTerminus(formula, precedingResidue, true);
         }
 
-        public int SetNTerminus(string strFormula, string strPrecedingResidue, bool blnUse3LetterCode)
+        public int SetNTerminus(string formula, string precedingResidue, bool use3LetterCode)
         {
             // Returns 0 if success; 1 if error
             var success = 0;
@@ -2365,7 +2365,7 @@ namespace MolecularWeightCalculator
             // Carbamyl = CONH2
             // PTC = C7H6NS
 
-            mNTerminus.Formula = strFormula;
+            mNTerminus.Formula = formula;
             mNTerminus.Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref mNTerminus.Formula);
             if (mNTerminus.Mass < 0d)
             {
@@ -2377,52 +2377,52 @@ namespace MolecularWeightCalculator
                 success = 0;
             }
 
-            mNTerminus.PrecedingResidue = FillResidueStructureUsingSymbol(strPrecedingResidue, blnUse3LetterCode);
+            mNTerminus.PrecedingResidue = FillResidueStructureUsingSymbol(precedingResidue, use3LetterCode);
             mNTerminus.FollowingResidue = FillResidueStructureUsingSymbol(string.Empty);
 
             UpdateResidueMasses();
             return success;
         }
 
-        public int SetNTerminusGroup(NTerminusGroupType eNTerminusGroup)
+        public int SetNTerminusGroup(NTerminusGroupType nTerminusGroup)
         {
-            return SetNTerminusGroup(eNTerminusGroup, "", true);
+            return SetNTerminusGroup(nTerminusGroup, "", true);
         }
 
-        public int SetNTerminusGroup(NTerminusGroupType eNTerminusGroup, string strPrecedingResidue)
+        public int SetNTerminusGroup(NTerminusGroupType nTerminusGroup, string precedingResidue)
         {
-            return SetNTerminusGroup(eNTerminusGroup, strPrecedingResidue, true);
+            return SetNTerminusGroup(nTerminusGroup, precedingResidue, true);
         }
 
-        public int SetNTerminusGroup(NTerminusGroupType eNTerminusGroup,
-            string strPrecedingResidue,
-            bool blnUse3LetterCode)
+        public int SetNTerminusGroup(NTerminusGroupType nTerminusGroup,
+            string precedingResidue,
+            bool use3LetterCode)
         {
             // Returns 0 if success; 1 if error
             int lngError;
 
-            switch (eNTerminusGroup)
+            switch (nTerminusGroup)
             {
                 case NTerminusGroupType.Hydrogen:
-                    lngError = SetNTerminus("H", strPrecedingResidue, blnUse3LetterCode);
+                    lngError = SetNTerminus("H", precedingResidue, use3LetterCode);
                     break;
                 case NTerminusGroupType.HydrogenPlusProton:
-                    lngError = SetNTerminus("HH", strPrecedingResidue, blnUse3LetterCode);
+                    lngError = SetNTerminus("HH", precedingResidue, use3LetterCode);
                     break;
                 case NTerminusGroupType.Acetyl:
-                    lngError = SetNTerminus("C2OH3", strPrecedingResidue, blnUse3LetterCode);
+                    lngError = SetNTerminus("C2OH3", precedingResidue, use3LetterCode);
                     break;
                 case NTerminusGroupType.PyroGlu:
-                    lngError = SetNTerminus("C5O2NH6", strPrecedingResidue, blnUse3LetterCode);
+                    lngError = SetNTerminus("C5O2NH6", precedingResidue, use3LetterCode);
                     break;
                 case NTerminusGroupType.Carbamyl:
-                    lngError = SetNTerminus("CONH2", strPrecedingResidue, blnUse3LetterCode);
+                    lngError = SetNTerminus("CONH2", precedingResidue, use3LetterCode);
                     break;
                 case NTerminusGroupType.PTC:
-                    lngError = SetNTerminus("C7H6NS", strPrecedingResidue, blnUse3LetterCode);
+                    lngError = SetNTerminus("C7H6NS", precedingResidue, use3LetterCode);
                     break;
                 case NTerminusGroupType.None:
-                    lngError = SetNTerminus(string.Empty, strPrecedingResidue, blnUse3LetterCode);
+                    lngError = SetNTerminus(string.Empty, precedingResidue, use3LetterCode);
                     break;
                 default:
                     lngError = 1;
@@ -2432,23 +2432,23 @@ namespace MolecularWeightCalculator
             return lngError;
         }
 
-        public int SetResidue(int lngResidueNumber,
-            string strSymbol)
+        public int SetResidue(int residueNumber,
+            string symbol)
         {
-            return SetResidue(lngResidueNumber, strSymbol, true, false);
+            return SetResidue(residueNumber, symbol, true, false);
         }
 
-        public int SetResidue(int lngResidueNumber,
-            string strSymbol, bool
-                blnIs3LetterCode)
+        public int SetResidue(int residueNumber,
+            string symbol,
+            bool is3LetterCode)
         {
-            return SetResidue(lngResidueNumber, strSymbol, blnIs3LetterCode, false);
+            return SetResidue(residueNumber, symbol, is3LetterCode, false);
         }
 
-        public int SetResidue(int lngResidueNumber,
-            string strSymbol,
-            bool blnIs3LetterCode,
-            bool blnPhosphorylated)
+        public int SetResidue(int residueNumber,
+            string symbol,
+            bool is3LetterCode,
+            bool phosphorylated)
         {
             // Sets or adds a residue (must add residues in order)
             // Returns the index of the modified residue, or the new index if added
@@ -2457,12 +2457,12 @@ namespace MolecularWeightCalculator
             int lngIndexToUse;
             string str3LetterSymbol;
 
-            if (string.IsNullOrEmpty(strSymbol))
+            if (string.IsNullOrEmpty(symbol))
             {
                 return -1;
             }
 
-            if (lngResidueNumber > ResidueCount)
+            if (residueNumber > ResidueCount)
             {
                 ResidueCount += 1;
                 ReserveMemoryForResidues(ResidueCount, true);
@@ -2470,17 +2470,17 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                lngIndexToUse = lngResidueNumber;
+                lngIndexToUse = residueNumber;
             }
 
             var residue = Residues[lngIndexToUse];
-            if (blnIs3LetterCode)
+            if (is3LetterCode)
             {
-                str3LetterSymbol = strSymbol;
+                str3LetterSymbol = symbol;
             }
             else
             {
-                str3LetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(strSymbol, true);
+                str3LetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, true);
             }
 
             if (str3LetterSymbol.Length == 0)
@@ -2492,8 +2492,8 @@ namespace MolecularWeightCalculator
                 residue.Symbol = str3LetterSymbol;
             }
 
-            residue.Phosphorylated = blnPhosphorylated;
-            if (blnPhosphorylated)
+            residue.Phosphorylated = phosphorylated;
+            if (phosphorylated)
             {
                 // Only Ser, Thr, or Tyr should be phosphorylated
                 // However, if the user sets other residues as phosphorylated, we'll allow that
@@ -2510,26 +2510,26 @@ namespace MolecularWeightCalculator
             return lngIndexToUse;
         }
 
-        public int SetResidueModifications(int lngResidueNumber, short intModificationCount, int[] lngModificationIDsOneBased)
+        public int SetResidueModifications(int residueNumber, short modificationCount, int[] modificationIDsOneBased)
         {
             // Sets the modifications for a specific residue
             // Modification Symbols are defined using successive calls to SetModificationSymbol()
 
             // Returns 0 if modifications set; returns 1 if an error
 
-            if (lngResidueNumber >= 1 && lngResidueNumber <= ResidueCount && intModificationCount >= 0)
+            if (residueNumber >= 1 && residueNumber <= ResidueCount && modificationCount >= 0)
             {
-                var residue = Residues[lngResidueNumber];
-                if (intModificationCount > MAX_MODIFICATIONS)
+                var residue = Residues[residueNumber];
+                if (modificationCount > MAX_MODIFICATIONS)
                 {
-                    intModificationCount = MAX_MODIFICATIONS;
+                    modificationCount = MAX_MODIFICATIONS;
                 }
 
                 residue.ModificationIDCount = 0;
                 residue.Phosphorylated = false;
-                for (var intIndex = 1; intIndex <= intModificationCount; intIndex++)
+                for (var intIndex = 1; intIndex <= modificationCount; intIndex++)
                 {
-                    var lngNewModID = lngModificationIDsOneBased[intIndex];
+                    var lngNewModID = modificationIDsOneBased[intIndex];
                     if (lngNewModID >= 1 && lngNewModID <= ModificationSymbolCount)
                     {
                         residue.ModificationIDs[residue.ModificationIDCount] = lngNewModID;
@@ -2553,150 +2553,150 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="strSequence">Peptide sequence using 3-letter amino acid symbols</param>
+        /// <param name="sequence">Peptide sequence using 3-letter amino acid symbols</param>
         /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence)
+        /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
+        public int SetSequence(string sequence)
         {
-            return SetSequence(strSequence,
+            return SetSequence(sequence,
                    NTerminusGroupType.Hydrogen,
                    CTerminusGroupType.Hydroxyl,
-                   blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+                   is3LetterCode: true, oneLetterCheckForPrefixAndSuffixResidues: true, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
         }
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="strSequence">Peptide sequence using 1-letter amino acid symbols</param>
+        /// <param name="sequence">Peptide sequence using 1-letter amino acid symbols</param>
         /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence1LetterSymbol(string strSequence)
+        /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
+        public int SetSequence1LetterSymbol(string sequence)
         {
-            return SetSequence(strSequence,
+            return SetSequence(sequence,
                 NTerminusGroupType.Hydrogen,
                 CTerminusGroupType.Hydroxyl,
-                blnIs3LetterCode: false, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+                is3LetterCode: false, oneLetterCheckForPrefixAndSuffixResidues: true, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
         }
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="strSequence">Peptide sequence</param>
-        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <param name="bln1LetterCheckForPrefixAndSuffixResidues"></param>
+        /// <param name="sequence">Peptide sequence</param>
+        /// <param name="is3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="oneLetterCheckForPrefixAndSuffixResidues"></param>
         /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence,
-            bool blnIs3LetterCode,
-            bool bln1LetterCheckForPrefixAndSuffixResidues)
+        /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
+        public int SetSequence(string sequence,
+            bool is3LetterCode,
+            bool oneLetterCheckForPrefixAndSuffixResidues)
         {
-            return SetSequence(strSequence, NTerminusGroupType.Hydrogen, CTerminusGroupType.Hydroxyl,
-                blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(sequence, NTerminusGroupType.Hydrogen, CTerminusGroupType.Hydroxyl,
+                is3LetterCode, oneLetterCheckForPrefixAndSuffixResidues, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
         }
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="strSequence">Peptide sequence using 3-letter amino acid symbols</param>
+        /// <param name="sequence">Peptide sequence using 3-letter amino acid symbols</param>
+        /// <param name="nTerminus">N-terminus group</param>
+        /// <param name="cTerminus">C-terminus group</param>
+        /// <returns>0 if success or 1 if an error</returns>
+        /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
+        public int SetSequence(string sequence,
+            NTerminusGroupType nTerminus,
+            CTerminusGroupType cTerminus)
+        {
+            return SetSequence(sequence, nTerminus, cTerminus,
+                is3LetterCode: true, oneLetterCheckForPrefixAndSuffixResidues: true, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
+        }
+
+        /// <summary>
+        /// Defines the peptide sequence
+        /// </summary>
+        /// <param name="sequence">Peptide sequence</param>
         /// <param name="eNTerminus">N-terminus group</param>
         /// <param name="eCTerminus">C-terminus group</param>
-        /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence,
-            NTerminusGroupType eNTerminus,
-            CTerminusGroupType eCTerminus)
-        {
-            return SetSequence(strSequence, eNTerminus, eCTerminus,
-                blnIs3LetterCode: true, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
-        }
-
-        /// <summary>
-        /// Defines the peptide sequence
-        /// </summary>
-        /// <param name="strSequence">Peptide sequence</param>
-        /// <param name="eNTerminus">N-terminus group</param>
-        /// <param name="eCTerminus">C-terminus group</param>
         /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
         /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence,
+        /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
+        public int SetSequence(string sequence,
             NTerminusGroupType eNTerminus,
             CTerminusGroupType eCTerminus,
             bool blnIs3LetterCode)
         {
-            return SetSequence(strSequence, eNTerminus, eCTerminus,
-                blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues: true, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(sequence, eNTerminus, eCTerminus,
+                blnIs3LetterCode, oneLetterCheckForPrefixAndSuffixResidues: true, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
         }
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="strSequence">Peptide sequence</param>
-        /// <param name="eNTerminus">N-terminus group</param>
-        /// <param name="eCTerminus">C-terminus group</param>
-        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+        /// <param name="sequence">Peptide sequence</param>
+        /// <param name="nTerminus">N-terminus group</param>
+        /// <param name="cTerminus">C-terminus group</param>
+        /// <param name="is3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
         /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence,
-            NTerminusGroupType eNTerminus,
-            CTerminusGroupType eCTerminus,
-            bool blnIs3LetterCode,
-            bool bln1LetterCheckForPrefixAndSuffixResidues)
+        /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
+        public int SetSequence(string sequence,
+            NTerminusGroupType nTerminus,
+            CTerminusGroupType cTerminus,
+            bool is3LetterCode,
+            bool oneLetterCheckForPrefixAndSuffixResidues)
         {
-            return SetSequence(strSequence, eNTerminus, eCTerminus,
-                blnIs3LetterCode, bln1LetterCheckForPrefixAndSuffixResidues, bln3LetterCheckForPrefixHandSuffixOH: true, blnAddMissingModificationSymbols: false);
+            return SetSequence(sequence, nTerminus, cTerminus,
+                is3LetterCode, oneLetterCheckForPrefixAndSuffixResidues, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
         }
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="strSequence">Peptide sequence</param>
-        /// <param name="eNTerminus">N-terminus group</param>
-        /// <param name="eCTerminus">C-terminus group</param>
-        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
-        /// <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
+        /// <param name="sequence">Peptide sequence</param>
+        /// <param name="nTerminus">N-terminus group</param>
+        /// <param name="cTerminus">C-terminus group</param>
+        /// <param name="is3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+        /// <param name="threeLetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
         /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence,
-            NTerminusGroupType eNTerminus,
-            CTerminusGroupType eCTerminus,
-            bool blnIs3LetterCode,
-            bool bln1LetterCheckForPrefixAndSuffixResidues,
-            bool bln3LetterCheckForPrefixHandSuffixOH)
+        /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
+        public int SetSequence(string sequence,
+            NTerminusGroupType nTerminus,
+            CTerminusGroupType cTerminus,
+            bool is3LetterCode,
+            bool oneLetterCheckForPrefixAndSuffixResidues,
+            bool threeLetterCheckForPrefixHandSuffixOH)
         {
-            return SetSequence(strSequence, eNTerminus, eCTerminus,
-                blnIs3LetterCode,
-                bln1LetterCheckForPrefixAndSuffixResidues,
-                bln3LetterCheckForPrefixHandSuffixOH, blnAddMissingModificationSymbols: false);
+            return SetSequence(sequence, nTerminus, cTerminus,
+                is3LetterCode,
+                oneLetterCheckForPrefixAndSuffixResidues,
+                threeLetterCheckForPrefixHandSuffixOH, addMissingModificationSymbols: false);
         }
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="strSequence">Peptide sequence</param>
-        /// <param name="eNTerminus">N-terminus group</param>
-        /// <param name="eCTerminus">C-terminus group</param>
-        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <param name="bln1LetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
-        /// <param name="bln3LetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
-        /// <param name="blnAddMissingModificationSymbols">Set to True to automatically add missing modification symbols (though the mod masses will be 0)</param>
+        /// <param name="sequence">Peptide sequence</param>
+        /// <param name="nTerminus">N-terminus group</param>
+        /// <param name="cTerminus">C-terminus group</param>
+        /// <param name="is3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+        /// <param name="threeLetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
+        /// <param name="addMissingModificationSymbols">Set to True to automatically add missing modification symbols (though the mod masses will be 0)</param>
         /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If strSequence is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string strSequence,
-            NTerminusGroupType eNTerminus,
-            CTerminusGroupType eCTerminus,
-            bool blnIs3LetterCode,
-            bool bln1LetterCheckForPrefixAndSuffixResidues,
-            bool bln3LetterCheckForPrefixHandSuffixOH,
-            bool blnAddMissingModificationSymbols)
+        /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
+        public int SetSequence(string sequence,
+            NTerminusGroupType nTerminus,
+            CTerminusGroupType cTerminus,
+            bool is3LetterCode,
+            bool oneLetterCheckForPrefixAndSuffixResidues,
+            bool threeLetterCheckForPrefixHandSuffixOH,
+            bool addMissingModificationSymbols)
         {
             try
             {
-                strSequence = strSequence.Trim();
+                sequence = sequence.Trim();
 
-                var lngSequenceStrLength = strSequence.Length;
+                var lngSequenceStrLength = sequence.Length;
                 if (lngSequenceStrLength == 0)
                 {
                     return AssureNonZero(0);
@@ -2708,45 +2708,45 @@ namespace MolecularWeightCalculator
 
                 string str3LetterSymbol;
                 int lngModSymbolLength;
-                if (!blnIs3LetterCode)
+                if (!is3LetterCode)
                 {
                     // Sequence is 1 letter codes
 
-                    if (bln1LetterCheckForPrefixAndSuffixResidues)
+                    if (oneLetterCheckForPrefixAndSuffixResidues)
                     {
                         // First look if sequence is in the form A.BCDEFG.Z or -.BCDEFG.Z or A.BCDEFG.-
                         // If so, then need to strip out the preceding A and Z residues since they aren't really part of the sequence
-                        if (lngSequenceStrLength > 1 && strSequence.Contains("."))
+                        if (lngSequenceStrLength > 1 && sequence.Contains("."))
                         {
-                            if (strSequence.Substring(1, 1) == ".")
+                            if (sequence.Substring(1, 1) == ".")
                             {
-                                strSequence = strSequence.Substring(2);
-                                lngSequenceStrLength = strSequence.Length;
+                                sequence = sequence.Substring(2);
+                                lngSequenceStrLength = sequence.Length;
                             }
 
-                            if (strSequence.Substring(lngSequenceStrLength - 2, 1) == ".")
+                            if (sequence.Substring(lngSequenceStrLength - 2, 1) == ".")
                             {
-                                strSequence = strSequence.Substring(0, lngSequenceStrLength - 2);
+                                sequence = sequence.Substring(0, lngSequenceStrLength - 2);
                             }
 
                             // Also check for starting with a . or ending with a .
-                            if (strSequence.Substring(0, 1) == ".")
+                            if (sequence.Substring(0, 1) == ".")
                             {
-                                strSequence = strSequence.Substring(1);
+                                sequence = sequence.Substring(1);
                             }
 
-                            if (strSequence.Substring(strSequence.Length - 1) == ".")
+                            if (sequence.Substring(sequence.Length - 1) == ".")
                             {
-                                strSequence = strSequence.Substring(0, strSequence.Length - 1);
+                                sequence = sequence.Substring(0, sequence.Length - 1);
                             }
 
-                            lngSequenceStrLength = strSequence.Length;
+                            lngSequenceStrLength = sequence.Length;
                         }
                     }
 
                     for (var lngIndex = 0; lngIndex < lngSequenceStrLength; lngIndex++)
                     {
-                        var str1LetterSymbol = strSequence.Substring(lngIndex, 1);
+                        var str1LetterSymbol = sequence.Substring(lngIndex, 1);
                         if (char.IsLetter(str1LetterSymbol[0]))
                         {
                             // Character found
@@ -2760,7 +2760,7 @@ namespace MolecularWeightCalculator
                             SetSequenceAddResidue(str3LetterSymbol);
 
                             // Look at following character(s), and record any modification symbols present
-                            lngModSymbolLength = CheckForModifications(strSequence.Substring(lngIndex + 1), ResidueCount, blnAddMissingModificationSymbols);
+                            lngModSymbolLength = CheckForModifications(sequence.Substring(lngIndex + 1), ResidueCount, addMissingModificationSymbols);
 
                             lngIndex += lngModSymbolLength;
                         }
@@ -2778,24 +2778,24 @@ namespace MolecularWeightCalculator
                     // Sequence is 3 letter codes
                     var lngIndex = 0;
 
-                    if (bln3LetterCheckForPrefixHandSuffixOH)
+                    if (threeLetterCheckForPrefixHandSuffixOH)
                     {
                         // Look for a leading H or trailing OH, provided those don't match any of the amino acids
-                        RemoveLeadingH(ref strSequence);
-                        RemoveTrailingOH(ref strSequence);
+                        RemoveLeadingH(ref sequence);
+                        RemoveTrailingOH(ref sequence);
 
                         // Recompute sequence length
-                        lngSequenceStrLength = strSequence.Length;
+                        lngSequenceStrLength = sequence.Length;
                     }
 
                     while (lngIndex < lngSequenceStrLength - 3)
                     {
-                        var strFirstChar = strSequence.Substring(lngIndex, 1);
+                        var strFirstChar = sequence.Substring(lngIndex, 1);
                         if (char.IsLetter(strFirstChar[0]))
                         {
-                            if (char.IsLetter(strSequence[lngIndex + 1]) && char.IsLetter(strSequence[lngIndex + 2]))
+                            if (char.IsLetter(sequence[lngIndex + 1]) && char.IsLetter(sequence[lngIndex + 2]))
                             {
-                                str3LetterSymbol = strFirstChar.ToUpper() + strSequence.Substring(lngIndex + 1, 2).ToLower();
+                                str3LetterSymbol = strFirstChar.ToUpper() + sequence.Substring(lngIndex + 1, 2).ToLower();
 
                                 if (ElementAndMassRoutines.GetAbbreviationIDInternal(str3LetterSymbol, true) == 0)
                                 {
@@ -2807,7 +2807,7 @@ namespace MolecularWeightCalculator
                                 SetSequenceAddResidue(str3LetterSymbol);
 
                                 // Look at following character(s), and record any modification symbols present
-                                lngModSymbolLength = CheckForModifications(strSequence.Substring(lngIndex + 3), ResidueCount, blnAddMissingModificationSymbols);
+                                lngModSymbolLength = CheckForModifications(sequence.Substring(lngIndex + 3), ResidueCount, addMissingModificationSymbols);
 
                                 lngIndex += 3;
                                 lngIndex += lngModSymbolLength;
@@ -2835,8 +2835,8 @@ namespace MolecularWeightCalculator
 
                 // By calling SetNTerminus and SetCTerminus, the UpdateResidueMasses() Sub will also be called
                 mDelayUpdateResidueMass = true;
-                SetNTerminusGroup(eNTerminus);
-                SetCTerminusGroup(eCTerminus);
+                SetNTerminusGroup(nTerminus);
+                SetCTerminusGroup(cTerminus);
 
                 mDelayUpdateResidueMass = false;
                 UpdateResidueMasses();
@@ -2849,54 +2849,54 @@ namespace MolecularWeightCalculator
             }
         }
 
-        private void SetSequenceAddResidue(string str3LetterSymbol)
+        private void SetSequenceAddResidue(string threeLetterSymbol)
         {
-            if (string.IsNullOrWhiteSpace(str3LetterSymbol))
+            if (string.IsNullOrWhiteSpace(threeLetterSymbol))
             {
-                str3LetterSymbol = UNKNOWN_SYMBOL;
+                threeLetterSymbol = UNKNOWN_SYMBOL;
             }
 
             ResidueCount += 1;
             ReserveMemoryForResidues(ResidueCount, true);
 
             var residue = Residues[ResidueCount];
-            residue.Symbol = str3LetterSymbol;
+            residue.Symbol = threeLetterSymbol;
             residue.Phosphorylated = false;
             residue.ModificationIDCount = 0;
         }
 
-        public void SetSymbolAmmoniaLoss(string strNewSymbol)
+        public void SetSymbolAmmoniaLoss(string newSymbol)
         {
-            if (!string.IsNullOrWhiteSpace(strNewSymbol))
+            if (!string.IsNullOrWhiteSpace(newSymbol))
             {
-                mAmmoniaLossSymbol = strNewSymbol;
+                mAmmoniaLossSymbol = newSymbol;
             }
         }
 
-        public void SetSymbolPhosphoLoss(string strNewSymbol)
+        public void SetSymbolPhosphoLoss(string newSymbol)
         {
-            if (!string.IsNullOrWhiteSpace(strNewSymbol))
+            if (!string.IsNullOrWhiteSpace(newSymbol))
             {
-                mPhosphoLossSymbol = strNewSymbol;
+                mPhosphoLossSymbol = newSymbol;
             }
         }
 
-        public void SetSymbolWaterLoss(string strNewSymbol)
+        public void SetSymbolWaterLoss(string newSymbol)
         {
-            if (!string.IsNullOrWhiteSpace(strNewSymbol))
+            if (!string.IsNullOrWhiteSpace(newSymbol))
             {
-                mWaterLossSymbol = strNewSymbol;
+                mWaterLossSymbol = newSymbol;
             }
         }
 
-        private void ShellSortFragSpectrum(ref FragmentationSpectrumData[] FragSpectrumWork, ref int[] PointerArray, int lngLowIndex, int lngHighIndex)
+        private void ShellSortFragSpectrum(ref FragmentationSpectrumData[] fragSpectrumWork, ref int[] pointerArray, int lowIndex, int highIndex)
         {
             // Sort the list using a shell sort
 
             // Sort PointerArray[lngLowIndex..lngHighIndex] by comparing FragSpectrumWork(PointerArray(x)).Mass
 
             // Compute largest increment
-            var lngCount = lngHighIndex - lngLowIndex + 1;
+            var lngCount = highIndex - lowIndex + 1;
             var lngIncrement = 1;
             if (lngCount < 14)
             {
@@ -2914,19 +2914,19 @@ namespace MolecularWeightCalculator
             while (lngIncrement > 0)
             {
                 // Sort by insertion in increments of lngIncrement
-                for (var lngIndex = lngLowIndex + lngIncrement; lngIndex <= lngHighIndex; lngIndex++)
+                for (var lngIndex = lowIndex + lngIncrement; lngIndex <= highIndex; lngIndex++)
                 {
-                    var lngPointerSwap = PointerArray[lngIndex];
+                    var lngPointerSwap = pointerArray[lngIndex];
                     int lngIndexCompare;
-                    for (lngIndexCompare = lngIndex - lngIncrement; lngIndexCompare >= lngLowIndex; lngIndexCompare += -lngIncrement)
+                    for (lngIndexCompare = lngIndex - lngIncrement; lngIndexCompare >= lowIndex; lngIndexCompare += -lngIncrement)
                     {
                         // Use <= to sort ascending; Use > to sort descending
-                        if (FragSpectrumWork[PointerArray[lngIndexCompare]].Mass <= FragSpectrumWork[lngPointerSwap].Mass)
+                        if (fragSpectrumWork[pointerArray[lngIndexCompare]].Mass <= fragSpectrumWork[lngPointerSwap].Mass)
                             break;
-                        PointerArray[lngIndexCompare + lngIncrement] = PointerArray[lngIndexCompare];
+                        pointerArray[lngIndexCompare + lngIncrement] = pointerArray[lngIndexCompare];
                     }
 
-                    PointerArray[lngIndexCompare + lngIncrement] = lngPointerSwap;
+                    pointerArray[lngIndexCompare + lngIncrement] = lngPointerSwap;
                 }
 
                 lngIncrement /= 3;

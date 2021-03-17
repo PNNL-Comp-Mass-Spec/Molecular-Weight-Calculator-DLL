@@ -41,43 +41,43 @@ namespace MwtWinDllTest
         private MolecularWeightTool mMwtWin;
         private DataSet myDataSet;
 
-        private void AppendColumnToTableStyle(ref DataGridTableStyle tsTableStyle, string strMappingName, string strHeaderText, int intWidth = 75, bool blnIsReadOnly = false, bool blnIsDateTime = false, int intDecimalPlaces = -1)
+        private void AppendColumnToTableStyle(ref DataGridTableStyle tableStyle, string mappingName, string headerText, int width = 75, bool isReadOnly = false, bool isDateTime = false, int decimalPlaces = -1)
         {
             // If intDecimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
             var TextCol = new DataGridTextBoxColumn
             {
-                MappingName = strMappingName,
-                HeaderText = strHeaderText,
-                Width = intWidth,
-                ReadOnly = blnIsReadOnly
+                MappingName = mappingName,
+                HeaderText = headerText,
+                Width = width,
+                ReadOnly = isReadOnly
             };
 
-            if (blnIsDateTime)
+            if (isDateTime)
             {
                 TextCol.Format = "g";
             }
-            else if (intDecimalPlaces >= 0)
+            else if (decimalPlaces >= 0)
             {
                 TextCol.Format = "0.";
-                for (var i = 0; i < intDecimalPlaces; i++)
+                for (var i = 0; i < decimalPlaces; i++)
                     TextCol.Format += "0";
             }
 
-            tsTableStyle.GridColumnStyles.Add(TextCol);
+            tableStyle.GridColumnStyles.Add(TextCol);
         }
 
-        private void AppendBoolColumnToTableStyle(ref DataGridTableStyle tsTableStyle, string strMappingName, string strHeaderText, int intWidth = 75, bool blnIsReadOnly = false, bool blnSourceIsTrueFalse = true)
+        private void AppendBoolColumnToTableStyle(ref DataGridTableStyle tableStyle, string mappingName, string headerText, int width = 75, bool isReadOnly = false, bool sourceIsTrueFalse = true)
         {
             // If intDecimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
             var BoolCol = new DataGridBoolColumn
             {
-                MappingName = strMappingName,
-                HeaderText = strHeaderText,
-                Width = intWidth,
-                ReadOnly = blnIsReadOnly
+                MappingName = mappingName,
+                HeaderText = headerText,
+                Width = width,
+                ReadOnly = isReadOnly
             };
 
-            if (blnSourceIsTrueFalse)
+            if (sourceIsTrueFalse)
             {
                 BoolCol.FalseValue = false;
                 BoolCol.TrueValue = true;
@@ -91,7 +91,7 @@ namespace MwtWinDllTest
             BoolCol.AllowNull = false;
             BoolCol.NullValue = Convert.DBNull;
 
-            tsTableStyle.GridColumnStyles.Add(BoolCol);
+            tableStyle.GridColumnStyles.Add(BoolCol);
         }
 
         private void FindPercentComposition()
@@ -145,7 +145,7 @@ namespace MwtWinDllTest
             PopulateComboBoxes();
         }
 
-        private void MakeDataSet(int lngIonCount, Peptide.FragmentationSpectrumData[] udtFragSpectrum)
+        private void MakeDataSet(int ionCount, Peptide.FragmentationSpectrumData[] fragSpectrum)
         {
             // Create a DataSet.
             myDataSet = new DataSet("myDataSet");
@@ -165,13 +165,13 @@ namespace MwtWinDllTest
             myDataSet.Tables.Add(tDataTable);
 
             // Append rows to the table.
-            for (var lngIndex = 0; lngIndex < lngIonCount; lngIndex++)
+            for (var lngIndex = 0; lngIndex < ionCount; lngIndex++)
             {
                 // Populates the table.
                 var newRow = tDataTable.NewRow();
-                newRow["Mass"] = udtFragSpectrum[lngIndex].Mass;
-                newRow["Intensity"] = udtFragSpectrum[lngIndex].Intensity;
-                newRow["Symbol"] = udtFragSpectrum[lngIndex].Symbol;
+                newRow["Mass"] = fragSpectrum[lngIndex].Mass;
+                newRow["Intensity"] = fragSpectrum[lngIndex].Intensity;
+                newRow["Symbol"] = fragSpectrum[lngIndex].Symbol;
                 tDataTable.Rows.Add(newRow);
             }
         }
@@ -553,34 +553,34 @@ namespace MwtWinDllTest
             }
         }
 
-        private void FormulaFinderTest1(MolecularWeightTool oMwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest1(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
         {
 
             // Search for 200 Da, +/- 0.05 Da
-            var lstResults = oMwtWin.FormulaFinder.FindMatchesByMass(200d, 0.05d, searchOptions);
+            var lstResults = mwtWin.FormulaFinder.FindMatchesByMass(200d, 0.05d, searchOptions);
             ShowFormulaFinderResults(currentTask, searchOptions, lstResults);
         }
 
-        private void FormulaFinderTest2(MolecularWeightTool oMwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest2(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
         {
 
             // Search for 200 Da, +/- 250 ppm
-            var lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
+            var lstResults = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
             ShowFormulaFinderResults(currentTask, searchOptions, lstResults, true);
         }
 
-        private void FormulaFinderTest3(MolecularWeightTool oMwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest3(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
         {
             searchOptions.LimitChargeRange = true;
             searchOptions.ChargeMin = -4;
             searchOptions.ChargeMax = 6;
 
             // Search for 200 Da, +/- 250 ppm
-            var lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
+            var lstResults = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
             ShowFormulaFinderResults(currentTask, searchOptions, lstResults, true);
         }
 
-        private void FormulaFinderTest4(MolecularWeightTool oMwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest4(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
         {
             searchOptions.LimitChargeRange = true;
             searchOptions.ChargeMin = -4;
@@ -588,37 +588,37 @@ namespace MwtWinDllTest
             searchOptions.FindTargetMZ = true;
 
             // Search for 100 m/z, +/- 250 ppm
-            var lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(100d, 250d, searchOptions);
+            var lstResults = mwtWin.FormulaFinder.FindMatchesByMassPPM(100d, 250d, searchOptions);
             ShowFormulaFinderResults(currentTask, searchOptions, lstResults, true);
         }
 
-        private void FormulaFinderTest5(MolecularWeightTool oMwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest5(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
         {
-            oMwtWin.FormulaFinder.CandidateElements.Clear();
+            mwtWin.FormulaFinder.CandidateElements.Clear();
 
-            oMwtWin.FormulaFinder.AddCandidateElement("C", 70d);
-            oMwtWin.FormulaFinder.AddCandidateElement("H", 10d);
-            oMwtWin.FormulaFinder.AddCandidateElement("N", 10d);
-            oMwtWin.FormulaFinder.AddCandidateElement("O", 10d);
+            mwtWin.FormulaFinder.AddCandidateElement("C", 70d);
+            mwtWin.FormulaFinder.AddCandidateElement("H", 10d);
+            mwtWin.FormulaFinder.AddCandidateElement("N", 10d);
+            mwtWin.FormulaFinder.AddCandidateElement("O", 10d);
 
             // Search for percent composition results, maximum mass 400 Da
-            var lstResults = oMwtWin.FormulaFinder.FindMatchesByPercentComposition(400d, 1d, searchOptions);
+            var lstResults = mwtWin.FormulaFinder.FindMatchesByPercentComposition(400d, 1d, searchOptions);
             ShowFormulaFinderResults(currentTask, searchOptions, lstResults, false, true);
         }
 
-        private void FormulaFinderTest6(MolecularWeightTool oMwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest6(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
         {
             searchOptions.SearchMode = FormulaFinderOptions.SearchModes.Bounded;
 
             // Search for 200 Da, +/- 250 ppm
-            var lstResults = oMwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
+            var lstResults = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
             ShowFormulaFinderResults(currentTask, searchOptions, lstResults, true);
         }
 
         private void ShowFormulaFinderResults(
             string currentTask,
             FormulaFinderOptions searchOptions,
-            List<FormulaFinderResult> lstResults,
+            List<FormulaFinderResult> results,
             bool deltaMassIsPPM = false,
             bool percentCompositionSearch = false)
         {
@@ -662,7 +662,7 @@ namespace MwtWinDllTest
 
             var sbPercentCompInfo = new StringBuilder();
 
-            foreach (var result in lstResults)
+            foreach (var result in results)
             {
                 // Populates the table.
                 var newRow = tDataTable.NewRow();
@@ -887,20 +887,20 @@ namespace MwtWinDllTest
             Cursor = Cursors.Default;
         }
 
-        private void UpdateResultsForCompound(ref Compound objCompound)
+        private void UpdateResultsForCompound(ref Compound compound)
         {
-            if (string.IsNullOrEmpty(objCompound.ErrorDescription))
+            if (string.IsNullOrEmpty(compound.ErrorDescription))
             {
-                txtFormula.Text = objCompound.FormulaCapitalized;
+                txtFormula.Text = compound.FormulaCapitalized;
                 FindMass();
             }
             else
             {
-                lblStatus.Text = objCompound.ErrorDescription;
+                lblStatus.Text = compound.ErrorDescription;
             }
         }
 
-        private void cboStdDevMode_SelectedIndexChanged(object eventSender, EventArgs eventArgs)
+        private void cboStdDevMode_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
             switch (cboStdDevMode.SelectedIndex)
             {
@@ -916,7 +916,7 @@ namespace MwtWinDllTest
             }
         }
 
-        private void cboWeightMode_SelectedIndexChanged(object eventSender, EventArgs eventArgs)
+        private void cboWeightMode_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
             switch (cboWeightMode.SelectedIndex)
             {
@@ -932,7 +932,7 @@ namespace MwtWinDllTest
             }
         }
 
-        private void cmdClose_Click(object eventSender, EventArgs eventArgs)
+        private void cmdClose_Click(object sender, EventArgs eventArgs)
         {
             if (mMwtWin != null)
             {
@@ -946,7 +946,7 @@ namespace MwtWinDllTest
             Environment.Exit(0);
         }
 
-        private void cmdConvertToEmpirical_Click(object eventSender, EventArgs eventArgs)
+        private void cmdConvertToEmpirical_Click(object sender, EventArgs eventArgs)
         {
             lblProgress.Text = string.Empty;
 
@@ -956,7 +956,7 @@ namespace MwtWinDllTest
             UpdateResultsForCompound(ref mMwtWin.Compound);
         }
 
-        private void cmdExpandAbbreviations_Click(object eventSender, EventArgs eventArgs)
+        private void cmdExpandAbbreviations_Click(object sender, EventArgs eventArgs)
         {
             lblProgress.Text = string.Empty;
 
@@ -966,18 +966,18 @@ namespace MwtWinDllTest
             UpdateResultsForCompound(ref mMwtWin.Compound);
         }
 
-        private void cmdFindMass_Click(object eventSender, EventArgs eventArgs)
+        private void cmdFindMass_Click(object sender, EventArgs eventArgs)
         {
             FindMass();
             FindPercentComposition();
         }
 
-        private void cmdTestFunctions_Click(object eventSender, EventArgs eventArgs)
+        private void cmdTestFunctions_Click(object sender, EventArgs eventArgs)
         {
             TestAccessFunctions();
         }
 
-        private void cmdTestGetTrypticName_Click(object eventSender, EventArgs eventArgs)
+        private void cmdTestGetTrypticName_Click(object sender, EventArgs eventArgs)
         {
             TestTrypticName();
         }

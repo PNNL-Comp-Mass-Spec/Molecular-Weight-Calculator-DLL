@@ -78,9 +78,9 @@ namespace MwtWinDllTest
 
         #region "Procedures"
 
-        public void AppendText(string Value)
+        public void AppendText(string value)
         {
-            txtData.Text += Value + Environment.NewLine;
+            txtData.Text += value + Environment.NewLine;
             txtData.SelectionStart = txtData.TextLength;
             txtData.ScrollToCaret();
         }
