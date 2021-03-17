@@ -232,25 +232,10 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="targetMass"></param>
         /// <param name="massTolerancePPM"></param>
-        /// <returns></returns>
-        /// <remarks>Uses default search options</remarks>
-        public List<FormulaFinderResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM)
-        {
-            var lstResults = FindMatchesByMassPPM(targetMass, massTolerancePPM, null);
-
-            // No need to sort because FindMatchesByMassPPM has already done so
-            return lstResults;
-        }
-
-        /// <summary>
-        /// Find empirical formulas that match the given target mass, with the given ppm tolerance
-        /// </summary>
-        /// <param name="targetMass"></param>
-        /// <param name="massTolerancePPM"></param>
-        /// <param name="searchOptions"></param>
+        /// <param name="searchOptions">If null, uses default search options</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public List<FormulaFinderResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, FormulaFinderOptions searchOptions)
+        public List<FormulaFinderResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, FormulaFinderOptions searchOptions = null)
         {
             var massToleranceDa = massTolerancePPM * targetMass / 1000000.0d;
             if (searchOptions == null)
@@ -267,25 +252,10 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="targetMass"></param>
         /// <param name="massToleranceDa"></param>
-        /// <returns></returns>
-        /// <remarks>Uses default search options</remarks>
-        public List<FormulaFinderResult> FindMatchesByMass(double targetMass, double massToleranceDa)
-        {
-            var lstResults = FindMatchesByMass(targetMass, massToleranceDa, null);
-
-            // No need to sort because FindMatchesByMassPPM has already done so
-            return lstResults;
-        }
-
-        /// <summary>
-        /// Find empirical formulas that match the given target mass, with the given tolerance
-        /// </summary>
-        /// <param name="targetMass"></param>
-        /// <param name="massToleranceDa"></param>
-        /// <param name="searchOptions"></param>
+        /// <param name="searchOptions">If null, uses default search options</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public List<FormulaFinderResult> FindMatchesByMass(double targetMass, double massToleranceDa, FormulaFinderOptions searchOptions)
+        public List<FormulaFinderResult> FindMatchesByMass(double targetMass, double massToleranceDa, FormulaFinderOptions searchOptions = null)
         {
             if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
@@ -1423,11 +1393,6 @@ namespace MolecularWeightCalculator
             return potentialElementCount;
         }
 
-        private CandidateElementTolerances GetDefaultCandidateElementTolerance()
-        {
-            return GetDefaultCandidateElementTolerance(0d);
-        }
-
         private CandidateElementTolerances GetDefaultCandidateElementTolerance(int minimumCount, int maximumCount)
         {
             var udtElementTolerances = new CandidateElementTolerances
@@ -1440,7 +1405,7 @@ namespace MolecularWeightCalculator
             return udtElementTolerances;
         }
 
-        private CandidateElementTolerances GetDefaultCandidateElementTolerance(double targetPercentComposition)
+        private CandidateElementTolerances GetDefaultCandidateElementTolerance(double targetPercentComposition = 0)
         {
             var udtElementTolerances = new CandidateElementTolerances
             {

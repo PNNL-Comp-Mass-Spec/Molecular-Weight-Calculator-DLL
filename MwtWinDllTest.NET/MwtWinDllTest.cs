@@ -433,7 +433,7 @@ namespace MwtWinDllTest
             objResults.AppendText(strNewSeq);
             peptide.SetSequence(strNewSeq);
 
-            peptide.SetSequence("K.TQPLE*VK.-", Peptide.NTerminusGroupType.HydrogenPlusProton, Peptide.CTerminusGroupType.Hydroxyl, blnIs3LetterCode: false);
+            peptide.SetSequence("K.TQPLE*VK.-", Peptide.NTerminusGroupType.HydrogenPlusProton, Peptide.CTerminusGroupType.Hydroxyl, is3LetterCode: false);
 
             objResults.AppendText(peptide.GetSequence(true, false, true, false));
             objResults.AppendText(peptide.GetSequence(false, true, false, false));

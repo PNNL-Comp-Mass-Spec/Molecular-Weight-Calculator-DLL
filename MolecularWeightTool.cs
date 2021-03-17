@@ -261,51 +261,7 @@ namespace MolecularWeightCalculator
         /// <param name="results">Output: Table of results</param>
         /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
         /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-        /// <returns>0 if success, -1 if an error</returns>
-        /// <remarks>
-        /// Returns uncharged mass values if <paramref name="chargeState"/>=0,
-        /// Returns M+H values if <paramref name="chargeState"/>=1
-        /// Returns convoluted m/z if <paramref name="chargeState"/> is &gt; 1
-        /// </remarks>
-        public short ComputeIsotopicAbundances(
-            ref string formulaIn, short chargeState, ref string results,
-            ref double[,] convolutedMSData2DOneBased, ref int convolutedMSDataCount)
-        {
-            return ComputeIsotopicAbundances(ref formulaIn, chargeState, ref results, ref convolutedMSData2DOneBased, ref convolutedMSDataCount,
-                                             "Isotopic Abundances for", "Mass", "Fraction", "Intensity");
-        }
-
-        /// <summary>
-        /// Computes the Isotopic Distribution for a formula
-        /// </summary>
-        /// <param name="formulaIn">Input/output: The properly formatted formula to parse</param>
-        /// <param name="chargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-        /// <param name="results">Output: Table of results</param>
-        /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-        /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-        /// <param name="addProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
-        /// <returns>0 if success, -1 if an error</returns>
-        /// <remarks>
-        /// Returns uncharged mass values if <paramref name="chargeState"/>=0,
-        /// Returns M+H values if <paramref name="chargeState"/>=1
-        /// Returns convoluted m/z if <paramref name="chargeState"/> is &gt; 1
-        /// </remarks>
-        public short ComputeIsotopicAbundances(
-            ref string formulaIn, short chargeState, ref string results,
-            ref double[,] convolutedMSData2DOneBased, ref int convolutedMSDataCount, bool addProtonChargeCarrier)
-        {
-            return ComputeIsotopicAbundances(ref formulaIn, chargeState, ref results, ref convolutedMSData2DOneBased, ref convolutedMSDataCount,
-                                             "Isotopic Abundances for", "Mass", "Fraction", "Intensity", addProtonChargeCarrier);
-        }
-
-        /// <summary>
-        /// Computes the Isotopic Distribution for a formula
-        /// </summary>
-        /// <param name="formulaIn">Input/output: The properly formatted formula to parse</param>
-        /// <param name="chargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-        /// <param name="results">Output: Table of results</param>
-        /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-        /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
+        /// <param name="addProtonChargeCarrier">If addProtonChargeCarrier is false, then still convolutes by charge, but doesn't add a proton</param>
         /// <param name="headerIsotopicAbundances">Header to use in <paramref name="results"/></param>
         /// <param name="headerMassToCharge">Header to use in <paramref name="results"/></param>
         /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
@@ -319,58 +275,13 @@ namespace MolecularWeightCalculator
         public short ComputeIsotopicAbundances(
             ref string formulaIn, short chargeState, ref string results,
             ref double[,] convolutedMSData2DOneBased, ref int convolutedMSDataCount,
-            string headerIsotopicAbundances,
-            string headerMassToCharge,
-            string headerFraction,
-            string headerIntensity)
+            bool addProtonChargeCarrier = true,
+            string headerIsotopicAbundances = "Isotopic Abundances for",
+            string headerMassToCharge = "Mass",
+            string headerFraction = "Fraction",
+            string headerIntensity = "Intensity")
         {
-            const bool blnAddProtonChargeCarrier = true;
-            return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref formulaIn, chargeState, ref results, ref convolutedMSData2DOneBased, ref convolutedMSDataCount, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false, blnAddProtonChargeCarrier);
-        }
-
-        /// <summary>
-        /// Computes the Isotopic Distribution for a formula
-        /// </summary>
-        /// <param name="formulaIn">Input/output: The properly formatted formula to parse</param>
-        /// <param name="chargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
-        /// <param name="results">Output: Table of results</param>
-        /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
-        /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-        /// <param name="headerIsotopicAbundances">Header to use in <paramref name="results"/></param>
-        /// <param name="headerMassToCharge">Header to use in <paramref name="results"/></param>
-        /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
-        /// <param name="headerIntensity">Header to use in <paramref name="results"/></param>
-        /// <param name="addProtonChargeCarrier">If blnAddProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
-        /// <returns>0 if success, -1 if an error</returns>
-        /// <remarks>
-        /// Returns uncharged mass values if <paramref name="chargeState"/>=0,
-        /// Returns M+H values if <paramref name="chargeState"/>=1
-        /// Returns convoluted m/z if <paramref name="chargeState"/> is &gt; 1
-        /// </remarks>
-        public short ComputeIsotopicAbundances(
-            ref string formulaIn, short chargeState, ref string results,
-            ref double[,] convolutedMSData2DOneBased, ref int convolutedMSDataCount,
-            string headerIsotopicAbundances,
-            string headerMassToCharge,
-            string headerFraction,
-            string headerIntensity,
-            bool addProtonChargeCarrier)
-        {
-            return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref formulaIn, chargeState, ref results, ref convolutedMSData2DOneBased, ref convolutedMSDataCount, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false, addProtonChargeCarrier);
-        }
-
-        /// <summary>
-        /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
-        /// </summary>
-        /// <param name="xyVals">XY data, as key-value pairs</param>
-        /// <param name="resolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
-        /// <param name="resolutionMass">The m/z value at which the resolution applies</param>
-        /// <returns>Gaussian spectrum data</returns>
-        /// <remarks></remarks>
-        public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass)
-        {
-            const int intQualityFactor = 50;
-            return ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, intQualityFactor);
+            return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref formulaIn, chargeState, ref results, ref convolutedMSData2DOneBased, ref convolutedMSDataCount, addProtonChargeCarrier, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
         }
 
         /// <summary>
@@ -382,7 +293,7 @@ namespace MolecularWeightCalculator
         /// <param name="qualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
         /// <returns>Gaussian spectrum data</returns>
         /// <remarks></remarks>
-        public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor)
+        public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor = 50)
         {
             return mElementAndMassRoutines.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor);
         }
@@ -392,36 +303,11 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="massMz">Mass or m/z value</param>
         /// <param name="currentCharge">Current charge (0 means neutral mass)</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
-        public double ConvoluteMass(double massMz, short currentCharge)
-        {
-            return ConvoluteMass(massMz, currentCharge, 1, 0d);
-        }
-
-        /// <summary>
-        /// Converts a given mass or m/z value to the MH+ m/z value
-        /// </summary>
-        /// <param name="massMz">Mass or m/z value</param>
-        /// <param name="currentCharge">Current charge (0 means neutral mass)</param>
         /// <param name="desiredCharge">Desired charge (0 means neutral mass)</param>
+        /// <param name="chargeCarrierMass">Custom charge carrier mass (0 means use default, usually 1.00727649)</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public double ConvoluteMass(double massMz, short currentCharge, short desiredCharge)
-        {
-            return ConvoluteMass(massMz, currentCharge, desiredCharge, 0d);
-        }
-
-        /// <summary>
-        /// Converts a given mass or m/z value to the MH+ m/z value
-        /// </summary>
-        /// <param name="massMz">Mass or m/z value</param>
-        /// <param name="currentCharge">Current charge (0 means neutral mass)</param>
-        /// <param name="desiredCharge">Desired charge (0 means neutral mass)</param>
-        /// <param name="chargeCarrierMass">Custom charge carrier mass (default is 1.00727649)</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
-        public double ConvoluteMass(double massMz, short currentCharge, short desiredCharge, double chargeCarrierMass)
+        public double ConvoluteMass(double massMz, short currentCharge, short desiredCharge = 1, double chargeCarrierMass = 0)
         {
             return mElementAndMassRoutines.ConvoluteMassInternal(massMz, currentCharge, desiredCharge, chargeCarrierMass);
         }
@@ -673,19 +559,9 @@ namespace MolecularWeightCalculator
         /// Get message text using message ID
         /// </summary>
         /// <param name="messageId"></param>
-        /// <returns></returns>
-        public string GetMessageStatement(int messageId)
-        {
-            return GetMessageStatement(messageId, string.Empty);
-        }
-
-        /// <summary>
-        /// Get message text using message ID
-        /// </summary>
-        /// <param name="messageId"></param>
         /// <param name="appendText"></param>
         /// <returns></returns>
-        public string GetMessageStatement(int messageId, string appendText)
+        public string GetMessageStatement(int messageId, string appendText = "")
         {
             return mElementAndMassRoutines.GetMessageStatementInternal(messageId, appendText);
         }
@@ -742,12 +618,7 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.MassToPPMInternal(massToConvert, currentMz);
         }
 
-        public double MonoMassToMZ(double monoisotopicMass, short charge)
-        {
-            return MonoMassToMZ(monoisotopicMass, charge, 0d);
-        }
-
-        public double MonoMassToMZ(double monoisotopicMass, short charge, double chargeCarrierMass)
+        public double MonoMassToMZ(double monoisotopicMass, short charge, double chargeCarrierMass = 0)
         {
             return mElementAndMassRoutines.MonoMassToMZInternal(monoisotopicMass, charge, chargeCarrierMass);
         }
@@ -799,20 +670,6 @@ namespace MolecularWeightCalculator
             mElementAndMassRoutines.MemoryLoadMessageStatements();
         }
 
-        public int SetAbbreviation(string symbol, string formula, float charge,
-            bool blnIsAminoAcid)
-        {
-            return SetAbbreviation(symbol, formula, charge, blnIsAminoAcid, "", "", true);
-        }
-
-        public int SetAbbreviation(string symbol, string formula, float charge,
-            bool isAminoAcid,
-            string oneLetterSymbol,
-            string comment)
-        {
-            return SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, true);
-        }
-
         /// <summary>
         /// Adds a new abbreviation or updates an existing one (based on <paramref name="symbol"/>)
         /// </summary>
@@ -832,18 +689,11 @@ namespace MolecularWeightCalculator
         public int SetAbbreviation(
             string symbol, string formula, float charge,
             bool isAminoAcid,
-            string oneLetterSymbol,
-            string comment,
-            bool validateFormula)
+            string oneLetterSymbol = "",
+            string comment = "",
+            bool validateFormula = true)
         {
             return mElementAndMassRoutines.SetAbbreviationInternal(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
-        }
-
-        public int SetAbbreviationByID(
-            int abbrevId, string symbol, string formula,
-            float charge, bool isAminoAcid)
-        {
-            return SetAbbreviationByID(abbrevId, symbol, formula, charge, isAminoAcid, "", "", true);
         }
 
         /// <summary>
@@ -866,9 +716,9 @@ namespace MolecularWeightCalculator
         public int SetAbbreviationByID(
             int abbrevId, string symbol, string formula,
             float charge, bool isAminoAcid,
-            string oneLetterSymbol,
-            string comment,
-            bool validateFormula)
+            string oneLetterSymbol = "",
+            string comment = "",
+            bool validateFormula = true)
         {
             return mElementAndMassRoutines.SetAbbreviationByIDInternal((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
         }
@@ -889,12 +739,6 @@ namespace MolecularWeightCalculator
             mElementAndMassRoutines.SetChargeCarrierMassInternal(mass);
         }
 
-        public int SetElement(string symbol, double mass,
-            double uncertainty, float charge)
-        {
-            return SetElement(symbol, mass, uncertainty, charge, true);
-        }
-
         /// <summary>
         /// Update the values for a single element (based on <paramref name="symbol"/>)
         /// </summary>
@@ -902,11 +746,11 @@ namespace MolecularWeightCalculator
         /// <param name="mass"></param>
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
-        /// <param name="recomputeAbbreviationMasses">Set to False if updating several elements</param>
+        /// <param name="recomputeAbbreviationMasses">Set to false if updating several elements</param>
         /// <returns></returns>
         public int SetElement(string symbol, double mass, double uncertainty,
             float charge,
-            bool recomputeAbbreviationMasses)
+            bool recomputeAbbreviationMasses = true)
         {
             return mElementAndMassRoutines.SetElementInternal(symbol, mass, uncertainty, charge, recomputeAbbreviationMasses);
         }
@@ -916,12 +760,7 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.SetElementIsotopesInternal(symbol, isotopeCount, ref isotopeMassesOneBased, ref isotopeAbundancesOneBased);
         }
 
-        public void SetElementMode(ElementAndMassTools.ElementMassMode elementMode)
-        {
-            SetElementMode(elementMode, true);
-        }
-
-        public void SetElementMode(ElementAndMassTools.ElementMassMode elementMode, bool memoryLoadElementValues)
+        public void SetElementMode(ElementAndMassTools.ElementMassMode elementMode, bool memoryLoadElementValues = true)
         {
             mElementAndMassRoutines.SetElementModeInternal(elementMode, memoryLoadElementValues);
         }
@@ -942,22 +781,6 @@ namespace MolecularWeightCalculator
             mElementAndMassRoutines.SortAbbreviationsInternal();
         }
 
-        public string TextToRTF(string textToConvert)
-        {
-            return TextToRTF(textToConvert, false, true, false, 0);
-        }
-
-        public string TextToRTF(string textToConvert, bool calculatorMode)
-        {
-            return TextToRTF(textToConvert, calculatorMode, true, false, 0);
-        }
-
-        public string TextToRTF(string textToConvert, bool calculatorMode,
-            bool highlightCharFollowingPercentSign)
-        {
-            return TextToRTF(textToConvert, calculatorMode, highlightCharFollowingPercentSign, false, 0);
-        }
-
         /// <summary>
         /// Converts plain text to formatted rtf text
         /// </summary>
@@ -969,10 +792,10 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public string TextToRTF(
             string textToConvert,
-            bool calculatorMode,
-            bool highlightCharFollowingPercentSign,
-            bool overrideErrorId,
-            int errorIdOverride)
+            bool calculatorMode = false,
+            bool highlightCharFollowingPercentSign = true,
+            bool overrideErrorId = false,
+            int errorIdOverride = 0)
         {
             return mElementAndMassRoutines.PlainTextToRtfInternal(textToConvert, calculatorMode, highlightCharFollowingPercentSign, overrideErrorId, errorIdOverride);
         }

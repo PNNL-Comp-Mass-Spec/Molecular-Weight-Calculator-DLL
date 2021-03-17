@@ -126,12 +126,7 @@ namespace MolecularWeightCalculator
             return -1;
         }
 
-        public string GetPercentCompositionForElementAsString(short elementId)
-        {
-            return GetPercentCompositionForElementAsString(elementId, true);
-        }
-
-        public string GetPercentCompositionForElementAsString(short elementId, bool includeStandardDeviation)
+        public string GetPercentCompositionForElementAsString(short elementId, bool includeStandardDeviation = true)
         {
             // Returns the percent composition and standard deviation for element
             // Returns "" if an invalid ID

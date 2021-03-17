@@ -27,15 +27,14 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        public Peptide()
+        public Peptide(ElementAndMassTools elementAndMassTools = null)
         {
-            ElementAndMassRoutines = new ElementAndMassTools();
-            InitializeClass();
-        }
+            ElementAndMassRoutines = elementAndMassTools;
+            if (ElementAndMassRoutines == null)
+            {
+                ElementAndMassRoutines = new ElementAndMassTools();
+            }
 
-        public Peptide(ElementAndMassTools objElementAndMassTools)
-        {
-            ElementAndMassRoutines = objElementAndMassTools;
             InitializeClass();
         }
 
@@ -907,47 +906,16 @@ namespace MolecularWeightCalculator
             return strSymbol;
         }
 
-        public string GetSequence()
-        {
-            return GetSequence(use3LetterCode: true, addSpaceEvery10Residues: false, separateResiduesWithDash: false, includeNAndCTerminii: false, includeModificationSymbols: true);
-        }
-
         public string GetSequence1LetterCode()
         {
-            return GetSequence(use3LetterCode: false, addSpaceEvery10Residues: false, separateResiduesWithDash: false, includeNAndCTerminii: false, includeModificationSymbols: true);
+            return GetSequence(false);
         }
 
-        public string GetSequence(bool use3LetterCode)
-        {
-            return GetSequence(use3LetterCode, addSpaceEvery10Residues: false, separateResiduesWithDash: false, includeNAndCTerminii: false, includeModificationSymbols: true);
-        }
-
-        public string GetSequence(bool use3LetterCode,
-            bool addSpaceEvery10Residues)
-        {
-            return GetSequence(use3LetterCode, addSpaceEvery10Residues, separateResiduesWithDash: false, includeNAndCTerminii: false, includeModificationSymbols: true);
-        }
-
-        public string GetSequence(bool use3LetterCode,
-            bool addSpaceEvery10Residues,
-            bool separateResiduesWithDash)
-        {
-            return GetSequence(use3LetterCode, addSpaceEvery10Residues, separateResiduesWithDash, includeNAndCTerminii: false, includeModificationSymbols: true);
-        }
-
-        public string GetSequence(bool use3LetterCode,
-            bool addSpaceEvery10Residues,
-            bool separateResiduesWithDash,
-            bool includeNAndCTerminii)
-        {
-            return GetSequence(use3LetterCode, addSpaceEvery10Residues, separateResiduesWithDash, includeNAndCTerminii, includeModificationSymbols: true);
-        }
-
-        public string GetSequence(bool use3LetterCode,
-            bool addSpaceEvery10Residues,
-            bool separateResiduesWithDash,
-            bool includeNAndCTerminii,
-            bool includeModificationSymbols)
+        public string GetSequence(bool use3LetterCode = true,
+            bool addSpaceEvery10Residues = false,
+            bool separateResiduesWithDash = false,
+            bool includeNAndCTerminii = false,
+            bool includeModificationSymbols = true)
         {
             // Construct a text sequence using Residues() and the N and C Terminus info
 
@@ -1034,46 +1002,10 @@ namespace MolecularWeightCalculator
             return mAmmoniaLossSymbol;
         }
 
-        public string GetTrypticName(string proteinResidues, string peptideResidues)
-        {
-            return GetTrypticName(proteinResidues, peptideResidues, out _, out _, false,
-                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
-        }
-
         public string GetTrypticName(string proteinResidues, string peptideResidues,
-            int proteinSearchStartLoc)
+            int proteinSearchStartLoc = 1)
         {
-            return GetTrypticName(proteinResidues, peptideResidues, out _, out _, false,
-                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, proteinSearchStartLoc);
-        }
-
-        public string GetTrypticName(string proteinResidues, string peptideResidues,
-            out int returnResidueStart,
-            out int returnResidueEnd)
-        {
-            return GetTrypticName(proteinResidues, peptideResidues, out returnResidueStart, out returnResidueEnd, false,
-                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
-        }
-
-        public string GetTrypticName(string proteinResidues, string peptideResidues,
-            out int returnResidueStart,
-            out int returnResidueEnd,
-            bool ICR2LSCompatible)
-        {
-            return GetTrypticName(proteinResidues, peptideResidues, out returnResidueStart, out returnResidueEnd, ICR2LSCompatible,
-                                  TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1);
-        }
-
-        public string GetTrypticName(string proteinResidues, string peptideResidues,
-            out int returnResidueStart,
-            out int returnResidueEnd,
-            bool ICR2LSCompatible,
-            string ruleResidues,
-            string exceptionResidues,
-            string terminiiSymbol)
-        {
-            return GetTrypticName(proteinResidues, peptideResidues, out returnResidueStart, out returnResidueEnd, ICR2LSCompatible,
-                                  ruleResidues, exceptionResidues, terminiiSymbol, true, 1);
+            return GetTrypticName(proteinResidues, peptideResidues, out _, out _, proteinSearchStartLoc: proteinSearchStartLoc);
         }
 
         /// <summary>
@@ -1096,12 +1028,12 @@ namespace MolecularWeightCalculator
         public string GetTrypticName(string proteinResidues, string peptideResidues,
             out int returnResidueStart,
             out int returnResidueEnd,
-            bool ICR2LSCompatible,
-            string ruleResidues,
-            string exceptionResidues,
-            string terminiiSymbol,
-            bool ignoreCase,
-            int proteinSearchStartLoc)
+            bool ICR2LSCompatible = false,
+            string ruleResidues = TRYPTIC_RULE_RESIDUES,
+            string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
+            string terminiiSymbol = TERMINII_SYMBOL,
+            bool ignoreCase = true,
+            int proteinSearchStartLoc = 1)
         {
             // The tryptic name in the following format
             // t1  indicates tryptic peptide 1
@@ -1258,70 +1190,13 @@ namespace MolecularWeightCalculator
         }
 
         public string GetTrypticNameMultipleMatches(string proteinResidues,
-            string peptideResidues)
-        {
-            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
-                                                 out _, out _, out _, false,
-                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
-        }
-
-        public string GetTrypticNameMultipleMatches(string proteinResidues,
             string peptideResidues,
-            int proteinSearchStartLoc)
+            int proteinSearchStartLoc = 1,
+            string listDelimiter = ", ")
         {
             return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
-                                                 out _, out _, out _, false,
-                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
-                                                 proteinSearchStartLoc, ", ");
-        }
-
-        public string GetTrypticNameMultipleMatches(string proteinResidues,
-            string peptideResidues,
-            int proteinSearchStartLoc,
-            string listDelimiter)
-        {
-            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
-                                                 out _, out _, out _, false,
-                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true,
-                                                 proteinSearchStartLoc, listDelimiter);
-        }
-
-        public string GetTrypticNameMultipleMatches(string proteinResidues,
-            string peptideResidues,
-            out int returnMatchCount,
-            out int returnResidueStart,
-            out int returnResidueEnd)
-        {
-            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
-                                                 out returnMatchCount, out returnResidueStart, out returnResidueEnd, false,
-                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
-        }
-
-        public string GetTrypticNameMultipleMatches(string proteinResidues,
-            string peptideResidues,
-            out int returnMatchCount,
-            out int returnResidueStart,
-            out int returnResidueEnd,
-            bool ICR2LSCompatible)
-        {
-            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
-                                                 out returnMatchCount, out returnResidueStart, out returnResidueEnd, ICR2LSCompatible,
-                                                 TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true, 1, ", ");
-        }
-
-        public string GetTrypticNameMultipleMatches(string proteinResidues,
-            string peptideResidues,
-            out int returnMatchCount,
-            out int returnResidueStart,
-            out int returnResidueEnd,
-            bool ICR2LSCompatible,
-            string ruleResidues,
-            string exceptionResidues,
-            string terminiiSymbol)
-        {
-            return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
-                                                 out returnMatchCount, out returnResidueStart, out returnResidueEnd, ICR2LSCompatible,
-                                                 ruleResidues, exceptionResidues, terminiiSymbol, true, 1, ", ");
+                                                 out _, out _, out _,
+                                                 proteinSearchStartLoc: proteinSearchStartLoc, listDelimiter: listDelimiter);
         }
 
         /// <summary>
@@ -1347,13 +1222,13 @@ namespace MolecularWeightCalculator
             out int returnMatchCount,
             out int returnResidueStart,
             out int returnResidueEnd,
-            bool ICR2LSCompatible,
-            string ruleResidues,
-            string exceptionResidues,
-            string terminiiSymbol,
-            bool ignoreCase,
-            int proteinSearchStartLoc,
-            string listDelimiter)
+            bool ICR2LSCompatible = false,
+            string ruleResidues = TRYPTIC_RULE_RESIDUES,
+            string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
+            string terminiiSymbol = TERMINII_SYMBOL,
+            bool ignoreCase = true,
+            int proteinSearchStartLoc = 1,
+            string listDelimiter = ", ")
         {
             // Returns the number of matches in returnMatchCount
             // returnResidueStart contains the residue number of the start of the first match
@@ -1516,16 +1391,16 @@ namespace MolecularWeightCalculator
         public string GetTrypticPeptideNext(string proteinResidues,
             int searchStartLoc)
         {
-            return GetTrypticPeptideNext(proteinResidues, searchStartLoc, out _, out _, TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL);
+            return GetTrypticPeptideNext(proteinResidues, searchStartLoc, out _, out _);
         }
 
         public string GetTrypticPeptideNext(string proteinResidues,
             int searchStartLoc,
             out int returnResidueStart,
             out int returnResidueEnd,
-            string ruleResidues,
-            string exceptionResidues,
-            string terminiiSymbol)
+            string ruleResidues = TRYPTIC_RULE_RESIDUES,
+            string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
+            string terminiiSymbol = TERMINII_SYMBOL)
         {
             // Returns the next tryptic peptide in proteinResidues, starting the search as searchStartLoc
             // Useful when obtaining all of the tryptic peptides for a protein, since this function will operate
@@ -1569,28 +1444,17 @@ namespace MolecularWeightCalculator
         public string GetTrypticPeptideByFragmentNumber(string proteinResidues,
             short desiredPeptideNumber)
         {
-            return GetTrypticPeptideByFragmentNumber(proteinResidues, desiredPeptideNumber, out _, out _,
-                                                     TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
-        }
-
-        public string GetTrypticPeptideByFragmentNumber(string proteinResidues,
-            short desiredPeptideNumber,
-            out int returnResidueStart,
-            out int returnResidueEnd)
-        {
-            return GetTrypticPeptideByFragmentNumber(proteinResidues, desiredPeptideNumber,
-                                                     out returnResidueStart, out returnResidueEnd,
-                                                     TRYPTIC_RULE_RESIDUES, TRYPTIC_EXCEPTION_RESIDUES, TERMINII_SYMBOL, true);
+            return GetTrypticPeptideByFragmentNumber(proteinResidues, desiredPeptideNumber, out _, out _);
         }
 
         public string GetTrypticPeptideByFragmentNumber(string proteinResidues,
             short desiredPeptideNumber,
             out int returnResidueStart,
             out int returnResidueEnd,
-            string ruleResidues,
-            string exceptionResidues,
-            string terminiiSymbol,
-            bool ignoreCase)
+            string ruleResidues = TRYPTIC_RULE_RESIDUES,
+            string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
+            string terminiiSymbol = TERMINII_SYMBOL,
+            bool ignoreCase = true)
         {
             // Returns the desired tryptic peptide from proteinResidues
 
@@ -1689,42 +1553,23 @@ namespace MolecularWeightCalculator
         public bool CheckSequenceAgainstCleavageRule(string sequence,
             string ruleResidues,
             string exceptionSuffixResidues,
-            bool allowPartialCleavage)
+            bool allowPartialCleavage,
+            string separationChar = ".",
+            string terminiiSymbol = TERMINII_SYMBOL,
+            bool ignoreCase = true)
         {
             return CheckSequenceAgainstCleavageRule(sequence, ruleResidues, exceptionSuffixResidues,
-                                                    allowPartialCleavage, ".", TERMINII_SYMBOL, true, out _);
+                                                    allowPartialCleavage, out _, separationChar, terminiiSymbol, ignoreCase);
         }
 
         public bool CheckSequenceAgainstCleavageRule(string sequence,
             string ruleResidues,
             string exceptionSuffixResidues,
             bool allowPartialCleavage,
-            out short ruleMatchCount)
-        {
-            return CheckSequenceAgainstCleavageRule(sequence, ruleResidues, exceptionSuffixResidues,
-                                                    allowPartialCleavage, ".", TERMINII_SYMBOL, true, out ruleMatchCount);
-        }
-
-        public bool CheckSequenceAgainstCleavageRule(string sequence,
-            string ruleResidues,
-            string exceptionSuffixResidues,
-            bool allowPartialCleavage,
-            string separationChar,
-            string terminiiSymbol,
-            bool ignoreCase)
-        {
-            return CheckSequenceAgainstCleavageRule(sequence, ruleResidues, exceptionSuffixResidues,
-                                                    allowPartialCleavage, separationChar, terminiiSymbol, ignoreCase, out _);
-        }
-
-        public bool CheckSequenceAgainstCleavageRule(string sequence,
-            string ruleResidues,
-            string exceptionSuffixResidues,
-            bool allowPartialCleavage,
-            string separationChar,
-            string terminiiSymbol,
-            bool ignoreCase,
-            out short ruleMatchCount)
+            out short ruleMatchCount,
+            string separationChar = ".",
+            string terminiiSymbol = TERMINII_SYMBOL,
+            bool ignoreCase = true)
         {
             // Checks sequence to see if it matches the cleavage rule
             // Returns True if valid, False if invalid
@@ -2132,17 +1977,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public int SetCTerminus(string formula)
-        {
-            return SetCTerminus(formula, "", true);
-        }
-
-        public int SetCTerminus(string formula, string followingResidue)
-        {
-            return SetCTerminus(formula, followingResidue, true);
-        }
-
-        public int SetCTerminus(string formula, string followingResidue, bool use3LetterCode)
+        public int SetCTerminus(string formula, string followingResidue = "", bool use3LetterCode = true)
         {
             // Returns 0 if success; 1 if error
             var success = 0;
@@ -2170,19 +2005,9 @@ namespace MolecularWeightCalculator
             return success;
         }
 
-        public int SetCTerminusGroup(CTerminusGroupType cTerminusGroup)
-        {
-            return SetCTerminusGroup(cTerminusGroup, "", true);
-        }
-
-        public int SetCTerminusGroup(CTerminusGroupType cTerminusGroup, string followingResidue)
-        {
-            return SetCTerminusGroup(cTerminusGroup, followingResidue, true);
-        }
-
         public int SetCTerminusGroup(CTerminusGroupType cTerminusGroup,
-            string followingResidue,
-            bool use3LetterCode)
+            string followingResidue = "",
+            bool use3LetterCode = true)
         {
             // Returns 0 if success; 1 if error
             int lngError;
@@ -2287,17 +2112,7 @@ namespace MolecularWeightCalculator
             mFragSpectrumOptions = newFragSpectrumOptions;
         }
 
-        public void SetModificationSymbol(string modSymbol, double modificationMass)
-        {
-            SetModificationSymbol(modSymbol, modificationMass, indicatesPhosphorylation: false, comment: string.Empty);
-        }
-
-        public void SetModificationSymbol(string modSymbol, double modificationMass, string comment)
-        {
-            SetModificationSymbol(modSymbol, modificationMass, indicatesPhosphorylation: false, comment: comment);
-        }
-
-        public int SetModificationSymbol(string modSymbol, double modificationMass, bool indicatesPhosphorylation, string comment)
+        public int SetModificationSymbol(string modSymbol, double modificationMass, bool indicatesPhosphorylation = false, string comment = "")
         {
             // Adds a new modification or updates an existing one (based on modSymbol)
             // Returns 0 if successful, otherwise, returns -1
@@ -2343,17 +2158,7 @@ namespace MolecularWeightCalculator
             return lngErrorID;
         }
 
-        public int SetNTerminus(string formula)
-        {
-            return SetNTerminus(formula, "", true);
-        }
-
-        public int SetNTerminus(string formula, string precedingResidue)
-        {
-            return SetNTerminus(formula, precedingResidue, true);
-        }
-
-        public int SetNTerminus(string formula, string precedingResidue, bool use3LetterCode)
+        public int SetNTerminus(string formula, string precedingResidue = "", bool use3LetterCode = true)
         {
             // Returns 0 if success; 1 if error
             var success = 0;
@@ -2384,19 +2189,9 @@ namespace MolecularWeightCalculator
             return success;
         }
 
-        public int SetNTerminusGroup(NTerminusGroupType nTerminusGroup)
-        {
-            return SetNTerminusGroup(nTerminusGroup, "", true);
-        }
-
-        public int SetNTerminusGroup(NTerminusGroupType nTerminusGroup, string precedingResidue)
-        {
-            return SetNTerminusGroup(nTerminusGroup, precedingResidue, true);
-        }
-
         public int SetNTerminusGroup(NTerminusGroupType nTerminusGroup,
-            string precedingResidue,
-            bool use3LetterCode)
+            string precedingResidue = "",
+            bool use3LetterCode = true)
         {
             // Returns 0 if success; 1 if error
             int lngError;
@@ -2433,22 +2228,9 @@ namespace MolecularWeightCalculator
         }
 
         public int SetResidue(int residueNumber,
-            string symbol)
-        {
-            return SetResidue(residueNumber, symbol, true, false);
-        }
-
-        public int SetResidue(int residueNumber,
             string symbol,
-            bool is3LetterCode)
-        {
-            return SetResidue(residueNumber, symbol, is3LetterCode, false);
-        }
-
-        public int SetResidue(int residueNumber,
-            string symbol,
-            bool is3LetterCode,
-            bool phosphorylated)
+            bool is3LetterCode = true,
+            bool phosphorylated = false)
         {
             // Sets or adds a residue (must add residues in order)
             // Returns the index of the modified residue, or the new index if added
@@ -2553,37 +2335,20 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="sequence">Peptide sequence using 3-letter amino acid symbols</param>
-        /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string sequence)
-        {
-            return SetSequence(sequence,
-                   NTerminusGroupType.Hydrogen,
-                   CTerminusGroupType.Hydroxyl,
-                   is3LetterCode: true, oneLetterCheckForPrefixAndSuffixResidues: true, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
-        }
-
-        /// <summary>
-        /// Defines the peptide sequence
-        /// </summary>
         /// <param name="sequence">Peptide sequence using 1-letter amino acid symbols</param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence1LetterSymbol(string sequence)
         {
-            return SetSequence(sequence,
-                NTerminusGroupType.Hydrogen,
-                CTerminusGroupType.Hydroxyl,
-                is3LetterCode: false, oneLetterCheckForPrefixAndSuffixResidues: true, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
+            return SetSequence(sequence, is3LetterCode: false);
         }
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
         /// <param name="sequence">Peptide sequence</param>
-        /// <param name="is3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <param name="oneLetterCheckForPrefixAndSuffixResidues"></param>
+        /// <param name="is3LetterCode">Set to true for 3-letter amino acid symbols, false for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to true to check for and remove prefix and suffix residues when <paramref name="is3LetterCode"/> = false</param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string sequence,
@@ -2591,106 +2356,28 @@ namespace MolecularWeightCalculator
             bool oneLetterCheckForPrefixAndSuffixResidues)
         {
             return SetSequence(sequence, NTerminusGroupType.Hydrogen, CTerminusGroupType.Hydroxyl,
-                is3LetterCode, oneLetterCheckForPrefixAndSuffixResidues, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
+                is3LetterCode, oneLetterCheckForPrefixAndSuffixResidues);
         }
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
-        /// <param name="sequence">Peptide sequence using 3-letter amino acid symbols</param>
+        /// <param name="sequence">Peptide sequence, using 3-letter amino acid symbols (unless <paramref name="is3LetterCode"/> = false)</param>
         /// <param name="nTerminus">N-terminus group</param>
         /// <param name="cTerminus">C-terminus group</param>
-        /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string sequence,
-            NTerminusGroupType nTerminus,
-            CTerminusGroupType cTerminus)
-        {
-            return SetSequence(sequence, nTerminus, cTerminus,
-                is3LetterCode: true, oneLetterCheckForPrefixAndSuffixResidues: true, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
-        }
-
-        /// <summary>
-        /// Defines the peptide sequence
-        /// </summary>
-        /// <param name="sequence">Peptide sequence</param>
-        /// <param name="eNTerminus">N-terminus group</param>
-        /// <param name="eCTerminus">C-terminus group</param>
-        /// <param name="blnIs3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string sequence,
-            NTerminusGroupType eNTerminus,
-            CTerminusGroupType eCTerminus,
-            bool blnIs3LetterCode)
-        {
-            return SetSequence(sequence, eNTerminus, eCTerminus,
-                blnIs3LetterCode, oneLetterCheckForPrefixAndSuffixResidues: true, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
-        }
-
-        /// <summary>
-        /// Defines the peptide sequence
-        /// </summary>
-        /// <param name="sequence">Peptide sequence</param>
-        /// <param name="nTerminus">N-terminus group</param>
-        /// <param name="cTerminus">C-terminus group</param>
-        /// <param name="is3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
+        /// <param name="is3LetterCode">Set to true for 3-letter amino acid symbols, false for 1-letter symbols (for example, R.ABCDEF.R)</param>
+        /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to true to check for and remove prefix and suffix residues when <paramref name="is3LetterCode"/> = false</param>
+        /// <param name="threeLetterCheckForPrefixHandSuffixOH">Set to true to check for and remove prefix H and OH when <paramref name="is3LetterCode"/> = true</param>
+        /// <param name="addMissingModificationSymbols">Set to true to automatically add missing modification symbols (though the mod masses will be 0)</param>
         /// <returns>0 if success or 1 if an error</returns>
         /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string sequence,
-            NTerminusGroupType nTerminus,
-            CTerminusGroupType cTerminus,
-            bool is3LetterCode,
-            bool oneLetterCheckForPrefixAndSuffixResidues)
-        {
-            return SetSequence(sequence, nTerminus, cTerminus,
-                is3LetterCode, oneLetterCheckForPrefixAndSuffixResidues, threeLetterCheckForPrefixHandSuffixOH: true, addMissingModificationSymbols: false);
-        }
-
-        /// <summary>
-        /// Defines the peptide sequence
-        /// </summary>
-        /// <param name="sequence">Peptide sequence</param>
-        /// <param name="nTerminus">N-terminus group</param>
-        /// <param name="cTerminus">C-terminus group</param>
-        /// <param name="is3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
-        /// <param name="threeLetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
-        /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string sequence,
-            NTerminusGroupType nTerminus,
-            CTerminusGroupType cTerminus,
-            bool is3LetterCode,
-            bool oneLetterCheckForPrefixAndSuffixResidues,
-            bool threeLetterCheckForPrefixHandSuffixOH)
-        {
-            return SetSequence(sequence, nTerminus, cTerminus,
-                is3LetterCode,
-                oneLetterCheckForPrefixAndSuffixResidues,
-                threeLetterCheckForPrefixHandSuffixOH, addMissingModificationSymbols: false);
-        }
-
-        /// <summary>
-        /// Defines the peptide sequence
-        /// </summary>
-        /// <param name="sequence">Peptide sequence</param>
-        /// <param name="nTerminus">N-terminus group</param>
-        /// <param name="cTerminus">C-terminus group</param>
-        /// <param name="is3LetterCode">Set to True for 3-letter amino acid symbols, False for 1-letter symbols (for example, R.ABCDEF.R)</param>
-        /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to True to check for and remove prefix and suffix residues when blnIs3LetterCode = False</param>
-        /// <param name="threeLetterCheckForPrefixHandSuffixOH">Set to True to check for and remove prefix H and OH when blnIs3LetterCode = True</param>
-        /// <param name="addMissingModificationSymbols">Set to True to automatically add missing modification symbols (though the mod masses will be 0)</param>
-        /// <returns>0 if success or 1 if an error</returns>
-        /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
-        public int SetSequence(string sequence,
-            NTerminusGroupType nTerminus,
-            CTerminusGroupType cTerminus,
-            bool is3LetterCode,
-            bool oneLetterCheckForPrefixAndSuffixResidues,
-            bool threeLetterCheckForPrefixHandSuffixOH,
-            bool addMissingModificationSymbols)
+            NTerminusGroupType nTerminus = NTerminusGroupType.Hydrogen,
+            CTerminusGroupType cTerminus = CTerminusGroupType.Hydroxyl,
+            bool is3LetterCode = true,
+            bool oneLetterCheckForPrefixAndSuffixResidues = true,
+            bool threeLetterCheckForPrefixHandSuffixOH = true,
+            bool addMissingModificationSymbols = false)
         {
             try
             {
