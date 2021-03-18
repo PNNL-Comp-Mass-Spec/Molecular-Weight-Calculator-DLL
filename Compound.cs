@@ -255,12 +255,7 @@ namespace MolecularWeightCalculator
             var charLoc = (short)mStrFormattedFormula.ToLower().IndexOf("[x", StringComparison.OrdinalIgnoreCase);
             if (charLoc >= 0)
             {
-                if (mStrFormattedFormula.Substring(charLoc + 1, 1) != "e")
-                {
-                    return true;
-                }
-
-                return false;
+                return mStrFormattedFormula[charLoc + 1] != 'e';
             }
 
             return false;

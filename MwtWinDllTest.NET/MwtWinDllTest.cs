@@ -482,11 +482,11 @@ namespace MwtWinDllTest
 
             var gaussianResults = new StringBuilder();
             gaussianResults.AppendLine("m/z" + "\t" + "Intensity");
-            for (var index = 0; index < gaussianData.Count; index++)
+            foreach (var point in gaussianData)
             {
-                if (gaussianData[index].Key >= 15175d && gaussianData[index].Key < 15193d)
+                if (point.Key >= 15175d && point.Key < 15193d)
                 {
-                    gaussianResults.AppendLine(gaussianData[index].Key.ToString("0.000") + "\t" + gaussianData[index].Value.ToString("0.000"));
+                    gaussianResults.AppendLine(point.Key.ToString("0.000") + "\t" + point.Value.ToString("0.000"));
                 }
             }
 

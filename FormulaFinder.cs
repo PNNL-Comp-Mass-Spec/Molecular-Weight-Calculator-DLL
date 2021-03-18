@@ -509,13 +509,8 @@ namespace MolecularWeightCalculator
             }
 
             var originalMtoZ = targetMass / multipleMtoZCharge;
-            if (mToZ < originalMtoZ - massToleranceDa || mToZ > originalMtoZ + massToleranceDa)
-            {
-                // mToZ is not within tolerance of originalMtoZ, so don't report the result
-                return false;
-            }
-
-            return true;
+            // mToZ is not within tolerance of originalMtoZ, so don't report the result
+            return !(mToZ < originalMtoZ - massToleranceDa || mToZ > originalMtoZ + massToleranceDa);
         }
 
         private double Combinatorial(int a, int b)
@@ -1547,12 +1542,12 @@ namespace MolecularWeightCalculator
 
                 var ranges = new List<BoundedSearchRange>(MAX_MATCHING_ELEMENTS);
 
-                for (var elementIndex = 0; elementIndex < sortedElementStats.Count; elementIndex++)
+                foreach (var element in sortedElementStats)
                 {
                     var boundedSearchRange = new BoundedSearchRange
                     {
-                        Min = sortedElementStats[elementIndex].CountMinimum,
-                        Max = sortedElementStats[elementIndex].CountMaximum
+                        Min = element.CountMinimum,
+                        Max = element.CountMaximum
                     };
                     ranges.Add(boundedSearchRange);
                 }

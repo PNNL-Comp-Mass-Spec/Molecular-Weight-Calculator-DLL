@@ -108,12 +108,7 @@ namespace MolecularWeightCalculator
             public int[] ModificationIDs; // 1-based array
 
             // Note: "Initialize" must be called to initialize instances of this structure
-            public void Initialize()
-            {
-                Initialize(false);
-            }
-
-            public void Initialize(bool forceInit)
+            public void Initialize(bool forceInit = false)
             {
                 if (forceInit || IonMass == null)
                 {
@@ -1738,21 +1733,7 @@ namespace MolecularWeightCalculator
         {
             // Checks to see if testResidue matches one of the residues in ruleResidues
             // Used to test by Rule Residues and Exception Residues
-
-            for (var charIndex = 0; charIndex < ruleResidues.Length; charIndex++)
-            {
-                var compareResidue = ruleResidues.Substring(charIndex, 1).Trim();
-                if (compareResidue.Length > 0)
-                {
-                    if ((testResidue ?? "") == compareResidue)
-                    {
-                        // Match found
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return ruleResidues.IndexOf(testResidue, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         public double ComputeImmoniumMass(double residueMass)

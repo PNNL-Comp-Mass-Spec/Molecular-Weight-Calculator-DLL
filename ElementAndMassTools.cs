@@ -1644,9 +1644,8 @@ namespace MolecularWeightCalculator
                 }
 
                 // Copy data from xySummation to gaussianData
-
-                foreach (var item in xySummation)
-                    gaussianData.Add(new KeyValuePair<double, double>(item.X, item.Y));
+                gaussianData.Capacity = Math.Max(gaussianData.Count, xySummation.Count);
+                gaussianData.AddRange(xySummation.Select(item => new KeyValuePair<double, double>(item.X, item.Y)));
             }
             catch (Exception ex)
             {
@@ -2744,18 +2743,7 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private bool IsStringAllLetters(string test)
         {
-            // Assume true until proven otherwise
-            var allLetters = true;
-            for (var index = 0; index < test.Length; index++)
-            {
-                if (!char.IsLetter(test[index]))
-                {
-                    allLetters = false;
-                    break;
-                }
-            }
-
-            return allLetters;
+            return test.All(char.IsLetter);
         }
 
         public bool IsValidElementSymbol(string elementSymbol, bool caseSensitive = true)
@@ -4297,12 +4285,7 @@ namespace MolecularWeightCalculator
             else
             {
                 // Check for more than one decimal point (. or ,)
-                var decPtCount = 0;
-                for (var index = 0; index < foundNum.Length; index++)
-                {
-                    if (foundNum.Substring(index, 1) == gComputationOptions.DecimalSeparator.ToString())
-                        decPtCount = (short)(decPtCount + 1);
-                }
+                var decPtCount = foundNum.Count(c => c == gComputationOptions.DecimalSeparator);
 
                 if (decPtCount > 1)
                 {
@@ -4552,12 +4535,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            if (removed)
-            {
-                return 0;
-            }
-
-            return 1;
+            return removed ? 0 : 1;
         }
 
         /// <summary>
@@ -4583,12 +4561,7 @@ namespace MolecularWeightCalculator
                 removed = false;
             }
 
-            if (removed)
-            {
-                return 0;
-            }
-
-            return 1;
+            return removed ? 0 : 1;
         }
 
         /// <summary>
@@ -4615,12 +4588,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            if (removed)
-            {
-                return 0;
-            }
-
-            return 1;
+            return removed ? 0 : 1;
         }
 
         public void ResetErrorParamsInternal()
@@ -5125,12 +5093,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            if (found)
-            {
-                return 0;
-            }
-
-            return 1;
+            return found ? 0 : 1;
         }
 
         /// <summary>
