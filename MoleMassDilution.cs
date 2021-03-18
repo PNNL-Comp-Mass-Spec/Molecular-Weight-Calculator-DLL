@@ -370,7 +370,7 @@ namespace MolecularWeightCalculator
         {
             if (currentUnits == newUnits)
             {
-                // No conversion, simply return dblAmountIn
+                // No conversion, simply return amountIn
                 return amountIn;
             }
 
@@ -379,30 +379,30 @@ namespace MolecularWeightCalculator
                 // Converting from one volume unit to another volume unit
                 // No need to explicitly specify mass or density
 
-                var eCurrentVolumeUnits = (UnitOfExtendedVolume)((int)currentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
-                var eNewVolumeUnits = (UnitOfExtendedVolume)((int)newUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+                var currentVolumeUnits = (UnitOfExtendedVolume)((int)currentUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
+                var newVolumeUnits = (UnitOfExtendedVolume)((int)newUnits - (int)AMOUNT_UNITS_VOLUME_INDEX_START);
 
-                return ConvertVolumeExtended(amountIn, eCurrentVolumeUnits, eNewVolumeUnits);
+                return ConvertVolumeExtended(amountIn, currentVolumeUnits, newVolumeUnits);
             }
 
-            var dblSampleMass = mQuantity.SampleMass;
-            var dblSampleDensity = mQuantity.SampleDensity;
+            var sampleMass = mQuantity.SampleMass;
+            var sampleDensity = mQuantity.SampleDensity;
 
-            var dblFactor = FactorAmount(currentUnits, dblSampleMass, dblSampleDensity);
-            if (dblFactor < 0d)
+            var factor = FactorAmount(currentUnits, sampleMass, sampleDensity);
+            if (factor < 0d)
             {
                 return -1;
             }
 
-            var dblValue = amountIn * dblFactor;
+            var value = amountIn * factor;
 
-            dblFactor = FactorAmount(newUnits, dblSampleMass, dblSampleDensity);
-            if (dblFactor <= 0d)
+            factor = FactorAmount(newUnits, sampleMass, sampleDensity);
+            if (factor <= 0d)
             {
                 return -1;
             }
 
-            return dblValue / dblFactor;
+            return value / factor;
         }
 
         /// <summary>
@@ -420,23 +420,23 @@ namespace MolecularWeightCalculator
                 return concentrationIn;
             }
 
-            var dblSampleMass = mQuantity.SampleMass;
+            var sampleMass = mQuantity.SampleMass;
 
-            var dblFactor = FactorConcentration(currentUnits, dblSampleMass);
-            if (dblFactor < 0d)
+            var factor = FactorConcentration(currentUnits, sampleMass);
+            if (factor < 0d)
             {
                 return -1;
             }
 
-            var dblValue = concentrationIn * dblFactor;
+            var value = concentrationIn * factor;
 
-            dblFactor = FactorConcentration(newUnits, dblSampleMass);
-            if (dblFactor <= 0d)
+            factor = FactorConcentration(newUnits, sampleMass);
+            if (factor <= 0d)
             {
                 return -1;
             }
 
-            return dblValue / dblFactor;
+            return value / factor;
         }
 
         public double ConvertVolumeExtended(double volume, UnitOfExtendedVolume currentUnits, UnitOfExtendedVolume newUnits)
@@ -446,21 +446,21 @@ namespace MolecularWeightCalculator
                 return volume;
             }
 
-            var dblFactor = FactorVolumeExtended(currentUnits);
-            if (dblFactor < 0d)
+            var factor = FactorVolumeExtended(currentUnits);
+            if (factor < 0d)
             {
                 return -1;
             }
 
-            var dblValue = volume * dblFactor;
+            var value = volume * factor;
 
-            dblFactor = FactorVolumeExtended(newUnits);
-            if (dblFactor <= 0d)
+            factor = FactorVolumeExtended(newUnits);
+            if (factor <= 0d)
             {
                 return -1;
             }
 
-            return dblValue / dblFactor;
+            return value / factor;
         }
 
         /// <summary>
@@ -475,90 +475,90 @@ namespace MolecularWeightCalculator
             double sampleMass = -1,
             double sampleDensity = 0d)
         {
-            double dblFactor;
+            double factor;
 
             if (Math.Abs(sampleMass) < float.Epsilon)
             {
-                dblFactor = -1;
+                factor = -1;
             }
             else
             {
-                // Determine the Amount multiplication dblFactor
+                // Determine the Amount multiplication factor
                 switch (units)
                 {
                     case Unit.Moles:
-                        dblFactor = 1d;
+                        factor = 1d;
                         break;
                     case Unit.Millimoles:
-                        dblFactor = 1d / 1000.0d;
+                        factor = 1d / 1000.0d;
                         break;
                     case Unit.MicroMoles:
-                        dblFactor = 1d / 1000000.0d;
+                        factor = 1d / 1000000.0d;
                         break;
                     case Unit.NanoMoles:
-                        dblFactor = 1d / 1000000000.0d;
+                        factor = 1d / 1000000000.0d;
                         break;
                     case Unit.PicoMoles:
-                        dblFactor = 1d / 1000000000000.0d;
+                        factor = 1d / 1000000000000.0d;
                         break;
                     case Unit.FemtoMoles:
-                        dblFactor = 1d / 1.0E+15d;
+                        factor = 1d / 1.0E+15d;
                         break;
                     case Unit.AttoMoles:
-                        dblFactor = 1d / 1.0E+18d;
+                        factor = 1d / 1.0E+18d;
                         break;
                     case Unit.Kilograms:
-                        dblFactor = 1000.0d / sampleMass;
+                        factor = 1000.0d / sampleMass;
                         break;
                     case Unit.Grams:
-                        dblFactor = 1d / sampleMass;
+                        factor = 1d / sampleMass;
                         break;
                     case Unit.Milligrams:
-                        dblFactor = 1d / (sampleMass * 1000.0d);
+                        factor = 1d / (sampleMass * 1000.0d);
                         break;
                     case Unit.Micrograms:
-                        dblFactor = 1d / (sampleMass * 1000000.0d);
+                        factor = 1d / (sampleMass * 1000000.0d);
                         break;
                     case Unit.Pounds:
-                        dblFactor = 1000.0d / (sampleMass * POUNDS_PER_KG);
+                        factor = 1000.0d / (sampleMass * POUNDS_PER_KG);
                         break;
                     case Unit.Ounces:
-                        dblFactor = 1000.0d / (sampleMass * POUNDS_PER_KG * 16d);
+                        factor = 1000.0d / (sampleMass * POUNDS_PER_KG * 16d);
                         break;
                     case Unit.Liters:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.L);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.L);
                         break;
                     case Unit.DeciLiters:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.DL);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.DL);
                         break;
                     case Unit.MilliLiters:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.ML);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.ML);
                         break;
                     case Unit.MicroLiters:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.UL);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.UL);
                         break;
                     case Unit.NanoLiters:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.NL);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.NL);
                         break;
                     case Unit.PicoLiters:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.PL);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.PL);
                         break;
                     case Unit.Gallons:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Gallons);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Gallons);
                         break;
                     case Unit.Quarts:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Quarts);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Quarts);
                         break;
                     case Unit.Pints:
-                        dblFactor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Pints);
+                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Pints);
                         break;
                     default:
-                        dblFactor = -1;
+                        factor = -1;
                         break;
                 }
             }
 
-            return dblFactor;
+            return factor;
         }
 
         /// <summary>
@@ -570,62 +570,62 @@ namespace MolecularWeightCalculator
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private double FactorConcentration(UnitOfMoleMassConcentration units, double sampleMass = 0d)
         {
-            double dblFactor;
+            double factor;
 
             if (Math.Abs(sampleMass) < float.Epsilon)
             {
-                dblFactor = -1;
+                factor = -1;
             }
             else
             {
                 switch (units)
                 {
                     case UnitOfMoleMassConcentration.Molar:
-                        dblFactor = 1.0d;
+                        factor = 1.0d;
                         break;
                     case UnitOfMoleMassConcentration.MilliMolar:
-                        dblFactor = 1d / 1000.0d;
+                        factor = 1d / 1000.0d;
                         break;
                     case UnitOfMoleMassConcentration.MicroMolar:
-                        dblFactor = 1d / 1000000.0d;
+                        factor = 1d / 1000000.0d;
                         break;
                     case UnitOfMoleMassConcentration.NanoMolar:
-                        dblFactor = 1d / 1000000000.0d;
+                        factor = 1d / 1000000000.0d;
                         break;
                     case UnitOfMoleMassConcentration.PicoMolar:
-                        dblFactor = 1d / 1000000000000.0d;
+                        factor = 1d / 1000000000000.0d;
                         break;
                     case UnitOfMoleMassConcentration.FemtoMolar:
-                        dblFactor = 1d / 1.0E+15d;
+                        factor = 1d / 1.0E+15d;
                         break;
                     case UnitOfMoleMassConcentration.AttoMolar:
-                        dblFactor = 1d / 1.0E+18d;
+                        factor = 1d / 1.0E+18d;
                         break;
                     case UnitOfMoleMassConcentration.MgPerDL:
-                        dblFactor = 1d / sampleMass / 100.0d; // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
+                        factor = 1d / sampleMass / 100.0d; // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
                         break;
                     case UnitOfMoleMassConcentration.MgPerML:
-                        dblFactor = 1d / sampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                        factor = 1d / sampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
                         break;
                     case UnitOfMoleMassConcentration.UgPerML:
-                        dblFactor = 1d / (sampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                        factor = 1d / (sampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
                         break;
                     case UnitOfMoleMassConcentration.NgPerML:
-                        dblFactor = 1d / (sampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                        factor = 1d / (sampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
                         break;
                     case UnitOfMoleMassConcentration.UgPerUL:
-                        dblFactor = 1d / sampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                        factor = 1d / sampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
                         break;
                     case UnitOfMoleMassConcentration.NgPerUL:
-                        dblFactor = 1d / (sampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                        factor = 1d / (sampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
                         break;
                     default:
-                        dblFactor = -1;
+                        factor = -1;
                         break;
                 }
             }
 
-            return dblFactor;
+            return factor;
         }
 
         /// <summary>
@@ -636,44 +636,44 @@ namespace MolecularWeightCalculator
         /// <remarks>An extended version of the FactorVolume function in CapillaryFlow</remarks>
         private double FactorVolumeExtended(UnitOfExtendedVolume units)
         {
-            double dblFactor;
+            double factor;
 
             // Note: 4 quarts per gallon, 2 pints per quart
             switch (units)
             {
                 case UnitOfExtendedVolume.L:
-                    dblFactor = 1d * 1000.0d;
+                    factor = 1d * 1000.0d;
                     break;
                 case UnitOfExtendedVolume.DL:
-                    dblFactor = 1d * 100.0d;
+                    factor = 1d * 100.0d;
                     break;
                 case UnitOfExtendedVolume.ML:
-                    dblFactor = 1.0d;
+                    factor = 1.0d;
                     break;
                 case UnitOfExtendedVolume.UL:
-                    dblFactor = 1d / 1000.0d;
+                    factor = 1d / 1000.0d;
                     break;
                 case UnitOfExtendedVolume.NL:
-                    dblFactor = 1d / 1000000.0d;
+                    factor = 1d / 1000000.0d;
                     break;
                 case UnitOfExtendedVolume.PL:
-                    dblFactor = 1d / 1000000000.0d;
+                    factor = 1d / 1000000000.0d;
                     break;
                 case UnitOfExtendedVolume.Gallons:
-                    dblFactor = 1000.0d / GALLONS_PER_L;
+                    factor = 1000.0d / GALLONS_PER_L;
                     break;
                 case UnitOfExtendedVolume.Quarts:
-                    dblFactor = 1000.0d / GALLONS_PER_L / 4.0d;
+                    factor = 1000.0d / GALLONS_PER_L / 4.0d;
                     break;
                 case UnitOfExtendedVolume.Pints:
-                    dblFactor = 1000.0d / GALLONS_PER_L / 8.0d;
+                    factor = 1000.0d / GALLONS_PER_L / 8.0d;
                     break;
                 default:
-                    dblFactor = -1;
+                    factor = -1;
                     break;
             }
 
-            return dblFactor;
+            return factor;
         }
 
 

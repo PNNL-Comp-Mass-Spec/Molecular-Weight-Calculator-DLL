@@ -179,9 +179,9 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass)
         {
-            var udtElementTolerances = GetDefaultCandidateElementTolerance();
+            var elementTolerances = GetDefaultCandidateElementTolerance();
 
-            AddCandidateElement(elementSymbolAbbrevOrMass, udtElementTolerances);
+            AddCandidateElement(elementSymbolAbbrevOrMass, elementTolerances);
         }
 
         /// <summary>
@@ -192,8 +192,8 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, double targetPercentComposition)
         {
-            var udtElementTolerances = GetDefaultCandidateElementTolerance(targetPercentComposition);
-            AddCandidateElement(elementSymbolAbbrevOrMass, udtElementTolerances);
+            var elementTolerances = GetDefaultCandidateElementTolerance(targetPercentComposition);
+            AddCandidateElement(elementSymbolAbbrevOrMass, elementTolerances);
         }
 
         /// <summary>
@@ -205,8 +205,8 @@ namespace MolecularWeightCalculator
         /// <remarks>This method should be used when defining elements for a bounded search</remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, int minimumCount, int maximumCount)
         {
-            var udtElementTolerances = GetDefaultCandidateElementTolerance(minimumCount, maximumCount);
-            AddCandidateElement(elementSymbolAbbrevOrMass, udtElementTolerances);
+            var elementTolerances = GetDefaultCandidateElementTolerance(minimumCount, maximumCount);
+            AddCandidateElement(elementSymbolAbbrevOrMass, elementTolerances);
         }
 
         /// <summary>
@@ -241,9 +241,9 @@ namespace MolecularWeightCalculator
             if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
 
-            var lstResults = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, true);
+            var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, true);
 
-            var sortedResults = (from item in lstResults orderby item.SortKey select item).ToList();
+            var sortedResults = (from item in results orderby item.SortKey select item).ToList();
             return sortedResults;
         }
 
@@ -260,9 +260,9 @@ namespace MolecularWeightCalculator
             if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
 
-            var lstResults = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, false);
+            var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, false);
 
-            var sortedResults = (from item in lstResults orderby item.SortKey select item).ToList();
+            var sortedResults = (from item in results orderby item.SortKey select item).ToList();
             return sortedResults;
         }
 
@@ -274,9 +274,9 @@ namespace MolecularWeightCalculator
             if (searchOptions == null)
                 searchOptions = new FormulaFinderOptions();
 
-            var lstResults = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, searchOptions);
+            var results = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, searchOptions);
 
-            var sortedResults = (from item in lstResults orderby item.SortKey select item).ToList();
+            var sortedResults = (from item in results orderby item.SortKey select item).ToList();
             return sortedResults;
         }
 
@@ -346,7 +346,7 @@ namespace MolecularWeightCalculator
             CalculationMode calculationMode,
             IList<FormulaFinderCandidateElement> sortedElementStats)
         {
-            List<FormulaFinderResult> lstResults;
+            List<FormulaFinderResult> results;
 
             if (searchOptions.FindTargetMZ)
             {
@@ -357,33 +357,33 @@ namespace MolecularWeightCalculator
 
                 MultipleSearchMath(sortedElementStats.Count, searchOptions, out mzSearchChargeMin, out mzSearchChargeMax);
 
-                lstResults = OldFormulaFinder(searchOptions, ppmMode, calculationMode, sortedElementStats, targetMass, massToleranceDa, maximumFormulaMass);
+                results = OldFormulaFinder(searchOptions, ppmMode, calculationMode, sortedElementStats, targetMass, massToleranceDa, maximumFormulaMass);
             }
             else
             {
                 searchOptions.ChargeMin = 1;
                 searchOptions.ChargeMax = 1;
 
-                lstResults = OldFormulaFinder(searchOptions, ppmMode, calculationMode, sortedElementStats, targetMass, massToleranceDa, maximumFormulaMass);
+                results = OldFormulaFinder(searchOptions, ppmMode, calculationMode, sortedElementStats, targetMass, massToleranceDa, maximumFormulaMass);
             }
 
-            ComputeSortKeys(lstResults);
+            ComputeSortKeys(results);
 
-            return lstResults;
+            return results;
         }
 
         private void ComputeSortKeys(IEnumerable<FormulaFinderResult> results)
         {
             // Compute the sort key for each result
-            var sbCodeString = new StringBuilder();
+            var codeString = new StringBuilder();
 
             foreach (var item in results)
-                item.SortKey = ComputeSortKey(sbCodeString, item.EmpiricalFormula);
+                item.SortKey = ComputeSortKey(codeString, item.EmpiricalFormula);
         }
 
         private string ComputeSortKey(StringBuilder codeString, string empiricalFormula)
         {
-            // Precedence order for sbCodeString
+            // Precedence order for codeString
             // C1_ C2_ C3_ C4_ C5_ C6_ C7_ C8_ C9_  a   z    1,  2,  3...
             // 1   2   3   4   5   6   7   8   9   10  35   36  37  38
             //
@@ -402,10 +402,10 @@ namespace MolecularWeightCalculator
 
             while (charIndex < formulaLength)
             {
-                var strCurrentLetter = char.ToUpper(empiricalFormula[charIndex]);
+                var currentLetter = char.ToUpper(empiricalFormula[charIndex]);
 
                 int parsedValue;
-                if (char.IsLetter(strCurrentLetter))
+                if (char.IsLetter(currentLetter))
                 {
                     codeString.Append('\0');
 
@@ -432,11 +432,11 @@ namespace MolecularWeightCalculator
                     {
                         // 65 is the ascii code for the letter a
                         // Thus, 65-55 = 10
-                        int asciiValue = strCurrentLetter;
+                        int asciiValue = currentLetter;
                         codeString.Append((char)(asciiValue - 55));
                     }
                 }
-                else if (strCurrentLetter.ToString() != "_")
+                else if (currentLetter.ToString() != "_")
                 {
                     // At a number, since empirical formulas can only have letters or numbers or underscores
 
@@ -491,16 +491,16 @@ namespace MolecularWeightCalculator
             double massToleranceDa,
             int multipleMtoZCharge)
         {
-            double dblMtoZ;
+            double mToZ;
 
             // The original target is the target m/z; assure this compound has that m/z
             if (Math.Abs(totalCharge) > 0.5d)
             {
-                dblMtoZ = Math.Abs(totalMass / totalCharge);
+                mToZ = Math.Abs(totalMass / totalCharge);
             }
             else
             {
-                dblMtoZ = 0d;
+                mToZ = 0d;
             }
 
             if (multipleMtoZCharge == 0)
@@ -508,10 +508,10 @@ namespace MolecularWeightCalculator
                 return false;
             }
 
-            var dblOriginalMtoZ = targetMass / multipleMtoZCharge;
-            if (dblMtoZ < dblOriginalMtoZ - massToleranceDa || dblMtoZ > dblOriginalMtoZ + massToleranceDa)
+            var originalMtoZ = targetMass / multipleMtoZCharge;
+            if (mToZ < originalMtoZ - massToleranceDa || mToZ > originalMtoZ + massToleranceDa)
             {
-                // dblMtoZ is not within tolerance of dblOriginalMtoZ, so don't report the result
+                // mToZ is not within tolerance of originalMtoZ, so don't report the result
                 return false;
             }
 
@@ -665,10 +665,9 @@ namespace MolecularWeightCalculator
                                                            empiricalResultSymbols, out correctedCharge);
 
                 // Uncomment to debug
-                // Dim computedMass = mElementAndMassRoutines.ComputeFormulaWeight(sbEmpiricalFormula.ToString())
-                // If Math.Abs(computedMass - totalMass) > massToleranceDa Then
-                // Console.WriteLine("Wrong result: " + sbEmpiricalFormula.ToString())
-                // End If
+                //var computedMass = mElementAndMassRoutines.ComputeFormulaWeight(empiricalFormula.ToString());
+                //if (Math.Abs(computedMass - totalMass) > massToleranceDa)
+                //    Console.WriteLine("Wrong result: " + empiricalFormula);
 
                 return valid;
             }
@@ -742,7 +741,7 @@ namespace MolecularWeightCalculator
             // Verify that the formula does not have too many hydrogens
 
             // Counters for elements of interest (hydrogen, carbon, silicon, nitrogen, phosphorus, chlorine, iodine, florine, bromine, and other)
-            var udtElementNum = new ElementNum();
+            var elementNum = new ElementNum();
 
             // Determine number of C, Si, N, P, O, S, Cl, I, F, Br and H atoms
             foreach (var item in empiricalResultSymbols)
@@ -750,40 +749,40 @@ namespace MolecularWeightCalculator
                 switch (item.Key ?? "")
                 {
                     case "C":
-                        udtElementNum.C += item.Value;
+                        elementNum.C += item.Value;
                         break;
                     case "Si":
-                        udtElementNum.Si += item.Value;
+                        elementNum.Si += item.Value;
                         break;
                     case "N":
-                        udtElementNum.N += item.Value;
+                        elementNum.N += item.Value;
                         break;
                     case "P":
-                        udtElementNum.P += item.Value;
+                        elementNum.P += item.Value;
                         break;
                     case "O":
-                        udtElementNum.O += item.Value;
+                        elementNum.O += item.Value;
                         break;
                     case "S":
-                        udtElementNum.S += item.Value;
+                        elementNum.S += item.Value;
                         break;
                     case "Cl":
-                        udtElementNum.Cl += item.Value;
+                        elementNum.Cl += item.Value;
                         break;
                     case "I":
-                        udtElementNum.I += item.Value;
+                        elementNum.I += item.Value;
                         break;
                     case "F":
-                        udtElementNum.F += item.Value;
+                        elementNum.F += item.Value;
                         break;
                     case "Br":
-                        udtElementNum.Br += item.Value;
+                        elementNum.Br += item.Value;
                         break;
                     case "H":
-                        udtElementNum.H += item.Value;
+                        elementNum.H += item.Value;
                         break;
                     default:
-                        udtElementNum.Other += item.Value;
+                        elementNum.Other += item.Value;
                         break;
                 }
             }
@@ -791,9 +790,9 @@ namespace MolecularWeightCalculator
             var maxH = 0;
 
             // Compute maximum number of hydrogens
-            if (udtElementNum.Si == 0 && udtElementNum.C == 0 && udtElementNum.N == 0 &&
-                udtElementNum.P == 0 && udtElementNum.Other == 0 &&
-                (udtElementNum.O > 0 || udtElementNum.S > 0))
+            if (elementNum.Si == 0 && elementNum.C == 0 && elementNum.N == 0 &&
+                elementNum.P == 0 && elementNum.Other == 0 &&
+                (elementNum.O > 0 || elementNum.S > 0))
             {
                 // Only O and S
                 maxH = 3;
@@ -801,32 +800,32 @@ namespace MolecularWeightCalculator
             else
             {
                 // Formula is: [#C*2 + 3 - (2 if N or P present)] + [#N + 3 - (1 if C or Si present)] + [#other elements * 4 + 3], where we assume other elements can have a coordination Number of up to 7
-                if (udtElementNum.C > 0 || udtElementNum.Si > 0)
+                if (elementNum.C > 0 || elementNum.Si > 0)
                 {
-                    maxH += (udtElementNum.C + udtElementNum.Si) * 2 + 3;
-                    // If udtElementNum.N > 0 Or udtElementNum.P > 0 Then maxH = maxH - 2
+                    maxH += (elementNum.C + elementNum.Si) * 2 + 3;
+                    //if (elementNum.N > 0 || elementNum.P > 0) maxH -= 2;
                 }
 
-                if (udtElementNum.N > 0 || udtElementNum.P > 0)
+                if (elementNum.N > 0 || elementNum.P > 0)
                 {
-                    maxH += udtElementNum.N + udtElementNum.P + 3;
-                    // If udtElementNum.C > 0 Or udtElementNum.Si > 0 Then maxH = maxH - 1
+                    maxH += elementNum.N + elementNum.P + 3;
+                    //if (elementNum.C > 0 || elementNum.Si > 0) maxH -= 1;
                 }
 
                 // Correction for carbon contribution
-                // If (udtElementNum.C > 0 Or udtElementNum.Si > 0) And (udtElementNum.N > 0 Or udtElementNum.P > 0) Then udtElementNum.H = udtElementNum.H - 2
+                //if ((elementNum.C > 0 || elementNum.Si > 0) && (elementNum.N > 0 || elementNum.P > 0)) elementNum.H -= 2;
 
                 // Correction for nitrogen contribution
-                // If (udtElementNum.N > 0 Or udtElementNum.P > 0) And (udtElementNum.C > 0 Or udtElementNum.Si > 0) Then udtElementNum.H = udtElementNum.H - 1
+                //if ((elementNum.N > 0 || elementNum.P > 0) && (elementNum.C > 0 || elementNum.Si > 0)) elementNum.H -= 1;
 
                 // Combine the above two commented out if's to obtain:
-                if ((udtElementNum.N > 0 || udtElementNum.P > 0) && (udtElementNum.C > 0 || udtElementNum.Si > 0))
+                if ((elementNum.N > 0 || elementNum.P > 0) && (elementNum.C > 0 || elementNum.Si > 0))
                 {
                     maxH -= 3;
                 }
 
-                if (udtElementNum.Other > 0)
-                    maxH += udtElementNum.Other * 4 + 3;
+                if (elementNum.Other > 0)
+                    maxH += elementNum.Other * 4 + 3;
             }
 
             // correct for if H only
@@ -834,17 +833,17 @@ namespace MolecularWeightCalculator
                 maxH = 3;
 
             // correct for halogens
-            maxH = maxH - udtElementNum.F - udtElementNum.Cl - udtElementNum.Br - udtElementNum.I;
+            maxH = maxH - elementNum.F - elementNum.Cl - elementNum.Br - elementNum.I;
 
-            // correct for negative udtElementNum.H
+            // correct for negative elementNum.H
             if (maxH < 0)
                 maxH = 0;
 
             // Verify H's
-            var blnHOK = udtElementNum.H <= maxH;
+            var hOK = elementNum.H <= maxH;
 
             // Only proceed if hydrogens check out
-            if (!blnHOK)
+            if (!hOK)
             {
                 return false;
             }
@@ -854,7 +853,7 @@ namespace MolecularWeightCalculator
             // See if totalCharge is within charge limits (chargeOK will be set to True or False by CorrectChargeEmpirical)
             if (searchOptions.FindCharge)
             {
-                correctedCharge = CorrectChargeEmpirical(searchOptions, totalCharge, udtElementNum, out chargeOK);
+                correctedCharge = CorrectChargeEmpirical(searchOptions, totalCharge, elementNum, out chargeOK);
             }
             else
             {
@@ -881,11 +880,11 @@ namespace MolecularWeightCalculator
 
             var elementCountArray = GetElementCountArray(sortedElementStats.Count, potentialElementPointers);
 
-            for (var intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
+            for (var index = 0; index < sortedElementStats.Count; index++)
             {
-                if (elementCountArray[intIndex] != 0)
+                if (elementCountArray[index] != 0)
                 {
-                    empiricalResultSymbols.Add(sortedElementStats[intIndex].Symbol, elementCountArray[intIndex]);
+                    empiricalResultSymbols.Add(sortedElementStats[index].Symbol, elementCountArray[index]);
                 }
             }
 
@@ -914,11 +913,11 @@ namespace MolecularWeightCalculator
                 if (elementCounts.H > 0 && Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, MolecularWeightTool.ElementStatsType.Charge) - 1d) < float.Epsilon)
                 {
                     // Since carbon or silicon are present, assume the hydrogens should be negative
-                    // Subtract udtElementNum.H * 2 since hydrogen is assigned a +1 charge if ElementStats(1).Charge = 1
+                    // Subtract elementNum.H * 2 since hydrogen is assigned a +1 charge if ElementStats[1].Charge = 1
                     correctedCharge -= elementCounts.H * 2;
                 }
 
-                // Correct for udtElementNumber of C and Si
+                // Correct for elementNumber of C and Si
                 if (elementCounts.C + elementCounts.Si > 1)
                 {
                     correctedCharge -= (elementCounts.C + elementCounts.Si - 1) * 2;
@@ -928,26 +927,26 @@ namespace MolecularWeightCalculator
             if (elementCounts.N + elementCounts.P > 0 && elementCounts.C > 0)
             {
                 // Assume 2 hydrogens around each Nitrogen or Phosphorus, thus add back +2 for each H
-                // First, decrease udtElementNumber of halogens by udtElementNumber of hydrogens & halogens taken up by the carbons
+                // First, decrease elementNumber of halogens by elementNumber of hydrogens & halogens taken up by the carbons
                 // Determine # of H taken up by all the carbons in a compound without N or P, then add back 1 H for each N and P
-                var intNumHalogens = elementCounts.H + elementCounts.F + elementCounts.Cl + elementCounts.Br + elementCounts.I;
-                intNumHalogens = intNumHalogens - (elementCounts.C * 2 + 2) + elementCounts.N + elementCounts.P;
+                var numHalogens = elementCounts.H + elementCounts.F + elementCounts.Cl + elementCounts.Br + elementCounts.I;
+                numHalogens = numHalogens - (elementCounts.C * 2 + 2) + elementCounts.N + elementCounts.P;
 
-                if (intNumHalogens >= 0)
+                if (numHalogens >= 0)
                 {
-                    for (var intIndex = 1; intIndex <= elementCounts.N + elementCounts.P; intIndex++)
+                    for (var index = 1; index <= elementCounts.N + elementCounts.P; index++)
                     {
                         correctedCharge += 2d;
-                        intNumHalogens -= 1;
+                        numHalogens -= 1;
 
-                        if (intNumHalogens <= 0)
+                        if (numHalogens <= 0)
                         {
                             break;
                         }
 
                         correctedCharge += 2d;
-                        intNumHalogens -= 1;
-                        if (intNumHalogens <= 0)
+                        numHalogens -= 1;
+                        if (numHalogens <= 0)
                             break;
                     }
                 }
@@ -1016,7 +1015,7 @@ namespace MolecularWeightCalculator
 
             const int NUM_POINTERS = 3;
 
-            // Calculate lngMaxRecursiveCount based on a combination function
+            // Calculate maxRecursiveCount based on a combination function
             var maxRecursiveCount = Combinatorial(NUM_POINTERS + potentialElementCount, potentialElementCount - 1) - Combinatorial(potentialElementCount + NUM_POINTERS - 2, NUM_POINTERS - 1);
             if (maxRecursiveCount > int.MaxValue)
             {
@@ -1029,7 +1028,7 @@ namespace MolecularWeightCalculator
 
             if (multipleSearchMax > 0)
             {
-                // Correct lngMaxRecursiveCount for searching for m/z values
+                // Correct maxRecursiveCount for searching for m/z values
                 mMaxRecursiveCount *= multipleSearchMax;
             }
         }
@@ -1100,9 +1099,9 @@ namespace MolecularWeightCalculator
                 EstimateNumberOfOperations(sortedElementStats.Count);
 
                 // Pointers to the potential elements
-                var lstPotentialElementPointers = new List<int>();
+                var potentialElementPointers = new List<int>();
 
-                var lstResults = new List<FormulaFinderResult>();
+                var results = new List<FormulaFinderResult>();
 
                 if (searchOptions.FindTargetMZ)
                 {
@@ -1111,18 +1110,18 @@ namespace MolecularWeightCalculator
                     MultipleSearchMath(sortedElementStats.Count, searchOptions, out var mzSearchChargeMin, out var mzSearchChargeMax);
 
                     for (var currentMzCharge = mzSearchChargeMin; currentMzCharge <= mzSearchChargeMax; currentMzCharge++)
-                        // Call the RecursiveMWFinder repeatedly, sending dblTargetWeight * x each time to search for target, target*2, target*3, etc.
-                        RecursiveMWFinder(lstResults, searchOptions, ppmMode, sortedElementStats, 0, lstPotentialElementPointers, 0d, targetMass * currentMzCharge, massToleranceDa, 0d, currentMzCharge);
+                        // Call the RecursiveMWFinder repeatedly, sending targetWeight * x each time to search for target, target*2, target*3, etc.
+                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 0, potentialElementPointers, 0d, targetMass * currentMzCharge, massToleranceDa, 0d, currentMzCharge);
                 }
                 else
                 {
-                    // RecursiveMWFinder(lstResults, searchOptions, ppmMode, strPotentialElements, dblPotentialElementStats, 0, potentialElementCount, lstPotentialElementPointers, 0, targetMass, massToleranceDa, 0, 0)
-                    RecursiveMWFinder(lstResults, searchOptions, ppmMode, sortedElementStats, 0, lstPotentialElementPointers, 0d, targetMass, massToleranceDa, 0d, 0);
+                    //RecursiveMWFinder(results, searchOptions, ppmMode, potentialElements, potentialElementStats, 0, potentialElementCount, potentialElementPointers, 0, targetMass, massToleranceDa, 0, 0)
+                    RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 0, potentialElementPointers, 0d, targetMass, massToleranceDa, 0d, 0);
                 }
 
-                ComputeSortKeys(lstResults);
+                ComputeSortKeys(results);
 
-                return lstResults;
+                return results;
             }
 
             // Bounded search
@@ -1176,15 +1175,15 @@ namespace MolecularWeightCalculator
                 EstimateNumberOfOperations(sortedElementStats.Count);
 
                 // Pointers to the potential elements
-                var lstPotentialElementPointers = new List<int>();
+                var potentialElementPointers = new List<int>();
 
-                var lstResults = new List<FormulaFinderResult>();
+                var results = new List<FormulaFinderResult>();
 
-                RecursivePCompFinder(lstResults, searchOptions, sortedElementStats, 0, lstPotentialElementPointers, 0d, maximumFormulaMass, 9d);
+                RecursivePCompFinder(results, searchOptions, sortedElementStats, 0, potentialElementPointers, 0d, maximumFormulaMass, 9d);
 
-                ComputeSortKeys(lstResults);
+                ComputeSortKeys(results);
 
-                return lstResults;
+                return results;
             }
             // Bounded search
 
@@ -1215,16 +1214,16 @@ namespace MolecularWeightCalculator
                     CountMaximum = item.Value.MaximumCount
                 };
 
-                float sngCharge;
-                double dblMass;
+                float charge;
+                double mass;
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
                     var elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
 
-                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out _, out sngCharge, out _);
+                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out mass, out _, out charge, out _);
 
-                    candidateElement.Mass = dblMass;
-                    candidateElement.Charge = sngCharge;
+                    candidateElement.Mass = mass;
+                    candidateElement.Charge = charge;
                 }
                 else
                 {
@@ -1265,21 +1264,21 @@ namespace MolecularWeightCalculator
                         }
 
                         // See if this is an abbreviation
-                        var intSymbolReference = mElementAndMassRoutines.GetAbbreviationIDInternal(abbrevSymbol);
-                        if (intSymbolReference < 1)
+                        var symbolReference = mElementAndMassRoutines.GetAbbreviationIDInternal(abbrevSymbol);
+                        if (symbolReference < 1)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
                             return new List<FormulaFinderCandidateElement>();
                         }
 
                         // Found a normal abbreviation
-                        mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out _, out var abbrevFormula, out sngCharge, out _);
+                        mElementAndMassRoutines.GetAbbreviationInternal(symbolReference, out _, out var abbrevFormula, out charge, out _);
 
-                        dblMass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
+                        mass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
 
-                        candidateElement.Mass = dblMass;
+                        candidateElement.Mass = mass;
 
-                        candidateElement.Charge = sngCharge;
+                        candidateElement.Charge = charge;
                     }
                 }
 
@@ -1308,16 +1307,16 @@ namespace MolecularWeightCalculator
                 range[potentialElementCount, 0] = item.Value.MinimumCount;
                 range[potentialElementCount, 1] = item.Value.MaximumCount;
 
-                float sngCharge;
-                double dblMass;
+                float charge;
+                double mass;
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
                     var elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
 
-                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out dblMass, out _, out sngCharge, out _);
+                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out mass, out _, out charge, out _);
 
-                    potentialElementStats[potentialElementCount, 0] = dblMass;
-                    potentialElementStats[potentialElementCount, 1] = sngCharge;
+                    potentialElementStats[potentialElementCount, 0] = mass;
+                    potentialElementStats[potentialElementCount, 1] = charge;
 
                     potentialElements[potentialElementCount] = item.Key;
                 }
@@ -1359,25 +1358,25 @@ namespace MolecularWeightCalculator
                             return 0;
                         }
 
-                        const int charge = 0;
+                        const int defaultCharge = 0;
 
                         // See if this is an abbreviation
-                        var intSymbolReference = mElementAndMassRoutines.GetAbbreviationIDInternal(abbrevSymbol);
-                        if (intSymbolReference < 1)
+                        var symbolReference = mElementAndMassRoutines.GetAbbreviationIDInternal(abbrevSymbol);
+                        if (symbolReference < 1)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
                             return 0;
                         }
 
                         // Found a normal abbreviation
-                        mElementAndMassRoutines.GetAbbreviationInternal(intSymbolReference, out var matchedAbbrevSymbol, out var abbrevFormula, out sngCharge, out _);
+                        mElementAndMassRoutines.GetAbbreviationInternal(symbolReference, out var matchedAbbrevSymbol, out var abbrevFormula, out charge, out _);
 
-                        dblMass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
+                        mass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
 
                         // Returns weight of element/abbreviation, but also charge
-                        potentialElementStats[potentialElementCount, 0] = dblMass;
+                        potentialElementStats[potentialElementCount, 0] = mass;
 
-                        potentialElementStats[potentialElementCount, 1] = charge;
+                        potentialElementStats[potentialElementCount, 1] = defaultCharge;
 
                         // No problems, store symbol
                         potentialElements[potentialElementCount] = matchedAbbrevSymbol;
@@ -1395,26 +1394,26 @@ namespace MolecularWeightCalculator
 
         private CandidateElementTolerances GetDefaultCandidateElementTolerance(int minimumCount, int maximumCount)
         {
-            var udtElementTolerances = new CandidateElementTolerances
+            var elementTolerances = new CandidateElementTolerances
             {
                 MinimumCount = minimumCount,    // Only used with the Bounded search mode
                 MaximumCount = maximumCount,    // Only used with the Bounded search mode
                 TargetPercentComposition = 0d   // Only used when searching for percent compositions
             };
 
-            return udtElementTolerances;
+            return elementTolerances;
         }
 
         private CandidateElementTolerances GetDefaultCandidateElementTolerance(double targetPercentComposition = 0)
         {
-            var udtElementTolerances = new CandidateElementTolerances
+            var elementTolerances = new CandidateElementTolerances
             {
                 MinimumCount = 0,               // Only used with the Bounded search mode
                 MaximumCount = 10,              // Only used with the Bounded search mode
                 TargetPercentComposition = targetPercentComposition   // Only used when searching for percent compositions
             };
 
-            return udtElementTolerances;
+            return elementTolerances;
         }
 
         /// <summary>
@@ -1536,61 +1535,60 @@ namespace MolecularWeightCalculator
             double maximumFormulaMass)
         {
             // The calculated percentages for the specific compound
-            var Percent = new double[11];
+            var percent = new double[11];
+            var results = new List<FormulaFinderResult>();
 
-            var lstResults = new List<FormulaFinderResult>();
             try
             {
-
                 // Only used when calculationMode is MatchMolecularWeight
-                var dblMultipleSearchMaxWeight = targetMass * searchOptions.ChargeMax;
+                var multipleSearchMaxWeight = targetMass * searchOptions.ChargeMax;
 
-                var sbEmpiricalFormula = new StringBuilder();
+                var empiricalFormula = new StringBuilder();
 
-                var lstRanges = new List<BoundedSearchRange>(MAX_MATCHING_ELEMENTS);
+                var ranges = new List<BoundedSearchRange>(MAX_MATCHING_ELEMENTS);
 
                 for (var elementIndex = 0; elementIndex < sortedElementStats.Count; elementIndex++)
                 {
-                    var udtBoundedSearchRange = new BoundedSearchRange
+                    var boundedSearchRange = new BoundedSearchRange
                     {
                         Min = sortedElementStats[elementIndex].CountMinimum,
                         Max = sortedElementStats[elementIndex].CountMaximum
                     };
-                    lstRanges.Add(udtBoundedSearchRange);
+                    ranges.Add(boundedSearchRange);
                 }
 
-                while (lstRanges.Count < MAX_MATCHING_ELEMENTS)
+                while (ranges.Count < MAX_MATCHING_ELEMENTS)
                 {
-                    var udtBoundedSearchRange = new BoundedSearchRange
+                    var boundedSearchRange = new BoundedSearchRange
                     {
                         Min = 0,
                         Max = 0
                     };
-                    lstRanges.Add(udtBoundedSearchRange);
+                    ranges.Add(boundedSearchRange);
                 }
 
                 var potentialElementCount = sortedElementStats.Count;
 
                 // Determine the valid compounds
-                for (var j = lstRanges[0].Min; j <= lstRanges[0].Max; j++)
+                for (var j = ranges[0].Min; j <= ranges[0].Max; j++)
                 {
-                    for (var k = lstRanges[1].Min; k <= lstRanges[1].Max; k++)
+                    for (var k = ranges[1].Min; k <= ranges[1].Max; k++)
                     {
-                        for (var l = lstRanges[2].Min; l <= lstRanges[2].Max; l++)
+                        for (var l = ranges[2].Min; l <= ranges[2].Max; l++)
                         {
-                            for (var m = lstRanges[3].Min; m <= lstRanges[3].Max; m++)
+                            for (var m = ranges[3].Min; m <= ranges[3].Max; m++)
                             {
-                                for (var N = lstRanges[4].Min; N <= lstRanges[4].Max; N++)
+                                for (var N = ranges[4].Min; N <= ranges[4].Max; N++)
                                 {
-                                    for (var O = lstRanges[5].Min; O <= lstRanges[5].Max; O++)
+                                    for (var O = ranges[5].Min; O <= ranges[5].Max; O++)
                                     {
-                                        for (var P = lstRanges[6].Min; P <= lstRanges[6].Max; P++)
+                                        for (var P = ranges[6].Min; P <= ranges[6].Max; P++)
                                         {
-                                            for (var q = lstRanges[7].Min; q <= lstRanges[7].Max; q++)
+                                            for (var q = ranges[7].Min; q <= ranges[7].Max; q++)
                                             {
-                                                for (var r = lstRanges[8].Min; r <= lstRanges[8].Max; r++)
+                                                for (var r = ranges[8].Min; r <= ranges[8].Max; r++)
                                                 {
-                                                    for (var s = lstRanges[9].Min; s <= lstRanges[9].Max; s++)
+                                                    for (var s = ranges[9].Min; s <= ranges[9].Max; s++)
                                                     {
                                                         var totalMass = j * sortedElementStats[0].Mass;
                                                         var totalCharge = j * sortedElementStats[0].Charge;
@@ -1654,42 +1652,42 @@ namespace MolecularWeightCalculator
                                                             // Matching Percent Compositions
                                                             if (totalMass > 0d && totalMass <= maximumFormulaMass)
                                                             {
-                                                                Percent[0] = j * sortedElementStats[0].Mass / totalMass * 100d;
+                                                                percent[0] = j * sortedElementStats[0].Mass / totalMass * 100d;
                                                                 if (potentialElementCount > 1)
                                                                 {
-                                                                    Percent[1] = k * sortedElementStats[1].Mass / totalMass * 100d;
+                                                                    percent[1] = k * sortedElementStats[1].Mass / totalMass * 100d;
 
                                                                     if (potentialElementCount > 1)
                                                                     {
-                                                                        Percent[2] = l * sortedElementStats[2].Mass / totalMass * 100d;
+                                                                        percent[2] = l * sortedElementStats[2].Mass / totalMass * 100d;
 
                                                                         if (potentialElementCount > 1)
                                                                         {
-                                                                            Percent[3] = m * sortedElementStats[3].Mass / totalMass * 100d;
+                                                                            percent[3] = m * sortedElementStats[3].Mass / totalMass * 100d;
 
                                                                             if (potentialElementCount > 1)
                                                                             {
-                                                                                Percent[4] = N * sortedElementStats[4].Mass / totalMass * 100d;
+                                                                                percent[4] = N * sortedElementStats[4].Mass / totalMass * 100d;
 
                                                                                 if (potentialElementCount > 1)
                                                                                 {
-                                                                                    Percent[5] = O * sortedElementStats[5].Mass / totalMass * 100d;
+                                                                                    percent[5] = O * sortedElementStats[5].Mass / totalMass * 100d;
 
                                                                                     if (potentialElementCount > 1)
                                                                                     {
-                                                                                        Percent[6] = P * sortedElementStats[6].Mass / totalMass * 100d;
+                                                                                        percent[6] = P * sortedElementStats[6].Mass / totalMass * 100d;
 
                                                                                         if (potentialElementCount > 1)
                                                                                         {
-                                                                                            Percent[7] = q * sortedElementStats[7].Mass / totalMass * 100d;
+                                                                                            percent[7] = q * sortedElementStats[7].Mass / totalMass * 100d;
 
                                                                                             if (potentialElementCount > 1)
                                                                                             {
-                                                                                                Percent[8] = r * sortedElementStats[8].Mass / totalMass * 100d;
+                                                                                                percent[8] = r * sortedElementStats[8].Mass / totalMass * 100d;
 
                                                                                                 if (potentialElementCount > 1)
                                                                                                 {
-                                                                                                    Percent[9] = s * sortedElementStats[9].Mass / totalMass * 100d;
+                                                                                                    percent[9] = s * sortedElementStats[9].Mass / totalMass * 100d;
                                                                                                 }
                                                                                             }
                                                                                         }
@@ -1700,22 +1698,22 @@ namespace MolecularWeightCalculator
                                                                     }
                                                                 }
 
-                                                                var intSubTrack = 0;
-                                                                for (var intIndex = 0; intIndex < potentialElementCount; intIndex++)
+                                                                var subTrack = 0;
+                                                                for (var index = 0; index < potentialElementCount; index++)
                                                                 {
-                                                                    if (Percent[intIndex] >= sortedElementStats[intIndex].PercentCompMinimum && Percent[intIndex] <= sortedElementStats[intIndex].PercentCompMaximum)
+                                                                    if (percent[index] >= sortedElementStats[index].PercentCompMinimum && percent[index] <= sortedElementStats[index].PercentCompMaximum)
                                                                     {
-                                                                        intSubTrack += 1;
+                                                                        subTrack += 1;
                                                                     }
                                                                 }
 
-                                                                if (intSubTrack == potentialElementCount)
+                                                                if (subTrack == potentialElementCount)
                                                                 {
                                                                     // All of the elements have percent compositions matching the target
 
                                                                     // Construct the empirical formula and verify hydrogens
-                                                                    var blnHOK = ConstructAndVerifyCompound(searchOptions,
-                                                                                                            sbEmpiricalFormula,
+                                                                    var hOK = ConstructAndVerifyCompound(searchOptions,
+                                                                                                            empiricalFormula,
                                                                                                             j, k, l, m, N, O, P, q, r, s,
                                                                                                             sortedElementStats,
                                                                                                             totalMass, targetMass, massToleranceDa,
@@ -1723,56 +1721,56 @@ namespace MolecularWeightCalculator
                                                                                                             out var empiricalResultSymbols,
                                                                                                             out var correctedCharge);
 
-                                                                    if (sbEmpiricalFormula.Length > 0 && blnHOK)
+                                                                    if (empiricalFormula.Length > 0 && hOK)
                                                                     {
-                                                                        var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
+                                                                        var searchResult = GetSearchResult(searchOptions, ppmMode, empiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
 
                                                                         // Add % composition info
 
-                                                                        AppendPercentCompositionResult(searchResult, j, sortedElementStats, 0, Percent[0]);
-                                                                        AppendPercentCompositionResult(searchResult, k, sortedElementStats, 1, Percent[1]);
-                                                                        AppendPercentCompositionResult(searchResult, l, sortedElementStats, 2, Percent[2]);
-                                                                        AppendPercentCompositionResult(searchResult, m, sortedElementStats, 3, Percent[3]);
-                                                                        AppendPercentCompositionResult(searchResult, N, sortedElementStats, 4, Percent[4]);
-                                                                        AppendPercentCompositionResult(searchResult, O, sortedElementStats, 5, Percent[5]);
-                                                                        AppendPercentCompositionResult(searchResult, P, sortedElementStats, 6, Percent[6]);
-                                                                        AppendPercentCompositionResult(searchResult, q, sortedElementStats, 7, Percent[7]);
-                                                                        AppendPercentCompositionResult(searchResult, r, sortedElementStats, 8, Percent[8]);
-                                                                        AppendPercentCompositionResult(searchResult, s, sortedElementStats, 9, Percent[9]);
+                                                                        AppendPercentCompositionResult(searchResult, j, sortedElementStats, 0, percent[0]);
+                                                                        AppendPercentCompositionResult(searchResult, k, sortedElementStats, 1, percent[1]);
+                                                                        AppendPercentCompositionResult(searchResult, l, sortedElementStats, 2, percent[2]);
+                                                                        AppendPercentCompositionResult(searchResult, m, sortedElementStats, 3, percent[3]);
+                                                                        AppendPercentCompositionResult(searchResult, N, sortedElementStats, 4, percent[4]);
+                                                                        AppendPercentCompositionResult(searchResult, O, sortedElementStats, 5, percent[5]);
+                                                                        AppendPercentCompositionResult(searchResult, P, sortedElementStats, 6, percent[6]);
+                                                                        AppendPercentCompositionResult(searchResult, q, sortedElementStats, 7, percent[7]);
+                                                                        AppendPercentCompositionResult(searchResult, r, sortedElementStats, 8, percent[8]);
+                                                                        AppendPercentCompositionResult(searchResult, s, sortedElementStats, 9, percent[9]);
 
-                                                                        lstResults.Add(searchResult);
+                                                                        results.Add(searchResult);
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                         // Matching Molecular Weights
 
-                                                        else if (totalMass <= dblMultipleSearchMaxWeight + massToleranceDa)
+                                                        else if (totalMass <= multipleSearchMaxWeight + massToleranceDa)
                                                         {
 
                                                             // When searchOptions.FindTargetMZ is false, ChargeMin and ChargeMax will be 1
-                                                            for (var intCurrentCharge = searchOptions.ChargeMin; intCurrentCharge <= searchOptions.ChargeMax; intCurrentCharge++)
+                                                            for (var currentCharge = searchOptions.ChargeMin; currentCharge <= searchOptions.ChargeMax; currentCharge++)
                                                             {
-                                                                var dblMatchWeight = targetMass * intCurrentCharge;
-                                                                if (totalMass <= dblMatchWeight + massToleranceDa && totalMass >= dblMatchWeight - massToleranceDa)
+                                                                var matchWeight = targetMass * currentCharge;
+                                                                if (totalMass <= matchWeight + massToleranceDa && totalMass >= matchWeight - massToleranceDa)
                                                                 {
                                                                     // Within massToleranceDa
 
                                                                     // Construct the empirical formula and verify hydrogens
-                                                                    var blnHOK = ConstructAndVerifyCompound(searchOptions,
-                                                                                                            sbEmpiricalFormula,
+                                                                    var hOK = ConstructAndVerifyCompound(searchOptions,
+                                                                                                            empiricalFormula,
                                                                                                             j, k, l, m, N, O, P, q, r, s,
                                                                                                             sortedElementStats,
-                                                                                                            totalMass, targetMass * intCurrentCharge, massToleranceDa,
-                                                                                                            totalCharge, intCurrentCharge,
+                                                                                                            totalMass, targetMass * currentCharge, massToleranceDa,
+                                                                                                            totalCharge, currentCharge,
                                                                                                             out var empiricalResultSymbols,
                                                                                                             out var correctedCharge);
 
-                                                                    if (sbEmpiricalFormula.Length > 0 && blnHOK)
+                                                                    if (empiricalFormula.Length > 0 && hOK)
                                                                     {
-                                                                        var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, targetMass, correctedCharge, empiricalResultSymbols);
+                                                                        var searchResult = GetSearchResult(searchOptions, ppmMode, empiricalFormula, totalMass, targetMass, correctedCharge, empiricalResultSymbols);
 
-                                                                        lstResults.Add(searchResult);
+                                                                        results.Add(searchResult);
                                                                     }
 
                                                                     break;
@@ -1785,35 +1783,35 @@ namespace MolecularWeightCalculator
                                                             // Jump out of loop since weight is too high
                                                             // Determine which variable is causing the weight to be too high
                                                             // Incrementing "s" would definitely make the weight too high, so set it to its max (so it will zero and increment "r")
-                                                            s = lstRanges[9].Max;
-                                                            if (j * lstRanges[0].Min + k * lstRanges[1].Min + l * lstRanges[2].Min + m * lstRanges[3].Min + N * lstRanges[4].Min + O * lstRanges[5].Min + P * lstRanges[6].Min + q * lstRanges[7].Min + (r + 1) * lstRanges[8].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                            s = ranges[9].Max;
+                                                            if (j * ranges[0].Min + k * ranges[1].Min + l * ranges[2].Min + m * ranges[3].Min + N * ranges[4].Min + O * ranges[5].Min + P * ranges[6].Min + q * ranges[7].Min + (r + 1) * ranges[8].Min > massToleranceDa + multipleSearchMaxWeight)
                                                             {
                                                                 // Incrementing r would make the weight too high, so set it to its max (so it will zero and increment q)
-                                                                r = lstRanges[8].Max;
-                                                                if (j * lstRanges[0].Min + k * lstRanges[1].Min + l * lstRanges[2].Min + m * lstRanges[3].Min + N * lstRanges[4].Min + O * lstRanges[5].Min + P * lstRanges[6].Min + (q + 1) * lstRanges[7].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                                r = ranges[8].Max;
+                                                                if (j * ranges[0].Min + k * ranges[1].Min + l * ranges[2].Min + m * ranges[3].Min + N * ranges[4].Min + O * ranges[5].Min + P * ranges[6].Min + (q + 1) * ranges[7].Min > massToleranceDa + multipleSearchMaxWeight)
                                                                 {
-                                                                    q = lstRanges[7].Max;
-                                                                    if (j * lstRanges[0].Min + k * lstRanges[1].Min + l * lstRanges[2].Min + m * lstRanges[3].Min + N * lstRanges[4].Min + O * lstRanges[5].Min + (P + 1) * lstRanges[6].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                                    q = ranges[7].Max;
+                                                                    if (j * ranges[0].Min + k * ranges[1].Min + l * ranges[2].Min + m * ranges[3].Min + N * ranges[4].Min + O * ranges[5].Min + (P + 1) * ranges[6].Min > massToleranceDa + multipleSearchMaxWeight)
                                                                     {
-                                                                        P = lstRanges[6].Max;
-                                                                        if (j * lstRanges[0].Min + k * lstRanges[1].Min + l * lstRanges[2].Min + m * lstRanges[3].Min + N * lstRanges[4].Min + (O + 1) * lstRanges[5].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                                        P = ranges[6].Max;
+                                                                        if (j * ranges[0].Min + k * ranges[1].Min + l * ranges[2].Min + m * ranges[3].Min + N * ranges[4].Min + (O + 1) * ranges[5].Min > massToleranceDa + multipleSearchMaxWeight)
                                                                         {
-                                                                            O = lstRanges[5].Max;
-                                                                            if (j * lstRanges[0].Min + k * lstRanges[1].Min + l * lstRanges[2].Min + m * lstRanges[3].Min + (N + 1) * lstRanges[4].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                                            O = ranges[5].Max;
+                                                                            if (j * ranges[0].Min + k * ranges[1].Min + l * ranges[2].Min + m * ranges[3].Min + (N + 1) * ranges[4].Min > massToleranceDa + multipleSearchMaxWeight)
                                                                             {
-                                                                                N = lstRanges[4].Max;
-                                                                                if (j * lstRanges[0].Min + k * lstRanges[1].Min + l * lstRanges[2].Min + (m + 1) * lstRanges[3].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                                                N = ranges[4].Max;
+                                                                                if (j * ranges[0].Min + k * ranges[1].Min + l * ranges[2].Min + (m + 1) * ranges[3].Min > massToleranceDa + multipleSearchMaxWeight)
                                                                                 {
-                                                                                    m = lstRanges[3].Max;
-                                                                                    if (j * lstRanges[0].Min + k * lstRanges[1].Min + (l + 1) * lstRanges[2].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                                                    m = ranges[3].Max;
+                                                                                    if (j * ranges[0].Min + k * ranges[1].Min + (l + 1) * ranges[2].Min > massToleranceDa + multipleSearchMaxWeight)
                                                                                     {
-                                                                                        l = lstRanges[2].Max;
-                                                                                        if (j * lstRanges[0].Min + (k + 1) * lstRanges[1].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                                                        l = ranges[2].Max;
+                                                                                        if (j * ranges[0].Min + (k + 1) * ranges[1].Min > massToleranceDa + multipleSearchMaxWeight)
                                                                                         {
-                                                                                            k = lstRanges[1].Max;
-                                                                                            if ((j + 1) * lstRanges[0].Min > massToleranceDa + dblMultipleSearchMaxWeight)
+                                                                                            k = ranges[1].Max;
+                                                                                            if ((j + 1) * ranges[0].Min > massToleranceDa + multipleSearchMaxWeight)
                                                                                             {
-                                                                                                j = lstRanges[0].Max;
+                                                                                                j = ranges[0].Max;
                                                                                             }
                                                                                         }
                                                                                     }
@@ -1827,23 +1825,23 @@ namespace MolecularWeightCalculator
 
                                                         if (mAbortProcessing)
                                                         {
-                                                            return lstResults;
+                                                            return results;
                                                         }
 
-                                                        if (lstResults.Count >= mMaximumHits)
+                                                        if (results.Count >= mMaximumHits)
                                                         {
 
                                                             // Set variables to their maximum so all the loops will end
-                                                            j = lstRanges[0].Max;
-                                                            k = lstRanges[1].Max;
-                                                            l = lstRanges[2].Max;
-                                                            m = lstRanges[3].Max;
-                                                            N = lstRanges[4].Max;
-                                                            O = lstRanges[5].Max;
-                                                            P = lstRanges[6].Max;
-                                                            q = lstRanges[7].Max;
-                                                            r = lstRanges[8].Max;
-                                                            s = lstRanges[9].Max;
+                                                            j = ranges[0].Max;
+                                                            k = ranges[1].Max;
+                                                            l = ranges[2].Max;
+                                                            m = ranges[3].Max;
+                                                            N = ranges[4].Max;
+                                                            O = ranges[5].Max;
+                                                            P = ranges[6].Max;
+                                                            q = ranges[7].Max;
+                                                            r = ranges[8].Max;
+                                                            s = ranges[9].Max;
                                                         }
                                                     }
                                                 }
@@ -1855,15 +1853,15 @@ namespace MolecularWeightCalculator
                         }
                     }
 
-                    if (lstRanges[0].Max != 0)
+                    if (ranges[0].Max != 0)
                     {
                         if (searchOptions.ChargeMin == 0)
                         {
-                            PercentComplete = j / (double)lstRanges[0].Max * 100d;
+                            PercentComplete = j / (double)ranges[0].Max * 100d;
                         }
                         else
                         {
-                            PercentComplete = j / (double)lstRanges[0].Max * 100d * searchOptions.ChargeMax;
+                            PercentComplete = j / (double)ranges[0].Max * 100d * searchOptions.ChargeMax;
                         }
 
                         Console.WriteLine("Bounded search: " + PercentComplete.ToString("0") + "% complete");
@@ -1875,7 +1873,7 @@ namespace MolecularWeightCalculator
                 mElementAndMassRoutines.GeneralErrorHandler("OldFormulaFinder", ex);
             }
 
-            return lstResults;
+            return results;
         }
 
         [Obsolete("Deprecated")]
@@ -1886,7 +1884,7 @@ namespace MolecularWeightCalculator
             IList<string> potentialElements,
             double[,] targetPercents)
         {
-            // Reorder dblPotentialElementStats pointer array in order from heaviest to lightest element
+            // Reorder potentialElementStats pointer array in order from heaviest to lightest element
             // Greatly speeds up the recursive routine
 
             // Bubble sort
@@ -1897,30 +1895,30 @@ namespace MolecularWeightCalculator
                     if (potentialElementStats[x, 0] < potentialElementStats[x + 1, 0])
                     {
                         // Swap the element symbols
-                        var strSwap = potentialElements[x];
+                        var swap = potentialElements[x];
                         potentialElements[x] = potentialElements[x + 1];
-                        potentialElements[x + 1] = strSwap;
+                        potentialElements[x + 1] = swap;
 
                         // and their weights
-                        var dblSwapVal = potentialElementStats[x, 0];
+                        var swapVal = potentialElementStats[x, 0];
                         potentialElementStats[x, 0] = potentialElementStats[x + 1, 0];
-                        potentialElementStats[x + 1, 0] = dblSwapVal;
+                        potentialElementStats[x + 1, 0] = swapVal;
 
                         // and their charge
-                        dblSwapVal = potentialElementStats[x, 1];
+                        swapVal = potentialElementStats[x, 1];
                         potentialElementStats[x, 1] = potentialElementStats[x + 1, 1];
-                        potentialElementStats[x + 1, 1] = dblSwapVal;
+                        potentialElementStats[x + 1, 1] = swapVal;
 
                         if (calculationMode == CalculationMode.MatchPercentComposition)
                         {
-                            // and the dblTargetPercents array
-                            dblSwapVal = targetPercents[x, 0];
+                            // and the targetPercents array
+                            swapVal = targetPercents[x, 0];
                             targetPercents[x, 0] = targetPercents[x + 1, 0];
-                            targetPercents[x + 1, 0] = dblSwapVal;
+                            targetPercents[x + 1, 0] = swapVal;
 
-                            dblSwapVal = targetPercents[x, 1];
+                            swapVal = targetPercents[x, 1];
                             targetPercents[x, 1] = targetPercents[x + 1, 1];
-                            targetPercents[x + 1, 1] = dblSwapVal;
+                            targetPercents[x + 1, 1] = swapVal;
                         }
                     }
                 }
@@ -1957,29 +1955,29 @@ namespace MolecularWeightCalculator
         {
             try
             {
-                var lstNewPotentialElementPointers = new List<int>(potentialElementPointers.Count + 1);
+                var newPotentialElementPointers = new List<int>(potentialElementPointers.Count + 1);
 
                 if (mAbortProcessing || results.Count >= mMaximumHits)
                 {
                     return;
                 }
 
-                var sbEmpiricalFormula = new StringBuilder();
+                var empiricalFormula = new StringBuilder();
 
-                for (var intCurrentIndex = startIndex; intCurrentIndex < sortedElementStats.Count; intCurrentIndex++)
+                for (var currentIndex = startIndex; currentIndex < sortedElementStats.Count; currentIndex++)
                 {
-                    var totalMass = potentialMassTotal + sortedElementStats[intCurrentIndex].Mass;
-                    var totalCharge = potentialChargeTotal + sortedElementStats[intCurrentIndex].Charge;
+                    var totalMass = potentialMassTotal + sortedElementStats[currentIndex].Mass;
+                    var totalCharge = potentialChargeTotal + sortedElementStats[currentIndex].Charge;
 
-                    lstNewPotentialElementPointers.Clear();
+                    newPotentialElementPointers.Clear();
 
                     if (totalMass <= targetMass + massToleranceDa)
                     {
-                        // Below or within dblMassTolerance, add current element's pointer to pointer array
-                        lstNewPotentialElementPointers.AddRange(potentialElementPointers);
+                        // Below or within massTolerance, add current element's pointer to pointer array
+                        newPotentialElementPointers.AddRange(potentialElementPointers);
 
                         // Append the current element's number
-                        lstNewPotentialElementPointers.Add(intCurrentIndex);
+                        newPotentialElementPointers.Add(currentIndex);
 
                         // Update status
                         UpdateStatus();
@@ -2011,45 +2009,45 @@ namespace MolecularWeightCalculator
                             // Matching compound
 
                             // Construct the empirical formula and verify hydrogens
-                            var blnHOK = ConstructAndVerifyCompoundRecursive(searchOptions,
-                                                                             sbEmpiricalFormula, sortedElementStats,
-                                                                             lstNewPotentialElementPointers,
+                            var hOK = ConstructAndVerifyCompoundRecursive(searchOptions,
+                                                                             empiricalFormula, sortedElementStats,
+                                                                             newPotentialElementPointers,
                                                                              totalMass, targetMass, massToleranceDa,
                                                                              totalCharge, multipleMtoZCharge,
                                                                              out var empiricalResultSymbols,
                                                                              out var correctedCharge);
 
-                            if (sbEmpiricalFormula.Length > 0 && blnHOK)
+                            if (empiricalFormula.Length > 0 && hOK)
                             {
-                                var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, targetMass, correctedCharge, empiricalResultSymbols);
+                                var searchResult = GetSearchResult(searchOptions, ppmMode, empiricalFormula, totalMass, targetMass, correctedCharge, empiricalResultSymbols);
 
                                 results.Add(searchResult);
                             }
                         }
 
-                        // Haven't reached targetMass - dblMassTolerance region, so call RecursiveFinder again
+                        // Haven't reached targetMass - massTolerance region, so call RecursiveFinder again
 
                         // But first, if adding the lightest element (i.e. the last in the list),
                         // add a bunch of it until the potential compound's weight is close to the target
-                        if (intCurrentIndex == sortedElementStats.Count - 1)
+                        if (currentIndex == sortedElementStats.Count - 1)
                         {
-                            var intExtra = 0;
-                            while (totalMass < targetMass - massToleranceDa - sortedElementStats[intCurrentIndex].Mass)
+                            var extra = 0;
+                            while (totalMass < targetMass - massToleranceDa - sortedElementStats[currentIndex].Mass)
                             {
-                                intExtra += 1;
-                                totalMass += sortedElementStats[intCurrentIndex].Mass;
-                                totalCharge += sortedElementStats[intCurrentIndex].Charge;
+                                extra += 1;
+                                totalMass += sortedElementStats[currentIndex].Mass;
+                                totalCharge += sortedElementStats[currentIndex].Charge;
                             }
 
-                            if (intExtra > 0)
+                            if (extra > 0)
                             {
-                                for (var intPointer = 1; intPointer <= intExtra; intPointer++)
-                                    lstNewPotentialElementPointers.Add(intCurrentIndex);
+                                for (var pointer = 1; pointer <= extra; pointer++)
+                                    newPotentialElementPointers.Add(currentIndex);
                             }
                         }
 
                         // Now recursively call this sub
-                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, intCurrentIndex, lstNewPotentialElementPointers, totalMass, targetMass, massToleranceDa, totalCharge, multipleMtoZCharge);
+                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, currentIndex, newPotentialElementPointers, totalMass, targetMass, massToleranceDa, totalCharge, multipleMtoZCharge);
                     }
                 }
             }
@@ -2084,36 +2082,36 @@ namespace MolecularWeightCalculator
         {
             try
             {
-                var lstNewPotentialElementPointers = new List<int>(potentialElementPointers.Count + 1);
+                var newPotentialElementPointers = new List<int>(potentialElementPointers.Count + 1);
 
-                var dblPotentialPercents = new double[sortedElementStats.Count + 1];
+                var potentialPercents = new double[sortedElementStats.Count + 1];
 
                 if (mAbortProcessing || results.Count >= mMaximumHits)
                 {
                     return;
                 }
 
-                var sbEmpiricalFormula = new StringBuilder();
+                var empiricalFormula = new StringBuilder();
                 const bool ppmMode = false;
 
-                for (var intCurrentIndex = startIndex; intCurrentIndex < sortedElementStats.Count; intCurrentIndex++)  // potentialElementCount >= 1, if 1, means just dblPotentialElementStats[0,0], etc.
+                for (var currentIndex = startIndex; currentIndex < sortedElementStats.Count; currentIndex++)  // potentialElementCount >= 1, if 1, means just potentialElementStats[0,0], etc.
                 {
-                    var totalMass = potentialMassTotal + sortedElementStats[intCurrentIndex].Mass;
-                    var totalCharge = potentialChargeTotal + sortedElementStats[intCurrentIndex].Charge;
+                    var totalMass = potentialMassTotal + sortedElementStats[currentIndex].Mass;
+                    var totalCharge = potentialChargeTotal + sortedElementStats[currentIndex].Charge;
 
-                    lstNewPotentialElementPointers.Clear();
+                    newPotentialElementPointers.Clear();
 
                     if (totalMass <= maximumFormulaMass)
                     {
                         // only proceed if weight is less than max weight
 
-                        lstNewPotentialElementPointers.AddRange(potentialElementPointers);
+                        newPotentialElementPointers.AddRange(potentialElementPointers);
 
                         // Append the current element's number
-                        lstNewPotentialElementPointers.Add(intCurrentIndex);
+                        newPotentialElementPointers.Add(currentIndex);
 
                         // Compute the number of each element
-                        var elementCountArray = GetElementCountArray(sortedElementStats.Count, lstNewPotentialElementPointers);
+                        var elementCountArray = GetElementCountArray(sortedElementStats.Count, newPotentialElementPointers);
 
                         var nonZeroCount = (from item in elementCountArray where item > 0 select item).Count();
 
@@ -2121,46 +2119,46 @@ namespace MolecularWeightCalculator
                         if (nonZeroCount == sortedElementStats.Count)
                         {
                             // Compute % comp of each element
-                            for (var intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
-                                dblPotentialPercents[intIndex] = elementCountArray[intIndex] * sortedElementStats[intIndex].Mass / totalMass * 100d;
+                            for (var index = 0; index < sortedElementStats.Count; index++)
+                                potentialPercents[index] = elementCountArray[index] * sortedElementStats[index].Mass / totalMass * 100d;
 
-                            // If intPointerCount = 0 Then dblPotentialPercents(0) = 100
+                            //if (pointerCount == 0) potentialPercents[0] = 100;
 
-                            var intPercentTrack = 0;
-                            for (var intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
+                            var percentTrack = 0;
+                            for (var index = 0; index < sortedElementStats.Count; index++)
                             {
-                                if (dblPotentialPercents[intIndex] >= sortedElementStats[intIndex].PercentCompMinimum &&
-                                    dblPotentialPercents[intIndex] <= sortedElementStats[intIndex].PercentCompMaximum)
+                                if (potentialPercents[index] >= sortedElementStats[index].PercentCompMinimum &&
+                                    potentialPercents[index] <= sortedElementStats[index].PercentCompMaximum)
                                 {
-                                    intPercentTrack += 1;
+                                    percentTrack += 1;
                                 }
                             }
 
-                            if (intPercentTrack == sortedElementStats.Count)
+                            if (percentTrack == sortedElementStats.Count)
                             {
                                 // Matching compound
 
                                 // Construct the empirical formula and verify hydrogens
-                                var blnHOK = ConstructAndVerifyCompoundRecursive(searchOptions,
-                                                                                 sbEmpiricalFormula, sortedElementStats,
-                                                                                 lstNewPotentialElementPointers,
+                                var hOK = ConstructAndVerifyCompoundRecursive(searchOptions,
+                                                                                 empiricalFormula, sortedElementStats,
+                                                                                 newPotentialElementPointers,
                                                                                  totalMass, 0d, 0d,
                                                                                  totalCharge, 0,
                                                                                  out var empiricalResultSymbols,
                                                                                  out var correctedCharge);
 
-                                if (sbEmpiricalFormula.Length > 0 && blnHOK)
+                                if (empiricalFormula.Length > 0 && hOK)
                                 {
-                                    var searchResult = GetSearchResult(searchOptions, ppmMode, sbEmpiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
+                                    var searchResult = GetSearchResult(searchOptions, ppmMode, empiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
 
                                     // Add % composition info
-                                    for (var intIndex = 0; intIndex < sortedElementStats.Count; intIndex++)
+                                    for (var index = 0; index < sortedElementStats.Count; index++)
                                     {
-                                        if (elementCountArray[intIndex] != 0)
+                                        if (elementCountArray[index] != 0)
                                         {
-                                            var percentComposition = elementCountArray[intIndex] * sortedElementStats[intIndex].Mass / totalMass * 100d;
+                                            var percentComposition = elementCountArray[index] * sortedElementStats[index].Mass / totalMass * 100d;
 
-                                            AppendPercentCompositionResult(searchResult, elementCountArray[intIndex], sortedElementStats, intIndex, percentComposition);
+                                            AppendPercentCompositionResult(searchResult, elementCountArray[index], sortedElementStats, index, percentComposition);
                                         }
                                     }
 
@@ -2179,7 +2177,7 @@ namespace MolecularWeightCalculator
 
                         // Haven't reached maximumFormulaMass
                         // Now recursively call this sub
-                        RecursivePCompFinder(results, searchOptions, sortedElementStats, intCurrentIndex, lstNewPotentialElementPointers, totalMass, maximumFormulaMass, totalCharge);
+                        RecursivePCompFinder(results, searchOptions, sortedElementStats, currentIndex, newPotentialElementPointers, totalMass, maximumFormulaMass, totalCharge);
                     }
                 }
             }
@@ -2227,16 +2225,16 @@ namespace MolecularWeightCalculator
         {
             foreach (var elementSymbol in mCandidateElements.Keys)
             {
-                var udtElementTolerances = mCandidateElements[elementSymbol];
+                var elementTolerances = mCandidateElements[elementSymbol];
 
-                if (udtElementTolerances.MinimumCount < 0 || udtElementTolerances.MaximumCount > MAX_BOUNDED_SEARCH_COUNT)
+                if (elementTolerances.MinimumCount < 0 || elementTolerances.MaximumCount > MAX_BOUNDED_SEARCH_COUNT)
                 {
-                    if (udtElementTolerances.MinimumCount < 0)
-                        udtElementTolerances.MinimumCount = 0;
-                    if (udtElementTolerances.MaximumCount > MAX_BOUNDED_SEARCH_COUNT)
-                        udtElementTolerances.MaximumCount = MAX_BOUNDED_SEARCH_COUNT;
+                    if (elementTolerances.MinimumCount < 0)
+                        elementTolerances.MinimumCount = 0;
+                    if (elementTolerances.MaximumCount > MAX_BOUNDED_SEARCH_COUNT)
+                        elementTolerances.MaximumCount = MAX_BOUNDED_SEARCH_COUNT;
 
-                    mCandidateElements[elementSymbol] = udtElementTolerances;
+                    mCandidateElements[elementSymbol] = elementTolerances;
                 }
             }
         }
@@ -2245,16 +2243,16 @@ namespace MolecularWeightCalculator
         {
             foreach (var elementSymbol in mCandidateElements.Keys)
             {
-                var udtElementTolerances = mCandidateElements[elementSymbol];
+                var elementTolerances = mCandidateElements[elementSymbol];
 
-                if (udtElementTolerances.TargetPercentComposition < 0d || udtElementTolerances.TargetPercentComposition > 100d)
+                if (elementTolerances.TargetPercentComposition < 0d || elementTolerances.TargetPercentComposition > 100d)
                 {
-                    if (udtElementTolerances.TargetPercentComposition < 0d)
-                        udtElementTolerances.TargetPercentComposition = 0d;
-                    if (udtElementTolerances.TargetPercentComposition > 100d)
-                        udtElementTolerances.TargetPercentComposition = 100d;
+                    if (elementTolerances.TargetPercentComposition < 0d)
+                        elementTolerances.TargetPercentComposition = 0d;
+                    if (elementTolerances.TargetPercentComposition > 100d)
+                        elementTolerances.TargetPercentComposition = 100d;
 
-                    mCandidateElements[elementSymbol] = udtElementTolerances;
+                    mCandidateElements[elementSymbol] = elementTolerances;
                 }
             }
         }

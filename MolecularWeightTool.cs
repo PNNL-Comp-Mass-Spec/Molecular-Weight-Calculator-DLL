@@ -125,17 +125,17 @@ namespace MolecularWeightCalculator
         {
             get
             {
-                string strVersion;
+                string version;
                 try
                 {
-                    strVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                    version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
                 }
                 catch
                 {
-                    strVersion = "??.??.??.??";
+                    version = "??.??.??.??";
                 }
 
-                return strVersion;
+                return version;
             }
         }
 
@@ -248,7 +248,7 @@ namespace MolecularWeightCalculator
         /// <returns>Mass of the formula</returns>
         public double ComputeMass(string formula)
         {
-            // Simply assigning strFormula to .Formula will update the Mass
+            // Simply assigning formula to .Formula will update the Mass
             Compound.Formula = formula;
             return Compound.get_Mass(false);
         }
@@ -326,9 +326,9 @@ namespace MolecularWeightCalculator
             try
             {
                 // Determine what locale we're in (. or , for decimal point)
-                const string strTestNumber = "5,500";
-                var sglConversionResult = double.Parse(strTestNumber);
-                if (Math.Abs(sglConversionResult - 5.5d) < float.Epsilon)
+                const string testNumber = "5,500";
+                var conversionResult = double.Parse(testNumber);
+                if (Math.Abs(conversionResult - 5.5d) < float.Epsilon)
                 {
                     // Use comma as Decimal point
                     return ',';
@@ -473,7 +473,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Returns the settings for the element with intElementID in the ByRef variables
+        /// Returns the settings for the element with <paramref name="elementId"/> in the ByRef variables
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="symbol"></param>
@@ -507,7 +507,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Returns the isotope masses and abundances for the element with intElementID
+        /// Returns the isotope masses and abundances for the element with <paramref name="elementId"/>
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="isotopeCount"></param>
@@ -572,7 +572,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Returns True if the first letter of strTestChar is a ModSymbol
+        /// Returns True if the first letter of <paramref name="symbol"/> is a ModSymbol
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
@@ -628,7 +628,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <remarks>
         /// Useful if we just finished setting lots of element masses, and
-        /// had blnRecomputeAbbreviationMasses = False when calling .SetElement()
+        /// had recomputeAbbreviationMasses = false when calling .SetElement()
         /// </remarks>
         public void RecomputeAbbreviationMasses()
         {

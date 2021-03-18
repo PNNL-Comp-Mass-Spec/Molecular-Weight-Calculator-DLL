@@ -43,7 +43,7 @@ namespace MwtWinDllTest
 
         private void AppendColumnToTableStyle(ref DataGridTableStyle tableStyle, string mappingName, string headerText, int width = 75, bool isReadOnly = false, bool isDateTime = false, int decimalPlaces = -1)
         {
-            // If intDecimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
+            // If decimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
             var TextCol = new DataGridTextBoxColumn
             {
                 MappingName = mappingName,
@@ -68,7 +68,7 @@ namespace MwtWinDllTest
 
         private void AppendBoolColumnToTableStyle(ref DataGridTableStyle tableStyle, string mappingName, string headerText, int width = 75, bool isReadOnly = false, bool sourceIsTrueFalse = true)
         {
-            // If intDecimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
+            // If decimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
             var BoolCol = new DataGridBoolColumn
             {
                 MappingName = mappingName,
@@ -98,8 +98,8 @@ namespace MwtWinDllTest
         {
             mMwtWin.Compound.Formula = txtFormula.Text;
 
-            var dblPctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElement(6);
-            var strPctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElementAsString(6);
+            var pctCompForCarbon = mMwtWin.Compound.GetPercentCompositionForElement(6);
+            var pctCompForCarbonString = mMwtWin.Compound.GetPercentCompositionForElementAsString(6);
 
             var percentCompositionByElement = mMwtWin.Compound.GetPercentCompositionForAllElements();
 
@@ -151,28 +151,25 @@ namespace MwtWinDllTest
             myDataSet = new DataSet("myDataSet");
 
             // Create a DataTable.
-            var tDataTable = new DataTable("DataTable1");
+            var dataTable = new DataTable("DataTable1");
 
             // Create three columns, and add them to the table.
-            var cCMass = new DataColumn("Mass", typeof(double));
-            var cIntensity = new DataColumn("Intensity", typeof(double));
-            var cSymbol = new DataColumn("Symbol", typeof(string));
-            tDataTable.Columns.Add(cCMass);
-            tDataTable.Columns.Add(cIntensity);
-            tDataTable.Columns.Add(cSymbol);
+            dataTable.Columns.Add(new DataColumn("Mass", typeof(double)));
+            dataTable.Columns.Add(new DataColumn("Intensity", typeof(double)));
+            dataTable.Columns.Add(new DataColumn("Symbol", typeof(string)));
 
             // Add the table to the DataSet.
-            myDataSet.Tables.Add(tDataTable);
+            myDataSet.Tables.Add(dataTable);
 
             // Append rows to the table.
-            for (var lngIndex = 0; lngIndex < ionCount; lngIndex++)
+            for (var index = 0; index < ionCount; index++)
             {
                 // Populates the table.
-                var newRow = tDataTable.NewRow();
-                newRow["Mass"] = fragSpectrum[lngIndex].Mass;
-                newRow["Intensity"] = fragSpectrum[lngIndex].Intensity;
-                newRow["Symbol"] = fragSpectrum[lngIndex].Symbol;
-                tDataTable.Rows.Add(newRow);
+                var newRow = dataTable.NewRow();
+                newRow["Mass"] = fragSpectrum[index].Mass;
+                newRow["Intensity"] = fragSpectrum[index].Intensity;
+                newRow["Symbol"] = fragSpectrum[index].Symbol;
+                dataTable.Rows.Add(newRow);
             }
         }
 
@@ -183,28 +180,25 @@ namespace MwtWinDllTest
             myDataSet = new DataSet("myDataSet");
 
             // Create a DataTable.
-            var tDataTable = new DataTable("DataTable1");
+            var dataTable = new DataTable("DataTable1");
 
             // Create three columns, and add them to the table.
-            var cElement = new DataColumn("Element", typeof(string));
-            var cPctComp = new DataColumn("Pct Comp", typeof(string));
-
-            tDataTable.Columns.Add(cElement);
-            tDataTable.Columns.Add(cPctComp);
+            dataTable.Columns.Add(new DataColumn("Element", typeof(string)));
+            dataTable.Columns.Add(new DataColumn("Pct Comp", typeof(string)));
 
 
             // Add the table to the DataSet.
-            myDataSet.Tables.Add(tDataTable);
+            myDataSet.Tables.Add(dataTable);
 
             // Populates the table
 
             // Append rows to the table.
             foreach (var item in percentCompositionByElement)
             {
-                var newRow = tDataTable.NewRow();
+                var newRow = dataTable.NewRow();
                 newRow["Element"] = item.Key;
                 newRow["Pct Comp"] = item.Value;
-                tDataTable.Rows.Add(newRow);
+                dataTable.Rows.Add(newRow);
             }
         }
 
@@ -234,70 +228,70 @@ namespace MwtWinDllTest
 
         public void TestAccessFunctions()
         {
-            int intResult;
-            double dblMass;
+            int result;
+            double mass;
 
-            var objResults = new frmTextbrowser();
+            var results = new frmTextbrowser();
 
             lblProgress.Text = string.Empty;
 
-            objResults.Show();
-            objResults.SetText = string.Empty;
+            results.Show();
+            results.SetText = string.Empty;
 
             // Test Abbreviations
-            var lngItemCount = mMwtWin.GetAbbreviationCount();
-            for (var intIndex = 1; intIndex <= lngItemCount; intIndex++)
+            var itemCount = mMwtWin.GetAbbreviationCount();
+            for (var index = 1; index <= itemCount; index++)
             {
-                intResult = mMwtWin.GetAbbreviation(intIndex, out var strSymbol, out var strFormula, out var sngCharge, out var blnIsAminoAcid, out var strOneLetterSymbol, out var strComment);
-                Debug.Assert(intResult == 0, "");
-                Debug.Assert(mMwtWin.GetAbbreviationID(strSymbol) == intIndex, "");
+                result = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
+                Debug.Assert(result == 0, "");
+                Debug.Assert(mMwtWin.GetAbbreviationID(symbol) == index, "");
 
-                intResult = mMwtWin.SetAbbreviation(strSymbol, strFormula, sngCharge, blnIsAminoAcid, strOneLetterSymbol, strComment);
-                Debug.Assert(intResult == 0, "");
+                result = mMwtWin.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
+                Debug.Assert(result == 0, "");
             }
 
             // Test Caution statements
-            lngItemCount = mMwtWin.GetCautionStatementCount();
-            for (var intIndex = 1; intIndex <= lngItemCount; intIndex++)
+            itemCount = mMwtWin.GetCautionStatementCount();
+            for (var index = 1; index <= itemCount; index++)
             {
-                intResult = mMwtWin.GetCautionStatement(intIndex, out var strSymbol, out var strStatement);
-                Debug.Assert(intResult == 0, "");
-                Debug.Assert(mMwtWin.GetCautionStatementID(strSymbol) == intIndex, "");
+                result = mMwtWin.GetCautionStatement(index, out var symbol, out var statement);
+                Debug.Assert(result == 0, "");
+                Debug.Assert(mMwtWin.GetCautionStatementID(symbol) == index, "");
 
-                intResult = mMwtWin.SetCautionStatement(strSymbol, strStatement);
-                Debug.Assert(intResult == 0, "");
+                result = mMwtWin.SetCautionStatement(symbol, statement);
+                Debug.Assert(result == 0, "");
             }
 
             // Test Element access
-            lngItemCount = mMwtWin.GetElementCount();
-            for (var intIndex = 1; intIndex <= lngItemCount; intIndex++)
+            itemCount = mMwtWin.GetElementCount();
+            for (var index = 1; index <= itemCount; index++)
             {
-                intResult = mMwtWin.GetElement((short)intIndex, out var strSymbol, out dblMass, out var dblUncertainty, out var sngCharge, out var intIsotopeCount);
-                Debug.Assert(intResult == 0, "");
-                Debug.Assert(mMwtWin.GetElementID(strSymbol) == intIndex, "");
+                result = mMwtWin.GetElement((short)index, out var symbol, out mass, out var uncertainty, out var charge, out var isotopeCount);
+                Debug.Assert(result == 0, "");
+                Debug.Assert(mMwtWin.GetElementID(symbol) == index, "");
 
-                intResult = mMwtWin.SetElement(strSymbol, dblMass, dblUncertainty, sngCharge, false);
-                Debug.Assert(intResult == 0, "");
+                result = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
+                Debug.Assert(result == 0, "");
 
-                var dblIsotopeMasses = new double[intIsotopeCount + 1 + 1];
-                var sngIsotopeAbundances = new float[intIsotopeCount + 1 + 1];
+                var isotopeMasses = new double[isotopeCount + 1 + 1];
+                var isotopeAbundances = new float[isotopeCount + 1 + 1];
 
-                short intIsotopeCount2 = default;
-                intResult = mMwtWin.GetElementIsotopes((short)intIndex, ref intIsotopeCount2, ref dblIsotopeMasses, ref sngIsotopeAbundances);
-                Debug.Assert(intIsotopeCount == intIsotopeCount2, "");
-                Debug.Assert(intResult == 0, "");
+                short isotopeCount2 = default;
+                result = mMwtWin.GetElementIsotopes((short)index, ref isotopeCount2, ref isotopeMasses, ref isotopeAbundances);
+                Debug.Assert(isotopeCount == isotopeCount2, "");
+                Debug.Assert(result == 0, "");
 
-                intResult = mMwtWin.SetElementIsotopes(strSymbol, intIsotopeCount, ref dblIsotopeMasses, ref sngIsotopeAbundances);
-                Debug.Assert(intResult == 0, "");
+                result = mMwtWin.SetElementIsotopes(symbol, isotopeCount, ref isotopeMasses, ref isotopeAbundances);
+                Debug.Assert(result == 0, "");
             }
 
             // Test Message Statements access
-            lngItemCount = mMwtWin.GetMessageStatementCount();
-            for (var lngIndex = 1; lngIndex <= lngItemCount; lngIndex++)
+            itemCount = mMwtWin.GetMessageStatementCount();
+            for (var index = 1; index <= itemCount; index++)
             {
-                var strStatement = mMwtWin.GetMessageStatement(lngIndex);
+                var statement = mMwtWin.GetMessageStatement(index);
 
-                intResult = mMwtWin.SetMessageStatement(lngIndex, strStatement);
+                result = mMwtWin.SetMessageStatement(index, statement);
             }
 
             // Test m/z conversion
@@ -306,18 +300,18 @@ namespace MwtWinDllTest
             mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
 
             mMwtWin.Compound.SetFormula("C19H36O5NH4");
-            dblMass = mMwtWin.Compound.Mass;
-            objResults.AppendText("Mass of " + mMwtWin.Compound.FormulaCapitalized + ": " + dblMass);
-            for (short intCharge = 1; intCharge <= 4; intCharge++)
-                objResults.AppendText("  m/z of " + intCharge + "+: " + mMwtWin.ConvoluteMass(dblMass, 0, intCharge));
+            mass = mMwtWin.Compound.Mass;
+            results.AppendText("Mass of " + mMwtWin.Compound.FormulaCapitalized + ": " + mass);
+            for (short charge = 1; charge <= 4; charge++)
+                results.AppendText("  m/z of " + charge + "+: " + mMwtWin.ConvoluteMass(mass, 0, charge));
 
-            objResults.AppendText("");
+            results.AppendText("");
 
             mMwtWin.Compound.SetFormula("C19H36O5NH3");
-            dblMass = mMwtWin.Compound.Mass;
-            objResults.AppendText("m/z values if we first lose a hydrogen before adding a proton");
-            for (short intCharge = 1; intCharge <= 4; intCharge++)
-                objResults.AppendText("  m/z of " + intCharge + "+: " + mMwtWin.ConvoluteMass(dblMass, 0, intCharge));
+            mass = mMwtWin.Compound.Mass;
+            results.AppendText("m/z values if we first lose a hydrogen before adding a proton");
+            for (short charge = 1; charge <= 4; charge++)
+                results.AppendText("  m/z of " + charge + "+: " + mMwtWin.ConvoluteMass(mass, 0, charge));
 
             // Test Capillary flow functions
             var capFlow = mMwtWin.CapFlow;
@@ -330,74 +324,74 @@ namespace MwtWinDllTest
             capFlow.SetParticleDiameter(2d, CapillaryFlow.UnitOfLength.Microns);
             capFlow.SetAutoComputeEnabled(true);
 
-            objResults.AppendText("");
-            objResults.AppendText("Check capillary flow calcs");
-            objResults.AppendText("Linear Velocity: " + capFlow.ComputeLinearVelocity(CapillaryFlow.UnitOfLinearVelocity.CmPerSec));
-            objResults.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + "  (newly computed)");
+            results.AppendText("");
+            results.AppendText("Check capillary flow calcs");
+            results.AppendText("Linear Velocity: " + capFlow.ComputeLinearVelocity(CapillaryFlow.UnitOfLinearVelocity.CmPerSec));
+            results.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + "  (newly computed)");
 
-            objResults.AppendText("Vol flow rate:   " + capFlow.GetVolFlowRate());
-            objResults.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.UnitOfPressure.Psi));
-            objResults.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.UnitOfLength.CM));
-            objResults.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.UnitOfLength.Microns));
-            objResults.AppendText("Column Volume:   " + capFlow.ComputeColumnVolume(CapillaryFlow.UnitOfVolume.NL));
-            objResults.AppendText("Dead time:       " + capFlow.ComputeDeadTime(CapillaryFlow.UnitOfTime.Seconds));
+            results.AppendText("Vol flow rate:   " + capFlow.GetVolFlowRate());
+            results.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.UnitOfPressure.Psi));
+            results.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.UnitOfLength.CM));
+            results.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.UnitOfLength.Microns));
+            results.AppendText("Column Volume:   " + capFlow.ComputeColumnVolume(CapillaryFlow.UnitOfVolume.NL));
+            results.AppendText("Dead time:       " + capFlow.ComputeDeadTime(CapillaryFlow.UnitOfTime.Seconds));
 
-            objResults.AppendText("");
+            results.AppendText("");
 
-            objResults.AppendText("Repeat Computations, but in a different order (should give same results)");
-            objResults.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin));
-            objResults.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.UnitOfLength.Microns));
-            objResults.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.UnitOfPressure.Psi));
-            objResults.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.UnitOfLength.CM));
+            results.AppendText("Repeat Computations, but in a different order (should give same results)");
+            results.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin));
+            results.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.UnitOfLength.Microns));
+            results.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.UnitOfPressure.Psi));
+            results.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.UnitOfLength.CM));
 
-            objResults.AppendText("");
+            results.AppendText("");
 
-            objResults.AppendText("Old Dead time: " + capFlow.GetDeadTime(CapillaryFlow.UnitOfTime.Minutes));
+            results.AppendText("Old Dead time: " + capFlow.GetDeadTime(CapillaryFlow.UnitOfTime.Minutes));
 
             capFlow.SetAutoComputeMode(CapillaryFlow.AutoComputeMode.VolFlowRateUsingDeadTime);
 
             capFlow.SetDeadTime(25d, CapillaryFlow.UnitOfTime.Minutes);
-            objResults.AppendText("Dead time is now 25.0 minutes");
+            results.AppendText("Dead time is now 25.0 minutes");
 
-            objResults.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)");
+            results.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)");
 
             // Confirm that auto-compute worked
 
-            objResults.AppendText("Vol flow rate: " + capFlow.ComputeVolFlowRateUsingDeadTime(out var dblNewPressure, CapillaryFlow.UnitOfFlowRate.NLPerMin, CapillaryFlow.UnitOfPressure.Psi) + "  (confirmation of computed volumetric flow rate)");
-            objResults.AppendText("New pressure: " + dblNewPressure);
+            results.AppendText("Vol flow rate: " + capFlow.ComputeVolFlowRateUsingDeadTime(out var newPressure, CapillaryFlow.UnitOfFlowRate.NLPerMin, CapillaryFlow.UnitOfPressure.Psi) + "  (confirmation of computed volumetric flow rate)");
+            results.AppendText("New pressure: " + newPressure);
 
-            objResults.AppendText("");
+            results.AppendText("");
 
             // Can set a new back pressure, but since auto-compute is on, and the
             // auto-compute mode is acmVolFlowRateUsingDeadTime, the pressure will get changed back to
             // the pressure needed to give a vol flow rate matching the dead time
             capFlow.SetBackPressure(2000d);
-            objResults.AppendText("Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure");
-            objResults.AppendText("  was automatically changed back to pressure needed to give vol flow rate matching dead time");
-            objResults.AppendText("Pressure is now: " + capFlow.GetBackPressure(CapillaryFlow.UnitOfPressure.Psi) + " psi (thus, not 2000 as one might expect)");
+            results.AppendText("Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure");
+            results.AppendText("  was automatically changed back to pressure needed to give vol flow rate matching dead time");
+            results.AppendText("Pressure is now: " + capFlow.GetBackPressure(CapillaryFlow.UnitOfPressure.Psi) + " psi (thus, not 2000 as one might expect)");
 
             capFlow.SetAutoComputeMode(CapillaryFlow.AutoComputeMode.VolFlowRate);
-            objResults.AppendText("Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.");
+            results.AppendText("Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.");
 
             capFlow.SetBackPressure(2000d, CapillaryFlow.UnitOfPressure.Psi);
 
             // Calling GetVolFlowRate will get the new computed vol flow rate (since auto-compute is on)
-            objResults.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate());
+            results.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate());
 
             capFlow.SetMassRateSampleMass(1000d);
             capFlow.SetMassRateConcentration(1d, CapillaryFlow.UnitOfConcentration.MicroMolar);
             capFlow.SetMassRateVolFlowRate(600d, CapillaryFlow.UnitOfFlowRate.NLPerMin);
             capFlow.SetMassRateInjectionTime(5d, CapillaryFlow.UnitOfTime.Minutes);
 
-            objResults.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.UnitOfMassFlowRate.FmolPerSec) + " fmol/sec");
-            objResults.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.UnitOfMolarAmount.FemtoMoles) + " fmoles");
+            results.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.UnitOfMassFlowRate.FmolPerSec) + " fmol/sec");
+            results.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.UnitOfMolarAmount.FemtoMoles) + " fmoles");
 
             capFlow.SetMassRateSampleMass(1234d);
             capFlow.SetMassRateConcentration(1d, CapillaryFlow.UnitOfConcentration.NgPerML);
 
-            objResults.AppendText("Computing mass flow rate for compound weighing 1234 g/mol and at 1 ng/mL concentration");
-            objResults.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.UnitOfMassFlowRate.AmolPerMin) + " amol/min");
-            objResults.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.UnitOfMolarAmount.FemtoMoles) + " fmoles");
+            results.AppendText("Computing mass flow rate for compound weighing 1234 g/mol and at 1 ng/mL concentration");
+            results.AppendText("Mass flow rate: " + capFlow.GetMassFlowRate(CapillaryFlow.UnitOfMassFlowRate.AmolPerMin) + " amol/min");
+            results.AppendText("Moles injected: " + capFlow.GetMassRateMolesInjected(CapillaryFlow.UnitOfMolarAmount.FemtoMoles) + " fmoles");
 
             capFlow.SetExtraColumnBroadeningLinearVelocity(4d, CapillaryFlow.UnitOfLinearVelocity.CmPerMin);
             capFlow.SetExtraColumnBroadeningDiffusionCoefficient(0.0003d, CapillaryFlow.UnitOfDiffusionCoefficient.CmSquaredPerMin);
@@ -405,11 +399,11 @@ namespace MwtWinDllTest
             capFlow.SetExtraColumnBroadeningOpenTubeID(250d, CapillaryFlow.UnitOfLength.Microns);
             capFlow.SetExtraColumnBroadeningInitialPeakWidthAtBase(30d, CapillaryFlow.UnitOfTime.Seconds);
 
-            objResults.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
-            objResults.AppendText(capFlow.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.UnitOfTime.Seconds).ToString());
+            results.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
+            results.AppendText(capFlow.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.UnitOfTime.Seconds).ToString());
 
-            var udtFragSpectrumOptions = new Peptide.FragmentationSpectrumOptions();
-            udtFragSpectrumOptions.Initialize();
+            var fragSpectrumOptions = new Peptide.FragmentationSpectrumOptions();
+            fragSpectrumOptions.Initialize();
 
             var peptide = mMwtWin.Peptide;
             peptide.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G");
@@ -429,97 +423,97 @@ namespace MwtWinDllTest
             // Can define that the * modification equals 15
             peptide.SetModificationSymbol("*", 15d, false, "");
 
-            const string strNewSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys";
-            objResults.AppendText(strNewSeq);
-            peptide.SetSequence(strNewSeq);
+            const string newSeq = "Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg*-Lys-Ala-Cys-Tyr-Glu-Phe-Gly-His-Arg-Lys";
+            results.AppendText(newSeq);
+            peptide.SetSequence(newSeq);
 
             peptide.SetSequence("K.TQPLE*VK.-", Peptide.NTerminusGroupType.HydrogenPlusProton, Peptide.CTerminusGroupType.Hydroxyl, is3LetterCode: false);
 
-            objResults.AppendText(peptide.GetSequence(true, false, true, false));
-            objResults.AppendText(peptide.GetSequence(false, true, false, false));
-            objResults.AppendText(peptide.GetSequence(true, false, true, true));
+            results.AppendText(peptide.GetSequence(true, false, true, false));
+            results.AppendText(peptide.GetSequence(false, true, false, false));
+            results.AppendText(peptide.GetSequence(true, false, true, true));
 
             peptide.SetCTerminusGroup(Peptide.CTerminusGroupType.None);
-            objResults.AppendText(peptide.GetSequence(true, false, true, true));
+            results.AppendText(peptide.GetSequence(true, false, true, true));
 
-            udtFragSpectrumOptions = peptide.GetFragmentationSpectrumOptions();
+            fragSpectrumOptions = peptide.GetFragmentationSpectrumOptions();
 
-            udtFragSpectrumOptions.DoubleChargeIonsShow = true;
-            udtFragSpectrumOptions.DoubleChargeIonsThreshold = 300f;
-            udtFragSpectrumOptions.IntensityOptions.BYIonShoulder = 0d;
+            fragSpectrumOptions.DoubleChargeIonsShow = true;
+            fragSpectrumOptions.DoubleChargeIonsThreshold = 300f;
+            fragSpectrumOptions.IntensityOptions.BYIonShoulder = 0d;
 
-            udtFragSpectrumOptions.TripleChargeIonsShow = true;
-            udtFragSpectrumOptions.TripleChargeIonsThreshold = 400f;
+            fragSpectrumOptions.TripleChargeIonsShow = true;
+            fragSpectrumOptions.TripleChargeIonsThreshold = 400f;
 
-            udtFragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.AIon].ShowIon = true;
+            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.AIon].ShowIon = true;
 
-            peptide.SetFragmentationSpectrumOptions(udtFragSpectrumOptions);
+            peptide.SetFragmentationSpectrumOptions(fragSpectrumOptions);
 
-            var lngIonCount = peptide.GetFragmentationMasses(out var udtFragSpectrum);
+            var ionCount = peptide.GetFragmentationMasses(out var fragSpectrum);
 
-            MakeDataSet(lngIonCount, udtFragSpectrum);
+            MakeDataSet(ionCount, fragSpectrum);
             dgDataGrid.SetDataBinding(myDataSet, "DataTable1");
 
-            objResults.AppendText(string.Empty);
+            results.AppendText(string.Empty);
 
-            var strResults = string.Empty;
-            var ConvolutedMSDataCount = default(int);
+            var resultString = string.Empty;
+            var convolutedMSDataCount = default(int);
 
             // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
-            const short intChargeState = 1;
-            var blnAddProtonChargeCarrier = true;
-            objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState);
+            const short chargeState = 1;
+            var addProtonChargeCarrier = true;
+            results.AppendText("Isotopic abundance test with Charge=" + chargeState);
 
-            var ConvolutedMSData2DOneBased = new double[1, 2];
-            var argstrFormulaIn = "C1255H43O2Cl";
-            var intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount);
-            objResults.AppendText(strResults);
+            var convolutedMSData2DOneBased = new double[1, 2];
+            var formulaIn = "C1255H43O2Cl";
+            var success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, ref resultString, ref convolutedMSData2DOneBased, ref convolutedMSDataCount);
+            results.AppendText(resultString);
 
-            objResults.AppendText("Convert isotopic distribution to gaussian");
-            var lstXYVals = new List<KeyValuePair<double, double>>();
-            for (var intIndex = 1; intIndex <= ConvolutedMSDataCount; intIndex++)
-                lstXYVals.Add(new KeyValuePair<double, double>(ConvolutedMSData2DOneBased[intIndex, 0], ConvolutedMSData2DOneBased[intIndex, 1]));
+            results.AppendText("Convert isotopic distribution to gaussian");
+            var xyVals = new List<KeyValuePair<double, double>>();
+            for (var index = 1; index <= convolutedMSDataCount; index++)
+                xyVals.Add(new KeyValuePair<double, double>(convolutedMSData2DOneBased[index, 0], convolutedMSData2DOneBased[index, 1]));
 
-            const int intResolution = 2000;
-            const double dblResolutionMass = 1000d;
-            const int intQualityFactor = 50;
+            const int resolution = 2000;
+            const double resolutionMass = 1000d;
+            const int qualityFactor = 50;
 
-            var lstGaussianData = mMwtWin.ConvertStickDataToGaussian2DArray(lstXYVals, intResolution, dblResolutionMass, intQualityFactor);
+            var gaussianData = mMwtWin.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor);
 
-            var sbResults = new StringBuilder();
-            sbResults.AppendLine("m/z" + "\t" + "Intensity");
-            for (var intIndex = 0; intIndex < lstGaussianData.Count; intIndex++)
+            var gaussianResults = new StringBuilder();
+            gaussianResults.AppendLine("m/z" + "\t" + "Intensity");
+            for (var index = 0; index < gaussianData.Count; index++)
             {
-                if (lstGaussianData[intIndex].Key >= 15175d && lstGaussianData[intIndex].Key < 15193d)
+                if (gaussianData[index].Key >= 15175d && gaussianData[index].Key < 15193d)
                 {
-                    sbResults.AppendLine(lstGaussianData[intIndex].Key.ToString("0.000") + "\t" + lstGaussianData[intIndex].Value.ToString("0.000"));
+                    gaussianResults.AppendLine(gaussianData[index].Key.ToString("0.000") + "\t" + gaussianData[index].Value.ToString("0.000"));
                 }
             }
 
-            objResults.AppendText(sbResults.ToString());
+            results.AppendText(gaussianResults.ToString());
 
-            blnAddProtonChargeCarrier = false;
-            objResults.AppendText("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
-            var argstrFormulaIn1 = "C1255H43O2Cl";
-            intSuccess = mMwtWin.ComputeIsotopicAbundances(ref argstrFormulaIn1, intChargeState, ref strResults, ref ConvolutedMSData2DOneBased, ref ConvolutedMSDataCount, blnAddProtonChargeCarrier);
-            objResults.AppendText(strResults);
+            addProtonChargeCarrier = false;
+            results.AppendText("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
+            formulaIn = "C1255H43O2Cl";
+            success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, ref resultString, ref convolutedMSData2DOneBased, ref convolutedMSDataCount, addProtonChargeCarrier);
+            results.AppendText(resultString);
         }
 
         public void TestFormulaFinder()
         {
-            var oMwtWin = new MolecularWeightTool();
+            var mwtWin = new MolecularWeightTool();
 
-            oMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
+            mwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
 
-            oMwtWin.FormulaFinder.CandidateElements.Clear();
+            mwtWin.FormulaFinder.CandidateElements.Clear();
 
-            oMwtWin.FormulaFinder.AddCandidateElement("C");
-            oMwtWin.FormulaFinder.AddCandidateElement("H");
-            oMwtWin.FormulaFinder.AddCandidateElement("N");
-            oMwtWin.FormulaFinder.AddCandidateElement("O");
+            mwtWin.FormulaFinder.AddCandidateElement("C");
+            mwtWin.FormulaFinder.AddCandidateElement("H");
+            mwtWin.FormulaFinder.AddCandidateElement("N");
+            mwtWin.FormulaFinder.AddCandidateElement("O");
 
             // Abbreviations are supported, for example Serine
-            oMwtWin.FormulaFinder.AddCandidateElement("Ser");
+            mwtWin.FormulaFinder.AddCandidateElement("Ser");
 
             var searchOptions = new FormulaFinderOptions
             {
@@ -533,17 +527,17 @@ namespace MwtWinDllTest
             Application.DoEvents();
 
             if (cboFormulaFinderTestMode.SelectedIndex == 0)
-                FormulaFinderTest1(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text);
+                FormulaFinderTest1(mwtWin, searchOptions, cboFormulaFinderTestMode.Text);
             if (cboFormulaFinderTestMode.SelectedIndex == 1)
-                FormulaFinderTest2(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text);
+                FormulaFinderTest2(mwtWin, searchOptions, cboFormulaFinderTestMode.Text);
             if (cboFormulaFinderTestMode.SelectedIndex == 2)
-                FormulaFinderTest3(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text);
+                FormulaFinderTest3(mwtWin, searchOptions, cboFormulaFinderTestMode.Text);
             if (cboFormulaFinderTestMode.SelectedIndex == 3)
-                FormulaFinderTest4(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text);
+                FormulaFinderTest4(mwtWin, searchOptions, cboFormulaFinderTestMode.Text);
             if (cboFormulaFinderTestMode.SelectedIndex == 4)
-                FormulaFinderTest5(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text);
+                FormulaFinderTest5(mwtWin, searchOptions, cboFormulaFinderTestMode.Text);
             if (cboFormulaFinderTestMode.SelectedIndex == 5)
-                FormulaFinderTest6(oMwtWin, searchOptions, cboFormulaFinderTestMode.Text);
+                FormulaFinderTest6(mwtWin, searchOptions, cboFormulaFinderTestMode.Text);
 
             cmdTestFormulaFinder.Enabled = true;
 
@@ -557,16 +551,16 @@ namespace MwtWinDllTest
         {
 
             // Search for 200 Da, +/- 0.05 Da
-            var lstResults = mwtWin.FormulaFinder.FindMatchesByMass(200d, 0.05d, searchOptions);
-            ShowFormulaFinderResults(currentTask, searchOptions, lstResults);
+            var results = mwtWin.FormulaFinder.FindMatchesByMass(200d, 0.05d, searchOptions);
+            ShowFormulaFinderResults(currentTask, searchOptions, results);
         }
 
         private void FormulaFinderTest2(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
         {
 
             // Search for 200 Da, +/- 250 ppm
-            var lstResults = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
-            ShowFormulaFinderResults(currentTask, searchOptions, lstResults, true);
+            var results = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
+            ShowFormulaFinderResults(currentTask, searchOptions, results, true);
         }
 
         private void FormulaFinderTest3(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
@@ -576,8 +570,8 @@ namespace MwtWinDllTest
             searchOptions.ChargeMax = 6;
 
             // Search for 200 Da, +/- 250 ppm
-            var lstResults = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
-            ShowFormulaFinderResults(currentTask, searchOptions, lstResults, true);
+            var results = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
+            ShowFormulaFinderResults(currentTask, searchOptions, results, true);
         }
 
         private void FormulaFinderTest4(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
@@ -588,8 +582,8 @@ namespace MwtWinDllTest
             searchOptions.FindTargetMZ = true;
 
             // Search for 100 m/z, +/- 250 ppm
-            var lstResults = mwtWin.FormulaFinder.FindMatchesByMassPPM(100d, 250d, searchOptions);
-            ShowFormulaFinderResults(currentTask, searchOptions, lstResults, true);
+            var results = mwtWin.FormulaFinder.FindMatchesByMassPPM(100d, 250d, searchOptions);
+            ShowFormulaFinderResults(currentTask, searchOptions, results, true);
         }
 
         private void FormulaFinderTest5(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
@@ -602,8 +596,8 @@ namespace MwtWinDllTest
             mwtWin.FormulaFinder.AddCandidateElement("O", 10d);
 
             // Search for percent composition results, maximum mass 400 Da
-            var lstResults = mwtWin.FormulaFinder.FindMatchesByPercentComposition(400d, 1d, searchOptions);
-            ShowFormulaFinderResults(currentTask, searchOptions, lstResults, false, true);
+            var results = mwtWin.FormulaFinder.FindMatchesByPercentComposition(400d, 1d, searchOptions);
+            ShowFormulaFinderResults(currentTask, searchOptions, results, false, true);
         }
 
         private void FormulaFinderTest6(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
@@ -611,8 +605,8 @@ namespace MwtWinDllTest
             searchOptions.SearchMode = FormulaFinderOptions.SearchModes.Bounded;
 
             // Search for 200 Da, +/- 250 ppm
-            var lstResults = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
-            ShowFormulaFinderResults(currentTask, searchOptions, lstResults, true);
+            var results = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
+            ShowFormulaFinderResults(currentTask, searchOptions, results, true);
         }
 
         private void ShowFormulaFinderResults(
@@ -625,7 +619,7 @@ namespace MwtWinDllTest
             myDataSet = new DataSet("myDataSet");
 
             // Create a DataTable.
-            var tDataTable = new DataTable("DataTable1");
+            var dataTable = new DataTable("DataTable1");
 
             string massColumnName;
             if (deltaMassIsPPM)
@@ -638,19 +632,12 @@ namespace MwtWinDllTest
             }
 
             // Add columns to the table
-            var cFormula = new DataColumn("Formula", typeof(string));
-            var cMass = new DataColumn("Mass", typeof(double));
-            var cDeltaMass = new DataColumn(massColumnName, typeof(double));
-            var cCharge = new DataColumn("Charge", typeof(int));
-            var cMZ = new DataColumn("M/Z", typeof(double));
-            var cPercentComp = new DataColumn("PercentCompInfo", typeof(string));
-
-            tDataTable.Columns.Add(cFormula);
-            tDataTable.Columns.Add(cMass);
-            tDataTable.Columns.Add(cDeltaMass);
-            tDataTable.Columns.Add(cCharge);
-            tDataTable.Columns.Add(cMZ);
-            tDataTable.Columns.Add(cPercentComp);
+            dataTable.Columns.Add(new DataColumn("Formula", typeof(string)));
+            dataTable.Columns.Add(new DataColumn("Mass", typeof(double)));
+            dataTable.Columns.Add(new DataColumn(massColumnName, typeof(double)));
+            dataTable.Columns.Add(new DataColumn("Charge", typeof(int)));
+            dataTable.Columns.Add(new DataColumn("M/Z", typeof(double)));
+            dataTable.Columns.Add(new DataColumn("PercentCompInfo", typeof(string)));
 
             if (myDataSet.Tables.Count > 0)
             {
@@ -658,14 +645,14 @@ namespace MwtWinDllTest
             }
 
             // Add the table to the DataSet.
-            myDataSet.Tables.Add(tDataTable);
+            myDataSet.Tables.Add(dataTable);
 
-            var sbPercentCompInfo = new StringBuilder();
+            var percentCompInfo = new StringBuilder();
 
             foreach (var result in results)
             {
                 // Populates the table.
-                var newRow = tDataTable.NewRow();
+                var newRow = dataTable.NewRow();
                 newRow["Formula"] = result.EmpiricalFormula;
                 newRow["Mass"] = Math.Round(result.Mass, 4);
 
@@ -687,19 +674,19 @@ namespace MwtWinDllTest
 
                 if (percentCompositionSearch)
                 {
-                    sbPercentCompInfo.Clear();
+                    percentCompInfo.Clear();
 
                     foreach (var percentCompValue in result.PercentComposition)
-                        sbPercentCompInfo.Append(" " + percentCompValue.Key + "=" + percentCompValue.Value.ToString("0.00") + "%");
+                        percentCompInfo.Append(" " + percentCompValue.Key + "=" + percentCompValue.Value.ToString("0.00") + "%");
 
-                    newRow["PercentCompInfo"] = sbPercentCompInfo.ToString().TrimStart();
+                    newRow["PercentCompInfo"] = percentCompInfo.ToString().TrimStart();
                 }
                 else
                 {
                     newRow["PercentCompInfo"] = string.Empty;
                 }
 
-                tDataTable.Rows.Add(newRow);
+                dataTable.Rows.Add(newRow);
             }
 
             dgDataGrid.SetDataBinding(myDataSet, "DataTable1");
@@ -714,20 +701,20 @@ namespace MwtWinDllTest
             const short MAX_PROTEIN_LENGTH = 200;
             const string POSSIBLE_RESIDUES = "ACDEFGHIKLMNPQRSTVWY";
 
-            string strPeptideFragMwtWin;
-            const int lngMatchCount = default(int);
+            string peptideFragMwtWin;
+            const int matchCount = default(int);
 
-            var objResults = new frmTextbrowser();
+            var results = new frmTextbrowser();
 
             lblProgress.Text = string.Empty;
 
-            int lngMwtWinDimCount = DIM_CHUNK;
-            var strPeptideNameMwtWin = new string[lngMwtWinDimCount + 1];
+            int mwtWinDimCount = DIM_CHUNK;
+            var peptideNameMwtWin = new string[mwtWinDimCount + 1];
 
             Cursor = Cursors.WaitCursor;
 
-            objResults.Show();
-            objResults.SetText = string.Empty;
+            results.Show();
+            results.SetText = string.Empty;
 
             //Dim lngIcr2lsWorkTime As Long
             //Dim lngIcr2lsTime As Long
@@ -741,96 +728,96 @@ namespace MwtWinDllTest
             //
             //objResults.AppendText("ICR2ls Version: " & ICRTools.ICR2LSversion)
 
-            //strProtein = "MGNISFLTGGNPSSPQSIAESIYQLENTSVVFLSAWQRTTPDFQRAARASQEAMLHLDHIVNEIMRNRDQLQADGTYTGSQLEGLLNISRAVSVSPVTRAEQDDLANYGPGNGVLPSAGSSISMEKLLNKIKHRRTNSANFRIGASGEHIFIIGVDKPNRQPDSIVEFIVGDFCQHCSDIAALI"
+            //var protein = "MGNISFLTGGNPSSPQSIAESIYQLENTSVVFLSAWQRTTPDFQRAARASQEAMLHLDHIVNEIMRNRDQLQADGTYTGSQLEGLLNISRAVSVSPVTRAEQDDLANYGPGNGVLPSAGSSISMEKLLNKIKHRRTNSANFRIGASGEHIFIIGVDKPNRQPDSIVEFIVGDFCQHCSDIAALI"
 
             // Bigger protein
-            var strProtein = "MMKANVTKKTLNEGLGLLERVIPSRSSNPLLTALKVETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVRNLGGELVELELSGQELSVRSGGSDFKLQTGDIEAYPPLSFPAQADVSLDGGELSRAFSSVRYAASNEAFQAVFRGIKLEHHGESARVVASDGYRVAIRDFPASGDGKNLIIPARSVDELIRVLKDGEARFTYGDGMLTVTTDRVKMNLKLLDGDFPDYERVIPKDIKLQVTLPATALKEAVNRVAVLADKNANNRVEFLVSEGTLRLAAEGDYGRAQDTLSVTQGGTEQAMSLAFNARHVLDALGPIDGDAELLFSGSTSPAIFRARRWGRRVYGGHGHAARLRGLLRPLRGMSALAHHPESSPPLEPRPEFA";
+            var protein = "MMKANVTKKTLNEGLGLLERVIPSRSSNPLLTALKVETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVRNLGGELVELELSGQELSVRSGGSDFKLQTGDIEAYPPLSFPAQADVSLDGGELSRAFSSVRYAASNEAFQAVFRGIKLEHHGESARVVASDGYRVAIRDFPASGDGKNLIIPARSVDELIRVLKDGEARFTYGDGMLTVTTDRVKMNLKLLDGDFPDYERVIPKDIKLQVTLPATALKEAVNRVAVLADKNANNRVEFLVSEGTLRLAAEGDYGRAQDTLSVTQGGTEQAMSLAFNARHVLDALGPIDGDAELLFSGSTSPAIFRARRWGRRVYGGHGHAARLRGLLRPLRGMSALAHHPESSPPLEPRPEFA";
 
-            objResults.AppendText("Testing GetTrypticNameMultipleMatches() function");
-            objResults.AppendText("MatchList for NL: " + mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, "NL", lngMatchCount));
-            objResults.AppendText("MatchCount = " + lngMatchCount);
+            results.AppendText("Testing GetTrypticNameMultipleMatches() function");
+            results.AppendText("MatchList for NL: " + mMwtWin.Peptide.GetTrypticNameMultipleMatches(protein, "NL", matchCount));
+            results.AppendText("MatchCount = " + matchCount);
 
-            objResults.AppendText(string.Empty);
-            objResults.AppendText("Testing GetTrypticPeptideByFragmentNumber function");
+            results.AppendText(string.Empty);
+            results.AppendText("Testing GetTrypticPeptideByFragmentNumber function");
             for (var index = 0; index < 43; index++)
             {
-                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)index, out var lngResidueStart, out var lngResidueEnd);
-                //strPeptideFragIcr2ls = ICRTools.TrypticPeptide(strProtein, CInt(index))
+                peptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)index, out var residueStart, out var residueEnd);
+                //peptideFragIcr2ls = ICRTools.TrypticPeptide(protein, index);
                 //
-                //Debug.Assert strPeptideFragMwtWin = strPeptideFragIcr2ls
+                //Debug.Assert(peptideFragMwtWin == peptideFragIcr2ls);
 
-                if (strPeptideFragMwtWin.Length > 1)
+                if (peptideFragMwtWin.Length > 1)
                 {
-                    // Make sure lngResidueStart and lngResidueEnd are correct
+                    // Make sure residueStart and residueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
-                    var strPeptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(strProtein, strProtein.Substring(lngResidueStart, lngResidueEnd - lngResidueStart + 1));
-                    Debug.Assert(strPeptideName.IndexOf("t" + index, StringComparison.Ordinal) >= 0, "");
+                    var peptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(protein, protein.Substring(residueStart, residueEnd - residueStart + 1));
+                    Debug.Assert(peptideName.IndexOf("t" + index, StringComparison.Ordinal) >= 0, "");
                 }
             }
 
-            objResults.AppendText("Check of GetTrypticPeptideByFragmentNumber Complete");
-            objResults.AppendText(string.Empty);
+            results.AppendText("Check of GetTrypticPeptideByFragmentNumber Complete");
+            results.AppendText(string.Empty);
 
-            objResults.AppendText("Test tryptic digest of: " + strProtein);
-            var lngIndex = 1;
+            results.AppendText("Test tryptic digest of: " + protein);
+            var fragIndex = 1;
             do
             {
-                strPeptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(strProtein, (short)lngIndex, out _, out _);
-                objResults.AppendText("Tryptic fragment " + lngIndex + ": " + strPeptideFragMwtWin);
-                lngIndex += 1;
+                peptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)fragIndex, out _, out _);
+                results.AppendText("Tryptic fragment " + fragIndex + ": " + peptideFragMwtWin);
+                fragIndex += 1;
             }
-            while (strPeptideFragMwtWin.Length > 0);
+            while (peptideFragMwtWin.Length > 0);
 
-            objResults.AppendText(string.Empty);
+            results.AppendText(string.Empty);
             var random = new Random();
-            for (var lngMultipleIteration = 1; lngMultipleIteration <= ITERATIONS_TO_RUN; lngMultipleIteration++)
+            for (var multipleIteration = 1; multipleIteration <= ITERATIONS_TO_RUN; multipleIteration++)
             {
                 // Generate random protein
-                var lngProteinLengthRand = random.Next(MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) + MIN_PROTEIN_LENGTH;
+                var proteinLengthRand = random.Next(MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) + MIN_PROTEIN_LENGTH;
 
-                strProtein = "";
-                for (var lngResidueRand = 0; lngResidueRand < lngProteinLengthRand; lngResidueRand++)
+                protein = "";
+                for (var residueRand = 0; residueRand < proteinLengthRand; residueRand++)
                 {
-                    var strNewResidue = POSSIBLE_RESIDUES.Substring(random.Next(POSSIBLE_RESIDUES.Length), 1);
-                    strProtein += strNewResidue;
+                    var newResidue = POSSIBLE_RESIDUES.Substring(random.Next(POSSIBLE_RESIDUES.Length), 1);
+                    protein += newResidue;
                 }
 
-                objResults.AppendText("Iteration: " + lngMultipleIteration + " = " + strProtein);
+                results.AppendText("Iteration: " + multipleIteration + " = " + protein);
 
-                var lngMwtWinResultCount = 0;
+                var mwtWinResultCount = 0;
                 Debug.Write("Starting residue is ");
-                var lngStartTime = Program.GetTickCount();
-                for (var lngResidueStart = 0; lngResidueStart < strProtein.Length; lngResidueStart++)
+                var startTime = Program.GetTickCount();
+                for (var residueStart = 0; residueStart < protein.Length; residueStart++)
                 {
-                    if (lngResidueStart % 10 == 0)
+                    if (residueStart % 10 == 0)
                     {
-                        Debug.Write(lngResidueStart + ", ");
+                        Debug.Write(residueStart + ", ");
                         Application.DoEvents();
                     }
 
-                    for (var lngResidueEnd = 0; lngResidueEnd < strProtein.Length - lngResidueStart; lngResidueEnd++)
+                    for (var residueEnd = 0; residueEnd < protein.Length - residueStart; residueEnd++)
                     {
-                        if (lngResidueEnd - lngResidueStart > 50)
+                        if (residueEnd - residueStart > 50)
                         {
                             break;
                         }
 
-                        var strPeptideResidues = strProtein.Substring(lngResidueStart, lngResidueEnd);
-                        strPeptideNameMwtWin[lngMwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(strProtein, strPeptideResidues, out _, out _, true);
+                        var peptideResidues = protein.Substring(residueStart, residueEnd);
+                        peptideNameMwtWin[mwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(protein, peptideResidues, out _, out _, true);
 
-                        lngMwtWinResultCount += 1;
-                        if (lngMwtWinResultCount > lngMwtWinDimCount)
+                        mwtWinResultCount += 1;
+                        if (mwtWinResultCount > mwtWinDimCount)
                         {
-                            lngMwtWinDimCount += DIM_CHUNK;
-                            Array.Resize(ref strPeptideNameMwtWin, lngMwtWinDimCount + 1);
+                            mwtWinDimCount += DIM_CHUNK;
+                            Array.Resize(ref peptideNameMwtWin, mwtWinDimCount + 1);
                         }
                     }
                 }
 
-                var lngStopTime = Program.GetTickCount();
-                var lngMwtWinWorkTime = lngStopTime - lngStartTime;
+                var stopTime = Program.GetTickCount();
+                var mwtWinWorkTime = stopTime - startTime;
                 Console.WriteLine("");
-                Console.WriteLine("MwtWin time (" + lngMwtWinResultCount + " peptides) = " + lngMwtWinWorkTime + " msec");
+                Console.WriteLine("MwtWin time (" + mwtWinResultCount + " peptides) = " + mwtWinWorkTime + " msec");
 
                 //lngIcr2lsResultCount = 0
                 //Debug.Print "Starting residue is ";
@@ -882,7 +869,7 @@ namespace MwtWinDllTest
                 //Next lngIndex
             }
 
-            objResults.AppendText("Check of Tryptic Sequence functions Complete");
+            results.AppendText("Check of Tryptic Sequence functions Complete");
 
             Cursor = Cursors.Default;
         }
@@ -992,15 +979,15 @@ namespace MwtWinDllTest
             txtRTFSource.Visible = chkShowRTFSource.Checked;
         }
 
-        private DateTime dtLastUpdate = DateTime.MinValue;
+        private DateTime lastUpdateTime = DateTime.MinValue;
 
         private void mMwtWin_ProgressChanged(string taskDescription, float percentComplete)
         {
             lblProgress.Text = mMwtWin.ProgressStepDescription + "; " + percentComplete.ToString("0.0") + "% complete";
 
-            if (DateTime.UtcNow.Subtract(dtLastUpdate).TotalMilliseconds > 100d)
+            if (DateTime.UtcNow.Subtract(lastUpdateTime).TotalMilliseconds > 100d)
             {
-                dtLastUpdate = DateTime.UtcNow;
+                lastUpdateTime = DateTime.UtcNow;
                 Application.DoEvents();
             }
         }

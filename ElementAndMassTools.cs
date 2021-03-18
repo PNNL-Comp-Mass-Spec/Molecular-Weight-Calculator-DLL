@@ -498,15 +498,16 @@ namespace MolecularWeightCalculator
 
         private void CheckCaution(string formulaExcerpt)
         {
-            for (var intLength = 1; intLength <= MAX_ABBREV_LENGTH; intLength++)
+            for (var length = 1; length <= MAX_ABBREV_LENGTH; length++)
             {
-                if (intLength > formulaExcerpt.Length)
+                if (length > formulaExcerpt.Length)
                     break;
-                var strTest = formulaExcerpt.Substring(0, intLength);
-                var strNewCaution = LookupCautionStatement(strTest);
-                if (!string.IsNullOrEmpty(strNewCaution))
+
+                var test = formulaExcerpt.Substring(0, length);
+                var newCaution = LookupCautionStatement(test);
+                if (!string.IsNullOrEmpty(newCaution))
                 {
-                    AddToCautionDescription(strNewCaution);
+                    AddToCautionDescription(newCaution);
                     break;
                 }
             }
@@ -553,44 +554,44 @@ namespace MolecularWeightCalculator
         /// </returns>
         private SymbolMatchMode CheckElemAndAbbrev(string formulaExcerpt, ref short symbolReference)
         {
-            var eSymbolMatchType = default(SymbolMatchMode);
+            var symbolMatchType = default(SymbolMatchMode);
 
             // MasterSymbolsList[] stores the element symbols, abbreviations, & amino acids in order of longest length to
             // shortest length, non-alphabetized, for use in symbol matching when parsing a formula
 
-            // MasterSymbolsList[intIndex,0] contains the symbol to be matched
-            // MasterSymbolsList[intIndex,1] contains E for element, A for amino acid, or N for normal abbreviation, followed by
+            // MasterSymbolsList[index,0] contains the symbol to be matched
+            // MasterSymbolsList[index,1] contains E for element, A for amino acid, or N for normal abbreviation, followed by
             // the reference number in the master list
-            // For example for Carbon, MasterSymbolsList[intIndex,0] = "C" and MasterSymbolsList[intIndex,1] = "E6"
+            // For example for Carbon, MasterSymbolsList[index,0] = "C" and MasterSymbolsList[index,1] = "E6"
 
             // Look for match, stepping directly through MasterSymbolsList[]
             // List is sorted by reverse length, so can do all at once
 
-            for (var intIndex = 0; intIndex < MasterSymbolsListCount; intIndex++)
+            for (var index = 0; index < MasterSymbolsListCount; index++)
             {
-                if (MasterSymbolsList[intIndex, 0].Length > 0)
+                if (MasterSymbolsList[index, 0].Length > 0)
                 {
-                    if (formulaExcerpt.Substring(0, Math.Min(formulaExcerpt.Length, MasterSymbolsList[intIndex, 0].Length)) == (MasterSymbolsList[intIndex, 0] ?? ""))
+                    if (formulaExcerpt.Substring(0, Math.Min(formulaExcerpt.Length, MasterSymbolsList[index, 0].Length)) == (MasterSymbolsList[index, 0] ?? ""))
                     {
                         // Matched a symbol
-                        switch (MasterSymbolsList[intIndex, 1].Substring(0, 1).ToUpper())
+                        switch (MasterSymbolsList[index, 1].Substring(0, 1).ToUpper())
                         {
                             case "E": // An element
-                                eSymbolMatchType = SymbolMatchMode.Element;
+                                symbolMatchType = SymbolMatchMode.Element;
                                 break;
                             case "A": // An abbreviation or amino acid
-                                eSymbolMatchType = SymbolMatchMode.Abbreviation;
+                                symbolMatchType = SymbolMatchMode.Abbreviation;
                                 break;
                             default:
                                 // error
-                                eSymbolMatchType = SymbolMatchMode.Unknown;
+                                symbolMatchType = SymbolMatchMode.Unknown;
                                 symbolReference = -1;
                                 break;
                         }
 
-                        if (eSymbolMatchType != SymbolMatchMode.Unknown)
+                        if (symbolMatchType != SymbolMatchMode.Unknown)
                         {
-                            symbolReference = (short)Math.Round(double.Parse(MasterSymbolsList[intIndex, 1].Substring(1)));
+                            symbolReference = (short)Math.Round(double.Parse(MasterSymbolsList[index, 1].Substring(1)));
                         }
 
                         break;
@@ -602,7 +603,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            return eSymbolMatchType;
+            return symbolMatchType;
         }
 
         /// <summary>
@@ -624,14 +625,14 @@ namespace MolecularWeightCalculator
         /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(ref string formula)
         {
-            var udtComputationStats = new ComputationStats();
-            udtComputationStats.Initialize();
+            var computationStats = new ComputationStats();
+            computationStats.Initialize();
 
-            ParseFormulaPublic(ref formula, ref udtComputationStats, false);
+            ParseFormulaPublic(ref formula, ref computationStats, false);
 
             if (ErrorParams.ErrorID == 0)
             {
-                return udtComputationStats.TotalMass;
+                return computationStats.TotalMass;
             }
 
             return -1;
@@ -646,10 +647,10 @@ namespace MolecularWeightCalculator
         /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
         /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
         /// <param name="addProtonChargeCarrier">If addProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
-        /// <param name="headerIsotopicAbundances">Header to use in strResults</param>
-        /// <param name="headerMassToCharge">Header to use in strResults</param>
-        /// <param name="headerFraction">Header to use in strResults</param>
-        /// <param name="headerIntensity">Header to use in strResults</param>
+        /// <param name="headerIsotopicAbundances">Header to use in <paramref name="results"/></param>
+        /// <param name="headerMassToCharge">Header to use in <paramref name="results"/></param>
+        /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
+        /// <param name="headerIntensity">Header to use in <paramref name="results"/></param>
         /// <param name="useFactorials">Set to true to use Factorial math, which is typically slower; default is False</param>
         /// <returns>0 if success, -1 if an error</returns>
         /// <remarks>
@@ -670,22 +671,22 @@ namespace MolecularWeightCalculator
             string headerIntensity = "Intensity",
             bool useFactorials = false)
         {
-            var udtComputationStats = new ComputationStats();
-            udtComputationStats.Initialize();
+            var computationStats = new ComputationStats();
+            computationStats.Initialize();
 
-            double dblNextComboFractionalAbundance = default;
+            double nextComboFractionalAbundance = default;
 
-            const string strDeuteriumEquiv = "^2.014H";
+            const string deuteriumEquiv = "^2.014H";
 
-            long PredictedConvIterations;
+            long predictedConvIterations;
 
             const double MIN_ABUNDANCE_TO_KEEP = 0.000001d;
             const double CUTOFF_FOR_RATIO_METHOD = 0.00001d;
 
-            var blnExplicitIsotopesPresent = default(bool);
-            var ExplicitIsotopeCount = default(short);
+            var explicitIsotopesPresent = default(bool);
+            var explicitIsotopeCount = default(short);
 
-            double dblLogRho = default;
+            double logRho = default;
 
             // Make sure formula is not blank
             if (string.IsNullOrEmpty(formulaIn))
@@ -696,12 +697,12 @@ namespace MolecularWeightCalculator
             mAbortProcessing = false;
             try
             {
-                short MasterElementIndex;
-                double dblTemp;
-                float sngPercentComplete;
-                int PredictedCombos;
-                int AtomCount;
-                short IsotopeCount;
+                short masterElementIndex;
+                double temp;
+                float percentComplete;
+                int predictedCombos;
+                int atomCount;
+                short isotopeCount;
                 // Change headerMassToCharge to "Neutral Mass" if chargeState = 0 and headerMassToCharge is "Mass/Charge"
                 if (chargeState == 0)
                 {
@@ -712,10 +713,10 @@ namespace MolecularWeightCalculator
                 }
 
                 // Parse Formula to determine if valid and number of each element
-                var strFormula = formulaIn;
-                var dblWorkingFormulaMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats, false);
+                var formula = formulaIn;
+                var workingFormulaMass = ParseFormulaPublic(ref formula, ref computationStats, false);
 
-                if (dblWorkingFormulaMass < 0d)
+                if (workingFormulaMass < 0d)
                 {
                     // Error occurred; information is stored in ErrorParams
                     results = LookupMessage(350) + ": " + LookupMessage(ErrorParams.ErrorID);
@@ -723,57 +724,57 @@ namespace MolecularWeightCalculator
                 }
 
                 // See if Deuterium is present by looking for a fractional amount of Hydrogen
-                // strFormula will contain a capital D followed by a number or another letter (or the end of formula)
+                // formula will contain a capital D followed by a number or another letter (or the end of formula)
                 // If found, replace each D with ^2.014H and re-compute
-                var dblCount = udtComputationStats.Elements[1].Count;
-                if (Math.Abs(dblCount - (int)Math.Round(dblCount)) > float.Epsilon)
+                var count = computationStats.Elements[1].Count;
+                if (Math.Abs(count - (int)Math.Round(count)) > float.Epsilon)
                 {
                     // Deuterium is present
-                    var strModifiedFormula = "";
-                    short intIndex = 0;
-                    while (intIndex <= strFormula.Length)
+                    var modifiedFormula = "";
+                    short index = 0;
+                    while (index <= formula.Length)
                     {
-                        var blnReplaceDeuterium = false;
-                        if (strFormula.Substring(intIndex, 1) == "D")
+                        var replaceDeuterium = false;
+                        if (formula.Substring(index, 1) == "D")
                         {
-                            if (intIndex == strFormula.Length - 1)
+                            if (index == formula.Length - 1)
                             {
-                                blnReplaceDeuterium = true;
+                                replaceDeuterium = true;
                             }
                             else
                             {
-                                var intAsciiOfNext = (int)strFormula.Substring(intIndex + 1, 1)[0];
-                                if (intAsciiOfNext < 97 || intAsciiOfNext > 122)
+                                var asciiOfNext = (int)formula[index + 1];
+                                if (asciiOfNext < 97 || asciiOfNext > 122)
                                 {
-                                    blnReplaceDeuterium = true;
+                                    replaceDeuterium = true;
                                 }
                             }
 
-                            if (blnReplaceDeuterium)
+                            if (replaceDeuterium)
                             {
-                                if (intIndex > 0)
+                                if (index > 0)
                                 {
-                                    strModifiedFormula = strFormula.Substring(0, Math.Min(strFormula.Length, intIndex - 1));
+                                    modifiedFormula = formula.Substring(0, Math.Min(formula.Length, index - 1));
                                 }
 
-                                strModifiedFormula += strDeuteriumEquiv;
-                                if (intIndex < strFormula.Length - 1)
+                                modifiedFormula += deuteriumEquiv;
+                                if (index < formula.Length - 1)
                                 {
-                                    strModifiedFormula += strFormula.Substring(intIndex + 1);
+                                    modifiedFormula += formula.Substring(index + 1);
                                 }
 
-                                strFormula = strModifiedFormula;
-                                intIndex = 0;
+                                formula = modifiedFormula;
+                                index = 0;
                             }
                         }
 
-                        intIndex++;
+                        index++;
                     }
 
                     // Re-Parse Formula since D's are now ^2.014H
-                    dblWorkingFormulaMass = ParseFormulaPublic(ref strFormula, ref udtComputationStats, false);
+                    workingFormulaMass = ParseFormulaPublic(ref formula, ref computationStats, false);
 
-                    if (dblWorkingFormulaMass < 0d)
+                    if (workingFormulaMass < 0d)
                     {
                         // Error occurred; information is stored in ErrorParams
                         results = LookupMessage(350) + ": " + LookupMessage(ErrorParams.ErrorID);
@@ -782,173 +783,173 @@ namespace MolecularWeightCalculator
                 }
 
                 // Make sure there are no fractional atoms present (need to specially handle Deuterium)
-                for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
-                    dblCount = udtComputationStats.Elements[intElementIndex].Count;
-                    if (Math.Abs(dblCount - (int)Math.Round(dblCount)) > float.Epsilon)
+                    count = computationStats.Elements[elementIndex].Count;
+                    if (Math.Abs(count - (int)Math.Round(count)) > float.Epsilon)
                     {
-                        results = LookupMessage(350) + ": " + LookupMessage(805) + ": " + ElementStats[intElementIndex].Symbol + dblCount;
+                        results = LookupMessage(350) + ": " + LookupMessage(805) + ": " + ElementStats[elementIndex].Symbol + count;
                         return -1;
                     }
                 }
 
                 // Remove occurrences of explicitly defined isotopes from the formula
-                for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
-                    var element = udtComputationStats.Elements[intElementIndex];
+                    var element = computationStats.Elements[elementIndex];
                     if (element.IsotopeCount > 0)
                     {
-                        blnExplicitIsotopesPresent = true;
-                        ExplicitIsotopeCount += element.IsotopeCount;
-                        for (var IsotopeIndex = 1; IsotopeIndex <= element.IsotopeCount; IsotopeIndex++)
-                            element.Count -= element.Isotopes[IsotopeIndex].Count;
+                        explicitIsotopesPresent = true;
+                        explicitIsotopeCount += element.IsotopeCount;
+                        for (var isotopeIndex = 1; isotopeIndex <= element.IsotopeCount; isotopeIndex++)
+                            element.Count -= element.Isotopes[isotopeIndex].Count;
                     }
                 }
 
-                // Determine the number of elements present in strFormula
-                short intElementCount = 0;
-                for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                // Determine the number of elements present in formula
+                short elementCount = 0;
+                for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
-                    if (udtComputationStats.Elements[intElementIndex].Used)
+                    if (computationStats.Elements[elementIndex].Used)
                     {
-                        intElementCount = (short)(intElementCount + 1);
+                        elementCount = (short)(elementCount + 1);
                     }
                 }
 
-                if (blnExplicitIsotopesPresent)
+                if (explicitIsotopesPresent)
                 {
-                    intElementCount += ExplicitIsotopeCount;
+                    elementCount += explicitIsotopeCount;
                 }
 
-                if (intElementCount == 0 || Math.Abs(dblWorkingFormulaMass) < float.Epsilon)
+                if (elementCount == 0 || Math.Abs(workingFormulaMass) < float.Epsilon)
                 {
                     // No elements or no weight
                     return -1;
                 }
 
-                // The formula seems valid, so update strFormulaIn
-                formulaIn = strFormula;
+                // The formula seems valid, so update formulaIn
+                formulaIn = formula;
 
-                // Reserve memory for IsoStats[] array
-                var IsoStats = new IsoResultsByElement[intElementCount + 1];
-                for (var i = 0; i < IsoStats.Length; i++)
+                // Reserve memory for isoStats[] array
+                var isoStats = new IsoResultsByElement[elementCount + 1];
+                for (var i = 0; i < isoStats.Length; i++)
                 {
-                    IsoStats[i] = new IsoResultsByElement();
+                    isoStats[i] = new IsoResultsByElement();
                 }
 
-                // Step through udtComputationStats.Elements() again and copy info into IsoStats()
+                // Step through computationStats.Elements[] again and copy info into isoStats[]
                 // In addition, determine minimum and maximum weight for the molecule
-                intElementCount = 0;
-                var MinWeight = 0;
-                var MaxWeight = 0;
-                for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                elementCount = 0;
+                var minWeight = 0;
+                var maxWeight = 0;
+                for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
-                    if (udtComputationStats.Elements[intElementIndex].Used)
+                    if (computationStats.Elements[elementIndex].Used)
                     {
-                        if (udtComputationStats.Elements[intElementIndex].Count > 0d)
+                        if (computationStats.Elements[elementIndex].Count > 0d)
                         {
-                            intElementCount = (short)(intElementCount + 1);
-                            IsoStats[intElementCount].ElementIndex = (short)intElementIndex;
-                            IsoStats[intElementCount].AtomCount = (int)Math.Round(udtComputationStats.Elements[intElementIndex].Count); // Note: Ignoring .Elements(intElementIndex).IsotopicCorrection
-                            IsoStats[intElementCount].ExplicitMass = ElementStats[intElementIndex].Mass;
+                            elementCount = (short)(elementCount + 1);
+                            isoStats[elementCount].ElementIndex = (short)elementIndex;
+                            isoStats[elementCount].AtomCount = (int)Math.Round(computationStats.Elements[elementIndex].Count); // Note: Ignoring .Elements[elementIndex].IsotopicCorrection
+                            isoStats[elementCount].ExplicitMass = ElementStats[elementIndex].Mass;
 
-                            var stats = ElementStats[intElementIndex];
-                            MinWeight = (int)Math.Round(MinWeight + IsoStats[intElementCount].AtomCount * Math.Round(stats.Isotopes[1].Mass, 0));
-                            MaxWeight = (int)Math.Round(MaxWeight + IsoStats[intElementCount].AtomCount * Math.Round(stats.Isotopes[stats.IsotopeCount].Mass, 0));
+                            var stats = ElementStats[elementIndex];
+                            minWeight = (int)Math.Round(minWeight + isoStats[elementCount].AtomCount * Math.Round(stats.Isotopes[1].Mass, 0));
+                            maxWeight = (int)Math.Round(maxWeight + isoStats[elementCount].AtomCount * Math.Round(stats.Isotopes[stats.IsotopeCount].Mass, 0));
                         }
                     }
                 }
 
-                if (blnExplicitIsotopesPresent)
+                if (explicitIsotopesPresent)
                 {
                     // Add the isotopes, pretending they are unique elements
-                    for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                    for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                     {
-                        var element = udtComputationStats.Elements[intElementIndex];
+                        var element = computationStats.Elements[elementIndex];
                         if (element.IsotopeCount > 0)
                         {
-                            for (var IsotopeIndex = 1; IsotopeIndex <= element.IsotopeCount; IsotopeIndex++)
+                            for (var isotopeIndex = 1; isotopeIndex <= element.IsotopeCount; isotopeIndex++)
                             {
-                                intElementCount = (short)(intElementCount + 1);
+                                elementCount = (short)(elementCount + 1);
 
-                                IsoStats[intElementCount].boolExplicitIsotope = true;
-                                IsoStats[intElementCount].ElementIndex = (short)intElementIndex;
-                                IsoStats[intElementCount].AtomCount = (int)Math.Round(element.Isotopes[IsotopeIndex].Count);
-                                IsoStats[intElementCount].ExplicitMass = element.Isotopes[IsotopeIndex].Mass;
+                                isoStats[elementCount].boolExplicitIsotope = true;
+                                isoStats[elementCount].ElementIndex = (short)elementIndex;
+                                isoStats[elementCount].AtomCount = (int)Math.Round(element.Isotopes[isotopeIndex].Count);
+                                isoStats[elementCount].ExplicitMass = element.Isotopes[isotopeIndex].Mass;
 
-                                var stats = IsoStats[intElementCount];
-                                MinWeight = (int)Math.Round(MinWeight + stats.AtomCount * stats.ExplicitMass);
-                                MaxWeight = (int)Math.Round(MaxWeight + stats.AtomCount * stats.ExplicitMass);
+                                var stats = isoStats[elementCount];
+                                minWeight = (int)Math.Round(minWeight + stats.AtomCount * stats.ExplicitMass);
+                                maxWeight = (int)Math.Round(maxWeight + stats.AtomCount * stats.ExplicitMass);
                             }
                         }
                     }
                 }
 
-                if (MinWeight < 0)
-                    MinWeight = 0;
+                if (minWeight < 0)
+                    minWeight = 0;
 
                 // Create an array to hold the Fractional Abundances for all the masses
-                convolutedMSDataCount = MaxWeight - MinWeight + 1;
-                var ConvolutedAbundanceStartMass = MinWeight;
-                var ConvolutedAbundances = new IsoResultsOverallData[convolutedMSDataCount + 1]; // Fractional abundance at each mass; 1-based array
+                convolutedMSDataCount = maxWeight - minWeight + 1;
+                var convolutedAbundanceStartMass = minWeight;
+                var convolutedAbundances = new IsoResultsOverallData[convolutedMSDataCount + 1]; // Fractional abundance at each mass; 1-based array
 
-                for (var i = 0; i < ConvolutedAbundances.Length; i++)
+                for (var i = 0; i < convolutedAbundances.Length; i++)
                 {
-                    ConvolutedAbundances[i] = new IsoResultsOverallData();
+                    convolutedAbundances[i] = new IsoResultsOverallData();
                 }
 
                 // Predict the total number of computations required; show progress if necessary
-                var PredictedTotalComboCalcs = 0;
-                for (var intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
+                var predictedTotalComboCalcs = 0;
+                for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
                 {
-                    MasterElementIndex = IsoStats[intElementIndex].ElementIndex;
-                    AtomCount = IsoStats[intElementIndex].AtomCount;
-                    IsotopeCount = ElementStats[MasterElementIndex].IsotopeCount;
+                    masterElementIndex = isoStats[elementIndex].ElementIndex;
+                    atomCount = isoStats[elementIndex].AtomCount;
+                    isotopeCount = ElementStats[masterElementIndex].IsotopeCount;
 
-                    PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount);
-                    PredictedTotalComboCalcs += PredictedCombos;
+                    predictedCombos = FindCombosPredictIterations(atomCount, isotopeCount);
+                    predictedTotalComboCalcs += predictedCombos;
                 }
 
                 ResetProgress("Finding Isotopic Abundances: Computing abundances");
 
                 // For each element, compute all of the possible combinations
-                var CompletedComboCalcs = 0;
-                for (var intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
+                var completedComboCalcs = 0;
+                for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
                 {
-                    short IsotopeStartingMass;
-                    short IsotopeEndingMass;
-                    MasterElementIndex = IsoStats[intElementIndex].ElementIndex;
-                    AtomCount = IsoStats[intElementIndex].AtomCount;
+                    short isotopeStartingMass;
+                    short isotopeEndingMass;
+                    masterElementIndex = isoStats[elementIndex].ElementIndex;
+                    atomCount = isoStats[elementIndex].AtomCount;
 
-                    if (IsoStats[intElementIndex].boolExplicitIsotope)
+                    if (isoStats[elementIndex].boolExplicitIsotope)
                     {
-                        IsotopeCount = 1;
-                        IsotopeStartingMass = (short)Math.Round(IsoStats[intElementIndex].ExplicitMass);
-                        IsotopeEndingMass = IsotopeStartingMass;
+                        isotopeCount = 1;
+                        isotopeStartingMass = (short)Math.Round(isoStats[elementIndex].ExplicitMass);
+                        isotopeEndingMass = isotopeStartingMass;
                     }
                     else
                     {
-                        var stats = ElementStats[MasterElementIndex];
-                        IsotopeCount = stats.IsotopeCount;
-                        IsotopeStartingMass = (short)Math.Round(Math.Round(stats.Isotopes[1].Mass, 0));
-                        IsotopeEndingMass = (short)Math.Round(Math.Round(stats.Isotopes[IsotopeCount].Mass, 0));
+                        var stats = ElementStats[masterElementIndex];
+                        isotopeCount = stats.IsotopeCount;
+                        isotopeStartingMass = (short)Math.Round(Math.Round(stats.Isotopes[1].Mass, 0));
+                        isotopeEndingMass = (short)Math.Round(Math.Round(stats.Isotopes[isotopeCount].Mass, 0));
                     }
 
-                    PredictedCombos = FindCombosPredictIterations(AtomCount, IsotopeCount);
+                    predictedCombos = FindCombosPredictIterations(atomCount, isotopeCount);
 
-                    if (PredictedCombos > 10000000)
+                    if (predictedCombos > 10000000)
                     {
-                        var strMessage = "Too many combinations necessary for prediction of isotopic distribution: " + PredictedCombos.ToString("#,##0") + Environment.NewLine + "Please use a simpler formula or reduce the isotopic range defined for the element (currently " + IsotopeCount + ")";
+                        var message = "Too many combinations necessary for prediction of isotopic distribution: " + predictedCombos.ToString("#,##0") + Environment.NewLine + "Please use a simpler formula or reduce the isotopic range defined for the element (currently " + isotopeCount + ")";
                         if (ShowErrorMessageDialogs)
                         {
-                            MessageBox.Show(strMessage);
+                            MessageBox.Show(message);
                         }
 
-                        LogMessage(strMessage, MessageType.Error);
+                        LogMessage(message, MessageType.Error);
                         return -1;
                     }
 
-                    var IsoCombos = new int[PredictedCombos + 1, IsotopeCount + 1];
+                    var isoCombos = new int[predictedCombos + 1, isotopeCount + 1];
                     // 2D array: Holds the # of each isotope for each combination
                     // For example, Two chlorine atoms, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
                     // m1  m2  m3
@@ -959,50 +960,50 @@ namespace MolecularWeightCalculator
                     // 0   1   1
                     // 0   0   2
 
-                    var AtomTrackHistory = new int[IsotopeCount + 1];
-                    AtomTrackHistory[1] = AtomCount;
+                    var atomTrackHistory = new int[isotopeCount + 1];
+                    atomTrackHistory[1] = atomCount;
 
-                    var CombosFound = FindCombosRecurse(ref IsoCombos, AtomCount, IsotopeCount, IsotopeCount, 1, 1, ref AtomTrackHistory);
+                    var combosFound = FindCombosRecurse(ref isoCombos, atomCount, isotopeCount, isotopeCount, 1, 1, ref atomTrackHistory);
 
-                    // The predicted value should always match the actual value, unless blnExplicitIsotopesPresent = True
-                    if (!blnExplicitIsotopesPresent)
+                    // The predicted value should always match the actual value, unless explicitIsotopesPresent = True
+                    if (!explicitIsotopesPresent)
                     {
-                        if (PredictedCombos != CombosFound)
+                        if (predictedCombos != combosFound)
                         {
-                            Console.WriteLine("PredictedCombos doesn't match CombosFound (" + PredictedCombos + " vs. " + CombosFound + "); this is unexpected");
+                            Console.WriteLine("PredictedCombos doesn't match CombosFound (" + predictedCombos + " vs. " + combosFound + "); this is unexpected");
                         }
                     }
 
                     // Reserve space for the abundances based on the minimum and maximum weight of the isotopes of the element
-                    MinWeight = AtomCount * IsotopeStartingMass;
-                    MaxWeight = AtomCount * IsotopeEndingMass;
-                    var ResultingMassCountForElement = MaxWeight - MinWeight + 1;
-                    IsoStats[intElementIndex].StartingResultsMass = MinWeight;
-                    IsoStats[intElementIndex].ResultsCount = ResultingMassCountForElement;
-                    IsoStats[intElementIndex].MassAbundances = new float[ResultingMassCountForElement + 1];
+                    minWeight = atomCount * isotopeStartingMass;
+                    maxWeight = atomCount * isotopeEndingMass;
+                    var resultingMassCountForElement = maxWeight - minWeight + 1;
+                    isoStats[elementIndex].StartingResultsMass = minWeight;
+                    isoStats[elementIndex].ResultsCount = resultingMassCountForElement;
+                    isoStats[elementIndex].MassAbundances = new float[resultingMassCountForElement + 1];
 
-                    if (IsoStats[intElementIndex].boolExplicitIsotope)
+                    if (isoStats[elementIndex].boolExplicitIsotope)
                     {
                         // Explicitly defined isotope; there is only one "combo" and its abundance = 1
-                        IsoStats[intElementIndex].MassAbundances[1] = 1f;
+                        isoStats[elementIndex].MassAbundances[1] = 1f;
                     }
                     else
                     {
-                        var dblFractionalAbundanceSaved = 0d;
-                        for (var ComboIndex = 1; ComboIndex <= CombosFound; ComboIndex++)
+                        var fractionalAbundanceSaved = 0d;
+                        for (var comboIndex = 1; comboIndex <= combosFound; comboIndex++)
                         {
-                            int IndexToStoreAbundance;
-                            CompletedComboCalcs += 1;
+                            int indexToStoreAbundance;
+                            completedComboCalcs += 1;
 
-                            sngPercentComplete = CompletedComboCalcs / (float)PredictedTotalComboCalcs * 100f;
-                            if (CompletedComboCalcs % 10 == 0)
+                            percentComplete = completedComboCalcs / (float)predictedTotalComboCalcs * 100f;
+                            if (completedComboCalcs % 10 == 0)
                             {
-                                UpdateProgress(sngPercentComplete);
+                                UpdateProgress(percentComplete);
                             }
 
-                            double dblThisComboFractionalAbundance = -1;
-                            var blnRatioMethodUsed = false;
-                            var blnRigorousMethodUsed = false;
+                            double thisComboFractionalAbundance = -1;
+                            var ratioMethodUsed = false;
+                            var rigorousMethodUsed = false;
 
                             if (useFactorials)
                             {
@@ -1010,138 +1011,138 @@ namespace MolecularWeightCalculator
                                 // Rigorous, slow, easily overflowed method
                                 // #######
                                 //
-                                blnRigorousMethodUsed = true;
+                                rigorousMethodUsed = true;
 
                                 // AbundDenom  and  AbundSuffix are only needed if using the easily-overflowed factorial method
-                                var AbundDenom = 1d;
-                                var AbundSuffix = 1d;
-                                var stats = ElementStats[MasterElementIndex];
-                                for (var IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
+                                var abundDenom = 1d;
+                                var abundSuffix = 1d;
+                                var stats = ElementStats[masterElementIndex];
+                                for (var isotopeIndex = 1; isotopeIndex <= isotopeCount; isotopeIndex++)
                                 {
-                                    var IsotopeCountInThisCombo = IsoCombos[ComboIndex, IsotopeIndex];
-                                    if (IsotopeCountInThisCombo > 0)
+                                    var isotopeCountInThisCombo = isoCombos[comboIndex, isotopeIndex];
+                                    if (isotopeCountInThisCombo > 0)
                                     {
-                                        AbundDenom *= Factorial((short)IsotopeCountInThisCombo);
-                                        AbundSuffix *= Math.Pow(stats.Isotopes[IsotopeIndex].Abundance, IsotopeCountInThisCombo);
+                                        abundDenom *= Factorial((short)isotopeCountInThisCombo);
+                                        abundSuffix *= Math.Pow(stats.Isotopes[isotopeIndex].Abundance, isotopeCountInThisCombo);
                                     }
                                 }
 
-                                dblThisComboFractionalAbundance = Factorial((short)AtomCount) / AbundDenom * AbundSuffix;
+                                thisComboFractionalAbundance = Factorial((short)atomCount) / abundDenom * abundSuffix;
                             }
                             else
                             {
-                                if (dblFractionalAbundanceSaved < CUTOFF_FOR_RATIO_METHOD)
+                                if (fractionalAbundanceSaved < CUTOFF_FOR_RATIO_METHOD)
                                 {
                                     // #######
                                     // Equivalent of rigorous method, but uses logarithms
                                     // #######
                                     //
-                                    blnRigorousMethodUsed = true;
+                                    rigorousMethodUsed = true;
 
-                                    var dblLogSigma = 0d;
-                                    for (var sigma = 1; sigma <= AtomCount; sigma++)
-                                        dblLogSigma += Math.Log(sigma);
+                                    var logSigma = 0d;
+                                    for (var sigma = 1; sigma <= atomCount; sigma++)
+                                        logSigma += Math.Log(sigma);
 
-                                    var dblSumI = 0d;
-                                    for (var IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
+                                    var sumI = 0d;
+                                    for (var isotopeIndex = 1; isotopeIndex <= isotopeCount; isotopeIndex++)
                                     {
-                                        if (IsoCombos[ComboIndex, IsotopeIndex] > 0)
+                                        if (isoCombos[comboIndex, isotopeIndex] > 0)
                                         {
-                                            var dblWorkingSum = 0d;
-                                            for (var SubIndex = 1; SubIndex <= IsoCombos[ComboIndex, IsotopeIndex]; SubIndex++)
-                                                dblWorkingSum += Math.Log(SubIndex);
+                                            var workingSum = 0d;
+                                            for (var subIndex = 1; subIndex <= isoCombos[comboIndex, isotopeIndex]; subIndex++)
+                                                workingSum += Math.Log(subIndex);
 
-                                            dblSumI += dblWorkingSum;
+                                            sumI += workingSum;
                                         }
                                     }
 
-                                    var stats = ElementStats[MasterElementIndex];
-                                    var dblSumF = 0d;
-                                    for (var IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
+                                    var stats = ElementStats[masterElementIndex];
+                                    var sumF = 0d;
+                                    for (var isotopeIndex = 1; isotopeIndex <= isotopeCount; isotopeIndex++)
                                     {
-                                        if (stats.Isotopes[IsotopeIndex].Abundance > 0f)
+                                        if (stats.Isotopes[isotopeIndex].Abundance > 0f)
                                         {
-                                            dblSumF += IsoCombos[ComboIndex, IsotopeIndex] * Math.Log(stats.Isotopes[IsotopeIndex].Abundance);
+                                            sumF += isoCombos[comboIndex, isotopeIndex] * Math.Log(stats.Isotopes[isotopeIndex].Abundance);
                                         }
                                     }
 
-                                    var dblLogFreq = dblLogSigma - dblSumI + dblSumF;
-                                    dblThisComboFractionalAbundance = Math.Exp(dblLogFreq);
+                                    var logFreq = logSigma - sumI + sumF;
+                                    thisComboFractionalAbundance = Math.Exp(logFreq);
 
-                                    dblFractionalAbundanceSaved = dblThisComboFractionalAbundance;
+                                    fractionalAbundanceSaved = thisComboFractionalAbundance;
                                 }
 
-                                // Use dblThisComboFractionalAbundance to predict
+                                // Use thisComboFractionalAbundance to predict
                                 // the Fractional Abundance of the Next Combo
-                                if (ComboIndex < CombosFound && dblFractionalAbundanceSaved >= CUTOFF_FOR_RATIO_METHOD)
+                                if (comboIndex < combosFound && fractionalAbundanceSaved >= CUTOFF_FOR_RATIO_METHOD)
                                 {
                                     // #######
                                     // Third method, determines the ratio of this combo's abundance and the next combo's abundance
                                     // #######
                                     //
-                                    var dblRatioOfFreqs = 1d;
+                                    var ratioOfFreqs = 1d;
 
-                                    for (var IsotopeIndex = 1; IsotopeIndex <= IsotopeCount; IsotopeIndex++)
+                                    for (var isotopeIndex = 1; isotopeIndex <= isotopeCount; isotopeIndex++)
                                     {
-                                        double intM = IsoCombos[ComboIndex, IsotopeIndex];
-                                        double intMPrime = IsoCombos[ComboIndex + 1, IsotopeIndex];
+                                        double m = isoCombos[comboIndex, isotopeIndex];
+                                        double mPrime = isoCombos[comboIndex + 1, isotopeIndex];
 
-                                        if (intM > intMPrime)
+                                        if (m > mPrime)
                                         {
-                                            var dblLogSigma = 0d;
-                                            for (var SubIndex = (int)Math.Round(intMPrime) + 1; SubIndex <= (int)Math.Round(intM); SubIndex++)
-                                                dblLogSigma += Math.Log(SubIndex);
+                                            var logSigma = 0d;
+                                            for (var subIndex = (int)Math.Round(mPrime) + 1; subIndex <= (int)Math.Round(m); subIndex++)
+                                                logSigma += Math.Log(subIndex);
 
-                                            dblLogRho = dblLogSigma - (intM - intMPrime) * Math.Log(ElementStats[MasterElementIndex].Isotopes[IsotopeIndex].Abundance);
+                                            logRho = logSigma - (m - mPrime) * Math.Log(ElementStats[masterElementIndex].Isotopes[isotopeIndex].Abundance);
                                         }
-                                        else if (intM < intMPrime)
+                                        else if (m < mPrime)
                                         {
-                                            var dblLogSigma = 0d;
-                                            for (var SubIndex = (int)Math.Round(intM) + 1; SubIndex <= (int)Math.Round(intMPrime); SubIndex++)
-                                                dblLogSigma += Math.Log(SubIndex);
+                                            var logSigma = 0d;
+                                            for (var subIndex = (int)Math.Round(m) + 1; subIndex <= (int)Math.Round(mPrime); subIndex++)
+                                                logSigma += Math.Log(subIndex);
 
-                                            var stats = ElementStats[MasterElementIndex];
-                                            if (stats.Isotopes[IsotopeIndex].Abundance > 0f)
+                                            var stats = ElementStats[masterElementIndex];
+                                            if (stats.Isotopes[isotopeIndex].Abundance > 0f)
                                             {
-                                                dblLogRho = (intMPrime - intM) * Math.Log(stats.Isotopes[IsotopeIndex].Abundance) - dblLogSigma;
+                                                logRho = (mPrime - m) * Math.Log(stats.Isotopes[isotopeIndex].Abundance) - logSigma;
                                             }
                                         }
                                         else
                                         {
-                                            // intM = intMPrime
-                                            dblLogRho = 0d;
+                                            //m = mPrime
+                                            logRho = 0d;
                                         }
 
-                                        var dblRho = Math.Exp(dblLogRho);
-                                        dblRatioOfFreqs *= dblRho;
+                                        var rho = Math.Exp(logRho);
+                                        ratioOfFreqs *= rho;
                                     }
 
-                                    dblNextComboFractionalAbundance = dblFractionalAbundanceSaved * dblRatioOfFreqs;
+                                    nextComboFractionalAbundance = fractionalAbundanceSaved * ratioOfFreqs;
 
-                                    dblFractionalAbundanceSaved = dblNextComboFractionalAbundance;
-                                    blnRatioMethodUsed = true;
+                                    fractionalAbundanceSaved = nextComboFractionalAbundance;
+                                    ratioMethodUsed = true;
                                 }
                             }
 
-                            if (blnRigorousMethodUsed)
+                            if (rigorousMethodUsed)
                             {
                                 // Determine nominal mass of this combination; depends on number of atoms of each isotope
-                                IndexToStoreAbundance = FindIndexForNominalMass(ref IsoCombos, ComboIndex, IsotopeCount, AtomCount, ref ElementStats[MasterElementIndex].Isotopes);
+                                indexToStoreAbundance = FindIndexForNominalMass(ref isoCombos, comboIndex, isotopeCount, atomCount, ref ElementStats[masterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances[] at location IndexToStoreAbundance
-                                IsoStats[intElementIndex].MassAbundances[IndexToStoreAbundance] = (float)(IsoStats[intElementIndex].MassAbundances[IndexToStoreAbundance] + dblThisComboFractionalAbundance);
+                                isoStats[elementIndex].MassAbundances[indexToStoreAbundance] = (float)(isoStats[elementIndex].MassAbundances[indexToStoreAbundance] + thisComboFractionalAbundance);
                             }
 
-                            if (blnRatioMethodUsed)
+                            if (ratioMethodUsed)
                             {
                                 // Store abundance for next Combo
-                                IndexToStoreAbundance = FindIndexForNominalMass(ref IsoCombos, ComboIndex + 1, IsotopeCount, AtomCount, ref ElementStats[MasterElementIndex].Isotopes);
+                                indexToStoreAbundance = FindIndexForNominalMass(ref isoCombos, comboIndex + 1, isotopeCount, atomCount, ref ElementStats[masterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances[] at location IndexToStoreAbundance
-                                IsoStats[intElementIndex].MassAbundances[IndexToStoreAbundance] = (float)(IsoStats[intElementIndex].MassAbundances[IndexToStoreAbundance] + dblNextComboFractionalAbundance);
+                                isoStats[elementIndex].MassAbundances[indexToStoreAbundance] = (float)(isoStats[elementIndex].MassAbundances[indexToStoreAbundance] + nextComboFractionalAbundance);
                             }
 
-                            if (blnRatioMethodUsed && ComboIndex + 1 == CombosFound)
+                            if (ratioMethodUsed && comboIndex + 1 == combosFound)
                             {
                                 // No need to compute the last combo since we just did it
                                 break;
@@ -1163,9 +1164,9 @@ namespace MolecularWeightCalculator
                 // Step Through IsoStats from the end to the beginning, shortening the length to the
                 // first value greater than MIN_ABUNDANCE_TO_KEEP
                 // This greatly speeds up the convolution
-                for (var intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
+                for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
                 {
-                    var stats = IsoStats[intElementIndex];
+                    var stats = isoStats[elementIndex];
                     var index = stats.ResultsCount;
                     while (stats.MassAbundances[index] < MIN_ABUNDANCE_TO_KEEP)
                     {
@@ -1178,20 +1179,20 @@ namespace MolecularWeightCalculator
                 }
 
                 // Examine IsoStats[] to predict the number of ConvolutionIterations
-                PredictedConvIterations = IsoStats[1].ResultsCount;
-                for (var intElementIndex = 2; intElementIndex <= intElementCount; intElementIndex++)
-                    PredictedConvIterations *= IsoStats[2].ResultsCount;
+                predictedConvIterations = isoStats[1].ResultsCount;
+                for (var elementIndex = 2; elementIndex <= elementCount; elementIndex++)
+                    predictedConvIterations *= isoStats[2].ResultsCount;
 
                 ResetProgress("Finding Isotopic Abundances: Convoluting results");
 
                 // Convolute the results for each element using a recursive convolution routine
-                var ConvolutionIterations = 0L;
-                for (var index = 1; index <= IsoStats[1].ResultsCount; index++)
+                var convolutionIterations = 0L;
+                for (var index = 1; index <= isoStats[1].ResultsCount; index++)
                 {
-                    ConvoluteMasses(ref ConvolutedAbundances, ConvolutedAbundanceStartMass, index, 1f, 0, 1, ref IsoStats, intElementCount, ref ConvolutionIterations);
+                    ConvoluteMasses(ref convolutedAbundances, convolutedAbundanceStartMass, index, 1f, 0, 1, ref isoStats, elementCount, ref convolutionIterations);
 
-                    sngPercentComplete = index / (float)IsoStats[1].ResultsCount * 100f;
-                    UpdateProgress(sngPercentComplete);
+                    percentComplete = index / (float)isoStats[1].ResultsCount * 100f;
+                    UpdateProgress(percentComplete);
                 }
 
                 if (mAbortProcessing)
@@ -1202,76 +1203,76 @@ namespace MolecularWeightCalculator
                 }
 
                 // Compute mass defect (difference of initial isotope's mass from integer mass)
-                var dblExactBaseIsoMass = 0d;
-                for (var intElementIndex = 1; intElementIndex <= intElementCount; intElementIndex++)
+                var exactBaseIsoMass = 0d;
+                for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
                 {
-                    var stats = IsoStats[intElementIndex];
+                    var stats = isoStats[elementIndex];
                     if (stats.boolExplicitIsotope)
                     {
-                        dblExactBaseIsoMass += stats.AtomCount * stats.ExplicitMass;
+                        exactBaseIsoMass += stats.AtomCount * stats.ExplicitMass;
                     }
                     else
                     {
-                        dblExactBaseIsoMass += stats.AtomCount * ElementStats[stats.ElementIndex].Isotopes[1].Mass;
+                        exactBaseIsoMass += stats.AtomCount * ElementStats[stats.ElementIndex].Isotopes[1].Mass;
                     }
                 }
 
-                var dblMassDefect = Math.Round(dblExactBaseIsoMass - ConvolutedAbundanceStartMass, 5);
+                var massDefect = Math.Round(exactBaseIsoMass - convolutedAbundanceStartMass, 5);
 
                 // Assure that the mass defect is only a small percentage of the total mass
-                // This won't be true for very small compounds so dblTemp is set to at least 10
-                if (ConvolutedAbundanceStartMass < 10)
+                // This won't be true for very small compounds so temp is set to at least 10
+                if (convolutedAbundanceStartMass < 10)
                 {
-                    dblTemp = 10d;
+                    temp = 10d;
                 }
                 else
                 {
-                    dblTemp = ConvolutedAbundanceStartMass;
+                    temp = convolutedAbundanceStartMass;
                 }
 
-                var dblMaxPercentDifference = Math.Pow(10d, -(3d - Math.Round(Math.Log10(dblTemp), 0)));
+                var maxPercentDifference = Math.Pow(10d, -(3d - Math.Round(Math.Log10(temp), 0)));
 
-                if (Math.Abs(dblMassDefect / dblExactBaseIsoMass) >= dblMaxPercentDifference)
+                if (Math.Abs(massDefect / exactBaseIsoMass) >= maxPercentDifference)
                 {
-                    Console.WriteLine("dblMassDefect / dblExactBaseIsoMass is greater dblMaxPercentDifference: (" + dblMassDefect / dblExactBaseIsoMass + " vs. " + dblMaxPercentDifference + "); this is unexpected");
+                    Console.WriteLine("massDefect / exactBaseIsoMass is greater maxPercentDifference: (" + massDefect / exactBaseIsoMass + " vs. " + maxPercentDifference + "); this is unexpected");
                 }
 
                 // Step Through convolutedAbundances[], starting at the end, and find the first value above MIN_ABUNDANCE_TO_KEEP
                 // Decrease convolutedMSDataCount to remove the extra values below MIN_ABUNDANCE_TO_KEEP
                 for (var massIndex = convolutedMSDataCount; massIndex >= 1; massIndex -= 1)
                 {
-                    if (ConvolutedAbundances[massIndex].Abundance > MIN_ABUNDANCE_TO_KEEP)
+                    if (convolutedAbundances[massIndex].Abundance > MIN_ABUNDANCE_TO_KEEP)
                     {
                         convolutedMSDataCount = massIndex;
                         break;
                     }
                 }
 
-                var strOutput = headerIsotopicAbundances + " " + strFormula + Environment.NewLine;
-                strOutput = strOutput + SpacePad("  " + headerMassToCharge, 12) + "\t" + SpacePad(headerFraction, 9) + "\t" + headerIntensity + Environment.NewLine;
+                var output = headerIsotopicAbundances + " " + formula + Environment.NewLine;
+                output = output + SpacePad("  " + headerMassToCharge, 12) + "\t" + SpacePad(headerFraction, 9) + "\t" + headerIntensity + Environment.NewLine;
 
                 // Initialize convolutedMSData2DOneBased[]
                 convolutedMSData2DOneBased = new double[convolutedMSDataCount + 1, 3];
 
                 // Find Maximum Abundance
-                var dblMaxAbundance = 0d;
+                var maxAbundance = 0d;
                 for (var massIndex = 1; massIndex <= convolutedMSDataCount; massIndex++)
                 {
-                    if (ConvolutedAbundances[massIndex].Abundance > dblMaxAbundance)
+                    if (convolutedAbundances[massIndex].Abundance > maxAbundance)
                     {
-                        dblMaxAbundance = ConvolutedAbundances[massIndex].Abundance;
+                        maxAbundance = convolutedAbundances[massIndex].Abundance;
                     }
                 }
 
                 // Populate the results array with the masses and abundances
                 // Also, if chargeState is >= 1, then convolute the mass to the appropriate m/z
-                if (Math.Abs(dblMaxAbundance) < float.Epsilon)
-                    dblMaxAbundance = 1d;
+                if (Math.Abs(maxAbundance) < float.Epsilon)
+                    maxAbundance = 1d;
                 for (var massIndex = 1; massIndex <= convolutedMSDataCount; massIndex++)
                 {
-                    var mass = ConvolutedAbundances[massIndex];
-                    convolutedMSData2DOneBased[massIndex, 0] = ConvolutedAbundanceStartMass + massIndex - 1 + dblMassDefect;
-                    convolutedMSData2DOneBased[massIndex, 1] = mass.Abundance / dblMaxAbundance * 100d;
+                    var mass = convolutedAbundances[massIndex];
+                    convolutedMSData2DOneBased[massIndex, 0] = convolutedAbundanceStartMass + massIndex - 1 + massDefect;
+                    convolutedMSData2DOneBased[massIndex, 1] = mass.Abundance / maxAbundance * 100d;
 
                     if (chargeState >= 1)
                     {
@@ -1310,17 +1311,17 @@ namespace MolecularWeightCalculator
                     convolutedMSDataCount -= rowIndex;
                 }
 
-                // Write to strOutput
+                // Write to output
                 for (var massIndex = 1; massIndex <= convolutedMSDataCount; massIndex++)
                 {
-                    strOutput = strOutput + SpacePadFront(convolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + "\t";
-                    strOutput = strOutput + (convolutedMSData2DOneBased[massIndex, 1] * dblMaxAbundance / 100d).ToString("0.0000000") + "\t";
-                    strOutput = strOutput + SpacePadFront(convolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + Environment.NewLine;
+                    output = output + SpacePadFront(convolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + "\t";
+                    output = output + (convolutedMSData2DOneBased[massIndex, 1] * maxAbundance / 100d).ToString("0.0000000") + "\t";
+                    output = output + SpacePadFront(convolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + Environment.NewLine;
                     //ToDo: Fix Multiplicity
-                    //strOutput = strOutput + ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + Environment.NewLine
+                    //output = output + ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + Environment.NewLine
                 }
 
-                results = strOutput;
+                results = output;
             }
             catch
             {
@@ -1340,40 +1341,40 @@ namespace MolecularWeightCalculator
         public void ComputePercentComposition(ref ComputationStats computationStats)
         {
             // Determine the number of elements in the formula
-            for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+            for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
             {
                 if (computationStats.TotalMass > 0d)
                 {
-                    var dblElementTotalMass = computationStats.Elements[intElementIndex].Count * ElementStats[intElementIndex].Mass + computationStats.Elements[intElementIndex].IsotopicCorrection;
+                    var elementTotalMass = computationStats.Elements[elementIndex].Count * ElementStats[elementIndex].Mass + computationStats.Elements[elementIndex].IsotopicCorrection;
 
                     // Percent is the percent composition
-                    var dblPercentComp = dblElementTotalMass / computationStats.TotalMass * 100.0d;
-                    computationStats.PercentCompositions[intElementIndex].PercentComposition = dblPercentComp;
+                    var percentComp = elementTotalMass / computationStats.TotalMass * 100.0d;
+                    computationStats.PercentCompositions[elementIndex].PercentComposition = percentComp;
 
                     // Calculate standard deviation
-                    double dblStdDeviation;
-                    if (Math.Abs(computationStats.Elements[intElementIndex].IsotopicCorrection - 0d) < float.Epsilon)
+                    double stdDeviation;
+                    if (Math.Abs(computationStats.Elements[elementIndex].IsotopicCorrection - 0d) < float.Epsilon)
                     {
                         // No isotopic mass correction factor exists
-                        dblStdDeviation = dblPercentComp * Math.Sqrt(Math.Pow(ElementStats[intElementIndex].Uncertainty / ElementStats[intElementIndex].Mass, 2d) + Math.Pow(computationStats.StandardDeviation / computationStats.TotalMass, 2d));
+                        stdDeviation = percentComp * Math.Sqrt(Math.Pow(ElementStats[elementIndex].Uncertainty / ElementStats[elementIndex].Mass, 2d) + Math.Pow(computationStats.StandardDeviation / computationStats.TotalMass, 2d));
                     }
                     else
                     {
                         // Isotopic correction factor exists, assume no error in it
-                        dblStdDeviation = dblPercentComp * Math.Sqrt(Math.Pow(computationStats.StandardDeviation / computationStats.TotalMass, 2d));
+                        stdDeviation = percentComp * Math.Sqrt(Math.Pow(computationStats.StandardDeviation / computationStats.TotalMass, 2d));
                     }
 
-                    if (Math.Abs(dblElementTotalMass - computationStats.TotalMass) < float.Epsilon && Math.Abs(dblPercentComp - 100d) < float.Epsilon)
+                    if (Math.Abs(elementTotalMass - computationStats.TotalMass) < float.Epsilon && Math.Abs(percentComp - 100d) < float.Epsilon)
                     {
-                        dblStdDeviation = 0d;
+                        stdDeviation = 0d;
                     }
 
-                    computationStats.PercentCompositions[intElementIndex].StdDeviation = dblStdDeviation;
+                    computationStats.PercentCompositions[elementIndex].StdDeviation = stdDeviation;
                 }
                 else
                 {
-                    computationStats.PercentCompositions[intElementIndex].PercentComposition = 0d;
-                    computationStats.PercentCompositions[intElementIndex].StdDeviation = 0d;
+                    computationStats.PercentCompositions[elementIndex].PercentComposition = 0d;
+                    computationStats.PercentCompositions[elementIndex].StdDeviation = 0d;
                 }
             }
         }
@@ -1389,40 +1390,40 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor)
         {
-            // dblXVals() and dblYVals() are parallel arrays, 0-based (thus ranging from 0 to XYVals.count-1)
+            // xyVals is 0-based (thus ranging from 0 to xyVals.count-1)
             // The arrays should contain stick data
             // The original data in the arrays will be replaced with Gaussian peaks in place of each "stick"
-            // Note: Assumes dblXVals() is sorted in the x direction
+            // Note: Assumes xyVals is sorted in the 'x' direction
 
             const int MAX_DATA_POINTS = 1000000;
             const short MASS_PRECISION = 7;
 
-            var udtThisDataPoint = new XYData();
+            var thisDataPoint = new XYData();
 
-            var lstGaussianData = new List<KeyValuePair<double, double>>();
+            var gaussianData = new List<KeyValuePair<double, double>>();
 
             try
             {
-                double dblXValRange;
+                double xValRange;
                 if (xyVals == null || xyVals.Count == 0)
                 {
-                    return lstGaussianData;
+                    return gaussianData;
                 }
 
-                var lstXYSummation = new List<XYData>(xyVals.Count * 10);
+                var xySummation = new List<XYData>(xyVals.Count * 10);
 
-                // Determine the data range for dblXVals() and dblYVals()
+                // Determine the data range for xyVals
                 if (xyVals.Count > 1)
                 {
-                    dblXValRange = xyVals.Last().Key - xyVals.First().Key;
+                    xValRange = xyVals.Last().Key - xyVals.First().Key;
                 }
                 else
                 {
-                    dblXValRange = 1d;
+                    xValRange = 1d;
                 }
 
-                if (dblXValRange < 1d)
-                    dblXValRange = 1d;
+                if (xValRange < 1d)
+                    xValRange = 1d;
 
                 if (resolution < 1)
                     resolution = 1;
@@ -1430,168 +1431,168 @@ namespace MolecularWeightCalculator
                 if (qualityFactor < 1 || qualityFactor > 75)
                     qualityFactor = 50;
 
-                // Compute DeltaX using .intResolution and .intResolutionMass
+                // Compute deltaX using resolution and resolutionMass
                 // Do not allow the DeltaX to be so small that the total points required > MAX_DATA_POINTS
-                var DeltaX = resolutionMass / resolution / qualityFactor;
+                var deltaX = resolutionMass / resolution / qualityFactor;
 
                 // Make sure DeltaX is a reasonable number
-                DeltaX = RoundToMultipleOf10(DeltaX);
+                deltaX = RoundToMultipleOf10(deltaX);
 
-                if (Math.Abs(DeltaX) < float.Epsilon)
-                    DeltaX = 1d;
+                if (Math.Abs(deltaX) < float.Epsilon)
+                    deltaX = 1d;
 
                 // Set the Window Range to 1/10 the magnitude of the midpoint x value
-                var dblRangeWork = xyVals.First().Key + dblXValRange / 2d;
-                dblRangeWork = RoundToMultipleOf10(dblRangeWork);
+                var rangeWork = xyVals.First().Key + xValRange / 2d;
+                rangeWork = RoundToMultipleOf10(rangeWork);
 
-                var dblSigma = resolutionMass / resolution / Math.Sqrt(5.54d);
+                var sigma = resolutionMass / resolution / Math.Sqrt(5.54d);
 
                 // Set the window range (the xValue window width range) to calculate the Gaussian representation for each data point
-                // The width at the base of a peak is 4 dblSigma
-                // Use a width of 2 * 6 dblSigma
-                var dblXValWindowRange = 2 * 6 * dblSigma;
+                // The width at the base of a peak is 4 sigma
+                // Use a width of 2 * 6 sigma
+                var xValWindowRange = 2 * 6 * sigma;
 
-                if (dblXValRange / DeltaX > MAX_DATA_POINTS)
+                if (xValRange / deltaX > MAX_DATA_POINTS)
                 {
                     // Delta x is too small; change to a reasonable value
                     // This isn't a bug, but it may mean one of the default settings is inappropriate
-                    DeltaX = dblXValRange / MAX_DATA_POINTS;
+                    deltaX = xValRange / MAX_DATA_POINTS;
                 }
 
-                var intDataToAddCount = (int)Math.Round(dblXValWindowRange / DeltaX);
+                var dataToAddCount = (int)Math.Round(xValWindowRange / deltaX);
 
-                // Make sure intDataToAddCount is odd
-                if (intDataToAddCount % 2 == 0)
+                // Make sure dataToAddCount is odd
+                if (dataToAddCount % 2 == 0)
                 {
-                    intDataToAddCount += 1;
+                    dataToAddCount += 1;
                 }
 
-                var lstDataToAdd = new List<XYData>(intDataToAddCount);
-                var intMidPointIndex = (int)Math.Round((intDataToAddCount + 1) / 2d - 1d);
+                var dataToAdd = new List<XYData>(dataToAddCount);
+                var midPointIndex = (int)Math.Round((dataToAddCount + 1) / 2d - 1d);
 
-                // Compute the Gaussian data for each point in dblXVals()
-                for (var intStickIndex = 0; intStickIndex < xyVals.Count; intStickIndex++)
+                // Compute the Gaussian data for each point in xyVals[]
+                for (var stickIndex = 0; stickIndex < xyVals.Count; stickIndex++)
                 {
-                    if (intStickIndex % 25 == 0)
+                    if (stickIndex % 25 == 0)
                     {
                         if (AbortProcessing)
                             break;
                     }
 
-                    // Search through lstXYSummation to determine the index of the smallest XValue with which
-                    // data in lstDataToAdd could be combined
-                    var intMinimalSummationIndex = 0;
-                    lstDataToAdd.Clear();
+                    // Search through xySummation to determine the index of the smallest XValue with which
+                    // data in dataToAdd could be combined
+                    var minimalSummationIndex = 0;
+                    dataToAdd.Clear();
 
-                    var dblMinimalXValOfWindow = xyVals[intStickIndex].Key - intMidPointIndex * DeltaX;
+                    var minimalXValOfWindow = xyVals[stickIndex].Key - midPointIndex * deltaX;
 
-                    var blnSearchForMinimumXVal = true;
-                    if (lstXYSummation.Count > 0)
+                    var searchForMinimumXVal = true;
+                    if (xySummation.Count > 0)
                     {
-                        if (dblMinimalXValOfWindow > lstXYSummation[lstXYSummation.Count - 1].X)
+                        if (minimalXValOfWindow > xySummation[xySummation.Count - 1].X)
                         {
-                            intMinimalSummationIndex = lstXYSummation.Count - 1;
-                            blnSearchForMinimumXVal = false;
+                            minimalSummationIndex = xySummation.Count - 1;
+                            searchForMinimumXVal = false;
                         }
                     }
 
-                    if (blnSearchForMinimumXVal)
+                    if (searchForMinimumXVal)
                     {
-                        if (lstXYSummation.Count <= 0)
+                        if (xySummation.Count <= 0)
                         {
-                            intMinimalSummationIndex = 0;
+                            minimalSummationIndex = 0;
                         }
                         else
                         {
-                            int intSummationIndex;
-                            for (intSummationIndex = 0; intSummationIndex < lstXYSummation.Count; intSummationIndex++)
+                            int summationIndex;
+                            for (summationIndex = 0; summationIndex < xySummation.Count; summationIndex++)
                             {
-                                if (lstXYSummation[intSummationIndex].X >= dblMinimalXValOfWindow)
+                                if (xySummation[summationIndex].X >= minimalXValOfWindow)
                                 {
-                                    intMinimalSummationIndex = intSummationIndex - 1;
-                                    if (intMinimalSummationIndex < 0)
-                                        intMinimalSummationIndex = 0;
+                                    minimalSummationIndex = summationIndex - 1;
+                                    if (minimalSummationIndex < 0)
+                                        minimalSummationIndex = 0;
                                     break;
                                 }
                             }
 
-                            if (intSummationIndex >= lstXYSummation.Count)
+                            if (summationIndex >= xySummation.Count)
                             {
-                                intMinimalSummationIndex = lstXYSummation.Count - 1;
+                                minimalSummationIndex = xySummation.Count - 1;
                             }
                         }
                     }
 
                     // Construct the Gaussian representation for this Data Point
-                    udtThisDataPoint.X = xyVals[intStickIndex].Key;
-                    udtThisDataPoint.Y = xyVals[intStickIndex].Value;
+                    thisDataPoint.X = xyVals[stickIndex].Key;
+                    thisDataPoint.Y = xyVals[stickIndex].Value;
 
                     // Round ThisDataPoint.XVal to the nearest DeltaX
                     // If .XVal is not an even multiple of DeltaX then bump up .XVal until it is
-                    udtThisDataPoint.X = RoundToEvenMultiple(udtThisDataPoint.X, DeltaX, true);
+                    thisDataPoint.X = RoundToEvenMultiple(thisDataPoint.X, deltaX, true);
 
-                    for (var index = 0; index < intDataToAddCount; index++)
+                    for (var index = 0; index < dataToAddCount; index++)
                     {
-                        // Equation for Gaussian is: Amplitude * Exp[ -(x - mu)^2 / (2*dblSigma^2) ]
-                        // Use index, .YVal, and DeltaX
-                        var dblXOffSet = (intMidPointIndex - index) * DeltaX;
+                        // Equation for Gaussian is: Amplitude * Exp[ -(x - mu)^2 / (2*sigma^2) ]
+                        // Use index, .YVal, and deltaX
+                        var xOffSet = (midPointIndex - index) * deltaX;
 
-                        var udtNewPoint = new XYData
+                        var newPoint = new XYData
                         {
-                            X = udtThisDataPoint.X - dblXOffSet,
-                            Y = udtThisDataPoint.Y * Math.Exp(-Math.Pow(dblXOffSet, 2d) / (2d * Math.Pow(dblSigma, 2d)))
+                            X = thisDataPoint.X - xOffSet,
+                            Y = thisDataPoint.Y * Math.Exp(-Math.Pow(xOffSet, 2d) / (2d * Math.Pow(sigma, 2d)))
                         };
 
-                        lstDataToAdd.Add(udtNewPoint);
+                        dataToAdd.Add(newPoint);
                     }
 
-                    // Now merge lstDataToAdd into lstXYSummation
-                    // XValues in lstDataToAdd and those in lstXYSummation have the same DeltaX value
-                    // The XValues in lstDataToAdd might overlap partially with those in lstXYSummation
+                    // Now merge dataToAdd into xySummation
+                    // XValues in dataToAdd and those in xySummation have the same DeltaX value
+                    // The XValues in dataToAdd might overlap partially with those in xySummation
 
-                    var intDataIndex = 0;
-                    bool blnAppendNewData;
+                    var dataIndex = 0;
+                    bool appendNewData;
 
-                    // First, see if the first XValue in lstDataToAdd is larger than the last XValue in lstXYSummation
-                    if (lstXYSummation.Count <= 0)
+                    // First, see if the first XValue in dataToAdd is larger than the last XValue in xySummation
+                    if (xySummation.Count <= 0)
                     {
-                        blnAppendNewData = true;
+                        appendNewData = true;
                     }
-                    else if (lstDataToAdd[intDataIndex].X > lstXYSummation.Last().X)
+                    else if (dataToAdd[dataIndex].X > xySummation.Last().X)
                     {
-                        blnAppendNewData = true;
+                        appendNewData = true;
                     }
                     else
                     {
-                        blnAppendNewData = false;
-                        // Step through lstXYSummation starting at intMinimalSummationIndex, looking for
+                        appendNewData = false;
+                        // Step through xySummation starting at minimalSummationIndex, looking for
                         // the index to start combining data at
-                        for (var intSummationIndex = intMinimalSummationIndex; intSummationIndex < lstXYSummation.Count; intSummationIndex++)
+                        for (var summationIndex = minimalSummationIndex; summationIndex < xySummation.Count; summationIndex++)
                         {
-                            if (Math.Round(lstDataToAdd[intDataIndex].X, MASS_PRECISION) <= Math.Round(lstXYSummation[intSummationIndex].X, MASS_PRECISION))
+                            if (Math.Round(dataToAdd[dataIndex].X, MASS_PRECISION) <= Math.Round(xySummation[summationIndex].X, MASS_PRECISION))
                             {
 
                                 // Within Tolerance; start combining the values here
-                                while (intSummationIndex <= lstXYSummation.Count - 1)
+                                while (summationIndex <= xySummation.Count - 1)
                                 {
-                                    var udtCurrentVal = lstXYSummation[intSummationIndex];
-                                    udtCurrentVal.Y += lstDataToAdd[intDataIndex].Y;
+                                    var currentVal = xySummation[summationIndex];
+                                    currentVal.Y += dataToAdd[dataIndex].Y;
 
-                                    lstXYSummation[intSummationIndex] = udtCurrentVal;
+                                    xySummation[summationIndex] = currentVal;
 
-                                    intSummationIndex += 1;
-                                    intDataIndex += 1;
-                                    if (intDataIndex >= intDataToAddCount)
+                                    summationIndex += 1;
+                                    dataIndex += 1;
+                                    if (dataIndex >= dataToAddCount)
                                     {
                                         // Successfully combined all of the data
                                         break;
                                     }
                                 }
 
-                                if (intDataIndex < intDataToAddCount)
+                                if (dataIndex < dataToAddCount)
                                 {
                                     // Data still remains to be added
-                                    blnAppendNewData = true;
+                                    appendNewData = true;
                                 }
 
                                 break;
@@ -1599,59 +1600,59 @@ namespace MolecularWeightCalculator
                         }
                     }
 
-                    if (blnAppendNewData == true)
+                    if (appendNewData == true)
                     {
-                        while (intDataIndex < intDataToAddCount)
+                        while (dataIndex < dataToAddCount)
                         {
-                            lstXYSummation.Add(lstDataToAdd[intDataIndex]);
-                            intDataIndex += 1;
+                            xySummation.Add(dataToAdd[dataIndex]);
+                            dataIndex += 1;
                         }
                     }
                 }
 
                 // Assure there is a data point at each 1% point along x range (to give better looking plots)
                 // Probably need to add data, but may need to remove some
-                var dblMinimalXValSpacing = dblXValRange / 100d;
+                var minimalXValSpacing = xValRange / 100d;
 
-                for (var intSummationIndex = 0; intSummationIndex < lstXYSummation.Count - 1; intSummationIndex++)
+                for (var summationIndex = 0; summationIndex < xySummation.Count - 1; summationIndex++)
                 {
-                    if (lstXYSummation[intSummationIndex].X + dblMinimalXValSpacing < lstXYSummation[intSummationIndex + 1].X)
+                    if (xySummation[summationIndex].X + minimalXValSpacing < xySummation[summationIndex + 1].X)
                     {
                         // Need to insert a data point
 
                         // Choose the appropriate new .XVal
-                        dblRangeWork = lstXYSummation[intSummationIndex + 1].X - lstXYSummation[intSummationIndex].X;
-                        if (dblRangeWork < dblMinimalXValSpacing * 2d)
+                        rangeWork = xySummation[summationIndex + 1].X - xySummation[summationIndex].X;
+                        if (rangeWork < minimalXValSpacing * 2d)
                         {
-                            dblRangeWork /= 2d;
+                            rangeWork /= 2d;
                         }
                         else
                         {
-                            dblRangeWork = dblMinimalXValSpacing;
+                            rangeWork = minimalXValSpacing;
                         }
 
-                        // The new .YVal is the average of that at intSummationIndex and that at intSummationIndex + 1
-                        var udtNewDataPoint = new XYData
+                        // The new .YVal is the average of that at summationIndex and that at summationIndex + 1
+                        var newDataPoint = new XYData
                         {
-                            X = lstXYSummation[intSummationIndex].X + dblRangeWork,
-                            Y = (lstXYSummation[intSummationIndex].Y + lstXYSummation[intSummationIndex + 1].Y) / 2d
+                            X = xySummation[summationIndex].X + rangeWork,
+                            Y = (xySummation[summationIndex].Y + xySummation[summationIndex + 1].Y) / 2d
                         };
 
-                        lstXYSummation.Insert(intSummationIndex + 1, udtNewDataPoint);
+                        xySummation.Insert(summationIndex + 1, newDataPoint);
                     }
                 }
 
-                // Copy data from lstXYSummation to lstGaussianData
+                // Copy data from xySummation to gaussianData
 
-                foreach (var item in lstXYSummation)
-                    lstGaussianData.Add(new KeyValuePair<double, double>(item.X, item.Y));
+                foreach (var item in xySummation)
+                    gaussianData.Add(new KeyValuePair<double, double>(item.X, item.Y));
             }
             catch (Exception ex)
             {
                 GeneralErrorHandler("ConvertStickDataToGaussian", ex);
             }
 
-            return lstGaussianData;
+            return gaussianData;
         }
 
         public void ConstructMasterSymbolsList()
@@ -1661,16 +1662,16 @@ namespace MolecularWeightCalculator
 
             MasterSymbolsList = new string[ELEMENT_COUNT + AbbrevAllCount + 1, 2];
 
-            // MasterSymbolsList(,0) contains the symbol to be matched
-            // MasterSymbolsList(,1) contains E for element, A for amino acid, or N for normal abbreviation, followed by
+            // MasterSymbolsList[,0] contains the symbol to be matched
+            // MasterSymbolsList[,1] contains E for element, A for amino acid, or N for normal abbreviation, followed by
             // the reference number in the master list
-            // For example for Carbon, MasterSymbolsList(intIndex,0) = "C" and MasterSymbolsList(intIndex,1) = "E6"
+            // For example for Carbon, MasterSymbolsList[index,0] = "C" and MasterSymbolsList[index,1] = "E6"
 
             // Construct search list
-            for (var intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
+            for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                MasterSymbolsList[intIndex, 0] = ElementStats[intIndex].Symbol;
-                MasterSymbolsList[intIndex, 1] = "E" + intIndex;
+                MasterSymbolsList[index, 0] = ElementStats[index].Symbol;
+                MasterSymbolsList[index, 1] = "E" + index;
             }
 
             MasterSymbolsListCount = ELEMENT_COUNT;
@@ -1678,21 +1679,21 @@ namespace MolecularWeightCalculator
             // Note: AbbrevStats is 1-based
             if (gComputationOptions.AbbrevRecognitionMode != MolecularWeightTool.AbbrevRecognitionMode.NoAbbreviations)
             {
-                bool blnIncludeAmino;
+                bool includeAmino;
                 if (gComputationOptions.AbbrevRecognitionMode == MolecularWeightTool.AbbrevRecognitionMode.NormalPlusAminoAcids)
                 {
-                    blnIncludeAmino = true;
+                    includeAmino = true;
                 }
                 else
                 {
-                    blnIncludeAmino = false;
+                    includeAmino = false;
                 }
 
-                for (var intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
+                for (var index = 1; index <= AbbrevAllCount; index++)
                 {
-                    var stats = AbbrevStats[intIndex];
-                    // If blnIncludeAmino = False then do not include amino acids
-                    if (blnIncludeAmino || !blnIncludeAmino && !stats.IsAminoAcid)
+                    var stats = AbbrevStats[index];
+                    // If includeAmino = False then do not include amino acids
+                    if (includeAmino || !includeAmino && !stats.IsAminoAcid)
                     {
                         // Do not include if the formula is invalid
                         if (!stats.InvalidSymbolOrFormula)
@@ -1700,7 +1701,7 @@ namespace MolecularWeightCalculator
                             MasterSymbolsListCount = (short)(MasterSymbolsListCount + 1);
 
                             MasterSymbolsList[MasterSymbolsListCount, 0] = stats.Symbol;
-                            MasterSymbolsList[MasterSymbolsListCount, 1] = "A" + intIndex;
+                            MasterSymbolsList[MasterSymbolsListCount, 1] = "A" + index;
                         }
                     }
                 }
@@ -1727,7 +1728,7 @@ namespace MolecularWeightCalculator
         {
             const double DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649d;
 
-            double dblNewMZ;
+            double newMz;
 
             if (Math.Abs(chargeCarrierMass - 0d) < float.Epsilon)
                 chargeCarrierMass = mChargeCarrierMass;
@@ -1736,23 +1737,23 @@ namespace MolecularWeightCalculator
 
             if (currentCharge == desiredCharge)
             {
-                dblNewMZ = massMz;
+                newMz = massMz;
             }
             else
             {
                 if (currentCharge == 1)
                 {
-                    dblNewMZ = massMz;
+                    newMz = massMz;
                 }
                 else if (currentCharge > 1)
                 {
-                    // Convert dblMassMZ to M+H
-                    dblNewMZ = massMz * currentCharge - chargeCarrierMass * (currentCharge - 1);
+                    // Convert massMz to M+H
+                    newMz = massMz * currentCharge - chargeCarrierMass * (currentCharge - 1);
                 }
                 else if (currentCharge == 0)
                 {
-                    // Convert dblMassMZ (which is neutral) to M+H and store in dblNewMZ
-                    dblNewMZ = massMz + chargeCarrierMass;
+                    // Convert massMz (which is neutral) to M+H and store in newMz
+                    newMz = massMz + chargeCarrierMass;
                 }
                 else
                 {
@@ -1762,25 +1763,25 @@ namespace MolecularWeightCalculator
 
                 if (desiredCharge > 1)
                 {
-                    dblNewMZ = (dblNewMZ + chargeCarrierMass * (desiredCharge - 1)) / desiredCharge;
+                    newMz = (newMz + chargeCarrierMass * (desiredCharge - 1)) / desiredCharge;
                 }
                 else if (desiredCharge == 1)
                 {
-                    // Return M+H, which is currently stored in dblNewMZ
+                    // Return M+H, which is currently stored in newMz
                 }
                 else if (desiredCharge == 0)
                 {
                     // Return the neutral mass
-                    dblNewMZ -= chargeCarrierMass;
+                    newMz -= chargeCarrierMass;
                 }
                 else
                 {
                     // Negative charges are not supported; return 0
-                    dblNewMZ = 0d;
+                    newMz = 0d;
                 }
             }
 
-            return dblNewMZ;
+            return newMz;
         }
 
         /// <summary>
@@ -1791,64 +1792,64 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public string ConvertFormulaToEmpirical(string formula)
         {
-            var udtComputationStats = new ComputationStats();
-            udtComputationStats.Initialize();
+            var computationStats = new ComputationStats();
+            computationStats.Initialize();
 
-            // Call ParseFormulaPublic to compute the formula's mass and fill udtComputationStats
-            var dblMass = ParseFormulaPublic(ref formula, ref udtComputationStats);
+            // Call ParseFormulaPublic to compute the formula's mass and fill computationStats
+            var mass = ParseFormulaPublic(ref formula, ref computationStats);
 
             if (ErrorParams.ErrorID == 0)
             {
                 // Convert to empirical formula
-                var strEmpiricalFormula = "";
+                var empiricalFormula = "";
                 // Carbon first, then hydrogen, then the rest alphabetically
                 // This is correct to start at -1
-                for (var intElementIndex = -1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                for (var elementIndex = -1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
-                    var intElementIndexToUse = default(int);
-                    if (intElementIndex == -1)
+                    var elementIndexToUse = default(int);
+                    if (elementIndex == -1)
                     {
                         // Do Carbon first
-                        intElementIndexToUse = 6;
+                        elementIndexToUse = 6;
                     }
-                    else if (intElementIndex == 0)
+                    else if (elementIndex == 0)
                     {
                         // Then do Hydrogen
-                        intElementIndexToUse = 1;
+                        elementIndexToUse = 1;
                     }
                     else
                     {
                         // Then do the rest alphabetically
-                        if (ElementAlph[intElementIndex] == "C" || ElementAlph[intElementIndex] == "H")
+                        if (ElementAlph[elementIndex] == "C" || ElementAlph[elementIndex] == "H")
                         {
-                            // Increment intElementIndex when we encounter carbon or hydrogen
-                            intElementIndex = (short)(intElementIndex + 1);
+                            // Increment elementIndex when we encounter carbon or hydrogen
+                            elementIndex = (short)(elementIndex + 1);
                         }
 
-                        for (var intElementSearchIndex = 2; intElementSearchIndex <= ELEMENT_COUNT; intElementSearchIndex++) // Start at 2 to since we've already done hydrogen
+                        for (var elementSearchIndex = 2; elementSearchIndex <= ELEMENT_COUNT; elementSearchIndex++) // Start at 2 to since we've already done hydrogen
                         {
                             // find the element in the numerically ordered array that corresponds to the alphabetically ordered array
-                            if ((ElementStats[intElementSearchIndex].Symbol ?? "") == (ElementAlph[intElementIndex] ?? ""))
+                            if ((ElementStats[elementSearchIndex].Symbol ?? "") == (ElementAlph[elementIndex] ?? ""))
                             {
-                                intElementIndexToUse = intElementSearchIndex;
+                                elementIndexToUse = elementSearchIndex;
                                 break;
                             }
                         }
                     }
 
                     // Only display the element if it's in the formula
-                    var dblThisElementCount = mComputationStatsSaved.Elements[intElementIndexToUse].Count;
-                    if (Math.Abs(dblThisElementCount - 1.0d) < float.Epsilon)
+                    var thisElementCount = mComputationStatsSaved.Elements[elementIndexToUse].Count;
+                    if (Math.Abs(thisElementCount - 1.0d) < float.Epsilon)
                     {
-                        strEmpiricalFormula += ElementStats[intElementIndexToUse].Symbol;
+                        empiricalFormula += ElementStats[elementIndexToUse].Symbol;
                     }
-                    else if (dblThisElementCount > 0d)
+                    else if (thisElementCount > 0d)
                     {
-                        strEmpiricalFormula = strEmpiricalFormula + ElementStats[intElementIndexToUse].Symbol + dblThisElementCount;
+                        empiricalFormula = empiricalFormula + ElementStats[elementIndexToUse].Symbol + thisElementCount;
                     }
                 }
 
-                return strEmpiricalFormula;
+                return empiricalFormula;
             }
 
             return (-1).ToString();
@@ -1862,11 +1863,11 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public string ExpandAbbreviationsInFormula(string formula)
         {
-            var udtComputationStats = new ComputationStats();
-            udtComputationStats.Initialize();
+            var computationStats = new ComputationStats();
+            computationStats.Initialize();
 
             // Call ExpandAbbreviationsInFormula to compute the formula's mass
-            var dblMass = ParseFormulaPublic(ref formula, ref udtComputationStats, true);
+            var mass = ParseFormulaPublic(ref formula, ref computationStats, true);
 
             if (ErrorParams.ErrorID == 0)
             {
@@ -2163,30 +2164,30 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                var AtomTrack = atomCount;
+                var atomTrack = atomCount;
 
                 // Store AtomTrack value at current position
-                comboResults[currentRow, currentCol] = AtomTrack;
+                comboResults[currentRow, currentCol] = atomTrack;
 
-                while (AtomTrack > 0)
+                while (atomTrack > 0)
                 {
                     currentRow += 1;
 
                     // Went to a new row; if CurrentCol > 1 then need to assign previous values to previous columns
                     if (currentCol > 1)
                     {
-                        for (var ColIndex = 1; ColIndex < currentCol; ColIndex++)
-                            comboResults[currentRow, ColIndex] = atomTrackHistory[ColIndex];
+                        for (var colIndex = 1; colIndex < currentCol; colIndex++)
+                            comboResults[currentRow, colIndex] = atomTrackHistory[colIndex];
                     }
 
-                    AtomTrack -= 1;
-                    comboResults[currentRow, currentCol] = AtomTrack;
+                    atomTrack -= 1;
+                    comboResults[currentRow, currentCol] = atomTrack;
 
                     if (currentCol < maxIsotopeCount)
                     {
-                        var intNewColumn = (short)(currentCol + 1);
-                        atomTrackHistory[intNewColumn - 1] = AtomTrack;
-                        currentRow = FindCombosRecurse(ref comboResults, atomCount - AtomTrack, maxIsotopeCount, (short)(currentIsotopeCount - 1), currentRow, intNewColumn, ref atomTrackHistory);
+                        var newColumn = (short)(currentCol + 1);
+                        atomTrackHistory[newColumn - 1] = atomTrack;
+                        currentRow = FindCombosRecurse(ref comboResults, atomCount - atomTrack, maxIsotopeCount, (short)(currentIsotopeCount - 1), currentRow, newColumn, ref atomTrackHistory);
                     }
                     else
                     {
@@ -2207,32 +2208,32 @@ namespace MolecularWeightCalculator
 
         public void GeneralErrorHandler(string callingProcedure, int errorNumber, string errorDescriptionAdditional = "")
         {
-            var strMessage = "Error in " + callingProcedure + ": " + Conversion.ErrorToString(errorNumber) + " (#" + errorNumber + ")";
+            var message = "Error in " + callingProcedure + ": " + Conversion.ErrorToString(errorNumber) + " (#" + errorNumber + ")";
             if (!string.IsNullOrEmpty(errorDescriptionAdditional))
             {
-                strMessage += Environment.NewLine + errorDescriptionAdditional;
+                message += Environment.NewLine + errorDescriptionAdditional;
             }
 
-            LogMessage(strMessage, MessageType.Error);
+            LogMessage(message, MessageType.Error);
 
             if (ShowErrorMessageDialogs)
             {
-                MessageBox.Show(strMessage, "Error in MwtWinDll", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(message, "Error in MwtWinDll", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
-                Console.WriteLine(strMessage);
+                Console.WriteLine(message);
             }
 
-            LogMessage(strMessage, MessageType.Error);
+            LogMessage(message, MessageType.Error);
             try
             {
-                var strErrorFilePath = System.IO.Path.Combine(Environment.CurrentDirectory, "ErrorLog.txt");
+                var errorFilePath = System.IO.Path.Combine(Environment.CurrentDirectory, "ErrorLog.txt");
 
                 // Open the file and append a new error entry
-                using (var srOutFile = new System.IO.StreamWriter(strErrorFilePath, true))
+                using (var outFile = new System.IO.StreamWriter(errorFilePath, true))
                 {
-                    srOutFile.WriteLine(DateTime.Now + " -- " + strMessage + Environment.NewLine);
+                    outFile.WriteLine(DateTime.Now + " -- " + message + Environment.NewLine);
                 }
             }
             catch
@@ -2352,31 +2353,31 @@ namespace MolecularWeightCalculator
             // Returns the symbol, if found
             // Otherwise, returns ""
 
-            var strReturnSymbol = "";
-            // Use AbbrevStats() array to lookup code
+            var returnSymbol = "";
+            // Use AbbrevStats[] array to lookup code
             for (var index = 1; index <= AbbrevAllCount; index++)
             {
                 if (AbbrevStats[index].IsAminoAcid)
                 {
-                    string strCompareSymbol;
+                    string compareSymbol;
                     if (oneLetterTo3Letter)
                     {
-                        strCompareSymbol = AbbrevStats[index].OneLetterSymbol;
+                        compareSymbol = AbbrevStats[index].OneLetterSymbol;
                     }
                     else
                     {
-                        strCompareSymbol = AbbrevStats[index].Symbol;
+                        compareSymbol = AbbrevStats[index].Symbol;
                     }
 
-                    if ((strCompareSymbol?.ToLower() ?? "") == (symbolToFind?.ToLower() ?? ""))
+                    if ((compareSymbol?.ToLower() ?? "") == (symbolToFind?.ToLower() ?? ""))
                     {
                         if (oneLetterTo3Letter)
                         {
-                            strReturnSymbol = AbbrevStats[index].Symbol;
+                            returnSymbol = AbbrevStats[index].Symbol;
                         }
                         else
                         {
-                            strReturnSymbol = AbbrevStats[index].OneLetterSymbol;
+                            returnSymbol = AbbrevStats[index].OneLetterSymbol;
                         }
 
                         break;
@@ -2384,7 +2385,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            return strReturnSymbol;
+            return returnSymbol;
         }
 
         public int GetCautionStatementCountInternal()
@@ -2399,11 +2400,11 @@ namespace MolecularWeightCalculator
         /// <returns>Statement ID if found, otherwise -1</returns>
         public int GetCautionStatementIDInternal(string symbolCombo)
         {
-            for (var intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
+            for (var index = 1; index <= CautionStatementCount; index++)
             {
-                if ((CautionStatements[intIndex, 0] ?? "") == (symbolCombo ?? ""))
+                if ((CautionStatements[index, 0] ?? "") == (symbolCombo ?? ""))
                 {
-                    return intIndex;
+                    return index;
                 }
             }
 
@@ -2492,11 +2493,11 @@ namespace MolecularWeightCalculator
         /// <returns>ID if found, otherwise 0</returns>
         public short GetElementIDInternal(string symbol)
         {
-            for (var intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
+            for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if (string.Equals(ElementStats[intIndex].Symbol, symbol, StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(ElementStats[index].Symbol, symbol, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return (short)intIndex;
+                    return (short)index;
                 }
             }
 
@@ -2517,10 +2518,10 @@ namespace MolecularWeightCalculator
             {
                 var stats = ElementStats[elementId];
                 isotopeCount = stats.IsotopeCount;
-                for (var intIsotopeIndex = 1; intIsotopeIndex <= stats.IsotopeCount; intIsotopeIndex++)
+                for (var isotopeIndex = 1; isotopeIndex <= stats.IsotopeCount; isotopeIndex++)
                 {
-                    isotopeMasses[intIsotopeIndex] = stats.Isotopes[intIsotopeIndex].Mass;
-                    isotopeAbundances[intIsotopeIndex] = stats.Isotopes[intIsotopeIndex].Abundance;
+                    isotopeMasses[isotopeIndex] = stats.Isotopes[isotopeIndex].Mass;
+                    isotopeAbundances[isotopeIndex] = stats.Isotopes[isotopeIndex].Abundance;
                 }
 
                 return 0;
@@ -2634,7 +2635,7 @@ namespace MolecularWeightCalculator
         {
             if (messageId > 0 && messageId <= MessageStatementCount)
             {
-                var strMessage = MessageStatements[messageId];
+                var message = MessageStatements[messageId];
 
                 // Append Prefix to certain strings
                 switch (messageId)
@@ -2647,12 +2648,12 @@ namespace MolecularWeightCalculator
                     case 260:
                     case 270:
                     case 300:
-                        strMessage = GetMessageStatementInternal(350) + ": " + strMessage;
+                        message = GetMessageStatementInternal(350) + ": " + message;
                         break;
                 }
 
-                // Now append strAppendText
-                return strMessage + appendText;
+                // Now append appendText
+                return message + appendText;
             }
 
             return "";
@@ -2669,17 +2670,17 @@ namespace MolecularWeightCalculator
         {
             try
             {
-                var blnFound = false;
-                for (var intIndex = 0; intIndex < abbrevSymbolStack.Count; intIndex++)
+                var found = false;
+                for (var index = 0; index < abbrevSymbolStack.Count; index++)
                 {
-                    if (abbrevSymbolStack.SymbolReferenceStack[intIndex] == symbolReference)
+                    if (abbrevSymbolStack.SymbolReferenceStack[index] == symbolReference)
                     {
-                        blnFound = true;
+                        found = true;
                         break;
                     }
                 }
 
-                return blnFound;
+                return found;
             }
             catch (Exception ex)
             {
@@ -2699,40 +2700,40 @@ namespace MolecularWeightCalculator
         /// </remarks>
         public bool IsModSymbolInternal(string testChar)
         {
-            bool blnIsModSymbol;
+            bool isModSymbol;
 
             if (testChar.Length > 0)
             {
-                var chFirstChar = testChar[0];
+                var firstChar = testChar[0];
 
-                switch (Convert.ToInt32(chFirstChar))
+                switch (Convert.ToInt32(firstChar))
                 {
                     case 34: // " is not allowed
-                        blnIsModSymbol = false;
+                        isModSymbol = false;
                         break;
                     case var @case when 40 <= @case && @case <= 41: // ( and ) are not allowed
-                        blnIsModSymbol = false;
+                        isModSymbol = false;
                         break;
                     case var case1 when 44 <= case1 && case1 <= 62: // . and - and , and / and numbers and : and ; and < and = and > are not allowed
-                        blnIsModSymbol = false;
+                        isModSymbol = false;
                         break;
                     case var case2 when 33 <= case2 && case2 <= 43:
                     case var case3 when 63 <= case3 && case3 <= 64:
                     case var case4 when 94 <= case4 && case4 <= 96:
                     case 126:
-                        blnIsModSymbol = true;
+                        isModSymbol = true;
                         break;
                     default:
-                        blnIsModSymbol = false;
+                        isModSymbol = false;
                         break;
                 }
             }
             else
             {
-                blnIsModSymbol = false;
+                isModSymbol = false;
             }
 
-            return blnIsModSymbol;
+            return isModSymbol;
         }
 
         /// <summary>
@@ -2743,17 +2744,17 @@ namespace MolecularWeightCalculator
         private bool IsStringAllLetters(string test)
         {
             // Assume true until proven otherwise
-            var blnAllLetters = true;
-            for (var intIndex = 0; intIndex < test.Length; intIndex++)
+            var allLetters = true;
+            for (var index = 0; index < test.Length; index++)
             {
-                if (!char.IsLetter(test[intIndex]))
+                if (!char.IsLetter(test[index]))
                 {
-                    blnAllLetters = false;
+                    allLetters = false;
                     break;
                 }
             }
 
-            return blnAllLetters;
+            return allLetters;
         }
 
         public bool IsValidElementSymbol(string elementSymbol, bool caseSensitive = true)
@@ -2806,14 +2807,14 @@ namespace MolecularWeightCalculator
                         mLogFilePath = System.IO.Path.Combine(mLogFolderPath, mLogFilePath);
                     }
 
-                    var blnOpeningExistingFile = System.IO.File.Exists(mLogFilePath);
+                    var openingExistingFile = System.IO.File.Exists(mLogFilePath);
 
                     mLogFile = new System.IO.StreamWriter(new System.IO.FileStream(mLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read))
                     {
                         AutoFlush = true
                     };
 
-                    if (!blnOpeningExistingFile)
+                    if (!openingExistingFile)
                     {
                         mLogFile.WriteLine("Date" + "\t" +
                             "Type" + "\t" +
@@ -2827,42 +2828,42 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            string strMessageType;
+            string messageTypeText;
 
             switch (messageType)
             {
                 case MessageType.Normal:
-                    strMessageType = "Normal";
+                    messageTypeText = "Normal";
                     break;
                 case MessageType.Error:
-                    strMessageType = "Error";
+                    messageTypeText = "Error";
                     break;
                 case MessageType.Warning:
-                    strMessageType = "Warning";
+                    messageTypeText = "Warning";
                     break;
                 default:
-                    strMessageType = "Unknown";
+                    messageTypeText = "Unknown";
                     break;
             }
 
             if (mLogFile == null)
             {
-                Console.WriteLine(strMessageType + "\t" + message);
+                Console.WriteLine(messageTypeText + "\t" + message);
             }
             else
             {
                 mLogFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\t" +
-                    strMessageType + "\t" + message);
+                    messageTypeText + "\t" + message);
             }
         }
 
         private string LookupCautionStatement(string compareText)
         {
-            for (var intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
+            for (var index = 1; index <= CautionStatementCount; index++)
             {
-                if ((compareText ?? "") == (CautionStatements[intIndex, 0] ?? ""))
+                if ((compareText ?? "") == (CautionStatements[index, 0] ?? ""))
                 {
-                    return CautionStatements[intIndex, 1];
+                    return CautionStatements[index, 1];
                 }
             }
 
@@ -2882,14 +2883,14 @@ namespace MolecularWeightCalculator
                 MemoryLoadMessageStatements();
 
             // First assume we can't find the message number
-            var strMessage = "General unspecified error";
+            var message = "General unspecified error";
 
             // Now try to find it
             if (messageId < MESSAGE_STATEMENT_DIM_COUNT)
             {
                 if (MessageStatements[messageId].Length > 0)
                 {
-                    strMessage = MessageStatements[messageId];
+                    message = MessageStatements[messageId];
                 }
             }
 
@@ -2905,35 +2906,35 @@ namespace MolecularWeightCalculator
                 case 270:
                 case 300:
                     {
-                        strMessage = LookupMessage(350) + ": " + strMessage;
+                        message = LookupMessage(350) + ": " + message;
                         break;
                     }
             }
 
-            // Now append strAppendText
-            strMessage += appendText;
+            // Now append appendText
+            message += appendText;
 
-            // messageID's 1 and 18 may need to have an addendum added
+            // messageId's 1 and 18 may need to have an addendum added
             if (messageId == 1)
             {
                 if (gComputationOptions.CaseConversion == CaseConversionMode.ExactCase)
                 {
-                    strMessage = strMessage + " (" + LookupMessage(680) + ")";
+                    message = message + " (" + LookupMessage(680) + ")";
                 }
             }
             else if (messageId == 18)
             {
                 if (!gComputationOptions.BracketsAsParentheses)
                 {
-                    strMessage = strMessage + " (" + LookupMessage(685) + ")";
+                    message = message + " (" + LookupMessage(685) + ")";
                 }
                 else
                 {
-                    strMessage = strMessage + " (" + LookupMessage(690) + ")";
+                    message = message + " (" + LookupMessage(690) + ")";
                 }
             }
 
-            return strMessage;
+            return message;
         }
 
         /// <summary>
@@ -2996,8 +2997,8 @@ namespace MolecularWeightCalculator
             const short AminoAbbrevCount = 28;
 
             AbbrevAllCount = AminoAbbrevCount;
-            for (var intIndex = 1; intIndex <= AbbrevAllCount; intIndex++)
-                AbbrevStats[intIndex].IsAminoAcid = true;
+            for (var index = 1; index <= AbbrevAllCount; index++)
+                AbbrevStats[index].IsAminoAcid = true;
 
             AddAbbreviationWork(1, "Ala", "C3H5NO", 0f, true, "A", "Alanine");
             AddAbbreviationWork(2, "Arg", "C6H12N4O", 0f, true, "R", "Arginine, (unprotonated NH2)");
@@ -3030,8 +3031,8 @@ namespace MolecularWeightCalculator
 
             const short NormalAbbrevCount = 16;
             AbbrevAllCount += NormalAbbrevCount;
-            for (var intIndex = AminoAbbrevCount + 1; intIndex <= AbbrevAllCount; intIndex++)
-                AbbrevStats[intIndex].IsAminoAcid = false;
+            for (var index = AminoAbbrevCount + 1; index <= AbbrevAllCount; index++)
+                AbbrevStats[index].IsAminoAcid = false;
 
             AddAbbreviationWork(AminoAbbrevCount + 1, "Bpy", "C10H8N2", 0f, false, "", "Bipyridine");
             AddAbbreviationWork(AminoAbbrevCount + 2, "Bu", "C4H9", 1f, false, "", "Butyl");
@@ -3088,7 +3089,7 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Define the caution statements
         /// </summary>
-        /// <remarks>Use objMwtWin.ClearCautionStatements and objMwtWin.AddCautionStatement to set these based on language</remarks>
+        /// <remarks>Use ClearCautionStatements and AddCautionStatement to set these based on language</remarks>
         public void MemoryLoadCautionStatements()
         {
             CautionStatementCount = ElementAndMassInMemoryData.MemoryLoadCautionStatementsEnglish(ref CautionStatements);
@@ -3119,7 +3120,7 @@ namespace MolecularWeightCalculator
             // Data obtained from the Perma-Chart Science Series periodic table, 1993.
             // Uncertainties from CRC Handbook of Chemistry and Physics, except for
             // Radioactive elements, where uncertainty was estimated to be .n5 where
-            // intSpecificElementProperty represents the number digits after the decimal point but before the last
+            // specificElementProperty represents the number digits after the decimal point but before the last
             // number of the molecular weight.
             // For example, for No, MW = 259.1009 (±0.0005)
 
@@ -3133,41 +3134,41 @@ namespace MolecularWeightCalculator
                 SetChargeCarrierMassInternal(DEFAULT_CHARGE_CARRIER_MASS_MONOISO);
             }
 
-            // strElementNames stores the element names
-            // dblElemVals[intElementIndex,1] stores the element's weight
-            // dblElemVals[intElementIndex,2] stores the element's uncertainty
-            // dblElemVals[intElementIndex,3] stores the element's charge
-            // Note: I could make this array of type udtElementStatsType, but the size of this sub would increase dramatically
-            ElementAndMassInMemoryData.MemoryLoadElements(elementMode, out var strElementNames, out var dblElemVals);
+            // elementNames stores the element names
+            // elemVals[elementIndex,1] stores the element's weight
+            // elemVals[elementIndex,2] stores the element's uncertainty
+            // elemVals[elementIndex,3] stores the element's charge
+            // Note: I could make this array of type ElementInfo, but the size of this sub would increase dramatically
+            ElementAndMassInMemoryData.MemoryLoadElements(elementMode, out var elementNames, out var elemVals);
 
             if (specificElement == 0)
             {
                 // Updating all the elements
-                for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
-                    var stats = ElementStats[intElementIndex];
-                    stats.Symbol = strElementNames[intElementIndex];
-                    stats.Mass = dblElemVals[intElementIndex, 1];
-                    stats.Uncertainty = dblElemVals[intElementIndex, 2];
-                    stats.Charge = (float)dblElemVals[intElementIndex, 3];
+                    var stats = ElementStats[elementIndex];
+                    stats.Symbol = elementNames[elementIndex];
+                    stats.Mass = elemVals[elementIndex, 1];
+                    stats.Uncertainty = elemVals[elementIndex, 2];
+                    stats.Charge = (float)elemVals[elementIndex, 3];
 
-                    ElementAlph[intElementIndex] = stats.Symbol;
+                    ElementAlph[elementIndex] = stats.Symbol;
                 }
 
                 // Alphabetize ElementAlph[] array via built-in sort; no custom comparator needed.
                 Array.Sort(ElementAlph);
 
                 //// Alphabetize ElementAlph[] array via bubble sort
-                //for (var intCompareIndex = ELEMENT_COUNT; intCompareIndex >= 2; intCompareIndex += -1) // Sort from end to start
+                //for (var compareIndex = ELEMENT_COUNT; compareIndex >= 2; compareIndex += -1) // Sort from end to start
                 //{
-                //    for (var intIndex = 1; intIndex < intCompareIndex; intIndex++)
+                //    for (var index = 1; index < compareIndex; index++)
                 //    {
-                //        if (Operators.CompareString(ElementAlph[intIndex], ElementAlph[intIndex + 1], false) > 0)
+                //        if (string.Compare(ElementAlph[index], ElementAlph[index + 1], StringComparison.Ordinal) > 0)
                 //        {
                 //            // Swap them
-                //            var strSwap = ElementAlph[intIndex];
-                //            ElementAlph[intIndex] = ElementAlph[intIndex + 1];
-                //            ElementAlph[intIndex + 1] = strSwap;
+                //            var swap = ElementAlph[index];
+                //            ElementAlph[index] = ElementAlph[index + 1];
+                //            ElementAlph[index + 1] = swap;
                 //        }
                 //    }
                 //}
@@ -3178,13 +3179,13 @@ namespace MolecularWeightCalculator
                 switch (specificStatToReset)
                 {
                     case MolecularWeightTool.ElementStatsType.Mass:
-                        stats.Mass = dblElemVals[specificElement, 1];
+                        stats.Mass = elemVals[specificElement, 1];
                         break;
                     case MolecularWeightTool.ElementStatsType.Uncertainty:
-                        stats.Uncertainty = dblElemVals[specificElement, 2];
+                        stats.Uncertainty = elemVals[specificElement, 2];
                         break;
                     case MolecularWeightTool.ElementStatsType.Charge:
-                        stats.Charge = (float)dblElemVals[specificElement, 3];
+                        stats.Charge = (float)elemVals[specificElement, 3];
                         break;
                     default:
                         // Ignore it
@@ -3208,26 +3209,26 @@ namespace MolecularWeightCalculator
 
         private void MwtWinDllErrorHandler(string sourceForm)
         {
-            string strMessage;
+            string message;
 
             if (Information.Err().Number == 6)
             {
-                strMessage = LookupMessage(590);
+                message = LookupMessage(590);
                 if (ShowErrorMessageDialogs)
                 {
                     MessageBox.Show(LookupMessage(590), LookupMessage(350), MessageBoxButtons.OK);
                 }
 
-                LogMessage(strMessage, MessageType.Error);
+                LogMessage(message, MessageType.Error);
             }
             else
             {
-                strMessage = LookupMessage(600) + ": " + Information.Err().Description + Environment.NewLine + " (" + sourceForm + " handler)";
-                strMessage += Environment.NewLine + LookupMessage(605);
+                message = LookupMessage(600) + ": " + Information.Err().Description + Environment.NewLine + " (" + sourceForm + " handler)";
+                message += Environment.NewLine + LookupMessage(605);
 
                 if (ShowErrorMessageDialogs)
                 {
-                    MessageBox.Show(strMessage, LookupMessage(350), MessageBoxButtons.OK);
+                    MessageBox.Show(message, LookupMessage(350), MessageBoxButtons.OK);
                 }
 
                 // Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
@@ -3235,12 +3236,12 @@ namespace MolecularWeightCalculator
 
                 // Make sure mShowErrorMessageDialogs is false when calling GeneralErrorHandler
 
-                var blnShowErrorMessageDialogsSaved = ShowErrorMessageDialogs;
+                var showErrorMessageDialogsSaved = ShowErrorMessageDialogs;
                 ShowErrorMessageDialogs = false;
 
                 GeneralErrorHandler(sourceForm, Information.Err().Number);
 
-                ShowErrorMessageDialogs = blnShowErrorMessageDialogsSaved;
+                ShowErrorMessageDialogs = showErrorMessageDialogsSaved;
             }
         }
 
@@ -3285,9 +3286,9 @@ namespace MolecularWeightCalculator
             computationStats.StandardDeviation = 0.0d;
             computationStats.TotalMass = 0.0d;
 
-            for (var intElementIndex = 0; intElementIndex < ELEMENT_COUNT; intElementIndex++)
+            for (var elementIndex = 0; elementIndex < ELEMENT_COUNT; elementIndex++)
             {
-                var element = computationStats.Elements[intElementIndex];
+                var element = computationStats.Elements[elementIndex];
                 element.Used = false; // whether element is present
                 element.Count = 0d; // # of each element
                 element.IsotopicCorrection = 0d; // isotopic correction
@@ -3318,14 +3319,15 @@ namespace MolecularWeightCalculator
             bool expandAbbreviations = false,
             double valueForX = 1)
         {
-            var udtAbbrevSymbolStack = new AbbrevSymbolStack();
+            var abbrevSymbolStack = new AbbrevSymbolStack();
+
             try
             {
                 // Initialize the UDTs
                 InitializeComputationStats(ref computationStats);
-                InitializeAbbrevSymbolStack(ref udtAbbrevSymbolStack);
+                InitializeAbbrevSymbolStack(ref abbrevSymbolStack);
 
-                var dblStdDevSum = 0.0d;
+                var stdDevSum = 0.0d;
 
                 // Reset ErrorParams to clear any prior errors
                 ResetErrorParamsInternal();
@@ -3335,11 +3337,11 @@ namespace MolecularWeightCalculator
 
                 if (formula.Length > 0)
                 {
-                    var argCarbonOrSiliconReturnCount = 0;
-                    formula = ParseFormulaRecursive(formula, ref computationStats, ref udtAbbrevSymbolStack, expandAbbreviations, ref dblStdDevSum, ref argCarbonOrSiliconReturnCount, valueForX);
+                    var carbonOrSiliconReturnCount = 0;
+                    formula = ParseFormulaRecursive(formula, ref computationStats, ref abbrevSymbolStack, expandAbbreviations, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX);
                 }
 
-                // Copy udtComputationStats to mComputationStatsSaved
+                // Copy computationStats to mComputationStatsSaved
                 mComputationStatsSaved.Initialize();
                 mComputationStatsSaved = computationStats;
 
@@ -3347,14 +3349,14 @@ namespace MolecularWeightCalculator
                 {
 
                     // Compute the standard deviation
-                    computationStats.StandardDeviation = Math.Sqrt(dblStdDevSum);
+                    computationStats.StandardDeviation = Math.Sqrt(stdDevSum);
 
                     // Compute the total molecular weight
                     computationStats.TotalMass = 0d; // Reset total weight of compound to 0 so we can add to it
-                    for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                    for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                         // Increase total weight by multiplying the count of each element by the element's mass
                         // In addition, add in the Isotopic Correction value
-                        computationStats.TotalMass = computationStats.TotalMass + ElementStats[intElementIndex].Mass * computationStats.Elements[intElementIndex].Count + computationStats.Elements[intElementIndex].IsotopicCorrection;
+                        computationStats.TotalMass = computationStats.TotalMass + ElementStats[elementIndex].Mass * computationStats.Elements[elementIndex].Count + computationStats.Elements[elementIndex].IsotopicCorrection;
 
                     return computationStats.TotalMass;
                 }
@@ -3408,79 +3410,79 @@ namespace MolecularWeightCalculator
             // ^ is 94
             // is 95
 
-            int intSymbolLength = default;
-            var blnCaretPresent = default(bool);
+            int symbolLength = default;
+            var caretPresent = default(bool);
 
-            var udtComputationStatsRightHalf = new ComputationStats();
-            udtComputationStatsRightHalf.Initialize();
+            var computationStatsRightHalf = new ComputationStats();
+            computationStatsRightHalf.Initialize();
 
-            var udtAbbrevSymbolStackRightHalf = new AbbrevSymbolStack();
+            var abbrevSymbolStackRightHalf = new AbbrevSymbolStack();
 
-            var dblStdDevSumRightHalf = default(double);
-            double dblCaretVal = default;
-            var strChar1 = string.Empty;
+            var stdDevSumRightHalf = default(double);
+            double caretVal = default;
+            var char1 = string.Empty;
 
-            short SymbolReference = default, PrevSymbolReference = default;
-            int intParenthLevel = default;
+            short symbolReference = default, prevSymbolReference = default;
+            int parenthLevel = default;
 
             try
             {
-                int intCharIndex;
-                var dblDashMultiplier = dashMultiplierPrior;
-                var dblBracketMultiplier = bracketMultiplierPrior;
-                var blnInsideBrackets = false;
+                int charIndex;
+                var dashMultiplier = dashMultiplierPrior;
+                var bracketMultiplier = bracketMultiplierPrior;
+                var insideBrackets = false;
 
-                var intDashPos = 0;
-                var strNewFormula = string.Empty;
-                var strNewFormulaRightHalf = string.Empty;
+                var dashPos = 0;
+                var newFormula = string.Empty;
+                var newFormulaRightHalf = string.Empty;
 
-                var LoneCarbonOrSilicon = 0;
+                var loneCarbonOrSilicon = 0;
                 carbonOrSiliconReturnCount = 0;
 
                 // Look for the > symbol
                 // If found, this means take First Part minus the Second Part
-                var intMinusSymbolLoc = formula.IndexOf(">", StringComparison.Ordinal);
-                if (intMinusSymbolLoc >= 0)
+                var minusSymbolLoc = formula.IndexOf(">", StringComparison.Ordinal);
+                if (minusSymbolLoc >= 0)
                 {
                     // Look for the first occurrence of >
-                    intCharIndex = 0;
-                    var blnMatchFound = false;
+                    charIndex = 0;
+                    var matchFound = false;
                     do
                     {
-                        if (formula.Substring(intCharIndex, 1) == ">")
+                        if (formula.Substring(charIndex, 1) == ">")
                         {
-                            blnMatchFound = true;
-                            var strLeftHalf = formula.Substring(0, Math.Min(formula.Length, intCharIndex - 1));
-                            var strRightHalf = formula.Substring(intCharIndex + 1);
+                            matchFound = true;
+                            var leftHalf = formula.Substring(0, Math.Min(formula.Length, charIndex - 1));
+                            var rightHalf = formula.Substring(charIndex + 1);
 
                             // Parse the first half
-                            strNewFormula = ParseFormulaRecursive(strLeftHalf, ref computationStats, ref abbrevSymbolStack, expandAbbreviations, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior, parenthMultiplier, dblDashMultiplier, dblBracketMultiplier, parenthLevelPrevious);
+                            newFormula = ParseFormulaRecursive(leftHalf, ref computationStats, ref abbrevSymbolStack, expandAbbreviations, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
 
                             // Parse the second half
-                            InitializeComputationStats(ref udtComputationStatsRightHalf);
-                            InitializeAbbrevSymbolStack(ref udtAbbrevSymbolStackRightHalf);
+                            InitializeComputationStats(ref computationStatsRightHalf);
+                            InitializeAbbrevSymbolStack(ref abbrevSymbolStackRightHalf);
 
-                            strNewFormulaRightHalf = ParseFormulaRecursive(strRightHalf, ref udtComputationStatsRightHalf, ref udtAbbrevSymbolStackRightHalf, expandAbbreviations, ref dblStdDevSumRightHalf, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + intCharIndex, parenthMultiplier, dblDashMultiplier, dblBracketMultiplier, parenthLevelPrevious);
+                            newFormulaRightHalf = ParseFormulaRecursive(rightHalf, ref computationStatsRightHalf, ref abbrevSymbolStackRightHalf, expandAbbreviations, ref stdDevSumRightHalf, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + charIndex, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
                             break;
                         }
 
-                        intCharIndex++;
+                        charIndex++;
                     }
-                    while (intCharIndex < formula.Length);
+                    while (charIndex < formula.Length);
 
-                    if (blnMatchFound)
+                    if (matchFound)
                     {
                         // Update formula
-                        formula = strNewFormula + ">" + strNewFormulaRightHalf;
+                        formula = newFormula + ">" + newFormulaRightHalf;
 
-                        // Update udtComputationStats by subtracting the atom counts of the first half minus the second half
+                        // Update computationStats by subtracting the atom counts of the first half minus the second half
                         // If any atom counts become < 0 then, then raise an error
-                        for (var intElementIndex = 1; intElementIndex <= ELEMENT_COUNT; intElementIndex++)
+                        for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                         {
-                            var element = computationStats.Elements[intElementIndex];
-                            if (ElementStats[intElementIndex].Mass * element.Count + element.IsotopicCorrection >= ElementStats[intElementIndex].Mass * udtComputationStatsRightHalf.Elements[intElementIndex].Count + udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection)
+                            var element = computationStats.Elements[elementIndex];
+                            if (ElementStats[elementIndex].Mass * element.Count + element.IsotopicCorrection >= ElementStats[elementIndex].Mass * computationStatsRightHalf.Elements[elementIndex].Count + computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection)
                             {
-                                element.Count -= -udtComputationStatsRightHalf.Elements[intElementIndex].Count;
+                                element.Count -= -computationStatsRightHalf.Elements[elementIndex].Count;
                                 if (element.Count < 0d)
                                 {
                                     // This shouldn't happen
@@ -3488,17 +3490,17 @@ namespace MolecularWeightCalculator
                                     element.Count = 0d;
                                 }
 
-                                if (Math.Abs(udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection) > float.Epsilon)
+                                if (Math.Abs(computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection) > float.Epsilon)
                                 {
                                     // This assertion is here simply because I want to check the code
-                                    element.IsotopicCorrection -= udtComputationStatsRightHalf.Elements[intElementIndex].IsotopicCorrection;
+                                    element.IsotopicCorrection -= computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection;
                                 }
                             }
                             else
                             {
                                 // Invalid Formula; raise error
                                 ErrorParams.ErrorID = 30;
-                                ErrorParams.ErrorPosition = intCharIndex;
+                                ErrorParams.ErrorPosition = charIndex;
                             }
 
                             if (ErrorParams.ErrorID != 0)
@@ -3506,80 +3508,80 @@ namespace MolecularWeightCalculator
                         }
 
                         // Adjust the overall charge
-                        computationStats.Charge -= udtComputationStatsRightHalf.Charge;
+                        computationStats.Charge -= computationStatsRightHalf.Charge;
                     }
                 }
                 else
                 {
                     // Formula does not contain >
                     // Parse it
-                    intCharIndex = 0;
+                    charIndex = 0;
                     do
                     {
-                        strChar1 = formula.Substring(intCharIndex, 1);
-                        var strChar2 = formula.Substring(intCharIndex + 1, 1);
-                        var strChar3 = formula.Substring(intCharIndex + 2, 1);
-                        var strCharRemain = formula.Substring(intCharIndex + 3);
+                        char1 = formula.Substring(charIndex, 1);
+                        var char2 = formula.Substring(charIndex + 1, 1);
+                        var char3 = formula.Substring(charIndex + 2, 1);
+                        var charRemain = formula.Substring(charIndex + 3);
                         if (gComputationOptions.CaseConversion != CaseConversionMode.ExactCase)
-                            strChar1 = strChar1.ToUpper();
+                            char1 = char1.ToUpper();
 
                         if (gComputationOptions.BracketsAsParentheses)
                         {
-                            if (strChar1 == "[")
-                                strChar1 = "(";
-                            if (strChar1 == "]")
-                                strChar1 = ")";
+                            if (char1 == "[")
+                                char1 = "(";
+                            if (char1 == "]")
+                                char1 = ")";
                         }
 
-                        if (string.IsNullOrEmpty(strChar1))
-                            strChar1 = EMPTY_STRING_CHAR.ToString();
-                        if (string.IsNullOrEmpty(strChar2))
-                            strChar2 = EMPTY_STRING_CHAR.ToString();
-                        if (string.IsNullOrEmpty(strChar3))
-                            strChar3 = EMPTY_STRING_CHAR.ToString();
-                        if (string.IsNullOrEmpty(strCharRemain))
-                            strCharRemain = EMPTY_STRING_CHAR.ToString();
+                        if (string.IsNullOrEmpty(char1))
+                            char1 = EMPTY_STRING_CHAR.ToString();
+                        if (string.IsNullOrEmpty(char2))
+                            char2 = EMPTY_STRING_CHAR.ToString();
+                        if (string.IsNullOrEmpty(char3))
+                            char3 = EMPTY_STRING_CHAR.ToString();
+                        if (string.IsNullOrEmpty(charRemain))
+                            charRemain = EMPTY_STRING_CHAR.ToString();
 
-                        var strFormulaExcerpt = strChar1 + strChar2 + strChar3 + strCharRemain;
+                        var formulaExcerpt = char1 + char2 + char3 + charRemain;
 
                         // Check for needed caution statements
-                        CheckCaution(strFormulaExcerpt);
+                        CheckCaution(formulaExcerpt);
 
-                        int intNumLength;
-                        double dblAdjacentNum;
-                        int intAddonCount;
-                        switch ((int)strChar1[0])
+                        int numLength;
+                        double adjacentNum;
+                        int addonCount;
+                        switch ((int)char1[0])
                         {
                             case 40:
                             case 123: // (    Record its position
                                 // See if a number is present just after the opening parenthesis
-                                if (char.IsDigit(strChar2[0]) || strChar2 == ".")
+                                if (char.IsDigit(char2[0]) || char2 == ".")
                                 {
                                     // Misplaced number
                                     ErrorParams.ErrorID = 14;
-                                    ErrorParams.ErrorPosition = intCharIndex;
+                                    ErrorParams.ErrorPosition = charIndex;
                                 }
 
                                 if (ErrorParams.ErrorID == 0)
                                 {
                                     // search for closing parenthesis
-                                    intParenthLevel = 1;
-                                    for (var intParenthClose = intCharIndex + 1; intParenthClose < formula.Length; intParenthClose++)
+                                    parenthLevel = 1;
+                                    for (var parenthClose = charIndex + 1; parenthClose < formula.Length; parenthClose++)
                                     {
-                                        switch (formula.Substring(intParenthClose, 1) ?? "")
+                                        switch (formula.Substring(parenthClose, 1) ?? "")
                                         {
                                             case "(":
                                             case "{":
                                             case "[":
                                                 // Another opening parentheses
                                                 // increment parenthLevel
-                                                if (!gComputationOptions.BracketsAsParentheses && formula.Substring(intParenthClose, 1) == "[")
+                                                if (!gComputationOptions.BracketsAsParentheses && formula.Substring(parenthClose, 1) == "[")
                                                 {
                                                     // Do not count the bracket
                                                 }
                                                 else
                                                 {
-                                                    intParenthLevel += 1;
+                                                    parenthLevel += 1;
                                                 }
 
                                                 break;
@@ -3587,47 +3589,47 @@ namespace MolecularWeightCalculator
                                             case ")":
                                             case "}":
                                             case "]":
-                                                if (!gComputationOptions.BracketsAsParentheses && formula.Substring(intParenthClose, 1) == "]")
+                                                if (!gComputationOptions.BracketsAsParentheses && formula.Substring(parenthClose, 1) == "]")
                                                 {
                                                     // Do not count the bracket
                                                 }
                                                 else
                                                 {
-                                                    intParenthLevel -= 1;
-                                                    if (intParenthLevel == 0)
+                                                    parenthLevel -= 1;
+                                                    if (parenthLevel == 0)
                                                     {
-                                                        dblAdjacentNum = ParseNum(formula.Substring(intParenthClose + 1), out intNumLength);
-                                                        CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                                        adjacentNum = ParseNum(formula.Substring(parenthClose + 1), out numLength);
+                                                        CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                                                        if (dblAdjacentNum < 0d)
+                                                        if (adjacentNum < 0d)
                                                         {
-                                                            dblAdjacentNum = 1.0d;
-                                                            intAddonCount = 0;
+                                                            adjacentNum = 1.0d;
+                                                            addonCount = 0;
                                                         }
                                                         else
                                                         {
-                                                            intAddonCount = intNumLength;
+                                                            addonCount = numLength;
                                                         }
 
-                                                        var strSubFormula = formula.Substring(intCharIndex + 1, intParenthClose - (intCharIndex + 1));
+                                                        var subFormula = formula.Substring(charIndex + 1, parenthClose - (charIndex + 1));
 
-                                                        // Note, must pass dblParenthMultiplier * dblAdjacentNum to preserve previous parentheses stuff
-                                                        strNewFormula = ParseFormulaRecursive(strSubFormula, ref computationStats, ref abbrevSymbolStack, expandAbbreviations, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + intCharIndex, parenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, (short)(parenthLevelPrevious + 1));
+                                                        // Note, must pass parenthMultiplier * adjacentNum to preserve previous parentheses stuff
+                                                        newFormula = ParseFormulaRecursive(subFormula, ref computationStats, ref abbrevSymbolStack, expandAbbreviations, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
 
-                                                        // If expanding abbreviations, then strNewFormula might be longer than formula, must add this onto intCharIndex also
-                                                        var intExpandAbbrevAdd = strNewFormula.Length - strSubFormula.Length;
+                                                        // If expanding abbreviations, then newFormula might be longer than formula, must add this onto charIndex also
+                                                        var expandAbbrevAdd = newFormula.Length - subFormula.Length;
 
-                                                        // Must replace the part of the formula parsed with the strNewFormula part, in case the formula was expanded or elements were capitalized
-                                                        formula = formula.Substring(0, intCharIndex) + strNewFormula + formula.Substring(intParenthClose);
-                                                        intCharIndex = intParenthClose + intAddonCount + intExpandAbbrevAdd;
+                                                        // Must replace the part of the formula parsed with the newFormula part, in case the formula was expanded or elements were capitalized
+                                                        formula = formula.Substring(0, charIndex) + newFormula + formula.Substring(parenthClose);
+                                                        charIndex = parenthClose + addonCount + expandAbbrevAdd;
 
                                                         // Correct charge
                                                         if (carbonOrSiliconReturnCount > 0)
                                                         {
-                                                            computationStats.Charge = (float)(computationStats.Charge - 2d * dblAdjacentNum);
-                                                            if (dblAdjacentNum > 1d && carbonOrSiliconReturnCount > 1)
+                                                            computationStats.Charge = (float)(computationStats.Charge - 2d * adjacentNum);
+                                                            if (adjacentNum > 1d && carbonOrSiliconReturnCount > 1)
                                                             {
-                                                                computationStats.Charge = (float)(computationStats.Charge - 2d * (dblAdjacentNum - 1d) * (carbonOrSiliconReturnCount - 1));
+                                                                computationStats.Charge = (float)(computationStats.Charge - 2d * (adjacentNum - 1d) * (carbonOrSiliconReturnCount - 1));
                                                             }
                                                         }
 
@@ -3640,14 +3642,14 @@ namespace MolecularWeightCalculator
                                     }
                                 }
 
-                                if (intParenthLevel > 0 && ErrorParams.ErrorID == 0)
+                                if (parenthLevel > 0 && ErrorParams.ErrorID == 0)
                                 {
                                     // Missing closing parenthesis
                                     ErrorParams.ErrorID = 3;
-                                    ErrorParams.ErrorPosition = intCharIndex;
+                                    ErrorParams.ErrorPosition = charIndex;
                                 }
 
-                                PrevSymbolReference = 0;
+                                prevSymbolReference = 0;
                                 break;
 
                             case 41:
@@ -3655,35 +3657,35 @@ namespace MolecularWeightCalculator
                                 // Should have been skipped
                                 // Unmatched closing parentheses
                                 ErrorParams.ErrorID = 4;
-                                ErrorParams.ErrorPosition = intCharIndex;
+                                ErrorParams.ErrorPosition = charIndex;
                                 break;
 
                             case 45: // -
                                 // Used to denote a leading coefficient
-                                dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
-                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                                if (dblAdjacentNum > 0d)
+                                if (adjacentNum > 0d)
                                 {
-                                    intDashPos = intCharIndex + intNumLength;
-                                    dblDashMultiplier = dblAdjacentNum * dashMultiplierPrior;
-                                    intCharIndex += intNumLength;
+                                    dashPos = charIndex + numLength;
+                                    dashMultiplier = adjacentNum * dashMultiplierPrior;
+                                    charIndex += numLength;
                                 }
-                                else if (Math.Abs(dblAdjacentNum) < float.Epsilon)
+                                else if (Math.Abs(adjacentNum) < float.Epsilon)
                                 {
                                     // Cannot have 0 after a dash
                                     ErrorParams.ErrorID = 5;
-                                    ErrorParams.ErrorPosition = intCharIndex + 1;
+                                    ErrorParams.ErrorPosition = charIndex + 1;
                                 }
                                 else
                                 {
                                     // No number is present, that's just fine
                                     // Make sure defaults are set, though
-                                    intDashPos = 0;
-                                    dblDashMultiplier = dashMultiplierPrior;
+                                    dashPos = 0;
+                                    dashMultiplier = dashMultiplierPrior;
                                 }
 
-                                PrevSymbolReference = 0;
+                                prevSymbolReference = 0;
                                 break;
 
                             case 44:
@@ -3691,115 +3693,115 @@ namespace MolecularWeightCalculator
                             case var @case when 48 <= @case && @case <= 57: // . or , and Numbers 0 to 9
                                 // They should only be encountered as a leading coefficient
                                 // Should have been bypassed when the coefficient was processed
-                                if (intCharIndex == 0)
+                                if (charIndex == 0)
                                 {
                                     // Formula starts with a number -- multiply section by number (until next dash)
-                                    dblAdjacentNum = ParseNum(strFormulaExcerpt, out intNumLength);
-                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                    adjacentNum = ParseNum(formulaExcerpt, out numLength);
+                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                                    if (dblAdjacentNum >= 0d)
+                                    if (adjacentNum >= 0d)
                                     {
-                                        intDashPos = intCharIndex + intNumLength - 1;
-                                        dblDashMultiplier = dblAdjacentNum * dashMultiplierPrior;
-                                        intCharIndex = intCharIndex + intNumLength - 1;
+                                        dashPos = charIndex + numLength - 1;
+                                        dashMultiplier = adjacentNum * dashMultiplierPrior;
+                                        charIndex = charIndex + numLength - 1;
                                     }
                                     else
                                     {
                                         // A number less then zero should have been handled by CatchParseNumError above
                                         // Make sure defaults are set, though
-                                        intDashPos = 0;
-                                        dblDashMultiplier = dashMultiplierPrior;
+                                        dashPos = 0;
+                                        dashMultiplier = dashMultiplierPrior;
                                     }
                                 }
-                                else if (NumberConverter.CDblSafe(formula.Substring(intCharIndex - 1, 1)) > 0d)
+                                else if (NumberConverter.CDblSafe(formula.Substring(charIndex - 1, 1)) > 0d)
                                 {
                                     // Number too large
                                     ErrorParams.ErrorID = 7;
-                                    ErrorParams.ErrorPosition = intCharIndex;
+                                    ErrorParams.ErrorPosition = charIndex;
                                 }
                                 else
                                 {
                                     // Misplaced number
                                     ErrorParams.ErrorID = 14;
-                                    ErrorParams.ErrorPosition = intCharIndex;
+                                    ErrorParams.ErrorPosition = charIndex;
                                 }
 
-                                PrevSymbolReference = 0;
+                                prevSymbolReference = 0;
                                 break;
 
                             case 91: // [
-                                if (strChar2.ToUpper() == "X")
+                                if (char2.ToUpper() == "X")
                                 {
-                                    if (strChar3 == "e")
+                                    if (char3 == "e")
                                     {
-                                        dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
-                                        CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                        adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                                        CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
                                     }
                                     else
                                     {
-                                        dblAdjacentNum = valueForX;
-                                        intNumLength = 1;
+                                        adjacentNum = valueForX;
+                                        numLength = 1;
                                     }
                                 }
                                 else
                                 {
-                                    dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
-                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                    adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
                                 }
 
                                 if (ErrorParams.ErrorID == 0)
                                 {
-                                    if (blnInsideBrackets)
+                                    if (insideBrackets)
                                     {
                                         // No Nested brackets.
                                         ErrorParams.ErrorID = 16;
-                                        ErrorParams.ErrorPosition = intCharIndex;
+                                        ErrorParams.ErrorPosition = charIndex;
                                     }
-                                    else if (dblAdjacentNum < 0d)
+                                    else if (adjacentNum < 0d)
                                     {
                                         // No number after bracket
                                         ErrorParams.ErrorID = 12;
-                                        ErrorParams.ErrorPosition = intCharIndex + 1;
+                                        ErrorParams.ErrorPosition = charIndex + 1;
                                     }
                                     else
                                     {
                                         // Coefficient for bracketed section.
-                                        blnInsideBrackets = true;
-                                        dblBracketMultiplier = dblAdjacentNum * bracketMultiplierPrior; // Take times dblBracketMultiplierPrior in case it wasn't 1 to start with
-                                        intCharIndex += intNumLength;
+                                        insideBrackets = true;
+                                        bracketMultiplier = adjacentNum * bracketMultiplierPrior; // Take times bracketMultiplierPrior in case it wasn't 1 to start with
+                                        charIndex += numLength;
                                     }
                                 }
 
-                                PrevSymbolReference = 0;
+                                prevSymbolReference = 0;
                                 break;
 
                             case 93: // ]
-                                dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
-                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                                if (dblAdjacentNum >= 0d)
+                                if (adjacentNum >= 0d)
                                 {
                                     // Number following bracket
                                     ErrorParams.ErrorID = 11;
-                                    ErrorParams.ErrorPosition = intCharIndex + 1;
+                                    ErrorParams.ErrorPosition = charIndex + 1;
                                 }
-                                else if (blnInsideBrackets)
+                                else if (insideBrackets)
                                 {
-                                    if (intDashPos > 0)
+                                    if (dashPos > 0)
                                     {
-                                        // Need to set intDashPos and dblDashMultiplier back to defaults, since a dash number goes back to one inside brackets
-                                        intDashPos = 0;
-                                        dblDashMultiplier = 1d;
+                                        // Need to set dashPos and dashMultiplier back to defaults, since a dash number goes back to one inside brackets
+                                        dashPos = 0;
+                                        dashMultiplier = 1d;
                                     }
 
-                                    blnInsideBrackets = false;
-                                    dblBracketMultiplier = bracketMultiplierPrior;
+                                    insideBrackets = false;
+                                    bracketMultiplier = bracketMultiplierPrior;
                                 }
                                 else
                                 {
                                     // Unmatched bracket
                                     ErrorParams.ErrorID = 15;
-                                    ErrorParams.ErrorPosition = intCharIndex;
+                                    ErrorParams.ErrorPosition = charIndex;
                                 }
 
                                 break;
@@ -3808,58 +3810,58 @@ namespace MolecularWeightCalculator
                             case var case2 when 97 <= case2 && case2 <= 122:
                             case 43:
                             case 95: // Uppercase A to Z and lowercase a to z, and the plus (+) sign, and the underscore (_)
-                                intAddonCount = 0;
-                                dblAdjacentNum = 0d;
+                                addonCount = 0;
+                                adjacentNum = 0d;
 
-                                var eSymbolMatchType = CheckElemAndAbbrev(strFormulaExcerpt, ref SymbolReference);
+                                var symbolMatchType = CheckElemAndAbbrev(formulaExcerpt, ref symbolReference);
 
-                                switch (eSymbolMatchType)
+                                switch (symbolMatchType)
                                 {
                                     case SymbolMatchMode.Element:
                                         // Found an element
                                         // SymbolReference is the elemental number
-                                        intSymbolLength = ElementStats[SymbolReference].Symbol.Length;
-                                        if (intSymbolLength == 0)
+                                        symbolLength = ElementStats[symbolReference].Symbol.Length;
+                                        if (symbolLength == 0)
                                         {
                                             // No elements in ElementStats yet
-                                            // Set intSymbolLength to 1
-                                            intSymbolLength = 1;
+                                            // Set symbolLength to 1
+                                            symbolLength = 1;
                                         }
                                         // Look for number after element
-                                        dblAdjacentNum = ParseNum(formula.Substring(intCharIndex + intSymbolLength), out intNumLength);
-                                        CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                        adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
+                                        CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                                        if (dblAdjacentNum < 0d)
+                                        if (adjacentNum < 0d)
                                         {
-                                            dblAdjacentNum = 1d;
+                                            adjacentNum = 1d;
                                         }
 
-                                        // Note that intNumLength = 0 if dblAdjacentNum was -1 or otherwise < 0
-                                        intAddonCount = intNumLength + intSymbolLength - 1;
+                                        // Note that numLength = 0 if adjacentNum was -1 or otherwise < 0
+                                        addonCount = numLength + symbolLength - 1;
 
-                                        if (Math.Abs(dblAdjacentNum) < float.Epsilon)
+                                        if (Math.Abs(adjacentNum) < float.Epsilon)
                                         {
                                             // Zero after element
                                             ErrorParams.ErrorID = 5;
-                                            ErrorParams.ErrorPosition = intCharIndex + intSymbolLength;
+                                            ErrorParams.ErrorPosition = charIndex + symbolLength;
                                         }
                                         else
                                         {
-                                            double dblAtomCountToAdd;
-                                            if (!blnCaretPresent)
+                                            double atomCountToAdd;
+                                            if (!caretPresent)
                                             {
-                                                dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * parenthMultiplier * dblDashMultiplier;
-                                                var element = computationStats.Elements[SymbolReference];
-                                                element.Count += dblAtomCountToAdd;
+                                                atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
+                                                var element = computationStats.Elements[symbolReference];
+                                                element.Count += atomCountToAdd;
                                                 element.Used = true; // Element is present tag
-                                                stdDevSum += dblAtomCountToAdd * Math.Pow(ElementStats[SymbolReference].Uncertainty, 2d);
+                                                stdDevSum += atomCountToAdd * Math.Pow(ElementStats[symbolReference].Uncertainty, 2d);
 
                                                 var compStats = computationStats;
                                                 // Compute charge
-                                                if (SymbolReference == 1)
+                                                if (symbolReference == 1)
                                                 {
                                                     // Dealing with hydrogen
-                                                    switch (PrevSymbolReference)
+                                                    switch (prevSymbolReference)
                                                     {
                                                         case 1:
                                                         case var case3 when 3 <= case3 && case3 <= 6:
@@ -3869,56 +3871,56 @@ namespace MolecularWeightCalculator
                                                         case var case7 when 55 <= case7 && case7 <= 82:
                                                         case var case8 when 87 <= case8 && case8 <= 109:
                                                             // Hydrogen is -1 with metals (non-halides)
-                                                            compStats.Charge = (float)(compStats.Charge + dblAtomCountToAdd * -1);
+                                                            compStats.Charge = (float)(compStats.Charge + atomCountToAdd * -1);
                                                             break;
                                                         default:
-                                                            compStats.Charge = (float)(compStats.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
+                                                            compStats.Charge = (float)(compStats.Charge + atomCountToAdd * ElementStats[symbolReference].Charge);
                                                             break;
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    compStats.Charge = (float)(compStats.Charge + dblAtomCountToAdd * ElementStats[SymbolReference].Charge);
+                                                    compStats.Charge = (float)(compStats.Charge + atomCountToAdd * ElementStats[symbolReference].Charge);
                                                 }
 
-                                                if (SymbolReference == 6 || SymbolReference == 14)
+                                                if (symbolReference == 6 || symbolReference == 14)
                                                 {
                                                     // Sum up number lone C and Si (not in abbreviations)
-                                                    LoneCarbonOrSilicon = (int)Math.Round(LoneCarbonOrSilicon + dblAdjacentNum);
-                                                    carbonOrSiliconReturnCount = (int)Math.Round(carbonOrSiliconReturnCount + dblAdjacentNum);
+                                                    loneCarbonOrSilicon = (int)Math.Round(loneCarbonOrSilicon + adjacentNum);
+                                                    carbonOrSiliconReturnCount = (int)Math.Round(carbonOrSiliconReturnCount + adjacentNum);
                                                 }
                                             }
                                             else
                                             {
-                                                // blnCaretPresent = True
+                                                //caretPresent = true;
                                                 // Check to make sure isotopic mass is reasonable
-                                                double dblIsoDifferenceTop = NumberConverter.CIntSafe(0.63d * SymbolReference + 6d);
-                                                double dblIsoDifferenceBottom = NumberConverter.CIntSafe(0.008d * Math.Pow(SymbolReference, 2d) - 0.4d * SymbolReference - 6d);
-                                                var dblCaretValDifference = dblCaretVal - SymbolReference * 2;
+                                                double isoDifferenceTop = NumberConverter.CIntSafe(0.63d * symbolReference + 6d);
+                                                double isoDifferenceBottom = NumberConverter.CIntSafe(0.008d * Math.Pow(symbolReference, 2d) - 0.4d * symbolReference - 6d);
+                                                var caretValDifference = caretVal - symbolReference * 2;
 
-                                                if (dblCaretValDifference >= dblIsoDifferenceTop)
+                                                if (caretValDifference >= isoDifferenceTop)
                                                 {
                                                     // Probably too high isotopic mass
-                                                    AddToCautionDescription(LookupMessage(660) + ": " + ElementStats[SymbolReference].Symbol + " - " + dblCaretVal + " " + LookupMessage(665) + " " + ElementStats[SymbolReference].Mass);
+                                                    AddToCautionDescription(LookupMessage(660) + ": " + ElementStats[symbolReference].Symbol + " - " + caretVal + " " + LookupMessage(665) + " " + ElementStats[symbolReference].Mass);
                                                 }
-                                                else if (dblCaretVal < SymbolReference)
+                                                else if (caretVal < symbolReference)
                                                 {
                                                     // Definitely too low isotopic mass
-                                                    AddToCautionDescription(LookupMessage(670) + ": " + ElementStats[SymbolReference].Symbol + " - " + SymbolReference + " " + LookupMessage(675));
+                                                    AddToCautionDescription(LookupMessage(670) + ": " + ElementStats[symbolReference].Symbol + " - " + symbolReference + " " + LookupMessage(675));
                                                 }
-                                                else if (dblCaretValDifference <= dblIsoDifferenceBottom)
+                                                else if (caretValDifference <= isoDifferenceBottom)
                                                 {
                                                     // Probably too low isotopic mass
-                                                    AddToCautionDescription(LookupMessage(662) + ": " + ElementStats[SymbolReference].Symbol + " - " + dblCaretVal + " " + LookupMessage(665) + " " + ElementStats[SymbolReference].Mass);
+                                                    AddToCautionDescription(LookupMessage(662) + ": " + ElementStats[symbolReference].Symbol + " - " + caretVal + " " + LookupMessage(665) + " " + ElementStats[symbolReference].Mass);
                                                 }
 
                                                 // Put in isotopic correction factor
-                                                dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * parenthMultiplier * dblDashMultiplier;
-                                                var element = computationStats.Elements[SymbolReference];
+                                                atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
+                                                var element = computationStats.Elements[symbolReference];
                                                 // Increment element counting bin
-                                                element.Count += dblAtomCountToAdd;
+                                                element.Count += atomCountToAdd;
 
-                                                // Store information in .Isotopes()
+                                                // Store information in .Isotopes[]
                                                 // Increment the isotope counting bin
                                                 element.IsotopeCount = (short)(element.IsotopeCount + 1);
 
@@ -3928,27 +3930,27 @@ namespace MolecularWeightCalculator
                                                 }
 
                                                 var isotope = element.Isotopes[element.IsotopeCount];
-                                                isotope.Count += dblAtomCountToAdd;
-                                                isotope.Mass = dblCaretVal;
+                                                isotope.Count += atomCountToAdd;
+                                                isotope.Mass = caretVal;
 
-                                                // Add correction amount to udtComputationStats.elements(SymbolReference).IsotopicCorrection
-                                                element.IsotopicCorrection += (dblCaretVal * dblAtomCountToAdd - ElementStats[SymbolReference].Mass * dblAtomCountToAdd);
+                                                // Add correction amount to computationStats.Elements[SymbolReference].IsotopicCorrection
+                                                element.IsotopicCorrection += (caretVal * atomCountToAdd - ElementStats[symbolReference].Mass * atomCountToAdd);
 
                                                 // Set bit that element is present
                                                 element.Used = true;
 
-                                                // Assume no error in caret value, no need to change dblStdDevSum
+                                                // Assume no error in caret value, no need to change stdDevSum
 
-                                                // Reset blnCaretPresent
-                                                blnCaretPresent = false;
+                                                // Reset caretPresent
+                                                caretPresent = false;
                                             }
 
                                             if (gComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
                                             {
-                                                formula = formula.Substring(0, intCharIndex - 1) + formula.Substring(intCharIndex, 1).ToUpper() + formula.Substring(intCharIndex + 1);
+                                                formula = formula.Substring(0, charIndex - 1) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
                                             }
 
-                                            intCharIndex += intAddonCount;
+                                            charIndex += addonCount;
                                         }
 
                                         break;
@@ -3957,28 +3959,28 @@ namespace MolecularWeightCalculator
                                         // Found an abbreviation or amino acid
                                         // SymbolReference is the abbrev or amino acid number
 
-                                        if (IsPresentInAbbrevSymbolStack(ref abbrevSymbolStack, SymbolReference))
+                                        if (IsPresentInAbbrevSymbolStack(ref abbrevSymbolStack, symbolReference))
                                         {
                                             // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
                                             // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
                                             // Furthermore, can't have this either: Lor = C6H5Tal and Tal = H4O2Vin and Vin = S3Lor
                                             ErrorParams.ErrorID = 28;
-                                            ErrorParams.ErrorPosition = intCharIndex;
+                                            ErrorParams.ErrorPosition = charIndex;
                                         }
                                         // Found an abbreviation
-                                        else if (blnCaretPresent)
+                                        else if (caretPresent)
                                         {
                                             // Cannot have isotopic mass for an abbreviation, including deuterium
-                                            if (strChar1.ToUpper() == "D" && strChar2 != "y")
+                                            if (char1.ToUpper() == "D" && char2 != "y")
                                             {
                                                 // Isotopic mass used for Deuterium
                                                 ErrorParams.ErrorID = 26;
-                                                ErrorParams.ErrorPosition = intCharIndex;
+                                                ErrorParams.ErrorPosition = charIndex;
                                             }
                                             else
                                             {
                                                 ErrorParams.ErrorID = 24;
-                                                ErrorParams.ErrorPosition = intCharIndex;
+                                                ErrorParams.ErrorPosition = charIndex;
                                             }
                                         }
                                         else
@@ -3986,42 +3988,42 @@ namespace MolecularWeightCalculator
                                             // Parse abbreviation
                                             // Simply treat it like a formula surrounded by parentheses
                                             // Thus, find the number after the abbreviation, then call ParseFormulaRecursive, sending it the formula for the abbreviation
-                                            // Update the udtAbbrevSymbolStack before calling so that we can check for circular abbreviation references
+                                            // Update the abbrevSymbolStack before calling so that we can check for circular abbreviation references
 
                                             // Record the abbreviation length
-                                            intSymbolLength = AbbrevStats[SymbolReference].Symbol.Length;
+                                            symbolLength = AbbrevStats[symbolReference].Symbol.Length;
 
                                             // Look for number after abbrev/amino
-                                            dblAdjacentNum = ParseNum(formula.Substring(intCharIndex + intSymbolLength), out intNumLength);
-                                            CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                            adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
+                                            CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                                            if (dblAdjacentNum < 0d)
+                                            if (adjacentNum < 0d)
                                             {
-                                                dblAdjacentNum = 1d;
-                                                intAddonCount = intSymbolLength - 1;
+                                                adjacentNum = 1d;
+                                                addonCount = symbolLength - 1;
                                             }
                                             else
                                             {
-                                                intAddonCount = intNumLength + intSymbolLength - 1;
+                                                addonCount = numLength + symbolLength - 1;
                                             }
 
                                             // Add this abbreviation symbol to the Abbreviation Symbol Stack
-                                            AbbrevSymbolStackAdd(ref abbrevSymbolStack, SymbolReference);
+                                            AbbrevSymbolStackAdd(ref abbrevSymbolStack, symbolReference);
 
                                             // Compute the charge prior to calling ParseFormulaRecursive
-                                            // During the call to ParseFormulaRecursive, udtComputationStats.Charge will be
+                                            // During the call to ParseFormulaRecursive, computationStats.Charge will be
                                             // modified according to the atoms in the abbreviation's formula
                                             // This is not what we want; instead, we want to use the defined charge for the abbreviation
-                                            // We'll use the dblAtomCountToAdd variable here, though instead of an atom count, it's really an abbreviation occurrence count
-                                            var dblAtomCountToAdd = dblAdjacentNum * dblBracketMultiplier * parenthMultiplier * dblDashMultiplier;
-                                            var sngChargeSaved = (float)(computationStats.Charge + dblAtomCountToAdd * AbbrevStats[SymbolReference].Charge);
+                                            // We'll use the atomCountToAdd variable here, though instead of an atom count, it's really an abbreviation occurrence count
+                                            var atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
+                                            var chargeSaved = (float)(computationStats.Charge + atomCountToAdd * AbbrevStats[symbolReference].Charge);
 
-                                            // When parsing an abbreviation, do not pass on the value of blnExpandAbbreviations
+                                            // When parsing an abbreviation, do not pass on the value of expandAbbreviations
                                             // This way, an abbreviation containing an abbreviation will only get expanded one level
-                                            ParseFormulaRecursive(AbbrevStats[SymbolReference].Formula, ref computationStats, ref abbrevSymbolStack, false, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + intCharIndex, parenthMultiplier * dblAdjacentNum, dblDashMultiplier, dblBracketMultiplier, parenthLevelPrevious);
+                                            ParseFormulaRecursive(AbbrevStats[symbolReference].Formula, ref computationStats, ref abbrevSymbolStack, false, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
 
-                                            // Update the charge to sngChargeSaved
-                                            computationStats.Charge = sngChargeSaved;
+                                            // Update the charge to chargeSaved
+                                            computationStats.Charge = chargeSaved;
 
                                             // Remove this symbol from the Abbreviation Symbol Stack
                                             AbbrevSymbolStackAddRemoveMostRecent(ref abbrevSymbolStack);
@@ -4031,13 +4033,13 @@ namespace MolecularWeightCalculator
                                                 if (expandAbbreviations)
                                                 {
                                                     // Replace abbreviation with empirical formula
-                                                    var strReplace = AbbrevStats[SymbolReference].Formula;
+                                                    var replace = AbbrevStats[symbolReference].Formula;
 
                                                     // Look for a number after the abbreviation or amino acid
-                                                    dblAdjacentNum = ParseNum(formula.Substring(intCharIndex + intSymbolLength), out intNumLength);
-                                                    CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                                    adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
+                                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                                                    if (strReplace.IndexOf(">", StringComparison.Ordinal) >= 0)
+                                                    if (replace.IndexOf(">", StringComparison.Ordinal) >= 0)
                                                     {
                                                         // The > symbol means take First Part minus the Second Part
                                                         // If we are parsing a sub formula inside parentheses, or if there are
@@ -4049,44 +4051,44 @@ namespace MolecularWeightCalculator
                                                         // However, this will generate an error because (C6H5Cl2>HCl)2 gets split
                                                         // to (C6H5Cl2 and HCl)2 which will both generate an error
                                                         // The only option is to convert the abbreviation to its empirical formula
-                                                        if (parenthLevelPrevious > 0 || intParenthLevel > 0 || intCharIndex + intSymbolLength <= formula.Length)
+                                                        if (parenthLevelPrevious > 0 || parenthLevel > 0 || charIndex + symbolLength <= formula.Length)
                                                         {
-                                                            strReplace = ConvertFormulaToEmpirical(strReplace);
+                                                            replace = ConvertFormulaToEmpirical(replace);
                                                         }
                                                     }
 
-                                                    if (dblAdjacentNum < 0d)
+                                                    if (adjacentNum < 0d)
                                                     {
                                                         // No number after abbreviation
-                                                        formula = formula.Substring(0, intCharIndex - 1) + strReplace + formula.Substring(intCharIndex + intSymbolLength);
-                                                        intSymbolLength = strReplace.Length;
-                                                        dblAdjacentNum = 1d;
-                                                        intAddonCount = intSymbolLength - 1;
+                                                        formula = formula.Substring(0, charIndex - 1) + replace + formula.Substring(charIndex + symbolLength);
+                                                        symbolLength = replace.Length;
+                                                        adjacentNum = 1d;
+                                                        addonCount = symbolLength - 1;
                                                     }
                                                     else
                                                     {
                                                         // Number after abbreviation -- must put abbreviation in parentheses
                                                         // Parentheses can handle integer or decimal number
-                                                        strReplace = "(" + strReplace + ")";
-                                                        formula = formula.Substring(0, intCharIndex - 1) + strReplace + formula.Substring(intCharIndex + intSymbolLength);
-                                                        intSymbolLength = strReplace.Length;
-                                                        intAddonCount = intNumLength + intSymbolLength - 1;
+                                                        replace = "(" + replace + ")";
+                                                        formula = formula.Substring(0, charIndex - 1) + replace + formula.Substring(charIndex + symbolLength);
+                                                        symbolLength = replace.Length;
+                                                        addonCount = numLength + symbolLength - 1;
                                                     }
                                                 }
 
                                                 if (gComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
                                                 {
-                                                    formula = formula.Substring(0, intCharIndex - 1) + formula.Substring(intCharIndex, 1).ToUpper() + formula.Substring(intCharIndex + 1);
+                                                    formula = formula.Substring(0, charIndex - 1) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
                                                 }
                                             }
                                         }
 
-                                        intCharIndex += intAddonCount;
+                                        charIndex += addonCount;
                                         break;
 
                                     default:
                                         // Element not Found
-                                        if (strChar1.ToUpper() == "X")
+                                        if (char1.ToUpper() == "X")
                                         {
                                             // X for solver but no preceding bracket
                                             ErrorParams.ErrorID = 18;
@@ -4096,16 +4098,16 @@ namespace MolecularWeightCalculator
                                             ErrorParams.ErrorID = 1;
                                         }
 
-                                        ErrorParams.ErrorPosition = intCharIndex;
+                                        ErrorParams.ErrorPosition = charIndex;
                                         break;
                                 }
 
-                                PrevSymbolReference = SymbolReference;
+                                prevSymbolReference = symbolReference;
                                 break;
 
                             case 94: // ^ (caret)
-                                dblAdjacentNum = ParseNum(strChar2 + strChar3 + strCharRemain, out intNumLength);
-                                CatchParseNumError(dblAdjacentNum, intNumLength, intCharIndex, intSymbolLength);
+                                adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
                                 if (ErrorParams.ErrorID != 0)
                                 {
@@ -4113,43 +4115,43 @@ namespace MolecularWeightCalculator
                                 }
                                 else
                                 {
-                                    int intCharAsc;
-                                    var strCharVal = formula.Substring(intCharIndex + 1 + intNumLength, 1);
-                                    if (strCharVal.Length > 0)
-                                        intCharAsc = strCharVal[0];
+                                    int charAsc;
+                                    var charVal = formula.Substring(charIndex + 1 + numLength, 1);
+                                    if (charVal.Length > 0)
+                                        charAsc = charVal[0];
                                     else
-                                        intCharAsc = 0;
-                                    if (dblAdjacentNum >= 0d)
+                                        charAsc = 0;
+                                    if (adjacentNum >= 0d)
                                     {
-                                        if (intCharAsc >= 65 && intCharAsc <= 90 || intCharAsc >= 97 && intCharAsc <= 122) // Uppercase A to Z and lowercase a to z
+                                        if (charAsc >= 65 && charAsc <= 90 || charAsc >= 97 && charAsc <= 122) // Uppercase A to Z and lowercase a to z
                                         {
-                                            blnCaretPresent = true;
-                                            dblCaretVal = dblAdjacentNum;
-                                            intCharIndex += intNumLength;
+                                            caretPresent = true;
+                                            caretVal = adjacentNum;
+                                            charIndex += numLength;
                                         }
                                         else
                                         {
                                             // No letter after isotopic mass
                                             ErrorParams.ErrorID = 22;
-                                            ErrorParams.ErrorPosition = intCharIndex + intNumLength + 1;
+                                            ErrorParams.ErrorPosition = charIndex + numLength + 1;
                                         }
                                     }
                                     else
                                     {
                                         // Adjacent number is < 0 or not present
                                         // Record error
-                                        blnCaretPresent = false;
-                                        if (formula.Substring(intCharIndex + 1, 1) == "-")
+                                        caretPresent = false;
+                                        if (formula.Substring(charIndex + 1, 1) == "-")
                                         {
                                             // Negative number following caret
                                             ErrorParams.ErrorID = 23;
-                                            ErrorParams.ErrorPosition = intCharIndex + 1;
+                                            ErrorParams.ErrorPosition = charIndex + 1;
                                         }
                                         else
                                         {
                                             // No number following caret
                                             ErrorParams.ErrorID = 20;
-                                            ErrorParams.ErrorPosition = intCharIndex + 1;
+                                            ErrorParams.ErrorPosition = charIndex + 1;
                                         }
                                     }
                                 }
@@ -4161,12 +4163,12 @@ namespace MolecularWeightCalculator
                                 break;
                         }
 
-                        if (intCharIndex == formula.Length - 1)
+                        if (charIndex == formula.Length - 1)
                         {
                             // Need to make sure compounds are present after a leading coefficient after a dash
-                            if (dblDashMultiplier > 0d)
+                            if (dashMultiplier > 0d)
                             {
-                                if (intCharIndex != intDashPos)
+                                if (charIndex != dashPos)
                                 {
                                     // Things went fine, no need to set anything
                                 }
@@ -4174,45 +4176,45 @@ namespace MolecularWeightCalculator
                                 {
                                     // No compounds after leading coefficient after dash
                                     ErrorParams.ErrorID = 25;
-                                    ErrorParams.ErrorPosition = intCharIndex;
+                                    ErrorParams.ErrorPosition = charIndex;
                                 }
                             }
                         }
 
                         if (ErrorParams.ErrorID != 0)
                         {
-                            intCharIndex = formula.Length;
+                            charIndex = formula.Length;
                         }
 
-                        intCharIndex ++;
+                        charIndex ++;
                     }
-                    while (intCharIndex < formula.Length);
+                    while (charIndex < formula.Length);
                 }
 
-                if (blnInsideBrackets)
+                if (insideBrackets)
                 {
                     if (ErrorParams.ErrorID == 0)
                     {
                         // Missing closing bracket
                         ErrorParams.ErrorID = 13;
-                        ErrorParams.ErrorPosition = intCharIndex;
+                        ErrorParams.ErrorPosition = charIndex;
                     }
                 }
 
                 if (ErrorParams.ErrorID != 0 && ErrorParams.ErrorCharacter.Length == 0)
                 {
-                    if (string.IsNullOrEmpty(strChar1))
-                        strChar1 = EMPTY_STRING_CHAR.ToString();
-                    ErrorParams.ErrorCharacter = strChar1;
+                    if (string.IsNullOrEmpty(char1))
+                        char1 = EMPTY_STRING_CHAR.ToString();
+                    ErrorParams.ErrorCharacter = char1;
                     ErrorParams.ErrorPosition += charCountPrior;
                 }
 
-                if (LoneCarbonOrSilicon > 1)
+                if (loneCarbonOrSilicon > 1)
                 {
                     // Correct Charge for number of C and Si
-                    computationStats.Charge -= (LoneCarbonOrSilicon - 1) * 2;
+                    computationStats.Charge -= (loneCarbonOrSilicon - 1) * 2;
 
-                    carbonOrSiliconReturnCount = LoneCarbonOrSilicon;
+                    carbonOrSiliconReturnCount = loneCarbonOrSilicon;
                 }
                 else
                 {
@@ -4261,7 +4263,7 @@ namespace MolecularWeightCalculator
             // If it doesn't get set to 0 (due to an error), it will get set to the
             // length of the matched number before exiting the sub
             numLength = -1;
-            var strFoundNum = string.Empty;
+            var foundNum = string.Empty;
 
             if (string.IsNullOrEmpty(work))
                 work = EMPTY_STRING_CHAR.ToString();
@@ -4272,12 +4274,12 @@ namespace MolecularWeightCalculator
             }
 
             // Start of string is a number or a decimal point, or (if allowed) a negative sign
-            for (var intIndex = 0; intIndex < work.Length; intIndex++)
+            for (var index = 0; index < work.Length; index++)
             {
-                var strWorking = work.Substring(intIndex, 1);
-                if (char.IsDigit(strWorking[0]) || strWorking == gComputationOptions.DecimalSeparator.ToString() || allowNegative == true && strWorking == "-")
+                var working = work.Substring(index, 1);
+                if (char.IsDigit(working[0]) || working == gComputationOptions.DecimalSeparator.ToString() || allowNegative == true && working == "-")
                 {
-                    strFoundNum += strWorking;
+                    foundNum += working;
                 }
                 else
                 {
@@ -4285,34 +4287,34 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            if (strFoundNum.Length == 0 || strFoundNum == gComputationOptions.DecimalSeparator.ToString())
+            if (foundNum.Length == 0 || foundNum == gComputationOptions.DecimalSeparator.ToString())
             {
                 // No number at all or (more likely) no number after decimal point
-                strFoundNum = (-3).ToString();
+                foundNum = (-3).ToString();
                 numLength = 0;
             }
             else
             {
                 // Check for more than one decimal point (. or ,)
-                var intDecPtCount = 0;
-                for (var intIndex = 0; intIndex < strFoundNum.Length; intIndex++)
+                var decPtCount = 0;
+                for (var index = 0; index < foundNum.Length; index++)
                 {
-                    if (strFoundNum.Substring(intIndex, 1) == gComputationOptions.DecimalSeparator.ToString())
-                        intDecPtCount = (short)(intDecPtCount + 1);
+                    if (foundNum.Substring(index, 1) == gComputationOptions.DecimalSeparator.ToString())
+                        decPtCount = (short)(decPtCount + 1);
                 }
 
-                if (intDecPtCount > 1)
+                if (decPtCount > 1)
                 {
-                    // more than one intDecPtCount
-                    strFoundNum = (-4).ToString();
+                    // more than one decPtCount
+                    foundNum = (-4).ToString();
                     numLength = 0;
                 }
             }
 
             if (numLength < 0)
-                numLength = (short)strFoundNum.Length;
+                numLength = (short)foundNum.Length;
 
-            return NumberConverter.CDblSafe(strFoundNum);
+            return NumberConverter.CDblSafe(foundNum);
         }
 
         /// <summary>
@@ -4338,12 +4340,12 @@ namespace MolecularWeightCalculator
             // and must end with } or {\fs30  }} if superscript was used
 
             // "{\super 3}C{\sub 6}H{\sub 6}{\fs30  }}"
-            // strRTF = "{{\fonttbl{\f0\fcharset0\fprq2 " + rtfFormula(0).font + ";}}\pard\plain\fs25 ";
-            // Old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman\fcharset2 Times New Roman;}{\f3\froman " + lblMWT[0].FontName + ";}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f3\fs25 ";
-            // old: strRTF = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " + lblMWT[0].FontName + ";}{\f3\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f2\fs25 ";
+            // var rtf = "{{\fonttbl{\f0\fcharset0\fprq2 " + rtfFormula(0).font + ";}}\pard\plain\fs25 ";
+            // Old: var rtf = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman\fcharset2 Times New Roman;}{\f3\froman " + lblMWT[0].FontName + ";}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f3\fs25 ";
+            // old: var rtf = "{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " + lblMWT[0].FontName + ";}{\f3\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;}\deflang1033\pard\plain\f2\fs25 ";
             // f0                               f1                                 f2                          f3                               f4                      cf0 (black)        cf1 (red)          cf3 (white)
             // ReSharper disable StringLiteralTypo
-            var strRTF = @"{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " + gComputationOptions.RtfFontName + @";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" + NumberConverter.CShortSafe(gComputationOptions.RtfFontSize * 2.5d) + " ";
+            var rtf = @"{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " + gComputationOptions.RtfFontName + @";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" + NumberConverter.CShortSafe(gComputationOptions.RtfFontSize * 2.5d) + " ";
             // ReSharper restore StringLiteralTypo
 
             // ReSharper restore CommentTypo
@@ -4351,46 +4353,46 @@ namespace MolecularWeightCalculator
             if ((workText ?? "") == string.Empty)
             {
                 // Return a blank RTF string
-                return strRTF + "}";
+                return rtf + "}";
             }
 
-            var blnSuperFound = false;
-            var strWorkCharPrev = "";
-            for (var intCharIndex = 0; intCharIndex < workText.Length; intCharIndex++)
+            var superFound = false;
+            var workCharPrev = "";
+            for (var charIndex = 0; charIndex < workText.Length; charIndex++)
             {
-                var strWorkChar = workText.Substring(intCharIndex, 1);
-                if (strWorkChar == "%" && highlightCharFollowingPercentSign)
+                var workChar = workText.Substring(charIndex, 1);
+                if (workChar == "%" && highlightCharFollowingPercentSign)
                 {
                     // An error was found and marked by a % sign
                     // Highlight the character at the % sign, and remove the % sign
-                    if (intCharIndex == workText.Length - 1)
+                    if (charIndex == workText.Length - 1)
                     {
                         // At end of line
-                        int errorID;
+                        int errorId;
                         if (overrideErrorId && errorIdOverride != 0)
                         {
-                            errorID = errorIdOverride;
+                            errorId = errorIdOverride;
                         }
                         else
                         {
-                            errorID = ErrorParams.ErrorID;
+                            errorId = ErrorParams.ErrorID;
                         }
 
-                        switch (errorID)
+                        switch (errorId)
                         {
                             case var @case when 2 <= @case && @case <= 4:
                                 // Error involves a parentheses, find last opening parenthesis, (, or opening curly bracket, {
-                                for (var intCharIndex2 = strRTF.Length - 1; intCharIndex2 >= 2; intCharIndex2 -= 1)
+                                for (var charIndex2 = rtf.Length - 1; charIndex2 >= 2; charIndex2 -= 1)
                                 {
-                                    if (strRTF.Substring(intCharIndex2, 1) == "(")
+                                    if (rtf.Substring(charIndex2, 1) == "(")
                                     {
-                                        strRTF = strRTF.Substring(0, intCharIndex2 - 1) + @"{\cf1 (}" + strRTF.Substring(intCharIndex2 + 1);
+                                        rtf = rtf.Substring(0, charIndex2 - 1) + @"{\cf1 (}" + rtf.Substring(charIndex2 + 1);
                                         break;
                                     }
 
-                                    if (strRTF.Substring(intCharIndex2, 1) == "{")
+                                    if (rtf.Substring(charIndex2, 1) == "{")
                                     {
-                                        strRTF = strRTF.Substring(0, intCharIndex2 - 1) + @"{\cf1 \{}" + strRTF.Substring(intCharIndex2 + 1);
+                                        rtf = rtf.Substring(0, charIndex2 - 1) + @"{\cf1 \{}" + rtf.Substring(charIndex2 + 1);
                                         break;
                                     }
                                 }
@@ -4400,11 +4402,11 @@ namespace MolecularWeightCalculator
                             case 13:
                             case 15:
                                 // Error involves a bracket, find last opening bracket, [
-                                for (var intCharIndex2 = strRTF.Length - 1; intCharIndex2 >= 2; intCharIndex2 -= 1)
+                                for (var charIndex2 = rtf.Length - 1; charIndex2 >= 2; charIndex2 -= 1)
                                 {
-                                    if (strRTF.Substring(intCharIndex2, 1) == "[")
+                                    if (rtf.Substring(charIndex2, 1) == "[")
                                     {
-                                        strRTF = strRTF.Substring(0, intCharIndex2 - 1) + @"{\cf1 [}" + strRTF.Substring(intCharIndex2 + 1);
+                                        rtf = rtf.Substring(0, charIndex2 - 1) + @"{\cf1 [}" + rtf.Substring(charIndex2 + 1);
                                         break;
                                     }
                                 }
@@ -4419,92 +4421,92 @@ namespace MolecularWeightCalculator
                     else
                     {
                         // Highlight next character and skip % sign
-                        strWorkChar = workText.Substring(intCharIndex + 1, 1);
+                        workChar = workText.Substring(charIndex + 1, 1);
                         // Handle curly brackets
-                        if (strWorkChar == "{" || strWorkChar == "}")
-                            strWorkChar = @"\" + strWorkChar;
-                        strRTF = strRTF + @"{\cf1 " + strWorkChar + "}";
-                        intCharIndex++;
+                        if (workChar == "{" || workChar == "}")
+                            workChar = @"\" + workChar;
+                        rtf = rtf + @"{\cf1 " + workChar + "}";
+                        charIndex++;
                     }
                 }
-                else if (strWorkChar == "^")
+                else if (workChar == "^")
                 {
-                    strRTF += @"{\super ^}";
-                    blnSuperFound = true;
+                    rtf += @"{\super ^}";
+                    superFound = true;
                 }
-                else if (strWorkChar == "_")
+                else if (workChar == "_")
                 {
-                    strRTF += @"{\super}";
-                    blnSuperFound = true;
+                    rtf += @"{\super}";
+                    superFound = true;
                 }
-                else if (strWorkChar == "+" && !calculatorMode)
+                else if (workChar == "+" && !calculatorMode)
                 {
-                    strRTF += @"{\super +}";
-                    blnSuperFound = true;
+                    rtf += @"{\super +}";
+                    superFound = true;
                 }
-                else if (strWorkChar == EMPTY_STRING_CHAR.ToString())
+                else if (workChar == EMPTY_STRING_CHAR.ToString())
                 {
                     // skip it, the tilde sign is used to add additional height to the formula line when isotopes are used
-                    // If it's here from a previous time, we ignore it, adding it at the end if needed (if blnSuperFound = true)
+                    // If it's here from a previous time, we ignore it, adding it at the end if needed (if superFound = true)
                 }
-                else if (char.IsDigit(strWorkChar[0]) || strWorkChar == gComputationOptions.DecimalSeparator.ToString())
+                else if (char.IsDigit(workChar[0]) || workChar == gComputationOptions.DecimalSeparator.ToString())
                 {
                     // Number or period, so super or subscript it if needed
-                    if (intCharIndex == 1)
+                    if (charIndex == 1)
                     {
                         // at beginning of line, so leave it alone. Probably out of place
-                        strRTF += strWorkChar;
+                        rtf += workChar;
                     }
-                    else if (!calculatorMode && (char.IsLetter(strWorkCharPrev[0]) || strWorkCharPrev == ")" || strWorkCharPrev == @"\}" || strWorkCharPrev == "+" || strWorkCharPrev == "_" || strRTF.Substring(strRTF.Length - 6, 3) == "sub"))
+                    else if (!calculatorMode && (char.IsLetter(workCharPrev[0]) || workCharPrev == ")" || workCharPrev == @"\}" || workCharPrev == "+" || workCharPrev == "_" || rtf.Substring(rtf.Length - 6, 3) == "sub"))
                     {
                         // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
                         // But, don't use subscripts in calculator
-                        strRTF = strRTF + @"{\sub " + strWorkChar + "}";
+                        rtf = rtf + @"{\sub " + workChar + "}";
                     }
-                    else if (!calculatorMode && gComputationOptions.BracketsAsParentheses && strWorkCharPrev == "]")
+                    else if (!calculatorMode && gComputationOptions.BracketsAsParentheses && workCharPrev == "]")
                     {
                         // only subscript after closing bracket, ], if brackets are being treated as parentheses
-                        strRTF = strRTF + @"{\sub " + strWorkChar + "}";
+                        rtf = rtf + @"{\sub " + workChar + "}";
                     }
-                    else if (strRTF.Substring(strRTF.Length - 8, 5) == "super")
+                    else if (rtf.Substring(rtf.Length - 8, 5) == "super")
                     {
                         // if previous character was superscripted, then superscript this number too
-                        strRTF = strRTF + @"{\super " + strWorkChar + "}";
-                        blnSuperFound = true;
+                        rtf = rtf + @"{\super " + workChar + "}";
+                        superFound = true;
                     }
                     else
                     {
-                        strRTF += strWorkChar;
+                        rtf += workChar;
                     }
                 }
-                else if (strWorkChar == " ")
+                else if (workChar == " ")
                 {
                     // Ignore it
                 }
                 else
                 {
                     // Handle curly brackets
-                    if (strWorkChar == "{" || strWorkChar == "}")
-                        strWorkChar = @"\" + strWorkChar;
-                    strRTF += strWorkChar;
+                    if (workChar == "{" || workChar == "}")
+                        workChar = @"\" + workChar;
+                    rtf += workChar;
                 }
 
-                strWorkCharPrev = strWorkChar;
+                workCharPrev = workChar;
             }
 
-            if (blnSuperFound)
+            if (superFound)
             {
                 // Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUST_CHAR)
                 // It is used to add additional height to the formula line when isotopes are used
                 // It is colored white so the user does not see it
-                strRTF = strRTF + @"{\fs" + NumberConverter.CShortSafe(gComputationOptions.RtfFontSize * 3) + @"\cf2 " + RTF_HEIGHT_ADJUST_CHAR + "}}";
+                rtf = rtf + @"{\fs" + NumberConverter.CShortSafe(gComputationOptions.RtfFontSize * 3) + @"\cf2 " + RTF_HEIGHT_ADJUST_CHAR + "}}";
             }
             else
             {
-                strRTF += "}";
+                rtf += "}";
             }
 
-            return strRTF;
+            return rtf;
         }
 
         /// <summary>
@@ -4536,7 +4538,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if found and removed; 1 if error</returns>
         public int RemoveAbbreviationInternal(string abbreviationSymbol)
         {
-            var blnRemoved = default(bool);
+            var removed = default(bool);
 
             abbreviationSymbol = abbreviationSymbol?.ToLower();
 
@@ -4545,11 +4547,11 @@ namespace MolecularWeightCalculator
                 if ((AbbrevStats[index].Symbol?.ToLower() ?? "") == (abbreviationSymbol ?? ""))
                 {
                     RemoveAbbreviationByIDInternal(index);
-                    blnRemoved = true;
+                    removed = true;
                 }
             }
 
-            if (blnRemoved)
+            if (removed)
             {
                 return 0;
             }
@@ -4564,7 +4566,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if found and removed; 1 if error</returns>
         public int RemoveAbbreviationByIDInternal(int abbreviationId)
         {
-            bool blnRemoved;
+            bool removed;
 
             if (abbreviationId >= 1 && abbreviationId <= AbbrevAllCount)
             {
@@ -4573,14 +4575,14 @@ namespace MolecularWeightCalculator
 
                 AbbrevAllCount = (short)(AbbrevAllCount - 1);
                 ConstructMasterSymbolsList();
-                blnRemoved = true;
+                removed = true;
             }
             else
             {
-                blnRemoved = false;
+                removed = false;
             }
 
-            if (blnRemoved)
+            if (removed)
             {
                 return 0;
             }
@@ -4595,24 +4597,24 @@ namespace MolecularWeightCalculator
         /// <returns>0 if found and removed; 1 if error</returns>
         public int RemoveCautionStatementInternal(string cautionSymbol)
         {
-            var blnRemoved = default(bool);
+            var removed = default(bool);
 
-            for (var intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
+            for (var index = 1; index <= CautionStatementCount; index++)
             {
-                if ((CautionStatements[intIndex, 0] ?? "") == (cautionSymbol ?? ""))
+                if ((CautionStatements[index, 0] ?? "") == (cautionSymbol ?? ""))
                 {
-                    for (var intIndexRemove = intIndex; intIndexRemove < CautionStatementCount; intIndexRemove++)
+                    for (var indexRemove = index; indexRemove < CautionStatementCount; indexRemove++)
                     {
-                        CautionStatements[intIndexRemove, 0] = CautionStatements[intIndexRemove + 1, 0];
-                        CautionStatements[intIndexRemove, 1] = CautionStatements[intIndexRemove + 1, 1];
+                        CautionStatements[indexRemove, 0] = CautionStatements[indexRemove + 1, 0];
+                        CautionStatements[indexRemove, 1] = CautionStatements[indexRemove + 1, 1];
                     }
 
                     CautionStatementCount -= 1;
-                    blnRemoved = true;
+                    removed = true;
                 }
             }
 
-            if (blnRemoved)
+            if (removed)
             {
                 return 0;
             }
@@ -4650,81 +4652,81 @@ namespace MolecularWeightCalculator
             // mass is the main number
             // stdDev is the standard deviation
 
-            var strResult = string.Empty;
+            var result = string.Empty;
 
             try
             {
-                double dblRoundedMain;
-                string strPctSign;
-                // blnIncludePctSign is True when formatting Percent composition values
+                double roundedMain;
+                string pctSign;
+                // includePctSign is True when formatting Percent composition values
                 if (includePctSign)
                 {
-                    strPctSign = "%";
+                    pctSign = "%";
                 }
                 else
                 {
-                    strPctSign = "";
+                    pctSign = "";
                 }
 
                 if (Math.Abs(stdDev) < float.Epsilon)
                 {
                     // Standard deviation value is 0; simply return the result
-                    strResult = mass.ToString("0.0####") + strPctSign + " (" + '±' + "0)";
+                    result = mass.ToString("0.0####") + pctSign + " (" + '±' + "0)";
 
-                    // dblRoundedMain is used later, must copy dblMass to it
-                    dblRoundedMain = mass;
+                    // roundedMain is used later, must copy mass to it
+                    roundedMain = mass;
                 }
                 else
                 {
-                    // First round dblStdDev to show just one number
-                    var dblRoundedStdDev = double.Parse(stdDev.ToString("0E+000"));
+                    // First round stdDev to show just one number
+                    var roundedStdDev = double.Parse(stdDev.ToString("0E+000"));
 
-                    // Now round dblMass
-                    // Simply divide dblMass by 10^Exponent of the Standard Deviation
+                    // Now round mass
+                    // Simply divide mass by 10^Exponent of the Standard Deviation
                     // Next round
-                    // Now multiply to get back the rounded dblMass
-                    var strWork = stdDev.ToString("0E+000");
-                    var strStdDevShort = strWork.Substring(0, 1);
+                    // Now multiply to get back the rounded mass
+                    var workText = stdDev.ToString("0E+000");
+                    var stdDevShort = workText.Substring(0, 1);
 
-                    var intExponentValue = NumberConverter.CShortSafe(strWork.Substring(strWork.Length - 4));
-                    var dblWork = mass / Math.Pow(10d, intExponentValue);
-                    dblWork = Math.Round(dblWork, 0);
-                    dblRoundedMain = dblWork * Math.Pow(10d, intExponentValue);
+                    var exponentValue = NumberConverter.CShortSafe(workText.Substring(workText.Length - 4));
+                    var work = mass / Math.Pow(10d, exponentValue);
+                    work = Math.Round(work, 0);
+                    roundedMain = work * Math.Pow(10d, exponentValue);
 
-                    strWork = dblRoundedMain.ToString("0.0##E+00");
+                    workText = roundedMain.ToString("0.0##E+00");
 
                     if (gComputationOptions.StdDevMode == StdDevMode.Short)
                     {
                         // StdDevType Short (Type 0)
-                        strResult = dblRoundedMain.ToString();
+                        result = roundedMain.ToString();
                         if (includeStandardDeviation)
                         {
-                            strResult = strResult + "(" + '±' + strStdDevShort + ")";
+                            result = result + "(" + '±' + stdDevShort + ")";
                         }
 
-                        strResult += strPctSign;
+                        result += pctSign;
                     }
                     else if (gComputationOptions.StdDevMode == StdDevMode.Scientific)
                     {
                         // StdDevType Scientific (Type 1)
-                        strResult = dblRoundedMain + strPctSign;
+                        result = roundedMain + pctSign;
                         if (includeStandardDeviation)
                         {
-                            strResult += " (" + '±' + stdDev.ToString("0.000E+00") + ")";
+                            result += " (" + '±' + stdDev.ToString("0.000E+00") + ")";
                         }
                     }
                     else
                     {
                         // StdDevType Decimal
-                        strResult = mass.ToString("0.0####") + strPctSign;
+                        result = mass.ToString("0.0####") + pctSign;
                         if (includeStandardDeviation)
                         {
-                            strResult += " (" + '±' + dblRoundedStdDev + ")";
+                            result += " (" + '±' + roundedStdDev + ")";
                         }
                     }
                 }
 
-                return strResult;
+                return result;
             }
             catch
             {
@@ -4733,22 +4735,22 @@ namespace MolecularWeightCalculator
                 ErrorParams.ErrorPosition = 0;
             }
 
-            if (string.IsNullOrEmpty(strResult))
-                strResult = string.Empty;
-            return strResult;
+            if (string.IsNullOrEmpty(result))
+                result = string.Empty;
+            return result;
         }
 
         public double RoundToMultipleOf10(double thisNum)
         {
             // Round to nearest 1, 2, or 5 (or multiple of 10 thereof)
             // First, find the exponent of thisNum
-            var strWork = thisNum.ToString("0E+000");
-            var intExponentValue = NumberConverter.CIntSafe(strWork.Substring(strWork.Length - 4));
-            var dblWork = thisNum / Math.Pow(10d, intExponentValue);
-            dblWork = NumberConverter.CIntSafe(dblWork);
+            var workText = thisNum.ToString("0E+000");
+            var exponentValue = NumberConverter.CIntSafe(workText.Substring(workText.Length - 4));
+            var work = thisNum / Math.Pow(10d, exponentValue);
+            work = NumberConverter.CIntSafe(work);
 
-            // dblWork should now be between 0 and 9
-            switch (dblWork)
+            // work should now be between 0 and 9
+            switch (work)
             {
                 case 0d:
                 case 1d:
@@ -4762,8 +4764,8 @@ namespace MolecularWeightCalculator
                     break;
             }
 
-            // Convert dblThisNum back to the correct magnitude
-            thisNum *= Math.Pow(10d, intExponentValue);
+            // Convert thisNum back to the correct magnitude
+            thisNum *= Math.Pow(10d, exponentValue);
 
             return thisNum;
         }
@@ -4771,30 +4773,30 @@ namespace MolecularWeightCalculator
         public double RoundToEvenMultiple(double valueToRound, double multipleValue, bool roundUp)
         {
             // Find the exponent of MultipleValue
-            var strWork = multipleValue.ToString("0E+000");
-            var intExponentValue = NumberConverter.CIntSafe(strWork.Substring(strWork.Length - 4));
+            var workText = multipleValue.ToString("0E+000");
+            var exponentValue = NumberConverter.CIntSafe(workText.Substring(workText.Length - 4));
 
-            var intLoopCount = 0;
+            var loopCount = 0;
             while ((valueToRound / multipleValue).ToString() != Math.Round(valueToRound / multipleValue, 0).ToString())
             {
-                var dblWork = valueToRound / Math.Pow(10d, intExponentValue);
-                dblWork = double.Parse(dblWork.ToString("0"));
-                dblWork *= Math.Pow(10d, intExponentValue);
+                var work = valueToRound / Math.Pow(10d, exponentValue);
+                work = double.Parse(work.ToString("0"));
+                work *= Math.Pow(10d, exponentValue);
                 if (roundUp)
                 {
-                    if (dblWork <= valueToRound)
+                    if (work <= valueToRound)
                     {
-                        dblWork += Math.Pow(10d, intExponentValue);
+                        work += Math.Pow(10d, exponentValue);
                     }
                 }
-                else if (dblWork >= valueToRound)
+                else if (work >= valueToRound)
                 {
-                    dblWork -= Math.Pow(10d, intExponentValue);
+                    work -= Math.Pow(10d, exponentValue);
                 }
 
-                valueToRound = dblWork;
-                intLoopCount += 1;
-                if (intLoopCount > 500)
+                valueToRound = work;
+                loopCount += 1;
+                if (loopCount > 500)
                 {
                     // Debug.Assert False
                     break;
@@ -4827,26 +4829,26 @@ namespace MolecularWeightCalculator
             string comment = "",
             bool validateFormula = true)
         {
-            var abbrevID = default(int);
+            var abbrevId = default(int);
 
             // See if the abbreviation is already present
-            var blnAlreadyPresent = false;
+            var alreadyPresent = false;
             for (var index = 1; index <= AbbrevAllCount; index++)
             {
                 if ((AbbrevStats[index].Symbol?.ToUpper() ?? "") == (symbol?.ToUpper() ?? ""))
                 {
-                    blnAlreadyPresent = true;
-                    abbrevID = index;
+                    alreadyPresent = true;
+                    abbrevId = index;
                     break;
                 }
             }
 
             // AbbrevStats is a 1-based array
-            if (!blnAlreadyPresent)
+            if (!alreadyPresent)
             {
                 if (AbbrevAllCount < MAX_ABBREV_COUNT)
                 {
-                    abbrevID = AbbrevAllCount + 1;
+                    abbrevId = AbbrevAllCount + 1;
                     AbbrevAllCount = (short)(AbbrevAllCount + 1);
                 }
                 else
@@ -4856,9 +4858,9 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            if (abbrevID >= 1)
+            if (abbrevId >= 1)
             {
-                SetAbbreviationByIDInternal((short)abbrevID, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
+                SetAbbreviationByIDInternal((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
             }
 
             return ErrorParams.ErrorID;
@@ -4867,7 +4869,7 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Adds a new abbreviation or updates an existing one (based on <paramref name="abbrevId"/>)
         /// </summary>
-        /// <param name="abbrevId">If intAbbrevID is less than 1, adds as a new abbreviation</param>
+        /// <param name="abbrevId">If abbrevId is less than 1, adds as a new abbreviation</param>
         /// <param name="symbol"></param>
         /// <param name="formula"></param>
         /// <param name="charge"></param>
@@ -4884,18 +4886,18 @@ namespace MolecularWeightCalculator
             string comment = "",
             bool validateFormula = true)
         {
-            var udtComputationStats = new ComputationStats();
-            udtComputationStats.Initialize();
+            var computationStats = new ComputationStats();
+            computationStats.Initialize();
 
-            var udtAbbrevSymbolStack = new AbbrevSymbolStack();
-            var blnInvalidSymbolOrFormula = default(bool);
-            var intSymbolReference = default(short);
+            var abbrevSymbolStack = new AbbrevSymbolStack();
+            var invalidSymbolOrFormula = default(bool);
+            var symbolReference = default(short);
 
             ResetErrorParamsInternal();
 
             // Initialize the UDTs
-            InitializeComputationStats(ref udtComputationStats);
-            InitializeAbbrevSymbolStack(ref udtAbbrevSymbolStack);
+            InitializeComputationStats(ref computationStats);
+            InitializeAbbrevSymbolStack(ref abbrevSymbolStack);
 
             if (symbol.Length < 1)
             {
@@ -4914,7 +4916,7 @@ namespace MolecularWeightCalculator
                     // Convert symbol to proper case mode
                     symbol = symbol.Substring(0, 1).ToUpper() + symbol.Substring(1).ToLower();
 
-                    // If intAbbrevID is < 1 or larger than AbbrevAllCount, then define it
+                    // If abbrevId is < 1 or larger than AbbrevAllCount, then define it
                     if (abbrevId < 1 || abbrevId > AbbrevAllCount + 1)
                     {
                         if (AbbrevAllCount < MAX_ABBREV_COUNT)
@@ -4933,34 +4935,34 @@ namespace MolecularWeightCalculator
                     if (abbrevId >= 1)
                     {
                         // Make sure the abbreviation doesn't match one of the standard elements
-                        var eSymbolMatchType = CheckElemAndAbbrev(symbol, ref intSymbolReference);
+                        var symbolMatchType = CheckElemAndAbbrev(symbol, ref symbolReference);
 
-                        if (eSymbolMatchType == SymbolMatchMode.Element)
+                        if (symbolMatchType == SymbolMatchMode.Element)
                         {
-                            if ((ElementStats[intSymbolReference].Symbol ?? "") == symbol)
+                            if ((ElementStats[symbolReference].Symbol ?? "") == symbol)
                             {
-                                blnInvalidSymbolOrFormula = true;
+                                invalidSymbolOrFormula = true;
                             }
                         }
 
-                        if (!blnInvalidSymbolOrFormula && validateFormula)
+                        if (!invalidSymbolOrFormula && validateFormula)
                         {
                             // Make sure the abbreviation's formula is valid
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
-                            var argdblStdDevSum = 0d;
-                            var argCarbonOrSiliconReturnCount = 0;
-                            formula = ParseFormulaRecursive(formula, ref udtComputationStats, ref udtAbbrevSymbolStack, false, ref argdblStdDevSum, ref argCarbonOrSiliconReturnCount);
+                            var stdDevSum = 0d;
+                            var carbonOrSiliconReturnCount = 0;
+                            formula = ParseFormulaRecursive(formula, ref computationStats, ref abbrevSymbolStack, false, ref stdDevSum, ref carbonOrSiliconReturnCount);
 
                             if (ErrorParams.ErrorID != 0)
                             {
                                 // An error occurred while parsing
                                 // Already present in ErrorParams.ErrorID
                                 // We'll still add the formula, but mark it as invalid
-                                blnInvalidSymbolOrFormula = true;
+                                invalidSymbolOrFormula = true;
                             }
                         }
 
-                        AddAbbreviationWork(abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, blnInvalidSymbolOrFormula);
+                        AddAbbreviationWork(abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, invalidSymbolOrFormula);
 
                         ConstructMasterSymbolsList();
                     }
@@ -4988,7 +4990,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if successful, otherwise, returns an Error ID</returns>
         public int SetCautionStatementInternal(string symbolCombo, string newCautionStatement)
         {
-            var blnAlreadyPresent = default(bool);
+            var alreadyPresent = default(bool);
 
             ResetErrorParamsInternal();
 
@@ -4999,37 +5001,37 @@ namespace MolecularWeightCalculator
                 {
                     if (newCautionStatement.Length > 0)
                     {
-                        int intIndex;
+                        int index;
                         // See if symbolCombo is present in CautionStatements[]
-                        for (intIndex = 1; intIndex <= CautionStatementCount; intIndex++)
+                        for (index = 1; index <= CautionStatementCount; index++)
                         {
-                            if ((CautionStatements[intIndex, 0] ?? "") == symbolCombo)
+                            if ((CautionStatements[index, 0] ?? "") == symbolCombo)
                             {
-                                blnAlreadyPresent = true;
+                                alreadyPresent = true;
                                 break;
                             }
                         }
 
                         // Caution statements is a 0-based array
-                        if (!blnAlreadyPresent)
+                        if (!alreadyPresent)
                         {
                             if (CautionStatementCount < MAX_CAUTION_STATEMENTS)
                             {
                                 CautionStatementCount += 1;
-                                intIndex = CautionStatementCount;
+                                index = CautionStatementCount;
                             }
                             else
                             {
                                 // Too many caution statements
                                 ErrorParams.ErrorID = 1215;
-                                intIndex = -1;
+                                index = -1;
                             }
                         }
 
-                        if (intIndex >= 1)
+                        if (index >= 1)
                         {
-                            CautionStatements[intIndex, 0] = symbolCombo;
-                            CautionStatements[intIndex, 1] = newCautionStatement;
+                            CautionStatements[index, 0] = symbolCombo;
+                            CautionStatements[index, 1] = newCautionStatement;
                         }
                     }
                     else
@@ -5071,23 +5073,23 @@ namespace MolecularWeightCalculator
             double uncertainty, float charge,
             bool recomputeAbbreviationMasses = true)
         {
-            var blnFound = default(bool);
+            var found = default(bool);
 
-            for (var intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
+            for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if ((symbol?.ToLower() ?? "") == (ElementStats[intIndex].Symbol?.ToLower() ?? ""))
+                if ((symbol?.ToLower() ?? "") == (ElementStats[index].Symbol?.ToLower() ?? ""))
                 {
-                    var stats = ElementStats[intIndex];
+                    var stats = ElementStats[index];
                     stats.Mass = mass;
                     stats.Uncertainty = uncertainty;
                     stats.Charge = charge;
 
-                    blnFound = true;
+                    found = true;
                     break;
                 }
             }
 
-            if (blnFound)
+            if (found)
             {
                 if (recomputeAbbreviationMasses)
                     RecomputeAbbreviationMassesInternal();
@@ -5099,30 +5101,30 @@ namespace MolecularWeightCalculator
 
         public int SetElementIsotopesInternal(string symbol, short isotopeCount, ref double[] isotopeMassesOneBased, ref float[] isotopeAbundancesOneBased)
         {
-            var blnFound = default(bool);
+            var found = default(bool);
 
-            for (var intIndex = 1; intIndex <= ELEMENT_COUNT; intIndex++)
+            for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if ((symbol?.ToLower() ?? "") == (ElementStats[intIndex].Symbol?.ToLower() ?? ""))
+                if ((symbol?.ToLower() ?? "") == (ElementStats[index].Symbol?.ToLower() ?? ""))
                 {
-                    var stats = ElementStats[intIndex];
+                    var stats = ElementStats[index];
                     if (isotopeCount < 0)
                         isotopeCount = 0;
                     stats.IsotopeCount = isotopeCount;
-                    for (var intIsotopeIndex = 1; intIsotopeIndex <= stats.IsotopeCount; intIsotopeIndex++)
+                    for (var isotopeIndex = 1; isotopeIndex <= stats.IsotopeCount; isotopeIndex++)
                     {
-                        if (intIsotopeIndex > MAX_ISOTOPES)
+                        if (isotopeIndex > MAX_ISOTOPES)
                             break;
-                        stats.Isotopes[intIsotopeIndex].Mass = isotopeMassesOneBased[intIsotopeIndex];
-                        stats.Isotopes[intIsotopeIndex].Abundance = isotopeAbundancesOneBased[intIsotopeIndex];
+                        stats.Isotopes[isotopeIndex].Mass = isotopeMassesOneBased[isotopeIndex];
+                        stats.Isotopes[isotopeIndex].Abundance = isotopeAbundancesOneBased[isotopeIndex];
                     }
 
-                    blnFound = true;
+                    found = true;
                     break;
                 }
             }
 
-            if (blnFound)
+            if (found)
             {
                 return 0;
             }
@@ -5304,17 +5306,17 @@ namespace MolecularWeightCalculator
                 // sort by insertion in increments of incrementAmount
                 for (var index = lowIndex + incrementAmount; index <= highIndex; index++)
                 {
-                    var udtCompare = AbbrevStats[index];
+                    var compare = AbbrevStats[index];
                     int indexCompare;
                     for (indexCompare = index - incrementAmount; indexCompare >= lowIndex; indexCompare += -incrementAmount)
                     {
                         // Use <= to sort ascending; Use > to sort descending
-                        if (string.Compare(AbbrevStats[indexCompare].Symbol, udtCompare.Symbol, StringComparison.Ordinal) <= 0)
+                        if (string.Compare(AbbrevStats[indexCompare].Symbol, compare.Symbol, StringComparison.Ordinal) <= 0)
                             break;
                         AbbrevStats[indexCompare + incrementAmount] = AbbrevStats[indexCompare];
                     }
 
-                    AbbrevStats[indexCompare + incrementAmount] = udtCompare;
+                    AbbrevStats[indexCompare + incrementAmount] = compare;
                 }
 
                 incrementAmount /= 3;
@@ -5374,7 +5376,7 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         protected void UpdateProgress(string progressStepDescription, float percentComplete)
         {
-            var blnDescriptionChanged = !string.Equals(progressStepDescription, mProgressStepDescription);
+            var descriptionChanged = !string.Equals(progressStepDescription, mProgressStepDescription);
 
             mProgressStepDescription = string.Copy(progressStepDescription);
             if (percentComplete < 0f)
@@ -5388,7 +5390,7 @@ namespace MolecularWeightCalculator
 
             mProgressPercentComplete = percentComplete;
 
-            if (blnDescriptionChanged)
+            if (descriptionChanged)
             {
                 if (Math.Abs(mProgressPercentComplete) < float.Epsilon)
                 {
@@ -5415,19 +5417,19 @@ namespace MolecularWeightCalculator
         /// <returns>Count of the number of invalid abbreviations found</returns>
         public int ValidateAllAbbreviationsInternal()
         {
-            var intInvalidAbbreviationCount = default(short);
+            var invalidAbbreviationCount = default(short);
 
-            for (short intAbbrevIndex = 1; intAbbrevIndex <= AbbrevAllCount; intAbbrevIndex++)
+            for (short abbrevIndex = 1; abbrevIndex <= AbbrevAllCount; abbrevIndex++)
             {
-                var stats = AbbrevStats[intAbbrevIndex];
-                SetAbbreviationByIDInternal(intAbbrevIndex, stats.Symbol, stats.Formula, stats.Charge, stats.IsAminoAcid, stats.OneLetterSymbol, stats.Comment, true);
+                var stats = AbbrevStats[abbrevIndex];
+                SetAbbreviationByIDInternal(abbrevIndex, stats.Symbol, stats.Formula, stats.Charge, stats.IsAminoAcid, stats.OneLetterSymbol, stats.Comment, true);
                 if (stats.InvalidSymbolOrFormula)
                 {
-                    intInvalidAbbreviationCount = (short)(intInvalidAbbreviationCount + 1);
+                    invalidAbbreviationCount = (short)(invalidAbbreviationCount + 1);
                 }
             }
 
-            return intInvalidAbbreviationCount;
+            return invalidAbbreviationCount;
         }
     }
 }

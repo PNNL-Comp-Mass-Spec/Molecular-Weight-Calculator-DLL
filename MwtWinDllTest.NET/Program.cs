@@ -30,8 +30,8 @@ namespace MwtWinDllTest
 
         public static void Main()
         {
-            var objMwtWinDllTest = new frmMwtWinDllTest();
-            objMwtWinDllTest.ShowDialog();
+            var mwtWinDllTest = new frmMwtWinDllTest();
+            mwtWinDllTest.ShowDialog();
         }
     }
 }
