@@ -34,7 +34,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>MwtWinDllTest.modMwtWinDllTest</StartupObject>
+    <StartupObject>MwtWinDllTest.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -52,7 +52,7 @@
       <DependentUpon>frmTextbrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="modMwtWinDllTest.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="MwtWinDllTest.cs">
       <SubType>Form</SubType>
     </Compile>

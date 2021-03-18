@@ -799,7 +799,7 @@ namespace MwtWinDllTest
 
                 var lngMwtWinResultCount = 0;
                 Debug.Write("Starting residue is ");
-                var lngStartTime = modMwtWinDllTest.GetTickCount();
+                var lngStartTime = Program.GetTickCount();
                 for (var lngResidueStart = 0; lngResidueStart < strProtein.Length; lngResidueStart++)
                 {
                     if (lngResidueStart % 10 == 0)
@@ -827,7 +827,7 @@ namespace MwtWinDllTest
                     }
                 }
 
-                var lngStopTime = modMwtWinDllTest.GetTickCount();
+                var lngStopTime = Program.GetTickCount();
                 var lngMwtWinWorkTime = lngStopTime - lngStartTime;
                 Console.WriteLine("");
                 Console.WriteLine("MwtWin time (" + lngMwtWinResultCount + " peptides) = " + lngMwtWinWorkTime + " msec");
