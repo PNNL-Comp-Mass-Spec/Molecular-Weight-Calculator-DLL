@@ -87,8 +87,8 @@ namespace MwtWinDllTestCS
             Console.WriteLine();
 
             string results = null;
-            double[,] ConvolutedMSData2D = null;
-            var ConvolutedMSDataCount = 0;
+            double[,] convolutedMSData2D = null;
+            var convolutedMSDataCount = 0;
 
             // Compute the Isotopic distribution for the peptide
             // Need to first convert to an empirical formula
@@ -103,13 +103,13 @@ namespace MwtWinDllTestCS
 
             short chargeState = 1;
             Console.WriteLine("Isotopic abundance test with Charge=" + chargeState);
-            mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, ref results, ref ConvolutedMSData2D, ref ConvolutedMSDataCount);
+            mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, ref results, ref convolutedMSData2D, ref convolutedMSDataCount);
             Console.WriteLine(results);
 
             const bool addProtonChargeCarrier = false;
             chargeState = 1;
             Console.WriteLine("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
-            mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, ref results, ref ConvolutedMSData2D, ref ConvolutedMSDataCount, addProtonChargeCarrier);
+            mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, ref results, ref convolutedMSData2D, ref convolutedMSDataCount, addProtonChargeCarrier);
             Console.WriteLine(results);
         }
     }

@@ -44,7 +44,7 @@ namespace MwtWinDllTest
         private void AppendColumnToTableStyle(ref DataGridTableStyle tableStyle, string mappingName, string headerText, int width = 75, bool isReadOnly = false, bool isDateTime = false, int decimalPlaces = -1)
         {
             // If decimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
-            var TextCol = new DataGridTextBoxColumn
+            var textCol = new DataGridTextBoxColumn
             {
                 MappingName = mappingName,
                 HeaderText = headerText,
@@ -54,22 +54,22 @@ namespace MwtWinDllTest
 
             if (isDateTime)
             {
-                TextCol.Format = "g";
+                textCol.Format = "g";
             }
             else if (decimalPlaces >= 0)
             {
-                TextCol.Format = "0.";
+                textCol.Format = "0.";
                 for (var i = 0; i < decimalPlaces; i++)
-                    TextCol.Format += "0";
+                    textCol.Format += "0";
             }
 
-            tableStyle.GridColumnStyles.Add(TextCol);
+            tableStyle.GridColumnStyles.Add(textCol);
         }
 
         private void AppendBoolColumnToTableStyle(ref DataGridTableStyle tableStyle, string mappingName, string headerText, int width = 75, bool isReadOnly = false, bool sourceIsTrueFalse = true)
         {
             // If decimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
-            var BoolCol = new DataGridBoolColumn
+            var boolCol = new DataGridBoolColumn
             {
                 MappingName = mappingName,
                 HeaderText = headerText,
@@ -79,19 +79,19 @@ namespace MwtWinDllTest
 
             if (sourceIsTrueFalse)
             {
-                BoolCol.FalseValue = false;
-                BoolCol.TrueValue = true;
+                boolCol.FalseValue = false;
+                boolCol.TrueValue = true;
             }
             else
             {
-                BoolCol.FalseValue = 0;
-                BoolCol.TrueValue = 1;
+                boolCol.FalseValue = 0;
+                boolCol.TrueValue = 1;
             }
 
-            BoolCol.AllowNull = false;
-            BoolCol.NullValue = Convert.DBNull;
+            boolCol.AllowNull = false;
+            boolCol.NullValue = Convert.DBNull;
 
-            tableStyle.GridColumnStyles.Add(BoolCol);
+            tableStyle.GridColumnStyles.Add(boolCol);
         }
 
         private void FindPercentComposition()
@@ -244,7 +244,7 @@ namespace MwtWinDllTest
             {
                 result = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
                 Debug.Assert(result == 0, "");
-                Debug.Assert(mMwtWin.GetAbbreviationID(symbol) == index, "");
+                Debug.Assert(mMwtWin.GetAbbreviationId(symbol) == index, "");
 
                 result = mMwtWin.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
                 Debug.Assert(result == 0, "");
@@ -256,7 +256,7 @@ namespace MwtWinDllTest
             {
                 result = mMwtWin.GetCautionStatement(index, out var symbol, out var statement);
                 Debug.Assert(result == 0, "");
-                Debug.Assert(mMwtWin.GetCautionStatementID(symbol) == index, "");
+                Debug.Assert(mMwtWin.GetCautionStatementId(symbol) == index, "");
 
                 result = mMwtWin.SetCautionStatement(symbol, statement);
                 Debug.Assert(result == 0, "");
@@ -268,7 +268,7 @@ namespace MwtWinDllTest
             {
                 result = mMwtWin.GetElement((short)index, out var symbol, out mass, out var uncertainty, out var charge, out var isotopeCount);
                 Debug.Assert(result == 0, "");
-                Debug.Assert(mMwtWin.GetElementID(symbol) == index, "");
+                Debug.Assert(mMwtWin.GetElementId(symbol) == index, "");
 
                 result = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
                 Debug.Assert(result == 0, "");
@@ -318,7 +318,7 @@ namespace MwtWinDllTest
             capFlow.SetAutoComputeEnabled(false);
             capFlow.SetBackPressure(2000d, CapillaryFlow.UnitOfPressure.Psi);
             capFlow.SetColumnLength(40d, CapillaryFlow.UnitOfLength.CM);
-            capFlow.SetColumnID(50d, CapillaryFlow.UnitOfLength.Microns);
+            capFlow.SetColumnId(50d, CapillaryFlow.UnitOfLength.Microns);
             capFlow.SetSolventViscosity(0.0089d, CapillaryFlow.UnitOfViscosity.Poise);
             capFlow.SetInterparticlePorosity(0.33d);
             capFlow.SetParticleDiameter(2d, CapillaryFlow.UnitOfLength.Microns);
@@ -332,7 +332,7 @@ namespace MwtWinDllTest
             results.AppendText("Vol flow rate:   " + capFlow.GetVolFlowRate());
             results.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.UnitOfPressure.Psi));
             results.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.UnitOfLength.CM));
-            results.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.UnitOfLength.Microns));
+            results.AppendText("Column ID:       " + capFlow.ComputeColumnId(CapillaryFlow.UnitOfLength.Microns));
             results.AppendText("Column Volume:   " + capFlow.ComputeColumnVolume(CapillaryFlow.UnitOfVolume.NL));
             results.AppendText("Dead time:       " + capFlow.ComputeDeadTime(CapillaryFlow.UnitOfTime.Seconds));
 
@@ -340,7 +340,7 @@ namespace MwtWinDllTest
 
             results.AppendText("Repeat Computations, but in a different order (should give same results)");
             results.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin));
-            results.AppendText("Column ID:       " + capFlow.ComputeColumnID(CapillaryFlow.UnitOfLength.Microns));
+            results.AppendText("Column ID:       " + capFlow.ComputeColumnId(CapillaryFlow.UnitOfLength.Microns));
             results.AppendText("Back pressure:   " + capFlow.ComputeBackPressure(CapillaryFlow.UnitOfPressure.Psi));
             results.AppendText("Column Length:   " + capFlow.ComputeColumnLength(CapillaryFlow.UnitOfLength.CM));
 
@@ -396,7 +396,7 @@ namespace MwtWinDllTest
             capFlow.SetExtraColumnBroadeningLinearVelocity(4d, CapillaryFlow.UnitOfLinearVelocity.CmPerMin);
             capFlow.SetExtraColumnBroadeningDiffusionCoefficient(0.0003d, CapillaryFlow.UnitOfDiffusionCoefficient.CmSquaredPerMin);
             capFlow.SetExtraColumnBroadeningOpenTubeLength(5d, CapillaryFlow.UnitOfLength.CM);
-            capFlow.SetExtraColumnBroadeningOpenTubeID(250d, CapillaryFlow.UnitOfLength.Microns);
+            capFlow.SetExtraColumnBroadeningOpenTubeId(250d, CapillaryFlow.UnitOfLength.Microns);
             capFlow.SetExtraColumnBroadeningInitialPeakWidthAtBase(30d, CapillaryFlow.UnitOfTime.Seconds);
 
             results.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
@@ -520,7 +520,7 @@ namespace MwtWinDllTest
                 LimitChargeRange = false,
                 ChargeMin = 1,
                 ChargeMax = 1,
-                FindTargetMZ = false
+                FindTargetMz = false
             };
 
             cmdTestFormulaFinder.Enabled = false;
@@ -579,7 +579,7 @@ namespace MwtWinDllTest
             searchOptions.LimitChargeRange = true;
             searchOptions.ChargeMin = -4;
             searchOptions.ChargeMax = 6;
-            searchOptions.FindTargetMZ = true;
+            searchOptions.FindTargetMz = true;
 
             // Search for 100 m/z, +/- 250 ppm
             var results = mwtWin.FormulaFinder.FindMatchesByMassPPM(100d, 250d, searchOptions);
@@ -669,7 +669,7 @@ namespace MwtWinDllTest
 
                 if (searchOptions.FindCharge)
                 {
-                    newRow["M/Z"] = Math.Round(result.MZ, 3);
+                    newRow["M/Z"] = Math.Round(result.Mz, 3);
                 }
 
                 if (percentCompositionSearch)
@@ -694,12 +694,12 @@ namespace MwtWinDllTest
 
         private void TestTrypticName()
         {
-            const short DIM_CHUNK = 1000;
+            const short dimChunk = 1000;
 
-            const short ITERATIONS_TO_RUN = 5;
-            const short MIN_PROTEIN_LENGTH = 50;
-            const short MAX_PROTEIN_LENGTH = 200;
-            const string POSSIBLE_RESIDUES = "ACDEFGHIKLMNPQRSTVWY";
+            const short iterationsToRun = 5;
+            const short minProteinLength = 50;
+            const short maxProteinLength = 200;
+            const string possibleResidues = "ACDEFGHIKLMNPQRSTVWY";
 
             string peptideFragMwtWin;
             const int matchCount = default(int);
@@ -708,7 +708,7 @@ namespace MwtWinDllTest
 
             lblProgress.Text = string.Empty;
 
-            int mwtWinDimCount = DIM_CHUNK;
+            int mwtWinDimCount = dimChunk;
             var peptideNameMwtWin = new string[mwtWinDimCount + 1];
 
             Cursor = Cursors.WaitCursor;
@@ -770,15 +770,15 @@ namespace MwtWinDllTest
 
             results.AppendText(string.Empty);
             var random = new Random();
-            for (var multipleIteration = 1; multipleIteration <= ITERATIONS_TO_RUN; multipleIteration++)
+            for (var multipleIteration = 1; multipleIteration <= iterationsToRun; multipleIteration++)
             {
                 // Generate random protein
-                var proteinLengthRand = random.Next(MAX_PROTEIN_LENGTH - MIN_PROTEIN_LENGTH + 1) + MIN_PROTEIN_LENGTH;
+                var proteinLengthRand = random.Next(maxProteinLength - minProteinLength + 1) + minProteinLength;
 
                 protein = "";
                 for (var residueRand = 0; residueRand < proteinLengthRand; residueRand++)
                 {
-                    var newResidue = POSSIBLE_RESIDUES.Substring(random.Next(POSSIBLE_RESIDUES.Length), 1);
+                    var newResidue = possibleResidues.Substring(random.Next(possibleResidues.Length), 1);
                     protein += newResidue;
                 }
 
@@ -808,7 +808,7 @@ namespace MwtWinDllTest
                         mwtWinResultCount += 1;
                         if (mwtWinResultCount > mwtWinDimCount)
                         {
-                            mwtWinDimCount += DIM_CHUNK;
+                            mwtWinDimCount += dimChunk;
                             Array.Resize(ref peptideNameMwtWin, mwtWinDimCount + 1);
                         }
                     }

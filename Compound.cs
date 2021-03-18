@@ -37,13 +37,13 @@ namespace MolecularWeightCalculator
 
         public Compound()
         {
-            ElementAndMassRoutines = new ElementAndMassTools();
+            mElementAndMassRoutines = new ElementAndMassTools();
             InitializeClass();
         }
 
         public Compound(ElementAndMassTools elementAndMassTools)
         {
-            ElementAndMassRoutines = elementAndMassTools;
+            mElementAndMassRoutines = elementAndMassTools;
             InitializeClass();
         }
 
@@ -55,12 +55,12 @@ namespace MolecularWeightCalculator
 
         private ElementAndMassTools.ComputationStats mComputationStats = new ElementAndMassTools.ComputationStats();
 
-        private readonly ElementAndMassTools ElementAndMassRoutines;
+        private readonly ElementAndMassTools mElementAndMassRoutines;
 
         public string ConvertToEmpirical()
         {
             // Converts mStrFormula to its empirical formula and returns the result
-            var result = ElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula);
+            var result = mElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula);
             UpdateErrorAndCaution();
 
             if (string.IsNullOrEmpty(ErrorDescription))
@@ -87,7 +87,7 @@ namespace MolecularWeightCalculator
         public string ExpandAbbreviations()
         {
             // Expands abbreviations in mStrFormula and returns the result
-            var result = ElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula);
+            var result = mElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula);
             UpdateErrorAndCaution();
 
             if (string.IsNullOrEmpty(ErrorDescription))
@@ -134,14 +134,14 @@ namespace MolecularWeightCalculator
             if (elementId >= 1 && elementId <= ElementAndMassTools.ELEMENT_COUNT)
             {
                 var compStats = mComputationStats.PercentCompositions[elementId];
-                var elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal(elementId) + ":";
-                var pctComposition = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(compStats.PercentComposition, compStats.StdDeviation, includeStandardDeviation, true);
+                var elementSymbol = mElementAndMassRoutines.GetElementSymbolInternal(elementId) + ":";
+                var pctComposition = mElementAndMassRoutines.ReturnFormattedMassAndStdDev(compStats.PercentComposition, compStats.StdDeviation, includeStandardDeviation, true);
                 if (compStats.PercentComposition < 10d)
                 {
                     pctComposition = " " + pctComposition;
                 }
 
-                return ElementAndMassRoutines.SpacePad(elementSymbol, 4) + pctComposition;
+                return mElementAndMassRoutines.SpacePad(elementSymbol, 4) + pctComposition;
             }
 
             return string.Empty;
@@ -162,17 +162,17 @@ namespace MolecularWeightCalculator
 
             try
             {
-                ElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
+                mElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
 
                 for (var elementId = 1; elementId <= ElementAndMassTools.ELEMENT_COUNT; elementId++)
                 {
                     if (mComputationStats.PercentCompositions[elementId].PercentComposition > 0d)
                     {
-                        var percentCompositionAndStDev = ElementAndMassRoutines.ReturnFormattedMassAndStdDev(
+                        var percentCompositionAndStDev = mElementAndMassRoutines.ReturnFormattedMassAndStdDev(
                             mComputationStats.PercentCompositions[elementId].PercentComposition,
                             mComputationStats.PercentCompositions[elementId].StdDeviation);
 
-                        var elementSymbol = ElementAndMassRoutines.GetElementSymbolInternal((short)elementId);
+                        var elementSymbol = mElementAndMassRoutines.GetElementSymbolInternal((short)elementId);
 
                         if (!percentCompositionByElement.ContainsKey(elementSymbol))
                         {
@@ -220,14 +220,14 @@ namespace MolecularWeightCalculator
 
             Formula = newFormula;
 
-            return ErrorID;
+            return ErrorId;
         }
 
         private void UpdateErrorAndCaution()
         {
-            CautionDescription = ElementAndMassRoutines.GetCautionDescription();
-            ErrorDescription = ElementAndMassRoutines.GetErrorDescription();
-            ErrorID = ElementAndMassRoutines.GetErrorID();
+            CautionDescription = mElementAndMassRoutines.GetCautionDescription();
+            ErrorDescription = mElementAndMassRoutines.GetErrorDescription();
+            ErrorId = mElementAndMassRoutines.GetErrorId();
         }
 
         private void UpdateMass()
@@ -237,16 +237,16 @@ namespace MolecularWeightCalculator
             // mStrFormattedFormula is passed ByRef
             // If gComputationOptions.CaseConversion = ccConvertCaseUp then mStrFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
-            ElementAndMassRoutines.ParseFormulaPublic(ref mStrFormattedFormula, ref mComputationStats, false, mValueForX);
+            mElementAndMassRoutines.ParseFormulaPublic(ref mStrFormattedFormula, ref mComputationStats, false, mValueForX);
 
-            ElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
+            mElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
 
             UpdateErrorAndCaution();
         }
 
         public bool XIsPresentAfterBracket()
         {
-            if (ElementAndMassRoutines.gComputationOptions.BracketsAsParentheses)
+            if (mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses)
             {
                 // Treating brackets as parentheses, therefore an x after a bracket isn't allowed
                 return false;
@@ -276,7 +276,7 @@ namespace MolecularWeightCalculator
 
         public string ErrorDescription { get; private set; }
 
-        public int ErrorID { get; private set; }
+        public int ErrorId { get; private set; }
 
         public string Formula
         {
@@ -293,7 +293,8 @@ namespace MolecularWeightCalculator
 
         public string FormulaCapitalized => mStrFormattedFormula;
 
-        public string FormulaRTF => ElementAndMassRoutines.PlainTextToRtfInternal(FormulaCapitalized, false);
+        // ReSharper disable once InconsistentNaming
+        public string FormulaRTF => mElementAndMassRoutines.PlainTextToRtfInternal(FormulaCapitalized, false);
 
         public double Mass => get_Mass(true);
 
@@ -311,7 +312,7 @@ namespace MolecularWeightCalculator
             if (recomputeMass)
                 UpdateMass();
 
-            return ElementAndMassRoutines.ReturnFormattedMassAndStdDev(mComputationStats.TotalMass, mComputationStats.StandardDeviation);
+            return mElementAndMassRoutines.ReturnFormattedMassAndStdDev(mComputationStats.TotalMass, mComputationStats.StandardDeviation);
         }
 
         public double StandardDeviation => mComputationStats.StandardDeviation;

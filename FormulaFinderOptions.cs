@@ -13,7 +13,7 @@
         #region "Member Variables"
         private bool mFindCharge;
         private bool mLimitChargeRange;
-        private bool mFindTargetMZ;
+        private bool mFindTargetMz;
         #endregion
 
         #region "Properties"
@@ -33,7 +33,7 @@
                 {
                     // Auto-disable a few options
                     mLimitChargeRange = false;
-                    mFindTargetMZ = false;
+                    mFindTargetMz = false;
                 }
             }
         }
@@ -56,7 +56,7 @@
                 }
                 else
                 {
-                    mFindTargetMZ = false;
+                    mFindTargetMz = false;
                 }
             }
         }
@@ -77,13 +77,13 @@
         /// Set to true to search for a target m/z value instead of a target mass
         /// </summary>
         /// <remarks>Setting this to True auto-sets FindCharge and LimitChargeRange to True</remarks>
-        public bool FindTargetMZ
+        public bool FindTargetMz
         {
-            get => mFindTargetMZ;
+            get => mFindTargetMz;
             set
             {
-                mFindTargetMZ = value;
-                if (mFindTargetMZ)
+                mFindTargetMz = value;
+                if (mFindTargetMz)
                 {
                     FindCharge = true;
                     LimitChargeRange = true;
@@ -107,7 +107,7 @@
             LimitChargeRange = false;
             ChargeMin = -4;
             ChargeMax = 4;
-            FindTargetMZ = false;
+            FindTargetMz = false;
             SearchMode = SearchModes.Thorough;
             VerifyHydrogens = true;
         }

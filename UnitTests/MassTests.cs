@@ -76,8 +76,8 @@ namespace UnitTests
         [TestCase(14565.636, 15, 972.04979000, 972.04967649)]
         public void MonoisotopicMassConversion(double monoMass, short targetCharge, double expectedMzAvg, double expectedMzIso)
         {
-            var resultMzAvg = mMwtWinAvg.MonoMassToMZ(monoMass, targetCharge);
-            var resultMzIso = mMwtWinIso.MonoMassToMZ(monoMass, targetCharge);
+            var resultMzAvg = mMwtWinAvg.MonoMassToMz(monoMass, targetCharge);
+            var resultMzIso = mMwtWinIso.MonoMassToMz(monoMass, targetCharge);
 
             Console.WriteLine("{0,8:F3} Da -> {1,2}+ is {2,10:F8} m/z average mass, and {3,10:F8} m/z isotopic mass",
                 monoMass, targetCharge, resultMzAvg, resultMzIso);

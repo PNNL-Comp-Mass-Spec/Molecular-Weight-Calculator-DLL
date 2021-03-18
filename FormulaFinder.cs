@@ -348,7 +348,7 @@ namespace MolecularWeightCalculator
         {
             List<FormulaFinderResult> results;
 
-            if (searchOptions.FindTargetMZ)
+            if (searchOptions.FindTargetMz)
             {
                 // Searching for target m/z rather than target mass
 
@@ -733,7 +733,7 @@ namespace MolecularWeightCalculator
                     empiricalFormula.Append(result.Value);
             }
 
-            if (!searchOptions.VerifyHydrogens && !searchOptions.FindTargetMZ)
+            if (!searchOptions.VerifyHydrogens && !searchOptions.FindTargetMz)
             {
                 return true;
             }
@@ -840,34 +840,34 @@ namespace MolecularWeightCalculator
                 maxH = 0;
 
             // Verify H's
-            var hOK = elementNum.H <= maxH;
+            var hOkay = elementNum.H <= maxH;
 
             // Only proceed if hydrogens check out
-            if (!hOK)
+            if (!hOkay)
             {
                 return false;
             }
 
-            bool chargeOK;
+            bool chargeOkay;
 
-            // See if totalCharge is within charge limits (chargeOK will be set to True or False by CorrectChargeEmpirical)
+            // See if totalCharge is within charge limits (chargeOkay will be set to True or False by CorrectChargeEmpirical)
             if (searchOptions.FindCharge)
             {
-                correctedCharge = CorrectChargeEmpirical(searchOptions, totalCharge, elementNum, out chargeOK);
+                correctedCharge = CorrectChargeEmpirical(searchOptions, totalCharge, elementNum, out chargeOkay);
             }
             else
             {
-                chargeOK = true;
+                chargeOkay = true;
             }
 
             // If charge is within range and checking for multiples, see if correct m/z too
-            if (chargeOK && searchOptions.FindTargetMZ)
+            if (chargeOkay && searchOptions.FindTargetMz)
             {
-                chargeOK = CheckMtoZWithTarget(totalMass, correctedCharge, targetMass,
+                chargeOkay = CheckMtoZWithTarget(totalMass, correctedCharge, targetMass,
                                                massToleranceDa, multipleMtoZCharge);
             }
 
-            return chargeOK;
+            return chargeOkay;
         }
 
         private Dictionary<string, int> ConvertElementPointersToElementStats(
@@ -1013,10 +1013,10 @@ namespace MolecularWeightCalculator
                 return;
             }
 
-            const int NUM_POINTERS = 3;
+            const int numPointers = 3;
 
             // Calculate maxRecursiveCount based on a combination function
-            var maxRecursiveCount = Combinatorial(NUM_POINTERS + potentialElementCount, potentialElementCount - 1) - Combinatorial(potentialElementCount + NUM_POINTERS - 2, NUM_POINTERS - 1);
+            var maxRecursiveCount = Combinatorial(numPointers + potentialElementCount, potentialElementCount - 1) - Combinatorial(potentialElementCount + numPointers - 2, numPointers - 1);
             if (maxRecursiveCount > int.MaxValue)
             {
                 mMaxRecursiveCount = int.MaxValue;
@@ -1103,7 +1103,7 @@ namespace MolecularWeightCalculator
 
                 var results = new List<FormulaFinderResult>();
 
-                if (searchOptions.FindTargetMZ)
+                if (searchOptions.FindTargetMz)
                 {
                     // Searching for target m/z rather than target mass
 
@@ -1218,9 +1218,9 @@ namespace MolecularWeightCalculator
                 double mass;
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
-                    var elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
+                    var elementId = mElementAndMassRoutines.GetElementIdInternal(item.Key);
 
-                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out mass, out _, out charge, out _);
+                    mElementAndMassRoutines.GetElementInternal(elementId, out _, out mass, out _, out charge, out _);
 
                     candidateElement.Mass = mass;
                     candidateElement.Charge = charge;
@@ -1264,7 +1264,7 @@ namespace MolecularWeightCalculator
                         }
 
                         // See if this is an abbreviation
-                        var symbolReference = mElementAndMassRoutines.GetAbbreviationIDInternal(abbrevSymbol);
+                        var symbolReference = mElementAndMassRoutines.GetAbbreviationIdInternal(abbrevSymbol);
                         if (symbolReference < 1)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
@@ -1311,9 +1311,9 @@ namespace MolecularWeightCalculator
                 double mass;
                 if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
                 {
-                    var elementID = mElementAndMassRoutines.GetElementIDInternal(item.Key);
+                    var elementId = mElementAndMassRoutines.GetElementIdInternal(item.Key);
 
-                    mElementAndMassRoutines.GetElementInternal(elementID, out _, out mass, out _, out charge, out _);
+                    mElementAndMassRoutines.GetElementInternal(elementId, out _, out mass, out _, out charge, out _);
 
                     potentialElementStats[potentialElementCount, 0] = mass;
                     potentialElementStats[potentialElementCount, 1] = charge;
@@ -1361,7 +1361,7 @@ namespace MolecularWeightCalculator
                         const int defaultCharge = 0;
 
                         // See if this is an abbreviation
-                        var symbolReference = mElementAndMassRoutines.GetAbbreviationIDInternal(abbrevSymbol);
+                        var symbolReference = mElementAndMassRoutines.GetAbbreviationIdInternal(abbrevSymbol);
                         if (symbolReference < 1)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
@@ -1468,7 +1468,7 @@ namespace MolecularWeightCalculator
                 if (searchOptions.FindCharge && Math.Abs(totalCharge) > 0.1d)
                 {
                     // Compute m/z value
-                    searchResult.MZ = Math.Abs(totalMass / totalCharge);
+                    searchResult.Mz = Math.Abs(totalMass / totalCharge);
                 }
 
                 return searchResult;
@@ -1712,7 +1712,7 @@ namespace MolecularWeightCalculator
                                                                     // All of the elements have percent compositions matching the target
 
                                                                     // Construct the empirical formula and verify hydrogens
-                                                                    var hOK = ConstructAndVerifyCompound(searchOptions,
+                                                                    var hOkay = ConstructAndVerifyCompound(searchOptions,
                                                                                                             empiricalFormula,
                                                                                                             j, k, l, m, N, O, P, q, r, s,
                                                                                                             sortedElementStats,
@@ -1721,7 +1721,7 @@ namespace MolecularWeightCalculator
                                                                                                             out var empiricalResultSymbols,
                                                                                                             out var correctedCharge);
 
-                                                                    if (empiricalFormula.Length > 0 && hOK)
+                                                                    if (empiricalFormula.Length > 0 && hOkay)
                                                                     {
                                                                         var searchResult = GetSearchResult(searchOptions, ppmMode, empiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
 
@@ -1757,7 +1757,7 @@ namespace MolecularWeightCalculator
                                                                     // Within massToleranceDa
 
                                                                     // Construct the empirical formula and verify hydrogens
-                                                                    var hOK = ConstructAndVerifyCompound(searchOptions,
+                                                                    var hOkay = ConstructAndVerifyCompound(searchOptions,
                                                                                                             empiricalFormula,
                                                                                                             j, k, l, m, N, O, P, q, r, s,
                                                                                                             sortedElementStats,
@@ -1766,7 +1766,7 @@ namespace MolecularWeightCalculator
                                                                                                             out var empiricalResultSymbols,
                                                                                                             out var correctedCharge);
 
-                                                                    if (empiricalFormula.Length > 0 && hOK)
+                                                                    if (empiricalFormula.Length > 0 && hOkay)
                                                                     {
                                                                         var searchResult = GetSearchResult(searchOptions, ppmMode, empiricalFormula, totalMass, targetMass, correctedCharge, empiricalResultSymbols);
 
@@ -2009,7 +2009,7 @@ namespace MolecularWeightCalculator
                             // Matching compound
 
                             // Construct the empirical formula and verify hydrogens
-                            var hOK = ConstructAndVerifyCompoundRecursive(searchOptions,
+                            var hOkay = ConstructAndVerifyCompoundRecursive(searchOptions,
                                                                              empiricalFormula, sortedElementStats,
                                                                              newPotentialElementPointers,
                                                                              totalMass, targetMass, massToleranceDa,
@@ -2017,7 +2017,7 @@ namespace MolecularWeightCalculator
                                                                              out var empiricalResultSymbols,
                                                                              out var correctedCharge);
 
-                            if (empiricalFormula.Length > 0 && hOK)
+                            if (empiricalFormula.Length > 0 && hOkay)
                             {
                                 var searchResult = GetSearchResult(searchOptions, ppmMode, empiricalFormula, totalMass, targetMass, correctedCharge, empiricalResultSymbols);
 
@@ -2139,7 +2139,7 @@ namespace MolecularWeightCalculator
                                 // Matching compound
 
                                 // Construct the empirical formula and verify hydrogens
-                                var hOK = ConstructAndVerifyCompoundRecursive(searchOptions,
+                                var hOkay = ConstructAndVerifyCompoundRecursive(searchOptions,
                                                                                  empiricalFormula, sortedElementStats,
                                                                                  newPotentialElementPointers,
                                                                                  totalMass, 0d, 0d,
@@ -2147,7 +2147,7 @@ namespace MolecularWeightCalculator
                                                                                  out var empiricalResultSymbols,
                                                                                  out var correctedCharge);
 
-                                if (empiricalFormula.Length > 0 && hOK)
+                                if (empiricalFormula.Length > 0 && hOkay)
                                 {
                                     var searchResult = GetSearchResult(searchOptions, ppmMode, empiricalFormula, totalMass, -1, correctedCharge, empiricalResultSymbols);
 

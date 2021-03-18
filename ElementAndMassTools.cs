@@ -234,20 +234,20 @@ namespace MolecularWeightCalculator
 
         private class ErrorDescription
         {
-            public int ErrorID; // Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
+            public int ErrorId; // Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
             public int ErrorPosition;
             public string ErrorCharacter;
 
             public override string ToString()
             {
-                return "ErrorID " + ErrorID + " at " + ErrorPosition + ": " + ErrorCharacter;
+                return "ErrorID " + ErrorId + " at " + ErrorPosition + ": " + ErrorCharacter;
             }
         }
 
         private class IsoResultsByElement
         {
             public short ElementIndex; // Index of element in ElementStats() array; look in ElementStats() to get information on its isotopes
-            public bool boolExplicitIsotope; // True if an explicitly defined isotope
+            public bool ExplicitIsotope; // True if an explicitly defined isotope
             public double ExplicitMass;
             public int AtomCount; // Number of atoms of this element in the formula being parsed
             public int ResultsCount; // Number of masses in MassAbundances
@@ -267,6 +267,7 @@ namespace MolecularWeightCalculator
             public short[] SymbolReferenceStack; // 0-based array
         }
 
+        // ReSharper disable once InconsistentNaming
         private class XYData
         {
             public double X;
@@ -525,17 +526,17 @@ namespace MolecularWeightCalculator
                         break;
                     case -3:
                         // Error: No number after decimal point
-                        ErrorParams.ErrorID = 12;
+                        ErrorParams.ErrorId = 12;
                         ErrorParams.ErrorPosition = curCharacter + symbolLength;
                         break;
                     case -4:
                         // Error: More than one decimal point
-                        ErrorParams.ErrorID = 27;
+                        ErrorParams.ErrorId = 27;
                         ErrorParams.ErrorPosition = curCharacter + symbolLength;
                         break;
                     default:
                         // Error: General number error
-                        ErrorParams.ErrorID = 14;
+                        ErrorParams.ErrorId = 14;
                         ErrorParams.ErrorPosition = curCharacter + symbolLength;
                         break;
                 }
@@ -630,7 +631,7 @@ namespace MolecularWeightCalculator
 
             ParseFormulaPublic(ref formula, ref computationStats, false);
 
-            if (ErrorParams.ErrorID == 0)
+            if (ErrorParams.ErrorId == 0)
             {
                 return computationStats.TotalMass;
             }
@@ -680,8 +681,8 @@ namespace MolecularWeightCalculator
 
             long predictedConvIterations;
 
-            const double MIN_ABUNDANCE_TO_KEEP = 0.000001d;
-            const double CUTOFF_FOR_RATIO_METHOD = 0.00001d;
+            const double minAbundanceToKeep = 0.000001d;
+            const double cutoffForRatioMethod = 0.00001d;
 
             var explicitIsotopesPresent = default(bool);
             var explicitIsotopeCount = default(short);
@@ -719,7 +720,7 @@ namespace MolecularWeightCalculator
                 if (workingFormulaMass < 0d)
                 {
                     // Error occurred; information is stored in ErrorParams
-                    results = LookupMessage(350) + ": " + LookupMessage(ErrorParams.ErrorID);
+                    results = LookupMessage(350) + ": " + LookupMessage(ErrorParams.ErrorId);
                     return -1;
                 }
 
@@ -777,7 +778,7 @@ namespace MolecularWeightCalculator
                     if (workingFormulaMass < 0d)
                     {
                         // Error occurred; information is stored in ErrorParams
-                        results = LookupMessage(350) + ": " + LookupMessage(ErrorParams.ErrorID);
+                        results = LookupMessage(350) + ": " + LookupMessage(ErrorParams.ErrorId);
                         return -1;
                     }
                 }
@@ -872,7 +873,7 @@ namespace MolecularWeightCalculator
                             {
                                 elementCount = (short)(elementCount + 1);
 
-                                isoStats[elementCount].boolExplicitIsotope = true;
+                                isoStats[elementCount].ExplicitIsotope = true;
                                 isoStats[elementCount].ElementIndex = (short)elementIndex;
                                 isoStats[elementCount].AtomCount = (int)Math.Round(element.Isotopes[isotopeIndex].Count);
                                 isoStats[elementCount].ExplicitMass = element.Isotopes[isotopeIndex].Mass;
@@ -921,7 +922,7 @@ namespace MolecularWeightCalculator
                     masterElementIndex = isoStats[elementIndex].ElementIndex;
                     atomCount = isoStats[elementIndex].AtomCount;
 
-                    if (isoStats[elementIndex].boolExplicitIsotope)
+                    if (isoStats[elementIndex].ExplicitIsotope)
                     {
                         isotopeCount = 1;
                         isotopeStartingMass = (short)Math.Round(isoStats[elementIndex].ExplicitMass);
@@ -982,7 +983,7 @@ namespace MolecularWeightCalculator
                     isoStats[elementIndex].ResultsCount = resultingMassCountForElement;
                     isoStats[elementIndex].MassAbundances = new float[resultingMassCountForElement + 1];
 
-                    if (isoStats[elementIndex].boolExplicitIsotope)
+                    if (isoStats[elementIndex].ExplicitIsotope)
                     {
                         // Explicitly defined isotope; there is only one "combo" and its abundance = 1
                         isoStats[elementIndex].MassAbundances[1] = 1f;
@@ -1031,7 +1032,7 @@ namespace MolecularWeightCalculator
                             }
                             else
                             {
-                                if (fractionalAbundanceSaved < CUTOFF_FOR_RATIO_METHOD)
+                                if (fractionalAbundanceSaved < cutoffForRatioMethod)
                                 {
                                     // #######
                                     // Equivalent of rigorous method, but uses logarithms
@@ -1074,7 +1075,7 @@ namespace MolecularWeightCalculator
 
                                 // Use thisComboFractionalAbundance to predict
                                 // the Fractional Abundance of the Next Combo
-                                if (comboIndex < combosFound && fractionalAbundanceSaved >= CUTOFF_FOR_RATIO_METHOD)
+                                if (comboIndex < combosFound && fractionalAbundanceSaved >= cutoffForRatioMethod)
                                 {
                                     // #######
                                     // Third method, determines the ratio of this combo's abundance and the next combo's abundance
@@ -1168,7 +1169,7 @@ namespace MolecularWeightCalculator
                 {
                     var stats = isoStats[elementIndex];
                     var index = stats.ResultsCount;
-                    while (stats.MassAbundances[index] < MIN_ABUNDANCE_TO_KEEP)
+                    while (stats.MassAbundances[index] < minAbundanceToKeep)
                     {
                         index -= 1;
                         if (index == 1)
@@ -1207,7 +1208,7 @@ namespace MolecularWeightCalculator
                 for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
                 {
                     var stats = isoStats[elementIndex];
-                    if (stats.boolExplicitIsotope)
+                    if (stats.ExplicitIsotope)
                     {
                         exactBaseIsoMass += stats.AtomCount * stats.ExplicitMass;
                     }
@@ -1241,7 +1242,7 @@ namespace MolecularWeightCalculator
                 // Decrease convolutedMSDataCount to remove the extra values below MIN_ABUNDANCE_TO_KEEP
                 for (var massIndex = convolutedMSDataCount; massIndex >= 1; massIndex -= 1)
                 {
-                    if (convolutedAbundances[massIndex].Abundance > MIN_ABUNDANCE_TO_KEEP)
+                    if (convolutedAbundances[massIndex].Abundance > minAbundanceToKeep)
                     {
                         convolutedMSDataCount = massIndex;
                         break;
@@ -1290,7 +1291,7 @@ namespace MolecularWeightCalculator
                 // Step through convolutedMSData2DOneBased[] from the beginning to find the
                 // first value greater than MIN_ABUNDANCE_TO_KEEP
                 var rowIndex = 1;
-                while (convolutedMSData2DOneBased[rowIndex, 1] < MIN_ABUNDANCE_TO_KEEP)
+                while (convolutedMSData2DOneBased[rowIndex, 1] < minAbundanceToKeep)
                 {
                     rowIndex += 1;
                     if (rowIndex == convolutedMSDataCount)
@@ -1326,7 +1327,7 @@ namespace MolecularWeightCalculator
             catch
             {
                 MwtWinDllErrorHandler("MwtWinDll|ComputeIsotopicAbundances");
-                ErrorParams.ErrorID = 590;
+                ErrorParams.ErrorId = 590;
                 ErrorParams.ErrorPosition = 0;
                 return -1;
             }
@@ -1395,8 +1396,8 @@ namespace MolecularWeightCalculator
             // The original data in the arrays will be replaced with Gaussian peaks in place of each "stick"
             // Note: Assumes xyVals is sorted in the 'x' direction
 
-            const int MAX_DATA_POINTS = 1000000;
-            const short MASS_PRECISION = 7;
+            const int maxDataPoints = 1000000;
+            const short massPrecision = 7;
 
             var thisDataPoint = new XYData();
 
@@ -1452,11 +1453,11 @@ namespace MolecularWeightCalculator
                 // Use a width of 2 * 6 sigma
                 var xValWindowRange = 2 * 6 * sigma;
 
-                if (xValRange / deltaX > MAX_DATA_POINTS)
+                if (xValRange / deltaX > maxDataPoints)
                 {
                     // Delta x is too small; change to a reasonable value
                     // This isn't a bug, but it may mean one of the default settings is inappropriate
-                    deltaX = xValRange / MAX_DATA_POINTS;
+                    deltaX = xValRange / maxDataPoints;
                 }
 
                 var dataToAddCount = (int)Math.Round(xValWindowRange / deltaX);
@@ -1569,7 +1570,7 @@ namespace MolecularWeightCalculator
                         // the index to start combining data at
                         for (var summationIndex = minimalSummationIndex; summationIndex < xySummation.Count; summationIndex++)
                         {
-                            if (Math.Round(dataToAdd[dataIndex].X, MASS_PRECISION) <= Math.Round(xySummation[summationIndex].X, MASS_PRECISION))
+                            if (Math.Round(dataToAdd[dataIndex].X, massPrecision) <= Math.Round(xySummation[summationIndex].X, massPrecision))
                             {
 
                                 // Within Tolerance; start combining the values here
@@ -1726,14 +1727,14 @@ namespace MolecularWeightCalculator
             short desiredCharge = 1,
             double chargeCarrierMass = 0)
         {
-            const double DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649d;
+            const double defaultChargeCarrierMassMonoiso = 1.00727649d;
 
             double newMz;
 
             if (Math.Abs(chargeCarrierMass - 0d) < float.Epsilon)
                 chargeCarrierMass = mChargeCarrierMass;
             if (Math.Abs(chargeCarrierMass - 0d) < float.Epsilon)
-                chargeCarrierMass = DEFAULT_CHARGE_CARRIER_MASS_MONOISO;
+                chargeCarrierMass = defaultChargeCarrierMassMonoiso;
 
             if (currentCharge == desiredCharge)
             {
@@ -1798,7 +1799,7 @@ namespace MolecularWeightCalculator
             // Call ParseFormulaPublic to compute the formula's mass and fill computationStats
             var mass = ParseFormulaPublic(ref formula, ref computationStats);
 
-            if (ErrorParams.ErrorID == 0)
+            if (ErrorParams.ErrorId == 0)
             {
                 // Convert to empirical formula
                 var empiricalFormula = "";
@@ -1869,7 +1870,7 @@ namespace MolecularWeightCalculator
             // Call ExpandAbbreviationsInFormula to compute the formula's mass
             var mass = ParseFormulaPublic(ref formula, ref computationStats, true);
 
-            if (ErrorParams.ErrorID == 0)
+            if (ErrorParams.ErrorId == 0)
             {
                 return formula;
             }
@@ -1885,8 +1886,8 @@ namespace MolecularWeightCalculator
             ref IsotopeInfo[] thisElementsIsotopes)
         {
             var workingMass = 0;
-            for (var IsotopeIndex = 1; IsotopeIndex <= isotopeCount; IsotopeIndex++)
-                workingMass = (int)Math.Round(workingMass + isoCombos[comboIndex, IsotopeIndex] * Math.Round(thisElementsIsotopes[IsotopeIndex].Mass, 0));
+            for (var isotopeIndex = 1; isotopeIndex <= isotopeCount; isotopeIndex++)
+                workingMass = (int)Math.Round(workingMass + isoCombos[comboIndex, isotopeIndex] * Math.Round(thisElementsIsotopes[isotopeIndex].Mass, 0));
 
             // (workingMass  - IsoStats(ElementIndex).StartingResultsMass) + 1
             return (int)Math.Round(workingMass - atomCount * Math.Round(thisElementsIsotopes[1].Mass, 0)) + 1;
@@ -1924,23 +1925,23 @@ namespace MolecularWeightCalculator
                 Application.DoEvents();
             }
 
-            var NewAbundance = workingAbundance * isoStats[elementTrack].MassAbundances[workingRow];
-            var NewMassTotal = workingMassTotal + (isoStats[elementTrack].StartingResultsMass + workingRow - 1);
+            var newAbundance = workingAbundance * isoStats[elementTrack].MassAbundances[workingRow];
+            var newMassTotal = workingMassTotal + (isoStats[elementTrack].StartingResultsMass + workingRow - 1);
 
             if (elementTrack >= elementCount)
             {
-                var IndexToStoreResult = NewMassTotal - convolutedAbundanceStartMass + 1;
-                var result = convolutedAbundances[IndexToStoreResult];
-                if (NewAbundance > 0f)
+                var indexToStoreResult = newMassTotal - convolutedAbundanceStartMass + 1;
+                var result = convolutedAbundances[indexToStoreResult];
+                if (newAbundance > 0f)
                 {
-                    result.Abundance += NewAbundance;
+                    result.Abundance += newAbundance;
                     result.Multiplicity += 1;
                 }
             }
             else
             {
-                for (var RowIndex = 1; RowIndex <= isoStats[elementTrack + 1].ResultsCount; RowIndex++)
-                    ConvoluteMasses(ref convolutedAbundances, convolutedAbundanceStartMass, RowIndex, NewAbundance, NewMassTotal, (short)(elementTrack + 1), ref isoStats, elementCount, ref iterations);
+                for (var rowIndex = 1; rowIndex <= isoStats[elementTrack + 1].ResultsCount; rowIndex++)
+                    ConvoluteMasses(ref convolutedAbundances, convolutedAbundanceStartMass, rowIndex, newAbundance, newMassTotal, (short)(elementTrack + 1), ref isoStats, elementCount, ref iterations);
             }
         }
 
@@ -2083,42 +2084,42 @@ namespace MolecularWeightCalculator
             // 6             3               56
             // 6             4               126
 
-            var RunningSum = new int[atomCount + 1];
+            var runningSum = new int[atomCount + 1];
             try
             {
-                int PredictedCombos;
+                int predictedCombos;
                 if (atomCount == 1 || isotopeCount == 1)
                 {
-                    PredictedCombos = isotopeCount;
+                    predictedCombos = isotopeCount;
                 }
                 else
                 {
                     // Initialize RunningSum()
-                    for (var AtomIndex = 1; AtomIndex <= atomCount; AtomIndex++)
-                        RunningSum[AtomIndex] = AtomIndex + 1;
+                    for (var atomIndex = 1; atomIndex <= atomCount; atomIndex++)
+                        runningSum[atomIndex] = atomIndex + 1;
 
-                    for (var IsotopeIndex = 3; IsotopeIndex <= isotopeCount; IsotopeIndex++)
+                    for (var isotopeIndex = 3; isotopeIndex <= isotopeCount; isotopeIndex++)
                     {
-                        var PreviousComputedValue = IsotopeIndex;
-                        for (var AtomIndex = 2; AtomIndex <= atomCount; AtomIndex++)
+                        var previousComputedValue = isotopeIndex;
+                        for (var atomIndex = 2; atomIndex <= atomCount; atomIndex++)
                         {
                             // Compute new count for this AtomIndex
-                            RunningSum[AtomIndex] = PreviousComputedValue + RunningSum[AtomIndex];
+                            runningSum[atomIndex] = previousComputedValue + runningSum[atomIndex];
 
                             // Also place result in RunningSum(AtomIndex)
-                            PreviousComputedValue = RunningSum[AtomIndex];
+                            previousComputedValue = runningSum[atomIndex];
                         }
                     }
 
-                    PredictedCombos = RunningSum[atomCount];
+                    predictedCombos = runningSum[atomCount];
                 }
 
-                return PredictedCombos;
+                return predictedCombos;
             }
             catch
             {
                 MwtWinDllErrorHandler("MwtWinDll|FindCombosPredictIterations");
-                ErrorParams.ErrorID = 590;
+                ErrorParams.ErrorId = 590;
                 ErrorParams.ErrorPosition = 0;
                 return -1;
             }
@@ -2257,7 +2258,7 @@ namespace MolecularWeightCalculator
         /// <param name="symbol"></param>
         /// <param name="aminoAcidsOnly"></param>
         /// <returns>ID if found, otherwise 0</returns>
-        public int GetAbbreviationIDInternal(string symbol, bool aminoAcidsOnly = false)
+        public int GetAbbreviationIdInternal(string symbol, bool aminoAcidsOnly = false)
         {
             for (var index = 1; index <= AbbrevAllCount; index++)
             {
@@ -2398,7 +2399,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbolCombo"></param>
         /// <returns>Statement ID if found, otherwise -1</returns>
-        public int GetCautionStatementIDInternal(string symbolCombo)
+        public int GetCautionStatementIdInternal(string symbolCombo)
         {
             for (var index = 1; index <= CautionStatementCount; index++)
             {
@@ -2491,7 +2492,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns>ID if found, otherwise 0</returns>
-        public short GetElementIDInternal(string symbol)
+        public short GetElementIdInternal(string symbol)
         {
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
@@ -2593,17 +2594,17 @@ namespace MolecularWeightCalculator
 
         public string GetErrorDescription()
         {
-            if (ErrorParams.ErrorID != 0)
+            if (ErrorParams.ErrorId != 0)
             {
-                return LookupMessage(ErrorParams.ErrorID);
+                return LookupMessage(ErrorParams.ErrorId);
             }
 
             return "";
         }
 
-        public int GetErrorID()
+        public int GetErrorId()
         {
-            return ErrorParams.ErrorID;
+            return ErrorParams.ErrorId;
         }
 
         public string GetErrorCharacter()
@@ -2960,7 +2961,7 @@ namespace MolecularWeightCalculator
         /// <param name="charge"></param>
         /// <param name="chargeCarrierMass">If this is 0, uses mChargeCarrierMass</param>
         /// <returns></returns>
-        public double MonoMassToMZInternal(
+        public double MonoMassToMzInternal(
             double monoisotopicMass,
             short charge,
             double chargeCarrierMass = 0)
@@ -2994,9 +2995,9 @@ namespace MolecularWeightCalculator
         public void MemoryLoadAbbreviations()
         {
             // Symbol                            Formula            1 letter abbreviation
-            const short AminoAbbrevCount = 28;
+            const short aminoAbbrevCount = 28;
 
-            AbbrevAllCount = AminoAbbrevCount;
+            AbbrevAllCount = aminoAbbrevCount;
             for (var index = 1; index <= AbbrevAllCount; index++)
                 AbbrevStats[index].IsAminoAcid = true;
 
@@ -3029,27 +3030,27 @@ namespace MolecularWeightCalculator
             AddAbbreviationWork(27, "Val", "C5H9NO", 0f, true, "V", "Valine");
             AddAbbreviationWork(28, "Xxx", "C6H12N2O", 0f, true, "X", "Unknown");
 
-            const short NormalAbbrevCount = 16;
-            AbbrevAllCount += NormalAbbrevCount;
-            for (var index = AminoAbbrevCount + 1; index <= AbbrevAllCount; index++)
+            const short normalAbbrevCount = 16;
+            AbbrevAllCount += normalAbbrevCount;
+            for (var index = aminoAbbrevCount + 1; index <= AbbrevAllCount; index++)
                 AbbrevStats[index].IsAminoAcid = false;
 
-            AddAbbreviationWork(AminoAbbrevCount + 1, "Bpy", "C10H8N2", 0f, false, "", "Bipyridine");
-            AddAbbreviationWork(AminoAbbrevCount + 2, "Bu", "C4H9", 1f, false, "", "Butyl");
-            AddAbbreviationWork(AminoAbbrevCount + 3, "D", "^2.014H", 1f, false, "", "Deuterium");
-            AddAbbreviationWork(AminoAbbrevCount + 4, "En", "C2H8N2", 0f, false, "", "Ethylenediamine");
-            AddAbbreviationWork(AminoAbbrevCount + 5, "Et", "CH3CH2", 1f, false, "", "Ethyl");
-            AddAbbreviationWork(AminoAbbrevCount + 6, "Me", "CH3", 1f, false, "", "Methyl");
-            AddAbbreviationWork(AminoAbbrevCount + 7, "Ms", "CH3SOO", -1, false, "", "Mesyl");
-            AddAbbreviationWork(AminoAbbrevCount + 8, "Oac", "C2H3O2", -1, false, "", "Acetate");
-            AddAbbreviationWork(AminoAbbrevCount + 9, "Otf", "OSO2CF3", -1, false, "", "Triflate");
-            AddAbbreviationWork(AminoAbbrevCount + 10, "Ox", "C2O4", -2, false, "", "Oxalate");
-            AddAbbreviationWork(AminoAbbrevCount + 11, "Ph", "C6H5", 1f, false, "", "Phenyl");
-            AddAbbreviationWork(AminoAbbrevCount + 12, "Phen", "C12H8N2", 0f, false, "", "Phenanthroline");
-            AddAbbreviationWork(AminoAbbrevCount + 13, "Py", "C5H5N", 0f, false, "", "Pyridine");
-            AddAbbreviationWork(AminoAbbrevCount + 14, "Tpp", "(C4H2N(C6H5C)C4H2N(C6H5C))2", 0f, false, "", "Tetraphenylporphyrin");
-            AddAbbreviationWork(AminoAbbrevCount + 15, "Ts", "CH3C6H4SOO", -1, false, "", "Tosyl");
-            AddAbbreviationWork(AminoAbbrevCount + 16, "Urea", "H2NCONH2", 0f, false, "", "Urea");
+            AddAbbreviationWork(aminoAbbrevCount + 1, "Bpy", "C10H8N2", 0f, false, "", "Bipyridine");
+            AddAbbreviationWork(aminoAbbrevCount + 2, "Bu", "C4H9", 1f, false, "", "Butyl");
+            AddAbbreviationWork(aminoAbbrevCount + 3, "D", "^2.014H", 1f, false, "", "Deuterium");
+            AddAbbreviationWork(aminoAbbrevCount + 4, "En", "C2H8N2", 0f, false, "", "Ethylenediamine");
+            AddAbbreviationWork(aminoAbbrevCount + 5, "Et", "CH3CH2", 1f, false, "", "Ethyl");
+            AddAbbreviationWork(aminoAbbrevCount + 6, "Me", "CH3", 1f, false, "", "Methyl");
+            AddAbbreviationWork(aminoAbbrevCount + 7, "Ms", "CH3SOO", -1, false, "", "Mesyl");
+            AddAbbreviationWork(aminoAbbrevCount + 8, "Oac", "C2H3O2", -1, false, "", "Acetate");
+            AddAbbreviationWork(aminoAbbrevCount + 9, "Otf", "OSO2CF3", -1, false, "", "Triflate");
+            AddAbbreviationWork(aminoAbbrevCount + 10, "Ox", "C2O4", -2, false, "", "Oxalate");
+            AddAbbreviationWork(aminoAbbrevCount + 11, "Ph", "C6H5", 1f, false, "", "Phenyl");
+            AddAbbreviationWork(aminoAbbrevCount + 12, "Phen", "C12H8N2", 0f, false, "", "Phenanthroline");
+            AddAbbreviationWork(aminoAbbrevCount + 13, "Py", "C5H5N", 0f, false, "", "Pyridine");
+            AddAbbreviationWork(aminoAbbrevCount + 14, "Tpp", "(C4H2N(C6H5C)C4H2N(C6H5C))2", 0f, false, "", "Tetraphenylporphyrin");
+            AddAbbreviationWork(aminoAbbrevCount + 15, "Ts", "CH3C6H4SOO", -1, false, "", "Tosyl");
+            AddAbbreviationWork(aminoAbbrevCount + 16, "Urea", "H2NCONH2", 0f, false, "", "Urea");
 
             // Note Asx or B is often used for Asp or Asn
             // Note Glx or Z is often used for Glu or Gln
@@ -3110,8 +3111,8 @@ namespace MolecularWeightCalculator
             short specificElement = 0,
             MolecularWeightTool.ElementStatsType specificStatToReset = MolecularWeightTool.ElementStatsType.Mass)
         {
-            const double DEFAULT_CHARGE_CARRIER_MASS_AVG = 1.00739d;
-            const double DEFAULT_CHARGE_CARRIER_MASS_MONOISO = 1.00727649d;
+            const double defaultChargeCarrierMassAvg = 1.00739d;
+            const double defaultChargeCarrierMassMonoiso = 1.00727649d;
 
             // Data Load Statements
             // Uncertainties from CRC Handbook of Chemistry and Physics
@@ -3127,11 +3128,11 @@ namespace MolecularWeightCalculator
             // Define the charge carrier mass
             if (elementMode == ElementMassMode.Average)
             {
-                SetChargeCarrierMassInternal(DEFAULT_CHARGE_CARRIER_MASS_AVG);
+                SetChargeCarrierMassInternal(defaultChargeCarrierMassAvg);
             }
             else
             {
-                SetChargeCarrierMassInternal(DEFAULT_CHARGE_CARRIER_MASS_MONOISO);
+                SetChargeCarrierMassInternal(defaultChargeCarrierMassMonoiso);
             }
 
             // elementNames stores the element names
@@ -3345,7 +3346,7 @@ namespace MolecularWeightCalculator
                 mComputationStatsSaved.Initialize();
                 mComputationStatsSaved = computationStats;
 
-                if (ErrorParams.ErrorID == 0)
+                if (ErrorParams.ErrorId == 0)
                 {
 
                     // Compute the standard deviation
@@ -3499,11 +3500,11 @@ namespace MolecularWeightCalculator
                             else
                             {
                                 // Invalid Formula; raise error
-                                ErrorParams.ErrorID = 30;
+                                ErrorParams.ErrorId = 30;
                                 ErrorParams.ErrorPosition = charIndex;
                             }
 
-                            if (ErrorParams.ErrorID != 0)
+                            if (ErrorParams.ErrorId != 0)
                                 break;
                         }
 
@@ -3558,11 +3559,11 @@ namespace MolecularWeightCalculator
                                 if (char.IsDigit(char2[0]) || char2 == ".")
                                 {
                                     // Misplaced number
-                                    ErrorParams.ErrorID = 14;
+                                    ErrorParams.ErrorId = 14;
                                     ErrorParams.ErrorPosition = charIndex;
                                 }
 
-                                if (ErrorParams.ErrorID == 0)
+                                if (ErrorParams.ErrorId == 0)
                                 {
                                     // search for closing parenthesis
                                     parenthLevel = 1;
@@ -3642,10 +3643,10 @@ namespace MolecularWeightCalculator
                                     }
                                 }
 
-                                if (parenthLevel > 0 && ErrorParams.ErrorID == 0)
+                                if (parenthLevel > 0 && ErrorParams.ErrorId == 0)
                                 {
                                     // Missing closing parenthesis
-                                    ErrorParams.ErrorID = 3;
+                                    ErrorParams.ErrorId = 3;
                                     ErrorParams.ErrorPosition = charIndex;
                                 }
 
@@ -3656,7 +3657,7 @@ namespace MolecularWeightCalculator
                             case 125: // )    Repeat a section of a formula
                                 // Should have been skipped
                                 // Unmatched closing parentheses
-                                ErrorParams.ErrorID = 4;
+                                ErrorParams.ErrorId = 4;
                                 ErrorParams.ErrorPosition = charIndex;
                                 break;
 
@@ -3674,7 +3675,7 @@ namespace MolecularWeightCalculator
                                 else if (Math.Abs(adjacentNum) < float.Epsilon)
                                 {
                                     // Cannot have 0 after a dash
-                                    ErrorParams.ErrorID = 5;
+                                    ErrorParams.ErrorId = 5;
                                     ErrorParams.ErrorPosition = charIndex + 1;
                                 }
                                 else
@@ -3716,13 +3717,13 @@ namespace MolecularWeightCalculator
                                 else if (NumberConverter.CDblSafe(formula.Substring(charIndex - 1, 1)) > 0d)
                                 {
                                     // Number too large
-                                    ErrorParams.ErrorID = 7;
+                                    ErrorParams.ErrorId = 7;
                                     ErrorParams.ErrorPosition = charIndex;
                                 }
                                 else
                                 {
                                     // Misplaced number
-                                    ErrorParams.ErrorID = 14;
+                                    ErrorParams.ErrorId = 14;
                                     ErrorParams.ErrorPosition = charIndex;
                                 }
 
@@ -3749,18 +3750,18 @@ namespace MolecularWeightCalculator
                                     CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
                                 }
 
-                                if (ErrorParams.ErrorID == 0)
+                                if (ErrorParams.ErrorId == 0)
                                 {
                                     if (insideBrackets)
                                     {
                                         // No Nested brackets.
-                                        ErrorParams.ErrorID = 16;
+                                        ErrorParams.ErrorId = 16;
                                         ErrorParams.ErrorPosition = charIndex;
                                     }
                                     else if (adjacentNum < 0d)
                                     {
                                         // No number after bracket
-                                        ErrorParams.ErrorID = 12;
+                                        ErrorParams.ErrorId = 12;
                                         ErrorParams.ErrorPosition = charIndex + 1;
                                     }
                                     else
@@ -3782,7 +3783,7 @@ namespace MolecularWeightCalculator
                                 if (adjacentNum >= 0d)
                                 {
                                     // Number following bracket
-                                    ErrorParams.ErrorID = 11;
+                                    ErrorParams.ErrorId = 11;
                                     ErrorParams.ErrorPosition = charIndex + 1;
                                 }
                                 else if (insideBrackets)
@@ -3800,7 +3801,7 @@ namespace MolecularWeightCalculator
                                 else
                                 {
                                     // Unmatched bracket
-                                    ErrorParams.ErrorID = 15;
+                                    ErrorParams.ErrorId = 15;
                                     ErrorParams.ErrorPosition = charIndex;
                                 }
 
@@ -3842,7 +3843,7 @@ namespace MolecularWeightCalculator
                                         if (Math.Abs(adjacentNum) < float.Epsilon)
                                         {
                                             // Zero after element
-                                            ErrorParams.ErrorID = 5;
+                                            ErrorParams.ErrorId = 5;
                                             ErrorParams.ErrorPosition = charIndex + symbolLength;
                                         }
                                         else
@@ -3964,7 +3965,7 @@ namespace MolecularWeightCalculator
                                             // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
                                             // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
                                             // Furthermore, can't have this either: Lor = C6H5Tal and Tal = H4O2Vin and Vin = S3Lor
-                                            ErrorParams.ErrorID = 28;
+                                            ErrorParams.ErrorId = 28;
                                             ErrorParams.ErrorPosition = charIndex;
                                         }
                                         // Found an abbreviation
@@ -3974,12 +3975,12 @@ namespace MolecularWeightCalculator
                                             if (char1.ToUpper() == "D" && char2 != "y")
                                             {
                                                 // Isotopic mass used for Deuterium
-                                                ErrorParams.ErrorID = 26;
+                                                ErrorParams.ErrorId = 26;
                                                 ErrorParams.ErrorPosition = charIndex;
                                             }
                                             else
                                             {
-                                                ErrorParams.ErrorID = 24;
+                                                ErrorParams.ErrorId = 24;
                                                 ErrorParams.ErrorPosition = charIndex;
                                             }
                                         }
@@ -4028,7 +4029,7 @@ namespace MolecularWeightCalculator
                                             // Remove this symbol from the Abbreviation Symbol Stack
                                             AbbrevSymbolStackAddRemoveMostRecent(ref abbrevSymbolStack);
 
-                                            if (ErrorParams.ErrorID == 0)
+                                            if (ErrorParams.ErrorId == 0)
                                             {
                                                 if (expandAbbreviations)
                                                 {
@@ -4091,11 +4092,11 @@ namespace MolecularWeightCalculator
                                         if (char1.ToUpper() == "X")
                                         {
                                             // X for solver but no preceding bracket
-                                            ErrorParams.ErrorID = 18;
+                                            ErrorParams.ErrorId = 18;
                                         }
                                         else
                                         {
-                                            ErrorParams.ErrorID = 1;
+                                            ErrorParams.ErrorId = 1;
                                         }
 
                                         ErrorParams.ErrorPosition = charIndex;
@@ -4109,7 +4110,7 @@ namespace MolecularWeightCalculator
                                 adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
                                 CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                                if (ErrorParams.ErrorID != 0)
+                                if (ErrorParams.ErrorId != 0)
                                 {
                                     // Problem, don't go on.
                                 }
@@ -4132,7 +4133,7 @@ namespace MolecularWeightCalculator
                                         else
                                         {
                                             // No letter after isotopic mass
-                                            ErrorParams.ErrorID = 22;
+                                            ErrorParams.ErrorId = 22;
                                             ErrorParams.ErrorPosition = charIndex + numLength + 1;
                                         }
                                     }
@@ -4144,13 +4145,13 @@ namespace MolecularWeightCalculator
                                         if (formula.Substring(charIndex + 1, 1) == "-")
                                         {
                                             // Negative number following caret
-                                            ErrorParams.ErrorID = 23;
+                                            ErrorParams.ErrorId = 23;
                                             ErrorParams.ErrorPosition = charIndex + 1;
                                         }
                                         else
                                         {
                                             // No number following caret
-                                            ErrorParams.ErrorID = 20;
+                                            ErrorParams.ErrorId = 20;
                                             ErrorParams.ErrorPosition = charIndex + 1;
                                         }
                                     }
@@ -4175,13 +4176,13 @@ namespace MolecularWeightCalculator
                                 else
                                 {
                                     // No compounds after leading coefficient after dash
-                                    ErrorParams.ErrorID = 25;
+                                    ErrorParams.ErrorId = 25;
                                     ErrorParams.ErrorPosition = charIndex;
                                 }
                             }
                         }
 
-                        if (ErrorParams.ErrorID != 0)
+                        if (ErrorParams.ErrorId != 0)
                         {
                             charIndex = formula.Length;
                         }
@@ -4193,15 +4194,15 @@ namespace MolecularWeightCalculator
 
                 if (insideBrackets)
                 {
-                    if (ErrorParams.ErrorID == 0)
+                    if (ErrorParams.ErrorId == 0)
                     {
                         // Missing closing bracket
-                        ErrorParams.ErrorID = 13;
+                        ErrorParams.ErrorId = 13;
                         ErrorParams.ErrorPosition = charIndex;
                     }
                 }
 
-                if (ErrorParams.ErrorID != 0 && ErrorParams.ErrorCharacter.Length == 0)
+                if (ErrorParams.ErrorId != 0 && ErrorParams.ErrorCharacter.Length == 0)
                 {
                     if (string.IsNullOrEmpty(char1))
                         char1 = EMPTY_STRING_CHAR.ToString();
@@ -4228,7 +4229,7 @@ namespace MolecularWeightCalculator
             catch (Exception ex)
             {
                 MwtWinDllErrorHandler("MwtWinDll_clsElementAndMassRoutines|ParseFormula: " + ex.Message);
-                ErrorParams.ErrorID = -10;
+                ErrorParams.ErrorId = -10;
                 ErrorParams.ErrorPosition = 0;
 
                 return formula;
@@ -4375,7 +4376,7 @@ namespace MolecularWeightCalculator
                         }
                         else
                         {
-                            errorId = ErrorParams.ErrorID;
+                            errorId = ErrorParams.ErrorId;
                         }
 
                         switch (errorId)
@@ -4546,7 +4547,7 @@ namespace MolecularWeightCalculator
             {
                 if ((AbbrevStats[index].Symbol?.ToLower() ?? "") == (abbreviationSymbol ?? ""))
                 {
-                    RemoveAbbreviationByIDInternal(index);
+                    RemoveAbbreviationByIdInternal(index);
                     removed = true;
                 }
             }
@@ -4564,7 +4565,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="abbreviationId"></param>
         /// <returns>0 if found and removed; 1 if error</returns>
-        public int RemoveAbbreviationByIDInternal(int abbreviationId)
+        public int RemoveAbbreviationByIdInternal(int abbreviationId)
         {
             bool removed;
 
@@ -4625,7 +4626,7 @@ namespace MolecularWeightCalculator
         public void ResetErrorParamsInternal()
         {
             ErrorParams.ErrorCharacter = "";
-            ErrorParams.ErrorID = 0;
+            ErrorParams.ErrorId = 0;
             ErrorParams.ErrorPosition = 0;
         }
 
@@ -4731,7 +4732,7 @@ namespace MolecularWeightCalculator
             catch
             {
                 MwtWinDllErrorHandler("MwtWinDll_clsElementAndMassRoutines|ReturnFormattedMassAndStdDev");
-                ErrorParams.ErrorID = -10;
+                ErrorParams.ErrorId = -10;
                 ErrorParams.ErrorPosition = 0;
             }
 
@@ -4854,16 +4855,16 @@ namespace MolecularWeightCalculator
                 else
                 {
                     // Too many abbreviations
-                    ErrorParams.ErrorID = 196;
+                    ErrorParams.ErrorId = 196;
                 }
             }
 
             if (abbrevId >= 1)
             {
-                SetAbbreviationByIDInternal((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
+                SetAbbreviationByIdInternal((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
             }
 
-            return ErrorParams.ErrorID;
+            return ErrorParams.ErrorId;
         }
 
         /// <summary>
@@ -4878,7 +4879,7 @@ namespace MolecularWeightCalculator
         /// <param name="comment"></param>
         /// <param name="validateFormula"></param>
         /// <returns>0 if successful, otherwise an error ID</returns>
-        public int SetAbbreviationByIDInternal(
+        public int SetAbbreviationByIdInternal(
             short abbrevId, string symbol,
             string formula, float charge,
             bool isAminoAcid,
@@ -4902,12 +4903,12 @@ namespace MolecularWeightCalculator
             if (symbol.Length < 1)
             {
                 // Symbol length is 0
-                ErrorParams.ErrorID = 192;
+                ErrorParams.ErrorId = 192;
             }
             else if (symbol.Length > MAX_ABBREV_LENGTH)
             {
                 // Abbreviation symbol too long
-                ErrorParams.ErrorID = 190;
+                ErrorParams.ErrorId = 190;
             }
             else if (IsStringAllLetters(symbol))
             {
@@ -4927,7 +4928,7 @@ namespace MolecularWeightCalculator
                         else
                         {
                             // Too many abbreviations
-                            ErrorParams.ErrorID = 196;
+                            ErrorParams.ErrorId = 196;
                             abbrevId = -1;
                         }
                     }
@@ -4953,7 +4954,7 @@ namespace MolecularWeightCalculator
                             var carbonOrSiliconReturnCount = 0;
                             formula = ParseFormulaRecursive(formula, ref computationStats, ref abbrevSymbolStack, false, ref stdDevSum, ref carbonOrSiliconReturnCount);
 
-                            if (ErrorParams.ErrorID != 0)
+                            if (ErrorParams.ErrorId != 0)
                             {
                                 // An error occurred while parsing
                                 // Already present in ErrorParams.ErrorID
@@ -4970,16 +4971,16 @@ namespace MolecularWeightCalculator
                 else
                 {
                     // Invalid formula (actually, blank formula)
-                    ErrorParams.ErrorID = 160;
+                    ErrorParams.ErrorId = 160;
                 }
             }
             else
             {
                 // Symbol does not just contain letters
-                ErrorParams.ErrorID = 194;
+                ErrorParams.ErrorId = 194;
             }
 
-            return ErrorParams.ErrorID;
+            return ErrorParams.ErrorId;
         }
 
         /// <summary>
@@ -5023,7 +5024,7 @@ namespace MolecularWeightCalculator
                             else
                             {
                                 // Too many caution statements
-                                ErrorParams.ErrorID = 1215;
+                                ErrorParams.ErrorId = 1215;
                                 index = -1;
                             }
                         }
@@ -5037,22 +5038,22 @@ namespace MolecularWeightCalculator
                     else
                     {
                         // Caution description length is 0
-                        ErrorParams.ErrorID = 1210;
+                        ErrorParams.ErrorId = 1210;
                     }
                 }
                 else
                 {
                     // Caution symbol doesn't just contain letters
-                    ErrorParams.ErrorID = 1205;
+                    ErrorParams.ErrorId = 1205;
                 }
             }
             else
             {
                 // Symbol length is 0 or is greater than MAX_ABBREV_LENGTH
-                ErrorParams.ErrorID = 1200;
+                ErrorParams.ErrorId = 1200;
             }
 
-            return ErrorParams.ErrorID;
+            return ErrorParams.ErrorId;
         }
 
         public void SetChargeCarrierMassInternal(double mass)
@@ -5187,29 +5188,29 @@ namespace MolecularWeightCalculator
 
         private void ShellSortSymbols(int lowIndex, int highIndex)
         {
-            var PointerArray = new int[highIndex + 1];
-            var SymbolsStore = new string[highIndex + 1, 2];
+            var pointerArray = new int[highIndex + 1];
+            var symbolsStore = new string[highIndex + 1, 2];
 
             // MasterSymbolsList starts at lowIndex
             for (var index = lowIndex; index <= highIndex; index++)
-                PointerArray[index] = index;
+                pointerArray[index] = index;
 
-            ShellSortSymbolsWork(ref PointerArray, lowIndex, highIndex);
+            ShellSortSymbolsWork(ref pointerArray, lowIndex, highIndex);
 
             // Reassign MasterSymbolsList array according to PointerArray order
             // First, copy to a temporary array (I know it eats up memory, but I have no choice)
             for (var index = lowIndex; index <= highIndex; index++)
             {
-                SymbolsStore[index, 0] = MasterSymbolsList[index, 0];
-                SymbolsStore[index, 1] = MasterSymbolsList[index, 1];
+                symbolsStore[index, 0] = MasterSymbolsList[index, 0];
+                symbolsStore[index, 1] = MasterSymbolsList[index, 1];
             }
 
             // Now, put them back into the MasterSymbolsList() array in the correct order
             // Use PointerArray() for this
             for (var index = lowIndex; index <= highIndex; index++)
             {
-                MasterSymbolsList[index, 0] = SymbolsStore[PointerArray[index], 0];
-                MasterSymbolsList[index, 1] = SymbolsStore[PointerArray[index], 1];
+                MasterSymbolsList[index, 0] = symbolsStore[pointerArray[index], 0];
+                MasterSymbolsList[index, 1] = symbolsStore[pointerArray[index], 1];
             }
         }
 
@@ -5251,12 +5252,12 @@ namespace MolecularWeightCalculator
                     {
                         // Use <= to sort ascending; Use > to sort descending
                         // Sort by decreasing length
-                        var Length1 = MasterSymbolsList[pointerArray[indexCompare], 0].Length;
-                        var Length2 = MasterSymbolsList[pointerSwap, 0].Length;
-                        if (Length1 > Length2)
+                        var length1 = MasterSymbolsList[pointerArray[indexCompare], 0].Length;
+                        var length2 = MasterSymbolsList[pointerSwap, 0].Length;
+                        if (length1 > length2)
                             break;
                         // If same length, sort alphabetically
-                        if (Length1 == Length2)
+                        if (length1 == length2)
                         {
                             if (string.Compare(MasterSymbolsList[pointerArray[indexCompare], 0].ToUpper(), MasterSymbolsList[pointerSwap, 0].ToUpper(), StringComparison.Ordinal) <= 0)
                                 break;
@@ -5422,7 +5423,7 @@ namespace MolecularWeightCalculator
             for (short abbrevIndex = 1; abbrevIndex <= AbbrevAllCount; abbrevIndex++)
             {
                 var stats = AbbrevStats[abbrevIndex];
-                SetAbbreviationByIDInternal(abbrevIndex, stats.Symbol, stats.Formula, stats.Charge, stats.IsAminoAcid, stats.OneLetterSymbol, stats.Comment, true);
+                SetAbbreviationByIdInternal(abbrevIndex, stats.Symbol, stats.Formula, stats.Charge, stats.IsAminoAcid, stats.OneLetterSymbol, stats.Comment, true);
                 if (stats.InvalidSymbolOrFormula)
                 {
                     invalidAbbreviationCount = (short)(invalidAbbreviationCount + 1);

@@ -165,7 +165,7 @@ namespace MolecularWeightCalculator
 
         public string ErrorDescription => mElementAndMassRoutines.GetErrorDescription();
 
-        public int ErrorID => mElementAndMassRoutines.GetErrorID();
+        public int ErrorId => mElementAndMassRoutines.GetErrorId();
 
         public string ErrorCharacter => mElementAndMassRoutines.GetErrorCharacter();
 
@@ -423,9 +423,9 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns>ID if found, otherwise 0</returns>
-        public int GetAbbreviationID(string symbol)
+        public int GetAbbreviationId(string symbol)
         {
-            return mElementAndMassRoutines.GetAbbreviationIDInternal(symbol);
+            return mElementAndMassRoutines.GetAbbreviationIdInternal(symbol);
         }
 
         public string GetAminoAcidSymbolConversion(string symbolToFind, bool oneLetterTo3Letter)
@@ -462,9 +462,9 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbolCombo"></param>
         /// <returns>Statement ID if found, otherwise -1</returns>
-        public int GetCautionStatementID(string symbolCombo)
+        public int GetCautionStatementId(string symbolCombo)
         {
-            return mElementAndMassRoutines.GetCautionStatementIDInternal(symbolCombo);
+            return mElementAndMassRoutines.GetCautionStatementIdInternal(symbolCombo);
         }
 
         public double GetChargeCarrierMass()
@@ -501,9 +501,9 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns>ID if found, otherwise 0</returns>
-        public int GetElementID(string symbol)
+        public int GetElementId(string symbol)
         {
-            return mElementAndMassRoutines.GetElementIDInternal(symbol);
+            return mElementAndMassRoutines.GetElementIdInternal(symbol);
         }
 
         /// <summary>
@@ -535,12 +535,12 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Return the element symbol for the given element ID
         /// </summary>
-        /// <param name="elementID"></param>
+        /// <param name="elementId"></param>
         /// <returns></returns>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
-        public string GetElementSymbol(short elementID)
+        public string GetElementSymbol(short elementId)
         {
-            return mElementAndMassRoutines.GetElementSymbolInternal(elementID);
+            return mElementAndMassRoutines.GetElementSymbolInternal(elementId);
         }
 
         /// <summary>
@@ -618,9 +618,9 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.MassToPPMInternal(massToConvert, currentMz);
         }
 
-        public double MonoMassToMZ(double monoisotopicMass, short charge, double chargeCarrierMass = 0)
+        public double MonoMassToMz(double monoisotopicMass, short charge, double chargeCarrierMass = 0)
         {
-            return mElementAndMassRoutines.MonoMassToMZInternal(monoisotopicMass, charge, chargeCarrierMass);
+            return mElementAndMassRoutines.MonoMassToMzInternal(monoisotopicMass, charge, chargeCarrierMass);
         }
 
         /// <summary>
@@ -640,9 +640,9 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.RemoveAbbreviationInternal(abbreviationSymbol);
         }
 
-        public int RemoveAbbreviationByID(int abbreviationId)
+        public int RemoveAbbreviationById(int abbreviationId)
         {
-            return mElementAndMassRoutines.RemoveAbbreviationByIDInternal(abbreviationId);
+            return mElementAndMassRoutines.RemoveAbbreviationByIdInternal(abbreviationId);
         }
 
         public int RemoveCautionStatement(string cautionSymbol)
@@ -713,14 +713,14 @@ namespace MolecularWeightCalculator
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
         /// defined, then the parsing of the first abbreviation will fail
         /// </remarks>
-        public int SetAbbreviationByID(
+        public int SetAbbreviationById(
             int abbrevId, string symbol, string formula,
             float charge, bool isAminoAcid,
             string oneLetterSymbol = "",
             string comment = "",
             bool validateFormula = true)
         {
-            return mElementAndMassRoutines.SetAbbreviationByIDInternal((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
+            return mElementAndMassRoutines.SetAbbreviationByIdInternal((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
         }
 
         /// <summary>
@@ -790,6 +790,7 @@ namespace MolecularWeightCalculator
         /// <param name="overrideErrorId"></param>
         /// <param name="errorIdOverride"></param>
         /// <returns></returns>
+        // ReSharper disable once InconsistentNaming
         public string TextToRTF(
             string textToConvert,
             bool calculatorMode = false,

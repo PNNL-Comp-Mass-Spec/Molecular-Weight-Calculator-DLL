@@ -11,7 +11,7 @@ namespace MolecularWeightCalculator
         public double Mass { get; set; }
         public double DeltaMass { get; set; }
         public bool DeltaMassIsPPM { get; set; }
-        public double MZ { get; set; }
+        public double Mz { get; set; }
 
         public int ChargeState { get; set; }
 

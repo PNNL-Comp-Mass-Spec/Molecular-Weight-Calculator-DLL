@@ -29,10 +29,10 @@ namespace MolecularWeightCalculator
 
         public Peptide(ElementAndMassTools elementAndMassTools = null)
         {
-            ElementAndMassRoutines = elementAndMassTools;
-            if (ElementAndMassRoutines == null)
+            mElementAndMassRoutines = elementAndMassTools;
+            if (mElementAndMassRoutines == null)
             {
-                ElementAndMassRoutines = new ElementAndMassTools();
+                mElementAndMassRoutines = new ElementAndMassTools();
             }
 
             InitializeClass();
@@ -57,7 +57,7 @@ namespace MolecularWeightCalculator
 
         private const string SHOULDER_ION_PREFIX = "Shoulder-";
 
-        private readonly ElementAndMassTools ElementAndMassRoutines;
+        private readonly ElementAndMassTools mElementAndMassRoutines;
 
         public enum CTerminusGroupType
         {
@@ -73,6 +73,7 @@ namespace MolecularWeightCalculator
             Acetyl = 2,
             PyroGlu = 3,
             Carbamyl = 4,
+            // ReSharper disable once InconsistentNaming
             PTC = 5,
             None = 6
         }
@@ -103,7 +104,7 @@ namespace MolecularWeightCalculator
             public double MassWithMods; // The mass of the residue, including phosphorylation or any modification
             public double[] IonMass; // 0-based array; the masses that the a, b, and y ions ending/starting with this residue will produce in the mass spectrum (includes H+)
             public bool Phosphorylated; // Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
-            public short ModificationIDCount;
+            public short ModificationIdCount;
             public int[] ModificationIDs; // 1-based array
 
             // Note: "Initialize" must be called to initialize instances of this structure
@@ -140,6 +141,7 @@ namespace MolecularWeightCalculator
         public class FragmentationSpectrumIntensities
         {
             public double[] IonType; // 0-based array
+            // ReSharper disable once InconsistentNaming
             public double BYIonShoulder; // If > 0 then shoulder ions will be created by B and Y ions
             public double NeutralLoss;
 
@@ -201,15 +203,15 @@ namespace MolecularWeightCalculator
 
         // Note: A peptide goes from N to C, eg. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
         // Residue 1 would be Gly, Residue 2 would be Leu, Residue 3 would be Tyr
-        private Residue[] Residues; // 1-based array
-        private int ResidueCount;
-        private int ResidueCountDimmed;
+        private Residue[] mResidues; // 1-based array
+        private int mResidueCount;
+        private int mResidueCountDimmed;
 
         // ModificationSymbols() holds a list of the potential modification symbols and the mass of each modification
         // Modification symbols can be 1 or more letters long
-        private ModificationSymbol[] ModificationSymbols; // 1-based array
-        private int ModificationSymbolCount;
-        private int ModificationSymbolCountDimmed;
+        private ModificationSymbol[] mModificationSymbols; // 1-based array
+        private int mModificationSymbolCount;
+        private int mModificationSymbolCountDimmed;
 
         // ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
         private readonly Terminus mNTerminus = new Terminus(); // Formula on the N-Terminus
@@ -224,18 +226,22 @@ namespace MolecularWeightCalculator
 
         private FragmentationSpectrumOptions mFragSpectrumOptions = new FragmentationSpectrumOptions();
 
-        private double massHOH;
-        private double massNH3;
-        private double massH3PO4;
-        private double massPhosphorylation; // H3PO4 minus HOH = 79.9663326
-        private double massHydrogen; // Mass of hydrogen
-        private double chargeCarrierMass; // H minus one electron
+        // ReSharper disable InconsistentNaming
+        private double mMassHOH;
+        private double mMassNH3;
+        private double mMassH3PO4;
+        // ReSharper restore InconsistentNaming
+        private double mMassPhosphorylation; // H3PO4 minus HOH = 79.9663326
+        private double mMassHydrogen; // Mass of hydrogen
+        private double mChargeCarrierMass; // H minus one electron
 
-        private double immoniumMassDifference; // CO minus H = 26.9871
+        private double mImmoniumMassDifference; // CO minus H = 26.9871
 
-        private double histidineFW; // 110
-        private double phenylalanineFW; // 120
-        private double tyrosineFW; // 136
+        // ReSharper disable InconsistentNaming
+        private double mHistidineFW; // 110
+        private double mPhenylalanineFW; // 120
+        private double mTyrosineFW; // 136
+        // ReSharper restore InconsistentNaming
 
         private bool mDelayUpdateResidueMass;
 
@@ -296,7 +302,7 @@ namespace MolecularWeightCalculator
             while (compareIndex < sequenceStrLength)
             {
                 var testChar = partialSequence.Substring(compareIndex, 1);
-                if (ElementAndMassRoutines.IsModSymbolInternal(testChar))
+                if (mElementAndMassRoutines.IsModSymbolInternal(testChar))
                 {
                     modSymbolGroup += testChar;
                 }
@@ -320,7 +326,7 @@ namespace MolecularWeightCalculator
                 for (subPartLength = modSymbolGroup.Length; subPartLength >= 1; subPartLength -= 1)
                 {
                     // See if the modification is already defined
-                    modificationId = GetModificationSymbolID(modSymbolGroup.Substring(0, subPartLength));
+                    modificationId = GetModificationSymbolId(modSymbolGroup.Substring(0, subPartLength));
                     if (modificationId > 0)
                     {
                         matchFound = true;
@@ -348,12 +354,12 @@ namespace MolecularWeightCalculator
                 if (matchFound)
                 {
                     // Record the modification for this residue
-                    var residue = Residues[residueNumber];
-                    if (residue.ModificationIDCount < MAX_MODIFICATIONS)
+                    var residue = mResidues[residueNumber];
+                    if (residue.ModificationIdCount < MAX_MODIFICATIONS)
                     {
-                        residue.ModificationIDCount = (short)(residue.ModificationIDCount + 1);
-                        residue.ModificationIDs[residue.ModificationIDCount] = modificationId;
-                        if (ModificationSymbols[modificationId].IndicatesPhosphorylation)
+                        residue.ModificationIdCount = (short)(residue.ModificationIdCount + 1);
+                        residue.ModificationIDs[residue.ModificationIdCount] = modificationId;
+                        if (mModificationSymbols[modificationId].IndicatesPhosphorylation)
                         {
                             residue.Phosphorylated = true;
                         }
@@ -440,14 +446,14 @@ namespace MolecularWeightCalculator
                 }
                 else
                 {
-                    symbol3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, true);
+                    symbol3Letter = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, true);
                     if (symbol3Letter.Length == 0)
                     {
                         symbol3Letter = symbol;
                     }
                 }
 
-                abbrevId = ElementAndMassRoutines.GetAbbreviationIDInternal(symbol3Letter, true);
+                abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(symbol3Letter, true);
             }
             else
             {
@@ -455,11 +461,11 @@ namespace MolecularWeightCalculator
             }
 
             residue.Symbol = symbol3Letter;
-            residue.ModificationIDCount = 0;
+            residue.ModificationIdCount = 0;
             residue.Phosphorylated = false;
             if (abbrevId > 0)
             {
-                residue.Mass = ElementAndMassRoutines.GetAbbreviationMass(abbrevId);
+                residue.Mass = mElementAndMassRoutines.GetAbbreviationMass(abbrevId);
             }
             else
             {
@@ -500,11 +506,11 @@ namespace MolecularWeightCalculator
 
         public List<FragmentationSpectrumData> GetFragmentationMasses()
         {
-            const int MAX_CHARGE = 3;
+            const int maxCharge = 3;
 
             var ionIntensities = new float[5];
 
-            if (ResidueCount == 0)
+            if (mResidueCount == 0)
             {
                 // No residues
                 return new List<FragmentationSpectrumData>();
@@ -520,13 +526,13 @@ namespace MolecularWeightCalculator
             var ionShoulderIntensity = (float)mFragSpectrumOptions.IntensityOptions.BYIonShoulder;
             var neutralLossIntensity = (float)mFragSpectrumOptions.IntensityOptions.NeutralLoss;
 
-            if (MAX_CHARGE >= 2)
+            if (maxCharge >= 2)
             {
                 showCharge[2] = mFragSpectrumOptions.DoubleChargeIonsShow;
                 chargeThreshold[2] = mFragSpectrumOptions.DoubleChargeIonsThreshold;
             }
 
-            if (MAX_CHARGE >= 3)
+            if (maxCharge >= 3)
             {
                 showCharge[3] = mFragSpectrumOptions.TripleChargeIonsShow;
                 chargeThreshold[3] = mFragSpectrumOptions.TripleChargeIonsThreshold;
@@ -537,7 +543,7 @@ namespace MolecularWeightCalculator
             var predictedIonCount = GetFragmentationSpectrumRequiredDataPoints();
 
             if (predictedIonCount == 0)
-                predictedIonCount = ResidueCount;
+                predictedIonCount = mResidueCount;
             var fragSpectrumWork = new FragmentationSpectrumData[predictedIonCount + 1];
             for (var i = 0; i < fragSpectrumWork.Length; i++)
             {
@@ -548,15 +554,15 @@ namespace MolecularWeightCalculator
             UpdateResidueMasses();
 
             var ionCount = 0;
-            for (var residueIndex = 1; residueIndex <= ResidueCount; residueIndex++)
+            for (var residueIndex = 1; residueIndex <= mResidueCount; residueIndex++)
             {
-                var residue = Residues[residueIndex];
+                var residue = mResidues[residueIndex];
 
                 for (IonType ionType = 0; ionType <= ION_TYPE_MAX; ionType++)
                 {
                     if (mFragSpectrumOptions.IonTypeOptions[(int)ionType].ShowIon)
                     {
-                        if ((residueIndex == 1 || residueIndex == ResidueCount) && (ionType == IonType.AIon || ionType == IonType.BIon || ionType == IonType.CIon))
+                        if ((residueIndex == 1 || residueIndex == mResidueCount) && (ionType == IonType.AIon || ionType == IonType.BIon || ionType == IonType.CIon))
                         {
                             // Don't include a, b, or c ions in the output masses for this residue
                         }
@@ -570,7 +576,7 @@ namespace MolecularWeightCalculator
                             // Note that the residue symbols are separated by a space to avoid accidental matching by the IndexOf() functions below
                             var residues = GetInternalResidues(residueIndex, ionType, out var phosphorylated);
 
-                            for (short chargeIndex = 1; chargeIndex <= MAX_CHARGE; chargeIndex++)
+                            for (short chargeIndex = 1; chargeIndex <= maxCharge; chargeIndex++)
                             {
                                 if (chargeIndex == 1 || chargeIndex > 1 && showCharge[chargeIndex])
                                 {
@@ -582,7 +588,7 @@ namespace MolecularWeightCalculator
                                     else
                                     {
                                         // Compute mass at higher charge
-                                        convolutedMass = (float)ElementAndMassRoutines.ConvoluteMassInternal(baseMass, 1, chargeIndex, chargeCarrierMass);
+                                        convolutedMass = (float)mElementAndMassRoutines.ConvoluteMassInternal(baseMass, 1, chargeIndex, mChargeCarrierMass);
                                     }
 
                                     if (chargeIndex > 1 && baseMass < chargeThreshold[chargeIndex])
@@ -599,7 +605,7 @@ namespace MolecularWeightCalculator
                                         string ionSymbol;
                                         if (ionType == IonType.YIon || ionType == IonType.ZIon)
                                         {
-                                            ionSymbol = ionSymbolGeneric + (ResidueCount - residueIndex + 1);
+                                            ionSymbol = ionSymbolGeneric + (mResidueCount - residueIndex + 1);
                                         }
                                         else
                                         {
@@ -633,7 +639,7 @@ namespace MolecularWeightCalculator
                                             // See if the residues up to this point contain any of these residues
                                             if (residues.Contains("Ser") || residues.Contains("Thr") || residues.Contains("Glue") || residues.Contains("Asp"))
                                             {
-                                                observedMass = (float)(convolutedMass - massHOH / chargeIndex);
+                                                observedMass = (float)(convolutedMass - mMassHOH / chargeIndex);
                                                 AppendDataToFragSpectrum(ref ionCount, ref fragSpectrumWork, observedMass, neutralLossIntensity, ionSymbol + mWaterLossSymbol, ionSymbolGeneric + mWaterLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false);
                                             }
                                         }
@@ -644,7 +650,7 @@ namespace MolecularWeightCalculator
                                             // See if the residues up to this point contain any of these residues
                                             if (residues.Contains("Arg") || residues.Contains("Lys") || residues.Contains("Gln") || residues.Contains("Asn"))
                                             {
-                                                observedMass = (float)(convolutedMass - massNH3 / chargeIndex);
+                                                observedMass = (float)(convolutedMass - mMassNH3 / chargeIndex);
                                                 AppendDataToFragSpectrum(ref ionCount, ref fragSpectrumWork, observedMass, neutralLossIntensity, ionSymbol + mAmmoniaLossSymbol, ionSymbolGeneric + mAmmoniaLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false);
                                             }
                                         }
@@ -656,7 +662,7 @@ namespace MolecularWeightCalculator
                                             // See if the residues up to this point contain phosphorylated residues
                                             if (phosphorylated)
                                             {
-                                                observedMass = (float)(convolutedMass - massH3PO4 / chargeIndex);
+                                                observedMass = (float)(convolutedMass - mMassH3PO4 / chargeIndex);
                                                 AppendDataToFragSpectrum(ref ionCount, ref fragSpectrumWork, observedMass, neutralLossIntensity, ionSymbol + mPhosphoLossSymbol, ionSymbolGeneric + mPhosphoLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false);
                                             }
                                         }
@@ -689,7 +695,7 @@ namespace MolecularWeightCalculator
         {
             // Determines the total number of data points that will be required for a theoretical fragmentation spectrum
 
-            return ResidueCount * ComputeMaxIonsPerResidue();
+            return mResidueCount * ComputeMaxIonsPerResidue();
         }
 
         public FragmentationSpectrumOptions GetFragmentationSpectrumOptions()
@@ -700,7 +706,7 @@ namespace MolecularWeightCalculator
             }
             catch (Exception ex)
             {
-                ElementAndMassRoutines.GeneralErrorHandler("Peptide.GetFragmentationSpectrumOptions", ex);
+                mElementAndMassRoutines.GeneralErrorHandler("Peptide.GetFragmentationSpectrumOptions", ex);
             }
 
             var defaultOptions = new FragmentationSpectrumOptions();
@@ -737,10 +743,10 @@ namespace MolecularWeightCalculator
             phosphorylated = false;
             if (ionType == IonType.YIon || ionType == IonType.ZIon)
             {
-                for (var residueIndex = currentResidueIndex; residueIndex <= ResidueCount; residueIndex++)
+                for (var residueIndex = currentResidueIndex; residueIndex <= mResidueCount; residueIndex++)
                 {
-                    internalResidues = internalResidues + Residues[residueIndex].Symbol + " ";
-                    if (Residues[residueIndex].Phosphorylated)
+                    internalResidues = internalResidues + mResidues[residueIndex].Symbol + " ";
+                    if (mResidues[residueIndex].Phosphorylated)
                         phosphorylated = true;
                 }
             }
@@ -748,8 +754,8 @@ namespace MolecularWeightCalculator
             {
                 for (var residueIndex = 1; residueIndex <= currentResidueIndex; residueIndex++)
                 {
-                    internalResidues = internalResidues + Residues[residueIndex].Symbol + " ";
-                    if (Residues[residueIndex].Phosphorylated)
+                    internalResidues = internalResidues + mResidues[residueIndex].Symbol + " ";
+                    if (mResidues[residueIndex].Phosphorylated)
                         phosphorylated = true;
                 }
             }
@@ -762,9 +768,9 @@ namespace MolecularWeightCalculator
             // Returns information on the modification with modificationId
             // Returns 0 if success, 1 if failure
 
-            if (modificationId >= 1 && modificationId <= ModificationSymbolCount)
+            if (modificationId >= 1 && modificationId <= mModificationSymbolCount)
             {
-                var mod = ModificationSymbols[modificationId];
+                var mod = mModificationSymbols[modificationId];
                 modSymbol = mod.Symbol;
                 modificationMass = mod.ModificationMass;
                 indicatesPhosphorylation = mod.IndicatesPhosphorylation;
@@ -784,19 +790,19 @@ namespace MolecularWeightCalculator
         {
             // Returns the number of modifications defined
 
-            return ModificationSymbolCount;
+            return mModificationSymbolCount;
         }
 
-        public int GetModificationSymbolID(string modSymbol)
+        public int GetModificationSymbolId(string modSymbol)
         {
             // Returns the ID for a given modification
             // Returns 0 if not found, the ID if found
 
             var modificationIdMatch = default(int);
 
-            for (var index = 1; index <= ModificationSymbolCount; index++)
+            for (var index = 1; index <= mModificationSymbolCount; index++)
             {
-                if ((ModificationSymbols[index].Symbol ?? "") == (modSymbol ?? ""))
+                if ((mModificationSymbols[index].Symbol ?? "") == (modSymbol ?? ""))
                 {
                     modificationIdMatch = index;
                     break;
@@ -809,13 +815,13 @@ namespace MolecularWeightCalculator
         public int GetResidue(int residueNumber, ref string symbol, ref double mass, ref bool isModified, ref short modificationCount)
         {
             // Returns 0 if success, 1 if failure
-            if (residueNumber >= 1 && residueNumber <= ResidueCount)
+            if (residueNumber >= 1 && residueNumber <= mResidueCount)
             {
-                var residue = Residues[residueNumber];
+                var residue = mResidues[residueNumber];
                 symbol = residue.Symbol;
                 mass = residue.Mass;
-                isModified = residue.ModificationIDCount > 0;
-                modificationCount = residue.ModificationIDCount;
+                isModified = residue.ModificationIdCount > 0;
+                modificationCount = residue.ModificationIdCount;
 
                 return 0;
             }
@@ -825,7 +831,7 @@ namespace MolecularWeightCalculator
 
         public int GetResidueCount()
         {
-            return ResidueCount;
+            return mResidueCount;
         }
 
         public int GetResidueCountSpecificResidue(string residueSymbol, bool use3LetterCode)
@@ -840,13 +846,13 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                searchResidue3Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(residueSymbol, true);
+                searchResidue3Letter = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(residueSymbol, true);
             }
 
             var residueCount = 0;
-            for (var residueIndex = 0; residueIndex < ResidueCount; residueIndex++)
+            for (var residueIndex = 0; residueIndex < mResidueCount; residueIndex++)
             {
-                if ((Residues[residueIndex].Symbol ?? "") == (searchResidue3Letter ?? ""))
+                if ((mResidues[residueIndex].Symbol ?? "") == (searchResidue3Letter ?? ""))
                 {
                     residueCount += 1;
                 }
@@ -860,24 +866,24 @@ namespace MolecularWeightCalculator
             // Returns the number of Modifications
             // Resizes modificationIDsOneBased[] to hold the values
 
-            if (residueNumber >= 1 && residueNumber <= ResidueCount)
+            if (residueNumber >= 1 && residueNumber <= mResidueCount)
             {
-                var residue = Residues[residueNumber];
+                var residue = mResidues[residueNumber];
 
                 // Need to use this in case the calling program is sending an array with fixed dimensions
                 try
                 {
-                    modificationIDsOneBased = new int[residue.ModificationIDCount + 1];
+                    modificationIDsOneBased = new int[residue.ModificationIdCount + 1];
                 }
                 catch
                 {
                     // Ignore errors
                 }
 
-                for (var index = 1; index <= residue.ModificationIDCount; index++)
+                for (var index = 1; index <= residue.ModificationIdCount; index++)
                     modificationIDsOneBased[index] = residue.ModificationIDs[index];
 
-                return residue.ModificationIDCount;
+                return residue.ModificationIdCount;
             }
 
             return 0;
@@ -889,12 +895,12 @@ namespace MolecularWeightCalculator
 
             string symbol;
 
-            if (residueNumber >= 1 && residueNumber <= ResidueCount)
+            if (residueNumber >= 1 && residueNumber <= mResidueCount)
             {
-                symbol = Residues[residueNumber].Symbol;
+                symbol = mResidues[residueNumber].Symbol;
 
                 if (!use3LetterCode)
-                    symbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, false);
+                    symbol = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, false);
             }
             else
             {
@@ -925,9 +931,9 @@ namespace MolecularWeightCalculator
                 dashAdd = string.Empty;
 
             var sequence = string.Empty;
-            for (var index = 1; index <= ResidueCount; index++)
+            for (var index = 1; index <= mResidueCount; index++)
             {
-                var residue = Residues[index];
+                var residue = mResidues[index];
                 var symbol3Letter = residue.Symbol;
                 if (use3LetterCode)
                 {
@@ -935,7 +941,7 @@ namespace MolecularWeightCalculator
                 }
                 else
                 {
-                    var symbol1Letter = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol3Letter, false);
+                    var symbol1Letter = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol3Letter, false);
                     if ((symbol1Letter ?? "") == string.Empty)
                         symbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER;
                     sequence += symbol1Letter;
@@ -943,7 +949,7 @@ namespace MolecularWeightCalculator
 
                 if (includeModificationSymbols)
                 {
-                    for (var modIndex = 1; modIndex <= residue.ModificationIDCount; modIndex++)
+                    for (var modIndex = 1; modIndex <= residue.ModificationIdCount; modIndex++)
                     {
                         var error = GetModificationSymbol(residue.ModificationIDs[modIndex], out var modSymbol, out _, out _, out _);
                         if (error == 0)
@@ -957,7 +963,7 @@ namespace MolecularWeightCalculator
                     }
                 }
 
-                if (index != ResidueCount)
+                if (index != mResidueCount)
                 {
                     if (addSpaceEvery10Residues)
                     {
@@ -1026,6 +1032,7 @@ namespace MolecularWeightCalculator
         public string GetTrypticName(string proteinResidues, string peptideResidues,
             out int returnResidueStart,
             out int returnResidueEnd,
+            // ReSharper disable once InconsistentNaming
             bool ICR2LSCompatible = false,
             string ruleResidues = TRYPTIC_RULE_RESIDUES,
             string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
@@ -1220,6 +1227,7 @@ namespace MolecularWeightCalculator
             out int returnMatchCount,
             out int returnResidueStart,
             out int returnResidueEnd,
+            // ReSharper disable once InconsistentNaming
             bool ICR2LSCompatible = false,
             string ruleResidues = TRYPTIC_RULE_RESIDUES,
             string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
@@ -1749,7 +1757,7 @@ namespace MolecularWeightCalculator
 
         public double ComputeImmoniumMass(double residueMass)
         {
-            return residueMass - immoniumMassDifference;
+            return residueMass - mImmoniumMassDifference;
         }
 
         private void InitializeArrays()
@@ -1784,7 +1792,7 @@ namespace MolecularWeightCalculator
             // Returns 0 on success, 1 on failure
 
             ReserveMemoryForResidues(50, false);
-            ResidueCount = 0;
+            mResidueCount = 0;
             mTotalMass = 0d;
 
             return 0;
@@ -1797,7 +1805,7 @@ namespace MolecularWeightCalculator
             // Removing all modifications will invalidate any modifications present in a sequence
 
             ReserveMemoryForModifications(10, false);
-            ModificationSymbolCount = 0;
+            mModificationSymbolCount = 0;
 
             return 0;
         }
@@ -1818,9 +1826,9 @@ namespace MolecularWeightCalculator
                 else if (char.IsLetter(workingSequence[1]) && char.IsLetter(workingSequence[2]) && char.IsLetter(workingSequence[3]))
                 {
                     // Formula starts with 4 characters and the first is H, see if the first 3 characters are a valid amino acid code
-                    var abbrevID = ElementAndMassRoutines.GetAbbreviationIDInternal(workingSequence.Substring(0, 3), true);
+                    var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(workingSequence.Substring(0, 3), true);
 
-                    if (abbrevID <= 0)
+                    if (abbrevId <= 0)
                     {
                         // Doesn't start with a valid amino acid 3 letter abbreviation, so remove the initial H
                         workingSequence = workingSequence.Substring(1);
@@ -1829,10 +1837,12 @@ namespace MolecularWeightCalculator
             }
         }
 
+        // ReSharper disable once InconsistentNaming
         private bool RemoveTrailingOH(ref string workingSequence)
         {
             // Returns True if a trailing OH is removed
 
+            // ReSharper disable once InconsistentNaming
             var removedOH = false;
             var stringLength = workingSequence.Length;
             if (workingSequence.Length >= 5 && workingSequence.ToUpper().EndsWith("OH"))
@@ -1847,7 +1857,7 @@ namespace MolecularWeightCalculator
                 else if (char.IsLetter(workingSequence[stringLength - 3]))
                 {
                     // Formula ends with 3 characters and the last two are OH, see if the last 3 characters are a valid amino acid code
-                    var abbrevId = ElementAndMassRoutines.GetAbbreviationIDInternal(workingSequence.Substring(stringLength - 3, 3), true);
+                    var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(workingSequence.Substring(stringLength - 3, 3), true);
 
                     if (abbrevId <= 0)
                     {
@@ -1867,11 +1877,11 @@ namespace MolecularWeightCalculator
 
             var removed = false;
 
-            for (var index = 1; index <= ModificationSymbolCount; index++)
+            for (var index = 1; index <= mModificationSymbolCount; index++)
             {
-                if ((ModificationSymbols[index].Symbol ?? "") == (modSymbol ?? ""))
+                if ((mModificationSymbols[index].Symbol ?? "") == (modSymbol ?? ""))
                 {
-                    RemoveModificationByID(index);
+                    RemoveModificationById(index);
                     removed = true;
                 }
             }
@@ -1884,18 +1894,18 @@ namespace MolecularWeightCalculator
             return 1;
         }
 
-        public int RemoveModificationByID(int modificationID)
+        public int RemoveModificationById(int modificationId)
         {
             // Returns 0 if found and removed; 1 if error
 
             bool removed;
 
-            if (modificationID >= 1 && modificationID <= ModificationSymbolCount)
+            if (modificationId >= 1 && modificationId <= mModificationSymbolCount)
             {
-                for (var index = modificationID; index < ModificationSymbolCount; index++)
-                    ModificationSymbols[index] = ModificationSymbols[index + 1];
+                for (var index = modificationId; index < mModificationSymbolCount; index++)
+                    mModificationSymbols[index] = mModificationSymbols[index + 1];
 
-                ModificationSymbolCount -= 1;
+                mModificationSymbolCount -= 1;
                 removed = true;
             }
             else
@@ -1915,12 +1925,12 @@ namespace MolecularWeightCalculator
         {
             // Returns 0 if found and removed; 1 if error
 
-            if (residueNumber >= 1 && residueNumber <= ResidueCount)
+            if (residueNumber >= 1 && residueNumber <= mResidueCount)
             {
-                for (var index = residueNumber; index < ResidueCount; index++)
-                    Residues[index] = Residues[index + 1];
+                for (var index = residueNumber; index < mResidueCount; index++)
+                    mResidues[index] = mResidues[index + 1];
 
-                ResidueCount -= 1;
+                mResidueCount -= 1;
                 return 0;
             }
 
@@ -1932,23 +1942,23 @@ namespace MolecularWeightCalculator
             // Only reserves the memory if necessary
             // Thus, do not use this sub to clear Residues[]
 
-            if (newResidueCount > ResidueCountDimmed)
+            if (newResidueCount > mResidueCountDimmed)
             {
-                ResidueCountDimmed = newResidueCount + RESIDUE_DIM_CHUNK;
-                if (preserveContents && Residues != null)
+                mResidueCountDimmed = newResidueCount + RESIDUE_DIM_CHUNK;
+                if (preserveContents && mResidues != null)
                 {
-                    var oldIndexEnd = Residues.Length - 1;
-                    Array.Resize(ref Residues, ResidueCountDimmed + 1);
-                    for (var index = oldIndexEnd + 1; index <= ResidueCountDimmed; index++)
-                        Residues[index].Initialize(true);
+                    var oldIndexEnd = mResidues.Length - 1;
+                    Array.Resize(ref mResidues, mResidueCountDimmed + 1);
+                    for (var index = oldIndexEnd + 1; index <= mResidueCountDimmed; index++)
+                        mResidues[index].Initialize(true);
                 }
                 else
                 {
-                    Residues = new Residue[ResidueCountDimmed + 1];
-                    for (var index = 0; index <= ResidueCountDimmed; index++)
+                    mResidues = new Residue[mResidueCountDimmed + 1];
+                    for (var index = 0; index <= mResidueCountDimmed; index++)
                     {
-                        Residues[index] = new Residue();
-                        Residues[index].Initialize(true);
+                        mResidues[index] = new Residue();
+                        mResidues[index].Initialize(true);
                     }
                 }
             }
@@ -1956,21 +1966,21 @@ namespace MolecularWeightCalculator
 
         private void ReserveMemoryForModifications(int newModificationCount, bool preserveContents)
         {
-            if (newModificationCount > ModificationSymbolCountDimmed)
+            if (newModificationCount > mModificationSymbolCountDimmed)
             {
-                ModificationSymbolCountDimmed = newModificationCount + 10;
+                mModificationSymbolCountDimmed = newModificationCount + 10;
                 if (preserveContents)
                 {
-                    Array.Resize(ref ModificationSymbols, ModificationSymbolCountDimmed + 1);
+                    Array.Resize(ref mModificationSymbols, mModificationSymbolCountDimmed + 1);
                 }
                 else
                 {
-                    ModificationSymbols = new ModificationSymbol[ModificationSymbolCountDimmed + 1];
+                    mModificationSymbols = new ModificationSymbol[mModificationSymbolCountDimmed + 1];
                 }
 
-                for (var i = 0; i < ModificationSymbols.Length; i++)
+                for (var i = 0; i < mModificationSymbols.Length; i++)
                 {
-                    ModificationSymbols[i] = new ModificationSymbol();
+                    mModificationSymbols[i] = new ModificationSymbol();
                 }
             }
         }
@@ -1985,7 +1995,7 @@ namespace MolecularWeightCalculator
             // Amide = NH2
 
             mCTerminus.Formula = formula;
-            mCTerminus.Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref mCTerminus.Formula);
+            mCTerminus.Mass = mElementAndMassRoutines.ComputeFormulaWeight(ref mCTerminus.Formula);
             if (mCTerminus.Mass < 0d)
             {
                 mCTerminus.Mass = 0d;
@@ -2035,7 +2045,7 @@ namespace MolecularWeightCalculator
                 RemoveAllModificationSymbols();
 
                 // Add the symbol for phosphorylation
-                SetModificationSymbol("*", massPhosphorylation, true, "Phosphorylation [HPO3]");
+                SetModificationSymbol("*", mMassPhosphorylation, true, "Phosphorylation [HPO3]");
 
                 // Define the other default modifications
                 // Valid Mod Symbols are ! # $ % & ' * + ? ^ _ ` ~
@@ -2052,7 +2062,7 @@ namespace MolecularWeightCalculator
             }
             catch (Exception ex)
             {
-                ElementAndMassRoutines.GeneralErrorHandler("Peptide.SetDefaultModificationSymbols", ex);
+                mElementAndMassRoutines.GeneralErrorHandler("Peptide.SetDefaultModificationSymbols", ex);
             }
         }
 
@@ -2101,7 +2111,7 @@ namespace MolecularWeightCalculator
             }
             catch (Exception ex)
             {
-                ElementAndMassRoutines.GeneralErrorHandler("Peptide.SetDefaultOptions", ex);
+                mElementAndMassRoutines.GeneralErrorHandler("Peptide.SetDefaultOptions", ex);
             }
         }
 
@@ -2126,7 +2136,7 @@ namespace MolecularWeightCalculator
                 for (var index = 0; index < modSymbol.Length; index++)
                 {
                     var testChar = modSymbol.Substring(index, 1);
-                    if (!ElementAndMassRoutines.IsModSymbolInternal(testChar))
+                    if (!mElementAndMassRoutines.IsModSymbolInternal(testChar))
                     {
                         errorId = -1;
                     }
@@ -2135,17 +2145,17 @@ namespace MolecularWeightCalculator
                 if (errorId == 0)
                 {
                     // See if the modification is alrady present
-                    var indexToUse = GetModificationSymbolID(modSymbol);
+                    var indexToUse = GetModificationSymbolId(modSymbol);
 
                     if (indexToUse == 0)
                     {
                         // Need to add the modification
-                        ModificationSymbolCount += 1;
-                        indexToUse = ModificationSymbolCount;
-                        ReserveMemoryForModifications(ModificationSymbolCount, true);
+                        mModificationSymbolCount += 1;
+                        indexToUse = mModificationSymbolCount;
+                        ReserveMemoryForModifications(mModificationSymbolCount, true);
                     }
 
-                    var mod = ModificationSymbols[indexToUse];
+                    var mod = mModificationSymbols[indexToUse];
                     mod.Symbol = modSymbol;
                     mod.ModificationMass = modificationMass;
                     mod.IndicatesPhosphorylation = indicatesPhosphorylation;
@@ -2169,7 +2179,7 @@ namespace MolecularWeightCalculator
             // PTC = C7H6NS
 
             mNTerminus.Formula = formula;
-            mNTerminus.Mass = ElementAndMassRoutines.ComputeFormulaWeight(ref mNTerminus.Formula);
+            mNTerminus.Mass = mElementAndMassRoutines.ComputeFormulaWeight(ref mNTerminus.Formula);
             if (mNTerminus.Mass < 0d)
             {
                 mNTerminus.Mass = 0d;
@@ -2242,25 +2252,25 @@ namespace MolecularWeightCalculator
                 return -1;
             }
 
-            if (residueNumber > ResidueCount)
+            if (residueNumber > mResidueCount)
             {
-                ResidueCount += 1;
-                ReserveMemoryForResidues(ResidueCount, true);
-                indexToUse = ResidueCount;
+                mResidueCount += 1;
+                ReserveMemoryForResidues(mResidueCount, true);
+                indexToUse = mResidueCount;
             }
             else
             {
                 indexToUse = residueNumber;
             }
 
-            var residue = Residues[indexToUse];
+            var residue = mResidues[indexToUse];
             if (is3LetterCode)
             {
                 threeLetterSymbol = symbol;
             }
             else
             {
-                threeLetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, true);
+                threeLetterSymbol = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, true);
             }
 
             if (threeLetterSymbol.Length == 0)
@@ -2283,7 +2293,7 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            residue.ModificationIDCount = 0;
+            residue.ModificationIdCount = 0;
 
             UpdateResidueMasses();
 
@@ -2297,30 +2307,30 @@ namespace MolecularWeightCalculator
 
             // Returns 0 if modifications set; returns 1 if an error
 
-            if (residueNumber >= 1 && residueNumber <= ResidueCount && modificationCount >= 0)
+            if (residueNumber >= 1 && residueNumber <= mResidueCount && modificationCount >= 0)
             {
-                var residue = Residues[residueNumber];
+                var residue = mResidues[residueNumber];
                 if (modificationCount > MAX_MODIFICATIONS)
                 {
                     modificationCount = MAX_MODIFICATIONS;
                 }
 
-                residue.ModificationIDCount = 0;
+                residue.ModificationIdCount = 0;
                 residue.Phosphorylated = false;
                 for (var index = 1; index <= modificationCount; index++)
                 {
                     var newModId = modificationIDsOneBased[index];
-                    if (newModId >= 1 && newModId <= ModificationSymbolCount)
+                    if (newModId >= 1 && newModId <= mModificationSymbolCount)
                     {
-                        residue.ModificationIDs[residue.ModificationIDCount] = newModId;
+                        residue.ModificationIDs[residue.ModificationIdCount] = newModId;
 
                         // Check for phosphorylation
-                        if (ModificationSymbols[newModId].IndicatesPhosphorylation)
+                        if (mModificationSymbols[newModId].IndicatesPhosphorylation)
                         {
                             residue.Phosphorylated = true;
                         }
 
-                        residue.ModificationIDCount = (short)(residue.ModificationIDCount + 1);
+                        residue.ModificationIdCount = (short)(residue.ModificationIdCount + 1);
                     }
                 }
 
@@ -2374,6 +2384,7 @@ namespace MolecularWeightCalculator
             CTerminusGroupType cTerminus = CTerminusGroupType.Hydroxyl,
             bool is3LetterCode = true,
             bool oneLetterCheckForPrefixAndSuffixResidues = true,
+            // ReSharper disable once InconsistentNaming
             bool threeLetterCheckForPrefixHandSuffixOH = true,
             bool addMissingModificationSymbols = false)
         {
@@ -2388,8 +2399,8 @@ namespace MolecularWeightCalculator
                 }
 
                 // Clear any old residue information
-                ResidueCount = 0;
-                ReserveMemoryForResidues(ResidueCount, false);
+                mResidueCount = 0;
+                ReserveMemoryForResidues(mResidueCount, false);
 
                 string threeLetterSymbol;
                 int modSymbolLength;
@@ -2437,7 +2448,7 @@ namespace MolecularWeightCalculator
                             // Character found
                             // Look up 3 letter symbol
                             // If none is found, this will return an empty string
-                            threeLetterSymbol = ElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(oneLetterSymbol, true);
+                            threeLetterSymbol = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(oneLetterSymbol, true);
 
                             if (threeLetterSymbol.Length == 0)
                                 threeLetterSymbol = UNKNOWN_SYMBOL;
@@ -2445,7 +2456,7 @@ namespace MolecularWeightCalculator
                             SetSequenceAddResidue(threeLetterSymbol);
 
                             // Look at following character(s), and record any modification symbols present
-                            modSymbolLength = CheckForModifications(sequence.Substring(index + 1), ResidueCount, addMissingModificationSymbols);
+                            modSymbolLength = CheckForModifications(sequence.Substring(index + 1), mResidueCount, addMissingModificationSymbols);
 
                             index += modSymbolLength;
                         }
@@ -2482,7 +2493,7 @@ namespace MolecularWeightCalculator
                             {
                                 threeLetterSymbol = firstChar.ToUpper() + sequence.Substring(index + 1, 2).ToLower();
 
-                                if (ElementAndMassRoutines.GetAbbreviationIDInternal(threeLetterSymbol, true) == 0)
+                                if (mElementAndMassRoutines.GetAbbreviationIdInternal(threeLetterSymbol, true) == 0)
                                 {
                                     // 3 letter symbol not found
                                     // Add anyway, but mark as Xxx
@@ -2492,7 +2503,7 @@ namespace MolecularWeightCalculator
                                 SetSequenceAddResidue(threeLetterSymbol);
 
                                 // Look at following character(s), and record any modification symbols present
-                                modSymbolLength = CheckForModifications(sequence.Substring(index + 3), ResidueCount, addMissingModificationSymbols);
+                                modSymbolLength = CheckForModifications(sequence.Substring(index + 3), mResidueCount, addMissingModificationSymbols);
 
                                 index += 3;
                                 index += modSymbolLength;
@@ -2541,13 +2552,13 @@ namespace MolecularWeightCalculator
                 threeLetterSymbol = UNKNOWN_SYMBOL;
             }
 
-            ResidueCount += 1;
-            ReserveMemoryForResidues(ResidueCount, true);
+            mResidueCount += 1;
+            ReserveMemoryForResidues(mResidueCount, true);
 
-            var residue = Residues[ResidueCount];
+            var residue = mResidues[mResidueCount];
             residue.Symbol = threeLetterSymbol;
             residue.Phosphorylated = false;
-            residue.ModificationIDCount = 0;
+            residue.ModificationIdCount = 0;
         }
 
         public void SetSymbolAmmoniaLoss(string newSymbol)
@@ -2635,31 +2646,31 @@ namespace MolecularWeightCalculator
                 // However, we need to subtract out massHydrogen, and not chargeCarrierMass since the current
                 // formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier
                 protonatedNTerminus = true;
-                runningTotal -= massHydrogen;
+                runningTotal -= mMassHydrogen;
             }
 
-            for (var index = 1; index <= ResidueCount; index++)
+            for (var index = 1; index <= mResidueCount; index++)
             {
-                var residue = Residues[index];
+                var residue = mResidues[index];
                 residue.Initialize();
 
-                var abbrevId = ElementAndMassRoutines.GetAbbreviationIDInternal(residue.Symbol, true);
+                var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(residue.Symbol, true);
 
                 if (abbrevId > 0)
                 {
                     validResidueCount += 1;
-                    residue.Mass = ElementAndMassRoutines.GetAbbreviationMass(abbrevId);
+                    residue.Mass = mElementAndMassRoutines.GetAbbreviationMass(abbrevId);
 
                     var phosphorylationMassAdded = false;
 
                     // Compute the mass, including the modifications
                     residue.MassWithMods = residue.Mass;
-                    for (var modIndex = 1; modIndex <= residue.ModificationIDCount; modIndex++)
+                    for (var modIndex = 1; modIndex <= residue.ModificationIdCount; modIndex++)
                     {
-                        if (residue.ModificationIDs[modIndex] <= ModificationSymbolCount)
+                        if (residue.ModificationIDs[modIndex] <= mModificationSymbolCount)
                         {
-                            residue.MassWithMods += ModificationSymbols[residue.ModificationIDs[modIndex]].ModificationMass;
-                            if (ModificationSymbols[residue.ModificationIDs[modIndex]].IndicatesPhosphorylation)
+                            residue.MassWithMods += mModificationSymbols[residue.ModificationIDs[modIndex]].ModificationMass;
+                            if (mModificationSymbols[residue.ModificationIDs[modIndex]].IndicatesPhosphorylation)
                             {
                                 phosphorylationMassAdded = true;
                             }
@@ -2676,17 +2687,17 @@ namespace MolecularWeightCalculator
                         // Only add a mass if none of the .ModificationIDs has .IndicatesPhosphorylation = True
                         if (!phosphorylationMassAdded)
                         {
-                            residue.MassWithMods += massPhosphorylation;
+                            residue.MassWithMods += mMassPhosphorylation;
                         }
                     }
 
                     runningTotal += residue.MassWithMods;
 
-                    residue.IonMass[(int)IonType.AIon] = runningTotal - immoniumMassDifference - chargeCarrierMass;
+                    residue.IonMass[(int)IonType.AIon] = runningTotal - mImmoniumMassDifference - mChargeCarrierMass;
                     residue.IonMass[(int)IonType.BIon] = runningTotal;
 
                     // Add NH3 (ammonia) to the B ion mass to get the C ion mass
-                    residue.IonMass[(int)IonType.CIon] = residue.IonMass[(int)IonType.BIon] + massNH3;
+                    residue.IonMass[(int)IonType.CIon] = residue.IonMass[(int)IonType.BIon] + mMassNH3;
                 }
                 else
                 {
@@ -2699,7 +2710,7 @@ namespace MolecularWeightCalculator
             runningTotal += mCTerminus.Mass;
             if (protonatedNTerminus)
             {
-                runningTotal += chargeCarrierMass;
+                runningTotal += mChargeCarrierMass;
             }
 
             if (validResidueCount > 0)
@@ -2712,31 +2723,31 @@ namespace MolecularWeightCalculator
             }
 
             // Now compute the y-ion and z-ion masses
-            runningTotal = mCTerminus.Mass + chargeCarrierMass;
+            runningTotal = mCTerminus.Mass + mChargeCarrierMass;
 
-            for (var index = ResidueCount; index >= 1; index -= 1)
+            for (var index = mResidueCount; index >= 1; index -= 1)
             {
-                var residue = Residues[index];
+                var residue = mResidues[index];
                 if (residue.IonMass[(int)IonType.AIon] > 0d)
                 {
                     runningTotal += residue.MassWithMods;
-                    residue.IonMass[(int)IonType.YIon] = runningTotal + chargeCarrierMass;
+                    residue.IonMass[(int)IonType.YIon] = runningTotal + mChargeCarrierMass;
                     if (index == 1)
                     {
                         // Add the N-terminus mass to highest y ion
-                        residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] + mNTerminus.Mass - chargeCarrierMass;
+                        residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] + mNTerminus.Mass - mChargeCarrierMass;
                         if (protonatedNTerminus)
                         {
                             // ntgHydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
                             // we need to subtract it out here
                             // However, we need to subtract out massHydrogen, and not chargeCarrierMass since the current
                             // formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier
-                            residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] - massHydrogen;
+                            residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] - mMassHydrogen;
                         }
                     }
 
                     // Subtract NH2 (amide) from the Y ion mass to get the Z ion mass
-                    residue.IonMass[(int)IonType.ZIon] = residue.IonMass[(int)IonType.YIon] - (massNH3 - massHydrogen);
+                    residue.IonMass[(int)IonType.ZIon] = residue.IonMass[(int)IonType.YIon] - (mMassNH3 - mMassHydrogen);
                 }
             }
         }
@@ -2745,32 +2756,32 @@ namespace MolecularWeightCalculator
         {
             try
             {
-                var elementModeSaved = ElementAndMassRoutines.GetElementModeInternal();
+                var elementModeSaved = mElementAndMassRoutines.GetElementModeInternal();
 
-                ElementAndMassRoutines.SetElementModeInternal(ElementAndMassTools.ElementMassMode.Isotopic);
+                mElementAndMassRoutines.SetElementModeInternal(ElementAndMassTools.ElementMassMode.Isotopic);
 
-                chargeCarrierMass = ElementAndMassRoutines.GetChargeCarrierMassInternal();
+                mChargeCarrierMass = mElementAndMassRoutines.GetChargeCarrierMassInternal();
 
                 // Update standard mass values
-                massHOH = ElementAndMassRoutines.ComputeFormulaWeight("HOH");
-                massNH3 = ElementAndMassRoutines.ComputeFormulaWeight("NH3");
-                massH3PO4 = ElementAndMassRoutines.ComputeFormulaWeight("H3PO4");
-                massHydrogen = ElementAndMassRoutines.ComputeFormulaWeight("H");
+                mMassHOH = mElementAndMassRoutines.ComputeFormulaWeight("HOH");
+                mMassNH3 = mElementAndMassRoutines.ComputeFormulaWeight("NH3");
+                mMassH3PO4 = mElementAndMassRoutines.ComputeFormulaWeight("H3PO4");
+                mMassHydrogen = mElementAndMassRoutines.ComputeFormulaWeight("H");
 
                 // Phosphorylation is the loss of OH and the addition of H2PO4, for a net change of HPO3
-                massPhosphorylation = ElementAndMassRoutines.ComputeFormulaWeight("HPO3");
+                mMassPhosphorylation = mElementAndMassRoutines.ComputeFormulaWeight("HPO3");
 
                 // The immonium mass is equal to the mass of CO minus the mass of H, thus typically 26.9871
-                immoniumMassDifference = ElementAndMassRoutines.ComputeFormulaWeight("CO") - massHydrogen;
-                histidineFW = ElementAndMassRoutines.ComputeFormulaWeight("His");
-                phenylalanineFW = ElementAndMassRoutines.ComputeFormulaWeight("Phe");
-                tyrosineFW = ElementAndMassRoutines.ComputeFormulaWeight("Tyr");
+                mImmoniumMassDifference = mElementAndMassRoutines.ComputeFormulaWeight("CO") - mMassHydrogen;
+                mHistidineFW = mElementAndMassRoutines.ComputeFormulaWeight("His");
+                mPhenylalanineFW = mElementAndMassRoutines.ComputeFormulaWeight("Phe");
+                mTyrosineFW = mElementAndMassRoutines.ComputeFormulaWeight("Tyr");
 
-                ElementAndMassRoutines.SetElementModeInternal(elementModeSaved);
+                mElementAndMassRoutines.SetElementModeInternal(elementModeSaved);
             }
             catch (Exception ex)
             {
-                ElementAndMassRoutines.GeneralErrorHandler("Peptide.UpdateStandardMasses", ex);
+                mElementAndMassRoutines.GeneralErrorHandler("Peptide.UpdateStandardMasses", ex);
             }
         }
 
@@ -2780,19 +2791,19 @@ namespace MolecularWeightCalculator
             {
                 InitializeArrays();
 
-                ResidueCountDimmed = 0;
-                ResidueCount = 0;
+                mResidueCountDimmed = 0;
+                mResidueCount = 0;
                 ReserveMemoryForResidues(50, false);
 
-                ModificationSymbolCountDimmed = 0;
-                ModificationSymbolCount = 0;
+                mModificationSymbolCountDimmed = 0;
+                mModificationSymbolCount = 0;
                 ReserveMemoryForModifications(10, false);
 
                 SetDefaultOptions();
             }
             catch (Exception ex)
             {
-                ElementAndMassRoutines.GeneralErrorHandler("Peptide.Class_Initialize", ex);
+                mElementAndMassRoutines.GeneralErrorHandler("Peptide.Class_Initialize", ex);
             }
         }
     }

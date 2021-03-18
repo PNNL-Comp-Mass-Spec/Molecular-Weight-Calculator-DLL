@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MolecularWeightCalculator
 {
@@ -49,6 +50,7 @@ namespace MolecularWeightCalculator
             DynesPerSquareCm
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public enum UnitOfLength
         {
             M = 0,
@@ -64,6 +66,7 @@ namespace MolecularWeightCalculator
             CentiPoise
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public enum UnitOfFlowRate
         {
             MLPerMin = 0,
@@ -88,6 +91,7 @@ namespace MolecularWeightCalculator
             Seconds
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public enum UnitOfVolume
         {
             ML = 0,
@@ -96,6 +100,7 @@ namespace MolecularWeightCalculator
             PL
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public enum UnitOfConcentration
         {
             Molar = 0,
@@ -151,7 +156,7 @@ namespace MolecularWeightCalculator
         public enum AutoComputeMode
         {
             BackPressure = 0,
-            ColumnID,
+            ColumnId,
             ColumnLength,
             DeadTime,
             LinearVelocity,
@@ -180,7 +185,7 @@ namespace MolecularWeightCalculator
             /// <summary>
             /// Units: cm
             /// </summary>
-            public double ColumnID;
+            public double ColumnId;
 
             /// <summary>
             /// Units: poise
@@ -263,7 +268,7 @@ namespace MolecularWeightCalculator
             /// <summary>
             /// Units: cm
             /// </summary>
-            public double OpenTubeID;
+            public double OpenTubeId;
 
             /// <summary>
             /// Units: sec
@@ -315,8 +320,8 @@ namespace MolecularWeightCalculator
                     case AutoComputeMode.BackPressure:
                         ComputeBackPressure();
                         break;
-                    case AutoComputeMode.ColumnID:
-                        ComputeColumnID();
+                    case AutoComputeMode.ColumnId:
+                        ComputeColumnId();
                         break;
                     case AutoComputeMode.ColumnLength:
                         ComputeColumnLength();
@@ -347,7 +352,7 @@ namespace MolecularWeightCalculator
         {
             double backPressure;
 
-            var radius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var radius = mCapillaryFlowParameters.ColumnId / 2.0d;
 
             if (Math.Abs(radius) > float.Epsilon)
             {
@@ -391,7 +396,7 @@ namespace MolecularWeightCalculator
         {
             double columnLength;
 
-            var radius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var radius = mCapillaryFlowParameters.ColumnId / 2.0d;
 
             if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.VolumetricFlowRate) > float.Epsilon)
             {
@@ -429,7 +434,7 @@ namespace MolecularWeightCalculator
         {
             // Computes the column volume and returns it (does not store it)
 
-            var radius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var radius = mCapillaryFlowParameters.ColumnId / 2.0d;
 
             var columnVolume = mCapillaryFlowParameters.ColumnLength * PI * Math.Pow(radius, 2d);
 
@@ -446,7 +451,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="units"></param>
         /// <returns></returns>
-        public double ComputeColumnID(UnitOfLength units = UnitOfLength.Microns)
+        public double ComputeColumnId(UnitOfLength units = UnitOfLength.Microns)
         {
             double radius;
 
@@ -473,7 +478,7 @@ namespace MolecularWeightCalculator
                 radius = 0d;
             }
 
-            mCapillaryFlowParameters.ColumnID = radius * 2.0d;
+            mCapillaryFlowParameters.ColumnId = radius * 2.0d;
 
             // Compute Dead Time (and Linear Velocity)
             ComputeDeadTime(UnitOfTime.Minutes, true);
@@ -521,7 +526,7 @@ namespace MolecularWeightCalculator
         {
             if (Math.Abs(mExtraColumnBroadeningParameters.LinearVelocity) > float.Epsilon && Math.Abs(mExtraColumnBroadeningParameters.DiffusionCoefficient) > float.Epsilon)
             {
-                mExtraColumnBroadeningParameters.TemporalVariance = Math.Pow(mExtraColumnBroadeningParameters.OpenTubeID, 2d) * mExtraColumnBroadeningParameters.OpenTubeLength / (96d * mExtraColumnBroadeningParameters.DiffusionCoefficient * mExtraColumnBroadeningParameters.LinearVelocity / 60d); // in sec^2
+                mExtraColumnBroadeningParameters.TemporalVariance = Math.Pow(mExtraColumnBroadeningParameters.OpenTubeId, 2d) * mExtraColumnBroadeningParameters.OpenTubeLength / (96d * mExtraColumnBroadeningParameters.DiffusionCoefficient * mExtraColumnBroadeningParameters.LinearVelocity / 60d); // in sec^2
             }
             else
             {
@@ -558,7 +563,7 @@ namespace MolecularWeightCalculator
                 ComputeVolFlowRate(UnitOfFlowRate.MLPerMin);
             }
 
-            var radius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var radius = mCapillaryFlowParameters.ColumnId / 2.0d;
             if (Math.Abs(radius) > float.Epsilon)
             {
                 linearVelocity = mCapillaryFlowParameters.VolumetricFlowRate / (PI * Math.Pow(radius, 2d)); // Units in cm/min
@@ -629,6 +634,7 @@ namespace MolecularWeightCalculator
             return optimumLinearVelocity;
         }
 
+        // ReSharper disable once InconsistentNaming
         public double ComputeMeCNViscosity(double percentAcetonitrile, double temperature, UnitOfTemperature temperatureUnits = UnitOfTemperature.Celsius, UnitOfViscosity viscosityUnits = UnitOfViscosity.Poise)
         {
             try
@@ -669,7 +675,7 @@ namespace MolecularWeightCalculator
         {
             double volFlowRate;
 
-            var radius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var radius = mCapillaryFlowParameters.ColumnId / 2.0d;
 
             if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.ColumnLength) > float.Epsilon)
             {
@@ -721,7 +727,7 @@ namespace MolecularWeightCalculator
             newBackPressure = 0;
             double volFlowRate;
 
-            var radius = mCapillaryFlowParameters.ColumnID / 2.0d;
+            var radius = mCapillaryFlowParameters.ColumnId / 2.0d;
 
             // First find vol flow rate that gives observed dead time
             if (Math.Abs(mCapillaryFlowParameters.ColumnDeadTime) > float.Epsilon)
@@ -1399,9 +1405,9 @@ namespace MolecularWeightCalculator
             return mCapillaryFlowParameters.CapillaryType;
         }
 
-        public double GetColumnID(UnitOfLength units = UnitOfLength.Microns)
+        public double GetColumnId(UnitOfLength units = UnitOfLength.Microns)
         {
-            return ConvertLength(mCapillaryFlowParameters.ColumnID, UnitOfLength.CM, units);
+            return ConvertLength(mCapillaryFlowParameters.ColumnId, UnitOfLength.CM, units);
         }
 
         public double GetColumnLength(UnitOfLength units = UnitOfLength.CM)
@@ -1440,9 +1446,9 @@ namespace MolecularWeightCalculator
             return ConvertLinearVelocity(mExtraColumnBroadeningParameters.LinearVelocity, UnitOfLinearVelocity.CmPerMin, units);
         }
 
-        public double GetExtraColumnBroadeningOpenTubeID(UnitOfLength units = UnitOfLength.Microns)
+        public double GetExtraColumnBroadeningOpenTubeId(UnitOfLength units = UnitOfLength.Microns)
         {
-            return ConvertLength(mExtraColumnBroadeningParameters.OpenTubeID, UnitOfLength.CM, units);
+            return ConvertLength(mExtraColumnBroadeningParameters.OpenTubeId, UnitOfLength.CM, units);
         }
 
         public double GetExtraColumnBroadeningOpenTubeLength(UnitOfLength units = UnitOfLength.CM)
@@ -1548,9 +1554,9 @@ namespace MolecularWeightCalculator
             CheckAutoCompute();
         }
 
-        public void SetColumnID(double columnId, UnitOfLength units = UnitOfLength.Microns)
+        public void SetColumnId(double columnId, UnitOfLength units = UnitOfLength.Microns)
         {
-            mCapillaryFlowParameters.ColumnID = ConvertLength(columnId, units, UnitOfLength.CM);
+            mCapillaryFlowParameters.ColumnId = ConvertLength(columnId, units, UnitOfLength.CM);
             CheckAutoCompute();
         }
 
@@ -1590,9 +1596,9 @@ namespace MolecularWeightCalculator
             ComputeExtraColumnBroadeningValues();
         }
 
-        public void SetExtraColumnBroadeningOpenTubeID(double openTubeId, UnitOfLength units = UnitOfLength.Microns)
+        public void SetExtraColumnBroadeningOpenTubeId(double openTubeId, UnitOfLength units = UnitOfLength.Microns)
         {
-            mExtraColumnBroadeningParameters.OpenTubeID = ConvertLength(openTubeId, units, UnitOfLength.CM);
+            mExtraColumnBroadeningParameters.OpenTubeId = ConvertLength(openTubeId, units, UnitOfLength.CM);
             ComputeExtraColumnBroadeningValues();
         }
 
@@ -1670,7 +1676,7 @@ namespace MolecularWeightCalculator
             SetCapillaryType(CapillaryType.PackedCapillary);
             SetBackPressure(3000d, UnitOfPressure.Psi);
             SetColumnLength(50d, UnitOfLength.CM);
-            SetColumnID(75d, UnitOfLength.Microns);
+            SetColumnId(75d, UnitOfLength.Microns);
             SetSolventViscosity(0.0089d, UnitOfViscosity.Poise);
             SetParticleDiameter(5d, UnitOfLength.Microns);
             SetInterparticlePorosity(0.4d);

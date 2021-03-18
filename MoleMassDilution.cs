@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MolecularWeightCalculator
 {
@@ -76,6 +77,7 @@ namespace MolecularWeightCalculator
             Pints
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public enum UnitOfExtendedVolume
         {
             L = 0,
@@ -89,6 +91,7 @@ namespace MolecularWeightCalculator
             Pints
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public enum UnitOfMoleMassConcentration
         {
             Molar = 0,
@@ -830,6 +833,7 @@ namespace MolecularWeightCalculator
             mQuantity.Volume = ConvertVolumeExtended(volume, units, UnitOfExtendedVolume.L);
         }
 
+        // ReSharper disable once InconsistentNaming
         public void SetSampleDensity(double densityInGramsPerML)
         {
             if (densityInGramsPerML >= 0d)
