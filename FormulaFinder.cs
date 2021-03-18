@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -1093,9 +1094,6 @@ namespace MolecularWeightCalculator
 
                 EstimateNumberOfOperations(sortedElementStats.Count);
 
-                // Pointers to the potential elements
-                var potentialElementPointers = new List<int>();
-
                 var results = new List<FormulaFinderResult>();
 
                 if (searchOptions.FindTargetMz)
@@ -1106,12 +1104,12 @@ namespace MolecularWeightCalculator
 
                     for (var currentMzCharge = mzSearchChargeMin; currentMzCharge <= mzSearchChargeMax; currentMzCharge++)
                         // Call the RecursiveMWFinder repeatedly, sending targetWeight * x each time to search for target, target*2, target*3, etc.
-                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 0, potentialElementPointers, 0d, targetMass * currentMzCharge, massToleranceDa, 0d, currentMzCharge);
+                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 0, 0d, targetMass * currentMzCharge, massToleranceDa, 0d, currentMzCharge);
                 }
                 else
                 {
                     //RecursiveMWFinder(results, searchOptions, ppmMode, potentialElements, potentialElementStats, 0, potentialElementCount, potentialElementPointers, 0, targetMass, massToleranceDa, 0, 0)
-                    RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 0, potentialElementPointers, 0d, targetMass, massToleranceDa, 0d, 0);
+                    RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 0, 0d, targetMass, massToleranceDa, 0d, 0);
                 }
 
                 ComputeSortKeys(results);
@@ -1928,12 +1926,12 @@ namespace MolecularWeightCalculator
         /// <param name="ppmMode"></param>
         /// <param name="sortedElementStats">Candidate elements, including mass and charge. Sorted by de</param>
         /// <param name="startIndex">Index in candidateElementsStats to start at</param>
-        /// <param name="potentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
         /// <param name="potentialMassTotal">Weight of the potential formula</param>
         /// <param name="targetMass"></param>
         /// <param name="massToleranceDa"></param>
         /// <param name="potentialChargeTotal"></param>
         /// <param name="multipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
+        /// <param name="potentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
         /// <remarks></remarks>
         private void RecursiveMWFinder(
             ICollection<FormulaFinderResult> results,
@@ -1941,13 +1939,18 @@ namespace MolecularWeightCalculator
             bool ppmMode,
             IList<FormulaFinderCandidateElement> sortedElementStats,
             int startIndex,
-            IReadOnlyCollection<int> potentialElementPointers,
             double potentialMassTotal,
             double targetMass,
             double massToleranceDa,
             double potentialChargeTotal,
-            int multipleMtoZCharge)
+            int multipleMtoZCharge,
+            IReadOnlyCollection<int> potentialElementPointers = null)
         {
+            if (potentialElementPointers == null)
+            {
+                potentialElementPointers = new List<int>();
+            }
+
             try
             {
                 var newPotentialElementPointers = new List<int>(potentialElementPointers.Count + 1);
@@ -2042,7 +2045,7 @@ namespace MolecularWeightCalculator
                         }
 
                         // Now recursively call this sub
-                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, currentIndex, newPotentialElementPointers, totalMass, targetMass, massToleranceDa, totalCharge, multipleMtoZCharge);
+                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, currentIndex, totalMass, targetMass, massToleranceDa, totalCharge, multipleMtoZCharge, newPotentialElementPointers);
                     }
                 }
             }

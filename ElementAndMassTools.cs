@@ -1601,7 +1601,7 @@ namespace MolecularWeightCalculator
                         }
                     }
 
-                    if (appendNewData == true)
+                    if (appendNewData)
                     {
                         while (dataIndex < dataToAddCount)
                         {
@@ -1693,7 +1693,7 @@ namespace MolecularWeightCalculator
                 {
                     var stats = AbbrevStats[index];
                     // If includeAmino = False then do not include amino acids
-                    if (includeAmino || !includeAmino && !stats.IsAminoAcid)
+                    if (includeAmino || !stats.IsAminoAcid)
                     {
                         // Do not include if the formula is invalid
                         if (!stats.InvalidSymbolOrFormula)
@@ -2263,7 +2263,7 @@ namespace MolecularWeightCalculator
             {
                 if ((AbbrevStats[index].Symbol?.ToLower() ?? "") == (symbol?.ToLower() ?? ""))
                 {
-                    if (!aminoAcidsOnly || aminoAcidsOnly && AbbrevStats[index].IsAminoAcid)
+                    if (!aminoAcidsOnly || AbbrevStats[index].IsAminoAcid)
                     {
                         return index;
                     }
@@ -4256,7 +4256,7 @@ namespace MolecularWeightCalculator
 
             if (string.IsNullOrEmpty(work))
                 work = EMPTY_STRING_CHAR.ToString();
-            if ((work[0] < 48 || work[0] > 57) && work.Substring(0, 1) != gComputationOptions.DecimalSeparator.ToString() && !(work.Substring(0, 1) == "-" && allowNegative == true))
+            if ((work[0] < 48 || work[0] > 57) && work.Substring(0, 1) != gComputationOptions.DecimalSeparator.ToString() && !(work.Substring(0, 1) == "-" && allowNegative))
             {
                 numLength = 0; // No number found
                 return -1;
@@ -4266,7 +4266,7 @@ namespace MolecularWeightCalculator
             for (var index = 0; index < work.Length; index++)
             {
                 var working = work.Substring(index, 1);
-                if (char.IsDigit(working[0]) || working == gComputationOptions.DecimalSeparator.ToString() || allowNegative == true && working == "-")
+                if (char.IsDigit(working[0]) || working == gComputationOptions.DecimalSeparator.ToString() || allowNegative && working == "-")
                 {
                     foundNum += working;
                 }

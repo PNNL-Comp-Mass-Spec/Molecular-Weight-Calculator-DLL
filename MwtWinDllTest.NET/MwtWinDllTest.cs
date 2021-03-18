@@ -461,7 +461,6 @@ namespace MwtWinDllTest
 
             // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
             const short chargeState = 1;
-            var addProtonChargeCarrier = true;
             results.AppendText("Isotopic abundance test with Charge=" + chargeState);
 
             var convolutedMSData2DOneBased = new double[1, 2];
@@ -492,10 +491,9 @@ namespace MwtWinDllTest
 
             results.AppendText(gaussianResults.ToString());
 
-            addProtonChargeCarrier = false;
             results.AppendText("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
             formulaIn = "C1255H43O2Cl";
-            success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, ref resultString, ref convolutedMSData2DOneBased, ref convolutedMSDataCount, addProtonChargeCarrier);
+            success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, ref resultString, ref convolutedMSData2DOneBased, ref convolutedMSDataCount, false);
             results.AppendText(resultString);
         }
 

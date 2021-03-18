@@ -29,12 +29,7 @@ namespace MolecularWeightCalculator
 
         public Peptide(ElementAndMassTools elementAndMassTools = null)
         {
-            mElementAndMassRoutines = elementAndMassTools;
-            if (mElementAndMassRoutines == null)
-            {
-                mElementAndMassRoutines = new ElementAndMassTools();
-            }
-
+            mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();
             InitializeClass();
         }
 

@@ -1550,8 +1550,8 @@
             messageStatements[560] = "Maximum number of formula fields exist.";
             messageStatements[570] = "Current formula is blank.";
             messageStatements[580] = "Turn off Percent Solver (F11) before creating a new formula.";
-            messageStatements[590] = "An overflow error has occured.  Please reduce number sizes and recalculate.";
-            messageStatements[600] = "An error has occured";
+            messageStatements[590] = "An overflow error has occurred.  Please reduce number sizes and recalculate.";
+            messageStatements[600] = "An error has occurred";
             messageStatements[605] = "Please exit the program and report the error to the programmer.  Select About from the Help menu to see the E-mail address.";
             messageStatements[610] = "Spaces are not allowed in formulas";
             messageStatements[620] = "Invalid Character";

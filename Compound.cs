@@ -35,15 +35,9 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        public Compound()
+        public Compound(ElementAndMassTools elementAndMassTools = null)
         {
-            mElementAndMassRoutines = new ElementAndMassTools();
-            InitializeClass();
-        }
-
-        public Compound(ElementAndMassTools elementAndMassTools)
-        {
-            mElementAndMassRoutines = elementAndMassTools;
+            mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();
             InitializeClass();
         }
 
