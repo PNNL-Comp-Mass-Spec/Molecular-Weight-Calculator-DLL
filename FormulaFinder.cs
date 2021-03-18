@@ -27,31 +27,31 @@ namespace MolecularWeightCalculator
         /// </remarks>
         public class CandidateElementTolerances
         {
-            public double TargetPercentComposition;
-            public int MinimumCount;
-            public int MaximumCount;
+            public double TargetPercentComposition { get; set; }
+            public int MinimumCount { get; set; }
+            public int MaximumCount { get; set; }
         }
 
         private class ElementNum
         {
-            public int H;
-            public int C;
-            public int Si;
-            public int N;
-            public int P;
-            public int O;
-            public int S;
-            public int Cl;
-            public int I;
-            public int F;
-            public int Br;
-            public int Other;
+            public int H { get; set; }
+            public int C { get; set; }
+            public int Si { get; set; }
+            public int N { get; set; }
+            public int P { get; set; }
+            public int O { get; set; }
+            public int S { get; set; }
+            public int Cl { get; set; }
+            public int I { get; set; }
+            public int F { get; set; }
+            public int Br { get; set; }
+            public int Other { get; set; }
         }
 
         private class BoundedSearchRange
         {
-            public int Min;
-            public int Max;
+            public int Min { get; set; }
+            public int Max { get; set; }
         }
 
         private enum CalculationMode

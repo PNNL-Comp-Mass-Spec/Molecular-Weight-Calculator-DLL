@@ -28,7 +28,29 @@ namespace MolecularWeightCalculator
 
         public MoleMassDilution()
         {
-            InitializeClass();
+            SetAutoComputeDilutionEnabled(false);
+            SetAutoComputeQuantityEnabled(false);
+
+            SetAutoComputeDilutionMode(AutoComputeDilutionMode.FindRequiredDilutionVolumes);
+
+            SetAutoComputeQuantityMode(AutoComputeQuantityMode.FindConcentration);
+
+            SetQuantityAmount(1d, Unit.Moles);
+            SetQuantityVolume(100d, UnitOfExtendedVolume.ML);
+            SetQuantityConcentration(1d, UnitOfMoleMassConcentration.Molar);
+
+            SetDilutionInitialConcentration(10d, UnitOfMoleMassConcentration.Molar);
+            SetDilutionVolumeStockSolution(3d, UnitOfExtendedVolume.ML);
+            SetDilutionFinalConcentration(2d, UnitOfMoleMassConcentration.Molar);
+            SetDilutionVolumeDilutingSolvent(12d, UnitOfExtendedVolume.ML);
+            SetDilutionTotalFinalVolume(15d, UnitOfExtendedVolume.ML);
+
+            // Recompute
+            ComputeQuantityAmount();
+            ComputeDilutionRequiredStockAndDilutingSolventVolumes(out _);
+
+            SetAutoComputeDilutionEnabled(true);
+            SetAutoComputeQuantityEnabled(true);
         }
 
         #region "Enums"
@@ -115,20 +137,20 @@ namespace MolecularWeightCalculator
         #region "Data classes"
         private class MoleMassQuantity
         {
-            public double Amount; // In Moles
-            public double Volume; // In L
-            public double Concentration; // In Molar
-            public double SampleMass; // In g
-            public double SampleDensity; // In g/mL
+            public double Amount { get; set; } // In Moles
+            public double Volume { get; set; } // In L
+            public double Concentration { get; set; } // In Molar
+            public double SampleMass { get; set; } // In g
+            public double SampleDensity { get; set; } // In g/mL
         }
 
         private class MoleMassDilutionValues
         {
-            public double InitialConcentration; // In Molar
-            public double StockSolutionVolume; // In L
-            public double FinalConcentration; // In Molar
-            public double DilutingSolventVolume; // In L
-            public double TotalFinalVolume; // In L
+            public double InitialConcentration { get; set; } // In Molar
+            public double StockSolutionVolume { get; set; } // In L
+            public double FinalConcentration { get; set; } // In Molar
+            public double DilutingSolventVolume { get; set; } // In L
+            public double TotalFinalVolume { get; set; } // In L
         }
 
         #endregion
@@ -764,33 +786,6 @@ namespace MolecularWeightCalculator
             }
 
             CheckAutoComputeQuantity();
-        }
-
-        private void InitializeClass()
-        {
-            SetAutoComputeDilutionEnabled(false);
-            SetAutoComputeQuantityEnabled(false);
-
-            SetAutoComputeDilutionMode(AutoComputeDilutionMode.FindRequiredDilutionVolumes);
-
-            SetAutoComputeQuantityMode(AutoComputeQuantityMode.FindConcentration);
-
-            SetQuantityAmount(1d, Unit.Moles);
-            SetQuantityVolume(100d, UnitOfExtendedVolume.ML);
-            SetQuantityConcentration(1d, UnitOfMoleMassConcentration.Molar);
-
-            SetDilutionInitialConcentration(10d, UnitOfMoleMassConcentration.Molar);
-            SetDilutionVolumeStockSolution(3d, UnitOfExtendedVolume.ML);
-            SetDilutionFinalConcentration(2d, UnitOfMoleMassConcentration.Molar);
-            SetDilutionVolumeDilutingSolvent(12d, UnitOfExtendedVolume.ML);
-            SetDilutionTotalFinalVolume(15d, UnitOfExtendedVolume.ML);
-
-            // Recompute
-            ComputeQuantityAmount();
-            ComputeDilutionRequiredStockAndDilutingSolventVolumes(out _);
-
-            SetAutoComputeDilutionEnabled(true);
-            SetAutoComputeQuantityEnabled(true);
         }
 
         public short AmountsUnitListCount => (short)AMOUNT_UNITS_LIST_INDEX_MAX + 1;

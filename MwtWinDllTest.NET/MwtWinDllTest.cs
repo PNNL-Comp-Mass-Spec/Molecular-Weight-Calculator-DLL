@@ -403,7 +403,6 @@ namespace MwtWinDllTest
             results.AppendText(capFlow.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.UnitOfTime.Seconds).ToString());
 
             var fragSpectrumOptions = new Peptide.FragmentationSpectrumOptions();
-            fragSpectrumOptions.Initialize();
 
             var peptide = mMwtWin.Peptide;
             peptide.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G");
@@ -872,7 +871,7 @@ namespace MwtWinDllTest
             Cursor = Cursors.Default;
         }
 
-        private void UpdateResultsForCompound(ref Compound compound)
+        private void UpdateResultsForCompound(Compound compound)
         {
             if (string.IsNullOrEmpty(compound.ErrorDescription))
             {
@@ -932,7 +931,7 @@ namespace MwtWinDllTest
             mMwtWin.Compound.Formula = txtFormula.Text;
             mMwtWin.Compound.ConvertToEmpirical();
 
-            UpdateResultsForCompound(ref mMwtWin.Compound);
+            UpdateResultsForCompound(mMwtWin.Compound);
         }
 
         private void cmdExpandAbbreviations_Click(object sender, EventArgs eventArgs)
@@ -942,7 +941,7 @@ namespace MwtWinDllTest
             mMwtWin.Compound.Formula = txtFormula.Text;
             mMwtWin.Compound.ExpandAbbreviations();
 
-            UpdateResultsForCompound(ref mMwtWin.Compound);
+            UpdateResultsForCompound(mMwtWin.Compound);
         }
 
         private void cmdFindMass_Click(object sender, EventArgs eventArgs)

@@ -84,10 +84,10 @@ namespace MolecularWeightCalculator
         #region "Classwide Variables"
         private bool mDataInitialized;
 
-        public Compound Compound;
-        public Peptide Peptide;
-        public FormulaFinder FormulaFinder;
-        public CapillaryFlow CapFlow;
+        public Compound Compound { get; set; }
+        public Peptide Peptide { get; set; }
+        public FormulaFinder FormulaFinder { get; set; }
+        public CapillaryFlow CapFlow { get; set; }
 
         private readonly ElementAndMassTools mElementAndMassRoutines;
 
@@ -108,12 +108,12 @@ namespace MolecularWeightCalculator
         #region "Interface Functions"
         public AbbrevRecognitionMode AbbreviationRecognitionMode
         {
-            get => mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode;
+            get => mElementAndMassRoutines.ComputationOptions.AbbrevRecognitionMode;
             set
             {
                 if (value >= AbbrevRecognitionMode.NormalOnly & value <= AbbrevRecognitionMode.NoAbbreviations)
                 {
-                    mElementAndMassRoutines.gComputationOptions.AbbrevRecognitionMode = value;
+                    mElementAndMassRoutines.ComputationOptions.AbbrevRecognitionMode = value;
                     mElementAndMassRoutines.ConstructMasterSymbolsList();
                 }
             }
@@ -141,26 +141,26 @@ namespace MolecularWeightCalculator
 
         public bool BracketsTreatedAsParentheses
         {
-            get => mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses;
-            set => mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses = value;
+            get => mElementAndMassRoutines.ComputationOptions.BracketsAsParentheses;
+            set => mElementAndMassRoutines.ComputationOptions.BracketsAsParentheses = value;
         }
 
         public ElementAndMassTools.CaseConversionMode CaseConversionMode
         {
-            get => mElementAndMassRoutines.gComputationOptions.CaseConversion;
+            get => mElementAndMassRoutines.ComputationOptions.CaseConversion;
             set
             {
                 if (value >= ElementAndMassTools.CaseConversionMode.ConvertCaseUp & value <= ElementAndMassTools.CaseConversionMode.SmartCase)
                 {
-                    mElementAndMassRoutines.gComputationOptions.CaseConversion = value;
+                    mElementAndMassRoutines.ComputationOptions.CaseConversion = value;
                 }
             }
         }
 
         public char DecimalSeparator
         {
-            get => mElementAndMassRoutines.gComputationOptions.DecimalSeparator;
-            set => mElementAndMassRoutines.gComputationOptions.DecimalSeparator = value;
+            get => mElementAndMassRoutines.ComputationOptions.DecimalSeparator;
+            set => mElementAndMassRoutines.ComputationOptions.DecimalSeparator = value;
         }
 
         public string ErrorDescription => mElementAndMassRoutines.GetErrorDescription();
@@ -195,24 +195,24 @@ namespace MolecularWeightCalculator
 
         public string RtfFontName
         {
-            get => mElementAndMassRoutines.gComputationOptions.RtfFontName;
+            get => mElementAndMassRoutines.ComputationOptions.RtfFontName;
             set
             {
                 if (value.Length > 0)
                 {
-                    mElementAndMassRoutines.gComputationOptions.RtfFontName = value;
+                    mElementAndMassRoutines.ComputationOptions.RtfFontName = value;
                 }
             }
         }
 
         public short RtfFontSize
         {
-            get => mElementAndMassRoutines.gComputationOptions.RtfFontSize;
+            get => mElementAndMassRoutines.ComputationOptions.RtfFontSize;
             set
             {
                 if (value > 0)
                 {
-                    mElementAndMassRoutines.gComputationOptions.RtfFontSize = value;
+                    mElementAndMassRoutines.ComputationOptions.RtfFontSize = value;
                 }
             }
         }
@@ -225,12 +225,12 @@ namespace MolecularWeightCalculator
 
         public ElementAndMassTools.StdDevMode StdDevMode
         {
-            get => mElementAndMassRoutines.gComputationOptions.StdDevMode;
+            get => mElementAndMassRoutines.ComputationOptions.StdDevMode;
             set
             {
                 if (value >= ElementAndMassTools.StdDevMode.Short & value <= ElementAndMassTools.StdDevMode.Decimal)
                 {
-                    mElementAndMassRoutines.gComputationOptions.StdDevMode = value;
+                    mElementAndMassRoutines.ComputationOptions.StdDevMode = value;
                 }
             }
         }
@@ -598,7 +598,7 @@ namespace MolecularWeightCalculator
             RtfFontSize = 10;
             StdDevMode = ElementAndMassTools.StdDevMode.Decimal;
 
-            mElementAndMassRoutines.gComputationOptions.DecimalSeparator = DetermineDecimalPoint();
+            mElementAndMassRoutines.ComputationOptions.DecimalSeparator = DetermineDecimalPoint();
 
             mDataInitialized = true;
         }

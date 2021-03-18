@@ -38,7 +38,9 @@ namespace MolecularWeightCalculator
         public Compound(ElementAndMassTools elementAndMassTools = null)
         {
             mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();
-            InitializeClass();
+
+            mStrFormula = "";
+            ValueForX = 1.0d;
         }
 
         private string mStrFormula;
@@ -201,12 +203,6 @@ namespace MolecularWeightCalculator
             return totalElements;
         }
 
-        private void InitializeClass()
-        {
-            mStrFormula = "";
-            ValueForX = 1.0d;
-        }
-
         public int SetFormula(string newFormula)
         {
             // Provides an alternate method for setting the formula
@@ -240,7 +236,7 @@ namespace MolecularWeightCalculator
 
         public bool XIsPresentAfterBracket()
         {
-            if (mElementAndMassRoutines.gComputationOptions.BracketsAsParentheses)
+            if (mElementAndMassRoutines.ComputationOptions.BracketsAsParentheses)
             {
                 // Treating brackets as parentheses, therefore an x after a bracket isn't allowed
                 return false;

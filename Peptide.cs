@@ -30,7 +30,23 @@ namespace MolecularWeightCalculator
         public Peptide(ElementAndMassTools elementAndMassTools = null)
         {
             mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();
-            InitializeClass();
+
+            try
+            {
+                mResidueCountDimmed = 0;
+                mResidueCount = 0;
+                ReserveMemoryForResidues(50, false);
+
+                mModificationSymbolCountDimmed = 0;
+                mModificationSymbolCount = 0;
+                ReserveMemoryForModifications(10, false);
+
+                SetDefaultOptions();
+            }
+            catch (Exception ex)
+            {
+                mElementAndMassRoutines.GeneralErrorHandler("Peptide.Constructor", ex);
+            }
         }
 
         public const float DEFAULT_B_Y_ION_SHOULDER_INTENSITY = 50f;
@@ -86,59 +102,47 @@ namespace MolecularWeightCalculator
 
         private class ModificationSymbol
         {
-            public string Symbol; // Symbol used for modification in formula; may be 1 or more characters; for example: + ++ * ** etc.
-            public double ModificationMass; // Normally positive, but could be negative
-            public bool IndicatesPhosphorylation; // When true, then this symbol means a residue is phosphorylated
-            public string Comment;
+            public string Symbol { get; set; } // Symbol used for modification in formula; may be 1 or more characters; for example: + ++ * ** etc.
+            public double ModificationMass { get; set; } // Normally positive, but could be negative
+            public bool IndicatesPhosphorylation { get; set; } // When true, then this symbol means a residue is phosphorylated
+            public string Comment { get; set; }
         }
 
         private class Residue
         {
-            public string Symbol; // 3 letter symbol
-            public double Mass; // The mass of the residue alone (excluding any modification)
-            public double MassWithMods; // The mass of the residue, including phosphorylation or any modification
-            public double[] IonMass; // 0-based array; the masses that the a, b, and y ions ending/starting with this residue will produce in the mass spectrum (includes H+)
-            public bool Phosphorylated; // Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
-            public short ModificationIdCount;
-            public int[] ModificationIDs; // 1-based array
+            public string Symbol { get; set; } // 3 letter symbol
+            public double Mass { get; set; } // The mass of the residue alone (excluding any modification)
+            public double MassWithMods { get; set; } // The mass of the residue, including phosphorylation or any modification
+            public double[] IonMass { get; } // 0-based array; the masses that the a, b, and y ions ending/starting with this residue will produce in the mass spectrum (includes H+)
+            public bool Phosphorylated { get; set; } // Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
+            public short ModificationIdCount { get; set; }
+            public int[] ModificationIDs { get; } // 1-based array
 
-            // Note: "Initialize" must be called to initialize instances of this structure
-            public void Initialize(bool forceInit = false)
+            public Residue()
             {
-                if (forceInit || IonMass == null)
-                {
-                    IonMass = new double[5];
-                    ModificationIDs = new int[MAX_MODIFICATIONS + 1];
-                }
+                IonMass = new double[Enum.GetNames(typeof(IonType)).Length];
+                ModificationIDs = new int[MAX_MODIFICATIONS + 1];
             }
         }
 
         private class Terminus
         {
-            public string Formula;
-            public double Mass;
-            public Residue PrecedingResidue = new Residue(); // If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
-            public Residue FollowingResidue = new Residue(); // If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
-
-            // Note: "Initialize" must be called to initialize instances of this structure
-            public void Initialize()
-            {
-                PrecedingResidue.Initialize();
-                FollowingResidue.Initialize();
-            }
+            public string Formula { get; set; }
+            public double Mass { get; set; }
+            public Residue PrecedingResidue { get; set; } = new Residue(); // If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
+            public Residue FollowingResidue { get; set; } = new Residue(); // If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
         }
 
         public class FragmentationSpectrumIntensities
         {
-            public double[] IonType; // 0-based array
+            public double[] IonType { get; } // 0-based array
             // ReSharper disable once InconsistentNaming
-            public double BYIonShoulder; // If > 0 then shoulder ions will be created by B and Y ions
-            public double NeutralLoss;
+            public double BYIonShoulder { get; set; } // If > 0 then shoulder ions will be created by B and Y ions
+            public double NeutralLoss { get; set; }
 
-            // Note: "Initialize" must be called to initialize instances of this structure
-            public void Initialize()
+            public FragmentationSpectrumIntensities()
             {
-                IonType = new double[5];
+                IonType = new double[Enum.GetNames(typeof(IonType)).Length];
             }
         }
 
@@ -146,26 +150,24 @@ namespace MolecularWeightCalculator
         // The graphical version of MwtWin does not allow this to be overridden, but a programmer could do so via a call to this Dll
         public class IonTypeOptions
         {
-            public bool ShowIon;
-            public bool NeutralLossWater;
-            public bool NeutralLossAmmonia;
-            public bool NeutralLossPhosphate;
+            public bool ShowIon { get; set; }
+            public bool NeutralLossWater { get; set; }
+            public bool NeutralLossAmmonia { get; set; }
+            public bool NeutralLossPhosphate { get; set; }
         }
 
         public class FragmentationSpectrumOptions
         {
-            public FragmentationSpectrumIntensities IntensityOptions = new FragmentationSpectrumIntensities();
-            public IonTypeOptions[] IonTypeOptions;
-            public bool DoubleChargeIonsShow;
-            public float DoubleChargeIonsThreshold;
-            public bool TripleChargeIonsShow;
-            public float TripleChargeIonsThreshold;
+            public FragmentationSpectrumIntensities IntensityOptions { get; set; } = new FragmentationSpectrumIntensities();
+            public IonTypeOptions[] IonTypeOptions { get; }
+            public bool DoubleChargeIonsShow { get; set; }
+            public float DoubleChargeIonsThreshold { get; set; }
+            public bool TripleChargeIonsShow { get; set; }
+            public float TripleChargeIonsThreshold { get; set; }
 
-            // Note: "Initialize" must be called to initialize instances of this structure
-            public void Initialize()
+            public FragmentationSpectrumOptions()
             {
-                IntensityOptions.Initialize();
-                IonTypeOptions = new IonTypeOptions[5];
+                IonTypeOptions = new IonTypeOptions[Enum.GetNames(typeof(IonType)).Length];
                 for (var i = 0; i < IonTypeOptions.Length; i++)
                 {
                     IonTypeOptions[i] = new IonTypeOptions();
@@ -175,15 +177,15 @@ namespace MolecularWeightCalculator
 
         public class FragmentationSpectrumData
         {
-            public double Mass;
-            public double Intensity;
-            public string Symbol; // The symbol, with the residue number (e.g. y1, y2, b3-H2O, Shoulder-y1, etc.)
-            public string SymbolGeneric; // The symbol, without the residue number (e.g. a, b, y, b++, Shoulder-y, etc.)
-            public int SourceResidueNumber; // The residue number that resulted in this mass
-            public string SourceResidueSymbol3Letter; // The residue symbol that resulted in this mass
-            public short Charge;
-            public IonType IonType;
-            public bool IsShoulderIon; // B and Y ions can have Shoulder ions at +-1
+            public double Mass { get; set; }
+            public double Intensity { get; set; }
+            public string Symbol { get; set; } // The symbol, with the residue number (e.g. y1, y2, b3-H2O, Shoulder-y1, etc.)
+            public string SymbolGeneric { get; set; } // The symbol, without the residue number (e.g. a, b, y, b++, Shoulder-y, etc.)
+            public int SourceResidueNumber { get; set; } // The residue number that resulted in this mass
+            public string SourceResidueSymbol3Letter { get; set; } // The residue symbol that resulted in this mass
+            public short Charge { get; set; }
+            public IonType IonType { get; set; }
+            public bool IsShoulderIon { get; set; } // B and Y ions can have Shoulder ions at +-1
 
             public override string ToString()
             {
@@ -197,16 +199,13 @@ namespace MolecularWeightCalculator
         private int mResidueCount;
         private int mResidueCountDimmed;
 
-        // ModificationSymbols() holds a list of the potential modification symbols and the mass of each modification
+        // ModificationSymbols[] holds a list of the potential modification symbols and the mass of each modification
         // Modification symbols can be 1 or more letters long
         private ModificationSymbol[] mModificationSymbols; // 1-based array
         private int mModificationSymbolCount;
         private int mModificationSymbolCountDimmed;
 
-        // ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
         private readonly Terminus mNTerminus = new Terminus(); // Formula on the N-Terminus
-
-        // ReSharper disable once UnassignedField.Local - initialized in InitializeClass() when it calls InitializeArrays()
         private readonly Terminus mCTerminus = new Terminus(); // Formula on the C-Terminus
         private double mTotalMass;
 
@@ -424,8 +423,6 @@ namespace MolecularWeightCalculator
             int abbrevId;
             var residue = new Residue();
 
-            // Initialize the UDTs
-            residue.Initialize();
             var symbol3Letter = string.Empty;
 
             if (symbol.Length > 0)
@@ -700,7 +697,6 @@ namespace MolecularWeightCalculator
             }
 
             var defaultOptions = new FragmentationSpectrumOptions();
-            defaultOptions.Initialize();
 
             return defaultOptions;
         }
@@ -1732,13 +1728,6 @@ namespace MolecularWeightCalculator
             return residueMass - mImmoniumMassDifference;
         }
 
-        private void InitializeArrays()
-        {
-            mNTerminus.Initialize();
-            mCTerminus.Initialize();
-            mFragSpectrumOptions.Initialize();
-        }
-
         public string LookupIonTypeString(IonType ionType)
         {
             return ionType switch
@@ -1916,7 +1905,7 @@ namespace MolecularWeightCalculator
                     var oldIndexEnd = mResidues.Length - 1;
                     Array.Resize(ref mResidues, mResidueCountDimmed + 1);
                     for (var index = oldIndexEnd + 1; index <= mResidueCountDimmed; index++)
-                        mResidues[index].Initialize(true);
+                        mResidues[index] = new Residue();
                 }
                 else
                 {
@@ -1924,7 +1913,6 @@ namespace MolecularWeightCalculator
                     for (var index = 0; index <= mResidueCountDimmed; index++)
                     {
                         mResidues[index] = new Residue();
-                        mResidues[index].Initialize(true);
                     }
                 }
             }
@@ -1960,8 +1948,8 @@ namespace MolecularWeightCalculator
             // Free Acid = OH
             // Amide = NH2
 
+            mCTerminus.Mass = mElementAndMassRoutines.ComputeFormulaWeight(ref formula);
             mCTerminus.Formula = formula;
-            mCTerminus.Mass = mElementAndMassRoutines.ComputeFormulaWeight(ref mCTerminus.Formula);
             if (mCTerminus.Mass < 0d)
             {
                 mCTerminus.Mass = 0d;
@@ -2135,8 +2123,8 @@ namespace MolecularWeightCalculator
             // Carbamyl = CONH2
             // PTC = C7H6NS
 
+            mNTerminus.Mass = mElementAndMassRoutines.ComputeFormulaWeight(ref formula);
             mNTerminus.Formula = formula;
-            mNTerminus.Mass = mElementAndMassRoutines.ComputeFormulaWeight(ref mNTerminus.Formula);
             if (mNTerminus.Mass < 0d)
             {
                 mNTerminus.Mass = 0d;
@@ -2592,7 +2580,6 @@ namespace MolecularWeightCalculator
             for (var index = 1; index <= mResidueCount; index++)
             {
                 var residue = mResidues[index];
-                residue.Initialize();
 
                 var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(residue.Symbol, true);
 
@@ -2722,28 +2709,6 @@ namespace MolecularWeightCalculator
             catch (Exception ex)
             {
                 mElementAndMassRoutines.GeneralErrorHandler("Peptide.UpdateStandardMasses", ex);
-            }
-        }
-
-        private void InitializeClass()
-        {
-            try
-            {
-                InitializeArrays();
-
-                mResidueCountDimmed = 0;
-                mResidueCount = 0;
-                ReserveMemoryForResidues(50, false);
-
-                mModificationSymbolCountDimmed = 0;
-                mModificationSymbolCount = 0;
-                ReserveMemoryForModifications(10, false);
-
-                SetDefaultOptions();
-            }
-            catch (Exception ex)
-            {
-                mElementAndMassRoutines.GeneralErrorHandler("Peptide.Class_Initialize", ex);
             }
         }
     }

@@ -4,7 +4,7 @@ namespace MolecularWeightCalculator
 {
     public class FormulaFinderResult
     {
-        public readonly string EmpiricalFormula;
+        public string EmpiricalFormula { get; }
 
         public Dictionary<string, int> CountsByElement { get; }
 

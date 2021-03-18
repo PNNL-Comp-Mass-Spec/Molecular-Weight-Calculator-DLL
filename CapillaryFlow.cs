@@ -28,7 +28,27 @@ namespace MolecularWeightCalculator
 
         public CapillaryFlow()
         {
-            InitializeClass();
+            SetAutoComputeEnabled(false);
+
+            SetAutoComputeMode(AutoComputeMode.VolFlowRate);
+            SetCapillaryType(CapillaryType.PackedCapillary);
+            SetBackPressure(3000d, UnitOfPressure.Psi);
+            SetColumnLength(50d, UnitOfLength.CM);
+            SetColumnId(75d, UnitOfLength.Microns);
+            SetSolventViscosity(0.0089d, UnitOfViscosity.Poise);
+            SetParticleDiameter(5d, UnitOfLength.Microns);
+            SetInterparticlePorosity(0.4d);
+
+            SetMassRateConcentration(1d, UnitOfConcentration.MicroMolar);
+            SetMassRateVolFlowRate(600d, UnitOfFlowRate.NLPerMin);
+            SetMassRateInjectionTime(5d, UnitOfTime.Minutes);
+
+            // Recompute
+            ComputeVolFlowRate();
+            ComputeMassRateValues();
+            ComputeExtraColumnBroadeningValues();
+
+            SetAutoComputeEnabled(true);
         }
 
         #region "Enum Statements"
@@ -170,49 +190,49 @@ namespace MolecularWeightCalculator
 
         private class CapillaryFlowParameters
         {
-            public CapillaryType CapillaryType;
+            public CapillaryType CapillaryType { get; set; }
 
             /// <summary>
             /// Units: dynes/cm^2
             /// </summary>
-            public double BackPressure;
+            public double BackPressure { get; set; }
 
             /// <summary>
             /// Units: cm
             /// </summary>
-            public double ColumnLength;
+            public double ColumnLength { get; set; }
 
             /// <summary>
             /// Units: cm
             /// </summary>
-            public double ColumnId;
+            public double ColumnId { get; set; }
 
             /// <summary>
             /// Units: poise
             /// </summary>
-            public double SolventViscosity;
+            public double SolventViscosity { get; set; }
 
             /// <summary>
             /// Units: cm
             /// </summary>
-            public double ParticleDiameter;
+            public double ParticleDiameter { get; set; }
 
             /// <summary>
             /// Units: mL/min
             /// </summary>
-            public double VolumetricFlowRate;
+            public double VolumetricFlowRate { get; set; }
 
             /// <summary>
             /// Units: cm/min
             /// </summary>
-            public double LinearVelocity;
+            public double LinearVelocity { get; set; }
 
             /// <summary>
             /// Units: min
             /// </summary>
-            public double ColumnDeadTime;
+            public double ColumnDeadTime { get; set; }
 
-            public double InterparticlePorosity;
+            public double InterparticlePorosity { get; set; }
         }
 
         private class MassRateParameters
@@ -220,32 +240,32 @@ namespace MolecularWeightCalculator
             /// <summary>
             /// Units: Molar
             /// </summary>
-            public double SampleConcentration;
+            public double SampleConcentration { get; set; }
 
             /// <summary>
             /// Units: g/mole
             /// </summary>
-            public double SampleMass;
+            public double SampleMass { get; set; }
 
             /// <summary>
             /// Units: mL/min
             /// </summary>
-            public double VolumetricFlowRate;
+            public double VolumetricFlowRate { get; set; }
 
             /// <summary>
             /// Units: min
             /// </summary>
-            public double InjectionTime;
+            public double InjectionTime { get; set; }
 
             /// <summary>
             /// Units: Moles/min
             /// </summary>
-            public double MassFlowRate;
+            public double MassFlowRate { get; set; }
 
             /// <summary>
             /// Units: moles
             /// </summary>
-            public double MolesInjected;
+            public double MolesInjected { get; set; }
         }
 
         private class ExtraColumnBroadeningParameters
@@ -253,42 +273,42 @@ namespace MolecularWeightCalculator
             /// <summary>
             /// Units: cm/min
             /// </summary>
-            public double LinearVelocity;
+            public double LinearVelocity { get; set; }
 
             /// <summary>
             /// Units: cm^2/sec
             /// </summary>
-            public double DiffusionCoefficient;
+            public double DiffusionCoefficient { get; set; }
 
             /// <summary>
             /// Units: cm
             /// </summary>
-            public double OpenTubeLength;
+            public double OpenTubeLength { get; set; }
 
             /// <summary>
             /// Units: cm
             /// </summary>
-            public double OpenTubeId;
+            public double OpenTubeId { get; set; }
 
             /// <summary>
             /// Units: sec
             /// </summary>
-            public double InitialPeakWidth;
+            public double InitialPeakWidth { get; set; }
 
             /// <summary>
             /// Units: sec^2
             /// </summary>
-            public double TemporalVariance;
+            public double TemporalVariance { get; set; }
 
             /// <summary>
             /// Units: sec^2
             /// </summary>
-            public double AdditionalTemporalVariance;
+            public double AdditionalTemporalVariance { get; set; }
 
             /// <summary>
             /// Units: sec
             /// </summary>
-            public double ResultantPeakWidth;
+            public double ResultantPeakWidth { get; set; }
         }
 
         #endregion
@@ -1583,31 +1603,6 @@ namespace MolecularWeightCalculator
         {
             mCapillaryFlowParameters.VolumetricFlowRate = ConvertVolFlowRate(volFlowRate, units, UnitOfFlowRate.MLPerMin);
             CheckAutoCompute();
-        }
-
-        private void InitializeClass()
-        {
-            SetAutoComputeEnabled(false);
-
-            SetAutoComputeMode(AutoComputeMode.VolFlowRate);
-            SetCapillaryType(CapillaryType.PackedCapillary);
-            SetBackPressure(3000d, UnitOfPressure.Psi);
-            SetColumnLength(50d, UnitOfLength.CM);
-            SetColumnId(75d, UnitOfLength.Microns);
-            SetSolventViscosity(0.0089d, UnitOfViscosity.Poise);
-            SetParticleDiameter(5d, UnitOfLength.Microns);
-            SetInterparticlePorosity(0.4d);
-
-            SetMassRateConcentration(1d, UnitOfConcentration.MicroMolar);
-            SetMassRateVolFlowRate(600d, UnitOfFlowRate.NLPerMin);
-            SetMassRateInjectionTime(5d, UnitOfTime.Minutes);
-
-            // Recompute
-            ComputeVolFlowRate();
-            ComputeMassRateValues();
-            ComputeExtraColumnBroadeningValues();
-
-            SetAutoComputeEnabled(true);
         }
     }
 }

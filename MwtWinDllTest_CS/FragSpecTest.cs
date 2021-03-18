@@ -26,7 +26,6 @@ namespace MwtWinDllTestCS
             mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
 
             var fragSpectrumOptions = new Peptide.FragmentationSpectrumOptions();
-            fragSpectrumOptions.Initialize();
 
             // Initialize fragSpectrumOptions with the defaults
             fragSpectrumOptions = mMwtWin.Peptide.GetFragmentationSpectrumOptions();
