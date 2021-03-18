@@ -1711,11 +1711,7 @@ namespace MolecularWeightCalculator
                     }
                 }
 
-                if (ruleMatchCount == 2)
-                {
-                    matchesCleavageRule = true;
-                }
-                else if (ruleMatchCount >= 1 && allowPartialCleavage)
+                if (ruleMatchCount == 2 || (ruleMatchCount >= 1 && allowPartialCleavage))
                 {
                     matchesCleavageRule = true;
                 }
@@ -1745,21 +1741,15 @@ namespace MolecularWeightCalculator
 
         public string LookupIonTypeString(IonType ionType)
         {
-            switch (ionType)
+            return ionType switch
             {
-                case IonType.AIon:
-                    return "a";
-                case IonType.BIon:
-                    return "b";
-                case IonType.YIon:
-                    return "y";
-                case IonType.CIon:
-                    return "c";
-                case IonType.ZIon:
-                    return "z";
-                default:
-                    return string.Empty;
-            }
+                IonType.AIon => "a",
+                IonType.BIon => "b",
+                IonType.YIon => "y",
+                IonType.CIon => "c",
+                IonType.ZIon => "z",
+                _ => string.Empty
+            };
         }
 
         public int RemoveAllResidues()
@@ -1994,22 +1984,13 @@ namespace MolecularWeightCalculator
             bool use3LetterCode = true)
         {
             // Returns 0 if success; 1 if error
-            int error;
-            switch (cTerminusGroup)
+            int error = cTerminusGroup switch
             {
-                case CTerminusGroupType.Hydroxyl:
-                    error = SetCTerminus("OH", followingResidue, use3LetterCode);
-                    break;
-                case CTerminusGroupType.Amide:
-                    error = SetCTerminus("NH2", followingResidue, use3LetterCode);
-                    break;
-                case CTerminusGroupType.None:
-                    error = SetCTerminus(string.Empty, followingResidue, use3LetterCode);
-                    break;
-                default:
-                    error = 1;
-                    break;
-            }
+                CTerminusGroupType.Hydroxyl => SetCTerminus("OH", followingResidue, use3LetterCode),
+                CTerminusGroupType.Amide => SetCTerminus("NH2", followingResidue, use3LetterCode),
+                CTerminusGroupType.None => SetCTerminus(string.Empty, followingResidue, use3LetterCode),
+                _ => 1
+            };
 
             return error;
         }
@@ -2178,35 +2159,18 @@ namespace MolecularWeightCalculator
             bool use3LetterCode = true)
         {
             // Returns 0 if success; 1 if error
-            int error;
 
-            switch (nTerminusGroup)
+            int error = nTerminusGroup switch
             {
-                case NTerminusGroupType.Hydrogen:
-                    error = SetNTerminus("H", precedingResidue, use3LetterCode);
-                    break;
-                case NTerminusGroupType.HydrogenPlusProton:
-                    error = SetNTerminus("HH", precedingResidue, use3LetterCode);
-                    break;
-                case NTerminusGroupType.Acetyl:
-                    error = SetNTerminus("C2OH3", precedingResidue, use3LetterCode);
-                    break;
-                case NTerminusGroupType.PyroGlu:
-                    error = SetNTerminus("C5O2NH6", precedingResidue, use3LetterCode);
-                    break;
-                case NTerminusGroupType.Carbamyl:
-                    error = SetNTerminus("CONH2", precedingResidue, use3LetterCode);
-                    break;
-                case NTerminusGroupType.PTC:
-                    error = SetNTerminus("C7H6NS", precedingResidue, use3LetterCode);
-                    break;
-                case NTerminusGroupType.None:
-                    error = SetNTerminus(string.Empty, precedingResidue, use3LetterCode);
-                    break;
-                default:
-                    error = 1;
-                    break;
-            }
+                NTerminusGroupType.Hydrogen => SetNTerminus("H", precedingResidue, use3LetterCode),
+                NTerminusGroupType.HydrogenPlusProton => SetNTerminus("HH", precedingResidue, use3LetterCode),
+                NTerminusGroupType.Acetyl => SetNTerminus("C2OH3", precedingResidue, use3LetterCode),
+                NTerminusGroupType.PyroGlu => SetNTerminus("C5O2NH6", precedingResidue, use3LetterCode),
+                NTerminusGroupType.Carbamyl => SetNTerminus("CONH2", precedingResidue, use3LetterCode),
+                NTerminusGroupType.PTC => SetNTerminus("C7H6NS", precedingResidue, use3LetterCode),
+                NTerminusGroupType.None => SetNTerminus(string.Empty, precedingResidue, use3LetterCode),
+                _ => 1
+            };
 
             return error;
         }

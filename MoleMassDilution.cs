@@ -487,78 +487,32 @@ namespace MolecularWeightCalculator
             else
             {
                 // Determine the Amount multiplication factor
-                switch (units)
+                factor = units switch
                 {
-                    case Unit.Moles:
-                        factor = 1d;
-                        break;
-                    case Unit.Millimoles:
-                        factor = 1d / 1000.0d;
-                        break;
-                    case Unit.MicroMoles:
-                        factor = 1d / 1000000.0d;
-                        break;
-                    case Unit.NanoMoles:
-                        factor = 1d / 1000000000.0d;
-                        break;
-                    case Unit.PicoMoles:
-                        factor = 1d / 1000000000000.0d;
-                        break;
-                    case Unit.FemtoMoles:
-                        factor = 1d / 1.0E+15d;
-                        break;
-                    case Unit.AttoMoles:
-                        factor = 1d / 1.0E+18d;
-                        break;
-                    case Unit.Kilograms:
-                        factor = 1000.0d / sampleMass;
-                        break;
-                    case Unit.Grams:
-                        factor = 1d / sampleMass;
-                        break;
-                    case Unit.Milligrams:
-                        factor = 1d / (sampleMass * 1000.0d);
-                        break;
-                    case Unit.Micrograms:
-                        factor = 1d / (sampleMass * 1000000.0d);
-                        break;
-                    case Unit.Pounds:
-                        factor = 1000.0d / (sampleMass * POUNDS_PER_KG);
-                        break;
-                    case Unit.Ounces:
-                        factor = 1000.0d / (sampleMass * POUNDS_PER_KG * 16d);
-                        break;
-                    case Unit.Liters:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.L);
-                        break;
-                    case Unit.DeciLiters:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.DL);
-                        break;
-                    case Unit.MilliLiters:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.ML);
-                        break;
-                    case Unit.MicroLiters:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.UL);
-                        break;
-                    case Unit.NanoLiters:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.NL);
-                        break;
-                    case Unit.PicoLiters:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.PL);
-                        break;
-                    case Unit.Gallons:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Gallons);
-                        break;
-                    case Unit.Quarts:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Quarts);
-                        break;
-                    case Unit.Pints:
-                        factor = sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Pints);
-                        break;
-                    default:
-                        factor = -1;
-                        break;
-                }
+                    Unit.Moles => 1d,
+                    Unit.Millimoles => 1d / 1000.0d,
+                    Unit.MicroMoles => 1d / 1000000.0d,
+                    Unit.NanoMoles => 1d / 1000000000.0d,
+                    Unit.PicoMoles => 1d / 1000000000000.0d,
+                    Unit.FemtoMoles => 1d / 1.0E+15d,
+                    Unit.AttoMoles => 1d / 1.0E+18d,
+                    Unit.Kilograms => 1000.0d / sampleMass,
+                    Unit.Grams => 1d / sampleMass,
+                    Unit.Milligrams => 1d / (sampleMass * 1000.0d),
+                    Unit.Micrograms => 1d / (sampleMass * 1000000.0d),
+                    Unit.Pounds => 1000.0d / (sampleMass * POUNDS_PER_KG),
+                    Unit.Ounces => 1000.0d / (sampleMass * POUNDS_PER_KG * 16d),
+                    Unit.Liters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.L),
+                    Unit.DeciLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.DL),
+                    Unit.MilliLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.ML),
+                    Unit.MicroLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.UL),
+                    Unit.NanoLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.NL),
+                    Unit.PicoLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.PL),
+                    Unit.Gallons => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Gallons),
+                    Unit.Quarts => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Quarts),
+                    Unit.Pints => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Pints),
+                    _ => -1
+                };
             }
 
             return factor;
@@ -581,51 +535,23 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                switch (units)
+                factor = units switch
                 {
-                    case UnitOfMoleMassConcentration.Molar:
-                        factor = 1.0d;
-                        break;
-                    case UnitOfMoleMassConcentration.MilliMolar:
-                        factor = 1d / 1000.0d;
-                        break;
-                    case UnitOfMoleMassConcentration.MicroMolar:
-                        factor = 1d / 1000000.0d;
-                        break;
-                    case UnitOfMoleMassConcentration.NanoMolar:
-                        factor = 1d / 1000000000.0d;
-                        break;
-                    case UnitOfMoleMassConcentration.PicoMolar:
-                        factor = 1d / 1000000000000.0d;
-                        break;
-                    case UnitOfMoleMassConcentration.FemtoMolar:
-                        factor = 1d / 1.0E+15d;
-                        break;
-                    case UnitOfMoleMassConcentration.AttoMolar:
-                        factor = 1d / 1.0E+18d;
-                        break;
-                    case UnitOfMoleMassConcentration.MgPerDL:
-                        factor = 1d / sampleMass / 100.0d; // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
-                        break;
-                    case UnitOfMoleMassConcentration.MgPerML:
-                        factor = 1d / sampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
-                        break;
-                    case UnitOfMoleMassConcentration.UgPerML:
-                        factor = 1d / (sampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                        break;
-                    case UnitOfMoleMassConcentration.NgPerML:
-                        factor = 1d / (sampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
-                        break;
-                    case UnitOfMoleMassConcentration.UgPerUL:
-                        factor = 1d / sampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
-                        break;
-                    case UnitOfMoleMassConcentration.NgPerUL:
-                        factor = 1d / (sampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
-                        break;
-                    default:
-                        factor = -1;
-                        break;
-                }
+                    UnitOfMoleMassConcentration.Molar => 1.0d,
+                    UnitOfMoleMassConcentration.MilliMolar => 1d / 1000.0d,
+                    UnitOfMoleMassConcentration.MicroMolar => 1d / 1000000.0d,
+                    UnitOfMoleMassConcentration.NanoMolar => 1d / 1000000000.0d,
+                    UnitOfMoleMassConcentration.PicoMolar => 1d / 1000000000000.0d,
+                    UnitOfMoleMassConcentration.FemtoMolar => 1d / 1.0E+15d,
+                    UnitOfMoleMassConcentration.AttoMolar => 1d / 1.0E+18d,
+                    UnitOfMoleMassConcentration.MgPerDL => 1d / sampleMass / 100.0d, // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
+                    UnitOfMoleMassConcentration.MgPerML => 1d / sampleMass, // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                    UnitOfMoleMassConcentration.UgPerML => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                    UnitOfMoleMassConcentration.NgPerML => 1d / (sampleMass * 1000000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                    UnitOfMoleMassConcentration.UgPerUL => 1d / sampleMass, // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                    UnitOfMoleMassConcentration.NgPerUL => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                    _ => -1
+                };
             }
 
             return factor;
@@ -639,42 +565,20 @@ namespace MolecularWeightCalculator
         /// <remarks>An extended version of the FactorVolume function in CapillaryFlow</remarks>
         private double FactorVolumeExtended(UnitOfExtendedVolume units)
         {
-            double factor;
-
             // Note: 4 quarts per gallon, 2 pints per quart
-            switch (units)
+            double factor = units switch
             {
-                case UnitOfExtendedVolume.L:
-                    factor = 1d * 1000.0d;
-                    break;
-                case UnitOfExtendedVolume.DL:
-                    factor = 1d * 100.0d;
-                    break;
-                case UnitOfExtendedVolume.ML:
-                    factor = 1.0d;
-                    break;
-                case UnitOfExtendedVolume.UL:
-                    factor = 1d / 1000.0d;
-                    break;
-                case UnitOfExtendedVolume.NL:
-                    factor = 1d / 1000000.0d;
-                    break;
-                case UnitOfExtendedVolume.PL:
-                    factor = 1d / 1000000000.0d;
-                    break;
-                case UnitOfExtendedVolume.Gallons:
-                    factor = 1000.0d / GALLONS_PER_L;
-                    break;
-                case UnitOfExtendedVolume.Quarts:
-                    factor = 1000.0d / GALLONS_PER_L / 4.0d;
-                    break;
-                case UnitOfExtendedVolume.Pints:
-                    factor = 1000.0d / GALLONS_PER_L / 8.0d;
-                    break;
-                default:
-                    factor = -1;
-                    break;
-            }
+                UnitOfExtendedVolume.L => 1d * 1000.0d,
+                UnitOfExtendedVolume.DL => 1d * 100.0d,
+                UnitOfExtendedVolume.ML => 1.0d,
+                UnitOfExtendedVolume.UL => 1d / 1000.0d,
+                UnitOfExtendedVolume.NL => 1d / 1000000.0d,
+                UnitOfExtendedVolume.PL => 1d / 1000000000.0d,
+                UnitOfExtendedVolume.Gallons => 1000.0d / GALLONS_PER_L,
+                UnitOfExtendedVolume.Quarts => 1000.0d / GALLONS_PER_L / 4.0d,
+                UnitOfExtendedVolume.Pints => 1000.0d / GALLONS_PER_L / 8.0d,
+                _ => -1
+            };
 
             return factor;
         }

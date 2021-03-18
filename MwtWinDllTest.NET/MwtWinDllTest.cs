@@ -887,18 +887,12 @@ namespace MwtWinDllTest
 
         private void cboStdDevMode_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
-            switch (cboStdDevMode.SelectedIndex)
+            mMwtWin.StdDevMode = cboStdDevMode.SelectedIndex switch
             {
-                case 1:
-                    mMwtWin.StdDevMode = ElementAndMassTools.StdDevMode.Scientific;
-                    break;
-                case 2:
-                    mMwtWin.StdDevMode = ElementAndMassTools.StdDevMode.Decimal;
-                    break;
-                default:
-                    mMwtWin.StdDevMode = ElementAndMassTools.StdDevMode.Short;
-                    break;
-            }
+                1 => ElementAndMassTools.StdDevMode.Scientific,
+                2 => ElementAndMassTools.StdDevMode.Decimal,
+                _ => ElementAndMassTools.StdDevMode.Short
+            };
         }
 
         private void cboWeightMode_SelectedIndexChanged(object sender, EventArgs eventArgs)

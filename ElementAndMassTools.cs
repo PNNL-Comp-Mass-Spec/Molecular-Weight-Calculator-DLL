@@ -2575,17 +2575,13 @@ namespace MolecularWeightCalculator
         {
             if (elementId >= 1 && elementId <= ELEMENT_COUNT)
             {
-                switch (elementStat)
+                return elementStat switch
                 {
-                    case MolecularWeightTool.ElementStatsType.Mass:
-                        return ElementStats[elementId].Mass;
-                    case MolecularWeightTool.ElementStatsType.Charge:
-                        return ElementStats[elementId].Charge;
-                    case MolecularWeightTool.ElementStatsType.Uncertainty:
-                        return ElementStats[elementId].Uncertainty;
-                    default:
-                        return 0d;
-                }
+                    MolecularWeightTool.ElementStatsType.Mass => ElementStats[elementId].Mass,
+                    MolecularWeightTool.ElementStatsType.Charge => ElementStats[elementId].Charge,
+                    MolecularWeightTool.ElementStatsType.Uncertainty => ElementStats[elementId].Uncertainty,
+                    _ => 0d
+                };
             }
 
             return 0d;
@@ -2817,23 +2813,13 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            string messageTypeText;
-
-            switch (messageType)
+            string messageTypeText = messageType switch
             {
-                case MessageType.Normal:
-                    messageTypeText = "Normal";
-                    break;
-                case MessageType.Error:
-                    messageTypeText = "Error";
-                    break;
-                case MessageType.Warning:
-                    messageTypeText = "Warning";
-                    break;
-                default:
-                    messageTypeText = "Unknown";
-                    break;
-            }
+                MessageType.Normal => "Normal",
+                MessageType.Error => "Error",
+                MessageType.Warning => "Warning",
+                _ => "Unknown"
+            };
 
             if (mLogFile == null)
             {
@@ -4664,34 +4650,30 @@ namespace MolecularWeightCalculator
 
                     workText = roundedMain.ToString("0.0##E+00");
 
-                    if (gComputationOptions.StdDevMode == StdDevMode.Short)
+                    switch (gComputationOptions.StdDevMode)
                     {
-                        // StdDevType Short (Type 0)
-                        result = roundedMain.ToString();
-                        if (includeStandardDeviation)
-                        {
-                            result = result + "(" + '±' + stdDevShort + ")";
-                        }
+                        case StdDevMode.Short:
+                            // StdDevType Short (Type 0)
+                            result = roundedMain.ToString();
+                            if (includeStandardDeviation)
+                                result = result + "(" + '±' + stdDevShort + ")";
 
-                        result += pctSign;
-                    }
-                    else if (gComputationOptions.StdDevMode == StdDevMode.Scientific)
-                    {
-                        // StdDevType Scientific (Type 1)
-                        result = roundedMain + pctSign;
-                        if (includeStandardDeviation)
-                        {
-                            result += " (" + '±' + stdDev.ToString("0.000E+00") + ")";
-                        }
-                    }
-                    else
-                    {
-                        // StdDevType Decimal
-                        result = mass.ToString("0.0####") + pctSign;
-                        if (includeStandardDeviation)
-                        {
-                            result += " (" + '±' + roundedStdDev + ")";
-                        }
+                            result += pctSign;
+                            break;
+                        case StdDevMode.Scientific:
+                            // StdDevType Scientific (Type 1)
+                            result = roundedMain + pctSign;
+                            if (includeStandardDeviation)
+                                result += " (" + '±' + stdDev.ToString("0.000E+00") + ")";
+
+                            break;
+                        default:
+                            // StdDevType Decimal
+                            result = mass.ToString("0.0####") + pctSign;
+                            if (includeStandardDeviation)
+                                result += " (" + '±' + roundedStdDev + ")";
+
+                            break;
                     }
                 }
 

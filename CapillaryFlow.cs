@@ -1100,48 +1100,22 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                switch (units)
+                factor = units switch
                 {
-                    case UnitOfConcentration.Molar:
-                        factor = 1.0d;
-                        break;
-                    case UnitOfConcentration.MilliMolar:
-                        factor = 1d / 1000.0d;
-                        break;
-                    case UnitOfConcentration.MicroMolar:
-                        factor = 1d / 1000000.0d;
-                        break;
-                    case UnitOfConcentration.NanoMolar:
-                        factor = 1d / 1000000000.0d;
-                        break;
-                    case UnitOfConcentration.PicoMolar:
-                        factor = 1d / 1000000000000.0d;
-                        break;
-                    case UnitOfConcentration.FemtoMolar:
-                        factor = 1d / 1.0E+15d;
-                        break;
-                    case UnitOfConcentration.AttoMolar:
-                        factor = 1d / 1.0E+18d;
-                        break;
-                    case UnitOfConcentration.MgPerML:
-                        factor = 1d / sampleMass; // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
-                        break;
-                    case UnitOfConcentration.UgPerML:
-                        factor = 1d / (sampleMass * 1000.0d); // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                        break;
-                    case UnitOfConcentration.NgPerML:
-                        factor = 1d / (sampleMass * 1000000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
-                        break;
-                    case UnitOfConcentration.UgPerUL:
-                        factor = 1d / sampleMass; // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
-                        break;
-                    case UnitOfConcentration.NgPerUL:
-                        factor = 1d / (sampleMass * 1000.0d); // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
-                        break;
-                    default:
-                        factor = -1;
-                        break;
-                }
+                    UnitOfConcentration.Molar => 1.0d,
+                    UnitOfConcentration.MilliMolar => 1d / 1000.0d,
+                    UnitOfConcentration.MicroMolar => 1d / 1000000.0d,
+                    UnitOfConcentration.NanoMolar => 1d / 1000000000.0d,
+                    UnitOfConcentration.PicoMolar => 1d / 1000000000000.0d,
+                    UnitOfConcentration.FemtoMolar => 1d / 1.0E+15d,
+                    UnitOfConcentration.AttoMolar => 1d / 1.0E+18d,
+                    UnitOfConcentration.MgPerML => 1d / sampleMass, // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                    UnitOfConcentration.UgPerML => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                    UnitOfConcentration.NgPerML => 1d / (sampleMass * 1000000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                    UnitOfConcentration.UgPerUL => 1d / sampleMass, // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                    UnitOfConcentration.NgPerUL => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                    _ => -1
+                };
             }
 
             return factor;
@@ -1154,21 +1128,15 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorLength(UnitOfLength units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfLength.M:
-                    return 100.0d;
-                case UnitOfLength.CM:
-                    return 1.0d;
-                case UnitOfLength.MM:
-                    return 1d / 10.0d;
-                case UnitOfLength.Microns:
-                    return 1d / 10000.0d;
-                case UnitOfLength.Inches:
-                    return CM_PER_INCH;
-                default:
-                    return -1;
-            }
+                UnitOfLength.M => 100.0d,
+                UnitOfLength.CM => 1.0d,
+                UnitOfLength.MM => 1d / 10.0d,
+                UnitOfLength.Microns => 1d / 10000.0d,
+                UnitOfLength.Inches => CM_PER_INCH,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1178,23 +1146,16 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorLinearVelocity(UnitOfLinearVelocity units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfLinearVelocity.CmPerHr:
-                    return 1d / 60.0d;
-                case UnitOfLinearVelocity.MmPerHr:
-                    return 1d / 60.0d / 10.0d;
-                case UnitOfLinearVelocity.CmPerMin:
-                    return 1d;
-                case UnitOfLinearVelocity.MmPerMin:
-                    return 1d / 10.0d;
-                case UnitOfLinearVelocity.CmPerSec:
-                    return 60.0d;
-                case UnitOfLinearVelocity.MmPerSec:
-                    return 60.0d / 10.0d;
-                default:
-                    return -1;
-            }
+                UnitOfLinearVelocity.CmPerHr => 1d / 60.0d,
+                UnitOfLinearVelocity.MmPerHr => 1d / 60.0d / 10.0d,
+                UnitOfLinearVelocity.CmPerMin => 1d,
+                UnitOfLinearVelocity.MmPerMin => 1d / 10.0d,
+                UnitOfLinearVelocity.CmPerSec => 60.0d,
+                UnitOfLinearVelocity.MmPerSec => 60.0d / 10.0d,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1204,25 +1165,17 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorMassFlowRate(UnitOfMassFlowRate units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfMassFlowRate.PmolPerMin:
-                    return 1d / 1000000000000.0d;
-                case UnitOfMassFlowRate.FmolPerMin:
-                    return 1d / 1.0E+15d;
-                case UnitOfMassFlowRate.AmolPerMin:
-                    return 1d / 1.0E+18d;
-                case UnitOfMassFlowRate.PmolPerSec:
-                    return 1d / (1000000000000.0d / 60.0d);
-                case UnitOfMassFlowRate.FmolPerSec:
-                    return 1d / (1.0E+15d / 60.0d);
-                case UnitOfMassFlowRate.AmolPerSec:
-                    return 1d / (1.0E+18d / 60.0d);
-                case UnitOfMassFlowRate.MolesPerMin:
-                    return 1.0d;
-                default:
-                    return -1;
-            }
+                UnitOfMassFlowRate.PmolPerMin => 1d / 1000000000000.0d,
+                UnitOfMassFlowRate.FmolPerMin => 1d / 1.0E+15d,
+                UnitOfMassFlowRate.AmolPerMin => 1d / 1.0E+18d,
+                UnitOfMassFlowRate.PmolPerSec => 1d / (1000000000000.0d / 60.0d),
+                UnitOfMassFlowRate.FmolPerSec => 1d / (1.0E+15d / 60.0d),
+                UnitOfMassFlowRate.AmolPerSec => 1d / (1.0E+18d / 60.0d),
+                UnitOfMassFlowRate.MolesPerMin => 1.0d,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1232,25 +1185,17 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorMoles(UnitOfMolarAmount units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfMolarAmount.Moles:
-                    return 1.0d;
-                case UnitOfMolarAmount.MilliMoles:
-                    return 1d / 1000.0d;
-                case UnitOfMolarAmount.MicroMoles:
-                    return 1d / 1000000.0d;
-                case UnitOfMolarAmount.NanoMoles:
-                    return 1d / 1000000000.0d;
-                case UnitOfMolarAmount.PicoMoles:
-                    return 1d / 1000000000000.0d;
-                case UnitOfMolarAmount.FemtoMoles:
-                    return 1d / 1.0E+15d;
-                case UnitOfMolarAmount.AttoMoles:
-                    return 1d / 1.0E+18d;
-                default:
-                    return -1;
-            }
+                UnitOfMolarAmount.Moles => 1.0d,
+                UnitOfMolarAmount.MilliMoles => 1d / 1000.0d,
+                UnitOfMolarAmount.MicroMoles => 1d / 1000000.0d,
+                UnitOfMolarAmount.NanoMoles => 1d / 1000000000.0d,
+                UnitOfMolarAmount.PicoMoles => 1d / 1000000000000.0d,
+                UnitOfMolarAmount.FemtoMoles => 1d / 1.0E+15d,
+                UnitOfMolarAmount.AttoMoles => 1d / 1.0E+18d,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1260,25 +1205,17 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorPressure(UnitOfPressure units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfPressure.Psi:
-                    return 68947.57d;
-                case UnitOfPressure.Pascals:
-                    return 10.0d;
-                case UnitOfPressure.KiloPascals:
-                    return 10000.0d;
-                case UnitOfPressure.Atmospheres:
-                    return 1013250.0d;
-                case UnitOfPressure.Bar:
-                    return 1000000.0d;
-                case UnitOfPressure.Torr:
-                    return 1333.22d;
-                case UnitOfPressure.DynesPerSquareCm:
-                    return 1d;
-                default:
-                    return -1;
-            }
+                UnitOfPressure.Psi => 68947.57d,
+                UnitOfPressure.Pascals => 10.0d,
+                UnitOfPressure.KiloPascals => 10000.0d,
+                UnitOfPressure.Atmospheres => 1013250.0d,
+                UnitOfPressure.Bar => 1000000.0d,
+                UnitOfPressure.Torr => 1333.22d,
+                UnitOfPressure.DynesPerSquareCm => 1d,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1288,17 +1225,13 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorTime(UnitOfTime units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfTime.Hours:
-                    return 60.0d;
-                case UnitOfTime.Minutes:
-                    return 1.0d;
-                case UnitOfTime.Seconds:
-                    return 1d / 60.0d;
-                default:
-                    return -1;
-            }
+                UnitOfTime.Hours => 60.0d,
+                UnitOfTime.Minutes => 1.0d,
+                UnitOfTime.Seconds => 1d / 60.0d,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1308,17 +1241,13 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorDiffusionCoeff(UnitOfDiffusionCoefficient units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfDiffusionCoefficient.CmSquaredPerHr:
-                    return 1d / 3600.0d;
-                case UnitOfDiffusionCoefficient.CmSquaredPerMin:
-                    return 1d / 60.0d;
-                case UnitOfDiffusionCoefficient.CmSquaredPerSec:
-                    return 1.0d;
-                default:
-                    return -1;
-            }
+                UnitOfDiffusionCoefficient.CmSquaredPerHr => 1d / 3600.0d,
+                UnitOfDiffusionCoefficient.CmSquaredPerMin => 1d / 60.0d,
+                UnitOfDiffusionCoefficient.CmSquaredPerSec => 1.0d,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1328,15 +1257,12 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorViscosity(UnitOfViscosity units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfViscosity.Poise:
-                    return 1.0d;
-                case UnitOfViscosity.CentiPoise:
-                    return 1d / 100.0d;
-                default:
-                    return -1;
-            }
+                UnitOfViscosity.Poise => 1.0d,
+                UnitOfViscosity.CentiPoise => 1d / 100.0d,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1346,17 +1272,13 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorVolFlowRate(UnitOfFlowRate units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfFlowRate.MLPerMin:
-                    return 1.0d;
-                case UnitOfFlowRate.ULPerMin:
-                    return 1d / 1000.0d;
-                case UnitOfFlowRate.NLPerMin:
-                    return 1d / 1000000.0d;
-                default:
-                    return -1;
-            }
+                UnitOfFlowRate.MLPerMin => 1.0d,
+                UnitOfFlowRate.ULPerMin => 1d / 1000.0d,
+                UnitOfFlowRate.NLPerMin => 1d / 1000000.0d,
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -1366,19 +1288,14 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         private double FactorVolume(UnitOfVolume units)
         {
-            switch (units)
+            return units switch
             {
-                case UnitOfVolume.ML:
-                    return 1.0d;
-                case UnitOfVolume.UL:
-                    return 1d / 1000.0d;
-                case UnitOfVolume.NL:
-                    return 1d / 1000000.0d;
-                case UnitOfVolume.PL:
-                    return 1d / 1000000000.0d;
-                default:
-                    return -1;
-            }
+                UnitOfVolume.ML => 1.0d,
+                UnitOfVolume.UL => 1d / 1000.0d,
+                UnitOfVolume.NL => 1d / 1000000.0d,
+                UnitOfVolume.PL => 1d / 1000000000.0d,
+                _ => -1
+            };
         }
 
         // Get Methods
