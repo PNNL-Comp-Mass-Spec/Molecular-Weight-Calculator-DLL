@@ -1023,12 +1023,12 @@ namespace MolecularWeightCalculator
                                     var isotopeCountInThisCombo = isoCombos[comboIndex, isotopeIndex];
                                     if (isotopeCountInThisCombo > 0)
                                     {
-                                        abundDenom *= Factorial((short)isotopeCountInThisCombo);
+                                        abundDenom *= MathUtils.Factorial(isotopeCountInThisCombo);
                                         abundSuffix *= Math.Pow(stats.Isotopes[isotopeIndex].Abundance, isotopeCountInThisCombo);
                                     }
                                 }
 
-                                thisComboFractionalAbundance = Factorial((short)atomCount) / abundDenom * abundSuffix;
+                                thisComboFractionalAbundance = MathUtils.Factorial(atomCount) / abundDenom * abundSuffix;
                             }
                             else
                             {
@@ -1941,42 +1941,6 @@ namespace MolecularWeightCalculator
             {
                 for (var rowIndex = 1; rowIndex <= isoStats[elementTrack + 1].ResultsCount; rowIndex++)
                     ConvoluteMasses(ref convolutedAbundances, convolutedAbundanceStartMass, rowIndex, newAbundance, newMassTotal, (short)(elementTrack + 1), ref isoStats, elementCount, ref iterations);
-            }
-        }
-
-        /// <summary>
-        /// Compute the factorial of a number; uses recursion
-        /// </summary>
-        /// <param name="number">Integer number between 0 and 170</param>
-        /// <returns>The factorial, or -1 if an error</returns>
-        /// <remarks></remarks>
-        public double Factorial(short number)
-        {
-            try
-            {
-                if (number > 170)
-                {
-                    Console.WriteLine("Cannot compute factorial of a number over 170");
-                    return -1;
-                }
-
-                if (number < 0)
-                {
-                    Console.WriteLine("Cannot compute factorial of a negative number");
-                    return -1;
-                }
-
-                if (number == 0)
-                {
-                    return 1d;
-                }
-
-                return number * Factorial((short)(number - 1));
-            }
-            catch
-            {
-                Console.WriteLine("Number too large");
-                return -1;
             }
         }
 

@@ -50,6 +50,7 @@
     <Compile Include="FormulaFinderCandidateElement.cs" />
     <Compile Include="FormulaFinderOptions.cs" />
     <Compile Include="FormulaFinderResult.cs" />
+    <Compile Include="MathUtils.cs" />
     <Compile Include="MoleMassDilution.cs" />
     <Compile Include="MolecularWeightTool.cs" />
     <Compile Include="NumberConverter.cs" />

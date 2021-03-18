@@ -527,7 +527,7 @@ namespace MolecularWeightCalculator
                 Console.WriteLine("First number should be greater than or equal to the second number");
                 return -1;
             }
-            return Factorial(a) / (Factorial(b) * Factorial(a - b));
+            return MathUtils.Factorial(a) / (MathUtils.Factorial(b) * MathUtils.Factorial(a - b));
         }
 
         /// <summary>
@@ -1027,32 +1027,6 @@ namespace MolecularWeightCalculator
                 // Correct maxRecursiveCount for searching for m/z values
                 mMaxRecursiveCount *= multipleSearchMax;
             }
-        }
-
-        /// <summary>
-        /// Compute the factorial of a number; uses recursion
-        /// </summary>
-        /// <param name="value">Integer between 0 and 170</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
-        private double Factorial(int value)
-        {
-            if (value > 170)
-            {
-                throw new Exception("Cannot compute factorial of a number over 170");
-            }
-
-            if (value < 0)
-            {
-                throw new Exception("Cannot compute factorial of a negative number");
-            }
-
-            if (value == 0)
-            {
-                return 1d;
-            }
-
-            return value * Factorial(value - 1);
         }
 
         private List<FormulaFinderResult> FindMatchesByMass(
