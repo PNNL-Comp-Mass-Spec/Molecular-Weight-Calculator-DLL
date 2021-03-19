@@ -745,7 +745,7 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Stores isotope information in elementStats[]
         /// </summary>
-        internal static void MemoryLoadIsotopes(ref ElementAndMassTools.ElementInfo[] elementStats)
+        internal static void MemoryLoadIsotopes(ElementAndMassTools.ElementInfo[] elementStats)
         {
             // The isoMasses[] array holds the mass of each isotope
             // starting with isoMasses[x,1], isoMasses[x, 2], etc.

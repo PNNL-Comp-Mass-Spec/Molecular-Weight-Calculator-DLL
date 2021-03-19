@@ -31,11 +31,11 @@ namespace MolecularWeightCalculator
 
         public ElementAndMassTools()
         {
-            ElementAlph = new string[104];
-            ElementStats = new ElementInfo[104];
-            for (var i = 0; i <= ELEMENT_COUNT - 1; i++)
+            mElementAlph = new List<KeyValuePair<string, int>>(ELEMENT_COUNT);
+            mElementStats = new ElementInfo[ELEMENT_COUNT + 1];
+            for (var i = 0; i <= ELEMENT_COUNT; i++)
             {
-                ElementStats[i] = new ElementInfo();
+                mElementStats[i] = new ElementInfo();
             }
 
             mAbbrevStats = new List<AbbrevStatsData>(60);
@@ -270,6 +270,7 @@ namespace MolecularWeightCalculator
 
             public ElementInfo()
             {
+                Symbol = "";
                 Isotopes = new IsotopeInfo[ElementAndMassTools.MAX_ISOTOPES + 1];
 
                 for (var i = 0; i < Isotopes.Length; i++)
@@ -445,17 +446,18 @@ namespace MolecularWeightCalculator
         public Options ComputationOptions { get; } = new Options();
 
         /// <summary>
-        /// Stores the elements in alphabetical order
+        /// Stores the elements in alphabetical order, with Key==Symbol, and Value==Index in <see cref="mElementStats"/>
         /// Used for constructing empirical formulas
-        /// 1 to ELEMENT_COUNT
+        /// 0 to ELEMENT_COUNT - 1
         /// </summary>
-        private string[] ElementAlph;
+        private readonly List<KeyValuePair<string, int>> mElementAlph;
 
         /// <summary>
         /// Element stats
-        /// 1 to ELEMENT_COUNT
+        /// 1 to ELEMENT_COUNT, 0 is basically 'invalid element'
+        /// Leaving '0' as an invalid element allows indexing this array with the atomic number of the element
         /// </summary>
-        private ElementInfo[] ElementStats;
+        private readonly ElementInfo[] mElementStats;
 
         /// <summary>
         /// Stores the element symbols, abbreviations, and amino acids in order of longest symbol length to shortest length, non-alphabetized,
@@ -928,7 +930,7 @@ namespace MolecularWeightCalculator
                     count = computationStats.Elements[elementIndex].Count;
                     if (Math.Abs(count - (int)Math.Round(count)) > float.Epsilon)
                     {
-                        results = LookupMessage(350) + ": " + LookupMessage(805) + ": " + ElementStats[elementIndex].Symbol + count;
+                        results = LookupMessage(350) + ": " + LookupMessage(805) + ": " + mElementStats[elementIndex].Symbol + count;
                         return -1;
                     }
                 }
@@ -991,9 +993,9 @@ namespace MolecularWeightCalculator
                             elementCount = (short)(elementCount + 1);
                             isoStats[elementCount].ElementIndex = (short)elementIndex;
                             isoStats[elementCount].AtomCount = (int)Math.Round(computationStats.Elements[elementIndex].Count); // Note: Ignoring .Elements[elementIndex].IsotopicCorrection
-                            isoStats[elementCount].ExplicitMass = ElementStats[elementIndex].Mass;
+                            isoStats[elementCount].ExplicitMass = mElementStats[elementIndex].Mass;
 
-                            var stats = ElementStats[elementIndex];
+                            var stats = mElementStats[elementIndex];
                             minWeight = (int)Math.Round(minWeight + isoStats[elementCount].AtomCount * Math.Round(stats.Isotopes[1].Mass, 0));
                             maxWeight = (int)Math.Round(maxWeight + isoStats[elementCount].AtomCount * Math.Round(stats.Isotopes[stats.IsotopeCount].Mass, 0));
                         }
@@ -1044,7 +1046,7 @@ namespace MolecularWeightCalculator
                 {
                     masterElementIndex = isoStats[elementIndex].ElementIndex;
                     atomCount = isoStats[elementIndex].AtomCount;
-                    isotopeCount = ElementStats[masterElementIndex].IsotopeCount;
+                    isotopeCount = mElementStats[masterElementIndex].IsotopeCount;
 
                     predictedCombos = FindCombosPredictIterations(atomCount, isotopeCount);
                     predictedTotalComboCalcs += predictedCombos;
@@ -1069,7 +1071,7 @@ namespace MolecularWeightCalculator
                     }
                     else
                     {
-                        var stats = ElementStats[masterElementIndex];
+                        var stats = mElementStats[masterElementIndex];
                         isotopeCount = stats.IsotopeCount;
                         isotopeStartingMass = (short)Math.Round(Math.Round(stats.Isotopes[1].Mass, 0));
                         isotopeEndingMass = (short)Math.Round(Math.Round(stats.Isotopes[isotopeCount].Mass, 0));
@@ -1156,7 +1158,7 @@ namespace MolecularWeightCalculator
                                 // AbundDenom  and  AbundSuffix are only needed if using the easily-overflowed factorial method
                                 var abundDenom = 1d;
                                 var abundSuffix = 1d;
-                                var stats = ElementStats[masterElementIndex];
+                                var stats = mElementStats[masterElementIndex];
                                 for (var isotopeIndex = 1; isotopeIndex <= isotopeCount; isotopeIndex++)
                                 {
                                     var isotopeCountInThisCombo = isoCombos[comboIndex, isotopeIndex];
@@ -1196,7 +1198,7 @@ namespace MolecularWeightCalculator
                                         }
                                     }
 
-                                    var stats = ElementStats[masterElementIndex];
+                                    var stats = mElementStats[masterElementIndex];
                                     var sumF = 0d;
                                     for (var isotopeIndex = 1; isotopeIndex <= isotopeCount; isotopeIndex++)
                                     {
@@ -1233,7 +1235,7 @@ namespace MolecularWeightCalculator
                                             for (var subIndex = (int)Math.Round(mPrime) + 1; subIndex <= (int)Math.Round(m); subIndex++)
                                                 logSigma += Math.Log(subIndex);
 
-                                            logRho = logSigma - (m - mPrime) * Math.Log(ElementStats[masterElementIndex].Isotopes[isotopeIndex].Abundance);
+                                            logRho = logSigma - (m - mPrime) * Math.Log(mElementStats[masterElementIndex].Isotopes[isotopeIndex].Abundance);
                                         }
                                         else if (m < mPrime)
                                         {
@@ -1241,7 +1243,7 @@ namespace MolecularWeightCalculator
                                             for (var subIndex = (int)Math.Round(m) + 1; subIndex <= (int)Math.Round(mPrime); subIndex++)
                                                 logSigma += Math.Log(subIndex);
 
-                                            var stats = ElementStats[masterElementIndex];
+                                            var stats = mElementStats[masterElementIndex];
                                             if (stats.Isotopes[isotopeIndex].Abundance > 0f)
                                             {
                                                 logRho = (mPrime - m) * Math.Log(stats.Isotopes[isotopeIndex].Abundance) - logSigma;
@@ -1267,7 +1269,7 @@ namespace MolecularWeightCalculator
                             if (rigorousMethodUsed)
                             {
                                 // Determine nominal mass of this combination; depends on number of atoms of each isotope
-                                indexToStoreAbundance = FindIndexForNominalMass(ref isoCombos, comboIndex, isotopeCount, atomCount, ElementStats[masterElementIndex].Isotopes);
+                                indexToStoreAbundance = FindIndexForNominalMass(ref isoCombos, comboIndex, isotopeCount, atomCount, mElementStats[masterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances[] at location IndexToStoreAbundance
                                 isoStats[elementIndex].MassAbundances[indexToStoreAbundance] = (float)(isoStats[elementIndex].MassAbundances[indexToStoreAbundance] + thisComboFractionalAbundance);
@@ -1276,7 +1278,7 @@ namespace MolecularWeightCalculator
                             if (ratioMethodUsed)
                             {
                                 // Store abundance for next Combo
-                                indexToStoreAbundance = FindIndexForNominalMass(ref isoCombos, comboIndex + 1, isotopeCount, atomCount, ElementStats[masterElementIndex].Isotopes);
+                                indexToStoreAbundance = FindIndexForNominalMass(ref isoCombos, comboIndex + 1, isotopeCount, atomCount, mElementStats[masterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances[] at location IndexToStoreAbundance
                                 isoStats[elementIndex].MassAbundances[indexToStoreAbundance] = (float)(isoStats[elementIndex].MassAbundances[indexToStoreAbundance] + nextComboFractionalAbundance);
@@ -1353,7 +1355,7 @@ namespace MolecularWeightCalculator
                     }
                     else
                     {
-                        exactBaseIsoMass += stats.AtomCount * ElementStats[stats.ElementIndex].Isotopes[1].Mass;
+                        exactBaseIsoMass += stats.AtomCount * mElementStats[stats.ElementIndex].Isotopes[1].Mass;
                     }
                 }
 
@@ -1485,7 +1487,7 @@ namespace MolecularWeightCalculator
             {
                 if (computationStats.TotalMass > 0d)
                 {
-                    var elementTotalMass = computationStats.Elements[elementIndex].Count * ElementStats[elementIndex].Mass + computationStats.Elements[elementIndex].IsotopicCorrection;
+                    var elementTotalMass = computationStats.Elements[elementIndex].Count * mElementStats[elementIndex].Mass + computationStats.Elements[elementIndex].IsotopicCorrection;
 
                     // Percent is the percent composition
                     var percentComp = elementTotalMass / computationStats.TotalMass * 100.0d;
@@ -1496,7 +1498,7 @@ namespace MolecularWeightCalculator
                     if (Math.Abs(computationStats.Elements[elementIndex].IsotopicCorrection - 0d) < float.Epsilon)
                     {
                         // No isotopic mass correction factor exists
-                        stdDeviation = percentComp * Math.Sqrt(Math.Pow(ElementStats[elementIndex].Uncertainty / ElementStats[elementIndex].Mass, 2d) + Math.Pow(computationStats.StandardDeviation / computationStats.TotalMass, 2d));
+                        stdDeviation = percentComp * Math.Sqrt(Math.Pow(mElementStats[elementIndex].Uncertainty / mElementStats[elementIndex].Mass, 2d) + Math.Pow(computationStats.StandardDeviation / computationStats.TotalMass, 2d));
                     }
                     else
                     {
@@ -1809,7 +1811,7 @@ namespace MolecularWeightCalculator
             // Construct search list
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                MasterSymbolsList[index, 0] = ElementStats[index].Symbol;
+                MasterSymbolsList[index, 0] = mElementStats[index].Symbol;
                 MasterSymbolsList[index, 1] = "E" + index;
             }
 
@@ -1941,16 +1943,16 @@ namespace MolecularWeightCalculator
                 // Convert to empirical formula
                 var empiricalFormula = "";
                 // Carbon first, then hydrogen, then the rest alphabetically
-                // This is correct to start at -1
-                for (var elementIndex = -1; elementIndex <= ELEMENT_COUNT; elementIndex++)
+                // This is correct to start at -2
+                for (var elementIndex = -2; elementIndex < mElementAlph.Count; elementIndex++)
                 {
-                    var elementIndexToUse = default(int);
-                    if (elementIndex == -1)
+                    int elementIndexToUse;
+                    if (elementIndex == -2)
                     {
                         // Do Carbon first
                         elementIndexToUse = 6;
                     }
-                    else if (elementIndex == 0)
+                    else if (elementIndex == -1)
                     {
                         // Then do Hydrogen
                         elementIndexToUse = 1;
@@ -1958,32 +1960,24 @@ namespace MolecularWeightCalculator
                     else
                     {
                         // Then do the rest alphabetically
-                        if (ElementAlph[elementIndex] == "C" || ElementAlph[elementIndex] == "H")
+                        if (mElementAlph[elementIndex].Key == "C" || mElementAlph[elementIndex].Key == "H")
                         {
                             // Increment elementIndex when we encounter carbon or hydrogen
-                            elementIndex = (short)(elementIndex + 1);
+                            elementIndex++;
                         }
 
-                        for (var elementSearchIndex = 2; elementSearchIndex <= ELEMENT_COUNT; elementSearchIndex++) // Start at 2 to since we've already done hydrogen
-                        {
-                            // find the element in the numerically ordered array that corresponds to the alphabetically ordered array
-                            if ((ElementStats[elementSearchIndex].Symbol ?? "") == (ElementAlph[elementIndex] ?? ""))
-                            {
-                                elementIndexToUse = elementSearchIndex;
-                                break;
-                            }
-                        }
+                        elementIndexToUse = mElementAlph[elementIndex].Value;
                     }
 
                     // Only display the element if it's in the formula
                     var thisElementCount = mComputationStatsSaved.Elements[elementIndexToUse].Count;
                     if (Math.Abs(thisElementCount - 1.0d) < float.Epsilon)
                     {
-                        empiricalFormula += ElementStats[elementIndexToUse].Symbol;
+                        empiricalFormula += mElementStats[elementIndexToUse].Symbol;
                     }
                     else if (thisElementCount > 0d)
                     {
-                        empiricalFormula = empiricalFormula + ElementStats[elementIndexToUse].Symbol + thisElementCount;
+                        empiricalFormula = empiricalFormula + mElementStats[elementIndexToUse].Symbol + thisElementCount;
                     }
                 }
 
@@ -2551,8 +2545,7 @@ namespace MolecularWeightCalculator
         {
             if (elementId >= 1 && elementId <= ELEMENT_COUNT)
             {
-                symbol = ElementAlph[elementId];
-                var stats = ElementStats[elementId];
+                var stats = mElementStats[elementId];
                 symbol = stats.Symbol;
                 mass = stats.Mass;
                 uncertainty = stats.Uncertainty;
@@ -2579,7 +2572,7 @@ namespace MolecularWeightCalculator
         {
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if (string.Equals(ElementStats[index].Symbol, symbol, StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(mElementStats[index].Symbol, symbol, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return (short)index;
                 }
@@ -2600,7 +2593,7 @@ namespace MolecularWeightCalculator
         {
             if (elementId >= 1 && elementId <= ELEMENT_COUNT)
             {
-                var stats = ElementStats[elementId];
+                var stats = mElementStats[elementId];
                 isotopeCount = stats.IsotopeCount;
                 for (var isotopeIndex = 1; isotopeIndex <= stats.IsotopeCount; isotopeIndex++)
                 {
@@ -2637,7 +2630,7 @@ namespace MolecularWeightCalculator
         {
             if (elementId >= 1 && elementId <= ELEMENT_COUNT)
             {
-                return ElementStats[elementId].Symbol;
+                return mElementStats[elementId].Symbol;
             }
 
             return "";
@@ -2661,9 +2654,9 @@ namespace MolecularWeightCalculator
             {
                 return elementStat switch
                 {
-                    MolecularWeightTool.ElementStatsType.Mass => ElementStats[elementId].Mass,
-                    MolecularWeightTool.ElementStatsType.Charge => ElementStats[elementId].Charge,
-                    MolecularWeightTool.ElementStatsType.Uncertainty => ElementStats[elementId].Uncertainty,
+                    MolecularWeightTool.ElementStatsType.Mass => mElementStats[elementId].Mass,
+                    MolecularWeightTool.ElementStatsType.Charge => mElementStats[elementId].Charge,
+                    MolecularWeightTool.ElementStatsType.Uncertainty => mElementStats[elementId].Uncertainty,
                     _ => 0d
                 };
             }
@@ -2828,12 +2821,12 @@ namespace MolecularWeightCalculator
         {
             if (caseSensitive)
             {
-                var query = from item in ElementStats where (item.Symbol ?? "") == (elementSymbol ?? "") select item;
+                var query = from item in mElementStats where (item.Symbol ?? "") == (elementSymbol ?? "") select item;
                 return query.Any();
             }
             else
             {
-                var query = from item in ElementStats where (item.Symbol?.ToLower() ?? "") == (elementSymbol?.ToLower() ?? "") select item;
+                var query = from item in mElementStats where (item.Symbol?.ToLower() ?? "") == (elementSymbol?.ToLower() ?? "") select item;
                 return query.Any();
             }
         }
@@ -3200,36 +3193,21 @@ namespace MolecularWeightCalculator
                 // Updating all the elements
                 for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
-                    var stats = ElementStats[elementIndex];
+                    var stats = mElementStats[elementIndex];
                     stats.Symbol = elementNames[elementIndex];
                     stats.Mass = elemVals[elementIndex, 1];
                     stats.Uncertainty = elemVals[elementIndex, 2];
                     stats.Charge = (float)elemVals[elementIndex, 3];
 
-                    ElementAlph[elementIndex] = stats.Symbol;
+                    mElementAlph.Add(new KeyValuePair<string, int>(stats.Symbol, elementIndex));
                 }
 
-                // Alphabetize ElementAlph[] array via built-in sort; no custom comparator needed.
-                Array.Sort(ElementAlph);
-
-                //// Alphabetize ElementAlph[] array via bubble sort
-                //for (var compareIndex = ELEMENT_COUNT; compareIndex >= 2; compareIndex += -1) // Sort from end to start
-                //{
-                //    for (var index = 1; index < compareIndex; index++)
-                //    {
-                //        if (string.Compare(ElementAlph[index], ElementAlph[index + 1], StringComparison.Ordinal) > 0)
-                //        {
-                //            // Swap them
-                //            var swap = ElementAlph[index];
-                //            ElementAlph[index] = ElementAlph[index + 1];
-                //            ElementAlph[index + 1] = swap;
-                //        }
-                //    }
-                //}
+                // Alphabetize mElementAlph by Key/symbol
+                mElementAlph.Sort((x,y) => string.Compare(x.Key, y.Key, StringComparison.Ordinal));
             }
             else if (specificElement >= 1 && specificElement <= ELEMENT_COUNT)
             {
-                var stats = ElementStats[specificElement];
+                var stats = mElementStats[specificElement];
                 switch (specificStatToReset)
                 {
                     case MolecularWeightTool.ElementStatsType.Mass:
@@ -3253,7 +3231,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         private void MemoryLoadIsotopes()
         {
-            ElementAndMassInMemoryData.MemoryLoadIsotopes(ref ElementStats);
+            ElementAndMassInMemoryData.MemoryLoadIsotopes(mElementStats);
         }
 
         public void MemoryLoadMessageStatements()
@@ -3349,7 +3327,7 @@ namespace MolecularWeightCalculator
                     for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                         // Increase total weight by multiplying the count of each element by the element's mass
                         // In addition, add in the Isotopic Correction value
-                        computationStats.TotalMass = computationStats.TotalMass + ElementStats[elementIndex].Mass * computationStats.Elements[elementIndex].Count + computationStats.Elements[elementIndex].IsotopicCorrection;
+                        computationStats.TotalMass = computationStats.TotalMass + mElementStats[elementIndex].Mass * computationStats.Elements[elementIndex].Count + computationStats.Elements[elementIndex].IsotopicCorrection;
 
                     return computationStats.TotalMass;
                 }
@@ -3467,7 +3445,7 @@ namespace MolecularWeightCalculator
                         for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                         {
                             var element = computationStats.Elements[elementIndex];
-                            if (ElementStats[elementIndex].Mass * element.Count + element.IsotopicCorrection >= ElementStats[elementIndex].Mass * computationStatsRightHalf.Elements[elementIndex].Count + computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection)
+                            if (mElementStats[elementIndex].Mass * element.Count + element.IsotopicCorrection >= mElementStats[elementIndex].Mass * computationStatsRightHalf.Elements[elementIndex].Count + computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection)
                             {
                                 element.Count -= -computationStatsRightHalf.Elements[elementIndex].Count;
                                 if (element.Count < 0d)
@@ -3807,7 +3785,7 @@ namespace MolecularWeightCalculator
                                     case SymbolMatchMode.Element:
                                         // Found an element
                                         // SymbolReference is the elemental number
-                                        symbolLength = ElementStats[symbolReference].Symbol.Length;
+                                        symbolLength = mElementStats[symbolReference].Symbol.Length;
                                         if (symbolLength == 0)
                                         {
                                             // No elements in ElementStats yet
@@ -3841,7 +3819,7 @@ namespace MolecularWeightCalculator
                                                 var element = computationStats.Elements[symbolReference];
                                                 element.Count += atomCountToAdd;
                                                 element.Used = true; // Element is present tag
-                                                stdDevSum += atomCountToAdd * Math.Pow(ElementStats[symbolReference].Uncertainty, 2d);
+                                                stdDevSum += atomCountToAdd * Math.Pow(mElementStats[symbolReference].Uncertainty, 2d);
 
                                                 var compStats = computationStats;
                                                 // Compute charge
@@ -3861,13 +3839,13 @@ namespace MolecularWeightCalculator
                                                             compStats.Charge = (float)(compStats.Charge + atomCountToAdd * -1);
                                                             break;
                                                         default:
-                                                            compStats.Charge = (float)(compStats.Charge + atomCountToAdd * ElementStats[symbolReference].Charge);
+                                                            compStats.Charge = (float)(compStats.Charge + atomCountToAdd * mElementStats[symbolReference].Charge);
                                                             break;
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    compStats.Charge = (float)(compStats.Charge + atomCountToAdd * ElementStats[symbolReference].Charge);
+                                                    compStats.Charge = (float)(compStats.Charge + atomCountToAdd * mElementStats[symbolReference].Charge);
                                                 }
 
                                                 if (symbolReference == 6 || symbolReference == 14)
@@ -3888,17 +3866,17 @@ namespace MolecularWeightCalculator
                                                 if (caretValDifference >= isoDifferenceTop)
                                                 {
                                                     // Probably too high isotopic mass
-                                                    AddToCautionDescription(LookupMessage(660) + ": " + ElementStats[symbolReference].Symbol + " - " + caretVal + " " + LookupMessage(665) + " " + ElementStats[symbolReference].Mass);
+                                                    AddToCautionDescription(LookupMessage(660) + ": " + mElementStats[symbolReference].Symbol + " - " + caretVal + " " + LookupMessage(665) + " " + mElementStats[symbolReference].Mass);
                                                 }
                                                 else if (caretVal < symbolReference)
                                                 {
                                                     // Definitely too low isotopic mass
-                                                    AddToCautionDescription(LookupMessage(670) + ": " + ElementStats[symbolReference].Symbol + " - " + symbolReference + " " + LookupMessage(675));
+                                                    AddToCautionDescription(LookupMessage(670) + ": " + mElementStats[symbolReference].Symbol + " - " + symbolReference + " " + LookupMessage(675));
                                                 }
                                                 else if (caretValDifference <= isoDifferenceBottom)
                                                 {
                                                     // Probably too low isotopic mass
-                                                    AddToCautionDescription(LookupMessage(662) + ": " + ElementStats[symbolReference].Symbol + " - " + caretVal + " " + LookupMessage(665) + " " + ElementStats[symbolReference].Mass);
+                                                    AddToCautionDescription(LookupMessage(662) + ": " + mElementStats[symbolReference].Symbol + " - " + caretVal + " " + LookupMessage(665) + " " + mElementStats[symbolReference].Mass);
                                                 }
 
                                                 // Put in isotopic correction factor
@@ -3921,7 +3899,7 @@ namespace MolecularWeightCalculator
                                                 isotope.Mass = caretVal;
 
                                                 // Add correction amount to computationStats.Elements[SymbolReference].IsotopicCorrection
-                                                element.IsotopicCorrection += (caretVal * atomCountToAdd - ElementStats[symbolReference].Mass * atomCountToAdd);
+                                                element.IsotopicCorrection += (caretVal * atomCountToAdd - mElementStats[symbolReference].Mass * atomCountToAdd);
 
                                                 // Set bit that element is present
                                                 element.Used = true;
@@ -4877,7 +4855,7 @@ namespace MolecularWeightCalculator
 
                         if (symbolMatchType == SymbolMatchMode.Element)
                         {
-                            if ((ElementStats[symbolReference].Symbol ?? "") == symbol)
+                            if ((mElementStats[symbolReference].Symbol ?? "") == symbol)
                             {
                                 invalidSymbolOrFormula = true;
                             }
@@ -4993,9 +4971,9 @@ namespace MolecularWeightCalculator
 
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if ((symbol?.ToLower() ?? "") == (ElementStats[index].Symbol?.ToLower() ?? ""))
+                if ((symbol?.ToLower() ?? "") == (mElementStats[index].Symbol?.ToLower() ?? ""))
                 {
-                    var stats = ElementStats[index];
+                    var stats = mElementStats[index];
                     stats.Mass = mass;
                     stats.Uncertainty = uncertainty;
                     stats.Charge = charge;
@@ -5021,9 +4999,9 @@ namespace MolecularWeightCalculator
 
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if ((symbol?.ToLower() ?? "") == (ElementStats[index].Symbol?.ToLower() ?? ""))
+                if ((symbol?.ToLower() ?? "") == (mElementStats[index].Symbol?.ToLower() ?? ""))
                 {
-                    var stats = ElementStats[index];
+                    var stats = mElementStats[index];
                     if (isotopeCount < 0)
                         isotopeCount = 0;
                     stats.IsotopeCount = isotopeCount;
