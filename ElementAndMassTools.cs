@@ -33,10 +33,7 @@ namespace MolecularWeightCalculator
         {
             mElementAlph = new List<KeyValuePair<string, int>>(ELEMENT_COUNT);
             mElementStats = new ElementInfo[ELEMENT_COUNT + 1];
-            for (var i = 0; i <= ELEMENT_COUNT; i++)
-            {
-                mElementStats[i] = new ElementInfo();
-            }
+            mElementStats[0] = new ElementInfo(); // 'Invalid' element at index 0
 
             mAbbrevStats = new List<AbbrevStatsData>(60);
 
@@ -252,7 +249,7 @@ namespace MolecularWeightCalculator
 
         public class ElementInfo
         {
-            public string Symbol { get; set; }
+            public string Symbol { get; }
             public double Mass { get; set; }
             public double Uncertainty { get; set; }
             public float Charge { get; set; }
@@ -261,6 +258,15 @@ namespace MolecularWeightCalculator
             public ElementInfo()
             {
                 Symbol = "";
+                Isotopes = new List<IsotopeInfo>();
+            }
+
+            public ElementInfo(string symbol, float charge, double mass, double uncertainty = 0)
+            {
+                Symbol = symbol;
+                Charge = charge;
+                Mass = mass;
+                Uncertainty = uncertainty;
                 Isotopes = new List<IsotopeInfo>(MAX_ISOTOPES);
             }
 
@@ -3146,7 +3152,7 @@ namespace MolecularWeightCalculator
         /// nonzero <paramref name="specificElement"/> and <paramref name="specificStatToReset"/> values will set just that specific value to the default
         /// </remarks>
         public void MemoryLoadElements(
-            ElementMassMode elementMode,
+            ElementMassMode elementMode = ElementMassMode.Average,
             short specificElement = 0,
             MolecularWeightTool.ElementStatsType specificStatToReset = MolecularWeightTool.ElementStatsType.Mass)
         {
@@ -3179,20 +3185,39 @@ namespace MolecularWeightCalculator
             // elemVals[elementIndex,2] stores the element's uncertainty
             // elemVals[elementIndex,3] stores the element's charge
             // Note: I could make this array of type ElementInfo, but the size of this sub would increase dramatically
-            ElementAndMassInMemoryData.MemoryLoadElements(elementMode, out var elementNames, out var elemVals);
+            var elementMemoryData = ElementAndMassInMemoryData.MemoryLoadElements();
 
+            // Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights
+            // Reduce branching - use Func<> to get the correct value based on the settings
+            Func<ElementAndMassInMemoryData.ElementMem, double> getMass;
+            Func<ElementAndMassInMemoryData.ElementMem, double> getUncertainty;
+            switch (elementMode)
+            {
+                case ElementMassMode.Integer:
+                    getMass = elementMem => elementMem.MassInteger;
+                    getUncertainty = elementMem => 0;
+                    break;
+                case ElementMassMode.Isotopic:
+                    getMass = elementMem => elementMem.MassIsotopic;
+                    getUncertainty = elementMem => 0;
+                    break;
+                case ElementMassMode.Average:
+                default:
+                    getMass = elementMem => elementMem.MassAverage;
+                    getUncertainty = elementMem => elementMem.UncertaintyAverageMass;
+                    break;
+            }
+
+            // Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights
             if (specificElement == 0)
             {
                 // Updating all the elements
                 for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
-                    var stats = mElementStats[elementIndex];
-                    stats.Symbol = elementNames[elementIndex];
-                    stats.Mass = elemVals[elementIndex, 1];
-                    stats.Uncertainty = elemVals[elementIndex, 2];
-                    stats.Charge = (float)elemVals[elementIndex, 3];
+                    var elementMem = elementMemoryData[elementIndex];
+                    mElementStats[elementIndex] = new ElementInfo(elementMem.Symbol, elementMem.Charge, getMass(elementMem), getUncertainty(elementMem));
 
-                    mElementAlph.Add(new KeyValuePair<string, int>(stats.Symbol, elementIndex));
+                    mElementAlph.Add(new KeyValuePair<string, int>(elementMem.Symbol, elementIndex));
                 }
 
                 // Alphabetize mElementAlph by Key/symbol
@@ -3204,13 +3229,13 @@ namespace MolecularWeightCalculator
                 switch (specificStatToReset)
                 {
                     case MolecularWeightTool.ElementStatsType.Mass:
-                        stats.Mass = elemVals[specificElement, 1];
+                        stats.Mass = getMass(elementMemoryData[specificElement]);
                         break;
                     case MolecularWeightTool.ElementStatsType.Uncertainty:
-                        stats.Uncertainty = elemVals[specificElement, 2];
+                        stats.Uncertainty = getUncertainty(elementMemoryData[specificElement]);
                         break;
                     case MolecularWeightTool.ElementStatsType.Charge:
-                        stats.Charge = (float)elemVals[specificElement, 3];
+                        stats.Charge = elementMemoryData[specificElement].Charge;
                         break;
                     default:
                         // Ignore it
