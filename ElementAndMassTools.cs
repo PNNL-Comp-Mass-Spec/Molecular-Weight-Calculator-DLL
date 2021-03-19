@@ -42,6 +42,7 @@ namespace MolecularWeightCalculator
 
             mCautionStatements = new Dictionary<string, string>(50);
             mMessageStatements = new Dictionary<int, string>(220);
+            mMasterSymbolsList = new List<SymbolLookupInfo>();
 
             mProgressStepDescription = string.Empty;
             mProgressPercentComplete = 0f;
@@ -439,6 +440,48 @@ namespace MolecularWeightCalculator
             public double X { get; set; }
             public double Y { get; set; }
         }
+
+
+        /// <summary>
+        /// struct for data for mMasterSymbolsList; using a struct because it means less space, and we don't edit the struct
+        /// </summary>
+        private struct SymbolLookupInfo : IComparable<SymbolLookupInfo>
+        {
+            /// <summary>
+            /// Symbol to match - can be an abbreviation or a chemical/atomic symbol for an element
+            /// </summary>
+            public readonly string Symbol;
+
+            /// <summary>
+            /// Basically, a reference to which list <see cref="Index"/> contains this symbol
+            /// </summary>
+            public readonly SymbolMatchMode MatchType;
+
+            /// <summary>
+            /// The index of this symbol in the list referred to by <see cref="MatchType"/>
+            /// </summary>
+            public readonly int Index;
+
+            public SymbolLookupInfo(string symbol, int index, SymbolMatchMode matchType = SymbolMatchMode.Unknown)
+            {
+                Symbol = symbol;
+                Index = index;
+                MatchType = matchType;
+            }
+
+            public int CompareTo(SymbolLookupInfo other)
+            {
+                // For sorting: sort longest to shortest, then alphabetically
+                // 'other' first to sort by length descending
+                var lengthCompare = other.Symbol.Length.CompareTo(Symbol.Length);
+                if (lengthCompare == 0)
+                {
+                    return string.Compare(Symbol, other.Symbol, StringComparison.Ordinal);
+                }
+
+                return lengthCompare;
+            }
+        }
         #endregion
 
         #region "Classwide Variables"
@@ -462,11 +505,9 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Stores the element symbols, abbreviations, and amino acids in order of longest symbol length to shortest length, non-alphabetized,
         /// for use in symbol matching when parsing a formula
-        /// 1 To MasterSymbolsListCount
+        /// 0 To .Count - 1
         /// </summary>
-        /// <remarks>No number for array size since we dynamically allocate memory for it</remarks>
-        private string[,] MasterSymbolsList;
-        private short MasterSymbolsListCount;
+        private readonly List<SymbolLookupInfo> mMasterSymbolsList;
 
         /// <summary>
         /// Includes both abbreviations and amino acids
@@ -689,7 +730,7 @@ namespace MolecularWeightCalculator
         /// Examines the formula excerpt to determine if it is an element, abbreviation, amino acid, or unknown
         /// </summary>
         /// <param name="formulaExcerpt"></param>
-        /// <param name="symbolReference">Output: index of the matched element or abbreviation in MasterSymbolsList[]</param>
+        /// <param name="symbolReference">Output: index of the matched element or abbreviation in mMasterSymbolsList[]</param>
         /// <returns>
         /// smtElement if matched an element
         /// smtAbbreviation if matched an abbreviation or amino acid
@@ -700,42 +741,27 @@ namespace MolecularWeightCalculator
             var symbolMatchType = default(SymbolMatchMode);
             symbolReference = -1;
 
-            // MasterSymbolsList[] stores the element symbols, abbreviations, & amino acids in order of longest length to
-            // shortest length, non-alphabetized, for use in symbol matching when parsing a formula
+            // mMasterSymbolsList[] stores the element symbols, abbreviations, & amino acids in order of longest length to
+            // shortest length, then by alphabet sorting, for use in symbol matching when parsing a formula
 
-            // MasterSymbolsList[index,0] contains the symbol to be matched
-            // MasterSymbolsList[index,1] contains E for element, A for amino acid, or N for normal abbreviation, followed by
-            // the reference number in the master list
-            // For example for Carbon, MasterSymbolsList[index,0] = "C" and MasterSymbolsList[index,1] = "E6"
-
-            // Look for match, stepping directly through MasterSymbolsList[]
+            // Look for match, stepping directly through mMasterSymbolsList[]
             // List is sorted by reverse length, so can do all at once
 
-            for (var index = 0; index < MasterSymbolsListCount; index++)
+            foreach (var lookupSymbol in mMasterSymbolsList)
             {
-                if (MasterSymbolsList[index, 0].Length > 0)
+                if (lookupSymbol.Symbol?.Length > 0)
                 {
-                    if (formulaExcerpt.Substring(0, Math.Min(formulaExcerpt.Length, MasterSymbolsList[index, 0].Length)) == (MasterSymbolsList[index, 0] ?? ""))
+                    if (formulaExcerpt.Substring(0, Math.Min(formulaExcerpt.Length, lookupSymbol.Symbol.Length)) == lookupSymbol.Symbol)
                     {
                         // Matched a symbol
-                        switch (MasterSymbolsList[index, 1].Substring(0, 1).ToUpper())
+                        symbolMatchType = lookupSymbol.MatchType;
+                        if (symbolMatchType == SymbolMatchMode.Unknown)
                         {
-                            case "E": // An element
-                                symbolMatchType = SymbolMatchMode.Element;
-                                break;
-                            case "A": // An abbreviation or amino acid
-                                symbolMatchType = SymbolMatchMode.Abbreviation;
-                                break;
-                            default:
-                                // error
-                                symbolMatchType = SymbolMatchMode.Unknown;
-                                symbolReference = -1;
-                                break;
+                            symbolReference = -1;
                         }
-
-                        if (symbolMatchType != SymbolMatchMode.Unknown)
+                        else
                         {
-                            symbolReference = (short)Math.Round(double.Parse(MasterSymbolsList[index, 1].Substring(1)));
+                            symbolReference = (short)lookupSymbol.Index;
                         }
 
                         break;
@@ -743,7 +769,7 @@ namespace MolecularWeightCalculator
                 }
                 else
                 {
-                    Console.WriteLine("Zero-length entry found in MasterSymbolsList[]; this is unexpected");
+                    Console.WriteLine("Zero-length entry found in mMasterSymbolsList[]; this is unexpected");
                 }
             }
 
@@ -1801,23 +1827,16 @@ namespace MolecularWeightCalculator
             // Call after loading or changing abbreviations or elements
             // Call after loading or setting abbreviation mode
 
-            MasterSymbolsList = new string[ELEMENT_COUNT + mAbbrevStats.Count + 1, 2];
-
-            // MasterSymbolsList[,0] contains the symbol to be matched
-            // MasterSymbolsList[,1] contains E for element, A for amino acid, or N for normal abbreviation, followed by
-            // the reference number in the master list
-            // For example for Carbon, MasterSymbolsList[index,0] = "C" and MasterSymbolsList[index,1] = "E6"
+            mMasterSymbolsList.Clear();
+            mMasterSymbolsList.Capacity = ELEMENT_COUNT + mAbbrevStats.Count;
 
             // Construct search list
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                MasterSymbolsList[index, 0] = mElementStats[index].Symbol;
-                MasterSymbolsList[index, 1] = "E" + index;
+                mMasterSymbolsList.Add(new SymbolLookupInfo(mElementStats[index].Symbol, index, SymbolMatchMode.Element));
             }
 
-            MasterSymbolsListCount = ELEMENT_COUNT;
-
-            // Note: AbbrevStats is 1-based
+            // Note: mAbbrevStats is 0-based
             if (ComputationOptions.AbbrevRecognitionMode != MolecularWeightTool.AbbrevRecognitionMode.NoAbbreviations)
             {
                 bool includeAmino;
@@ -1839,17 +1858,16 @@ namespace MolecularWeightCalculator
                         // Do not include if the formula is invalid
                         if (!stats.InvalidSymbolOrFormula)
                         {
-                            MasterSymbolsListCount = (short)(MasterSymbolsListCount + 1);
-
-                            MasterSymbolsList[MasterSymbolsListCount, 0] = stats.Symbol;
-                            MasterSymbolsList[MasterSymbolsListCount, 1] = "A" + index;
+                            mMasterSymbolsList.Add(new SymbolLookupInfo(stats.Symbol, index, SymbolMatchMode.Abbreviation));
                         }
                     }
                 }
             }
 
+            mMasterSymbolsList.Capacity = mMasterSymbolsList.Count;
+
             // Sort the search list
-            ShellSortSymbols(1, MasterSymbolsListCount);
+            mMasterSymbolsList.Sort(); // Will use the IComparable implementation for longest-to-shortest, then alphabetical.
         }
 
         /// <summary>
@@ -5073,93 +5091,6 @@ namespace MolecularWeightCalculator
             }
 
             return 1;
-        }
-
-        private void ShellSortSymbols(int lowIndex, int highIndex)
-        {
-            var pointerArray = new int[highIndex + 1];
-            var symbolsStore = new string[highIndex + 1, 2];
-
-            // MasterSymbolsList starts at lowIndex
-            for (var index = lowIndex; index <= highIndex; index++)
-                pointerArray[index] = index;
-
-            ShellSortSymbolsWork(ref pointerArray, lowIndex, highIndex);
-
-            // Reassign MasterSymbolsList array according to PointerArray order
-            // First, copy to a temporary array (I know it eats up memory, but I have no choice)
-            for (var index = lowIndex; index <= highIndex; index++)
-            {
-                symbolsStore[index, 0] = MasterSymbolsList[index, 0];
-                symbolsStore[index, 1] = MasterSymbolsList[index, 1];
-            }
-
-            // Now, put them back into the MasterSymbolsList() array in the correct order
-            // Use PointerArray() for this
-            for (var index = lowIndex; index <= highIndex; index++)
-            {
-                MasterSymbolsList[index, 0] = symbolsStore[pointerArray[index], 0];
-                MasterSymbolsList[index, 1] = symbolsStore[pointerArray[index], 1];
-            }
-        }
-
-        /// <summary>
-        /// Sort the list using a shell sort
-        /// </summary>
-        /// <param name="pointerArray"></param>
-        /// <param name="lowIndex"></param>
-        /// <param name="highIndex"></param>
-        private void ShellSortSymbolsWork(ref int[] pointerArray, int lowIndex, int highIndex)
-        {
-            // Sort PointerArray[lowIndex..highIndex] by comparing
-            // Len(MasterSymbolsList(PointerArray(x)) and sorting by decreasing length
-            // If same length, sort alphabetically (increasing)
-
-            // Compute largest increment
-            var itemCount = highIndex - lowIndex + 1;
-            var incrementAmount = 1;
-            if (itemCount < 14)
-            {
-                incrementAmount = 1;
-            }
-            else
-            {
-                while (incrementAmount < itemCount)
-                    incrementAmount = 3 * incrementAmount + 1;
-                incrementAmount /= 3;
-                incrementAmount /= 3;
-            }
-
-            while (incrementAmount > 0)
-            {
-                // Sort by insertion in increments of incrementAmount
-                for (var index = lowIndex + incrementAmount; index <= highIndex; index++)
-                {
-                    var pointerSwap = pointerArray[index];
-                    int indexCompare;
-                    for (indexCompare = index - incrementAmount; indexCompare >= lowIndex; indexCompare += -incrementAmount)
-                    {
-                        // Use <= to sort ascending; Use > to sort descending
-                        // Sort by decreasing length
-                        var length1 = MasterSymbolsList[pointerArray[indexCompare], 0].Length;
-                        var length2 = MasterSymbolsList[pointerSwap, 0].Length;
-                        if (length1 > length2)
-                            break;
-                        // If same length, sort alphabetically
-                        if (length1 == length2)
-                        {
-                            if (string.Compare(MasterSymbolsList[pointerArray[indexCompare], 0].ToUpper(), MasterSymbolsList[pointerSwap, 0].ToUpper(), StringComparison.Ordinal) <= 0)
-                                break;
-                        }
-
-                        pointerArray[indexCompare + incrementAmount] = pointerArray[indexCompare];
-                    }
-
-                    pointerArray[indexCompare + incrementAmount] = pointerSwap;
-                }
-
-                incrementAmount /= 3;
-            }
         }
 
         public void SetShowErrorMessageDialogs(bool value)
