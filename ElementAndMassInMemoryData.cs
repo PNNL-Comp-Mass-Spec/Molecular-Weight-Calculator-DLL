@@ -8,10 +8,9 @@ namespace MolecularWeightCalculator
         /// Define the caution statements
         /// </summary>
         /// <remarks>Use ClearCautionStatements and AddCautionStatement to set these based on language</remarks>
-        public static Dictionary<string, string> MemoryLoadCautionStatementsEnglish()
+        public static void MemoryLoadCautionStatementsEnglish(Dictionary<string, string> cautions)
         {
-            var cautions = new Dictionary<string, string>(45);
-
+            cautions.Clear();
             cautions.Add("Bi", "Bi means bismuth; BI means boron-iodine.  ");
             cautions.Add("Bk", "Bk means berkelium; BK means boron-potassium.  ");
             cautions.Add("Bu", "Bu means the butyl group; BU means boron-uranium.  ");
@@ -53,8 +52,6 @@ namespace MolecularWeightCalculator
             cautions.Add("PrO", "Pro means proline; PrO means praseodymium-oxygen.  ");
             cautions.Add("Val", "Val means valine; VAl means vanadium-aluminum.  ");
             cautions.Add("VAl", "Val means valine; VAl means vanadium-aluminum.  ");
-
-            return cautions;
         }
 
         /// <summary>
@@ -1390,10 +1387,13 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public static Dictionary<int, string> MemoryLoadMessageStatementsEnglish()
+        /// <summary>
+        /// Replaces the current message statements with the default messages
+        /// </summary>
+        /// <param name="messages"></param>
+        public static void MemoryLoadMessageStatementsEnglish(Dictionary<int, string> messages)
         {
-            var messages = new Dictionary<int, string>(210);
-
+            messages.Clear();
             messages.Add(1, "Unknown element");
             messages.Add(2, "Obsolete msg: Cannot handle more than 4 layers of embedded parentheses");
             messages.Add(3, "Missing closing parentheses");
@@ -1606,8 +1606,6 @@ namespace MolecularWeightCalculator
             messages.Add(1545, "txt");
             messages.Add(1550, "Capillary Flow Info Files");
             messages.Add(1555, "cap");
-
-            return messages;
         }
     }
 }
