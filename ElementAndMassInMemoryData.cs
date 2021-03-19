@@ -1373,17 +1373,16 @@ namespace MolecularWeightCalculator
             for (var elementIndex = 1; elementIndex <= ElementAndMassTools.ELEMENT_COUNT - 1; elementIndex++)
             {
                 var stats = elementStats[elementIndex];
-                short isotopeIndex = 1;
+                short isotopeIndex = 0;
                 while (isoMasses[elementIndex, isotopeIndex] > 0d)
                 {
-                    stats.Isotopes[isotopeIndex].Abundance = isoAbun[elementIndex, isotopeIndex];
-                    stats.Isotopes[isotopeIndex].Mass = isoMasses[elementIndex, isotopeIndex];
-                    isotopeIndex = (short)(isotopeIndex + 1);
+                    stats.Isotopes.Add(new ElementAndMassTools.IsotopeInfo(isoMasses[elementIndex, isotopeIndex], isoAbun[elementIndex, isotopeIndex]));
+                    isotopeIndex++;
                     if (isotopeIndex > ElementAndMassTools.MAX_ISOTOPES)
                         break;
                 }
 
-                stats.IsotopeCount = (short)(isotopeIndex - 1);
+                stats.Isotopes.Capacity = stats.Isotopes.Count;
             }
         }
 
