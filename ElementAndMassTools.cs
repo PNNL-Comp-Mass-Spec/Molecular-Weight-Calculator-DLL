@@ -38,11 +38,7 @@ namespace MolecularWeightCalculator
                 ElementStats[i] = new ElementInfo();
             }
 
-            AbbrevStats = new AbbrevStatsData[501];
-            for (var i = 0; i < AbbrevStats.Length; i++)
-            {
-                AbbrevStats[i] = new AbbrevStatsData();
-            }
+            mAbbrevStats = new List<AbbrevStatsData>(60);
 
             mCautionStatements = new Dictionary<string, string>();
             mMessageStatements = new Dictionary<int, string>();
@@ -288,7 +284,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public class AbbrevStatsData
+        public class AbbrevStatsData : IComparable<AbbrevStatsData>
         {
             /// <summary>
             /// The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
@@ -331,9 +327,28 @@ namespace MolecularWeightCalculator
             /// </summary>
             public bool InvalidSymbolOrFormula { get; set; }
 
+            public AbbrevStatsData(string symbol, string formula, float charge, bool isAminoAcid, string oneLetterSymbol = "", string comment = "", bool invalidSymbolOrFormula = false)
+            {
+                InvalidSymbolOrFormula = invalidSymbolOrFormula;
+                Symbol = symbol;
+                Formula = formula;
+                Mass = 0d;
+                Charge = charge;
+                OneLetterSymbol = oneLetterSymbol.ToUpper();
+                IsAminoAcid = isAminoAcid;
+                Comment = comment;
+            }
+
             public override string ToString()
             {
                 return Symbol + ": " + Formula;
+            }
+
+            public int CompareTo(AbbrevStatsData other)
+            {
+                if (ReferenceEquals(this, other)) return 0;
+                if (ReferenceEquals(null, other)) return 1;
+                return string.Compare(Symbol, other.Symbol, StringComparison.Ordinal);
             }
         }
 
@@ -452,10 +467,9 @@ namespace MolecularWeightCalculator
         private short MasterSymbolsListCount;
 
         /// <summary>
-        /// Includes both abbreviations and amino acids; 1-based array
+        /// Includes both abbreviations and amino acids
         /// </summary>
-        private AbbrevStatsData[] AbbrevStats;
-        private short AbbrevAllCount;
+        private List<AbbrevStatsData> mAbbrevStats;
 
         /// <summary>
         /// CautionStatements.Key holds the symbol combo to look for
@@ -584,10 +598,24 @@ namespace MolecularWeightCalculator
             string comment = "",
             bool invalidSymbolOrFormula = false)
         {
-            var stats = AbbrevStats[abbrevIndex];
-            stats.InvalidSymbolOrFormula = invalidSymbolOrFormula;
-            stats.Symbol = symbol;
-            stats.Formula = formula;
+            AbbrevStatsData stats;
+            if (abbrevIndex < 0 || abbrevIndex >= mAbbrevStats.Count)
+            {
+                stats = new AbbrevStatsData(symbol, formula, charge, isAminoAcid, oneLetter, comment, invalidSymbolOrFormula);
+                mAbbrevStats.Add(stats);
+            }
+            else
+            {
+                stats = mAbbrevStats[abbrevIndex];
+                stats.InvalidSymbolOrFormula = invalidSymbolOrFormula;
+                stats.Symbol = symbol;
+                stats.Formula = formula;
+                stats.Charge = charge;
+                stats.OneLetterSymbol = oneLetter.ToUpper();
+                stats.IsAminoAcid = isAminoAcid;
+                stats.Comment = comment;
+            }
+
             stats.Mass = ComputeFormulaWeight(ref formula);
             if (stats.Mass < 0d)
             {
@@ -595,11 +623,6 @@ namespace MolecularWeightCalculator
                 stats.Mass = 0d;
                 stats.InvalidSymbolOrFormula = true;
             }
-
-            stats.Charge = charge;
-            stats.OneLetterSymbol = oneLetter.ToUpper();
-            stats.IsAminoAcid = isAminoAcid;
-            stats.Comment = comment;
 
             return formula;
         }
@@ -670,9 +693,10 @@ namespace MolecularWeightCalculator
         /// smtAbbreviation if matched an abbreviation or amino acid
         /// smtUnknown if no match
         /// </returns>
-        private SymbolMatchMode CheckElemAndAbbrev(string formulaExcerpt, ref short symbolReference)
+        private SymbolMatchMode CheckElemAndAbbrev(string formulaExcerpt, out short symbolReference)
         {
             var symbolMatchType = default(SymbolMatchMode);
+            symbolReference = -1;
 
             // MasterSymbolsList[] stores the element symbols, abbreviations, & amino acids in order of longest length to
             // shortest length, non-alphabetized, for use in symbol matching when parsing a formula
@@ -1775,7 +1799,7 @@ namespace MolecularWeightCalculator
             // Call after loading or changing abbreviations or elements
             // Call after loading or setting abbreviation mode
 
-            MasterSymbolsList = new string[ELEMENT_COUNT + AbbrevAllCount + 1, 2];
+            MasterSymbolsList = new string[ELEMENT_COUNT + mAbbrevStats.Count + 1, 2];
 
             // MasterSymbolsList[,0] contains the symbol to be matched
             // MasterSymbolsList[,1] contains E for element, A for amino acid, or N for normal abbreviation, followed by
@@ -1804,9 +1828,9 @@ namespace MolecularWeightCalculator
                     includeAmino = false;
                 }
 
-                for (var index = 1; index <= AbbrevAllCount; index++)
+                for (var index = 0; index < mAbbrevStats.Count; index++)
                 {
-                    var stats = AbbrevStats[index];
+                    var stats = mAbbrevStats[index];
                     // If includeAmino = False then do not include amino acids
                     if (includeAmino || !stats.IsAminoAcid)
                     {
@@ -2325,7 +2349,7 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public int GetAbbreviationCountInternal()
         {
-            return AbbrevAllCount;
+            return mAbbrevStats.Count;
         }
 
         /// <summary>
@@ -2336,11 +2360,11 @@ namespace MolecularWeightCalculator
         /// <returns>ID if found, otherwise 0</returns>
         public int GetAbbreviationIdInternal(string symbol, bool aminoAcidsOnly = false)
         {
-            for (var index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 0; index <= mAbbrevStats.Count; index++)
             {
-                if ((AbbrevStats[index].Symbol?.ToLower() ?? "") == (symbol?.ToLower() ?? ""))
+                if ((mAbbrevStats[index].Symbol?.ToLower() ?? "") == (symbol?.ToLower() ?? ""))
                 {
-                    if (!aminoAcidsOnly || AbbrevStats[index].IsAminoAcid)
+                    if (!aminoAcidsOnly || mAbbrevStats[index].IsAminoAcid)
                     {
                         return index;
                     }
@@ -2382,9 +2406,9 @@ namespace MolecularWeightCalculator
             out string comment,
             out bool invalidSymbolOrFormula)
         {
-            if (abbreviationId >= 1 && abbreviationId <= AbbrevAllCount)
+            if (abbreviationId >= 0 && abbreviationId < mAbbrevStats.Count)
             {
-                var stats = AbbrevStats[abbreviationId];
+                var stats = mAbbrevStats[abbreviationId];
                 symbol = stats.Symbol;
                 formula = stats.Formula;
                 charge = stats.Charge;
@@ -2416,9 +2440,9 @@ namespace MolecularWeightCalculator
             // Rather, it uses the .Mass member of AbbrevStats
             // This requires that .Mass be updated if the abbreviation is changed, if an element is changed, or if the element mode is changed
 
-            if (abbreviationId >= 1 && abbreviationId <= AbbrevAllCount)
+            if (abbreviationId >= 0 && abbreviationId < mAbbrevStats.Count)
             {
-                return AbbrevStats[abbreviationId].Mass;
+                return mAbbrevStats[abbreviationId].Mass;
             }
 
             return 0d;
@@ -2432,29 +2456,29 @@ namespace MolecularWeightCalculator
 
             var returnSymbol = "";
             // Use AbbrevStats[] array to lookup code
-            for (var index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                if (AbbrevStats[index].IsAminoAcid)
+                if (mAbbrevStats[index].IsAminoAcid)
                 {
                     string compareSymbol;
                     if (oneLetterTo3Letter)
                     {
-                        compareSymbol = AbbrevStats[index].OneLetterSymbol;
+                        compareSymbol = mAbbrevStats[index].OneLetterSymbol;
                     }
                     else
                     {
-                        compareSymbol = AbbrevStats[index].Symbol;
+                        compareSymbol = mAbbrevStats[index].Symbol;
                     }
 
                     if ((compareSymbol?.ToLower() ?? "") == (symbolToFind?.ToLower() ?? ""))
                     {
                         if (oneLetterTo3Letter)
                         {
-                            returnSymbol = AbbrevStats[index].Symbol;
+                            returnSymbol = mAbbrevStats[index].Symbol;
                         }
                         else
                         {
-                            returnSymbol = AbbrevStats[index].OneLetterSymbol;
+                            returnSymbol = mAbbrevStats[index].OneLetterSymbol;
                         }
 
                         break;
@@ -3024,62 +3048,62 @@ namespace MolecularWeightCalculator
         public void MemoryLoadAbbreviations()
         {
             // Symbol                            Formula            1 letter abbreviation
-            const short aminoAbbrevCount = 28;
+            mAbbrevStats.Add(new AbbrevStatsData("Ala", "C3H5NO", 0f, true, "A", "Alanine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Arg", "C6H12N4O", 0f, true, "R", "Arginine, (unprotonated NH2)"));
+            mAbbrevStats.Add(new AbbrevStatsData("Asn", "C4H6N2O2", 0f, true, "N", "Asparagine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Asp", "C4H5NO3", 0f, true, "D", "Aspartic acid (undissociated COOH)"));
+            mAbbrevStats.Add(new AbbrevStatsData("Cys", "C3H5NOS", 0f, true, "C", "Cysteine (no disulfide link)"));
+            mAbbrevStats.Add(new AbbrevStatsData("Gla", "C6H7NO5", 0f, true, "U", "gamma-Carboxyglutamate"));
+            mAbbrevStats.Add(new AbbrevStatsData("Gln", "C5H8N2O2", 0f, true, "Q", "Glutamine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Glu", "C5H7NO3", 0f, true, "E", "Glutamic acid (undissociated COOH)"));
+            mAbbrevStats.Add(new AbbrevStatsData("Gly", "C2H3NO", 0f, true, "G", "Glycine"));
+            mAbbrevStats.Add(new AbbrevStatsData("His", "C6H7N3O", 0f, true, "H", "Histidine (unprotonated NH)"));
+            mAbbrevStats.Add(new AbbrevStatsData("Hse", "C4H7NO2", 0f, true, "", "Homoserine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Hyl", "C6H12N2O2", 0f, true, "", "Hydroxylysine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Hyp", "C5H7NO2", 0f, true, "", "Hydroxyproline"));
+            mAbbrevStats.Add(new AbbrevStatsData("Ile", "C6H11NO", 0f, true, "I", "Isoleucine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Leu", "C6H11NO", 0f, true, "L", "Leucine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Lys", "C6H12N2O", 0f, true, "K", "Lysine (unprotonated NH2)"));
+            mAbbrevStats.Add(new AbbrevStatsData("Met", "C5H9NOS", 0f, true, "M", "Methionine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Orn", "C5H10N2O", 0f, true, "O", "Ornithine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Phe", "C9H9NO", 0f, true, "F", "Phenylalanine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Pro", "C5H7NO", 0f, true, "P", "Proline"));
+            mAbbrevStats.Add(new AbbrevStatsData("Pyr", "C5H5NO2", 0f, true, "", "Pyroglutamic acid"));
+            mAbbrevStats.Add(new AbbrevStatsData("Sar", "C3H5NO", 0f, true, "", "Sarcosine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Ser", "C3H5NO2", 0f, true, "S", "Serine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Thr", "C4H7NO2", 0f, true, "T", "Threonine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Trp", "C11H10N2O", 0f, true, "W", "Tryptophan"));
+            mAbbrevStats.Add(new AbbrevStatsData("Tyr", "C9H9NO2", 0f, true, "Y", "Tyrosine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Val", "C5H9NO", 0f, true, "V", "Valine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Xxx", "C6H12N2O", 0f, true, "X", "Unknown"));
 
-            AbbrevAllCount = aminoAbbrevCount;
-            for (var index = 1; index <= AbbrevAllCount; index++)
-                AbbrevStats[index].IsAminoAcid = true;
+            mAbbrevStats.Add(new AbbrevStatsData("Bpy", "C10H8N2", 0f, false, "", "Bipyridine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Bu", "C4H9", 1f, false, "", "Butyl"));
+            mAbbrevStats.Add(new AbbrevStatsData("D", "^2.014H", 1f, false, "", "Deuterium"));
+            mAbbrevStats.Add(new AbbrevStatsData("En", "C2H8N2", 0f, false, "", "Ethylenediamine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Et", "CH3CH2", 1f, false, "", "Ethyl"));
+            mAbbrevStats.Add(new AbbrevStatsData("Me", "CH3", 1f, false, "", "Methyl"));
+            mAbbrevStats.Add(new AbbrevStatsData("Ms", "CH3SOO", -1, false, "", "Mesyl"));
+            mAbbrevStats.Add(new AbbrevStatsData("Oac", "C2H3O2", -1, false, "", "Acetate"));
+            mAbbrevStats.Add(new AbbrevStatsData("Otf", "OSO2CF3", -1, false, "", "Triflate"));
+            mAbbrevStats.Add(new AbbrevStatsData("Ox", "C2O4", -2, false, "", "Oxalate"));
+            mAbbrevStats.Add(new AbbrevStatsData("Ph", "C6H5", 1f, false, "", "Phenyl"));
+            mAbbrevStats.Add(new AbbrevStatsData("Phen", "C12H8N2", 0f, false, "", "Phenanthroline"));
+            mAbbrevStats.Add(new AbbrevStatsData("Py", "C5H5N", 0f, false, "", "Pyridine"));
+            mAbbrevStats.Add(new AbbrevStatsData("Tpp", "(C4H2N(C6H5C)C4H2N(C6H5C))2", 0f, false, "", "Tetraphenylporphyrin"));
+            mAbbrevStats.Add(new AbbrevStatsData("Ts", "CH3C6H4SOO", -1, false, "", "Tosyl"));
+            mAbbrevStats.Add(new AbbrevStatsData("Urea", "H2NCONH2", 0f, false, "", "Urea"));
 
-            AddAbbreviationWork(1, "Ala", "C3H5NO", 0f, true, "A", "Alanine");
-            AddAbbreviationWork(2, "Arg", "C6H12N4O", 0f, true, "R", "Arginine, (unprotonated NH2)");
-            AddAbbreviationWork(3, "Asn", "C4H6N2O2", 0f, true, "N", "Asparagine");
-            AddAbbreviationWork(4, "Asp", "C4H5NO3", 0f, true, "D", "Aspartic acid (undissociated COOH)");
-            AddAbbreviationWork(5, "Cys", "C3H5NOS", 0f, true, "C", "Cysteine (no disulfide link)");
-            AddAbbreviationWork(6, "Gla", "C6H7NO5", 0f, true, "U", "gamma-Carboxyglutamate");
-            AddAbbreviationWork(7, "Gln", "C5H8N2O2", 0f, true, "Q", "Glutamine");
-            AddAbbreviationWork(8, "Glu", "C5H7NO3", 0f, true, "E", "Glutamic acid (undissociated COOH)");
-            AddAbbreviationWork(9, "Gly", "C2H3NO", 0f, true, "G", "Glycine");
-            AddAbbreviationWork(10, "His", "C6H7N3O", 0f, true, "H", "Histidine (unprotonated NH)");
-            AddAbbreviationWork(11, "Hse", "C4H7NO2", 0f, true, "", "Homoserine");
-            AddAbbreviationWork(12, "Hyl", "C6H12N2O2", 0f, true, "", "Hydroxylysine");
-            AddAbbreviationWork(13, "Hyp", "C5H7NO2", 0f, true, "", "Hydroxyproline");
-            AddAbbreviationWork(14, "Ile", "C6H11NO", 0f, true, "I", "Isoleucine");
-            AddAbbreviationWork(15, "Leu", "C6H11NO", 0f, true, "L", "Leucine");
-            AddAbbreviationWork(16, "Lys", "C6H12N2O", 0f, true, "K", "Lysine (unprotonated NH2)");
-            AddAbbreviationWork(17, "Met", "C5H9NOS", 0f, true, "M", "Methionine");
-            AddAbbreviationWork(18, "Orn", "C5H10N2O", 0f, true, "O", "Ornithine");
-            AddAbbreviationWork(19, "Phe", "C9H9NO", 0f, true, "F", "Phenylalanine");
-            AddAbbreviationWork(20, "Pro", "C5H7NO", 0f, true, "P", "Proline");
-            AddAbbreviationWork(21, "Pyr", "C5H5NO2", 0f, true, "", "Pyroglutamic acid");
-            AddAbbreviationWork(22, "Sar", "C3H5NO", 0f, true, "", "Sarcosine");
-            AddAbbreviationWork(23, "Ser", "C3H5NO2", 0f, true, "S", "Serine");
-            AddAbbreviationWork(24, "Thr", "C4H7NO2", 0f, true, "T", "Threonine");
-            AddAbbreviationWork(25, "Trp", "C11H10N2O", 0f, true, "W", "Tryptophan");
-            AddAbbreviationWork(26, "Tyr", "C9H9NO2", 0f, true, "Y", "Tyrosine");
-            AddAbbreviationWork(27, "Val", "C5H9NO", 0f, true, "V", "Valine");
-            AddAbbreviationWork(28, "Xxx", "C6H12N2O", 0f, true, "X", "Unknown");
-
-            const short normalAbbrevCount = 16;
-            AbbrevAllCount += normalAbbrevCount;
-            for (var index = aminoAbbrevCount + 1; index <= AbbrevAllCount; index++)
-                AbbrevStats[index].IsAminoAcid = false;
-
-            AddAbbreviationWork(aminoAbbrevCount + 1, "Bpy", "C10H8N2", 0f, false, "", "Bipyridine");
-            AddAbbreviationWork(aminoAbbrevCount + 2, "Bu", "C4H9", 1f, false, "", "Butyl");
-            AddAbbreviationWork(aminoAbbrevCount + 3, "D", "^2.014H", 1f, false, "", "Deuterium");
-            AddAbbreviationWork(aminoAbbrevCount + 4, "En", "C2H8N2", 0f, false, "", "Ethylenediamine");
-            AddAbbreviationWork(aminoAbbrevCount + 5, "Et", "CH3CH2", 1f, false, "", "Ethyl");
-            AddAbbreviationWork(aminoAbbrevCount + 6, "Me", "CH3", 1f, false, "", "Methyl");
-            AddAbbreviationWork(aminoAbbrevCount + 7, "Ms", "CH3SOO", -1, false, "", "Mesyl");
-            AddAbbreviationWork(aminoAbbrevCount + 8, "Oac", "C2H3O2", -1, false, "", "Acetate");
-            AddAbbreviationWork(aminoAbbrevCount + 9, "Otf", "OSO2CF3", -1, false, "", "Triflate");
-            AddAbbreviationWork(aminoAbbrevCount + 10, "Ox", "C2O4", -2, false, "", "Oxalate");
-            AddAbbreviationWork(aminoAbbrevCount + 11, "Ph", "C6H5", 1f, false, "", "Phenyl");
-            AddAbbreviationWork(aminoAbbrevCount + 12, "Phen", "C12H8N2", 0f, false, "", "Phenanthroline");
-            AddAbbreviationWork(aminoAbbrevCount + 13, "Py", "C5H5N", 0f, false, "", "Pyridine");
-            AddAbbreviationWork(aminoAbbrevCount + 14, "Tpp", "(C4H2N(C6H5C)C4H2N(C6H5C))2", 0f, false, "", "Tetraphenylporphyrin");
-            AddAbbreviationWork(aminoAbbrevCount + 15, "Ts", "CH3C6H4SOO", -1, false, "", "Tosyl");
-            AddAbbreviationWork(aminoAbbrevCount + 16, "Urea", "H2NCONH2", 0f, false, "", "Urea");
+            foreach (var stats in mAbbrevStats)
+            {
+                stats.Mass = ComputeFormulaWeight(stats.Formula);
+                if (stats.Mass < 0d)
+                {
+                    // Error occurred computing mass for abbreviation
+                    stats.Mass = 0d;
+                    stats.InvalidSymbolOrFormula = true;
+                }
+            }
 
             // Note Asx or B is often used for Asp or Asn
             // Note Glx or Z is often used for Glu or Gln
@@ -3386,7 +3410,7 @@ namespace MolecularWeightCalculator
             double caretVal = default;
             var char1 = string.Empty;
 
-            short symbolReference = default, prevSymbolReference = default;
+            short prevSymbolReference = default;
             int parenthLevel = default;
 
             try
@@ -3776,7 +3800,7 @@ namespace MolecularWeightCalculator
                                 addonCount = 0;
                                 adjacentNum = 0d;
 
-                                var symbolMatchType = CheckElemAndAbbrev(formulaExcerpt, ref symbolReference);
+                                var symbolMatchType = CheckElemAndAbbrev(formulaExcerpt, out var symbolReference);
 
                                 switch (symbolMatchType)
                                 {
@@ -3954,7 +3978,7 @@ namespace MolecularWeightCalculator
                                             // Update the abbrevSymbolStack before calling so that we can check for circular abbreviation references
 
                                             // Record the abbreviation length
-                                            symbolLength = AbbrevStats[symbolReference].Symbol.Length;
+                                            symbolLength = mAbbrevStats[symbolReference].Symbol.Length;
 
                                             // Look for number after abbrev/amino
                                             adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
@@ -3979,11 +4003,11 @@ namespace MolecularWeightCalculator
                                             // This is not what we want; instead, we want to use the defined charge for the abbreviation
                                             // We'll use the atomCountToAdd variable here, though instead of an atom count, it's really an abbreviation occurrence count
                                             var atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
-                                            var chargeSaved = (float)(computationStats.Charge + atomCountToAdd * AbbrevStats[symbolReference].Charge);
+                                            var chargeSaved = (float)(computationStats.Charge + atomCountToAdd * mAbbrevStats[symbolReference].Charge);
 
                                             // When parsing an abbreviation, do not pass on the value of expandAbbreviations
                                             // This way, an abbreviation containing an abbreviation will only get expanded one level
-                                            ParseFormulaRecursive(AbbrevStats[symbolReference].Formula, ref computationStats, ref abbrevSymbolStack, false, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
+                                            ParseFormulaRecursive(mAbbrevStats[symbolReference].Formula, ref computationStats, ref abbrevSymbolStack, false, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
 
                                             // Update the charge to chargeSaved
                                             computationStats.Charge = chargeSaved;
@@ -3996,7 +4020,7 @@ namespace MolecularWeightCalculator
                                                 if (expandAbbreviations)
                                                 {
                                                     // Replace abbreviation with empirical formula
-                                                    var replace = AbbrevStats[symbolReference].Formula;
+                                                    var replace = mAbbrevStats[symbolReference].Formula;
 
                                                     // Look for a number after the abbreviation or amino acid
                                                     adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
@@ -4472,11 +4496,11 @@ namespace MolecularWeightCalculator
         /// </summary>
         public void RecomputeAbbreviationMassesInternal()
         {
-            for (var index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                var formula = AbbrevStats[index].Formula;
-                AbbrevStats[index].Mass = ComputeFormulaWeight(ref formula);
-                AbbrevStats[index].Formula = formula;
+                var formula = mAbbrevStats[index].Formula;
+                mAbbrevStats[index].Mass = ComputeFormulaWeight(ref formula);
+                mAbbrevStats[index].Formula = formula;
             }
         }
 
@@ -4487,7 +4511,7 @@ namespace MolecularWeightCalculator
 
         public void RemoveAllAbbreviationsInternal()
         {
-            AbbrevAllCount = 0;
+            mAbbrevStats.Clear();
             ConstructMasterSymbolsList();
         }
 
@@ -4502,9 +4526,9 @@ namespace MolecularWeightCalculator
 
             abbreviationSymbol = abbreviationSymbol?.ToLower();
 
-            for (var index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                if ((AbbrevStats[index].Symbol?.ToLower() ?? "") == (abbreviationSymbol ?? ""))
+                if ((mAbbrevStats[index].Symbol?.ToLower() ?? "") == (abbreviationSymbol ?? ""))
                 {
                     RemoveAbbreviationByIdInternal(index);
                     removed = true;
@@ -4523,12 +4547,10 @@ namespace MolecularWeightCalculator
         {
             bool removed;
 
-            if (abbreviationId >= 1 && abbreviationId <= AbbrevAllCount)
+            if (abbreviationId >= 0 && abbreviationId < mAbbrevStats.Count)
             {
-                for (var indexRemove = abbreviationId; indexRemove < AbbrevAllCount; indexRemove++)
-                    AbbrevStats[indexRemove] = AbbrevStats[indexRemove + 1];
+                mAbbrevStats.RemoveAt(abbreviationId);
 
-                AbbrevAllCount--;
                 ConstructMasterSymbolsList();
                 removed = true;
             }
@@ -4757,9 +4779,9 @@ namespace MolecularWeightCalculator
 
             // See if the abbreviation is already present
             var alreadyPresent = false;
-            for (var index = 1; index <= AbbrevAllCount; index++)
+            for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                if ((AbbrevStats[index].Symbol?.ToUpper() ?? "") == (symbol?.ToUpper() ?? ""))
+                if ((mAbbrevStats[index].Symbol?.ToUpper() ?? "") == (symbol?.ToUpper() ?? ""))
                 {
                     alreadyPresent = true;
                     abbrevId = index;
@@ -4770,10 +4792,9 @@ namespace MolecularWeightCalculator
             // AbbrevStats is a 1-based array
             if (!alreadyPresent)
             {
-                if (AbbrevAllCount < MAX_ABBREV_COUNT)
+                if (mAbbrevStats.Count < MAX_ABBREV_COUNT)
                 {
-                    abbrevId = AbbrevAllCount + 1;
-                    AbbrevAllCount = (short)(AbbrevAllCount + 1);
+                    abbrevId = mAbbrevStats.Count;
                 }
                 else
                 {
@@ -4814,7 +4835,6 @@ namespace MolecularWeightCalculator
 
             var abbrevSymbolStack = new AbbrevSymbolStack();
             var invalidSymbolOrFormula = default(bool);
-            var symbolReference = default(short);
 
             ResetErrorParamsInternal();
 
@@ -4836,12 +4856,11 @@ namespace MolecularWeightCalculator
                     symbol = symbol.Substring(0, 1).ToUpper() + symbol.Substring(1).ToLower();
 
                     // If abbrevId is < 1 or larger than AbbrevAllCount, then define it
-                    if (abbrevId < 1 || abbrevId > AbbrevAllCount + 1)
+                    if (abbrevId < 0 || abbrevId >= mAbbrevStats.Count)
                     {
-                        if (AbbrevAllCount < MAX_ABBREV_COUNT)
+                        if (mAbbrevStats.Count < MAX_ABBREV_COUNT)
                         {
-                            AbbrevAllCount = (short)(AbbrevAllCount + 1);
-                            abbrevId = AbbrevAllCount;
+                            abbrevId = (short)mAbbrevStats.Count;
                         }
                         else
                         {
@@ -4854,7 +4873,7 @@ namespace MolecularWeightCalculator
                     if (abbrevId >= 1)
                     {
                         // Make sure the abbreviation doesn't match one of the standard elements
-                        var symbolMatchType = CheckElemAndAbbrev(symbol, ref symbolReference);
+                        var symbolMatchType = CheckElemAndAbbrev(symbol, out var symbolReference);
 
                         if (symbolMatchType == SymbolMatchMode.Element)
                         {
@@ -5171,48 +5190,8 @@ namespace MolecularWeightCalculator
 
         public void SortAbbreviationsInternal()
         {
-            int itemCount = AbbrevAllCount;
-            const int lowIndex = 1;
-            var highIndex = itemCount;
-
-            // sort array[lowIndex..highIndex]
-
-            // compute largest increment
-            itemCount = highIndex - lowIndex + 1;
-            var incrementAmount = 1;
-            if (itemCount < 14)
-            {
-                incrementAmount = 1;
-            }
-            else
-            {
-                while (incrementAmount < itemCount)
-                    incrementAmount = 3 * incrementAmount + 1;
-
-                incrementAmount /= 3;
-                incrementAmount /= 3;
-            }
-
-            while (incrementAmount > 0)
-            {
-                // sort by insertion in increments of incrementAmount
-                for (var index = lowIndex + incrementAmount; index <= highIndex; index++)
-                {
-                    var compare = AbbrevStats[index];
-                    int indexCompare;
-                    for (indexCompare = index - incrementAmount; indexCompare >= lowIndex; indexCompare += -incrementAmount)
-                    {
-                        // Use <= to sort ascending; Use > to sort descending
-                        if (string.Compare(AbbrevStats[indexCompare].Symbol, compare.Symbol, StringComparison.Ordinal) <= 0)
-                            break;
-                        AbbrevStats[indexCompare + incrementAmount] = AbbrevStats[indexCompare];
-                    }
-
-                    AbbrevStats[indexCompare + incrementAmount] = compare;
-                }
-
-                incrementAmount /= 3;
-            }
+            // Default comparison specified in AbbrevStatsData
+            mAbbrevStats.Sort();
 
             // Need to re-construct the master symbols list
             ConstructMasterSymbolsList();
@@ -5311,13 +5290,13 @@ namespace MolecularWeightCalculator
         {
             var invalidAbbreviationCount = default(short);
 
-            for (short abbrevIndex = 1; abbrevIndex <= AbbrevAllCount; abbrevIndex++)
+            for (short abbrevIndex = 0; abbrevIndex < mAbbrevStats.Count; abbrevIndex++)
             {
-                var stats = AbbrevStats[abbrevIndex];
+                var stats = mAbbrevStats[abbrevIndex];
                 SetAbbreviationByIdInternal(abbrevIndex, stats.Symbol, stats.Formula, stats.Charge, stats.IsAminoAcid, stats.OneLetterSymbol, stats.Comment, true);
                 if (stats.InvalidSymbolOrFormula)
                 {
-                    invalidAbbreviationCount = (short)(invalidAbbreviationCount + 1);
+                    invalidAbbreviationCount++;
                 }
             }
 
