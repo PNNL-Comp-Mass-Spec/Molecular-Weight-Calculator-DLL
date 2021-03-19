@@ -44,8 +44,8 @@ namespace MolecularWeightCalculator
                 AbbrevStats[i] = new AbbrevStatsData();
             }
 
-            CautionStatements = new string[101, 3];
-            MessageStatements = new string[1601];
+            mCautionStatements = new Dictionary<string, string>();
+            mMessageStatements = new Dictionary<int, string>();
 
             mProgressStepDescription = string.Empty;
             mProgressPercentComplete = 0f;
@@ -458,17 +458,15 @@ namespace MolecularWeightCalculator
         private short AbbrevAllCount;
 
         /// <summary>
-        /// CautionStatements(x,0) holds the symbol combo to look for
-        /// CautionStatements(x, 1) holds the caution statement; 1-based array
+        /// CautionStatements.Key holds the symbol combo to look for
+        /// CautionStatements.Value holds the caution statement
         /// </summary>
-        private string[,] CautionStatements;
-        private int CautionStatementCount;
+        private Dictionary<string, string> mCautionStatements;
 
         /// <summary>
-        /// Error messages; 1-based array
+        /// Error messages
         /// </summary>
-        private string[] MessageStatements;
-        private int MessageStatementCount;
+        private Dictionary<int, string> mMessageStatements;
 
         private readonly ErrorDescription ErrorParams = new ErrorDescription();
 
@@ -2469,44 +2467,27 @@ namespace MolecularWeightCalculator
 
         public int GetCautionStatementCountInternal()
         {
-            return CautionStatementCount;
+            return mCautionStatements.Count;
         }
 
-        /// <summary>
-        /// Get the caution statement ID for the given symbol combo
-        /// </summary>
-        /// <param name="symbolCombo"></param>
-        /// <returns>Statement ID if found, otherwise -1</returns>
-        public int GetCautionStatementIdInternal(string symbolCombo)
+        public List<string> GetCautionStatementSymbolsInternal()
         {
-            for (var index = 1; index <= CautionStatementCount; index++)
-            {
-                if ((CautionStatements[index, 0] ?? "") == (symbolCombo ?? ""))
-                {
-                    return index;
-                }
-            }
-
-            return -1;
+            return mCautionStatements.Keys.ToList();
         }
 
         /// <summary>
-        /// Get a caution statement, by ID
+        /// Get a caution statement for the given symbol combo
         /// </summary>
-        /// <param name="cautionStatementId"></param>
-        /// <param name="symbolCombo">Output: symbol combo for the caution statement</param>
+        /// <param name="symbolCombo">symbol combo for the caution statement</param>
         /// <param name="cautionStatement">Output: caution statement text</param>
         /// <returns>0 if success, 1 if an invalid ID</returns>
-        public int GetCautionStatementInternal(int cautionStatementId, out string symbolCombo, out string cautionStatement)
+        public int GetCautionStatementInternal(string symbolCombo, out string cautionStatement)
         {
-            if (cautionStatementId >= 1 && cautionStatementId <= CautionStatementCount)
+            if (mCautionStatements.TryGetValue(symbolCombo, out cautionStatement))
             {
-                symbolCombo = CautionStatements[cautionStatementId, 0];
-                cautionStatement = CautionStatements[cautionStatementId, 1];
                 return 0;
             }
 
-            symbolCombo = string.Empty;
             cautionStatement = string.Empty;
             return 1;
         }
@@ -2693,7 +2674,7 @@ namespace MolecularWeightCalculator
 
         public int GetMessageStatementCountInternal()
         {
-            return MessageStatementCount;
+            return mMessageStatements.Count;
         }
 
         /// <summary>
@@ -2708,10 +2689,8 @@ namespace MolecularWeightCalculator
         /// </remarks>
         public string GetMessageStatementInternal(int messageId, string appendText = "")
         {
-            if (messageId > 0 && messageId <= MessageStatementCount)
+            if (mMessageStatements.TryGetValue(messageId, out var message))
             {
-                var message = MessageStatements[messageId];
-
                 // Append Prefix to certain strings
                 switch (messageId)
                 {
@@ -2913,12 +2892,9 @@ namespace MolecularWeightCalculator
 
         private string LookupCautionStatement(string compareText)
         {
-            for (var index = 1; index <= CautionStatementCount; index++)
+            if (mCautionStatements.TryGetValue(compareText, out var message))
             {
-                if ((compareText ?? "") == (CautionStatements[index, 0] ?? ""))
-                {
-                    return CautionStatements[index, 1];
-                }
+                return message;
             }
 
             return string.Empty;
@@ -2933,7 +2909,7 @@ namespace MolecularWeightCalculator
         /// <returns>The complete message</returns>
         internal string LookupMessage(int messageId, string appendText = "")
         {
-            if (MessageStatementCount == 0)
+            if (mMessageStatements.Count == 0)
                 MemoryLoadMessageStatements();
 
             // First assume we can't find the message number
@@ -2942,9 +2918,9 @@ namespace MolecularWeightCalculator
             // Now try to find it
             if (messageId < MESSAGE_STATEMENT_DIM_COUNT)
             {
-                if (MessageStatements[messageId].Length > 0)
+                if (mMessageStatements[messageId].Length > 0)
                 {
-                    message = MessageStatements[messageId];
+                    message = mMessageStatements[messageId];
                 }
             }
 
@@ -3146,7 +3122,7 @@ namespace MolecularWeightCalculator
         /// <remarks>Use ClearCautionStatements and AddCautionStatement to set these based on language</remarks>
         public void MemoryLoadCautionStatements()
         {
-            CautionStatementCount = ElementAndMassInMemoryData.MemoryLoadCautionStatementsEnglish(ref CautionStatements);
+            mCautionStatements = ElementAndMassInMemoryData.MemoryLoadCautionStatementsEnglish();
         }
 
         /// <summary>
@@ -3258,7 +3234,7 @@ namespace MolecularWeightCalculator
 
         public void MemoryLoadMessageStatements()
         {
-            MessageStatementCount = ElementAndMassInMemoryData.MemoryLoadMessageStatementsEnglish(ref MessageStatements);
+            mMessageStatements = ElementAndMassInMemoryData.MemoryLoadMessageStatementsEnglish();
         }
 
         private void MwtWinDllErrorHandler(string sourceForm)
@@ -4506,7 +4482,7 @@ namespace MolecularWeightCalculator
 
         public void RemoveAllCautionStatementsInternal()
         {
-            CautionStatementCount = 0;
+            mCautionStatements.Clear();
         }
 
         public void RemoveAllAbbreviationsInternal()
@@ -4571,24 +4547,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if found and removed; 1 if error</returns>
         public int RemoveCautionStatementInternal(string cautionSymbol)
         {
-            var removed = default(bool);
-
-            for (var index = 1; index <= CautionStatementCount; index++)
-            {
-                if ((CautionStatements[index, 0] ?? "") == (cautionSymbol ?? ""))
-                {
-                    for (var indexRemove = index; indexRemove < CautionStatementCount; indexRemove++)
-                    {
-                        CautionStatements[indexRemove, 0] = CautionStatements[indexRemove + 1, 0];
-                        CautionStatements[indexRemove, 1] = CautionStatements[indexRemove + 1, 1];
-                    }
-
-                    CautionStatementCount -= 1;
-                    removed = true;
-                }
-            }
-
-            return removed ? 0 : 1;
+            return mCautionStatements.Remove(cautionSymbol) ? 0 : 1;
         }
 
         public void ResetErrorParamsInternal()
@@ -4950,8 +4909,6 @@ namespace MolecularWeightCalculator
         /// <returns>0 if successful, otherwise, returns an Error ID</returns>
         public int SetCautionStatementInternal(string symbolCombo, string newCautionStatement)
         {
-            var alreadyPresent = default(bool);
-
             ResetErrorParamsInternal();
 
             if (symbolCombo.Length >= 1 && symbolCombo.Length <= MAX_ABBREV_LENGTH)
@@ -4961,37 +4918,17 @@ namespace MolecularWeightCalculator
                 {
                     if (newCautionStatement.Length > 0)
                     {
-                        int index;
                         // See if symbolCombo is present in CautionStatements[]
-                        for (index = 1; index <= CautionStatementCount; index++)
-                        {
-                            if ((CautionStatements[index, 0] ?? "") == symbolCombo)
-                            {
-                                alreadyPresent = true;
-                                break;
-                            }
-                        }
+                        var alreadyPresent = mCautionStatements.ContainsKey(symbolCombo);
 
-                        // Caution statements is a 0-based array
-                        if (!alreadyPresent)
+                        if (!alreadyPresent && mCautionStatements.Count >= MAX_CAUTION_STATEMENTS)
                         {
-                            if (CautionStatementCount < MAX_CAUTION_STATEMENTS)
-                            {
-                                CautionStatementCount += 1;
-                                index = CautionStatementCount;
-                            }
-                            else
-                            {
-                                // Too many caution statements
-                                ErrorParams.ErrorId = 1215;
-                                index = -1;
-                            }
+                            // Too many caution statements
+                            ErrorParams.ErrorId = 1215;
                         }
-
-                        if (index >= 1)
+                        else
                         {
-                            CautionStatements[index, 0] = symbolCombo;
-                            CautionStatements[index, 1] = newCautionStatement;
+                            mCautionStatements.Add(symbolCombo, newCautionStatement);
                         }
                     }
                     else
@@ -5133,7 +5070,7 @@ namespace MolecularWeightCalculator
         {
             if (messageId >= 1 && messageId <= MESSAGE_STATEMENT_DIM_COUNT && newMessage.Length > 0)
             {
-                MessageStatements[messageId] = newMessage;
+                mMessageStatements[messageId] = newMessage;
                 return 0;
             }
 

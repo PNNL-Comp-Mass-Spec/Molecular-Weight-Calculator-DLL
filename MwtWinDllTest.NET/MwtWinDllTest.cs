@@ -251,12 +251,10 @@ namespace MwtWinDllTest
             }
 
             // Test Caution statements
-            itemCount = mMwtWin.GetCautionStatementCount();
-            for (var index = 1; index <= itemCount; index++)
+            foreach (var symbol in mMwtWin.GetCautionStatementSymbols())
             {
-                result = mMwtWin.GetCautionStatement(index, out var symbol, out var statement);
+                result = mMwtWin.GetCautionStatement(symbol, out var statement);
                 Debug.Assert(result == 0, "");
-                Debug.Assert(mMwtWin.GetCautionStatementId(symbol) == index, "");
 
                 result = mMwtWin.SetCautionStatement(symbol, statement);
                 Debug.Assert(result == 0, "");

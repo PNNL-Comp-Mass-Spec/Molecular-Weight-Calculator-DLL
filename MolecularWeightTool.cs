@@ -439,13 +439,12 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Get caution statement information
         /// </summary>
-        /// <param name="cautionStatementId"></param>
-        /// <param name="symbolCombo">Output: symbol combo for the caution statement</param>
+        /// <param name="symbolCombo">symbol combo for the caution statement</param>
         /// <param name="cautionStatement">Output: caution statement text</param>
         /// <returns>0 if success, 1 if an invalid ID</returns>
-        public int GetCautionStatement(int cautionStatementId, out string symbolCombo, out string cautionStatement)
+        public int GetCautionStatement(string symbolCombo, out string cautionStatement)
         {
-            return mElementAndMassRoutines.GetCautionStatementInternal(cautionStatementId, out symbolCombo, out cautionStatement);
+            return mElementAndMassRoutines.GetCautionStatementInternal(symbolCombo, out cautionStatement);
         }
 
         /// <summary>
@@ -458,13 +457,12 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Get the caution statement ID for the given symbol combo
+        /// Get the symbolCombos for Caution Statements in memory
         /// </summary>
-        /// <param name="symbolCombo"></param>
-        /// <returns>Statement ID if found, otherwise -1</returns>
-        public int GetCautionStatementId(string symbolCombo)
+        /// <returns></returns>
+        public List<string> GetCautionStatementSymbols()
         {
-            return mElementAndMassRoutines.GetCautionStatementIdInternal(symbolCombo);
+            return mElementAndMassRoutines.GetCautionStatementSymbolsInternal();
         }
 
         public double GetChargeCarrierMass()
