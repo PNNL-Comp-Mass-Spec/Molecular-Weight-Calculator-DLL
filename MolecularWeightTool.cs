@@ -573,9 +573,9 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.GetMessageStatementInternal(messageId, appendText);
         }
 
-        public int GetMessageStatementCount()
+        public int GetMessageStatementMaxId()
         {
-            return mElementAndMassRoutines.GetMessageStatementCountInternal();
+            return mElementAndMassRoutines.GetMessageStatementMaxId();
         }
 
         /// <summary>

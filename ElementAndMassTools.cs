@@ -1510,9 +1510,9 @@ namespace MolecularWeightCalculator
 
                 results = output;
             }
-            catch
+            catch (Exception ex)
             {
-                MwtWinDllErrorHandler("MwtWinDll|ComputeIsotopicAbundances");
+                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools|ComputeIsotopicAbundances", ex);
                 mErrorParams.ErrorId = 590;
                 mErrorParams.ErrorPosition = 0;
                 return -1;
@@ -2247,9 +2247,9 @@ namespace MolecularWeightCalculator
 
                 return predictedCombos;
             }
-            catch
+            catch (Exception ex)
             {
-                MwtWinDllErrorHandler("MwtWinDll|FindCombosPredictIterations");
+                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools.FindCombosPredictIterations", ex);
                 mErrorParams.ErrorId = 590;
                 mErrorParams.ErrorPosition = 0;
                 return -1;
@@ -2726,9 +2726,9 @@ namespace MolecularWeightCalculator
             return mErrorParams.ErrorPosition;
         }
 
-        public int GetMessageStatementCountInternal()
+        public int GetMessageStatementMaxId()
         {
-            return mMessageStatements.Count;
+            return mMessageStatements.Keys.Max();
         }
 
         /// <summary>
@@ -3292,7 +3292,7 @@ namespace MolecularWeightCalculator
             ElementAndMassInMemoryData.MemoryLoadMessageStatementsEnglish(mMessageStatements);
         }
 
-        private void MwtWinDllErrorHandler(string sourceForm)
+        private void MwtWinDllErrorHandler(string callingProcedure, Exception ex)
         {
             string message;
 
@@ -3308,7 +3308,7 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                message = LookupMessage(600) + ": " + Information.Err().Description + Environment.NewLine + " (" + sourceForm + " handler)";
+                message = LookupMessage(600) + ": " + Information.Err().Description + Environment.NewLine + " (" + callingProcedure + " handler)";
                 message += Environment.NewLine + LookupMessage(605);
 
                 if (ShowErrorMessageDialogs)
@@ -3324,7 +3324,14 @@ namespace MolecularWeightCalculator
                 var showErrorMessageDialogsSaved = ShowErrorMessageDialogs;
                 ShowErrorMessageDialogs = false;
 
-                GeneralErrorHandler(sourceForm, Information.Err().Number);
+                if (Information.Err().Number != 0)
+                {
+                    GeneralErrorHandler(callingProcedure, Information.Err().Number);
+                }
+                else
+                {
+                    GeneralErrorHandler(callingProcedure, ex);
+                }
 
                 ShowErrorMessageDialogs = showErrorMessageDialogsSaved;
             }
@@ -4243,7 +4250,7 @@ namespace MolecularWeightCalculator
             }
             catch (Exception ex)
             {
-                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools|ParseFormula: " + ex.Message);
+                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools.ParseFormula", ex);
                 mErrorParams.ErrorId = -10;
                 mErrorParams.ErrorPosition = 0;
 
@@ -4703,9 +4710,9 @@ namespace MolecularWeightCalculator
 
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
-                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools|ReturnFormattedMassAndStdDev");
+                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools.ReturnFormattedMassAndStdDev", ex);
                 mErrorParams.ErrorId = -10;
                 mErrorParams.ErrorPosition = 0;
             }
@@ -4972,9 +4979,13 @@ namespace MolecularWeightCalculator
                             // Too many caution statements
                             mErrorParams.ErrorId = 1215;
                         }
-                        else
+                        else if (!alreadyPresent)
                         {
                             mCautionStatements.Add(symbolCombo, newCautionStatement);
+                        }
+                        else
+                        {
+                            mCautionStatements[symbolCombo] = newCautionStatement;
                         }
                     }
                     else

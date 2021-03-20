@@ -240,7 +240,7 @@ namespace MwtWinDllTest
 
             // Test Abbreviations
             var itemCount = mMwtWin.GetAbbreviationCount();
-            for (var index = 1; index <= itemCount; index++)
+            for (var index = 0; index < itemCount; index++)
             {
                 result = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
                 Debug.Assert(result == 0, "");
@@ -284,8 +284,8 @@ namespace MwtWinDllTest
             }
 
             // Test Message Statements access
-            itemCount = mMwtWin.GetMessageStatementCount();
-            for (var index = 1; index <= itemCount; index++)
+            itemCount = mMwtWin.GetMessageStatementMaxId();
+            for (var index = 0; index <= itemCount; index++)
             {
                 var statement = mMwtWin.GetMessageStatement(index);
 
@@ -745,7 +745,7 @@ namespace MwtWinDllTest
                 {
                     // Make sure residueStart and residueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
-                    var peptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(protein, protein.Substring(residueStart, residueEnd - residueStart + 1));
+                    var peptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(protein, protein.Substring(residueStart, residueEnd - residueStart + 2));
                     Debug.Assert(peptideName.IndexOf("t" + index, StringComparison.Ordinal) >= 0, "");
                 }
             }

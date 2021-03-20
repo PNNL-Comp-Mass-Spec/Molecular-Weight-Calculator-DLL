@@ -483,7 +483,7 @@ namespace MolecularWeightCalculator
                 return 0;
             }
 
-            fragSpectrum = new FragmentationSpectrumData[fragSpectraData.Count + 1];
+            fragSpectrum = new FragmentationSpectrumData[fragSpectraData.Count];
 
             for (var index = 0; index < fragSpectraData.Count; index++)
                 fragSpectrum[index] = fragSpectraData[index];
