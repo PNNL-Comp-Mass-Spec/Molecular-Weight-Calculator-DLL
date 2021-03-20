@@ -1,7 +1,7 @@
 version: 1.0.{build}
 image: Visual Studio 2019
 build:
-  project: MwtWinDll.sln
+  project: MolecularWeightCalculator.sln
   verbosity: minimal
 artifacts:
-- path: bin\MwtWinDll.dll
+- path: bin\Release\MolecularWeightCalculator.dll
