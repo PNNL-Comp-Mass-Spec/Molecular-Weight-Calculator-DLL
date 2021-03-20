@@ -1029,7 +1029,7 @@ namespace MolecularWeightCalculator
             string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
             string terminiiSymbol = TERMINII_SYMBOL,
             bool ignoreCase = true,
-            int proteinSearchStartLoc = 1)
+            int proteinSearchStartLoc = 0)
         {
             // The tryptic name in the following format
             // t1  indicates tryptic peptide 1
@@ -1075,7 +1075,7 @@ namespace MolecularWeightCalculator
                 startLoc = proteinResidues.Substring(proteinSearchStartLoc).IndexOf(peptideResidues, StringComparison.Ordinal);
                 if (startLoc >= 0)
                 {
-                    startLoc += proteinSearchStartLoc - 1;
+                    startLoc += proteinSearchStartLoc;
                 }
             }
 
@@ -1125,11 +1125,11 @@ namespace MolecularWeightCalculator
                     int ruleResidueLoc;
                     if (startLoc == 0)
                     {
-                        trypticResidueNumber = 0;
+                        trypticResidueNumber = 1;
                     }
                     else
                     {
-                        var proteinResiduesBeforeStartLoc = proteinResidues.Substring(0, startLoc - 1);
+                        var proteinResiduesBeforeStartLoc = proteinResidues.Substring(0, startLoc);
                         var residueFollowingSearchResidues = peptideResidues.Substring(0, 1);
                         trypticResidueNumber = 0;
                         ruleResidueLoc = -1;
@@ -1157,7 +1157,7 @@ namespace MolecularWeightCalculator
                             ruleResidueMatchCount++;
                         }
                     }
-                    while (ruleResidueLoc >= 0 && ruleResidueLoc < peptideResiduesLength);
+                    while (ruleResidueLoc >= 0 && ruleResidueLoc < peptideResiduesLength - 1);
 
                     trypticName = "t" + trypticResidueNumber;
                     if (ruleResidueMatchCount > 1)
@@ -1167,11 +1167,11 @@ namespace MolecularWeightCalculator
                 }
                 else if (ICR2LSCompatible)
                 {
-                    trypticName = startLoc + "." + (endLoc + 1);
+                    trypticName = (startLoc + 1) + "." + (endLoc + 2);
                 }
                 else
                 {
-                    trypticName = startLoc + "." + endLoc;
+                    trypticName = (startLoc + 1) + "." + (endLoc + 1);
                 }
 
                 returnResidueStart = startLoc;
@@ -1187,7 +1187,7 @@ namespace MolecularWeightCalculator
 
         public string GetTrypticNameMultipleMatches(string proteinResidues,
             string peptideResidues,
-            int proteinSearchStartLoc = 1,
+            int proteinSearchStartLoc = 0,
             string listDelimiter = ", ")
         {
             return GetTrypticNameMultipleMatches(proteinResidues, peptideResidues,
@@ -1224,7 +1224,7 @@ namespace MolecularWeightCalculator
             string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
             string terminiiSymbol = TERMINII_SYMBOL,
             bool ignoreCase = true,
-            int proteinSearchStartLoc = 1,
+            int proteinSearchStartLoc = 0,
             string listDelimiter = ", ")
         {
             // Returns the number of matches in returnMatchCount
@@ -1261,7 +1261,7 @@ namespace MolecularWeightCalculator
 
                     returnResidueEnd = currentResidueEnd;
 
-                    if (currentSearchLoc > proteinResidues.Length)
+                    if (currentSearchLoc > proteinResidues.Length - 1)
                         break;
                 }
                 else
@@ -1301,14 +1301,19 @@ namespace MolecularWeightCalculator
 
             var exceptionSuffixResidueCount = (short)exceptionSuffixResidues.Length;
 
-            var minCharLoc = -1;
+            if (startChar >= searchResidues.Length)
+            {
+                return searchResidues.Length;
+            }
+
+            var minCharLoc = -2;
             for (var charLocInSearchChars = 0; charLocInSearchChars < searchChars.Length; charLocInSearchChars++)
             {
                 var charLoc = searchResidues.Substring(startChar).IndexOf(searchChars.Substring(charLocInSearchChars, 1), StringComparison.Ordinal);
 
                 if (charLoc >= 0)
                 {
-                    charLoc += startChar - 1;
+                    charLoc += startChar;
 
                     if (exceptionSuffixResidueCount > 0)
                     {
@@ -1323,7 +1328,7 @@ namespace MolecularWeightCalculator
                         else
                         {
                             // Matched the last residue in searchResidues
-                            exceptionCharLocInSearchResidues = searchResidues.Length + 1;
+                            exceptionCharLocInSearchResidues = searchResidues.Length;
                             residueFollowingCleavageResidue = residueFollowingSearchResidues;
                         }
 
@@ -1361,7 +1366,7 @@ namespace MolecularWeightCalculator
 
                 if (charLoc > 0)
                 {
-                    if (minCharLoc < 0)
+                    if (minCharLoc < -1)
                     {
                         minCharLoc = charLoc;
                     }
@@ -1374,10 +1379,10 @@ namespace MolecularWeightCalculator
 
             if (minCharLoc < 0 && (residueFollowingSearchResidues ?? "") == (terminiiSymbol ?? ""))
             {
-                minCharLoc = searchResidues.Length + 1;
+                minCharLoc = searchResidues.Length;
             }
 
-            if (minCharLoc < 0)
+            if (minCharLoc < -1)
             {
                 return 0;
             }
@@ -1527,14 +1532,15 @@ namespace MolecularWeightCalculator
                     returnResidueStart = prevStartLoc;
                     if (ruleResidueLoc >= proteinResiduesLength)
                     {
-                        returnResidueEnd = proteinResiduesLength;
+                        returnResidueEnd = proteinResiduesLength - 1;
                     }
                     else
                     {
                         returnResidueEnd = ruleResidueLoc;
                     }
 
-                    matchingFragment = proteinResidues.Substring(prevStartLoc, ruleResidueLoc - prevStartLoc + 1);
+                    // TODO: Determine and fix the exact cases causing a string length overflow
+                    matchingFragment = proteinResidues.Substring(prevStartLoc, Math.Min(ruleResidueLoc - prevStartLoc + 1, proteinResidues.Length - prevStartLoc));
                 }
             }
             else

@@ -734,7 +734,7 @@ namespace MwtWinDllTest
 
             results.AppendText(string.Empty);
             results.AppendText("Testing GetTrypticPeptideByFragmentNumber function");
-            for (var index = 0; index < 43; index++)
+            for (var index = 1; index <= 43; index++)
             {
                 peptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)index, out var residueStart, out var residueEnd);
                 //peptideFragIcr2ls = ICRTools.TrypticPeptide(protein, index);
@@ -745,7 +745,7 @@ namespace MwtWinDllTest
                 {
                     // Make sure residueStart and residueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
-                    var peptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(protein, protein.Substring(residueStart, residueEnd - residueStart + 2));
+                    var peptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(protein, protein.Substring(residueStart, Math.Min(residueEnd - residueStart + 1, protein.Length - residueStart)));
                     Debug.Assert(peptideName.IndexOf("t" + index, StringComparison.Ordinal) >= 0, "");
                 }
             }
