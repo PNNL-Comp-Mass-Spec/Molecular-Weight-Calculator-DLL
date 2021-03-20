@@ -35,32 +35,42 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Constructor, assumes the elements are using average masses
         /// </summary>
-        public MolecularWeightTool()
+        public MolecularWeightTool() : this(ElementAndMassTools.ElementMassMode.Average)
         {
-            mElementAndMassRoutines = new ElementAndMassTools();
-            mElementAndMassRoutines.ProgressChanged += mElementAndMassRoutines_ProgressChanged;
-            mElementAndMassRoutines.ProgressComplete += mElementAndMassRoutines_ProgressComplete;
-            mElementAndMassRoutines.ProgressReset += mElementAndMassRoutines_ProgressReset;
-
-            // LoadDefaults calls mElementAndMassRoutines.MemoryLoadAll, which is required prior to instantiating the Peptide class.
-            // We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
-            if (!mDataInitialized)
-                LoadDefaults();
-
-            Compound = new Compound(mElementAndMassRoutines);
-            Peptide = new Peptide(mElementAndMassRoutines);
-            FormulaFinder = new FormulaFinder(mElementAndMassRoutines);
-
-            CapFlow = new CapillaryFlow();
         }
 
         /// <summary>
         /// Constructor where the element mode can be defined
         /// </summary>
         /// <param name="elementMode">Mass mode for elements (average, monoisotopic, or integer)</param>
-        public MolecularWeightTool(ElementAndMassTools.ElementMassMode elementMode) : this()
+        public MolecularWeightTool(ElementAndMassTools.ElementMassMode elementMode)
         {
-            SetElementMode(elementMode);
+            mElementAndMassRoutines = new ElementAndMassTools();
+            mElementAndMassRoutines.ProgressChanged += mElementAndMassRoutines_ProgressChanged;
+            mElementAndMassRoutines.ProgressComplete += mElementAndMassRoutines_ProgressComplete;
+            mElementAndMassRoutines.ProgressReset += mElementAndMassRoutines_ProgressReset;
+
+            // Call mElementAndMassRoutines.MemoryLoadAll, which is required prior to instantiating the Peptide class.
+            // We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
+            mElementAndMassRoutines.MemoryLoadAll(elementMode);
+
+            // Does not re-load the elements or cause extra re-calculations because the masses loaded above were already the average masses
+            SetElementMode(elementMode, false); // Use "false" to avoid re-loading all of the elements and isotopes.
+            AbbreviationRecognitionMode = AbbrevRecognitionMode.NormalPlusAminoAcids;
+            BracketsTreatedAsParentheses = true;
+            CaseConversionMode = ElementAndMassTools.CaseConversionMode.ConvertCaseUp;
+            DecimalSeparator = '.';
+            RtfFontName = "Arial";
+            RtfFontSize = 10;
+            StdDevMode = ElementAndMassTools.StdDevMode.Decimal;
+
+            mElementAndMassRoutines.ComputationOptions.DecimalSeparator = DetermineDecimalPoint();
+
+            Compound = new Compound(mElementAndMassRoutines);
+            Peptide = new Peptide(mElementAndMassRoutines);
+            FormulaFinder = new FormulaFinder(mElementAndMassRoutines);
+
+            CapFlow = new CapillaryFlow();
         }
 
         #region "Constants and Enums"
@@ -82,7 +92,6 @@ namespace MolecularWeightCalculator
         #endregion
 
         #region "Classwide Variables"
-        private bool mDataInitialized;
 
         public Compound Compound { get; set; }
         public Peptide Peptide { get; set; }
@@ -581,24 +590,6 @@ namespace MolecularWeightCalculator
         public bool IsModSymbol(string symbol)
         {
             return mElementAndMassRoutines.IsModSymbolInternal(symbol);
-        }
-
-        private void LoadDefaults()
-        {
-            mElementAndMassRoutines.MemoryLoadAll(ElementAndMassTools.ElementMassMode.Average);
-
-            SetElementMode(ElementAndMassTools.ElementMassMode.Average);
-            AbbreviationRecognitionMode = AbbrevRecognitionMode.NormalPlusAminoAcids;
-            BracketsTreatedAsParentheses = true;
-            CaseConversionMode = ElementAndMassTools.CaseConversionMode.ConvertCaseUp;
-            DecimalSeparator = '.';
-            RtfFontName = "Arial";
-            RtfFontSize = 10;
-            StdDevMode = ElementAndMassTools.StdDevMode.Decimal;
-
-            mElementAndMassRoutines.ComputationOptions.DecimalSeparator = DetermineDecimalPoint();
-
-            mDataInitialized = true;
         }
 
         public void RemoveAllAbbreviations()

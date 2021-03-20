@@ -513,7 +513,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         private double mChargeCarrierMass;
 
-        private ElementMassMode mCurrentElementMode;
+        private ElementMassMode mCurrentElementMode = ElementMassMode.Average;
         private string mCautionDescription;
         private ComputationStats mComputationStatsSaved = new ComputationStats();
 
@@ -3019,16 +3019,17 @@ namespace MolecularWeightCalculator
 
         public void MemoryLoadAll(ElementMassMode elementMode)
         {
+            // TODO: Consider calling this as part of the ElementAndMassTools constructor
             MemoryLoadElements(elementMode);
 
             // Reconstruct master symbols list
+            // This is needed here to properly load the abbreviations
             ConstructMasterSymbolsList();
-
-            MemoryLoadIsotopes();
 
             MemoryLoadAbbreviations();
 
             // Reconstruct master symbols list
+            // Needed here to load abbreviations into the list
             ConstructMasterSymbolsList();
 
             MemoryLoadCautionStatements();
@@ -3142,13 +3143,13 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Load elements
+        /// Load elements and isotopes
         /// </summary>
         /// <param name="elementMode">Element mode: 1 for average weights, 2 for monoisotopic weights, 3 for integer weights</param>
         /// <param name="specificElement"></param>
         /// <param name="specificStatToReset"></param>
         /// <remarks>
-        /// <paramref name="specificElement"/> and <paramref name="specificStatToReset"/> are zero when updating all of the elements
+        /// <paramref name="specificElement"/> and <paramref name="specificStatToReset"/> are zero when updating all of the elements and isotopes.
         /// nonzero <paramref name="specificElement"/> and <paramref name="specificStatToReset"/> values will set just that specific value to the default
         /// </remarks>
         public void MemoryLoadElements(
@@ -3222,6 +3223,9 @@ namespace MolecularWeightCalculator
 
                 // Alphabetize mElementAlph by Key/symbol
                 mElementAlph.Sort((x,y) => string.Compare(x.Key, y.Key, StringComparison.Ordinal));
+
+                // Also load the isotopes, since if any were loaded we just cleared them.
+                ElementAndMassInMemoryData.MemoryLoadIsotopes(mElementStats);
             }
             else if (specificElement >= 1 && specificElement <= ELEMENT_COUNT)
             {
@@ -3242,14 +3246,6 @@ namespace MolecularWeightCalculator
                         break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Stores isotope information in ElementStats()
-        /// </summary>
-        private void MemoryLoadIsotopes()
-        {
-            ElementAndMassInMemoryData.MemoryLoadIsotopes(mElementStats);
         }
 
         public void MemoryLoadMessageStatements()
