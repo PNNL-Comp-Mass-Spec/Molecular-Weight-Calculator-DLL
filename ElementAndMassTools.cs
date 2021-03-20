@@ -662,7 +662,7 @@ namespace MolecularWeightCalculator
 
         private void CheckCaution(string formulaExcerpt)
         {
-            for (var length = 1; length <= MAX_ABBREV_LENGTH; length++)
+            for (var length = 0; length < MAX_ABBREV_LENGTH; length++)
             {
                 if (length > formulaExcerpt.Length)
                     break;
@@ -2582,10 +2582,10 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Returns the isotope masses and abundances for the element with <paramref name="elementId"/>
         /// </summary>
-        /// <param name="elementId"></param>
+        /// <param name="elementId">Element ID, or atomic number</param>
         /// <param name="isotopeCount"></param>
-        /// <param name="isotopeMasses"></param>
-        /// <param name="isotopeAbundances"></param>
+        /// <param name="isotopeMasses">output, 0-based array</param>
+        /// <param name="isotopeAbundances">output, 0-based array</param>
         /// <returns>0 if a valid ID, 1 if invalid</returns>
         public int GetElementIsotopesInternal(short elementId, ref short isotopeCount, ref double[] isotopeMasses, ref float[] isotopeAbundances)
         {
@@ -5005,21 +5005,34 @@ namespace MolecularWeightCalculator
             return 1;
         }
 
-        public int SetElementIsotopesInternal(string symbol, short isotopeCount, ref double[] isotopeMassesOneBased, ref float[] isotopeAbundancesOneBased)
+        /// <summary>
+        /// Set the isotopes for the element
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="isotopeCount"></param>
+        /// <param name="isotopeMasses">0-based array</param>
+        /// <param name="isotopeAbundances">0-based array</param>
+        /// <returns>0 if successful, 1 if symbol not found</returns>
+        public int SetElementIsotopesInternal(string symbol, short isotopeCount, ref double[] isotopeMasses, ref float[] isotopeAbundances)
         {
+            if (string.IsNullOrWhiteSpace(symbol))
+            {
+                return 1;
+            }
+
             var found = default(bool);
 
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if ((symbol?.ToLower() ?? "") == (mElementStats[index].Symbol?.ToLower() ?? ""))
+                if (string.Equals(symbol.ToLower(), mElementStats[index].Symbol.ToLower(), StringComparison.OrdinalIgnoreCase))
                 {
                     var stats = mElementStats[index];
                     stats.Isotopes.Clear();
-                    for (var isotopeIndex = 1; isotopeIndex < isotopeMassesOneBased.Length; isotopeIndex++)
+                    for (var isotopeIndex = 0; isotopeIndex < isotopeMasses.Length; isotopeIndex++)
                     {
                         if (isotopeIndex > MAX_ISOTOPES)
                             break;
-                        stats.Isotopes.Add(new IsotopeInfo(isotopeMassesOneBased[isotopeIndex], isotopeAbundancesOneBased[isotopeIndex]));
+                        stats.Isotopes.Add(new IsotopeInfo(isotopeMasses[isotopeIndex], isotopeAbundances[isotopeIndex]));
                     }
 
                     stats.Isotopes.Capacity = stats.Isotopes.Count;

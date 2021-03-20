@@ -507,7 +507,7 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Returns the isotope masses and abundances for the element with <paramref name="elementId"/>
         /// </summary>
-        /// <param name="elementId"></param>
+        /// <param name="elementId">Element ID, or atomic number</param>
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses"></param>
         /// <param name="isotopeAbundances"></param>
@@ -753,9 +753,17 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.SetElementInternal(symbol, mass, uncertainty, charge, recomputeAbbreviationMasses);
         }
 
-        public int SetElementIsotopes(string symbol, short isotopeCount, ref double[] isotopeMassesOneBased, ref float[] isotopeAbundancesOneBased)
+        /// <summary>
+        /// Set the isotopes for the element
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="isotopeCount"></param>
+        /// <param name="isotopeMasses">0-based array</param>
+        /// <param name="isotopeAbundances">0-based array</param>
+        /// <returns></returns>
+        public int SetElementIsotopes(string symbol, short isotopeCount, ref double[] isotopeMasses, ref float[] isotopeAbundances)
         {
-            return mElementAndMassRoutines.SetElementIsotopesInternal(symbol, isotopeCount, ref isotopeMassesOneBased, ref isotopeAbundancesOneBased);
+            return mElementAndMassRoutines.SetElementIsotopesInternal(symbol, isotopeCount, ref isotopeMasses, ref isotopeAbundances);
         }
 
         public void SetElementMode(ElementAndMassTools.ElementMassMode elementMode, bool memoryLoadElementValues = true)
