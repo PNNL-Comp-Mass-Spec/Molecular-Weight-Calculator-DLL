@@ -385,22 +385,22 @@ namespace MolecularWeightCalculator
             {
                 if (mFragSpectrumOptions.IonTypeOptions[(int)ionIndex].ShowIon)
                 {
-                    ionCount = (short)(ionCount + 1);
+                    ionCount++;
                     if (Math.Abs(mFragSpectrumOptions.IntensityOptions.BYIonShoulder) > 0d)
                     {
                         if (ionIndex == IonType.BIon || ionIndex == IonType.YIon ||
                             ionIndex == IonType.CIon || ionIndex == IonType.ZIon)
                         {
-                            ionCount = (short)(ionCount + 2);
+                            ionCount += 2;
                         }
                     }
 
                     if (mFragSpectrumOptions.IonTypeOptions[(int)ionIndex].NeutralLossAmmonia)
-                        ionCount = (short)(ionCount + 1);
+                        ionCount++;
                     if (mFragSpectrumOptions.IonTypeOptions[(int)ionIndex].NeutralLossPhosphate)
-                        ionCount = (short)(ionCount + 1);
+                        ionCount++;
                     if (mFragSpectrumOptions.IonTypeOptions[(int)ionIndex].NeutralLossWater)
-                        ionCount = (short)(ionCount + 1);
+                        ionCount++;
                 }
             }
 
@@ -731,7 +731,7 @@ namespace MolecularWeightCalculator
             {
                 for (var residueIndex = currentResidueIndex; residueIndex < mResidues.Count; residueIndex++)
                 {
-                    internalResidues = internalResidues + mResidues[residueIndex].Symbol + " ";
+                    internalResidues += mResidues[residueIndex].Symbol + " ";
                     if (mResidues[residueIndex].Phosphorylated)
                         phosphorylated = true;
                 }
@@ -740,7 +740,7 @@ namespace MolecularWeightCalculator
             {
                 for (var residueIndex = 0; residueIndex < currentResidueIndex; residueIndex++)
                 {
-                    internalResidues = internalResidues + mResidues[residueIndex].Symbol + " ";
+                    internalResidues += mResidues[residueIndex].Symbol + " ";
                     if (mResidues[residueIndex].Phosphorylated)
                         phosphorylated = true;
                 }
@@ -1075,7 +1075,7 @@ namespace MolecularWeightCalculator
                 startLoc = proteinResidues.Substring(proteinSearchStartLoc).IndexOf(peptideResidues, StringComparison.Ordinal);
                 if (startLoc >= 0)
                 {
-                    startLoc = startLoc + proteinSearchStartLoc - 1;
+                    startLoc += proteinSearchStartLoc - 1;
                 }
             }
 
@@ -1138,11 +1138,11 @@ namespace MolecularWeightCalculator
                             ruleResidueLoc = GetTrypticNameFindNextCleavageLoc(proteinResiduesBeforeStartLoc, residueFollowingSearchResidues, ruleResidueLoc + 1, ruleResidues, exceptionResidues, terminiiSymbol);
                             if (ruleResidueLoc >= 0)
                             {
-                                trypticResidueNumber = (short)(trypticResidueNumber + 1);
+                                trypticResidueNumber++;
                             }
                         }
                         while (ruleResidueLoc >= 0 && ruleResidueLoc + 1 < startLoc);
-                        trypticResidueNumber = (short)(trypticResidueNumber + 1);
+                        trypticResidueNumber++;
                     }
 
                     // Determine number of K or R residues in peptideResidues
@@ -1154,7 +1154,7 @@ namespace MolecularWeightCalculator
                         ruleResidueLoc = GetTrypticNameFindNextCleavageLoc(peptideResidues, suffix, ruleResidueLoc + 1, ruleResidues, exceptionResidues, terminiiSymbol);
                         if (ruleResidueLoc >= 0)
                         {
-                            ruleResidueMatchCount = (short)(ruleResidueMatchCount + 1);
+                            ruleResidueMatchCount++;
                         }
                     }
                     while (ruleResidueLoc >= 0 && ruleResidueLoc < peptideResiduesLength);
@@ -1162,7 +1162,7 @@ namespace MolecularWeightCalculator
                     trypticName = "t" + trypticResidueNumber;
                     if (ruleResidueMatchCount > 1)
                     {
-                        trypticName = trypticName + "." + ruleResidueMatchCount;
+                        trypticName += "." + ruleResidueMatchCount;
                     }
                 }
                 else if (ICR2LSCompatible)
@@ -1308,7 +1308,7 @@ namespace MolecularWeightCalculator
 
                 if (charLoc >= 0)
                 {
-                    charLoc = charLoc + startChar - 1;
+                    charLoc += startChar - 1;
 
                     if (exceptionSuffixResidueCount > 0)
                     {
@@ -1494,7 +1494,7 @@ namespace MolecularWeightCalculator
                 ruleResidueLoc = GetTrypticNameFindNextCleavageLoc(proteinResidues, terminiiSymbol, startLoc, ruleResidues, exceptionResidues, terminiiSymbol);
                 if (ruleResidueLoc >= 0)
                 {
-                    currentTrypticPeptideNumber = (short)(currentTrypticPeptideNumber + 1);
+                    currentTrypticPeptideNumber++;
                     prevStartLoc = startLoc;
                     startLoc = ruleResidueLoc + 1;
 
@@ -1671,7 +1671,7 @@ namespace MolecularWeightCalculator
                         testResidue = prefix;
                         if (prefix == (terminiiSymbol ?? ""))
                         {
-                            ruleMatchCount = (short)(ruleMatchCount + 1);
+                            ruleMatchCount++;
                             skipThisEnd = true;
                         }
                         // See if sequenceStart matches one of the exception residues
@@ -1692,7 +1692,7 @@ namespace MolecularWeightCalculator
                         testResidue = sequenceEnd;
                         if (suffix == (terminiiSymbol ?? ""))
                         {
-                            ruleMatchCount = (short)(ruleMatchCount + 1);
+                            ruleMatchCount++;
                             skipThisEnd = true;
                         }
                         // Make sure suffix does not match exceptionSuffixResidues
@@ -1707,7 +1707,7 @@ namespace MolecularWeightCalculator
                     {
                         if (CheckSequenceAgainstCleavageRuleMatchTestResidue(testResidue, ruleResidues))
                         {
-                            ruleMatchCount = (short)(ruleMatchCount + 1);
+                            ruleMatchCount++;
                         }
                     }
                 }

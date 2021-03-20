@@ -999,7 +999,7 @@ namespace MolecularWeightCalculator
                 {
                     if (computationStats.Elements[elementIndex].Used)
                     {
-                        elementCount = (short)(elementCount + 1);
+                        elementCount++;
                     }
                 }
 
@@ -1035,7 +1035,7 @@ namespace MolecularWeightCalculator
                     {
                         if (computationStats.Elements[elementIndex].Count > 0d)
                         {
-                            elementCount = (short)(elementCount + 1);
+                            elementCount++;
                             isoStats[elementCount].ElementIndex = (short)elementIndex;
                             isoStats[elementCount].AtomCount = (int)Math.Round(computationStats.Elements[elementIndex].Count); // Note: Ignoring .Elements[elementIndex].IsotopicCorrection
                             isoStats[elementCount].ExplicitMass = mElementStats[elementIndex].Mass;
@@ -1436,7 +1436,7 @@ namespace MolecularWeightCalculator
                 }
 
                 var output = headerIsotopicAbundances + " " + formula + Environment.NewLine;
-                output = output + SpacePad("  " + headerMassToCharge, 12) + "\t" + SpacePad(headerFraction, 9) + "\t" + headerIntensity + Environment.NewLine;
+                output += SpacePad("  " + headerMassToCharge, 12) + "\t" + SpacePad(headerFraction, 9) + "\t" + headerIntensity + Environment.NewLine;
 
                 // Initialize convolutedMSData2DOneBased[]
                 convolutedMSData2DOneBased = new double[convolutedMSDataCount + 1, 3];
@@ -1501,11 +1501,11 @@ namespace MolecularWeightCalculator
                 // Write to output
                 for (var massIndex = 1; massIndex <= convolutedMSDataCount; massIndex++)
                 {
-                    output = output + SpacePadFront(convolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + "\t";
-                    output = output + (convolutedMSData2DOneBased[massIndex, 1] * maxAbundance / 100d).ToString("0.0000000") + "\t";
-                    output = output + SpacePadFront(convolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + Environment.NewLine;
+                    output += SpacePadFront(convolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + "\t";
+                    output += (convolutedMSData2DOneBased[massIndex, 1] * maxAbundance / 100d).ToString("0.0000000") + "\t";
+                    output += SpacePadFront(convolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + Environment.NewLine;
                     //ToDo: Fix Multiplicity
-                    //output = output + ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + Environment.NewLine
+                    //output += ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + Environment.NewLine
                 }
 
                 results = output;
@@ -2014,7 +2014,7 @@ namespace MolecularWeightCalculator
                     }
                     else if (thisElementCount > 0d)
                     {
-                        empiricalFormula = empiricalFormula + mElementStats[elementIndexToUse].Symbol + thisElementCount;
+                        empiricalFormula += mElementStats[elementIndexToUse].Symbol + thisElementCount;
                     }
                 }
 
@@ -3003,18 +3003,18 @@ namespace MolecularWeightCalculator
             {
                 if (ComputationOptions.CaseConversion == CaseConversionMode.ExactCase)
                 {
-                    message = message + " (" + LookupMessage(680) + ")";
+                    message += " (" + LookupMessage(680) + ")";
                 }
             }
             else if (messageId == 18)
             {
                 if (!ComputationOptions.BracketsAsParentheses)
                 {
-                    message = message + " (" + LookupMessage(685) + ")";
+                    message += " (" + LookupMessage(685) + ")";
                 }
                 else
                 {
-                    message = message + " (" + LookupMessage(690) + ")";
+                    message += " (" + LookupMessage(690) + ")";
                 }
             }
 
@@ -3724,7 +3724,7 @@ namespace MolecularWeightCalculator
                                     {
                                         dashPos = charIndex + numLength - 1;
                                         dashMultiplier = adjacentNum * dashMultiplierPrior;
-                                        charIndex = charIndex + numLength - 1;
+                                        charIndex += numLength - 1;
                                     }
                                     else
                                     {
@@ -4436,7 +4436,7 @@ namespace MolecularWeightCalculator
                         // Handle curly brackets
                         if (workChar == "{" || workChar == "}")
                             workChar = @"\" + workChar;
-                        rtf = rtf + @"{\cf1 " + workChar + "}";
+                        rtf += @"{\cf1 " + workChar + "}";
                         charIndex++;
                     }
                 }
@@ -4472,17 +4472,17 @@ namespace MolecularWeightCalculator
                     {
                         // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
                         // But, don't use subscripts in calculator
-                        rtf = rtf + @"{\sub " + workChar + "}";
+                        rtf += @"{\sub " + workChar + "}";
                     }
                     else if (!calculatorMode && ComputationOptions.BracketsAsParentheses && workCharPrev == "]")
                     {
                         // only subscript after closing bracket, ], if brackets are being treated as parentheses
-                        rtf = rtf + @"{\sub " + workChar + "}";
+                        rtf += @"{\sub " + workChar + "}";
                     }
                     else if (rtf.Substring(rtf.Length - 8, 5) == "super")
                     {
                         // if previous character was superscripted, then superscript this number too
-                        rtf = rtf + @"{\super " + workChar + "}";
+                        rtf += @"{\super " + workChar + "}";
                         superFound = true;
                     }
                     else
@@ -4510,7 +4510,7 @@ namespace MolecularWeightCalculator
                 // Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUST_CHAR)
                 // It is used to add additional height to the formula line when isotopes are used
                 // It is colored white so the user does not see it
-                rtf = rtf + @"{\fs" + NumberConverter.CShortSafe(ComputationOptions.RtfFontSize * 3) + @"\cf2 " + RTF_HEIGHT_ADJUST_CHAR + "}}";
+                rtf += @"{\fs" + NumberConverter.CShortSafe(ComputationOptions.RtfFontSize * 3) + @"\cf2 " + RTF_HEIGHT_ADJUST_CHAR + "}}";
             }
             else
             {
@@ -4680,7 +4680,7 @@ namespace MolecularWeightCalculator
                             // StdDevType Short (Type 0)
                             result = roundedMain.ToString();
                             if (includeStandardDeviation)
-                                result = result + "(" + '±' + stdDevShort + ")";
+                                result += "(" + '±' + stdDevShort + ")";
 
                             result += pctSign;
                             break;

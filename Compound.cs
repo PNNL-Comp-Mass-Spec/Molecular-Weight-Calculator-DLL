@@ -196,7 +196,7 @@ namespace MolecularWeightCalculator
                 // Increment .TotalElements if element is present
                 if (mComputationStats.Elements[elementIndex].Used)
                 {
-                    totalElements = (short)(totalElements + 1);
+                    totalElements++;
                 }
             }
 
