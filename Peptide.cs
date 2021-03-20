@@ -789,7 +789,7 @@ namespace MolecularWeightCalculator
                 return -1;
             }
 
-            var modificationIdMatch = default(int);
+            var modificationIdMatch = -1;
 
             for (var index = 0; index < mModificationSymbols.Count; index++)
             {

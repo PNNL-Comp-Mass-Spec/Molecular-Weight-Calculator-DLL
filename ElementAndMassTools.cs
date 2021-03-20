@@ -123,6 +123,11 @@ namespace MolecularWeightCalculator
                 // Shallow copy is sufficient - no reference members
                 return (IsotopicAtomInfo) MemberwiseClone();
             }
+
+            public override string ToString()
+            {
+                return $"{Count}x{Mass:F2}";
+            }
         }
 
         public class ElementUseStats
@@ -161,10 +166,19 @@ namespace MolecularWeightCalculator
                 cloned.Isotopes = new List<IsotopicAtomInfo>(Isotopes.Count);
                 for (var i = 0; i < Isotopes.Count; i++)
                 {
-                    cloned.Isotopes[i] = Isotopes[i]?.Clone();
+                    cloned.Isotopes.Add(Isotopes[i]?.Clone());
                 }
 
                 return cloned;
+            }
+
+            public override string ToString()
+            {
+                if (!Used)
+                {
+                    return "unused";
+                }
+                return $"{Count}";
             }
         }
 
@@ -227,6 +241,11 @@ namespace MolecularWeightCalculator
                 }
 
                 return cloned;
+            }
+
+            public override string ToString()
+            {
+                return $"{TotalMass:F2}";
             }
         }
 
@@ -376,12 +395,22 @@ namespace MolecularWeightCalculator
             {
                 MassAbundances = new float[count + 1];
             }
+
+            public override string ToString()
+            {
+                return $"Element {ElementIndex}: {AtomCount} atoms";
+            }
         }
 
         private class IsoResultsOverallData
         {
             public float Abundance { get; set; }
             public int Multiplicity { get; set; }
+
+            public override string ToString()
+            {
+                return $"{Abundance:F2}";
+            }
         }
 
         private class AbbrevSymbolStack
@@ -419,6 +448,11 @@ namespace MolecularWeightCalculator
         {
             public double X { get; set; }
             public double Y { get; set; }
+
+            public override string ToString()
+            {
+                return $"{X:F2}: {Y:F2}";
+            }
         }
 
 
@@ -460,6 +494,11 @@ namespace MolecularWeightCalculator
                 }
 
                 return lengthCompare;
+            }
+
+            public override string ToString()
+            {
+                return $"{Symbol}: {MatchType} index {Index}";
             }
         }
         #endregion
@@ -777,7 +816,7 @@ namespace MolecularWeightCalculator
         {
             var computationStats = new ComputationStats();
 
-            ParseFormulaPublic(ref formula, ref computationStats, false);
+            ParseFormulaPublic(ref formula, computationStats, false);
 
             if (mErrorParams.ErrorId == 0)
             {
@@ -862,7 +901,7 @@ namespace MolecularWeightCalculator
 
                 // Parse Formula to determine if valid and number of each element
                 var formula = formulaIn;
-                var workingFormulaMass = ParseFormulaPublic(ref formula, ref computationStats, false);
+                var workingFormulaMass = ParseFormulaPublic(ref formula, computationStats, false);
 
                 if (workingFormulaMass < 0d)
                 {
@@ -920,7 +959,7 @@ namespace MolecularWeightCalculator
                     }
 
                     // Re-Parse Formula since D's are now ^2.014H
-                    workingFormulaMass = ParseFormulaPublic(ref formula, ref computationStats, false);
+                    workingFormulaMass = ParseFormulaPublic(ref formula, computationStats, false);
 
                     if (workingFormulaMass < 0d)
                     {
@@ -1934,7 +1973,7 @@ namespace MolecularWeightCalculator
             var computationStats = new ComputationStats();
 
             // Call ParseFormulaPublic to compute the formula's mass and fill computationStats
-            var mass = ParseFormulaPublic(ref formula, ref computationStats);
+            var mass = ParseFormulaPublic(ref formula, computationStats);
 
             if (mErrorParams.ErrorId == 0)
             {
@@ -1996,7 +2035,7 @@ namespace MolecularWeightCalculator
             var computationStats = new ComputationStats();
 
             // Call ExpandAbbreviationsInFormula to compute the formula's mass
-            var mass = ParseFormulaPublic(ref formula, ref computationStats, true);
+            var mass = ParseFormulaPublic(ref formula, computationStats, true);
 
             if (mErrorParams.ErrorId == 0)
             {
@@ -2735,7 +2774,7 @@ namespace MolecularWeightCalculator
         /// <param name="abbrevSymbolStack"></param>
         /// <param name="symbolReference"></param>
         /// <returns></returns>
-        private bool IsPresentInAbbrevSymbolStack(ref AbbrevSymbolStack abbrevSymbolStack, short symbolReference)
+        private bool IsPresentInAbbrevSymbolStack(AbbrevSymbolStack abbrevSymbolStack, short symbolReference)
         {
             try
             {
@@ -3305,7 +3344,7 @@ namespace MolecularWeightCalculator
         /// </remarks>
         public double ParseFormulaPublic(
             ref string formula,
-            ref ComputationStats computationStats,
+            ComputationStats computationStats,
             bool expandAbbreviations = false,
             double valueForX = 1)
         {
@@ -3323,8 +3362,7 @@ namespace MolecularWeightCalculator
 
                 if (formula.Length > 0)
                 {
-                    var carbonOrSiliconReturnCount = 0;
-                    formula = ParseFormulaRecursive(formula, ref computationStats, ref abbrevSymbolStack, expandAbbreviations, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX);
+                    formula = ParseFormulaRecursive(formula, computationStats, abbrevSymbolStack, expandAbbreviations, out stdDevSum, out _, valueForX);
                 }
 
                 // Copy computationStats to mComputationStatsSaved
@@ -3375,11 +3413,11 @@ namespace MolecularWeightCalculator
         /// <returns>Formatted formula</returns>
         private string ParseFormulaRecursive(
             string formula,
-            ref ComputationStats computationStats,
-            ref AbbrevSymbolStack abbrevSymbolStack,
+            ComputationStats computationStats,
+            AbbrevSymbolStack abbrevSymbolStack,
             bool expandAbbreviations,
-            ref double stdDevSum,
-            ref int carbonOrSiliconReturnCount,
+            out double stdDevSum,
+            out int carbonOrSiliconReturnCount,
             double valueForX = 1.0d,
             int charCountPrior = 0,
             double parenthMultiplier = 1.0d,
@@ -3398,12 +3436,14 @@ namespace MolecularWeightCalculator
             int symbolLength = default;
             var caretPresent = default(bool);
 
-            var stdDevSumRightHalf = default(double);
             double caretVal = default;
             var char1 = string.Empty;
 
             short prevSymbolReference = default;
             int parenthLevel = default;
+
+            stdDevSum = 0;
+            carbonOrSiliconReturnCount = 0;
 
             try
             {
@@ -3417,7 +3457,6 @@ namespace MolecularWeightCalculator
                 var newFormulaRightHalf = string.Empty;
 
                 var loneCarbonOrSilicon = 0;
-                carbonOrSiliconReturnCount = 0;
 
                 // Look for the > symbol
                 // If found, this means take First Part minus the Second Part
@@ -3433,15 +3472,16 @@ namespace MolecularWeightCalculator
                         if (formula.Substring(charIndex, 1) == ">")
                         {
                             matchFound = true;
-                            var leftHalf = formula.Substring(0, Math.Min(formula.Length, charIndex - 1));
+                            var leftHalf = formula.Substring(0, Math.Min(formula.Length, charIndex));
                             var rightHalf = formula.Substring(charIndex + 1);
 
                             // Parse the first half
-                            newFormula = ParseFormulaRecursive(leftHalf, ref computationStats, ref abbrevSymbolStack, expandAbbreviations, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
+                            newFormula = ParseFormulaRecursive(leftHalf, computationStats, abbrevSymbolStack, expandAbbreviations, out var leftStdDevSum, out _, valueForX, charCountPrior, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
+                            stdDevSum += leftStdDevSum;
 
                             // Parse the second half
                             var abbrevSymbolStackRightHalf = new AbbrevSymbolStack();
-                            newFormulaRightHalf = ParseFormulaRecursive(rightHalf, ref computationStatsRightHalf, ref abbrevSymbolStackRightHalf, expandAbbreviations, ref stdDevSumRightHalf, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + charIndex, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
+                            newFormulaRightHalf = ParseFormulaRecursive(rightHalf, computationStatsRightHalf, abbrevSymbolStackRightHalf, expandAbbreviations, out _, out _, valueForX, charCountPrior + charIndex, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
                             break;
                         }
 
@@ -3498,9 +3538,9 @@ namespace MolecularWeightCalculator
                     do
                     {
                         char1 = formula.Substring(charIndex, 1);
-                        var char2 = formula.Substring(charIndex + 1, 1);
-                        var char3 = formula.Substring(charIndex + 2, 1);
-                        var charRemain = formula.Substring(charIndex + 3);
+                        var char2 = charIndex + 1 < formula.Length ? formula.Substring(charIndex + 1, 1) : "";
+                        var char3 = charIndex + 2 < formula.Length ? formula.Substring(charIndex + 2, 1) : "";
+                        var charRemain = charIndex + 3 < formula.Length ? formula.Substring(charIndex + 3) : "";
                         if (ComputationOptions.CaseConversion != CaseConversionMode.ExactCase)
                             char1 = char1.ToUpper();
 
@@ -3593,26 +3633,28 @@ namespace MolecularWeightCalculator
                                                         var subFormula = formula.Substring(charIndex + 1, parenthClose - (charIndex + 1));
 
                                                         // Note, must pass parenthMultiplier * adjacentNum to preserve previous parentheses stuff
-                                                        newFormula = ParseFormulaRecursive(subFormula, ref computationStats, ref abbrevSymbolStack, expandAbbreviations, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
+                                                        newFormula = ParseFormulaRecursive(subFormula, computationStats, abbrevSymbolStack, expandAbbreviations, out var newStdDevSum, out var carbonSiliconCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
+                                                        stdDevSum += newStdDevSum;
 
                                                         // If expanding abbreviations, then newFormula might be longer than formula, must add this onto charIndex also
                                                         var expandAbbrevAdd = newFormula.Length - subFormula.Length;
 
                                                         // Must replace the part of the formula parsed with the newFormula part, in case the formula was expanded or elements were capitalized
-                                                        formula = formula.Substring(0, charIndex) + newFormula + formula.Substring(parenthClose);
+                                                        formula = formula.Substring(0, charIndex + 1) + newFormula + formula.Substring(parenthClose);
                                                         charIndex = parenthClose + addonCount + expandAbbrevAdd;
 
                                                         // Correct charge
-                                                        if (carbonOrSiliconReturnCount > 0)
+                                                        if (carbonSiliconCount > 0)
                                                         {
                                                             computationStats.Charge = (float)(computationStats.Charge - 2d * adjacentNum);
-                                                            if (adjacentNum > 1d && carbonOrSiliconReturnCount > 1)
+                                                            if (adjacentNum > 1d && carbonSiliconCount > 1)
                                                             {
-                                                                computationStats.Charge = (float)(computationStats.Charge - 2d * (adjacentNum - 1d) * (carbonOrSiliconReturnCount - 1));
+                                                                computationStats.Charge = (float)(computationStats.Charge - 2d * (adjacentNum - 1d) * (carbonSiliconCount - 1));
                                                             }
                                                         }
 
-                                                        break;
+                                                        // exit the loop;
+                                                        parenthClose = formula.Length;
                                                     }
                                                 }
 
@@ -3866,7 +3908,6 @@ namespace MolecularWeightCalculator
                                                 {
                                                     // Sum up number lone C and Si (not in abbreviations)
                                                     loneCarbonOrSilicon = (int)Math.Round(loneCarbonOrSilicon + adjacentNum);
-                                                    carbonOrSiliconReturnCount = (int)Math.Round(carbonOrSiliconReturnCount + adjacentNum);
                                                 }
                                             }
                                             else
@@ -3920,7 +3961,7 @@ namespace MolecularWeightCalculator
 
                                             if (ComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
                                             {
-                                                formula = formula.Substring(0, charIndex - 1) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
+                                                formula = formula.Substring(0, charIndex) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
                                             }
 
                                             charIndex += addonCount;
@@ -3932,7 +3973,7 @@ namespace MolecularWeightCalculator
                                         // Found an abbreviation or amino acid
                                         // SymbolReference is the abbrev or amino acid number
 
-                                        if (IsPresentInAbbrevSymbolStack(ref abbrevSymbolStack, symbolReference))
+                                        if (IsPresentInAbbrevSymbolStack(abbrevSymbolStack, symbolReference))
                                         {
                                             // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
                                             // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
@@ -3993,7 +4034,8 @@ namespace MolecularWeightCalculator
 
                                             // When parsing an abbreviation, do not pass on the value of expandAbbreviations
                                             // This way, an abbreviation containing an abbreviation will only get expanded one level
-                                            ParseFormulaRecursive(mAbbrevStats[symbolReference].Formula, ref computationStats, ref abbrevSymbolStack, false, ref stdDevSum, ref carbonOrSiliconReturnCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
+                                            ParseFormulaRecursive(mAbbrevStats[symbolReference].Formula, computationStats, abbrevSymbolStack, false, out var abbrevStdDevSum, out _, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
+                                            stdDevSum += abbrevStdDevSum;
 
                                             // Update the charge to chargeSaved
                                             computationStats.Charge = chargeSaved;
@@ -4033,7 +4075,7 @@ namespace MolecularWeightCalculator
                                                     if (adjacentNum < 0d)
                                                     {
                                                         // No number after abbreviation
-                                                        formula = formula.Substring(0, charIndex - 1) + replace + formula.Substring(charIndex + symbolLength);
+                                                        formula = formula.Substring(0, charIndex) + replace + formula.Substring(charIndex + symbolLength);
                                                         symbolLength = replace.Length;
                                                         adjacentNum = 1d;
                                                         addonCount = symbolLength - 1;
@@ -4043,7 +4085,7 @@ namespace MolecularWeightCalculator
                                                         // Number after abbreviation -- must put abbreviation in parentheses
                                                         // Parentheses can handle integer or decimal number
                                                         replace = "(" + replace + ")";
-                                                        formula = formula.Substring(0, charIndex - 1) + replace + formula.Substring(charIndex + symbolLength);
+                                                        formula = formula.Substring(0, charIndex) + replace + formula.Substring(charIndex + symbolLength);
                                                         symbolLength = replace.Length;
                                                         addonCount = numLength + symbolLength - 1;
                                                     }
@@ -4051,7 +4093,7 @@ namespace MolecularWeightCalculator
 
                                                 if (ComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
                                                 {
-                                                    formula = formula.Substring(0, charIndex - 1) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
+                                                    formula = formula.Substring(0, charIndex) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
                                                 }
                                             }
                                         }
@@ -4088,12 +4130,13 @@ namespace MolecularWeightCalculator
                                 }
                                 else
                                 {
-                                    int charAsc;
-                                    var charVal = formula.Substring(charIndex + 1 + numLength, 1);
-                                    if (charVal.Length > 0)
-                                        charAsc = charVal[0];
-                                    else
-                                        charAsc = 0;
+                                    var nextCharIndex = charIndex + 1 + numLength;
+                                    var charAsc = 0;
+                                    if (nextCharIndex < formula.Length)
+                                    {
+                                        charAsc = formula[nextCharIndex];
+                                    }
+
                                     if (adjacentNum >= 0d)
                                     {
                                         if (charAsc >= 65 && charAsc <= 90 || charAsc >= 97 && charAsc <= 122) // Uppercase A to Z and lowercase a to z
@@ -4200,7 +4243,7 @@ namespace MolecularWeightCalculator
             }
             catch (Exception ex)
             {
-                MwtWinDllErrorHandler("MwtWinDll_clsElementAndMassRoutines|ParseFormula: " + ex.Message);
+                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools|ParseFormula: " + ex.Message);
                 mErrorParams.ErrorId = -10;
                 mErrorParams.ErrorPosition = 0;
 
@@ -4662,7 +4705,7 @@ namespace MolecularWeightCalculator
             }
             catch
             {
-                MwtWinDllErrorHandler("MwtWinDll_clsElementAndMassRoutines|ReturnFormattedMassAndStdDev");
+                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools|ReturnFormattedMassAndStdDev");
                 mErrorParams.ErrorId = -10;
                 mErrorParams.ErrorPosition = 0;
             }
@@ -4873,9 +4916,7 @@ namespace MolecularWeightCalculator
                         {
                             // Make sure the abbreviation's formula is valid
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
-                            var stdDevSum = 0d;
-                            var carbonOrSiliconReturnCount = 0;
-                            formula = ParseFormulaRecursive(formula, ref computationStats, ref abbrevSymbolStack, false, ref stdDevSum, ref carbonOrSiliconReturnCount);
+                            formula = ParseFormulaRecursive(formula, computationStats, abbrevSymbolStack, false, out _, out _);
 
                             if (mErrorParams.ErrorId != 0)
                             {
