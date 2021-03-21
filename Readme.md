@@ -8,9 +8,14 @@ Modeller, Amino Acid Notation Converter, Isotopic Distribution Calculator,
 and Peptide Sequence Fragmentation Modeller.  To use, simply include the 
 DLL in a .NET project.
 
+## Downloads
+
+Release versions of the DLL can be found on GitHub at
+https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/releases
+
 ### Continuous Integration
 
-Obtain the DLL from the [AppVeyor CI server](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll/build/artifacts)
+Newer versions of the DLL can be found on the [AppVeyor CI server](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll/build/artifacts), though they get auto-deleted after 6 months.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/akbap1xwd92flnsv?svg=true)](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll)
 
@@ -20,6 +25,7 @@ Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) \
 Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002 \
 VB6 ActiveX Dll version written by Matthew Monroe in 2002 \
 Ported to VB.NET by Nikša Blonder and Matthew Monroe in 2005 \
+Ported to C# by Bryson Gibbons in 2021 \
 
 E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov \
 Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/ \
