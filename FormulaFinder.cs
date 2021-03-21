@@ -8,7 +8,7 @@ namespace MolecularWeightCalculator
 {
     public class FormulaFinder
     {
-        // Ignore Spelling: Da, florine
+        // Ignore Spelling: Da
 
         #region "Constants"
         private const int MAX_MATCHING_ELEMENTS = 10;
@@ -739,7 +739,7 @@ namespace MolecularWeightCalculator
 
             // Verify that the formula does not have too many hydrogens
 
-            // Counters for elements of interest (hydrogen, carbon, silicon, nitrogen, phosphorus, chlorine, iodine, florine, bromine, and other)
+            // Counters for elements of interest (hydrogen, carbon, silicon, nitrogen, phosphorus, chlorine, iodine, fluorine, bromine, and other)
             var elementNum = new ElementNum();
 
             // Determine number of C, Si, N, P, O, S, Cl, I, F, Br and H atoms
