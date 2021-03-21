@@ -31,9 +31,9 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        private const string PROGRAM_DATE = "January 17, 2020";
         // Ignore Spelling: xyVals, Arial
 
+        private const string PROGRAM_DATE = "March 20, 2021";
 
         /// <summary>
         /// Constructor, assumes the elements are using average masses
