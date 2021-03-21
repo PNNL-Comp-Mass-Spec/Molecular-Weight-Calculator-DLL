@@ -8,6 +8,8 @@ namespace MolecularWeightCalculator
 {
     public class FormulaFinder
     {
+        // Ignore Spelling: Da, florine
+
         #region "Constants"
         private const int MAX_MATCHING_ELEMENTS = 10;
         public const int DEFAULT_RESULTS_TO_FIND = 1000;
@@ -431,7 +433,7 @@ namespace MolecularWeightCalculator
                     }
                     else
                     {
-                        // 65 is the ascii code for the letter a
+                        // 65 is the ASCII code for the letter a
                         // Thus, 65-55 = 10
                         int asciiValue = currentLetter;
                         codeString.Append((char)(asciiValue - 55));
@@ -477,7 +479,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        ///
+        /// Compare m/z to target
         /// </summary>
         /// <param name="totalMass"></param>
         /// <param name="totalCharge"></param>
@@ -510,6 +512,7 @@ namespace MolecularWeightCalculator
             }
 
             var originalMtoZ = targetMass / multipleMtoZCharge;
+
             // mToZ is not within tolerance of originalMtoZ, so don't report the result
             return !(mToZ < originalMtoZ - massToleranceDa || mToZ > originalMtoZ + massToleranceDa);
         }
@@ -1389,7 +1392,7 @@ namespace MolecularWeightCalculator
         /// <param name="searchOptions"></param>
         /// <param name="ppmMode"></param>
         /// <param name="empiricalFormula"></param>
-        /// <param name="totalMass">If 0 or negative, means matching percent compositions, so don't want to add dm= to line</param>
+        /// <param name="totalMass">If 0 or negative, means matching percent compositions</param>
         /// <param name="targetMass"></param>
         /// <param name="totalCharge"></param>
         /// <param name="empiricalResultSymbols"></param>
@@ -1454,7 +1457,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        ///
+        /// Estimate the number of operations required to search for a target m/z rather than a target mass
         /// </summary>
         /// <param name="potentialElementCount"></param>
         /// <param name="searchOptions"></param>
@@ -1898,7 +1901,7 @@ namespace MolecularWeightCalculator
         /// <param name="results"></param>
         /// <param name="searchOptions"></param>
         /// <param name="ppmMode"></param>
-        /// <param name="sortedElementStats">Candidate elements, including mass and charge. Sorted by de</param>
+        /// <param name="sortedElementStats">Candidate elements, including mass and charge. Sorted by descending mass</param>
         /// <param name="startIndex">Index in candidateElementsStats to start at</param>
         /// <param name="potentialMassTotal">Weight of the potential formula</param>
         /// <param name="targetMass"></param>

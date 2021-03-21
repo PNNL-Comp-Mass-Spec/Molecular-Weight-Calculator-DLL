@@ -9,6 +9,7 @@ namespace MolecularWeightCalculator
 
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2002
+        // Converted to C# by Bryson Gibbons in 2021
         // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
         // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
         // -------------------------------------------------------------------------------
@@ -28,6 +29,8 @@ namespace MolecularWeightCalculator
 
         public MoleMassDilution()
         {
+            // Ignore Spelling: ug, ng
+
             SetAutoComputeDilutionEnabled(false);
             SetAutoComputeQuantityEnabled(false);
 
@@ -187,7 +190,7 @@ namespace MolecularWeightCalculator
                         ComputeDilutionInitialConcentration();
                         break;
                     default:
-                        // Includes acdFindRequiredDilutionVolumes
+                        // Includes FindRequiredDilutionVolumes
                         ComputeDilutionRequiredStockAndDilutingSolventVolumes(out _);
                         break;
                 }
@@ -211,7 +214,7 @@ namespace MolecularWeightCalculator
                         ComputeQuantityConcentration();
                         break;
                     default:
-                        // Includes acqFindAmount
+                        // Includes FindAmount
                         ComputeQuantityAmount();
                         break;
                 }

@@ -5,6 +5,8 @@ namespace MolecularWeightCalculator
 {
     internal class ElementAndMassInMemoryData
     {
+        // Ignore Spelling: csv, txt, frm, isoData
+
         /// <summary>
         /// Define the caution statements
         /// </summary>
@@ -525,9 +527,9 @@ namespace MolecularWeightCalculator
             isoData[102].Add(new IsotopeInfo(259d, 1f));
             isoData[103].Add(new IsotopeInfo(262d, 1f));
 
-            // Note: I chose to store the desired values in the isoData[] array
-            // then copy to the ElementStats[] array since this method actually decreases
-            // the size of this subroutine
+            // Note: We stored data in the isoData[] array above
+            // then copy to the ElementStats[] array here for the purposes of
+            // decreasing the size of this method
             for (var elementIndex = 1; elementIndex <= ElementAndMassTools.ELEMENT_COUNT - 1; elementIndex++)
             {
                 var stats = elementStats[elementIndex];

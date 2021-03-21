@@ -9,6 +9,7 @@ namespace MolecularWeightCalculator
 
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
+        // Converted to C# by Bryson Gibbons in 2021
         // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
         // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
         // -------------------------------------------------------------------------------
@@ -28,6 +29,8 @@ namespace MolecularWeightCalculator
 
         public CapillaryFlow()
         {
+            // Ignore Spelling: acetonitrile, dynes, ng, ug
+
             SetAutoComputeEnabled(false);
 
             SetAutoComputeMode(AutoComputeMode.VolFlowRate);
@@ -356,7 +359,7 @@ namespace MolecularWeightCalculator
                         ComputeVolFlowRateUsingDeadTime(out _);
                         break;
                     default:
-                        // Includes acmVolFlowRate
+                        // Includes VolFlowRate
                         ComputeVolFlowRate();
                         break;
                 }
@@ -559,7 +562,7 @@ namespace MolecularWeightCalculator
 
             if (sumOfVariances >= 0d)
             {
-                // ResultantPeakWidth at the base = 4 sigma  and  sigma = Sqr(Total_Variance)
+                // ResultantPeakWidth at the base = 4 sigma  and  sigma = SquareRoot(Total_Variance)
                 mExtraColumnBroadeningParameters.ResultantPeakWidth = 4d * Math.Sqrt(sumOfVariances);
             }
             else
@@ -659,7 +662,8 @@ namespace MolecularWeightCalculator
         {
             try
             {
-                var phi = percentAcetonitrile / 100.0d; // Fraction Acetonitrile
+                // compute fraction acetonitrile
+                var phi = percentAcetonitrile / 100.0d;
                 if (phi < 0d)
                     phi = 0d;
 
@@ -977,7 +981,7 @@ namespace MolecularWeightCalculator
                     value = 5.0d / 9.0d * (temperatureIn - 32d) + 273d;
                     break;
                 default:
-                    // Includes utpKelvin
+                    // Includes UnitOfTemperature.Kelvin
                     // Assume already Kelvin
                     break;
             }
@@ -998,7 +1002,7 @@ namespace MolecularWeightCalculator
                     value = 9.0d / 5.0d * (value - 273d) + 32d;
                     break;
                 default:
-                    // Includes utpKelvin
+                    // Includes UnitOfTemperature.Kelvin
                     // Already in Kelvin
                     break;
             }

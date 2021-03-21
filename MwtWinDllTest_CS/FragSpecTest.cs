@@ -11,6 +11,8 @@ namespace MwtWinDllTestCS
 
     internal class FragSpecTest
     {
+        // Ignore Spelling: frag, Arg
+
         private readonly MolecularWeightTool mMwtWin;
 
         public FragSpecTest() {

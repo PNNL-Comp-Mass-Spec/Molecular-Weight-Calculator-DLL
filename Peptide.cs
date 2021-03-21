@@ -10,6 +10,7 @@ namespace MolecularWeightCalculator
 
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2004
+        // Converted to C# by Bryson Gibbons in 2021
         // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
         // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
         // -------------------------------------------------------------------------------
@@ -27,6 +28,14 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
+        // Ignore Spelling: Acetyl, acrylamide, carbamyl, frag, Carboxymethylation, immonium
+        // Ignore Spelling: methylation, phosphorylates, pyro, terminii, Xxx
+        // Ignore Spelling: Arg, Asn, Gln, Glu, Gly, Leu, Lys, Phe, Ser, Thr, Tyr
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="elementAndMassTools"></param>
         public Peptide(ElementAndMassTools elementAndMassTools = null)
         {
             mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();
@@ -155,7 +164,6 @@ namespace MolecularWeightCalculator
         }
 
         // Note: A ions can have ammonia and phosphate loss, but not water loss, so this is set to false by default
-        // The graphical version of MwtWin does not allow this to be overridden, but a programmer could do so via a call to this Dll
         public class IonTypeOptions
         {
             public bool ShowIon { get; set; }
@@ -201,7 +209,7 @@ namespace MolecularWeightCalculator
             }
         }
 
-        // Note: A peptide goes from N to C, eg. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
+        // Note: A peptide goes from N to C, e.g. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
         // Residue 1 (index 0) would be Gly, Residue 2 (index 1) would be Leu, Residue 3 (index 2) would be Tyr
         private readonly List<Residue> mResidues; // 0-based array
 
@@ -465,15 +473,13 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        ///
+        /// Get fragmentation masses
         /// </summary>
         /// <param name="fragSpectrum"></param>
         /// <returns>The number of ions in fragSpectrum[]</returns>
         /// <remarks></remarks>
         public int GetFragmentationMasses(out FragmentationSpectrumData[] fragSpectrum)
         {
-            // Old: Func GetFragmentationMasses(lngMaxIonCount As Long, ByRef sngIonMassesZeroBased() As Single, ByRef sngIonIntensitiesZeroBased() As Single, ByRef strIonSymbolsZeroBased() As String) As Long
-
             var fragSpectraData = GetFragmentationMasses();
 
             if (fragSpectraData.Count == 0)
@@ -1511,7 +1517,7 @@ namespace MolecularWeightCalculator
                 }
                 else
                 {
-                    // I don't think I'll ever reach this code
+                    // This code should never be reached
                     break;
                 }
             }
@@ -2052,7 +2058,7 @@ namespace MolecularWeightCalculator
 
                 if (errorId == 0)
                 {
-                    // See if the modification is alrady present
+                    // See if the modification is already present
                     var indexToUse = GetModificationSymbolId(modSymbol);
 
                     if (indexToUse == -1)
@@ -2534,7 +2540,7 @@ namespace MolecularWeightCalculator
             var runningTotal = mNTerminus.Mass;
             if (mNTerminus.Formula.ToUpper() == "HH")
             {
-                // ntgHydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
+                // HydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
                 // we need to subtract it out here
                 // However, we need to subtract out massHydrogen, and not chargeCarrierMass since the current
                 // formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier
@@ -2630,7 +2636,7 @@ namespace MolecularWeightCalculator
                         residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] + mNTerminus.Mass - mChargeCarrierMass;
                         if (protonatedNTerminus)
                         {
-                            // ntgHydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
+                            // HydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
                             // we need to subtract it out here
                             // However, we need to subtract out massHydrogen, and not chargeCarrierMass since the current
                             // formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier

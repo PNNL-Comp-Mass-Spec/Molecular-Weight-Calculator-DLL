@@ -12,6 +12,7 @@ namespace MolecularWeightCalculator
 
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2003
+        // Converted to C# by Bryson Gibbons in 2021
         // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
         // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
         // -------------------------------------------------------------------------------
@@ -29,6 +30,12 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
+        // Ignore Spelling: alph, Convoluting, func, gaussian, Isoelectric, isoStats, Mwt
+        // Ignore Spelling: parenth, pos, prepend, struct, xyVals, yyyy-MM-dd, hh:mm:ss, tt
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ElementAndMassTools()
         {
             mElementAlph = new List<KeyValuePair<string, int>>(ELEMENT_COUNT);
@@ -61,7 +68,7 @@ namespace MolecularWeightCalculator
         private const int MAX_CAUTION_STATEMENTS = 100;
 
         private const char EMPTY_STRING_CHAR = '~';
-        private const char RTF_HEIGHT_ADJUST_CHAR = '~'; // A hidden character to adjust the height of Rtf Text Boxes when using superscripts
+        private const char RTF_HEIGHT_ADJUST_CHAR = '~'; // A hidden character to adjust the height of RTF Text Boxes when using superscripts
 
         public enum ElementMassMode
         {
@@ -110,12 +117,12 @@ namespace MolecularWeightCalculator
             public char DecimalSeparator { get; set; }
             public string RtfFontName { get; set; }
             public short RtfFontSize { get; set; }
-            public StdDevMode StdDevMode { get; set; } // Can be 0, 1, or 2 (see smStdDevModeConstants)
+            public StdDevMode StdDevMode { get; set; } // Can be 0, 1, or 2 (see StdDevModeConstants)
         }
 
         public class IsotopicAtomInfo
         {
-            public double Count { get; set; } // Can have non-integer counts of atoms, eg. ^13C5.5
+            public double Count { get; set; } // Can have non-integer counts of atoms, e.g. ^13C5.5
             public double Mass { get; set; }
 
             public IsotopicAtomInfo Clone()
@@ -455,7 +462,6 @@ namespace MolecularWeightCalculator
             }
         }
 
-
         /// <summary>
         /// struct for data for mMasterSymbolsList; using a struct because it means less space, and we don't edit the struct
         /// </summary>
@@ -503,7 +509,7 @@ namespace MolecularWeightCalculator
         }
         #endregion
 
-        #region "Classwide Variables"
+        #region "Class wide Variables"
 
         public Options ComputationOptions { get; } = new Options();
 
@@ -751,9 +757,9 @@ namespace MolecularWeightCalculator
         /// <param name="formulaExcerpt"></param>
         /// <param name="symbolReference">Output: index of the matched element or abbreviation in mMasterSymbolsList[]</param>
         /// <returns>
-        /// smtElement if matched an element
-        /// smtAbbreviation if matched an abbreviation or amino acid
-        /// smtUnknown if no match
+        /// Element if matched an element
+        /// Abbreviation if matched an abbreviation or amino acid
+        /// Unknown if no match
         /// </returns>
         private SymbolMatchMode CheckElemAndAbbrev(string formulaExcerpt, out short symbolReference)
         {
@@ -834,7 +840,7 @@ namespace MolecularWeightCalculator
         /// <param name="results">Output: Table of results</param>
         /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
         /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-        /// <param name="addProtonChargeCarrier">If addProtonChargeCarrier is False, then still convolutes by charge, but doesn't add a proton</param>
+        /// <param name="addProtonChargeCarrier">If addProtonChargeCarrier is False, then still convolute by charge, but doesn't add a proton</param>
         /// <param name="headerIsotopicAbundances">Header to use in <paramref name="results"/></param>
         /// <param name="headerMassToCharge">Header to use in <paramref name="results"/></param>
         /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
@@ -1200,7 +1206,7 @@ namespace MolecularWeightCalculator
                                 //
                                 rigorousMethodUsed = true;
 
-                                // AbundDenom  and  AbundSuffix are only needed if using the easily-overflowed factorial method
+                                // AbundDenom and AbundSuffix are only needed if using the easily-overflowed factorial method
                                 var abundDenom = 1d;
                                 var abundSuffix = 1d;
                                 var stats = mElementStats[masterElementIndex];
@@ -2760,7 +2766,7 @@ namespace MolecularWeightCalculator
                         break;
                 }
 
-                // Now append appendText
+                // Now append the text
                 return message + appendText;
             }
 
@@ -2995,7 +3001,7 @@ namespace MolecularWeightCalculator
                     }
             }
 
-            // Now append appendText
+            // Now append the text
             message += appendText;
 
             // messageId's 1 and 18 may need to have an addendum added
@@ -3224,7 +3230,7 @@ namespace MolecularWeightCalculator
             // elemVals[elementIndex,1] stores the element's weight
             // elemVals[elementIndex,2] stores the element's uncertainty
             // elemVals[elementIndex,3] stores the element's charge
-            // Note: I could make this array of type ElementInfo, but the size of this sub would increase dramatically
+            // Note: We could make this array of type ElementInfo, but the size of this method would increase dramatically
             var elementMemoryData = ElementAndMassInMemoryData.MemoryLoadElements();
 
             // Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights
@@ -3518,7 +3524,6 @@ namespace MolecularWeightCalculator
 
                                 if (Math.Abs(computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection) > float.Epsilon)
                                 {
-                                    // This assertion is here simply because I want to check the code
                                     element.IsotopicCorrection -= computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection;
                                 }
                             }
@@ -4336,7 +4341,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Converts plain text to formatted rtf text
+        /// Converts plain text to formatted RTF text
         /// </summary>
         /// <param name="workText"></param>
         /// <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>

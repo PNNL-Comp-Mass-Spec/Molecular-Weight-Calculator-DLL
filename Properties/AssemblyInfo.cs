@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Molecular Weight Calculator - .NET Dll Version")]
-[assembly: AssemblyDescription("Written by Matthew Monroe for the Department of Energy (at PNNL); matthew.monroe@pnnl.gov or proteomics@pnnl.gov")]
+[assembly: AssemblyDescription("Written by Matthew Monroe for the Department of Energy (at PNNL); Converted to C# by Bryson Gibbons; proteomics@pnnl.gov")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Pacific Northwest National Laboratory")]
 [assembly: AssemblyProduct("Molecular Weight Calculator - .NET Dll Version")]

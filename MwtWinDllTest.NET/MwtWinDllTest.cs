@@ -31,6 +31,9 @@ namespace MwtWinDllTest
 
     internal partial class frmMwtWinDllTest : Form
     {
+        // Ignore Spelling: Da, amol, fmol, fmoles, mol, ng terminii, acetyl
+        // Ignore Spelling: Ala, Arg, Cys, Glu, Gly, His, Lys, Phe, Tyr, Ser
+
         public frmMwtWinDllTest()
         {
             InitializeComponent();
@@ -323,7 +326,7 @@ namespace MwtWinDllTest
             capFlow.SetAutoComputeEnabled(true);
 
             results.AppendText("");
-            results.AppendText("Check capillary flow calcs");
+            results.AppendText("Check capillary flow calculations");
             results.AppendText("Linear Velocity: " + capFlow.ComputeLinearVelocity(CapillaryFlow.UnitOfLinearVelocity.CmPerSec));
             results.AppendText("Vol flow rate:   " + capFlow.ComputeVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + "  (newly computed)");
 
@@ -351,7 +354,7 @@ namespace MwtWinDllTest
             capFlow.SetDeadTime(25d, CapillaryFlow.UnitOfTime.Minutes);
             results.AppendText("Dead time is now 25.0 minutes");
 
-            results.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + " (auto-computed since AutoComputeMode = acmVolFlowrateUsingDeadTime)");
+            results.AppendText("Vol flow rate: " + capFlow.GetVolFlowRate(CapillaryFlow.UnitOfFlowRate.NLPerMin) + " (auto-computed since AutoComputeMode = VolFlowRateUsingDeadTime)");
 
             // Confirm that auto-compute worked
 
@@ -361,15 +364,15 @@ namespace MwtWinDllTest
             results.AppendText("");
 
             // Can set a new back pressure, but since auto-compute is on, and the
-            // auto-compute mode is acmVolFlowRateUsingDeadTime, the pressure will get changed back to
+            // auto-compute mode is VolFlowRateUsingDeadTime, the pressure will get changed back to
             // the pressure needed to give a vol flow rate matching the dead time
             capFlow.SetBackPressure(2000d);
-            results.AppendText("Pressure set to 2000 psi, but auto-compute mode is acmVolFlowRateUsingDeadTime, so pressure");
+            results.AppendText("Pressure set to 2000 psi, but auto-compute mode is VolFlowRateUsingDeadTime, so pressure");
             results.AppendText("  was automatically changed back to pressure needed to give vol flow rate matching dead time");
             results.AppendText("Pressure is now: " + capFlow.GetBackPressure(CapillaryFlow.UnitOfPressure.Psi) + " psi (thus, not 2000 as one might expect)");
 
             capFlow.SetAutoComputeMode(CapillaryFlow.AutoComputeMode.VolFlowRate);
-            results.AppendText("Changed auto-compute mode to acmVolFlowrate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.");
+            results.AppendText("Changed auto-compute mode to VolFlowRate.  Can now set pressure to 2000 and it will stick; plus, vol flow rate gets computed.");
 
             capFlow.SetBackPressure(2000d, CapillaryFlow.UnitOfPressure.Psi);
 
@@ -400,8 +403,6 @@ namespace MwtWinDllTest
             results.AppendText("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
             results.AppendText(capFlow.GetExtraColumnBroadeningResultantPeakWidth(CapillaryFlow.UnitOfTime.Seconds).ToString());
 
-            var fragSpectrumOptions = new Peptide.FragmentationSpectrumOptions();
-
             var peptide = mMwtWin.Peptide;
             peptide.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G");
             // .SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
@@ -414,7 +415,7 @@ namespace MwtWinDllTest
             peptide.SetNTerminus("C2OH3"); // Acetyl group
             peptide.SetCTerminus("NH2"); // Amide group
 
-            // Can mark third residue, Tyr, as phorphorylated
+            // Can mark third residue, Tyr, as phosphorylated
             peptide.SetResidue(3, "Tyr", true, true);
 
             // Can define that the * modification equals 15
@@ -433,7 +434,7 @@ namespace MwtWinDllTest
             peptide.SetCTerminusGroup(Peptide.CTerminusGroupType.None);
             results.AppendText(peptide.GetSequence(true, false, true, true));
 
-            fragSpectrumOptions = peptide.GetFragmentationSpectrumOptions();
+            var fragSpectrumOptions = peptide.GetFragmentationSpectrumOptions();
 
             fragSpectrumOptions.DoubleChargeIonsShow = true;
             fragSpectrumOptions.DoubleChargeIonsThreshold = 300f;
@@ -465,7 +466,7 @@ namespace MwtWinDllTest
             var success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, ref resultString, ref convolutedMSData2DOneBased, ref convolutedMSDataCount);
             results.AppendText(resultString);
 
-            results.AppendText("Convert isotopic distribution to gaussian");
+            results.AppendText("Convert isotopic distribution to Gaussian");
             var xyVals = new List<KeyValuePair<double, double>>();
             for (var index = 1; index <= convolutedMSDataCount; index++)
                 xyVals.Add(new KeyValuePair<double, double>(convolutedMSData2DOneBased[index, 0], convolutedMSData2DOneBased[index, 1]));
@@ -812,8 +813,6 @@ namespace MwtWinDllTest
                 var stopTime = Program.GetTickCount();
                 var mwtWinWorkTime = stopTime - startTime;
                 Console.WriteLine("");
-                Console.WriteLine("MwtWin time (" + mwtWinResultCount + " peptides) = " + mwtWinWorkTime + " msec");
-
                 //lngIcr2lsResultCount = 0
                 //Debug.Print "Starting residue is ";
                 //lngStartTime = GetTickCount()
@@ -862,6 +861,7 @@ namespace MwtWinDllTest
                 //        End If
                 //    End If
                 //Next lngIndex
+                Console.WriteLine("Processing time (" + mwtWinResultCount + " peptides) = " + mwtWinWorkTime + " msec");
             }
 
             results.AppendText("Check of Tryptic Sequence functions Complete");

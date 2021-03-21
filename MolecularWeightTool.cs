@@ -10,6 +10,7 @@ namespace MolecularWeightCalculator
         //
         // ActiveX Dll version written by Matthew Monroe in Richland, WA (2002)
         // Ported to VB.NET by Nikša Blonder in Richland, WA (2005)
+        // Converted to C# by Bryson Gibbons in 2021
 
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
@@ -31,6 +32,8 @@ namespace MolecularWeightCalculator
         // this computer software.
 
         private const string PROGRAM_DATE = "January 17, 2020";
+        // Ignore Spelling: xyVals, Arial
+
 
         /// <summary>
         /// Constructor, assumes the elements are using average masses
@@ -91,7 +94,7 @@ namespace MolecularWeightCalculator
 
         #endregion
 
-        #region "Classwide Variables"
+        #region "Class wide Variables"
 
         public Compound Compound { get; set; }
         public Peptide Peptide { get; set; }
@@ -270,7 +273,7 @@ namespace MolecularWeightCalculator
         /// <param name="results">Output: Table of results</param>
         /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
         /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
-        /// <param name="addProtonChargeCarrier">If addProtonChargeCarrier is false, then still convolutes by charge, but doesn't add a proton</param>
+        /// <param name="addProtonChargeCarrier">If addProtonChargeCarrier is false, then still convolute by charge, but doesn't add a proton</param>
         /// <param name="headerIsotopicAbundances">Header to use in <paramref name="results"/></param>
         /// <param name="headerMassToCharge">Header to use in <paramref name="results"/></param>
         /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
@@ -294,7 +297,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
+        /// Convert the centroided data (stick data) in xyVals to a Gaussian representation
         /// </summary>
         /// <param name="xyVals">XY data, as key-value pairs</param>
         /// <param name="resolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
@@ -327,11 +330,6 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         internal static char DetermineDecimalPoint()
         {
-            // In VB6, the Trim(Str(Cdbl(...))) statement causes an error when the
-            // user's computer is configured for using , for decimal points but not . for the
-            // thousand's separator (instead, perhaps, using a space for thousands)
-            // Not sure of the behavior in VB.NET
-
             try
             {
                 // Determine what locale we're in (. or , for decimal point)
@@ -779,7 +777,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Converts plain text to formatted rtf text
+        /// Converts plain text to formatted RTF text
         /// </summary>
         /// <param name="textToConvert"></param>
         /// <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
