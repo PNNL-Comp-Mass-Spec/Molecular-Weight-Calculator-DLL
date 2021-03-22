@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualBasic;
 
 namespace MolecularWeightCalculator
 {
@@ -270,21 +269,10 @@ namespace MolecularWeightCalculator
 
                 ionCount += 1;
             }
-            catch
+            catch (Exception ex)
             {
-                Console.WriteLine(Information.Err().Description);
+                Console.WriteLine("Error in Peptide.AppendDataToFragSpectrum: {0}", ex.Message);
             }
-        }
-
-        public int AssureNonZero(int number)
-        {
-            // Returns a non-zero number, either -1 if number = 0 or number if it's nonzero
-            if (number == 0)
-            {
-                return -1;
-            }
-
-            return number;
         }
 
         private int CheckForModifications(string partialSequence, int residueIndex, bool addMissingModificationSymbols = false)
@@ -2300,7 +2288,7 @@ namespace MolecularWeightCalculator
                 var sequenceStrLength = sequence.Length;
                 if (sequenceStrLength == 0)
                 {
-                    return AssureNonZero(0);
+                    return -1;
                 }
 
                 // Clear any old residue information
@@ -2444,9 +2432,10 @@ namespace MolecularWeightCalculator
 
                 return 0;
             }
-            catch
+            catch (Exception ex)
             {
-                return AssureNonZero(Information.Err().Number);
+                Console.WriteLine("Error in Peptide.SetSequence: {0}", ex.Message);
+                return -1;
             }
         }
 

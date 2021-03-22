@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
 
 namespace MolecularWeightCalculator
 {
@@ -2341,15 +2340,10 @@ namespace MolecularWeightCalculator
 
         public void GeneralErrorHandler(string callingProcedure, Exception ex)
         {
-            GeneralErrorHandler(callingProcedure, 0, ex.Message);
-        }
-
-        public void GeneralErrorHandler(string callingProcedure, int errorNumber, string errorDescriptionAdditional = "")
-        {
-            var message = "Error in " + callingProcedure + ": " + Conversion.ErrorToString(errorNumber) + " (#" + errorNumber + ")";
-            if (!string.IsNullOrEmpty(errorDescriptionAdditional))
+            var message = "Error in " + callingProcedure + ": ";
+            if (!string.IsNullOrEmpty(ex.Message))
             {
-                message += Environment.NewLine + errorDescriptionAdditional;
+                message += Environment.NewLine + ex.Message;
             }
 
             LogMessage(message, MessageType.Error);
@@ -3302,7 +3296,7 @@ namespace MolecularWeightCalculator
         {
             string message;
 
-            if (Information.Err().Number == 6)
+            if (ex is OverflowException)
             {
                 message = LookupMessage(590);
                 if (ShowErrorMessageDialogs)
@@ -3314,7 +3308,7 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                message = LookupMessage(600) + ": " + Information.Err().Description + Environment.NewLine + " (" + callingProcedure + " handler)";
+                message = LookupMessage(600) + ": " + ex.Message + Environment.NewLine + " (" + callingProcedure + " handler)";
                 message += Environment.NewLine + LookupMessage(605);
 
                 if (ShowErrorMessageDialogs)
@@ -3330,14 +3324,7 @@ namespace MolecularWeightCalculator
                 var showErrorMessageDialogsSaved = ShowErrorMessageDialogs;
                 ShowErrorMessageDialogs = false;
 
-                if (Information.Err().Number != 0)
-                {
-                    GeneralErrorHandler(callingProcedure, Information.Err().Number);
-                }
-                else
-                {
-                    GeneralErrorHandler(callingProcedure, ex);
-                }
+                GeneralErrorHandler(callingProcedure, ex);
 
                 ShowErrorMessageDialogs = showErrorMessageDialogsSaved;
             }
