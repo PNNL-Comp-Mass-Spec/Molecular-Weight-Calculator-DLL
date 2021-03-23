@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
 namespace MolecularWeightCalculator
 {
-    public class FormulaFinder
+    public class FormulaSearcher
     {
         // Ignore Spelling: Da
 
@@ -154,7 +153,7 @@ namespace MolecularWeightCalculator
         /// Constructor
         /// </summary>
         /// <remarks></remarks>
-        public FormulaFinder(ElementAndMassTools elementAndMassTools)
+        public FormulaSearcher(ElementAndMassTools elementAndMassTools)
         {
             mElementAndMassRoutines = elementAndMassTools;
             mCandidateElements = new Dictionary<string, CandidateElementTolerances>();

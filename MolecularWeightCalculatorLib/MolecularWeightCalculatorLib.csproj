@@ -45,7 +45,7 @@
     <Compile Include="Compound.cs" />
     <Compile Include="ElementAndMassInMemoryData.cs" />
     <Compile Include="ElementAndMassTools.cs" />
-    <Compile Include="FormulaFinder.cs" />
+    <Compile Include="FormulaSearcher.cs" />
     <Compile Include="FormulaFinderCandidateElement.cs" />
     <Compile Include="FormulaFinderOptions.cs" />
     <Compile Include="FormulaFinderResult.cs" />

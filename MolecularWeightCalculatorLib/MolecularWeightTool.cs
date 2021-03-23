@@ -71,7 +71,7 @@ namespace MolecularWeightCalculator
 
             Compound = new Compound(mElementAndMassRoutines);
             Peptide = new Peptide(mElementAndMassRoutines);
-            FormulaFinder = new FormulaFinder(mElementAndMassRoutines);
+            FormulaFinder = new FormulaSearcher(mElementAndMassRoutines);
 
             CapFlow = new CapillaryFlow();
         }
@@ -98,7 +98,7 @@ namespace MolecularWeightCalculator
 
         public Compound Compound { get; set; }
         public Peptide Peptide { get; set; }
-        public FormulaFinder FormulaFinder { get; set; }
+        public FormulaSearcher FormulaFinder { get; set; }
         public CapillaryFlow CapFlow { get; set; }
 
         private readonly ElementAndMassTools mElementAndMassRoutines;
