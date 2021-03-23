@@ -159,7 +159,7 @@ namespace MolecularWeightCalculator
 
             try
             {
-                mElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
+                mElementAndMassRoutines.ComputePercentComposition(mComputationStats);
 
                 for (var elementId = 1; elementId <= ElementAndMassTools.ELEMENT_COUNT; elementId++)
                 {
@@ -231,7 +231,7 @@ namespace MolecularWeightCalculator
             mComputationStats = new ElementAndMassTools.ComputationStats();
             mElementAndMassRoutines.ParseFormulaPublic(ref mStrFormattedFormula, mComputationStats, false, mValueForX);
 
-            mElementAndMassRoutines.ComputePercentComposition(ref mComputationStats);
+            mElementAndMassRoutines.ComputePercentComposition(mComputationStats);
 
             UpdateErrorAndCaution();
         }

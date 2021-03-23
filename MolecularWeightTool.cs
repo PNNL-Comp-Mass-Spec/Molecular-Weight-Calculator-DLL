@@ -285,15 +285,15 @@ namespace MolecularWeightCalculator
         /// Returns convoluted m/z if <paramref name="chargeState"/> is &gt; 1
         /// </remarks>
         public short ComputeIsotopicAbundances(
-            ref string formulaIn, short chargeState, ref string results,
-            ref double[,] convolutedMSData2DOneBased, ref int convolutedMSDataCount,
+            ref string formulaIn, short chargeState, out string results,
+            out double[,] convolutedMSData2DOneBased, out int convolutedMSDataCount,
             bool addProtonChargeCarrier = true,
             string headerIsotopicAbundances = "Isotopic Abundances for",
             string headerMassToCharge = "Mass",
             string headerFraction = "Fraction",
             string headerIntensity = "Intensity")
         {
-            return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref formulaIn, chargeState, ref results, ref convolutedMSData2DOneBased, ref convolutedMSDataCount, addProtonChargeCarrier, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
+            return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref formulaIn, chargeState, out results, out convolutedMSData2DOneBased, out convolutedMSDataCount, addProtonChargeCarrier, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
         }
 
         /// <summary>
@@ -519,9 +519,9 @@ namespace MolecularWeightCalculator
         /// <param name="isotopeMasses"></param>
         /// <param name="isotopeAbundances"></param>
         /// <returns>0 if a valid ID, 1 if invalid</returns>
-        public int GetElementIsotopes(short elementId, ref short isotopeCount, ref double[] isotopeMasses, ref float[] isotopeAbundances)
+        public int GetElementIsotopes(short elementId, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
-            return mElementAndMassRoutines.GetElementIsotopesInternal(elementId, ref isotopeCount, ref isotopeMasses, ref isotopeAbundances);
+            return mElementAndMassRoutines.GetElementIsotopesInternal(elementId, out isotopeCount, out isotopeMasses, out isotopeAbundances);
         }
 
         /// <summary>
@@ -750,9 +750,9 @@ namespace MolecularWeightCalculator
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
         /// <returns></returns>
-        public int SetElementIsotopes(string symbol, short isotopeCount, ref double[] isotopeMasses, ref float[] isotopeAbundances)
+        public int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances)
         {
-            return mElementAndMassRoutines.SetElementIsotopesInternal(symbol, isotopeCount, ref isotopeMasses, ref isotopeAbundances);
+            return mElementAndMassRoutines.SetElementIsotopesInternal(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
         }
 
         public void SetElementMode(ElementAndMassTools.ElementMassMode elementMode, bool memoryLoadElementValues = true)

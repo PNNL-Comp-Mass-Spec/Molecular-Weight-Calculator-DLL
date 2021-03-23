@@ -278,11 +278,11 @@ namespace MwtWinDllTest
                 var isotopeAbundances = new float[isotopeCount + 1 + 1];
 
                 short isotopeCount2 = default;
-                result = mMwtWin.GetElementIsotopes((short)index, ref isotopeCount2, ref isotopeMasses, ref isotopeAbundances);
+                result = mMwtWin.GetElementIsotopes((short)index, out isotopeCount2, out isotopeMasses, out isotopeAbundances);
                 Debug.Assert(isotopeCount == isotopeCount2, "");
                 Debug.Assert(result == 0, "");
 
-                result = mMwtWin.SetElementIsotopes(symbol, isotopeCount, ref isotopeMasses, ref isotopeAbundances);
+                result = mMwtWin.SetElementIsotopes(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
                 Debug.Assert(result == 0, "");
             }
 
@@ -454,16 +454,12 @@ namespace MwtWinDllTest
 
             results.AppendText(string.Empty);
 
-            var resultString = string.Empty;
-            var convolutedMSDataCount = default(int);
-
             // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
             const short chargeState = 1;
             results.AppendText("Isotopic abundance test with Charge=" + chargeState);
 
-            var convolutedMSData2DOneBased = new double[1, 2];
             var formulaIn = "C1255H43O2Cl";
-            var success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, ref resultString, ref convolutedMSData2DOneBased, ref convolutedMSDataCount);
+            var success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, out var resultString, out var convolutedMSData2DOneBased, out var convolutedMSDataCount);
             results.AppendText(resultString);
 
             results.AppendText("Convert isotopic distribution to Gaussian");
@@ -491,7 +487,7 @@ namespace MwtWinDllTest
 
             results.AppendText("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
             formulaIn = "C1255H43O2Cl";
-            success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, ref resultString, ref convolutedMSData2DOneBased, ref convolutedMSDataCount, false);
+            success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, out resultString, out convolutedMSData2DOneBased, out convolutedMSDataCount, false);
             results.AppendText(resultString);
         }
 

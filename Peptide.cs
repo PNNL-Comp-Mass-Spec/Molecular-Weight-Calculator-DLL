@@ -773,7 +773,7 @@ namespace MolecularWeightCalculator
             return modificationIdMatch;
         }
 
-        public int GetResidue(int residueIndex, ref string symbol, ref double mass, ref bool isModified, ref short modificationCount)
+        public int GetResidue(int residueIndex, out string symbol, out double mass, out bool isModified, out short modificationCount)
         {
             // Returns 0 if success, 1 if failure
             if (residueIndex >= 0 && residueIndex < mResidues.Count)
@@ -786,6 +786,11 @@ namespace MolecularWeightCalculator
 
                 return 0;
             }
+
+            symbol = "";
+            mass = 0;
+            isModified = false;
+            modificationCount = 0;
 
             return 1;
         }
@@ -826,7 +831,7 @@ namespace MolecularWeightCalculator
             return residueCount;
         }
 
-        public int GetResidueModificationIDs(int residueIndex, ref int[] modificationIDs)
+        public int GetResidueModificationIDs(int residueIndex, out int[] modificationIDs)
         {
             // Returns the number of Modifications
             // Resizes modificationIDs[] to hold the values
@@ -835,21 +840,15 @@ namespace MolecularWeightCalculator
             {
                 var residue = mResidues[residueIndex];
 
-                // Need to use this in case the calling program is sending an array with fixed dimensions
-                try
-                {
-                    modificationIDs = new int[residue.ModificationIDs.Count];
-                }
-                catch
-                {
-                    // Ignore errors
-                }
+                modificationIDs = new int[residue.ModificationIDs.Count];
 
                 for (var index = 0; index < residue.ModificationIDs.Count; index++)
                     modificationIDs[index] = residue.ModificationIDs[index];
 
                 return residue.ModificationIDs.Count;
             }
+
+            modificationIDs = new int[1];
 
             return 0;
         }
