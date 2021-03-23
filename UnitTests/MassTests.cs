@@ -26,8 +26,8 @@ namespace UnitTests
         [OneTimeSetUp]
         public void Setup()
         {
-            mMwtWinAvg = new MolecularWeightTool(ElementAndMassTools.ElementMassMode.Average);
-            mMwtWinIso = new MolecularWeightTool(ElementAndMassTools.ElementMassMode.Isotopic);
+            mMwtWinAvg = new MolecularWeightTool(ElementMassMode.Average);
+            mMwtWinIso = new MolecularWeightTool(ElementMassMode.Isotopic);
         }
 
         [Test]

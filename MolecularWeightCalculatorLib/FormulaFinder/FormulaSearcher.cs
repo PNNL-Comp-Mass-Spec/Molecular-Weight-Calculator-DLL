@@ -909,7 +909,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             if (elementCounts.C + elementCounts.Si >= 1)
             {
-                if (elementCounts.H > 0 && Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, MolecularWeightTool.ElementStatsType.Charge) - 1d) < float.Epsilon)
+                if (elementCounts.H > 0 && Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, ElementStatsType.Charge) - 1d) < float.Epsilon)
                 {
                     // Since carbon or silicon are present, assume the hydrogens should be negative
                     // Subtract elementNum.H * 2 since hydrogen is assigned a +1 charge if ElementStats[1].Charge = 1
@@ -1065,7 +1065,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             var sortedElementStats = (from item in candidateElementsStats orderby item.Mass descending select item).ToList();
 
-            if (searchOptions.SearchMode == SearchOptions.SearchModes.Thorough)
+            if (searchOptions.SearchMode == FormulaSearchModes.Thorough)
             {
                 // Thorough search
 
@@ -1138,7 +1138,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             var sortedElementStats = (from item in candidateElementsStats orderby item.Mass descending select item).ToList();
 
-            if (searchOptions.SearchMode == SearchOptions.SearchModes.Thorough)
+            if (searchOptions.SearchMode == FormulaSearchModes.Thorough)
             {
                 // Thorough search
 

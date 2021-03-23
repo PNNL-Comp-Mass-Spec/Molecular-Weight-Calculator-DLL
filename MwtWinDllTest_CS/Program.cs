@@ -17,7 +17,7 @@ namespace MwtWinDllTestCS
             // Instantiate the Molecular Weight Calculator
             var mwtWin = new MolecularWeightTool();
 
-            TestMwtWinFeatures(mwtWin, ElementAndMassTools.ElementMassMode.Average);
+            TestMwtWinFeatures(mwtWin, ElementMassMode.Average);
 
             Console.WriteLine();
             Console.WriteLine("Percent composition");
@@ -29,7 +29,7 @@ namespace MwtWinDllTestCS
             }
 
             Console.WriteLine();
-            TestMwtWinFeatures(mwtWin, ElementAndMassTools.ElementMassMode.Isotopic);
+            TestMwtWinFeatures(mwtWin, ElementMassMode.Isotopic);
 
             Console.WriteLine();
             Console.WriteLine();
@@ -42,13 +42,13 @@ namespace MwtWinDllTestCS
 
         private static void TestMwtWinFeatures(
             MolecularWeightTool mwtWin,
-            ElementAndMassTools.ElementMassMode elementMode)
+            ElementMassMode elementMode)
         {
             var elementModeDescription = elementMode switch
             {
-                ElementAndMassTools.ElementMassMode.Average => "Average",
-                ElementAndMassTools.ElementMassMode.Isotopic => "Monoisotopic",
-                ElementAndMassTools.ElementMassMode.Integer => "Integer",
+                ElementMassMode.Average => "Average",
+                ElementMassMode.Isotopic => "Monoisotopic",
+                ElementMassMode.Integer => "Integer",
                 _ => "Unknown",
             };
 

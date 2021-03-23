@@ -2,21 +2,9 @@
 {
     public class SearchOptions
     {
-        #region "Constants and Enums"
-        public enum SearchModes
-        {
-            Thorough = 0,
-            Bounded = 1
-        }
-        #endregion
-
-        #region "Member Variables"
         private bool mFindCharge;
         private bool mLimitChargeRange;
         private bool mFindTargetMz;
-        #endregion
-
-        #region "Properties"
 
         /// <summary>
         /// When true, compute the overall charge of each compound
@@ -91,11 +79,9 @@
             }
         }
 
-        public SearchModes SearchMode { get; set; }
+        public FormulaSearchModes SearchMode { get; set; }
 
         public bool VerifyHydrogens { get; set; }
-
-        #endregion
 
         /// <summary>
         /// Constructor
@@ -108,7 +94,7 @@
             ChargeMin = -4;
             ChargeMax = 4;
             FindTargetMz = false;
-            SearchMode = SearchModes.Thorough;
+            SearchMode = FormulaSearchModes.Thorough;
             VerifyHydrogens = true;
         }
     }

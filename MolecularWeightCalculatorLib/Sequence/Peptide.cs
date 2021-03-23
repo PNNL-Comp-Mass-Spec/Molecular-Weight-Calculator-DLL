@@ -74,35 +74,7 @@ namespace MolecularWeightCalculator.Sequence
 
         private readonly ElementAndMassTools mElementAndMassRoutines;
 
-        public enum CTerminusGroupType
-        {
-            Hydroxyl = 0,
-            Amide = 1,
-            None = 2
-        }
-
-        public enum NTerminusGroupType
-        {
-            Hydrogen = 0,
-            HydrogenPlusProton = 1,
-            Acetyl = 2,
-            PyroGlu = 3,
-            Carbamyl = 4,
-            // ReSharper disable once InconsistentNaming
-            PTC = 5,
-            None = 6
-        }
-
         private const IonType ION_TYPE_MAX = IonType.ZIon;
-
-        public enum IonType
-        {
-            AIon = 0,
-            BIon = 1,
-            YIon = 2,
-            CIon = 3,
-            ZIon = 4
-        }
 
         private class ModificationSymbol
         {
@@ -2577,7 +2549,7 @@ namespace MolecularWeightCalculator.Sequence
             {
                 var elementModeSaved = mElementAndMassRoutines.GetElementModeInternal();
 
-                mElementAndMassRoutines.SetElementModeInternal(ElementAndMassTools.ElementMassMode.Isotopic);
+                mElementAndMassRoutines.SetElementModeInternal(ElementMassMode.Isotopic);
 
                 mChargeCarrierMass = mElementAndMassRoutines.GetChargeCarrierMassInternal();
 

@@ -42,19 +42,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CapillaryFlow.cs" />
+    <Compile Include="CapillaryFlowEnums.cs" />
     <Compile Include="Formula\Compound.cs" />
     <Compile Include="Formula\ElementAndMassInMemoryData.cs" />
     <Compile Include="Formula\ElementAndMassTools.cs" />
+    <Compile Include="Formula\ElementEnums.cs" />
     <Compile Include="FormulaFinder\CandidateElement.cs" />
     <Compile Include="FormulaFinder\FormulaSearcher.cs" />
+    <Compile Include="FormulaFinder\FormulaSearchModes.cs" />
     <Compile Include="FormulaFinder\SearchOptions.cs" />
     <Compile Include="FormulaFinder\SearchResult.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="MoleMassDilution.cs" />
     <Compile Include="MolecularWeightTool.cs" />
+    <Compile Include="MoleMassDilutionEnums.cs" />
     <Compile Include="NumberConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sequence\Peptide.cs" />
+    <Compile Include="Sequence\PeptideEnums.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

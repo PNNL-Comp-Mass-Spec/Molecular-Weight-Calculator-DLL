@@ -27,7 +27,7 @@ namespace MwtWinDllTestCS
 
         public void TestAccessFunctions() {
             // Set the element mode (average, monoisotopic, or integer)
-            mMwtWin.SetElementMode(ElementAndMassTools.ElementMassMode.Isotopic);
+            mMwtWin.SetElementMode(ElementMassMode.Isotopic);
 
             var fragSpectrumOptions = new Peptide.FragmentationSpectrumOptions();
 
@@ -40,16 +40,16 @@ namespace MwtWinDllTestCS
             fragSpectrumOptions.DoubleChargeIonsThreshold = 400;
             fragSpectrumOptions.TripleChargeIonsThreshold = 400;
 
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.AIon].ShowIon = false;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.BIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.AIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.BIon].ShowIon = false;
 
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.YIon].ShowIon = true;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.YIon].NeutralLossAmmonia = false;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.YIon].NeutralLossPhosphate = false;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.YIon].NeutralLossWater = false;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.YIon].ShowIon = true;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.YIon].NeutralLossAmmonia = false;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.YIon].NeutralLossPhosphate = false;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.YIon].NeutralLossWater = false;
 
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.CIon].ShowIon = false;
-            fragSpectrumOptions.IonTypeOptions[(int)Peptide.IonType.ZIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.CIon].ShowIon = false;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.ZIon].ShowIon = false;
 
             fragSpectrumOptions.IntensityOptions.BYIonShoulder = 0;
 

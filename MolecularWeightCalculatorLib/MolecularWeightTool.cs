@@ -6,6 +6,20 @@ using MolecularWeightCalculator.Sequence;
 
 namespace MolecularWeightCalculator
 {
+    public enum AbbrevRecognitionMode
+    {
+        NormalOnly = 0,
+        NormalPlusAminoAcids = 1,
+        NoAbbreviations = 2
+    }
+
+    public enum ElementStatsType
+    {
+        Mass = 0,
+        Uncertainty = 1,
+        Charge = 2
+    }
+
     public class MolecularWeightTool
     {
         // Molecular Weight Calculator routines with ActiveX Class interfaces
@@ -41,7 +55,7 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Constructor, assumes the elements are using average masses
         /// </summary>
-        public MolecularWeightTool() : this(ElementAndMassTools.ElementMassMode.Average)
+        public MolecularWeightTool() : this(ElementMassMode.Average)
         {
         }
 
@@ -49,7 +63,7 @@ namespace MolecularWeightCalculator
         /// Constructor where the element mode can be defined
         /// </summary>
         /// <param name="elementMode">Mass mode for elements (average, monoisotopic, or integer)</param>
-        public MolecularWeightTool(ElementAndMassTools.ElementMassMode elementMode)
+        public MolecularWeightTool(ElementMassMode elementMode)
         {
             mElementAndMassRoutines = new ElementAndMassTools();
             mElementAndMassRoutines.ProgressChanged += mElementAndMassRoutines_ProgressChanged;
@@ -64,11 +78,11 @@ namespace MolecularWeightCalculator
             SetElementMode(elementMode, false); // Use "false" to avoid re-loading all of the elements and isotopes.
             AbbreviationRecognitionMode = AbbrevRecognitionMode.NormalPlusAminoAcids;
             BracketsTreatedAsParentheses = true;
-            CaseConversionMode = ElementAndMassTools.CaseConversionMode.ConvertCaseUp;
+            CaseConversionMode = CaseConversionMode.ConvertCaseUp;
             DecimalSeparator = '.';
             RtfFontName = "Arial";
             RtfFontSize = 10;
-            StdDevMode = ElementAndMassTools.StdDevMode.Decimal;
+            StdDevMode = StdDevMode.Decimal;
 
             mElementAndMassRoutines.ComputationOptions.DecimalSeparator = DetermineDecimalPoint();
 
@@ -78,24 +92,6 @@ namespace MolecularWeightCalculator
 
             CapFlow = new CapillaryFlow();
         }
-
-        #region "Constants and Enums"
-
-        public enum AbbrevRecognitionMode
-        {
-            NormalOnly = 0,
-            NormalPlusAminoAcids = 1,
-            NoAbbreviations = 2
-        }
-
-        public enum ElementStatsType
-        {
-            Mass = 0,
-            Uncertainty = 1,
-            Charge = 2
-        }
-
-        #endregion
 
         #region "Class wide Variables"
 
@@ -160,12 +156,12 @@ namespace MolecularWeightCalculator
             set => mElementAndMassRoutines.ComputationOptions.BracketsAsParentheses = value;
         }
 
-        public ElementAndMassTools.CaseConversionMode CaseConversionMode
+        public CaseConversionMode CaseConversionMode
         {
             get => mElementAndMassRoutines.ComputationOptions.CaseConversion;
             set
             {
-                if (value >= ElementAndMassTools.CaseConversionMode.ConvertCaseUp & value <= ElementAndMassTools.CaseConversionMode.SmartCase)
+                if (value >= CaseConversionMode.ConvertCaseUp & value <= CaseConversionMode.SmartCase)
                 {
                     mElementAndMassRoutines.ComputationOptions.CaseConversion = value;
                 }
@@ -238,12 +234,12 @@ namespace MolecularWeightCalculator
             set => mElementAndMassRoutines.SetShowErrorMessageDialogs(value);
         }
 
-        public ElementAndMassTools.StdDevMode StdDevMode
+        public StdDevMode StdDevMode
         {
             get => mElementAndMassRoutines.ComputationOptions.StdDevMode;
             set
             {
-                if (value >= ElementAndMassTools.StdDevMode.Short & value <= ElementAndMassTools.StdDevMode.Decimal)
+                if (value >= StdDevMode.Short & value <= StdDevMode.Decimal)
                 {
                     mElementAndMassRoutines.ComputationOptions.StdDevMode = value;
                 }
@@ -535,7 +531,7 @@ namespace MolecularWeightCalculator
         /// emIsotopicMass = 2
         /// emIntegerMass  = 3
         /// </returns>
-        public ElementAndMassTools.ElementMassMode GetElementMode()
+        public ElementMassMode GetElementMode()
         {
             return mElementAndMassRoutines.GetElementModeInternal();
         }
@@ -758,7 +754,7 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.SetElementIsotopesInternal(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
         }
 
-        public void SetElementMode(ElementAndMassTools.ElementMassMode elementMode, bool memoryLoadElementValues = true)
+        public void SetElementMode(ElementMassMode elementMode, bool memoryLoadElementValues = true)
         {
             mElementAndMassRoutines.SetElementModeInternal(elementMode, memoryLoadElementValues);
         }

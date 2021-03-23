@@ -69,27 +69,6 @@ namespace MolecularWeightCalculator.Formula
         private const char EMPTY_STRING_CHAR = '~';
         private const char RTF_HEIGHT_ADJUST_CHAR = '~'; // A hidden character to adjust the height of RTF Text Boxes when using superscripts
 
-        public enum ElementMassMode
-        {
-            Average = 1,
-            Isotopic = 2,
-            Integer = 3
-        }
-
-        public enum StdDevMode
-        {
-            Short = 0,
-            Scientific = 1,
-            Decimal = 2
-        }
-
-        public enum CaseConversionMode
-        {
-            ConvertCaseUp = 0,
-            ExactCase = 1,
-            SmartCase = 2
-        }
-
         private enum SymbolMatchMode
         {
             Unknown = 0,
@@ -110,7 +89,7 @@ namespace MolecularWeightCalculator.Formula
 
         public class Options
         {
-            public MolecularWeightTool.AbbrevRecognitionMode AbbrevRecognitionMode { get; set; }
+            public AbbrevRecognitionMode AbbrevRecognitionMode { get; set; }
             public bool BracketsAsParentheses { get; set; }
             public CaseConversionMode CaseConversion { get; set; }
             public char DecimalSeparator { get; set; }
@@ -1860,10 +1839,10 @@ namespace MolecularWeightCalculator.Formula
             }
 
             // Note: mAbbrevStats is 0-based
-            if (ComputationOptions.AbbrevRecognitionMode != MolecularWeightTool.AbbrevRecognitionMode.NoAbbreviations)
+            if (ComputationOptions.AbbrevRecognitionMode != AbbrevRecognitionMode.NoAbbreviations)
             {
                 bool includeAmino;
-                if (ComputationOptions.AbbrevRecognitionMode == MolecularWeightTool.AbbrevRecognitionMode.NormalPlusAminoAcids)
+                if (ComputationOptions.AbbrevRecognitionMode == AbbrevRecognitionMode.NormalPlusAminoAcids)
                 {
                     includeAmino = true;
                 }
@@ -2635,15 +2614,15 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
         /// <returns></returns>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
-        public double GetElementStatInternal(short elementId, MolecularWeightTool.ElementStatsType elementStat)
+        public double GetElementStatInternal(short elementId, ElementStatsType elementStat)
         {
             if (elementId >= 1 && elementId <= ELEMENT_COUNT)
             {
                 return elementStat switch
                 {
-                    MolecularWeightTool.ElementStatsType.Mass => mElementStats[elementId].Mass,
-                    MolecularWeightTool.ElementStatsType.Charge => mElementStats[elementId].Charge,
-                    MolecularWeightTool.ElementStatsType.Uncertainty => mElementStats[elementId].Uncertainty,
+                    ElementStatsType.Mass => mElementStats[elementId].Mass,
+                    ElementStatsType.Charge => mElementStats[elementId].Charge,
+                    ElementStatsType.Uncertainty => mElementStats[elementId].Uncertainty,
                     _ => 0d
                 };
             }
@@ -3144,7 +3123,7 @@ namespace MolecularWeightCalculator.Formula
         public void MemoryLoadElements(
             ElementMassMode elementMode = ElementMassMode.Average,
             short specificElement = 0,
-            MolecularWeightTool.ElementStatsType specificStatToReset = MolecularWeightTool.ElementStatsType.Mass)
+            ElementStatsType specificStatToReset = ElementStatsType.Mass)
         {
             const double defaultChargeCarrierMassAvg = 1.00739d;
             const double defaultChargeCarrierMassMonoiso = 1.00727649d;
@@ -3221,13 +3200,13 @@ namespace MolecularWeightCalculator.Formula
                 var stats = mElementStats[specificElement];
                 switch (specificStatToReset)
                 {
-                    case MolecularWeightTool.ElementStatsType.Mass:
+                    case ElementStatsType.Mass:
                         stats.Mass = getMass(elementMemoryData[specificElement]);
                         break;
-                    case MolecularWeightTool.ElementStatsType.Uncertainty:
+                    case ElementStatsType.Uncertainty:
                         stats.Uncertainty = getUncertainty(elementMemoryData[specificElement]);
                         break;
-                    case MolecularWeightTool.ElementStatsType.Charge:
+                    case ElementStatsType.Charge:
                         stats.Charge = elementMemoryData[specificElement].Charge;
                         break;
                     default:
