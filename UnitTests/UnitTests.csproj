@@ -40,7 +40,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MolecularWeightCalculatorLib.csproj">
+    <ProjectReference Include="..\MolecularWeightCalculatorLib\MolecularWeightCalculatorLib.csproj">
       <Project>{78332537-7ecc-4b74-8aa9-ba66ab296af0}</Project>
       <Name>MolecularWeightCalculatorLib</Name>
     </ProjectReference>

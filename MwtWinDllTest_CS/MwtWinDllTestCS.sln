@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MolecularWeightCalculatorLib", "..\MolecularWeightCalculatorLib.csproj", "{78332537-7ECC-4B74-8AA9-BA66AB296AF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MolecularWeightCalculatorLib", "..\MolecularWeightCalculatorLib\MolecularWeightCalculatorLib.csproj", "{78332537-7ECC-4B74-8AA9-BA66AB296AF0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MwtWinDllTestCS", "MwtWinDllTestCS.csproj", "{77AEA4B5-F133-4D02-8A55-0A65DACD1B04}"
 EndProject
