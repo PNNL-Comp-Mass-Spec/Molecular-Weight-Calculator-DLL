@@ -50,7 +50,7 @@ namespace MolecularWeightCalculator.Formula
         // For example, in C6H6[xBr] if x = 1, then the formula is treated like C6H6Br
         // If x = 2, then the formula is treated like C6H6Br2
 
-        private ElementAndMassTools.ComputationStats mComputationStats = new ElementAndMassTools.ComputationStats();
+        private ComputationStats mComputationStats = new ComputationStats();
 
         private readonly ElementAndMassTools mElementAndMassRoutines;
 
@@ -228,7 +228,7 @@ namespace MolecularWeightCalculator.Formula
             // mFormattedFormula is passed ByRef
             // If gComputationOptions.CaseConversion = ccConvertCaseUp then mFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
-            mComputationStats = new ElementAndMassTools.ComputationStats();
+            mComputationStats = new ComputationStats();
             mElementAndMassRoutines.ParseFormulaPublic(ref mFormattedFormula, mComputationStats, false, mValueForX);
 
             mElementAndMassRoutines.ComputePercentComposition(mComputationStats);

@@ -151,7 +151,7 @@ namespace MwtWinDllTest
             PopulateComboBoxes();
         }
 
-        private void MakeDataSet(int ionCount, Peptide.FragmentationSpectrumData[] fragSpectrum)
+        private void MakeDataSet(int ionCount, FragmentationSpectrumData[] fragSpectrum)
         {
             // Create a DataSet.
             myDataSet = new DataSet("myDataSet");

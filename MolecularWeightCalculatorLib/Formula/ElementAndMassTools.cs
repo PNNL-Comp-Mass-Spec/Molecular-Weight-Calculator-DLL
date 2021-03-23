@@ -76,7 +76,7 @@ namespace MolecularWeightCalculator.Formula
             Abbreviation = 2
         }
 
-        protected enum MessageType
+        private enum MessageType
         {
             Normal = 0,
             Error = 1,
@@ -86,267 +86,6 @@ namespace MolecularWeightCalculator.Formula
         #endregion
 
         #region "Data classes"
-
-        public class Options
-        {
-            public AbbrevRecognitionMode AbbrevRecognitionMode { get; set; }
-            public bool BracketsAsParentheses { get; set; }
-            public CaseConversionMode CaseConversion { get; set; }
-            public char DecimalSeparator { get; set; }
-            public string RtfFontName { get; set; }
-            public short RtfFontSize { get; set; }
-            public StdDevMode StdDevMode { get; set; } // Can be 0, 1, or 2 (see StdDevModeConstants)
-        }
-
-        public class IsotopicAtomInfo
-        {
-            public double Count { get; set; } // Can have non-integer counts of atoms, e.g. ^13C5.5
-            public double Mass { get; set; }
-
-            public IsotopicAtomInfo Clone()
-            {
-                // Shallow copy is sufficient - no reference members
-                return (IsotopicAtomInfo) MemberwiseClone();
-            }
-
-            public override string ToString()
-            {
-                return $"{Count}x{Mass:F2}";
-            }
-        }
-
-        public class ElementUseStats
-        {
-            /// <summary>
-            /// True if the element is present
-            /// </summary>
-            public bool Used { get; set; }
-
-            /// <summary>
-            /// Number of atoms of this element; can have a non-integer count, e.g., C5.5
-            /// </summary>
-            public double Count { get; set; }
-
-            public double IsotopicCorrection { get; set; }
-
-            /// <summary>
-            /// Specific isotopes of the atom
-            /// </summary>
-            public List<IsotopicAtomInfo> Isotopes { get; private set; }
-
-            public ElementUseStats()
-            {
-                Used = false;
-                Count = 0;
-                IsotopicCorrection = 0;
-                Isotopes = new List<IsotopicAtomInfo>(3);
-            }
-
-            public ElementUseStats Clone()
-            {
-                // Start with a shallow copy for all value members
-                var cloned = (ElementUseStats) MemberwiseClone();
-
-                // Finish with a deep copy for all reference members
-                cloned.Isotopes = new List<IsotopicAtomInfo>(Isotopes.Count);
-                for (var i = 0; i < Isotopes.Count; i++)
-                {
-                    cloned.Isotopes.Add(Isotopes[i]?.Clone());
-                }
-
-                return cloned;
-            }
-
-            public override string ToString()
-            {
-                if (!Used)
-                {
-                    return "unused";
-                }
-                return $"{Count}";
-            }
-        }
-
-        public class PercentCompositionInfo
-        {
-            public double PercentComposition { get; set; }
-            public double StdDeviation { get; set; }
-
-            public override string ToString()
-            {
-                return PercentComposition.ToString("0.0000");
-            }
-
-            public PercentCompositionInfo Clone()
-            {
-                // Shallow copy is sufficient - no reference members
-                return (PercentCompositionInfo) MemberwiseClone();
-            }
-        }
-
-        public class ComputationStats
-        {
-            public ElementUseStats[] Elements { get; private set; }        // 1-based array, ranging from 1 to ELEMENT_COUNT
-            public double TotalMass { get; set; }
-            public PercentCompositionInfo[] PercentCompositions { get; private set; } // 1-based array, ranging from 1 to ELEMENT_COUNT
-            public float Charge { get; set; }
-            public double StandardDeviation { get; set; }
-
-            public ComputationStats()
-            {
-                const int ElementCount = ELEMENT_COUNT + 1;
-
-                Charge = 0;
-                StandardDeviation = 0;
-                TotalMass = 0;
-                Elements = new ElementUseStats[ElementCount];
-                PercentCompositions = new PercentCompositionInfo[ElementCount];
-
-                for (var i = 0; i < ElementCount; i++)
-                {
-                    Elements[i] = new ElementUseStats();
-                    PercentCompositions[i] = new PercentCompositionInfo();
-                }
-            }
-
-            public ComputationStats Clone()
-            {
-                // Start with a shallow copy for all value members
-                var cloned = (ComputationStats)MemberwiseClone();
-
-                // Finish with a deep copy for all reference members
-                cloned.Elements = new ElementUseStats[Elements.Length];
-                cloned.PercentCompositions = new PercentCompositionInfo[PercentCompositions.Length];
-
-                // Assume Elements and PercentCompositions are always the same length
-                for (var i = 0; i < Elements.Length; i++)
-                {
-                    cloned.Elements[i] = Elements[i]?.Clone();
-                    cloned.PercentCompositions[i] = PercentCompositions[i]?.Clone();
-                }
-
-                return cloned;
-            }
-
-            public override string ToString()
-            {
-                return $"{TotalMass:F2}";
-            }
-        }
-
-        public class IsotopeInfo
-        {
-            public double Mass { get; }
-            public float Abundance { get; }
-
-            public IsotopeInfo(double mass, float abundance)
-            {
-                Mass = mass;
-                Abundance = abundance;
-            }
-
-            public override string ToString()
-            {
-                return Mass.ToString("0.0000");
-            }
-        }
-
-        public class ElementInfo
-        {
-            public string Symbol { get; }
-            public double Mass { get; set; }
-            public double Uncertainty { get; set; }
-            public float Charge { get; set; }
-            public List<IsotopeInfo> Isotopes { get; } // Masses and Abundances of the isotopes; 0-based array, ranging from 0 to MAX_Isotopes - 1 (at most)
-
-            public ElementInfo()
-            {
-                Symbol = "";
-                Isotopes = new List<IsotopeInfo>();
-            }
-
-            public ElementInfo(string symbol, float charge, double mass, double uncertainty = 0)
-            {
-                Symbol = symbol;
-                Charge = charge;
-                Mass = mass;
-                Uncertainty = uncertainty;
-                Isotopes = new List<IsotopeInfo>(MAX_ISOTOPES);
-            }
-
-            public override string ToString()
-            {
-                return Symbol + ": " + Mass.ToString("0.0000");
-            }
-        }
-
-        public class AbbrevStatsData : IComparable<AbbrevStatsData>
-        {
-            /// <summary>
-            /// The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
-            /// </summary>
-            public string Symbol { get; set; }
-
-            /// <summary>
-            /// Empirical formula
-            /// Cannot contain other abbreviations
-            /// </summary>
-            public string Formula { get; set; }
-
-            /// <summary>
-            /// Computed mass for quick reference
-            /// </summary>
-            public double Mass { get; set; }
-
-            /// <summary>
-            /// Charge state
-            /// </summary>
-            public float Charge { get; set; }
-
-            /// <summary>
-            /// True if an amino acid
-            /// </summary>
-            public bool IsAminoAcid { get; set; }
-
-            /// <summary>
-            /// One letter symbol (only used for amino acids)
-            /// </summary>
-            public string OneLetterSymbol { get; set; }
-
-            /// <summary>
-            /// Description of the abbreviation
-            /// </summary>
-            public string Comment { get; set; }
-
-            /// <summary>
-            /// True if this abbreviation has an invalid symbol or formula
-            /// </summary>
-            public bool InvalidSymbolOrFormula { get; set; }
-
-            public AbbrevStatsData(string symbol, string formula, float charge, bool isAminoAcid, string oneLetterSymbol = "", string comment = "", bool invalidSymbolOrFormula = false)
-            {
-                InvalidSymbolOrFormula = invalidSymbolOrFormula;
-                Symbol = symbol;
-                Formula = formula;
-                Mass = 0d;
-                Charge = charge;
-                OneLetterSymbol = oneLetterSymbol.ToUpper();
-                IsAminoAcid = isAminoAcid;
-                Comment = comment;
-            }
-
-            public override string ToString()
-            {
-                return Symbol + ": " + Formula;
-            }
-
-            public int CompareTo(AbbrevStatsData other)
-            {
-                if (ReferenceEquals(this, other)) return 0;
-                if (ReferenceEquals(null, other)) return 1;
-                return string.Compare(Symbol, other.Symbol, StringComparison.Ordinal);
-            }
-        }
 
         private class ErrorDescription
         {
@@ -489,7 +228,7 @@ namespace MolecularWeightCalculator.Formula
 
         #region "Class wide Variables"
 
-        public Options ComputationOptions { get; } = new Options();
+        public FormulaOptions ComputationOptions { get; } = new FormulaOptions();
 
         /// <summary>
         /// Stores the elements in alphabetical order, with Key==Symbol, and Value==Index in <see cref="mElementStats"/>
@@ -2797,7 +2536,7 @@ namespace MolecularWeightCalculator.Formula
             }
         }
 
-        protected void LogMessage(string message, MessageType messageType = MessageType.Normal)
+        private void LogMessage(string message, MessageType messageType = MessageType.Normal)
         {
             // Note that CleanupFilePaths() will update mOutputFolderPath, which is used here if mLogFolderPath is blank
             // Thus, be sure to call CleanupFilePaths (or update mLogFolderPath) before the first call to LogMessage
@@ -3158,8 +2897,8 @@ namespace MolecularWeightCalculator.Formula
 
             // Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights
             // Reduce branching - use Func<> to get the correct value based on the settings
-            Func<ElementAndMassInMemoryData.ElementMem, double> getMass;
-            Func<ElementAndMassInMemoryData.ElementMem, double> getUncertainty;
+            Func<ElementMem, double> getMass;
+            Func<ElementMem, double> getUncertainty;
             switch (elementMode)
             {
                 case ElementMassMode.Integer:

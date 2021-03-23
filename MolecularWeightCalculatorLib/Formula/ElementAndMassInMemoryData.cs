@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using IsotopeInfo = MolecularWeightCalculator.Formula.ElementAndMassTools.IsotopeInfo;
 
 namespace MolecularWeightCalculator.Formula
 {
@@ -55,26 +54,6 @@ namespace MolecularWeightCalculator.Formula
             cautions.Add("PrO", "Pro means proline; PrO means praseodymium-oxygen.  ");
             cautions.Add("Val", "Val means valine; VAl means vanadium-aluminum.  ");
             cautions.Add("VAl", "Val means valine; VAl means vanadium-aluminum.  ");
-        }
-
-        internal struct ElementMem
-        {
-            public readonly string Symbol;
-            public readonly int Charge;
-            public readonly int MassInteger;
-            public readonly double MassIsotopic;
-            public readonly double MassAverage;
-            public readonly double UncertaintyAverageMass;
-
-            public ElementMem(string symbol, int charge, int nominalMass, double isotopicMass, double averageMass, double uncertaintyAverageMass)
-            {
-                Symbol = symbol;
-                Charge = charge;
-                MassInteger = nominalMass;
-                MassIsotopic = isotopicMass;
-                MassAverage = averageMass;
-                UncertaintyAverageMass = uncertaintyAverageMass;
-            }
         }
 
         /// <summary>
@@ -209,7 +188,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Stores isotope information in elementStats[]
         /// </summary>
-        internal static void MemoryLoadIsotopes(ElementAndMassTools.ElementInfo[] elementStats)
+        internal static void MemoryLoadIsotopes(ElementInfo[] elementStats)
         {
             // The isoData[] array holds the list of isotopes for each element
             // Create the lists now, to simplify the code below.

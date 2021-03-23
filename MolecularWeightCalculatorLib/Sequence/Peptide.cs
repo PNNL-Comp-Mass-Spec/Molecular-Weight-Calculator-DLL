@@ -66,9 +66,9 @@ namespace MolecularWeightCalculator.Sequence
         private const string UNKNOWN_SYMBOL = "Xxx";
         private const string UNKNOWN_SYMBOL_ONE_LETTER = "X";
 
-        private const string TERMINII_SYMBOL = "-";
-        private const string TRYPTIC_RULE_RESIDUES = "KR";
-        private const string TRYPTIC_EXCEPTION_RESIDUES = "P";
+        internal const string TERMINII_SYMBOL = "-";
+        internal const string TRYPTIC_RULE_RESIDUES = "KR";
+        internal const string TRYPTIC_EXCEPTION_RESIDUES = "P";
 
         private const string SHOULDER_ION_PREFIX = "Shoulder-";
 
@@ -120,90 +120,6 @@ namespace MolecularWeightCalculator.Sequence
             public double Mass { get; set; }
             public Residue PrecedingResidue { get; set; } = new Residue(); // If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
             public Residue FollowingResidue { get; set; } = new Residue(); // If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
-        }
-
-        public class FragmentationSpectrumIntensities
-        {
-            public double[] IonType { get; } // 0-based array
-            // ReSharper disable once InconsistentNaming
-            public double BYIonShoulder { get; set; } // If > 0 then shoulder ions will be created by B and Y ions
-            public double NeutralLoss { get; set; }
-
-            public FragmentationSpectrumIntensities()
-            {
-                IonType = new double[Enum.GetNames(typeof(IonType)).Length];
-            }
-        }
-
-        // Note: A ions can have ammonia and phosphate loss, but not water loss, so this is set to false by default
-        public class IonTypeOptions
-        {
-            public bool ShowIon { get; set; }
-            public bool NeutralLossWater { get; set; }
-            public bool NeutralLossAmmonia { get; set; }
-            public bool NeutralLossPhosphate { get; set; }
-        }
-
-        public class FragmentationSpectrumOptions
-        {
-            public FragmentationSpectrumIntensities IntensityOptions { get; set; } = new FragmentationSpectrumIntensities();
-            public IonTypeOptions[] IonTypeOptions { get; }
-            public bool DoubleChargeIonsShow { get; set; }
-            public float DoubleChargeIonsThreshold { get; set; }
-            public bool TripleChargeIonsShow { get; set; }
-            public float TripleChargeIonsThreshold { get; set; }
-
-            public FragmentationSpectrumOptions()
-            {
-                IonTypeOptions = new IonTypeOptions[Enum.GetNames(typeof(IonType)).Length];
-                for (var i = 0; i < IonTypeOptions.Length; i++)
-                {
-                    IonTypeOptions[i] = new IonTypeOptions();
-                }
-            }
-        }
-
-        public class FragmentationSpectrumData : IComparable<FragmentationSpectrumData>
-        {
-            public double Mass { get; }
-            public double Intensity { get; }
-            public string Symbol { get; } // The symbol, with the residue number (e.g. y1, y2, b3-H2O, Shoulder-y1, etc.)
-            public string SymbolGeneric { get; } // The symbol, without the residue number (e.g. a, b, y, b++, Shoulder-y, etc.)
-            public int SourceResidueNumber { get; } // The residue number that resulted in this mass
-            public string SourceResidueSymbol3Letter { get; } // The residue symbol that resulted in this mass
-            public short Charge { get; }
-            public IonType IonType { get; }
-            public bool IsShoulderIon { get; } // B and Y ions can have Shoulder ions at +-1
-
-            public FragmentationSpectrumData()
-            {
-            }
-
-            public FragmentationSpectrumData(float mass, float intensity, string ionSymbol, string ionSymbolGeneric,
-                int sourceResidue, string sourceResidueSymbol3Letter, short charge, IonType ionType, bool isShoulderIon = false)
-            {
-                Mass = mass;
-                Intensity = intensity;
-                Symbol = ionSymbol;
-                SymbolGeneric = ionSymbolGeneric;
-                SourceResidueNumber = sourceResidue;
-                SourceResidueSymbol3Letter = sourceResidueSymbol3Letter;
-                Charge = charge;
-                IonType = ionType;
-                IsShoulderIon = isShoulderIon;
-            }
-
-            public override string ToString()
-            {
-                return Symbol + ", " + Mass.ToString("0.00");
-            }
-
-            public int CompareTo(FragmentationSpectrumData other)
-            {
-                if (ReferenceEquals(this, other)) return 0;
-                if (ReferenceEquals(null, other)) return 1;
-                return Mass.CompareTo(other.Mass);
-            }
         }
 
         // Note: A peptide goes from N to C, e.g. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH

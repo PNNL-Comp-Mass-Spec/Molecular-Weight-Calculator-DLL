@@ -43,11 +43,21 @@
   <ItemGroup>
     <Compile Include="CapillaryFlow.cs" />
     <Compile Include="CapillaryFlowEnums.cs" />
+    <Compile Include="Formula\AbbrevStatsData.cs" />
     <Compile Include="Formula\Compound.cs" />
+    <Compile Include="Formula\ComputationStats.cs" />
     <Compile Include="Formula\ElementAndMassInMemoryData.cs" />
     <Compile Include="Formula\ElementAndMassTools.cs" />
     <Compile Include="Formula\ElementEnums.cs" />
+    <Compile Include="Formula\ElementInfo.cs" />
+    <Compile Include="Formula\ElementMem.cs" />
+    <Compile Include="Formula\ElementUseStats.cs" />
+    <Compile Include="Formula\IsotopeInfo.cs" />
+    <Compile Include="Formula\IsotopicAtomInfo.cs" />
+    <Compile Include="Formula\FormulaOptions.cs" />
+    <Compile Include="Formula\PercentCompositionInfo.cs" />
     <Compile Include="FormulaFinder\CandidateElement.cs" />
+    <Compile Include="FormulaFinder\CandidateElementTolerances.cs" />
     <Compile Include="FormulaFinder\FormulaSearcher.cs" />
     <Compile Include="FormulaFinder\FormulaSearchModes.cs" />
     <Compile Include="FormulaFinder\SearchOptions.cs" />
@@ -58,6 +68,10 @@
     <Compile Include="MoleMassDilutionEnums.cs" />
     <Compile Include="NumberConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sequence\FragmentationSpectrumData.cs" />
+    <Compile Include="Sequence\FragmentationSpectrumIntensities.cs" />
+    <Compile Include="Sequence\FragmentationSpectrumOptions.cs" />
+    <Compile Include="Sequence\IonTypeOptions.cs" />
     <Compile Include="Sequence\Peptide.cs" />
     <Compile Include="Sequence\PeptideEnums.cs" />
   </ItemGroup>
