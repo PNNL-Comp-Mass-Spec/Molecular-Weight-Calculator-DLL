@@ -262,7 +262,7 @@ namespace MolecularWeightCalculator
         {
             // Simply assigning formula to .Formula will update the Mass
             Compound.Formula = formula;
-            return Compound.get_Mass(false);
+            return Compound.GetMass(false);
         }
 
         /// <summary>

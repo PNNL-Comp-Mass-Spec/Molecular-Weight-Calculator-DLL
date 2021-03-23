@@ -40,12 +40,12 @@ namespace MolecularWeightCalculator
         {
             mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();
 
-            mStrFormula = "";
+            mFormula = "";
             ValueForX = 1.0d;
         }
 
-        private string mStrFormula;
-        private string mStrFormattedFormula;
+        private string mFormula;
+        private string mFormattedFormula;
         private double mValueForX; // The value to assign to x when present after a square bracket.
         // For example, in C6H6[xBr] if x = 1, then the formula is treated like C6H6Br
         // If x = 2, then the formula is treated like C6H6Br2
@@ -56,14 +56,14 @@ namespace MolecularWeightCalculator
 
         public string ConvertToEmpirical()
         {
-            // Converts mStrFormula to its empirical formula and returns the result
-            var result = mElementAndMassRoutines.ConvertFormulaToEmpirical(mStrFormula);
+            // Converts mFormula to its empirical formula and returns the result
+            var result = mElementAndMassRoutines.ConvertFormulaToEmpirical(mFormula);
             UpdateErrorAndCaution();
 
             if (string.IsNullOrEmpty(ErrorDescription))
             {
-                mStrFormula = result;
-                mStrFormattedFormula = result;
+                mFormula = result;
+                mFormattedFormula = result;
                 return result;
             }
 
@@ -83,14 +83,14 @@ namespace MolecularWeightCalculator
 
         public string ExpandAbbreviations()
         {
-            // Expands abbreviations in mStrFormula and returns the result
-            var result = mElementAndMassRoutines.ExpandAbbreviationsInFormula(mStrFormula);
+            // Expands abbreviations in mFormula and returns the result
+            var result = mElementAndMassRoutines.ExpandAbbreviationsInFormula(mFormula);
             UpdateErrorAndCaution();
 
             if (string.IsNullOrEmpty(ErrorDescription))
             {
-                mStrFormula = result;
-                mStrFormattedFormula = result;
+                mFormula = result;
+                mFormattedFormula = result;
                 return result;
             }
 
@@ -188,7 +188,7 @@ namespace MolecularWeightCalculator
 
         public short GetUsedElementCount()
         {
-            // Returns the number of unique elements present in mStrFormula
+            // Returns the number of unique elements present in mFormula
 
             // Determine # of elements in formula
             short totalElements = 0;
@@ -223,13 +223,13 @@ namespace MolecularWeightCalculator
 
         private void UpdateMass()
         {
-            mStrFormattedFormula = mStrFormula;
+            mFormattedFormula = mFormula;
 
-            // mStrFormattedFormula is passed ByRef
-            // If gComputationOptions.CaseConversion = ccConvertCaseUp then mStrFormattedFormula is properly capitalized
+            // mFormattedFormula is passed ByRef
+            // If gComputationOptions.CaseConversion = ccConvertCaseUp then mFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
             mComputationStats = new ElementAndMassTools.ComputationStats();
-            mElementAndMassRoutines.ParseFormulaPublic(ref mStrFormattedFormula, mComputationStats, false, mValueForX);
+            mElementAndMassRoutines.ParseFormulaPublic(ref mFormattedFormula, mComputationStats, false, mValueForX);
 
             mElementAndMassRoutines.ComputePercentComposition(mComputationStats);
 
@@ -244,10 +244,10 @@ namespace MolecularWeightCalculator
                 return false;
             }
 
-            var charLoc = (short)mStrFormattedFormula.ToLower().IndexOf("[x", StringComparison.OrdinalIgnoreCase);
+            var charLoc = (short)mFormattedFormula.ToLower().IndexOf("[x", StringComparison.OrdinalIgnoreCase);
             if (charLoc >= 0)
             {
-                return mStrFormattedFormula[charLoc + 1] != 'e';
+                return mFormattedFormula[charLoc + 1] != 'e';
             }
 
             return false;
@@ -267,10 +267,10 @@ namespace MolecularWeightCalculator
 
         public string Formula
         {
-            get => mStrFormula;
+            get => mFormula;
             set
             {
-                mStrFormula = value;
+                mFormula = value;
 
                 // Recompute the mass for this formula
                 // Updates Error and Caution statements if there is a problem
@@ -278,23 +278,24 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public string FormulaCapitalized => mStrFormattedFormula;
+        public string FormulaCapitalized => mFormattedFormula;
 
         // ReSharper disable once InconsistentNaming
         public string FormulaRTF => mElementAndMassRoutines.PlainTextToRtfInternal(FormulaCapitalized, false);
 
-        public double Mass => get_Mass(true);
+        public double Mass => GetMass();
 
-        public double get_Mass(bool recomputeMass)
+        public double GetMass(bool recomputeMass = true)
         {
             if (recomputeMass)
                 UpdateMass();
+
             return mComputationStats.TotalMass;
         }
 
-        public string MassAndStdDevString => get_MassAndStdDevString(true);
+        public string MassAndStdDevString => GetMassAndStdDevString();
 
-        public string get_MassAndStdDevString(bool recomputeMass)
+        public string GetMassAndStdDevString(bool recomputeMass = true)
         {
             if (recomputeMass)
                 UpdateMass();
