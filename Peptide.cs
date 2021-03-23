@@ -190,21 +190,46 @@ namespace MolecularWeightCalculator
             }
         }
 
-        public class FragmentationSpectrumData
+        public class FragmentationSpectrumData : IComparable<FragmentationSpectrumData>
         {
-            public double Mass { get; set; }
-            public double Intensity { get; set; }
-            public string Symbol { get; set; } // The symbol, with the residue number (e.g. y1, y2, b3-H2O, Shoulder-y1, etc.)
-            public string SymbolGeneric { get; set; } // The symbol, without the residue number (e.g. a, b, y, b++, Shoulder-y, etc.)
-            public int SourceResidueNumber { get; set; } // The residue number that resulted in this mass
-            public string SourceResidueSymbol3Letter { get; set; } // The residue symbol that resulted in this mass
-            public short Charge { get; set; }
-            public IonType IonType { get; set; }
-            public bool IsShoulderIon { get; set; } // B and Y ions can have Shoulder ions at +-1
+            public double Mass { get; }
+            public double Intensity { get; }
+            public string Symbol { get; } // The symbol, with the residue number (e.g. y1, y2, b3-H2O, Shoulder-y1, etc.)
+            public string SymbolGeneric { get; } // The symbol, without the residue number (e.g. a, b, y, b++, Shoulder-y, etc.)
+            public int SourceResidueNumber { get; } // The residue number that resulted in this mass
+            public string SourceResidueSymbol3Letter { get; } // The residue symbol that resulted in this mass
+            public short Charge { get; }
+            public IonType IonType { get; }
+            public bool IsShoulderIon { get; } // B and Y ions can have Shoulder ions at +-1
+
+            public FragmentationSpectrumData()
+            {
+            }
+
+            public FragmentationSpectrumData(float mass, float intensity, string ionSymbol, string ionSymbolGeneric,
+                int sourceResidue, string sourceResidueSymbol3Letter, short charge, IonType ionType, bool isShoulderIon = false)
+            {
+                Mass = mass;
+                Intensity = intensity;
+                Symbol = ionSymbol;
+                SymbolGeneric = ionSymbolGeneric;
+                SourceResidueNumber = sourceResidue;
+                SourceResidueSymbol3Letter = sourceResidueSymbol3Letter;
+                Charge = charge;
+                IonType = ionType;
+                IsShoulderIon = isShoulderIon;
+            }
 
             public override string ToString()
             {
                 return Symbol + ", " + Mass.ToString("0.00");
+            }
+
+            public int CompareTo(FragmentationSpectrumData other)
+            {
+                if (ReferenceEquals(this, other)) return 0;
+                if (ReferenceEquals(null, other)) return 1;
+                return Mass.CompareTo(other.Mass);
             }
         }
 
@@ -244,36 +269,6 @@ namespace MolecularWeightCalculator
         // ReSharper restore InconsistentNaming
 
         private bool mDelayUpdateResidueMass;
-
-        private void AppendDataToFragSpectrum(ref int ionCount, ref FragmentationSpectrumData[] fragSpectrumWork, float mass, float intensity, string ionSymbol, string ionSymbolGeneric, int sourceResidue, string sourceResidueSymbol3Letter, short charge, IonType ionType, bool isShoulderIon)
-        {
-            try
-            {
-                if (ionCount >= fragSpectrumWork.Length)
-                {
-                    // This shouldn't happen
-                    Console.WriteLine("In AppendDataToFragSpectrum, ionCount is greater than FragSpectrumWork.Length - 1; this is unexpected");
-                    Array.Resize(ref fragSpectrumWork, fragSpectrumWork.Length + 10);
-                }
-
-                var fragIon = fragSpectrumWork[ionCount];
-                fragIon.Mass = mass;
-                fragIon.Intensity = intensity;
-                fragIon.Symbol = ionSymbol;
-                fragIon.SymbolGeneric = ionSymbolGeneric;
-                fragIon.SourceResidueNumber = sourceResidue;
-                fragIon.SourceResidueSymbol3Letter = sourceResidueSymbol3Letter;
-                fragIon.Charge = charge;
-                fragIon.IonType = ionType;
-                fragIon.IsShoulderIon = isShoulderIon;
-
-                ionCount += 1;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error in Peptide.AppendDataToFragSpectrum: {0}", ex.Message);
-            }
-        }
 
         private int CheckForModifications(string partialSequence, int residueIndex, bool addMissingModificationSymbols = false)
         {
@@ -477,10 +472,7 @@ namespace MolecularWeightCalculator
                 return 0;
             }
 
-            fragSpectrum = new FragmentationSpectrumData[fragSpectraData.Count];
-
-            for (var index = 0; index < fragSpectraData.Count; index++)
-                fragSpectrum[index] = fragSpectraData[index];
+            fragSpectrum = fragSpectraData.ToArray();
 
             return fragSpectraData.Count;
         }
@@ -525,16 +517,11 @@ namespace MolecularWeightCalculator
 
             if (predictedIonCount == 0)
                 predictedIonCount = mResidues.Count;
-            var fragSpectrumWork = new FragmentationSpectrumData[predictedIonCount + 1];
-            for (var i = 0; i < fragSpectrumWork.Length; i++)
-            {
-                fragSpectrumWork[i] = new FragmentationSpectrumData();
-            }
+            var fragSpectrumWork = new List<FragmentationSpectrumData>(predictedIonCount + 1);
 
             // Need to update the residue masses in case the modifications have changed
             UpdateResidueMasses();
 
-            var ionCount = 0;
             for (var residueIndex = 0; residueIndex < mResidues.Count; residueIndex++)
             {
                 var residue = mResidues[residueIndex];
@@ -599,7 +586,7 @@ namespace MolecularWeightCalculator
                                             ionSymbolGeneric += new string('+', chargeIndex);
                                         }
 
-                                        AppendDataToFragSpectrum(ref ionCount, ref fragSpectrumWork, convolutedMass, intensity, ionSymbol, ionSymbolGeneric, residueIndex, residue.Symbol, chargeIndex, ionType, false);
+                                        fragSpectrumWork.Add(new FragmentationSpectrumData(convolutedMass, intensity, ionSymbol, ionSymbolGeneric, residueIndex, residue.Symbol, chargeIndex, ionType, false));
 
                                         // Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
                                         // Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
@@ -609,7 +596,7 @@ namespace MolecularWeightCalculator
                                             for (var shoulderIndex = -1; shoulderIndex <= 1; shoulderIndex += 2)
                                             {
                                                 observedMass = (float)(convolutedMass + shoulderIndex * (1d / chargeIndex));
-                                                AppendDataToFragSpectrum(ref ionCount, ref fragSpectrumWork, observedMass, ionShoulderIntensity, SHOULDER_ION_PREFIX + ionSymbol, SHOULDER_ION_PREFIX + ionSymbolGeneric, residueIndex, residue.Symbol, chargeIndex, ionType, true);
+                                                fragSpectrumWork.Add(new FragmentationSpectrumData(observedMass, ionShoulderIntensity, SHOULDER_ION_PREFIX + ionSymbol, SHOULDER_ION_PREFIX + ionSymbolGeneric, residueIndex, residue.Symbol, chargeIndex, ionType, true));
                                             }
                                         }
 
@@ -621,7 +608,7 @@ namespace MolecularWeightCalculator
                                             if (residues.Contains("Ser") || residues.Contains("Thr") || residues.Contains("Glue") || residues.Contains("Asp"))
                                             {
                                                 observedMass = (float)(convolutedMass - mMassHOH / chargeIndex);
-                                                AppendDataToFragSpectrum(ref ionCount, ref fragSpectrumWork, observedMass, neutralLossIntensity, ionSymbol + mWaterLossSymbol, ionSymbolGeneric + mWaterLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false);
+                                                fragSpectrumWork.Add(new FragmentationSpectrumData(observedMass, neutralLossIntensity, ionSymbol + mWaterLossSymbol, ionSymbolGeneric + mWaterLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false));
                                             }
                                         }
 
@@ -632,7 +619,7 @@ namespace MolecularWeightCalculator
                                             if (residues.Contains("Arg") || residues.Contains("Lys") || residues.Contains("Gln") || residues.Contains("Asn"))
                                             {
                                                 observedMass = (float)(convolutedMass - mMassNH3 / chargeIndex);
-                                                AppendDataToFragSpectrum(ref ionCount, ref fragSpectrumWork, observedMass, neutralLossIntensity, ionSymbol + mAmmoniaLossSymbol, ionSymbolGeneric + mAmmoniaLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false);
+                                                fragSpectrumWork.Add(new FragmentationSpectrumData(observedMass, neutralLossIntensity, ionSymbol + mAmmoniaLossSymbol, ionSymbolGeneric + mAmmoniaLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false));
                                             }
                                         }
 
@@ -644,7 +631,7 @@ namespace MolecularWeightCalculator
                                             if (phosphorylated)
                                             {
                                                 observedMass = (float)(convolutedMass - mMassH3PO4 / chargeIndex);
-                                                AppendDataToFragSpectrum(ref ionCount, ref fragSpectrumWork, observedMass, neutralLossIntensity, ionSymbol + mPhosphoLossSymbol, ionSymbolGeneric + mPhosphoLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false);
+                                                fragSpectrumWork.Add(new FragmentationSpectrumData(observedMass, neutralLossIntensity, ionSymbol + mPhosphoLossSymbol, ionSymbolGeneric + mPhosphoLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false));
                                             }
                                         }
                                     }
@@ -655,21 +642,10 @@ namespace MolecularWeightCalculator
                 }
             }
 
-            // Sort arrays by mass (using a pointer array to synchronize the arrays)
-            var pointerArray = new int[ionCount + 1];
+            // Sort frag spectra by mass (using a pointer array to synchronize the arrays)
+            fragSpectrumWork.Sort(); // Uses the default comparator defined for FragmentationSpectrumData, which sorts by mass
 
-            for (var index = 0; index < ionCount; index++)
-                pointerArray[index] = index;
-
-            ShellSortFragSpectrum(ref fragSpectrumWork, ref pointerArray, 0, ionCount - 1);
-
-            // Copy the data from FragSpectrumWork[] to fragSpectraData
-            var fragSpectraData = new List<FragmentationSpectrumData>(ionCount);
-
-            for (var index = 0; index <= ionCount; index++)
-                fragSpectraData.Add(fragSpectrumWork[pointerArray[index]]);
-
-            return fragSpectraData;
+            return fragSpectrumWork;
         }
 
         public int GetFragmentationSpectrumRequiredDataPoints()
@@ -2470,50 +2446,6 @@ namespace MolecularWeightCalculator
             if (!string.IsNullOrWhiteSpace(newSymbol))
             {
                 mWaterLossSymbol = newSymbol;
-            }
-        }
-
-        private void ShellSortFragSpectrum(ref FragmentationSpectrumData[] fragSpectrumWork, ref int[] pointerArray, int lowIndex, int highIndex)
-        {
-            // Sort the list using a shell sort
-
-            // Sort PointerArray[lowIndex..highIndex] by comparing fragSpectrumWork[pointerArray[x]].Mass
-
-            // Compute largest increment
-            var count = highIndex - lowIndex + 1;
-            var increment = 1;
-            if (count < 14)
-            {
-                increment = 1;
-            }
-            else
-            {
-                while (increment < count)
-                    increment = 3 * increment + 1;
-
-                increment /= 3;
-                increment /= 3;
-            }
-
-            while (increment > 0)
-            {
-                // Sort by insertion in increments of increment
-                for (var index = lowIndex + increment; index <= highIndex; index++)
-                {
-                    var pointerSwap = pointerArray[index];
-                    int indexCompare;
-                    for (indexCompare = index - increment; indexCompare >= lowIndex; indexCompare += -increment)
-                    {
-                        // Use <= to sort ascending; Use > to sort descending
-                        if (fragSpectrumWork[pointerArray[indexCompare]].Mass <= fragSpectrumWork[pointerSwap].Mass)
-                            break;
-                        pointerArray[indexCompare + increment] = pointerArray[indexCompare];
-                    }
-
-                    pointerArray[indexCompare + increment] = pointerSwap;
-                }
-
-                increment /= 3;
             }
         }
 
