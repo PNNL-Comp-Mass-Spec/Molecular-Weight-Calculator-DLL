@@ -1,6 +1,6 @@
-﻿namespace MolecularWeightCalculator
+﻿namespace MolecularWeightCalculator.FormulaFinder
 {
-    public class FormulaFinderOptions
+    public class SearchOptions
     {
         #region "Constants and Enums"
         public enum SearchModes
@@ -101,7 +101,7 @@
         /// Constructor
         /// </summary>
         /// <remarks></remarks>
-        public FormulaFinderOptions()
+        public SearchOptions()
         {
             FindCharge = true;
             LimitChargeRange = false;

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using MolecularWeightCalculator.Formula;
+using MolecularWeightCalculator.FormulaFinder;
+using MolecularWeightCalculator.Sequence;
 
 namespace MolecularWeightCalculator
 {

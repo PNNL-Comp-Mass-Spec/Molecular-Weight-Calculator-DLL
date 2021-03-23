@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MolecularWeightCalculator.Formula;
 
-namespace MolecularWeightCalculator
+namespace MolecularWeightCalculator.FormulaFinder
 {
     public class FormulaSearcher
     {
@@ -237,11 +238,11 @@ namespace MolecularWeightCalculator
         /// <param name="searchOptions">If null, uses default search options</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public List<FormulaFinderResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, FormulaFinderOptions searchOptions = null)
+        public List<SearchResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, SearchOptions searchOptions = null)
         {
             var massToleranceDa = massTolerancePPM * targetMass / 1000000.0d;
             if (searchOptions == null)
-                searchOptions = new FormulaFinderOptions();
+                searchOptions = new SearchOptions();
 
             var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, true);
 
@@ -257,10 +258,10 @@ namespace MolecularWeightCalculator
         /// <param name="searchOptions">If null, uses default search options</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public List<FormulaFinderResult> FindMatchesByMass(double targetMass, double massToleranceDa, FormulaFinderOptions searchOptions = null)
+        public List<SearchResult> FindMatchesByMass(double targetMass, double massToleranceDa, SearchOptions searchOptions = null)
         {
             if (searchOptions == null)
-                searchOptions = new FormulaFinderOptions();
+                searchOptions = new SearchOptions();
 
             var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, false);
 
@@ -268,13 +269,13 @@ namespace MolecularWeightCalculator
             return sortedResults;
         }
 
-        public List<FormulaFinderResult> FindMatchesByPercentComposition(
+        public List<SearchResult> FindMatchesByPercentComposition(
             double maximumFormulaMass,
             double percentTolerance,
-            FormulaFinderOptions searchOptions)
+            SearchOptions searchOptions)
         {
             if (searchOptions == null)
-                searchOptions = new FormulaFinderOptions();
+                searchOptions = new SearchOptions();
 
             var results = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, searchOptions);
 
@@ -315,9 +316,9 @@ namespace MolecularWeightCalculator
         }
 
         private void AppendPercentCompositionResult(
-            FormulaFinderResult searchResult,
+            SearchResult searchResult,
             int elementCount,
-            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IList<CandidateElement> sortedElementStats,
             int targetIndex,
             double percentComposition)
         {
@@ -339,16 +340,16 @@ namespace MolecularWeightCalculator
         /// <param name="sortedElementStats"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        private List<FormulaFinderResult> BoundedSearch(
+        private List<SearchResult> BoundedSearch(
             double targetMass,
             double massToleranceDa,
             double maximumFormulaMass,
-            FormulaFinderOptions searchOptions,
+            SearchOptions searchOptions,
             bool ppmMode,
             CalculationMode calculationMode,
-            IList<FormulaFinderCandidateElement> sortedElementStats)
+            IList<CandidateElement> sortedElementStats)
         {
-            List<FormulaFinderResult> results;
+            List<SearchResult> results;
 
             if (searchOptions.FindTargetMz)
             {
@@ -374,7 +375,7 @@ namespace MolecularWeightCalculator
             return results;
         }
 
-        private void ComputeSortKeys(IEnumerable<FormulaFinderResult> results)
+        private void ComputeSortKeys(IEnumerable<SearchResult> results)
         {
             // Compute the sort key for each result
             var codeString = new StringBuilder();
@@ -558,10 +559,10 @@ namespace MolecularWeightCalculator
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
         /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompound(
-            FormulaFinderOptions searchOptions,
+            SearchOptions searchOptions,
             StringBuilder empiricalFormula,
             int count1, int count2, int count3, int count4, int count5, int count6, int count7, int count8, int count9, int count10,
-            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IList<CandidateElement> sortedElementStats,
             double totalMass,
             double targetMass,
             double massToleranceDa,
@@ -607,7 +608,7 @@ namespace MolecularWeightCalculator
         }
 
         private void ConstructAndVerifyAddIfValid(
-            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IList<CandidateElement> sortedElementStats,
             IDictionary<string, int> empiricalResultSymbols,
             int targetElementIndex,
             int currentCount)
@@ -635,9 +636,9 @@ namespace MolecularWeightCalculator
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
         /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompoundRecursive(
-            FormulaFinderOptions searchOptions,
+            SearchOptions searchOptions,
             StringBuilder empiricalFormula,
-            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IList<CandidateElement> sortedElementStats,
             IEnumerable<int> potentialElementPointers,
             double totalMass,
             double targetMass,
@@ -692,7 +693,7 @@ namespace MolecularWeightCalculator
         }
 
         private bool ConstructAndVerifyCompoundWork(
-            FormulaFinderOptions searchOptions,
+            SearchOptions searchOptions,
             StringBuilder empiricalFormula,
             double totalMass,
             double targetMass,
@@ -869,7 +870,7 @@ namespace MolecularWeightCalculator
         }
 
         private Dictionary<string, int> ConvertElementPointersToElementStats(
-            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IList<CandidateElement> sortedElementStats,
             IEnumerable<int> potentialElementPointers)
         {
             // This dictionary tracks the elements and abbreviations of the found formula so that they can be properly ordered according to empirical formula conventions
@@ -899,7 +900,7 @@ namespace MolecularWeightCalculator
         /// <returns>Corrected charge</returns>
         /// <remarks></remarks>
         private double CorrectChargeEmpirical(
-            FormulaFinderOptions searchOptions,
+            SearchOptions searchOptions,
             double totalCharge,
             ElementNum elementCounts,
             out bool chargeOk)
@@ -1031,46 +1032,46 @@ namespace MolecularWeightCalculator
             }
         }
 
-        private List<FormulaFinderResult> FindMatchesByMass(
+        private List<SearchResult> FindMatchesByMass(
             double targetMass,
             double massToleranceDa,
-            FormulaFinderOptions searchOptions,
+            SearchOptions searchOptions,
             bool ppmMode)
         {
             // Validate the Inputs
             if (!ValidateSettings(CalculationMode.MatchMolecularWeight))
             {
-                return new List<FormulaFinderResult>();
+                return new List<SearchResult>();
             }
 
             if (targetMass <= 0d)
             {
                 ReportError("Target molecular weight must be greater than 0");
-                return new List<FormulaFinderResult>();
+                return new List<SearchResult>();
             }
 
             if (massToleranceDa < 0d)
             {
                 ReportError("Mass tolerance cannot be negative");
-                return new List<FormulaFinderResult>();
+                return new List<SearchResult>();
             }
 
             var candidateElementsStats = GetCandidateElements();
 
             if (candidateElementsStats.Count == 0)
             {
-                return new List<FormulaFinderResult>();
+                return new List<SearchResult>();
             }
 
             var sortedElementStats = (from item in candidateElementsStats orderby item.Mass descending select item).ToList();
 
-            if (searchOptions.SearchMode == FormulaFinderOptions.SearchModes.Thorough)
+            if (searchOptions.SearchMode == SearchOptions.SearchModes.Thorough)
             {
                 // Thorough search
 
                 EstimateNumberOfOperations(sortedElementStats.Count);
 
-                var results = new List<FormulaFinderResult>();
+                var results = new List<SearchResult>();
 
                 if (searchOptions.FindTargetMz)
                 {
@@ -1105,39 +1106,39 @@ namespace MolecularWeightCalculator
             return boundedSearchResults;
         }
 
-        private List<FormulaFinderResult> FindMatchesByPercentCompositionWork(
+        private List<SearchResult> FindMatchesByPercentCompositionWork(
             double maximumFormulaMass,
             double percentTolerance,
-            FormulaFinderOptions searchOptions)
+            SearchOptions searchOptions)
         {
             // Validate the Inputs
             if (!ValidateSettings(CalculationMode.MatchPercentComposition))
             {
-                return new List<FormulaFinderResult>();
+                return new List<SearchResult>();
             }
 
             if (maximumFormulaMass <= 0d)
             {
                 ReportError("Maximum molecular weight must be greater than 0");
-                return new List<FormulaFinderResult>();
+                return new List<SearchResult>();
             }
 
             if (percentTolerance < 0d)
             {
                 ReportError("Percent tolerance cannot be negative");
-                return new List<FormulaFinderResult>();
+                return new List<SearchResult>();
             }
 
             var candidateElementsStats = GetCandidateElements(percentTolerance);
 
             if (candidateElementsStats.Count == 0)
             {
-                return new List<FormulaFinderResult>();
+                return new List<SearchResult>();
             }
 
             var sortedElementStats = (from item in candidateElementsStats orderby item.Mass descending select item).ToList();
 
-            if (searchOptions.SearchMode == FormulaFinderOptions.SearchModes.Thorough)
+            if (searchOptions.SearchMode == SearchOptions.SearchModes.Thorough)
             {
                 // Thorough search
 
@@ -1146,7 +1147,7 @@ namespace MolecularWeightCalculator
                 // Pointers to the potential elements
                 var potentialElementPointers = new List<int>();
 
-                var results = new List<FormulaFinderResult>();
+                var results = new List<SearchResult>();
 
                 RecursivePCompFinder(results, searchOptions, sortedElementStats, 0, potentialElementPointers, 0d, maximumFormulaMass, 9d);
 
@@ -1169,15 +1170,15 @@ namespace MolecularWeightCalculator
             return boundedSearchResults;
         }
 
-        private List<FormulaFinderCandidateElement> GetCandidateElements(double percentTolerance = 0d)
+        private List<CandidateElement> GetCandidateElements(double percentTolerance = 0d)
         {
-            var candidateElementsStats = new List<FormulaFinderCandidateElement>();
+            var candidateElementsStats = new List<CandidateElement>();
 
             var customElementCounter = 0;
 
             foreach (var item in mCandidateElements)
             {
-                var candidateElement = new FormulaFinderCandidateElement(item.Key)
+                var candidateElement = new CandidateElement(item.Key)
                 {
                     CountMinimum = item.Value.MinimumCount,
                     CountMaximum = item.Value.MaximumCount
@@ -1221,7 +1222,7 @@ namespace MolecularWeightCalculator
                             if (!(char.IsLetter(currentChar) || currentChar.ToString() == "+" || currentChar.ToString() == "_"))
                             {
                                 ReportError("Custom elemental weights must contain only numbers or only letters; if letters are used, they must be for a single valid elemental symbol or abbreviation");
-                                return new List<FormulaFinderCandidateElement>();
+                                return new List<CandidateElement>();
                             }
                         }
 
@@ -1229,7 +1230,7 @@ namespace MolecularWeightCalculator
                         {
                             // Too short
                             ReportError("Custom elemental weight is empty; if letters are used, they must be for a single valid elemental symbol or abbreviation");
-                            return new List<FormulaFinderCandidateElement>();
+                            return new List<CandidateElement>();
                         }
 
                         // See if this is an abbreviation
@@ -1237,7 +1238,7 @@ namespace MolecularWeightCalculator
                         if (symbolReference < 1)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
-                            return new List<FormulaFinderCandidateElement>();
+                            return new List<CandidateElement>();
                         }
 
                         // Found a normal abbreviation
@@ -1396,8 +1397,8 @@ namespace MolecularWeightCalculator
         /// <param name="totalCharge"></param>
         /// <param name="empiricalResultSymbols"></param>
         /// <remarks></remarks>
-        private FormulaFinderResult GetSearchResult(
-            FormulaFinderOptions searchOptions,
+        private SearchResult GetSearchResult(
+            SearchOptions searchOptions,
             bool ppmMode,
             StringBuilder empiricalFormula,
             double totalMass,
@@ -1407,7 +1408,7 @@ namespace MolecularWeightCalculator
         {
             try
             {
-                var searchResult = new FormulaFinderResult(empiricalFormula.ToString(), empiricalResultSymbols);
+                var searchResult = new SearchResult(empiricalFormula.ToString(), empiricalResultSymbols);
 
                 if (searchOptions.FindCharge)
                 {
@@ -1445,7 +1446,7 @@ namespace MolecularWeightCalculator
             catch (Exception ex)
             {
                 mElementAndMassRoutines.GeneralErrorHandler("GetSearchResult", ex);
-                return new FormulaFinderResult(string.Empty, new Dictionary<string, int>());
+                return new SearchResult(string.Empty, new Dictionary<string, int>());
             }
         }
 
@@ -1465,7 +1466,7 @@ namespace MolecularWeightCalculator
         /// <remarks>searchOptions is passed ByRef because it is a value type and .MzChargeMin and .MzChargeMax are updated</remarks>
         private void MultipleSearchMath(
             int potentialElementCount,
-            FormulaFinderOptions searchOptions,
+            SearchOptions searchOptions,
             out int mzSearchChargeMin,
             out int mzSearchChargeMax)
         {
@@ -1494,18 +1495,18 @@ namespace MolecularWeightCalculator
         /// <param name="maximumFormulaMass">Only used when calculationMode is MatchPercentComposition</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        private List<FormulaFinderResult> OldFormulaFinder(
-            FormulaFinderOptions searchOptions,
+        private List<SearchResult> OldFormulaFinder(
+            SearchOptions searchOptions,
             bool ppmMode,
             CalculationMode calculationMode,
-            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IList<CandidateElement> sortedElementStats,
             double targetMass,
             double massToleranceDa,
             double maximumFormulaMass)
         {
             // The calculated percentages for the specific compound
             var percent = new double[11];
-            var results = new List<FormulaFinderResult>();
+            var results = new List<SearchResult>();
 
             try
             {
@@ -1910,10 +1911,10 @@ namespace MolecularWeightCalculator
         /// <param name="potentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
         /// <remarks></remarks>
         private void RecursiveMWFinder(
-            ICollection<FormulaFinderResult> results,
-            FormulaFinderOptions searchOptions,
+            ICollection<SearchResult> results,
+            SearchOptions searchOptions,
             bool ppmMode,
-            IList<FormulaFinderCandidateElement> sortedElementStats,
+            IList<CandidateElement> sortedElementStats,
             int startIndex,
             double potentialMassTotal,
             double targetMass,
@@ -2045,9 +2046,9 @@ namespace MolecularWeightCalculator
         /// <param name="searchOptions"></param>
         /// <remarks></remarks>
         private void RecursivePCompFinder(
-            ICollection<FormulaFinderResult> results,
-            FormulaFinderOptions searchOptions,
-            IList<FormulaFinderCandidateElement> sortedElementStats,
+            ICollection<SearchResult> results,
+            SearchOptions searchOptions,
+            IList<CandidateElement> sortedElementStats,
             int startIndex,
             ICollection<int> potentialElementPointers,
             double potentialMassTotal,

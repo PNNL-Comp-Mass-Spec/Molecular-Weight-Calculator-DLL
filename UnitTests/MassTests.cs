@@ -1,5 +1,6 @@
 ﻿using System;
 using MolecularWeightCalculator;
+using MolecularWeightCalculator.Formula;
 using NUnit.Framework;
 
 namespace UnitTests

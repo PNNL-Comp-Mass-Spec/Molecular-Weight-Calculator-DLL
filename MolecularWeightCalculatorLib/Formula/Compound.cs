@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace MolecularWeightCalculator
+namespace MolecularWeightCalculator.Formula
 {
     public class Compound
     {

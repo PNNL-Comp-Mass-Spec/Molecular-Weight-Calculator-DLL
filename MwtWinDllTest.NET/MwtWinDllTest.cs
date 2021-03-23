@@ -5,6 +5,9 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
 using MolecularWeightCalculator;
+using MolecularWeightCalculator.Formula;
+using MolecularWeightCalculator.FormulaFinder;
+using MolecularWeightCalculator.Sequence;
 
 namespace MwtWinDllTest
 {
@@ -507,7 +510,7 @@ namespace MwtWinDllTest
             // Abbreviations are supported, for example Serine
             mwtWin.FormulaFinder.AddCandidateElement("Ser");
 
-            var searchOptions = new FormulaFinderOptions
+            var searchOptions = new SearchOptions
             {
                 LimitChargeRange = false,
                 ChargeMin = 1,
@@ -539,7 +542,7 @@ namespace MwtWinDllTest
             }
         }
 
-        private void FormulaFinderTest1(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest1(MolecularWeightTool mwtWin, SearchOptions searchOptions, string currentTask)
         {
 
             // Search for 200 Da, +/- 0.05 Da
@@ -547,7 +550,7 @@ namespace MwtWinDllTest
             ShowFormulaFinderResults(currentTask, searchOptions, results);
         }
 
-        private void FormulaFinderTest2(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest2(MolecularWeightTool mwtWin, SearchOptions searchOptions, string currentTask)
         {
 
             // Search for 200 Da, +/- 250 ppm
@@ -555,7 +558,7 @@ namespace MwtWinDllTest
             ShowFormulaFinderResults(currentTask, searchOptions, results, true);
         }
 
-        private void FormulaFinderTest3(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest3(MolecularWeightTool mwtWin, SearchOptions searchOptions, string currentTask)
         {
             searchOptions.LimitChargeRange = true;
             searchOptions.ChargeMin = -4;
@@ -566,7 +569,7 @@ namespace MwtWinDllTest
             ShowFormulaFinderResults(currentTask, searchOptions, results, true);
         }
 
-        private void FormulaFinderTest4(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest4(MolecularWeightTool mwtWin, SearchOptions searchOptions, string currentTask)
         {
             searchOptions.LimitChargeRange = true;
             searchOptions.ChargeMin = -4;
@@ -578,7 +581,7 @@ namespace MwtWinDllTest
             ShowFormulaFinderResults(currentTask, searchOptions, results, true);
         }
 
-        private void FormulaFinderTest5(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest5(MolecularWeightTool mwtWin, SearchOptions searchOptions, string currentTask)
         {
             mwtWin.FormulaFinder.CandidateElements.Clear();
 
@@ -592,9 +595,9 @@ namespace MwtWinDllTest
             ShowFormulaFinderResults(currentTask, searchOptions, results, false, true);
         }
 
-        private void FormulaFinderTest6(MolecularWeightTool mwtWin, FormulaFinderOptions searchOptions, string currentTask)
+        private void FormulaFinderTest6(MolecularWeightTool mwtWin, SearchOptions searchOptions, string currentTask)
         {
-            searchOptions.SearchMode = FormulaFinderOptions.SearchModes.Bounded;
+            searchOptions.SearchMode = SearchOptions.SearchModes.Bounded;
 
             // Search for 200 Da, +/- 250 ppm
             var results = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
@@ -603,8 +606,8 @@ namespace MwtWinDllTest
 
         private void ShowFormulaFinderResults(
             string currentTask,
-            FormulaFinderOptions searchOptions,
-            List<FormulaFinderResult> results,
+            SearchOptions searchOptions,
+            List<SearchResult> results,
             bool deltaMassIsPPM = false,
             bool percentCompositionSearch = false)
         {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace MolecularWeightCalculator
+namespace MolecularWeightCalculator.FormulaFinder
 {
-    public class FormulaFinderResult
+    public class SearchResult
     {
         public string EmpiricalFormula { get; }
 
@@ -23,7 +23,7 @@ namespace MolecularWeightCalculator
 
         public string SortKey;
 
-        public FormulaFinderResult(string newEmpiricalFormula, Dictionary<string, int> empiricalResultSymbols)
+        public SearchResult(string newEmpiricalFormula, Dictionary<string, int> empiricalResultSymbols)
         {
             EmpiricalFormula = newEmpiricalFormula;
             CountsByElement = empiricalResultSymbols;

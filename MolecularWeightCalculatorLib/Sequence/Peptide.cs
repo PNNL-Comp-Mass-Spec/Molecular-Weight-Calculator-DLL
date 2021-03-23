@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using MolecularWeightCalculator.Formula;
 
-namespace MolecularWeightCalculator
+namespace MolecularWeightCalculator.Sequence
 {
     public class Peptide
     {

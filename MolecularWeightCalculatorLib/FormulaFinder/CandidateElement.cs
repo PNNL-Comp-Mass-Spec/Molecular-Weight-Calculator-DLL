@@ -1,6 +1,6 @@
-﻿namespace MolecularWeightCalculator
+﻿namespace MolecularWeightCalculator.FormulaFinder
 {
-    internal class FormulaFinderCandidateElement
+    internal class CandidateElement
     {
         public double Mass { get; set; }
         public double Charge { get; set; }
@@ -15,7 +15,7 @@
 
         public string Symbol { get; set; }
 
-        public FormulaFinderCandidateElement(string elementOrAbbrevSymbol)
+        public CandidateElement(string elementOrAbbrevSymbol)
         {
             OriginalName = string.Copy(elementOrAbbrevSymbol);
             Symbol = string.Copy(elementOrAbbrevSymbol);

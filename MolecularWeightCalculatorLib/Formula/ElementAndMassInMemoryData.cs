@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using IsotopeInfo = MolecularWeightCalculator.ElementAndMassTools.IsotopeInfo;
+using IsotopeInfo = MolecularWeightCalculator.Formula.ElementAndMassTools.IsotopeInfo;
 
-namespace MolecularWeightCalculator
+namespace MolecularWeightCalculator.Formula
 {
     internal class ElementAndMassInMemoryData
     {
