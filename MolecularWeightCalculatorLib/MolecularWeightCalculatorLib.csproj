@@ -89,4 +89,11 @@
     <Compile Include="Sequence\PeptideEnums.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>call "$(DevEnvDir)..\Tools\VsDevCmd.bat"
+pushd "$(TargetDir)"
+tlbexp $(TargetFileName) /win32 /out: $(TargetName)32.tlb /silent
+tlbexp $(TargetFileName) /win64 /out: $(TargetName)64.tlb /silent
+popd</PostBuildEvent>
+  </PropertyGroup>
 </Project>
