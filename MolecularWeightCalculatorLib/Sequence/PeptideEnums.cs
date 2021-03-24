@@ -1,5 +1,8 @@
-﻿namespace MolecularWeightCalculator.Sequence
+﻿using System.Runtime.InteropServices;
+
+namespace MolecularWeightCalculator.Sequence
 {
+    [ComVisible(true)]
     public enum CTerminusGroupType
     {
         Hydroxyl = 0,
@@ -7,6 +10,7 @@
         None = 2
     }
 
+    [ComVisible(true)]
     public enum NTerminusGroupType
     {
         Hydrogen = 0,
@@ -19,6 +23,7 @@
         None = 6
     }
 
+    [ComVisible(true)]
     public enum IonType
     {
         AIon = 0,

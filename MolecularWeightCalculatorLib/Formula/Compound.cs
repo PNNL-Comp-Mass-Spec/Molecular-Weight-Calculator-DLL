@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator.Formula
 {
-    public class Compound
+    [Guid("4631BE93-0F20-4E9C-96CF-BC0FBA38BF4E"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
+    public class Compound : ICompound
     {
         // Molecular Weight Calculator routines with ActiveX Class interfaces: Compound
 
@@ -184,6 +187,28 @@ namespace MolecularWeightCalculator.Formula
             }
 
             return percentCompositionByElement;
+        }
+
+        /// <summary>
+        /// Get the percent composition for all elements in an empirical formula. This implementation is specifically for COM interop support
+        /// </summary>
+        /// <returns>
+        /// 2D array of percent composition values; first dimension is element symbols, second dimension is percent compositions
+        /// </returns>
+        public string[,] GetPercentCompositionForAllElements2DArray()
+        {
+            var data = GetPercentCompositionForAllElements();
+            var array = new string[data.Count, 2];
+            var counter = 0;
+
+            foreach (var entry in data)
+            {
+                array[counter, 0] = entry.Key;
+                array[counter, 1] = entry.Value;
+                counter++;
+            }
+
+            return array;
         }
 
         public short GetUsedElementCount()

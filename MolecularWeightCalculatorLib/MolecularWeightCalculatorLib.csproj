@@ -43,6 +43,19 @@
   <ItemGroup>
     <Compile Include="CapillaryFlow.cs" />
     <Compile Include="CapillaryFlowEnums.cs" />
+    <Compile Include="COMInterfaces\ICapillaryFlow.cs" />
+    <Compile Include="COMInterfaces\ICompound.cs" />
+    <Compile Include="COMInterfaces\IFormulaFinderSearchOptions.cs" />
+    <Compile Include="COMInterfaces\IFormulaFinderSearchResult.cs" />
+    <Compile Include="COMInterfaces\IFormulaSearcher.cs" />
+    <Compile Include="COMInterfaces\IFragmentationSpectrumData.cs" />
+    <Compile Include="COMInterfaces\IFragmentationSpectrumIntensities.cs" />
+    <Compile Include="COMInterfaces\IFragmentationSpectrumOptions.cs" />
+    <Compile Include="COMInterfaces\IMolecularWeightTool.cs" />
+    <Compile Include="COMInterfaces\IMoleMassDilution.cs" />
+    <Compile Include="COMInterfaces\IPeptide.cs" />
+    <Compile Include="COMInterfaces\ICandidateElementTolerances.cs" />
+    <Compile Include="EventHandlerDelegates.cs" />
     <Compile Include="Formula\AbbrevStatsData.cs" />
     <Compile Include="Formula\Compound.cs" />
     <Compile Include="Formula\ComputationStats.cs" />

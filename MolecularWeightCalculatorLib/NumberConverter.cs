@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator
 {
+    [ComVisible(false)]
     internal class NumberConverter
     {
         public static double CDblSafe(string work)

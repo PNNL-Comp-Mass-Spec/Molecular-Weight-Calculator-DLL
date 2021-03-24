@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator.FormulaFinder
 {
-    public class SearchResult
+    [Guid("4ACF7379-E609-4331-856E-45B06F408212"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
+    public class SearchResult : IFormulaFinderSearchResult
     {
         public string EmpiricalFormula { get; }
 
@@ -40,6 +43,50 @@ namespace MolecularWeightCalculator.FormulaFinder
             }
 
             return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.0000");
+        }
+
+        /// <summary>
+        /// Method to get data from CountsByElement that is compatible with COM interop
+        /// </summary>
+        /// <param name="symbols"></param>
+        /// <param name="counts"></param>
+        /// <returns>Count of symbols/counts returned</returns>
+        public int GetElementCounts(out string[] symbols, out int[] counts)
+        {
+            symbols = new string[CountsByElement.Count];
+            counts = new int[CountsByElement.Count];
+            var counter = 0;
+
+            foreach (var entry in CountsByElement)
+            {
+                symbols[counter] = entry.Key;
+                counts[counter] = entry.Value;
+                counter++;
+            }
+
+            return CountsByElement.Count;
+        }
+
+        /// <summary>
+        /// Method to get data from PercentComposition that is compatible with COM interop
+        /// </summary>
+        /// <param name="symbols"></param>
+        /// <param name="percentCompositions"></param>
+        /// <returns>Count of symbols/percentCompositions returned</returns>
+        public int GetPercentCompositions(out string[] symbols, out double[] percentCompositions)
+        {
+            symbols = new string[PercentComposition.Count];
+            percentCompositions = new double[PercentComposition.Count];
+            var counter = 0;
+
+            foreach (var entry in PercentComposition)
+            {
+                symbols[counter] = entry.Key;
+                percentCompositions[counter] = entry.Value;
+                counter++;
+            }
+
+            return PercentComposition.Count;
         }
     }
 }

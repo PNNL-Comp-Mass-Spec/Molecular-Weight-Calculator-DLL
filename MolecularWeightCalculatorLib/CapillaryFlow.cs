@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator
 {
-    public class CapillaryFlow
+    [Guid("502420CE-99CB-4674-B41A-EBF7D9A78BBA"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
+    public class CapillaryFlow : ICapillaryFlow
     {
         // Molecular Weight Calculator routines with ActiveX Class interfaces: CapillaryFlow
 

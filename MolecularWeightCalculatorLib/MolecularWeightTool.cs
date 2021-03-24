@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.FormulaFinder;
 using MolecularWeightCalculator.Sequence;
 
 namespace MolecularWeightCalculator
 {
+    [ComVisible(true)]
     public enum AbbrevRecognitionMode
     {
         NormalOnly = 0,
@@ -13,6 +16,7 @@ namespace MolecularWeightCalculator
         NoAbbreviations = 2
     }
 
+    [ComVisible(true)]
     public enum ElementStatsType
     {
         Mass = 0,
@@ -20,7 +24,8 @@ namespace MolecularWeightCalculator
         Charge = 2
     }
 
-    public class MolecularWeightTool
+    [Guid("9BB6C2DE-493F-48E8-BD5A-EE70ACC23C75"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IMolecularWeightToolEvents)), ComVisible(true)]
+    public class MolecularWeightTool : IMolecularWeightTool
     {
         // Molecular Weight Calculator routines with ActiveX Class interfaces
         // Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002
@@ -103,16 +108,8 @@ namespace MolecularWeightCalculator
         private readonly ElementAndMassTools mElementAndMassRoutines;
 
         public event ProgressResetEventHandler ProgressReset;
-
-        public delegate void ProgressResetEventHandler();
-
         public event ProgressChangedEventHandler ProgressChanged;
-
-        public delegate void ProgressChangedEventHandler(string taskDescription, float percentComplete);     // PercentComplete ranges from 0 to 100, but can contain decimal percentage values
-
         public event ProgressCompleteEventHandler ProgressComplete;
-
-        public delegate void ProgressCompleteEventHandler();
 
         #endregion
 
@@ -469,6 +466,15 @@ namespace MolecularWeightCalculator
         public List<string> GetCautionStatementSymbols()
         {
             return mElementAndMassRoutines.GetCautionStatementSymbolsInternal();
+        }
+
+        /// <summary>
+        /// Get the symbolCombos for Caution Statements in memory as an array. This version is for supporting COM interop because COM does not support generic types
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetCautionStatementSymbolsArray()
+        {
+            return GetCautionStatementSymbols().ToArray();
         }
 
         public double GetChargeCarrierMass()

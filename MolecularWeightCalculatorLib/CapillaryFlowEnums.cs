@@ -1,13 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator
 {
+    [ComVisible(true)]
     public enum CapillaryType
     {
         OpenTubularCapillary = 0,
         PackedCapillary
     }
 
+    [ComVisible(true)]
     public enum UnitOfPressure
     {
         Psi = 0,
@@ -19,6 +22,7 @@ namespace MolecularWeightCalculator
         DynesPerSquareCm
     }
 
+    [ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfLength
     {
@@ -29,12 +33,14 @@ namespace MolecularWeightCalculator
         Inches
     }
 
+    [ComVisible(true)]
     public enum UnitOfViscosity
     {
         Poise = 0,
         CentiPoise
     }
 
+    [ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfFlowRate
     {
@@ -43,6 +49,7 @@ namespace MolecularWeightCalculator
         NLPerMin
     }
 
+    [ComVisible(true)]
     public enum UnitOfLinearVelocity
     {
         CmPerHr = 0,
@@ -53,6 +60,7 @@ namespace MolecularWeightCalculator
         MmPerSec
     }
 
+    [ComVisible(true)]
     public enum UnitOfTime
     {
         Hours = 0,
@@ -60,6 +68,7 @@ namespace MolecularWeightCalculator
         Seconds
     }
 
+    [ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfVolume
     {
@@ -69,6 +78,7 @@ namespace MolecularWeightCalculator
         PL
     }
 
+    [ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfConcentration
     {
@@ -86,6 +96,7 @@ namespace MolecularWeightCalculator
         NgPerUL
     }
 
+    [ComVisible(true)]
     public enum UnitOfTemperature
     {
         Celsius = 0,
@@ -93,6 +104,7 @@ namespace MolecularWeightCalculator
         Fahrenheit
     }
 
+    [ComVisible(true)]
     public enum UnitOfMassFlowRate
     {
         PmolPerMin = 0,
@@ -104,6 +116,7 @@ namespace MolecularWeightCalculator
         MolesPerMin
     }
 
+    [ComVisible(true)]
     public enum UnitOfMolarAmount
     {
         Moles = 0,
@@ -115,6 +128,7 @@ namespace MolecularWeightCalculator
         AttoMoles
     }
 
+    [ComVisible(true)]
     public enum UnitOfDiffusionCoefficient
     {
         CmSquaredPerHr = 0,
@@ -122,6 +136,7 @@ namespace MolecularWeightCalculator
         CmSquaredPerSec
     }
 
+    [ComVisible(true)]
     public enum AutoComputeMode
     {
         BackPressure = 0,

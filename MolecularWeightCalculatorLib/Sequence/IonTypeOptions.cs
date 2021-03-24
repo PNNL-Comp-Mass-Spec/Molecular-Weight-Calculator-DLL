@@ -1,5 +1,8 @@
-﻿namespace MolecularWeightCalculator.Sequence
+﻿using System.Runtime.InteropServices;
+
+namespace MolecularWeightCalculator.Sequence
 {
+    [ComVisible(false)]
     public class IonTypeOptions
     {
         // Note: A ions can have ammonia and phosphate loss, but not water loss, so this is set to false by default

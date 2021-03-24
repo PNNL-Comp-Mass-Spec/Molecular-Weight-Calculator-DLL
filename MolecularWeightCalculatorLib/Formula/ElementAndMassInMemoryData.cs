@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.Formula
 {
+    [ComVisible(false)]
     internal class ElementAndMassInMemoryData
     {
         // Ignore Spelling: csv, txt, frm, isoData

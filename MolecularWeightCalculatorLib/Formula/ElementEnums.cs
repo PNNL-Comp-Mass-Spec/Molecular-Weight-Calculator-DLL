@@ -1,5 +1,8 @@
-﻿namespace MolecularWeightCalculator.Formula
+﻿using System.Runtime.InteropServices;
+
+namespace MolecularWeightCalculator.Formula
 {
+    [ComVisible(true)]
     public enum ElementMassMode
     {
         Average = 1,
@@ -7,6 +10,7 @@
         Integer = 3
     }
 
+    [ComVisible(true)]
     public enum StdDevMode
     {
         Short = 0,
@@ -14,6 +18,7 @@
         Decimal = 2
     }
 
+    [ComVisible(true)]
     public enum CaseConversionMode
     {
         ConvertCaseUp = 0,

@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator
 {
-    public class MoleMassDilution
+    [Guid("FD3FADF4-C3E4-4C4C-AF7A-AF7018FC3DBB"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
+    public class MoleMassDilution : IMoleMassDilution
     {
         // Molecular Weight Calculator routines with ActiveX Class interfaces: MoleMassDilution
 

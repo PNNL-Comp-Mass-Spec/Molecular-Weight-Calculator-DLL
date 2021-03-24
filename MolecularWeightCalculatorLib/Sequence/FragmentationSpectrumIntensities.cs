@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator.Sequence
 {
-    public class FragmentationSpectrumIntensities
+    [Guid("9CAAFE11-4A2C-4E6E-ACD2-10E7B9C870F4"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
+    public class FragmentationSpectrumIntensities : IFragmentationSpectrumIntensities
     {
         public double[] IonType { get; } // 0-based array
         // ReSharper disable once InconsistentNaming

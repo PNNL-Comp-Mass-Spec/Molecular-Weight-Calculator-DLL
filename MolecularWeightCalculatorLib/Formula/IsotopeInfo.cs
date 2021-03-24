@@ -1,5 +1,8 @@
-﻿namespace MolecularWeightCalculator.Formula
+﻿using System.Runtime.InteropServices;
+
+namespace MolecularWeightCalculator.Formula
 {
+    [ComVisible(false)]
     public class IsotopeInfo
     {
         public double Mass { get; }

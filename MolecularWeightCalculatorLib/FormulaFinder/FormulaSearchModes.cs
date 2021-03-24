@@ -1,5 +1,8 @@
-﻿namespace MolecularWeightCalculator.FormulaFinder
+﻿using System.Runtime.InteropServices;
+
+namespace MolecularWeightCalculator.FormulaFinder
 {
+    [ComVisible(true)]
     public enum FormulaSearchModes
     {
         Thorough = 0,

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.Formula
 {
+    [ComVisible(false)]
     internal class AbbrevStatsData : IComparable<AbbrevStatsData>
     {
         /// <summary>

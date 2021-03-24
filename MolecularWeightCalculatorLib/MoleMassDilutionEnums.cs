@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator
 {
+    [ComVisible(true)]
     public enum AutoComputeDilutionMode
     {
         FindRequiredDilutionVolumes = 0,
@@ -10,6 +12,7 @@ namespace MolecularWeightCalculator
         FindInitialConcentration
     }
 
+    [ComVisible(true)]
     public enum AutoComputeQuantityMode
     {
         FindAmount = 0,
@@ -17,6 +20,7 @@ namespace MolecularWeightCalculator
         FindConcentration
     }
 
+    [ComVisible(true)]
     public enum Unit
     {
         Moles = 0,
@@ -43,6 +47,7 @@ namespace MolecularWeightCalculator
         Pints
     }
 
+    [ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfExtendedVolume
     {
@@ -57,6 +62,7 @@ namespace MolecularWeightCalculator
         Pints
     }
 
+    [ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfMoleMassConcentration
     {

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
 using MolecularWeightCalculator.Formula;
 
 namespace MolecularWeightCalculator.Sequence
 {
-    public class Peptide
+    [Guid("1E33887D-563A-4A5F-909B-A3DF18E03EDC"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
+    public class Peptide : IPeptide
     {
         // Molecular Weight Calculator routines with ActiveX Class interfaces: Peptide
 

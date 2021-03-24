@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using MolecularWeightCalculator.COMInterfaces;
 using MolecularWeightCalculator.Formula;
 
 namespace MolecularWeightCalculator.FormulaFinder
 {
-    public class FormulaSearcher
+    [Guid("B24497AD-A29D-4266-A33A-EF97B86EA578"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IFormulaSearcherEvents)), ComVisible(true)]
+    public class FormulaSearcher : IFormulaSearcher, IFormulaSearcherEvents
     {
         // Ignore Spelling: Da
 
@@ -124,16 +127,8 @@ namespace MolecularWeightCalculator.FormulaFinder
 
         #region "Events"
         public event MessageEventEventHandler MessageEvent;
-
-        public delegate void MessageEventEventHandler(string message);
-
         public event ErrorEventEventHandler ErrorEvent;
-
-        public delegate void ErrorEventEventHandler(string errorMessage);
-
         public event WarningEventEventHandler WarningEvent;
-
-        public delegate void WarningEventEventHandler(string warningMessage);
         #endregion
 
         /// <summary>
@@ -237,6 +232,18 @@ namespace MolecularWeightCalculator.FormulaFinder
         }
 
         /// <summary>
+        /// Find empirical formulas that match the given target mass, with the given ppm tolerance, getting results in an array for COM interop support
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massTolerancePPM"></param>
+        /// <param name="searchOptions">If null, uses default search options</param>
+        /// <returns></returns>
+        public SearchResult[] FindMatchesByMassPPMGetArray(double targetMass, double massTolerancePPM, SearchOptions searchOptions = null)
+        {
+            return FindMatchesByMassPPM(targetMass, massTolerancePPM, searchOptions).ToArray();
+        }
+
+        /// <summary>
         /// Find empirical formulas that match the given target mass, with the given tolerance
         /// </summary>
         /// <param name="targetMass"></param>
@@ -255,6 +262,18 @@ namespace MolecularWeightCalculator.FormulaFinder
             return sortedResults;
         }
 
+        /// <summary>
+        /// Find empirical formulas that match the given target mass, with the given tolerance, getting results in an array for COM interop support
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massToleranceDa"></param>
+        /// <param name="searchOptions">If null, uses default search options</param>
+        /// <returns></returns>
+        public SearchResult[] FindMatchesByMassGetArray(double targetMass, double massToleranceDa, SearchOptions searchOptions = null)
+        {
+            return FindMatchesByMass(targetMass, massToleranceDa, searchOptions).ToArray();
+        }
+
         public List<SearchResult> FindMatchesByPercentComposition(
             double maximumFormulaMass,
             double percentTolerance,
@@ -267,6 +286,12 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             var sortedResults = (from item in results orderby item.SortKey select item).ToList();
             return sortedResults;
+        }
+
+        public SearchResult[] FindMatchesByPercentCompositionGetArray(double maximumFormulaMass, double percentTolerance, SearchOptions searchOptions)
+        {
+            // This version exists solely for COM interop support
+            return FindMatchesByPercentComposition(maximumFormulaMass, percentTolerance, searchOptions).ToArray();
         }
 
         /// <summary>

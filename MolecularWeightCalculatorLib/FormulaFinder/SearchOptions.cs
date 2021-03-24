@@ -1,6 +1,10 @@
-﻿namespace MolecularWeightCalculator.FormulaFinder
+﻿using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
+
+namespace MolecularWeightCalculator.FormulaFinder
 {
-    public class SearchOptions
+    [Guid("D35BAE50-BD22-4CD0-8BFC-A8358F71C802"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
+    public class SearchOptions : IFormulaFinderSearchOptions
     {
         private bool mFindCharge;
         private bool mLimitChargeRange;

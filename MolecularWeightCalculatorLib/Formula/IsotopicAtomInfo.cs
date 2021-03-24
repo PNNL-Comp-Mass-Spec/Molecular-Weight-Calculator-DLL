@@ -1,5 +1,8 @@
-﻿namespace MolecularWeightCalculator.Formula
+﻿using System.Runtime.InteropServices;
+
+namespace MolecularWeightCalculator.Formula
 {
+    [ComVisible(false)]
     public class IsotopicAtomInfo
     {
         public double Count { get; set; } // Can have non-integer counts of atoms, e.g. ^13C5.5

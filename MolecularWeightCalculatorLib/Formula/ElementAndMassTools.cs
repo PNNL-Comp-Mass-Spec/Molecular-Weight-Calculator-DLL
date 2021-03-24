@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace MolecularWeightCalculator.Formula
 {
+    [ComVisible(false)]
     public class ElementAndMassTools
     {
         // Molecular Weight Calculator routines with ActiveX Class interfaces: ElementAndMassTools
@@ -293,21 +295,8 @@ namespace MolecularWeightCalculator.Formula
         protected string mLogFolderPath;
 
         public event ProgressResetEventHandler ProgressReset;
-
-        public delegate void ProgressResetEventHandler();
-
-        /// <summary>
-        /// Progress changed event
-        /// </summary>
-        /// <param name="taskDescription"></param>
-        /// <param name="percentComplete">Ranges from 0 to 100, but can contain decimal percentage values</param>
         public event ProgressChangedEventHandler ProgressChanged;
-
-        public delegate void ProgressChangedEventHandler(string taskDescription, float percentComplete);
-
         public event ProgressCompleteEventHandler ProgressComplete;
-
-        public delegate void ProgressCompleteEventHandler();
 
         protected string mProgressStepDescription;
 

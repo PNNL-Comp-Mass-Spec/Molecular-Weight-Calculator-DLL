@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator.Sequence
 {
-    public class FragmentationSpectrumData : IComparable<FragmentationSpectrumData>
+    [Guid("F558EA24-E939-4062-9B18-58CE27972B33"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
+    public class FragmentationSpectrumData : IFragmentationSpectrumData, IComparable<FragmentationSpectrumData>
     {
         public double Mass { get; }
         public double Intensity { get; }

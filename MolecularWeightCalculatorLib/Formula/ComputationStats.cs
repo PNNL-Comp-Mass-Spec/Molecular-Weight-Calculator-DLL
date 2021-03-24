@@ -1,5 +1,8 @@
-﻿namespace MolecularWeightCalculator.Formula
+﻿using System.Runtime.InteropServices;
+
+namespace MolecularWeightCalculator.Formula
 {
+    [ComVisible(false)]
     public class ComputationStats
     {
         public ElementUseStats[] Elements { get; private set; }        // 1-based array, ranging from 1 to ELEMENT_COUNT

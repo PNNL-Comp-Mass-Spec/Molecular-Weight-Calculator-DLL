@@ -1,5 +1,8 @@
-﻿namespace MolecularWeightCalculator.FormulaFinder
+﻿using System.Runtime.InteropServices;
+
+namespace MolecularWeightCalculator.FormulaFinder
 {
+    [ComVisible(false)]
     internal class CandidateElement
     {
         public double Mass { get; set; }

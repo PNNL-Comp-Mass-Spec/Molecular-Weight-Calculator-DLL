@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator
 {
+    [ComVisible(false)]
     public static class MathUtils
     {
         /// <summary>
