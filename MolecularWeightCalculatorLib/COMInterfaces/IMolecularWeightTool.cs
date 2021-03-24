@@ -382,7 +382,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <returns></returns>
         int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances);
 
-        void SetElementMode(ElementMassMode elementMode, bool memoryLoadElementValues = true);
+        void SetElementMode(ElementMassMode elementMode, bool forceMemoryLoadElementValues = false);
 
         /// <summary>
         /// Used to replace the default message strings with foreign language equivalent ones

@@ -77,10 +77,9 @@ namespace MolecularWeightCalculator
 
             // Call mElementAndMassRoutines.MemoryLoadAll, which is required prior to instantiating the Peptide class.
             // We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
-            mElementAndMassRoutines.MemoryLoadAll(elementMode);
+            // Call it with Isotopic mass mode because that is what Peptide needs to update standard masses
+            mElementAndMassRoutines.MemoryLoadAll(ElementMassMode.Isotopic);
 
-            // Does not re-load the elements or cause extra re-calculations because the masses loaded above were already the average masses
-            SetElementMode(elementMode, false); // Use "false" to avoid re-loading all of the elements and isotopes.
             AbbreviationRecognitionMode = AbbrevRecognitionMode.NormalPlusAminoAcids;
             BracketsTreatedAsParentheses = true;
             CaseConversionMode = CaseConversionMode.ConvertCaseUp;
@@ -91,8 +90,12 @@ namespace MolecularWeightCalculator
 
             mElementAndMassRoutines.ComputationOptions.DecimalSeparator = DetermineDecimalPoint();
 
-            Compound = new Compound(mElementAndMassRoutines);
             Peptide = new Peptide(mElementAndMassRoutines);
+
+            // Does not re-load the elements or cause extra re-calculations because the masses loaded above were already the average masses
+            SetElementMode(elementMode, false); // Use "false" to avoid re-loading all of the elements and isotopes unless it is actually necessary.
+
+            Compound = new Compound(mElementAndMassRoutines);
             FormulaFinder = new FormulaSearcher(mElementAndMassRoutines);
 
             CapFlow = new CapillaryFlow();
@@ -760,9 +763,14 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.SetElementIsotopesInternal(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
         }
 
-        public void SetElementMode(ElementMassMode elementMode, bool memoryLoadElementValues = true)
+        /// <summary>
+        /// Set the element mode used for mass calculations
+        /// </summary>
+        /// <param name="elementMode"></param>
+        /// <param name="forceMemoryLoadElementValues">Set to true if you want to force a reload of element weights, even if not changing element modes</param>
+        public void SetElementMode(ElementMassMode elementMode, bool forceMemoryLoadElementValues = false)
         {
-            mElementAndMassRoutines.SetElementModeInternal(elementMode, memoryLoadElementValues);
+            mElementAndMassRoutines.SetElementModeInternal(elementMode, forceMemoryLoadElementValues);
         }
 
         /// <summary>

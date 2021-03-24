@@ -2715,6 +2715,9 @@ namespace MolecularWeightCalculator.Formula
 
         public void MemoryLoadAll(ElementMassMode elementMode)
         {
+            // Make sure this value accurately reflects what's loaded...
+            mCurrentElementMode = elementMode;
+
             // TODO: Consider calling this as part of the ElementAndMassTools constructor
             MemoryLoadElements(elementMode);
 
@@ -2909,6 +2912,7 @@ namespace MolecularWeightCalculator.Formula
             if (specificElement == 0)
             {
                 // Updating all the elements
+                mElementAlph.Clear();
                 for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
                 {
                     var elementMem = elementMemoryData[elementIndex];
@@ -4746,30 +4750,23 @@ namespace MolecularWeightCalculator.Formula
         /// Set the element mode
         /// </summary>
         /// <param name="newElementMode"></param>
-        /// <param name="memoryLoadElementValues"></param>
-        /// <remarks>
-        /// The only time you would want <paramref name="memoryLoadElementValues"/> to be false is if you're
-        /// manually setting element weight values, but want to let the software know that
-        /// they're average, isotopic, or integer values
-        /// </remarks>
-        public void SetElementModeInternal(ElementMassMode newElementMode, bool memoryLoadElementValues = true)
+        /// <param name="forceMemoryLoadElementValues">Set to true if you want to force a reload of element weights, even if not changing element modes</param>
+        public void SetElementModeInternal(ElementMassMode newElementMode, bool forceMemoryLoadElementValues = false)
         {
             try
             {
-                if (newElementMode >= ElementMassMode.Average && newElementMode <= ElementMassMode.Integer)
+                if (newElementMode < ElementMassMode.Average || newElementMode > ElementMassMode.Integer)
                 {
-                    if (newElementMode != mCurrentElementMode || memoryLoadElementValues)
-                    {
-                        mCurrentElementMode = newElementMode;
+                    return;
+                }
 
-                        if (memoryLoadElementValues)
-                        {
-                            MemoryLoadElements(mCurrentElementMode);
-                        }
+                if (newElementMode != mCurrentElementMode || forceMemoryLoadElementValues || mElementAlph.Count == 0)
+                {
+                    mCurrentElementMode = newElementMode;
 
-                        ConstructMasterSymbolsList();
-                        RecomputeAbbreviationMassesInternal();
-                    }
+                    MemoryLoadElements(mCurrentElementMode);
+                    ConstructMasterSymbolsList();
+                    RecomputeAbbreviationMassesInternal();
                 }
             }
             catch (Exception ex)

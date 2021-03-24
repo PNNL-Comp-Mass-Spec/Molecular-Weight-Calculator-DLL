@@ -35,6 +35,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompoundTests.cs" />
     <Compile Include="ElementTests.cs" />
     <Compile Include="MassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
