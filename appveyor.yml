@@ -6,4 +6,6 @@ build:
   project: MolecularWeightCalculator.sln
   verbosity: minimal
 artifacts:
-- path: bin\Release\MolecularWeightCalculator.dll
+- path: MolecularWeightCalculatorLib\bin\Release\MolecularWeightCalculator.dll
+- path: MolecularWeightCalculatorLib\bin\Release\MolecularWeightCalculator.xml
+- path: MolecularWeightCalculatorLib\bin\Release\MolecularWeightCalculator*.tlb
