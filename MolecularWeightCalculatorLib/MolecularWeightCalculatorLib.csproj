@@ -90,7 +90,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(DevEnvDir)..\Tools\VsDevCmd.bat"
+    <PostBuildEvent>REM  'DevEnvDir' only works within Visual Studio, so Jenkins fails...
+REM call "$(DevEnvDir)..\Tools\VsDevCmd.bat"
+REM 'MSBuildExtensionsPath', used in the .csproj file, should always be available, but it doesn't end with a '\'
+call "$(MSBuildExtensionsPath)\..\Common7\Tools\VsDevCmd.bat"
 pushd "$(TargetDir)"
 tlbexp $(TargetFileName) /win32 /out: $(TargetName)32.tlb /silent
 tlbexp $(TargetFileName) /win64 /out: $(TargetName)64.tlb /silent
