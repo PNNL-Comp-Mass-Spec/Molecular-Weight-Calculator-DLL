@@ -277,11 +277,7 @@ namespace MwtWinDllTest
                 result = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
                 Debug.Assert(result == 0, "");
 
-                var isotopeMasses = new double[isotopeCount + 1 + 1];
-                var isotopeAbundances = new float[isotopeCount + 1 + 1];
-
-                short isotopeCount2 = default;
-                result = mMwtWin.GetElementIsotopes((short)index, out isotopeCount2, out isotopeMasses, out isotopeAbundances);
+                result = mMwtWin.GetElementIsotopes((short)index, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
                 Debug.Assert(isotopeCount == isotopeCount2, "");
                 Debug.Assert(result == 0, "");
 

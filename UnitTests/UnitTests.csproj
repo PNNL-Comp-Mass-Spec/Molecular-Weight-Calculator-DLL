@@ -36,9 +36,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompoundTests.cs" />
-    <Compile Include="FunctionalTests\FragSpecTest.cs" />
-    <Compile Include="FunctionalTests\WorkflowTests.cs" />
     <Compile Include="ElementTests.cs" />
+    <Compile Include="FunctionalTests\FormulaSearcherTests.cs" />
+    <Compile Include="FunctionalTests\FragSpecTest.cs" />
+    <Compile Include="FunctionalTests\MwtAPITests.cs" />
+    <Compile Include="FunctionalTests\PeptideTests.cs" />
+    <Compile Include="FunctionalTests\WorkflowTests.cs" />
     <Compile Include="MassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
