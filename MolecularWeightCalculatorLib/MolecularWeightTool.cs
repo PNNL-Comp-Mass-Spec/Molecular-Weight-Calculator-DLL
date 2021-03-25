@@ -62,6 +62,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         public MolecularWeightTool() : this(ElementMassMode.Average)
         {
+            // DO NOT combine this constructor with the other one, using a default parameter will block use from COM.
         }
 
         /// <summary>
