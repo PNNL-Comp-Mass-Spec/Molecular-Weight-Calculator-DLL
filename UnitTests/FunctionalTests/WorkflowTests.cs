@@ -1,18 +1,21 @@
 ﻿using System;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
+using NUnit.Framework;
 
-namespace MwtWinDllTestCS
+namespace UnitTests.FunctionalTests
 {
     /// <summary>
-    /// This is a very simple C# application that shows how to use MwtWinDll.dll
+    /// This was originally a very simple C# application that showed how to use MwtWinDll.dll
+    /// Converted to a "Unit Test" to make it easier to run and inspect results from Visual Studio.
     /// </summary>
     /// <remarks>
     /// Written by Matthew Monroe for PNNL in 2010
     /// </remarks>
-    internal static class Program
+    public class WorkflowTests
     {
-        private static void Main(string[] args)
+        [Test]
+        public void TestWorkflowCS()
         {
             // Instantiate the Molecular Weight Calculator
             var mwtWin = new MolecularWeightTool();
@@ -40,7 +43,7 @@ namespace MwtWinDllTestCS
             Console.WriteLine();
         }
 
-        private static void TestMwtWinFeatures(
+        private void TestMwtWinFeatures(
             MolecularWeightTool mwtWin,
             ElementMassMode elementMode)
         {

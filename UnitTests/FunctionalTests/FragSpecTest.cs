@@ -3,29 +3,31 @@ using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Sequence;
 
-namespace MwtWinDllTestCS
+namespace UnitTests.FunctionalTests
 {
     /*
      * This class demonstrates how to obtain the fragmentation spectrum for a peptide sequence
      * It also demonstrates how to compute the theoretical isotopic distribution for the peptide
      * Written by Matthew Monroe for PNNL in 2010
      */
-
     internal class FragSpecTest
     {
         // Ignore Spelling: frag, Arg
 
         private readonly MolecularWeightTool mMwtWin;
 
-        public FragSpecTest() {
+        public FragSpecTest()
+        {
             mMwtWin = new MolecularWeightTool();
         }
 
-        public FragSpecTest(ref MolecularWeightTool mwtWin) {
+        public FragSpecTest(ref MolecularWeightTool mwtWin)
+        {
             mMwtWin = mwtWin;
         }
 
-        public void TestAccessFunctions() {
+        public void TestAccessFunctions()
+        {
             // Set the element mode (average, monoisotopic, or integer)
             mMwtWin.SetElementMode(ElementMassMode.Isotopic);
 
@@ -77,11 +79,13 @@ namespace MwtWinDllTestCS
 
             Console.WriteLine("Mass     Intensity    \tSymbol");
 
-            for (var i = 0; i < fragSpectrum.Length; i++) {
+            for (var i = 0; i < fragSpectrum.Length; i++)
+            {
                 Console.WriteLine(fragSpectrum[i].Mass.ToString("0.000") + "  " + fragSpectrum[i].Intensity.ToString("###0") + "        \t" + fragSpectrum[i].Symbol);
 
                 // For debugging purposes, stop after displaying 20 ions
-                if (i >= 30) {
+                if (i >= 30)
+                {
                     Console.WriteLine("...");
                     break;
                 }
