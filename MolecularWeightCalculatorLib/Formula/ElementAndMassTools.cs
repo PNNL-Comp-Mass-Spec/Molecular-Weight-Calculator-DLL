@@ -103,16 +103,21 @@ namespace MolecularWeightCalculator.Formula
 
         private class IsoResultsByElement
         {
-            public short ElementIndex { get; set; } // Index of element in ElementStats[] array; look in ElementStats[] to get information on its isotopes
-            public bool ExplicitIsotope { get; set; } // True if an explicitly defined isotope
-            public double ExplicitMass { get; set; }
-            public int AtomCount { get; set; } // Number of atoms of this element in the formula being parsed
+            public int ElementIndex { get; } // Index of element in ElementStats[] array; look in ElementStats[] to get information on its isotopes
+            public bool ExplicitIsotope { get; } // True if an explicitly defined isotope
+            public double ExplicitMass { get; }
+            public int AtomCount { get; } // Number of atoms of this element in the formula being parsed
             public int ResultsCount { get; set; } // Number of masses in MassAbundances
             public int StartingResultsMass { get; set; } // Starting mass of the results for this element
             public float[] MassAbundances { get; private set; } // Abundance of each mass, starting with StartingResultsMass; 1-based array; usage is convoluted (haha)
 
-            public IsoResultsByElement()
+            public IsoResultsByElement(int elementIndex, int atomCount, double explicitMass, bool explicitIsotope = false)
             {
+                ElementIndex = elementIndex;
+                AtomCount = atomCount;
+                ExplicitMass = explicitMass;
+                ExplicitIsotope = explicitIsotope;
+
                 ResultsCount = 0;
                 MassAbundances = new float[1];
             }
@@ -598,7 +603,6 @@ namespace MolecularWeightCalculator.Formula
             mAbortProcessing = false;
             try
             {
-                short masterElementIndex;
                 double temp;
                 float percentComplete;
                 int predictedCombos;
@@ -633,7 +637,7 @@ namespace MolecularWeightCalculator.Formula
                     // Deuterium is present
                     var modifiedFormula = "";
                     short index = 0;
-                    while (index <= formula.Length)
+                    while (index < formula.Length)
                     {
                         var replaceDeuterium = false;
                         if (formula.Substring(index, 1) == "D")
@@ -732,15 +736,10 @@ namespace MolecularWeightCalculator.Formula
                 formulaIn = formula;
 
                 // Reserve memory for isoStats[] array
-                var isoStats = new IsoResultsByElement[elementCount + 1];
-                for (var i = 0; i < isoStats.Length; i++)
-                {
-                    isoStats[i] = new IsoResultsByElement();
-                }
+                var isoStats = new List<IsoResultsByElement>(elementCount);
 
                 // Step through computationStats.Elements[] again and copy info into isoStats[]
                 // In addition, determine minimum and maximum weight for the molecule
-                elementCount = 0;
                 var minWeight = 0;
                 var maxWeight = 0;
                 for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
@@ -749,14 +748,13 @@ namespace MolecularWeightCalculator.Formula
                     {
                         if (computationStats.Elements[elementIndex].Count > 0d)
                         {
-                            elementCount++;
-                            isoStats[elementCount].ElementIndex = (short)elementIndex;
-                            isoStats[elementCount].AtomCount = (int)Math.Round(computationStats.Elements[elementIndex].Count); // Note: Ignoring .Elements[elementIndex].IsotopicCorrection
-                            isoStats[elementCount].ExplicitMass = mElementStats[elementIndex].Mass;
-
                             var stats = mElementStats[elementIndex];
-                            minWeight = (int)Math.Round(minWeight + isoStats[elementCount].AtomCount * Math.Round(stats.Isotopes[0].Mass, 0));
-                            maxWeight = (int)Math.Round(maxWeight + isoStats[elementCount].AtomCount * Math.Round(stats.Isotopes[stats.Isotopes.Count - 1].Mass, 0));
+                            // Note: Ignoring .Elements[elementIndex].IsotopicCorrection when getting atom count
+                            var isoStat = new IsoResultsByElement(elementIndex, (int)Math.Round(computationStats.Elements[elementIndex].Count), stats.Mass);
+                            isoStats.Add(isoStat);
+
+                            minWeight = (int)Math.Round(minWeight + isoStat.AtomCount * Math.Round(stats.Isotopes[0].Mass, 0));
+                            maxWeight = (int)Math.Round(maxWeight + isoStat.AtomCount * Math.Round(stats.Isotopes[stats.Isotopes.Count - 1].Mass, 0));
                         }
                     }
                 }
@@ -771,16 +769,11 @@ namespace MolecularWeightCalculator.Formula
                         {
                             for (var isotopeIndex = 0; isotopeIndex < element.Isotopes.Count; isotopeIndex++)
                             {
-                                elementCount++;
+                                var isoStat = new IsoResultsByElement(elementIndex, (int)Math.Round(element.Isotopes[isotopeIndex].Count), element.Isotopes[isotopeIndex].Mass, true);
+                                isoStats.Add(isoStat);
 
-                                isoStats[elementCount].ExplicitIsotope = true;
-                                isoStats[elementCount].ElementIndex = (short)elementIndex;
-                                isoStats[elementCount].AtomCount = (int)Math.Round(element.Isotopes[isotopeIndex].Count);
-                                isoStats[elementCount].ExplicitMass = element.Isotopes[isotopeIndex].Mass;
-
-                                var stats = isoStats[elementCount];
-                                minWeight = (int)Math.Round(minWeight + stats.AtomCount * stats.ExplicitMass);
-                                maxWeight = (int)Math.Round(maxWeight + stats.AtomCount * stats.ExplicitMass);
+                                minWeight = (int)Math.Round(minWeight + isoStat.AtomCount * isoStat.ExplicitMass);
+                                maxWeight = (int)Math.Round(maxWeight + isoStat.AtomCount * isoStat.ExplicitMass);
                             }
                         }
                     }
@@ -801,10 +794,10 @@ namespace MolecularWeightCalculator.Formula
 
                 // Predict the total number of computations required; show progress if necessary
                 var predictedTotalComboCalcs = 0;
-                for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
+                for (var index = 0; index < isoStats.Count; index++)
                 {
-                    masterElementIndex = isoStats[elementIndex].ElementIndex;
-                    atomCount = isoStats[elementIndex].AtomCount;
+                    var masterElementIndex = isoStats[index].ElementIndex;
+                    atomCount = isoStats[index].AtomCount;
                     isotopeCount = (short)mElementStats[masterElementIndex].Isotopes.Count;
 
                     predictedCombos = FindCombosPredictIterations(atomCount, isotopeCount);
@@ -815,17 +808,18 @@ namespace MolecularWeightCalculator.Formula
 
                 // For each element, compute all of the possible combinations
                 var completedComboCalcs = 0;
-                for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
+                for (var index = 0; index < isoStats.Count; index++)
                 {
                     short isotopeStartingMass;
                     short isotopeEndingMass;
-                    masterElementIndex = isoStats[elementIndex].ElementIndex;
-                    atomCount = isoStats[elementIndex].AtomCount;
+                    var isoStat = isoStats[index];
+                    var masterElementIndex = isoStat.ElementIndex;
+                    atomCount = isoStat.AtomCount;
 
-                    if (isoStats[elementIndex].ExplicitIsotope)
+                    if (isoStat.ExplicitIsotope)
                     {
                         isotopeCount = 1;
-                        isotopeStartingMass = (short)Math.Round(isoStats[elementIndex].ExplicitMass);
+                        isotopeStartingMass = (short)Math.Round(isoStat.ExplicitMass);
                         isotopeEndingMass = isotopeStartingMass;
                     }
                     else
@@ -876,14 +870,14 @@ namespace MolecularWeightCalculator.Formula
                     minWeight = atomCount * isotopeStartingMass;
                     maxWeight = atomCount * isotopeEndingMass;
                     var resultingMassCountForElement = maxWeight - minWeight + 1;
-                    isoStats[elementIndex].StartingResultsMass = minWeight;
-                    isoStats[elementIndex].ResultsCount = resultingMassCountForElement;
-                    isoStats[elementIndex].SetArraySize(resultingMassCountForElement);
+                    isoStat.StartingResultsMass = minWeight;
+                    isoStat.ResultsCount = resultingMassCountForElement;
+                    isoStat.SetArraySize(resultingMassCountForElement);
 
-                    if (isoStats[elementIndex].ExplicitIsotope)
+                    if (isoStat.ExplicitIsotope)
                     {
                         // Explicitly defined isotope; there is only one "combo" and its abundance = 1
-                        isoStats[elementIndex].MassAbundances[1] = 1f;
+                        isoStat.MassAbundances[1] = 1f;
                     }
                     else
                     {
@@ -1028,7 +1022,7 @@ namespace MolecularWeightCalculator.Formula
                                 indexToStoreAbundance = FindIndexForNominalMass(isoCombos, comboIndex, isotopeCount, atomCount, mElementStats[masterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances[] at location IndexToStoreAbundance
-                                isoStats[elementIndex].MassAbundances[indexToStoreAbundance] = (float)(isoStats[elementIndex].MassAbundances[indexToStoreAbundance] + thisComboFractionalAbundance);
+                                isoStat.MassAbundances[indexToStoreAbundance] = (float)(isoStat.MassAbundances[indexToStoreAbundance] + thisComboFractionalAbundance);
                             }
 
                             if (ratioMethodUsed)
@@ -1037,7 +1031,7 @@ namespace MolecularWeightCalculator.Formula
                                 indexToStoreAbundance = FindIndexForNominalMass(isoCombos, comboIndex + 1, isotopeCount, atomCount, mElementStats[masterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances[] at location IndexToStoreAbundance
-                                isoStats[elementIndex].MassAbundances[indexToStoreAbundance] = (float)(isoStats[elementIndex].MassAbundances[indexToStoreAbundance] + nextComboFractionalAbundance);
+                                isoStat.MassAbundances[indexToStoreAbundance] = (float)(isoStat.MassAbundances[indexToStoreAbundance] + nextComboFractionalAbundance);
                             }
 
                             if (ratioMethodUsed && comboIndex + 1 == combosFound)
@@ -1062,9 +1056,9 @@ namespace MolecularWeightCalculator.Formula
                 // Step Through IsoStats from the end to the beginning, shortening the length to the
                 // first value greater than MIN_ABUNDANCE_TO_KEEP
                 // This greatly speeds up the convolution
-                for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
+                for (var isoIndex = 0; isoIndex < isoStats.Count; isoIndex++)
                 {
-                    var stats = isoStats[elementIndex];
+                    var stats = isoStats[isoIndex];
                     var index = stats.ResultsCount;
                     while (stats.MassAbundances[index] < minAbundanceToKeep)
                     {
@@ -1078,16 +1072,16 @@ namespace MolecularWeightCalculator.Formula
 
                 // Examine IsoStats[] to predict the number of ConvolutionIterations
                 // Commented out because the only calculated value is not used anywhere.
-                //long predictedConvIterations = isoStats[1].ResultsCount;
-                //for (var elementIndex = 2; elementIndex <= elementCount; elementIndex++)
-                //    predictedConvIterations *= isoStats[2].ResultsCount;
+                //long predictedConvIterations = isoStats[0].ResultsCount;
+                //for (var index = 1; index < isoStats.Count; index++)
+                //    predictedConvIterations *= isoStats[index].ResultsCount;
 
                 ResetProgress("Finding Isotopic Abundances: Convoluting results");
 
                 // Convolute the results for each element using a recursive convolution routine
-                for (var index = 1; index <= isoStats[1].ResultsCount; index++)
+                for (var index = 0; index < isoStats[0].ResultsCount; index++)
                 {
-                    ConvoluteMasses(convolutedAbundances, convolutedAbundanceStartMass, isoStats, elementCount, index);
+                    ConvoluteMasses(convolutedAbundances, convolutedAbundanceStartMass, isoStats, index);
 
                     percentComplete = index / (float)isoStats[1].ResultsCount * 100f;
                     UpdateProgress(percentComplete);
@@ -1102,9 +1096,9 @@ namespace MolecularWeightCalculator.Formula
 
                 // Compute mass defect (difference of initial isotope's mass from integer mass)
                 var exactBaseIsoMass = 0d;
-                for (var elementIndex = 1; elementIndex <= elementCount; elementIndex++)
+                for (var index = 0; index < isoStats.Count; index++)
                 {
-                    var stats = isoStats[elementIndex];
+                    var stats = isoStats[index];
                     if (stats.ExplicitIsotope)
                     {
                         exactBaseIsoMass += stats.AtomCount * stats.ExplicitMass;
@@ -1777,21 +1771,19 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="convolutedAbundances"></param>
         /// <param name="convolutedAbundanceStartMass"></param>
         /// <param name="isoStats"></param>
-        /// <param name="elementCount"></param>
         /// <param name="workingRow"></param>
         /// <param name="workingAbundance"></param>
         /// <param name="workingMassTotal"></param>
-        /// <param name="elementTrack"></param>
+        /// <param name="isoStatsIndex"></param>
         /// <param name="iterations"></param>
         private void ConvoluteMasses(
             IsoResultsOverallData[] convolutedAbundances,
             int convolutedAbundanceStartMass,
-            IsoResultsByElement[] isoStats,
-            short elementCount,
+            List<IsoResultsByElement> isoStats,
             int workingRow,
             float workingAbundance = 1,
             int workingMassTotal = 0,
-            int elementTrack = 1,
+            int isoStatsIndex = 0,
             long iterations = 0)
         {
             if (mAbortProcessing)
@@ -1803,10 +1795,10 @@ namespace MolecularWeightCalculator.Formula
                 Application.DoEvents();
             }
 
-            var newAbundance = workingAbundance * isoStats[elementTrack].MassAbundances[workingRow];
-            var newMassTotal = workingMassTotal + (isoStats[elementTrack].StartingResultsMass + workingRow - 1);
+            var newAbundance = workingAbundance * isoStats[isoStatsIndex].MassAbundances[workingRow];
+            var newMassTotal = workingMassTotal + (isoStats[isoStatsIndex].StartingResultsMass + workingRow - 1);
 
-            if (elementTrack >= elementCount)
+            if (isoStatsIndex >= isoStats.Count - 1)
             {
                 var indexToStoreResult = newMassTotal - convolutedAbundanceStartMass + 1;
                 var result = convolutedAbundances[indexToStoreResult];
@@ -1818,8 +1810,8 @@ namespace MolecularWeightCalculator.Formula
             }
             else
             {
-                for (var rowIndex = 1; rowIndex <= isoStats[elementTrack + 1].ResultsCount; rowIndex++)
-                    ConvoluteMasses(convolutedAbundances, convolutedAbundanceStartMass, isoStats, elementCount, rowIndex, newAbundance, newMassTotal, elementTrack + 1, iterations);
+                for (var rowIndex = 1; rowIndex <= isoStats[isoStatsIndex + 1].ResultsCount; rowIndex++)
+                    ConvoluteMasses(convolutedAbundances, convolutedAbundanceStartMass, isoStats, rowIndex, newAbundance, newMassTotal, isoStatsIndex + 1, iterations);
             }
         }
 
