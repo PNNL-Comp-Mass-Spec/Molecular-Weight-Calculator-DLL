@@ -844,7 +844,7 @@ namespace MolecularWeightCalculator.Formula
                         return -1;
                     }
 
-                    var isoCombos = new int[predictedCombos + 1, isotopeCount + 1];
+                    var isoCombos = new int[predictedCombos, isotopeCount];
                     // 2D array: Holds the # of each isotope for each combination
                     // For example, Two chlorine atoms, Cl2, has at most 6 combos since Cl isotopes are 35, 36, and 37
                     // m1  m2  m3
@@ -855,7 +855,7 @@ namespace MolecularWeightCalculator.Formula
                     // 0   1   1
                     // 0   0   2
 
-                    var combosFound = FindCombosRecurse(isoCombos, atomCount, isotopeCount);
+                    var combosFound = FindCombosRecurse(isoCombos, atomCount, isotopeCount) + 1;
 
                     // The predicted value should always match the actual value, unless explicitIsotopesPresent = True
                     if (!explicitIsotopesPresent)
@@ -882,7 +882,7 @@ namespace MolecularWeightCalculator.Formula
                     else
                     {
                         var fractionalAbundanceSaved = 0d;
-                        for (var comboIndex = 1; comboIndex <= combosFound; comboIndex++)
+                        for (var comboIndex = 0; comboIndex < combosFound; comboIndex++)
                         {
                             int indexToStoreAbundance;
                             completedComboCalcs += 1;
@@ -911,7 +911,7 @@ namespace MolecularWeightCalculator.Formula
                                 var stats = mElementStats[masterElementIndex];
                                 for (var isotopeIndex = 0; isotopeIndex < isotopeCount; isotopeIndex++)
                                 {
-                                    var isotopeCountInThisCombo = isoCombos[comboIndex, isotopeIndex + 1];
+                                    var isotopeCountInThisCombo = isoCombos[comboIndex, isotopeIndex];
                                     if (isotopeCountInThisCombo > 0)
                                     {
                                         abundDenom *= MathUtils.Factorial(isotopeCountInThisCombo);
@@ -938,10 +938,10 @@ namespace MolecularWeightCalculator.Formula
                                     var sumI = 0d;
                                     for (var isotopeIndex = 0; isotopeIndex < isotopeCount; isotopeIndex++)
                                     {
-                                        if (isoCombos[comboIndex, isotopeIndex + 1] > 0)
+                                        if (isoCombos[comboIndex, isotopeIndex] > 0)
                                         {
                                             var workingSum = 0d;
-                                            for (var subIndex = 1; subIndex <= isoCombos[comboIndex, isotopeIndex + 1]; subIndex++)
+                                            for (var subIndex = 1; subIndex <= isoCombos[comboIndex, isotopeIndex]; subIndex++)
                                                 workingSum += Math.Log(subIndex);
 
                                             sumI += workingSum;
@@ -954,7 +954,7 @@ namespace MolecularWeightCalculator.Formula
                                     {
                                         if (stats.Isotopes[isotopeIndex].Abundance > 0f)
                                         {
-                                            sumF += isoCombos[comboIndex, isotopeIndex + 1] * Math.Log(stats.Isotopes[isotopeIndex].Abundance);
+                                            sumF += isoCombos[comboIndex, isotopeIndex] * Math.Log(stats.Isotopes[isotopeIndex].Abundance);
                                         }
                                     }
 
@@ -966,7 +966,7 @@ namespace MolecularWeightCalculator.Formula
 
                                 // Use thisComboFractionalAbundance to predict
                                 // the Fractional Abundance of the Next Combo
-                                if (comboIndex < combosFound && fractionalAbundanceSaved >= cutoffForRatioMethod)
+                                if (comboIndex < combosFound - 1 && fractionalAbundanceSaved >= cutoffForRatioMethod)
                                 {
                                     // #######
                                     // Third method, determines the ratio of this combo's abundance and the next combo's abundance
@@ -976,8 +976,8 @@ namespace MolecularWeightCalculator.Formula
 
                                     for (var isotopeIndex = 0; isotopeIndex < isotopeCount; isotopeIndex++)
                                     {
-                                        double m = isoCombos[comboIndex, isotopeIndex + 1];
-                                        double mPrime = isoCombos[comboIndex + 1, isotopeIndex + 1];
+                                        double m = isoCombos[comboIndex, isotopeIndex];
+                                        double mPrime = isoCombos[comboIndex + 1, isotopeIndex];
 
                                         if (m > mPrime)
                                         {
@@ -1034,7 +1034,7 @@ namespace MolecularWeightCalculator.Formula
                                 isoStat.MassAbundances[indexToStoreAbundance] = (float)(isoStat.MassAbundances[indexToStoreAbundance] + nextComboFractionalAbundance);
                             }
 
-                            if (ratioMethodUsed && comboIndex + 1 == combosFound)
+                            if (ratioMethodUsed && comboIndex + 2 == combosFound)
                             {
                                 // No need to compute the last combo since we just did it
                                 break;
@@ -1759,7 +1759,7 @@ namespace MolecularWeightCalculator.Formula
         {
             var workingMass = 0;
             for (var isotopeIndex = 0; isotopeIndex < isotopeCount; isotopeIndex++)
-                workingMass = (int)Math.Round(workingMass + isoCombos[comboIndex, isotopeIndex + 1] * Math.Round(thisElementsIsotopes[isotopeIndex].Mass, 0));
+                workingMass = (int)Math.Round(workingMass + isoCombos[comboIndex, isotopeIndex] * Math.Round(thisElementsIsotopes[isotopeIndex].Mass, 0));
 
             // (workingMass  - IsoStats(ElementIndex).StartingResultsMass) + 1
             return (int)Math.Round(workingMass - atomCount * Math.Round(thisElementsIsotopes[0].Mass, 0)) + 1;
@@ -1853,7 +1853,7 @@ namespace MolecularWeightCalculator.Formula
             // 6             3               56
             // 6             4               126
 
-            var runningSum = new int[atomCount + 1];
+            var runningSum = new int[atomCount];
             try
             {
                 int predictedCombos;
@@ -1863,14 +1863,14 @@ namespace MolecularWeightCalculator.Formula
                 }
                 else
                 {
-                    // Initialize RunningSum()
-                    for (var atomIndex = 1; atomIndex <= atomCount; atomIndex++)
-                        runningSum[atomIndex] = atomIndex + 1;
+                    // Initialize runningSum[]
+                    for (var atomIndex = 0; atomIndex < atomCount; atomIndex++)
+                        runningSum[atomIndex] = atomIndex + 2;
 
                     for (var isotopeIndex = 3; isotopeIndex <= isotopeCount; isotopeIndex++)
                     {
                         var previousComputedValue = isotopeIndex;
-                        for (var atomIndex = 2; atomIndex <= atomCount; atomIndex++)
+                        for (var atomIndex = 1; atomIndex < atomCount; atomIndex++)
                         {
                             // Compute new count for this AtomIndex
                             runningSum[atomIndex] = previousComputedValue + runningSum[atomIndex];
@@ -1880,7 +1880,7 @@ namespace MolecularWeightCalculator.Formula
                         }
                     }
 
-                    predictedCombos = runningSum[atomCount];
+                    predictedCombos = runningSum[atomCount - 1];
                 }
 
                 return predictedCombos;
@@ -1905,14 +1905,14 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="currentRow"></param>
         /// <param name="currentCol"></param>
         /// <param name="atomTrackHistory"></param>
-        /// <returns></returns>
+        /// <returns>Last modified index</returns>
         private int FindCombosRecurse(
             int[,] comboResults,
             int atomCount,
             int maxIsotopeCount,
             int currentIsotopeCount = -1,
-            int currentRow = 1,
-            int currentCol = 1,
+            int currentRow = 0,
+            int currentCol = 0,
             int[] atomTrackHistory = null)
         {
             // IsoCombos[] is a 2D array holding the # of each isotope for each combination
@@ -1927,8 +1927,8 @@ namespace MolecularWeightCalculator.Formula
 
             if (atomTrackHistory == null)
             {
-                atomTrackHistory = new int[maxIsotopeCount + 1];
-                atomTrackHistory[1] = atomCount;
+                atomTrackHistory = new int[maxIsotopeCount];
+                atomTrackHistory[0] = atomCount;
             }
             if (currentIsotopeCount < 0)
             {
@@ -1953,21 +1953,20 @@ namespace MolecularWeightCalculator.Formula
                 {
                     currentRow += 1;
 
-                    // Went to a new row; if CurrentCol > 1 then need to assign previous values to previous columns
-                    if (currentCol > 1)
+                    // Went to a new row; if CurrentCol > 0 then need to assign previous values to previous columns
+                    if (currentCol > 0)
                     {
-                        for (var colIndex = 1; colIndex < currentCol; colIndex++)
+                        for (var colIndex = 0; colIndex < currentCol; colIndex++)
                             comboResults[currentRow, colIndex] = atomTrackHistory[colIndex];
                     }
 
                     atomTrack -= 1;
                     comboResults[currentRow, currentCol] = atomTrack;
 
-                    if (currentCol < maxIsotopeCount)
+                    if (currentCol < maxIsotopeCount - 1)
                     {
-                        var newColumn = currentCol + 1;
-                        atomTrackHistory[newColumn - 1] = atomTrack;
-                        currentRow = FindCombosRecurse(comboResults, atomCount - atomTrack, maxIsotopeCount, currentIsotopeCount - 1, currentRow, newColumn, atomTrackHistory);
+                        atomTrackHistory[currentCol] = atomTrack;
+                        currentRow = FindCombosRecurse(comboResults, atomCount - atomTrack, maxIsotopeCount, currentIsotopeCount - 1, currentRow, currentCol + 1, atomTrackHistory);
                     }
                     else
                     {
