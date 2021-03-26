@@ -239,6 +239,7 @@ namespace UnitTests.FunctionalTests
 
             var ionCount = peptide.GetFragmentationMasses(out var fragSpectrum);
 
+            Console.WriteLine();
             OutputDataTable(ionCount, fragSpectrum);
         }
 

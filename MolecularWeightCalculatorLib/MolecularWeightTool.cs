@@ -429,7 +429,7 @@ namespace MolecularWeightCalculator
         /// Get the abbreviation ID for the given abbreviation symbol
         /// </summary>
         /// <param name="symbol"></param>
-        /// <returns>ID if found, otherwise 0</returns>
+        /// <returns>ID if found, otherwise -1</returns>
         public int GetAbbreviationId(string symbol)
         {
             return mElementAndMassRoutines.GetAbbreviationIdInternal(symbol);

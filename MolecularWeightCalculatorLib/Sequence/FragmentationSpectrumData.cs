@@ -44,7 +44,9 @@ namespace MolecularWeightCalculator.Sequence
         {
             if (ReferenceEquals(this, other)) return 0;
             if (ReferenceEquals(null, other)) return 1;
-            return Mass.CompareTo(other.Mass);
+            var massComparison = Mass.CompareTo(other.Mass);
+            if (massComparison != 0) return massComparison;
+            return Intensity.CompareTo(other.Intensity);
         }
     }
 }

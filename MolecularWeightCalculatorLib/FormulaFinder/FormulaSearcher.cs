@@ -1246,7 +1246,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
                         // See if this is an abbreviation
                         var symbolReference = mElementAndMassRoutines.GetAbbreviationIdInternal(abbrevSymbol);
-                        if (symbolReference < 1)
+                        if (symbolReference < 0)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
                             return new List<CandidateElement>();
@@ -1343,7 +1343,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
                         // See if this is an abbreviation
                         var symbolReference = mElementAndMassRoutines.GetAbbreviationIdInternal(abbrevSymbol);
-                        if (symbolReference < 1)
+                        if (symbolReference < 0)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
                             return 0;

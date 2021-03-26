@@ -115,6 +115,11 @@ namespace MolecularWeightCalculator.Sequence
                 Symbol = symbol;
                 Phosphorylated = false;
             }
+
+            public override string ToString()
+            {
+                return $"{Symbol}: {Mass}, b {IonMass[1]}, y {IonMass[2]}";
+            }
         }
 
         private class Terminus
@@ -328,12 +333,12 @@ namespace MolecularWeightCalculator.Sequence
             }
             else
             {
-                abbrevId = 0;
+                abbrevId = -1;
             }
 
             var residue = new Residue(symbol3Letter);
             residue.Phosphorylated = false;
-            if (abbrevId > 0)
+            if (abbrevId >= 0)
             {
                 residue.Mass = mElementAndMassRoutines.GetAbbreviationMass(abbrevId);
             }
@@ -465,11 +470,11 @@ namespace MolecularWeightCalculator.Sequence
                                         string ionSymbol;
                                         if (ionType == IonType.YIon || ionType == IonType.ZIon)
                                         {
-                                            ionSymbol = ionSymbolGeneric + (mResidues.Count - residueIndex + 1);
+                                            ionSymbol = ionSymbolGeneric + (mResidues.Count - residueIndex);
                                         }
                                         else
                                         {
-                                            ionSymbol = ionSymbolGeneric + residueIndex;
+                                            ionSymbol = ionSymbolGeneric + (residueIndex + 1);
                                         }
 
                                         if (chargeIndex > 1)
@@ -600,7 +605,7 @@ namespace MolecularWeightCalculator.Sequence
             }
             else
             {
-                for (var residueIndex = 0; residueIndex < currentResidueIndex; residueIndex++)
+                for (var residueIndex = 0; residueIndex <= currentResidueIndex; residueIndex++)
                 {
                     internalResidues += mResidues[residueIndex].Symbol + " ";
                     if (mResidues[residueIndex].Phosphorylated)
@@ -819,7 +824,7 @@ namespace MolecularWeightCalculator.Sequence
                 {
                     if (addSpaceEvery10Residues)
                     {
-                        if (index % 10 == 0)
+                        if (index % 10 == 9) // 0-based index: mod-10 == 9 will do every 10th residue, starting with the 10th
                         {
                             sequence += " ";
                         }
@@ -1655,7 +1660,7 @@ namespace MolecularWeightCalculator.Sequence
                     // Formula starts with 4 characters and the first is H, see if the first 3 characters are a valid amino acid code
                     var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(workingSequence.Substring(0, 3), true);
 
-                    if (abbrevId <= 0)
+                    if (abbrevId < 0)
                     {
                         // Doesn't start with a valid amino acid 3 letter abbreviation, so remove the initial H
                         workingSequence = workingSequence.Substring(1);
@@ -1686,7 +1691,7 @@ namespace MolecularWeightCalculator.Sequence
                     // Formula ends with 3 characters and the last two are OH, see if the last 3 characters are a valid amino acid code
                     var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(workingSequence.Substring(stringLength - 3, 3), true);
 
-                    if (abbrevId <= 0)
+                    if (abbrevId < 0)
                     {
                         // Doesn't end with a valid amino acid 3 letter abbreviation, so remove the trailing OH
                         workingSequence = workingSequence.Substring(0, stringLength - 2);
@@ -2253,7 +2258,7 @@ namespace MolecularWeightCalculator.Sequence
                             {
                                 threeLetterSymbol = firstChar.ToUpper() + sequence.Substring(index + 1, 2).ToLower();
 
-                                if (mElementAndMassRoutines.GetAbbreviationIdInternal(threeLetterSymbol, true) == 0)
+                                if (mElementAndMassRoutines.GetAbbreviationIdInternal(threeLetterSymbol, true) == -1)
                                 {
                                     // 3 letter symbol not found
                                     // Add anyway, but mark as Xxx
@@ -2366,7 +2371,7 @@ namespace MolecularWeightCalculator.Sequence
 
                 var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(residue.Symbol, true);
 
-                if (abbrevId > 0)
+                if (abbrevId >= 0)
                 {
                     validResidueCount += 1;
                     residue.Mass = mElementAndMassRoutines.GetAbbreviationMass(abbrevId);
@@ -2442,7 +2447,7 @@ namespace MolecularWeightCalculator.Sequence
                 {
                     runningTotal += residue.MassWithMods;
                     residue.IonMass[(int)IonType.YIon] = runningTotal + mChargeCarrierMass;
-                    if (index == 1)
+                    if (index == 0)
                     {
                         // Add the N-terminus mass to highest y ion
                         residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] + mNTerminus.Mass - mChargeCarrierMass;

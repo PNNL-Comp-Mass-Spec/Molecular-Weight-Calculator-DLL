@@ -2032,10 +2032,10 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="symbol"></param>
         /// <param name="aminoAcidsOnly"></param>
-        /// <returns>ID if found, otherwise 0</returns>
+        /// <returns>ID if found, otherwise -1</returns>
         public int GetAbbreviationIdInternal(string symbol, bool aminoAcidsOnly = false)
         {
-            for (var index = 0; index <= mAbbrevStats.Count; index++)
+            for (var index = 0; index < mAbbrevStats.Count; index++)
             {
                 if ((mAbbrevStats[index].Symbol?.ToLower() ?? "") == (symbol?.ToLower() ?? ""))
                 {
@@ -2046,7 +2046,7 @@ namespace MolecularWeightCalculator.Formula
                 }
             }
 
-            return 0;
+            return -1;
         }
 
         public int GetAbbreviationInternal(
@@ -3106,7 +3106,7 @@ namespace MolecularWeightCalculator.Formula
                 var bracketMultiplier = bracketMultiplierPrior;
                 var insideBrackets = false;
 
-                var dashPos = 0;
+                var dashPos = -1;
                 var newFormula = string.Empty;
                 var newFormulaRightHalf = string.Empty;
 
@@ -3355,7 +3355,7 @@ namespace MolecularWeightCalculator.Formula
                                 {
                                     // No number is present, that's just fine
                                     // Make sure defaults are set, though
-                                    dashPos = 0;
+                                    dashPos = -1;
                                     dashMultiplier = dashMultiplierPrior;
                                 }
 
@@ -3383,7 +3383,7 @@ namespace MolecularWeightCalculator.Formula
                                     {
                                         // A number less then zero should have been handled by CatchParseNumError above
                                         // Make sure defaults are set, though
-                                        dashPos = 0;
+                                        dashPos = -1;
                                         dashMultiplier = dashMultiplierPrior;
                                     }
                                 }
@@ -3461,10 +3461,10 @@ namespace MolecularWeightCalculator.Formula
                                 }
                                 else if (insideBrackets)
                                 {
-                                    if (dashPos > 0)
+                                    if (dashPos >= 0)
                                     {
                                         // Need to set dashPos and dashMultiplier back to defaults, since a dash number goes back to one inside brackets
-                                        dashPos = 0;
+                                        dashPos = -1;
                                         dashMultiplier = 1d;
                                     }
 
