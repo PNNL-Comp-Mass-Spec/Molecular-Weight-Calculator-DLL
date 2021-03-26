@@ -107,9 +107,9 @@ namespace MolecularWeightCalculator.Formula
             public bool ExplicitIsotope { get; } // True if an explicitly defined isotope
             public double ExplicitMass { get; }
             public int AtomCount { get; } // Number of atoms of this element in the formula being parsed
-            public int ResultsCount { get; set; } // Number of masses in MassAbundances
+            public int ResultsCount { get; set; } // Number of masses in MassAbundances; changed at times for data filtering purposes
             public int StartingResultsMass { get; set; } // Starting mass of the results for this element
-            public float[] MassAbundances { get; private set; } // Abundance of each mass, starting with StartingResultsMass; 1-based array; usage is convoluted (haha)
+            public float[] MassAbundances { get; private set; } // Abundance of each mass, starting with StartingResultsMass; 0-based array (can't change to a list)
 
             public IsoResultsByElement(int elementIndex, int atomCount, double explicitMass, bool explicitIsotope = false)
             {
@@ -124,7 +124,7 @@ namespace MolecularWeightCalculator.Formula
 
             public void SetArraySize(int count)
             {
-                MassAbundances = new float[count + 1];
+                MassAbundances = new float[count];
             }
 
             public override string ToString()
@@ -549,7 +549,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="formulaIn">Input/output: The properly formatted formula to parse</param>
         /// <param name="chargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
         /// <param name="results">Output: Table of results</param>
-        /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="convolutedMSData2D">2D array of MSData (mass and intensity pairs)</param>
         /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
         /// <param name="addProtonChargeCarrier">If addProtonChargeCarrier is False, then still convolute by charge, but doesn't add a proton</param>
         /// <param name="headerIsotopicAbundances">Header to use in <paramref name="results"/></param>
@@ -567,7 +567,7 @@ namespace MolecularWeightCalculator.Formula
             ref string formulaIn,
             short chargeState,
             out string results,
-            out double[,] convolutedMSData2DOneBased,
+            out double[,] convolutedMSData2D,
             out int convolutedMSDataCount,
             bool addProtonChargeCarrier = true,
             string headerIsotopicAbundances = "Isotopic Abundances for",
@@ -576,7 +576,7 @@ namespace MolecularWeightCalculator.Formula
             string headerIntensity = "Intensity",
             bool useFactorials = false)
         {
-            convolutedMSData2DOneBased = new double[0, 0];
+            convolutedMSData2D = new double[0, 0];
             convolutedMSDataCount = 0;
             results = "";
 
@@ -785,7 +785,7 @@ namespace MolecularWeightCalculator.Formula
                 // Create an array to hold the Fractional Abundances for all the masses
                 convolutedMSDataCount = maxWeight - minWeight + 1;
                 var convolutedAbundanceStartMass = minWeight;
-                var convolutedAbundances = new IsoResultsOverallData[convolutedMSDataCount + 1]; // Fractional abundance at each mass; 1-based array
+                var convolutedAbundances = new IsoResultsOverallData[convolutedMSDataCount]; // Fractional abundance at each mass; 1-based array
 
                 for (var i = 0; i < convolutedAbundances.Length; i++)
                 {
@@ -877,7 +877,7 @@ namespace MolecularWeightCalculator.Formula
                     if (isoStat.ExplicitIsotope)
                     {
                         // Explicitly defined isotope; there is only one "combo" and its abundance = 1
-                        isoStat.MassAbundances[1] = 1f;
+                        isoStat.MassAbundances[0] = 1f;
                     }
                     else
                     {
@@ -1022,6 +1022,7 @@ namespace MolecularWeightCalculator.Formula
                                 indexToStoreAbundance = FindIndexForNominalMass(isoCombos, comboIndex, isotopeCount, atomCount, mElementStats[masterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances[] at location IndexToStoreAbundance
+                                // TODO: Use +=
                                 isoStat.MassAbundances[indexToStoreAbundance] = (float)(isoStat.MassAbundances[indexToStoreAbundance] + thisComboFractionalAbundance);
                             }
 
@@ -1031,6 +1032,7 @@ namespace MolecularWeightCalculator.Formula
                                 indexToStoreAbundance = FindIndexForNominalMass(isoCombos, comboIndex + 1, isotopeCount, atomCount, mElementStats[masterElementIndex].Isotopes);
 
                                 // Store the abundance in .MassAbundances[] at location IndexToStoreAbundance
+                                // TODO: Use +=
                                 isoStat.MassAbundances[indexToStoreAbundance] = (float)(isoStat.MassAbundances[indexToStoreAbundance] + nextComboFractionalAbundance);
                             }
 
@@ -1059,15 +1061,15 @@ namespace MolecularWeightCalculator.Formula
                 for (var isoIndex = 0; isoIndex < isoStats.Count; isoIndex++)
                 {
                     var stats = isoStats[isoIndex];
-                    var index = stats.ResultsCount;
+                    var index = stats.ResultsCount - 1;
                     while (stats.MassAbundances[index] < minAbundanceToKeep)
                     {
                         index -= 1;
-                        if (index == 1)
+                        if (index == 0)
                             break;
                     }
 
-                    stats.ResultsCount = index;
+                    stats.ResultsCount = index + 1;
                 }
 
                 // Examine IsoStats[] to predict the number of ConvolutionIterations
@@ -1131,11 +1133,11 @@ namespace MolecularWeightCalculator.Formula
 
                 // Step Through convolutedAbundances[], starting at the end, and find the first value above MIN_ABUNDANCE_TO_KEEP
                 // Decrease convolutedMSDataCount to remove the extra values below MIN_ABUNDANCE_TO_KEEP
-                for (var massIndex = convolutedMSDataCount; massIndex >= 1; massIndex -= 1)
+                for (var massIndex = convolutedMSDataCount - 1; massIndex >= 0; massIndex -= 1)
                 {
                     if (convolutedAbundances[massIndex].Abundance > minAbundanceToKeep)
                     {
-                        convolutedMSDataCount = massIndex;
+                        convolutedMSDataCount = massIndex + 1;
                         break;
                     }
                 }
@@ -1143,12 +1145,12 @@ namespace MolecularWeightCalculator.Formula
                 var output = headerIsotopicAbundances + " " + formula + Environment.NewLine;
                 output += SpacePad("  " + headerMassToCharge, 12) + "\t" + SpacePad(headerFraction, 9) + "\t" + headerIntensity + Environment.NewLine;
 
-                // Initialize convolutedMSData2DOneBased[]
-                convolutedMSData2DOneBased = new double[convolutedMSDataCount + 1, 3];
+                // Initialize convolutedMSData2D[]
+                convolutedMSData2D = new double[convolutedMSDataCount, 2];
 
                 // Find Maximum Abundance
                 var maxAbundance = 0d;
-                for (var massIndex = 1; massIndex <= convolutedMSDataCount; massIndex++)
+                for (var massIndex = 0; massIndex < convolutedMSDataCount; massIndex++)
                 {
                     if (convolutedAbundances[massIndex].Abundance > maxAbundance)
                     {
@@ -1160,55 +1162,55 @@ namespace MolecularWeightCalculator.Formula
                 // Also, if chargeState is >= 1, then convolute the mass to the appropriate m/z
                 if (Math.Abs(maxAbundance) < float.Epsilon)
                     maxAbundance = 1d;
-                for (var massIndex = 1; massIndex <= convolutedMSDataCount; massIndex++)
+                for (var massIndex = 0; massIndex < convolutedMSDataCount; massIndex++)
                 {
                     var mass = convolutedAbundances[massIndex];
-                    convolutedMSData2DOneBased[massIndex, 0] = convolutedAbundanceStartMass + massIndex - 1 + massDefect;
-                    convolutedMSData2DOneBased[massIndex, 1] = mass.Abundance / maxAbundance * 100d;
+                    convolutedMSData2D[massIndex, 0] = convolutedAbundanceStartMass + massIndex + massDefect;
+                    convolutedMSData2D[massIndex, 1] = mass.Abundance / maxAbundance * 100d;
 
                     if (chargeState >= 1)
                     {
                         if (addProtonChargeCarrier)
                         {
-                            convolutedMSData2DOneBased[massIndex, 0] = ConvoluteMassInternal(convolutedMSData2DOneBased[massIndex, 0], 0, chargeState);
+                            convolutedMSData2D[massIndex, 0] = ConvoluteMassInternal(convolutedMSData2D[massIndex, 0], 0, chargeState);
                         }
                         else
                         {
-                            convolutedMSData2DOneBased[massIndex, 0] = convolutedMSData2DOneBased[massIndex, 0] / chargeState;
+                            convolutedMSData2D[massIndex, 0] = convolutedMSData2D[massIndex, 0] / chargeState;
                         }
                     }
                 }
 
                 // Step through convolutedMSData2DOneBased[] from the beginning to find the
                 // first value greater than MIN_ABUNDANCE_TO_KEEP
-                var rowIndex = 1;
-                while (convolutedMSData2DOneBased[rowIndex, 1] < minAbundanceToKeep)
+                var rowIndex = 0;
+                while (convolutedMSData2D[rowIndex, 1] < minAbundanceToKeep)
                 {
                     rowIndex += 1;
-                    if (rowIndex == convolutedMSDataCount)
+                    if (rowIndex == convolutedMSDataCount - 1)
                         break;
                 }
 
-                // If rowIndex > 1 then remove rows from beginning since value is less than MIN_ABUNDANCE_TO_KEEP
-                if (rowIndex > 1 && rowIndex < convolutedMSDataCount)
+                // If rowIndex > 0 then remove rows from beginning since value is less than MIN_ABUNDANCE_TO_KEEP
+                if (rowIndex > 0 && rowIndex < convolutedMSDataCount - 1)
                 {
                     rowIndex -= 1;
                     // Remove rows from the start of convolutedMSData2DOneBased[] since 0 mass
-                    for (var massIndex = rowIndex + 1; massIndex <= convolutedMSDataCount; massIndex++)
+                    for (var massIndex = rowIndex + 1; massIndex < convolutedMSDataCount; massIndex++)
                     {
-                        convolutedMSData2DOneBased[massIndex - rowIndex, 0] = convolutedMSData2DOneBased[massIndex, 0];
-                        convolutedMSData2DOneBased[massIndex - rowIndex, 1] = convolutedMSData2DOneBased[massIndex, 1];
+                        convolutedMSData2D[massIndex - rowIndex, 0] = convolutedMSData2D[massIndex, 0];
+                        convolutedMSData2D[massIndex - rowIndex, 1] = convolutedMSData2D[massIndex, 1];
                     }
 
                     convolutedMSDataCount -= rowIndex;
                 }
 
                 // Write to output
-                for (var massIndex = 1; massIndex <= convolutedMSDataCount; massIndex++)
+                for (var massIndex = 0; massIndex < convolutedMSDataCount; massIndex++)
                 {
-                    output += SpacePadFront(convolutedMSData2DOneBased[massIndex, 0].ToString("#0.00000"), 12) + "\t";
-                    output += (convolutedMSData2DOneBased[massIndex, 1] * maxAbundance / 100d).ToString("0.0000000") + "\t";
-                    output += SpacePadFront(convolutedMSData2DOneBased[massIndex, 1].ToString("##0.00"), 7) + Environment.NewLine;
+                    output += SpacePadFront(convolutedMSData2D[massIndex, 0].ToString("#0.00000"), 12) + "\t";
+                    output += (convolutedMSData2D[massIndex, 1] * maxAbundance / 100d).ToString("0.0000000") + "\t";
+                    output += SpacePadFront(convolutedMSData2D[massIndex, 1].ToString("##0.00"), 7) + Environment.NewLine;
                     //ToDo: Fix Multiplicity
                     //output += ConvolutedAbundances(massIndex).Multiplicity.ToString("##0") + Environment.NewLine
                 }
@@ -1762,7 +1764,7 @@ namespace MolecularWeightCalculator.Formula
                 workingMass = (int)Math.Round(workingMass + isoCombos[comboIndex, isotopeIndex] * Math.Round(thisElementsIsotopes[isotopeIndex].Mass, 0));
 
             // (workingMass  - IsoStats(ElementIndex).StartingResultsMass) + 1
-            return (int)Math.Round(workingMass - atomCount * Math.Round(thisElementsIsotopes[0].Mass, 0)) + 1;
+            return (int)Math.Round(workingMass - atomCount * Math.Round(thisElementsIsotopes[0].Mass, 0));
         }
 
         /// <summary>
@@ -1796,11 +1798,11 @@ namespace MolecularWeightCalculator.Formula
             }
 
             var newAbundance = workingAbundance * isoStats[isoStatsIndex].MassAbundances[workingRow];
-            var newMassTotal = workingMassTotal + (isoStats[isoStatsIndex].StartingResultsMass + workingRow - 1);
+            var newMassTotal = workingMassTotal + isoStats[isoStatsIndex].StartingResultsMass + workingRow;
 
             if (isoStatsIndex >= isoStats.Count - 1)
             {
-                var indexToStoreResult = newMassTotal - convolutedAbundanceStartMass + 1;
+                var indexToStoreResult = newMassTotal - convolutedAbundanceStartMass;
                 var result = convolutedAbundances[indexToStoreResult];
                 if (newAbundance > 0f)
                 {
@@ -1810,7 +1812,7 @@ namespace MolecularWeightCalculator.Formula
             }
             else
             {
-                for (var rowIndex = 1; rowIndex <= isoStats[isoStatsIndex + 1].ResultsCount; rowIndex++)
+                for (var rowIndex = 0; rowIndex < isoStats[isoStatsIndex + 1].ResultsCount; rowIndex++)
                     ConvoluteMasses(convolutedAbundances, convolutedAbundanceStartMass, isoStats, rowIndex, newAbundance, newMassTotal, isoStatsIndex + 1, iterations);
             }
         }

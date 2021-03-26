@@ -253,13 +253,13 @@ namespace UnitTests.FunctionalTests
             Console.WriteLine("Isotopic abundance test with Charge=" + chargeState);
 
             var formulaIn = "C1255H43O2Cl";
-            var success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, out var resultString, out var convolutedMSData2DOneBased, out var convolutedMSDataCount);
+            var success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, out var resultString, out var convolutedMSData2D, out var convolutedMSDataCount);
             Console.WriteLine(resultString);
 
             Console.WriteLine("Convert isotopic distribution to Gaussian");
             var xyVals = new List<KeyValuePair<double, double>>();
-            for (var index = 1; index <= convolutedMSDataCount; index++)
-                xyVals.Add(new KeyValuePair<double, double>(convolutedMSData2DOneBased[index, 0], convolutedMSData2DOneBased[index, 1]));
+            for (var index = 0; index < convolutedMSDataCount; index++)
+                xyVals.Add(new KeyValuePair<double, double>(convolutedMSData2D[index, 0], convolutedMSData2D[index, 1]));
 
             const int resolution = 2000;
             const double resolutionMass = 1000d;

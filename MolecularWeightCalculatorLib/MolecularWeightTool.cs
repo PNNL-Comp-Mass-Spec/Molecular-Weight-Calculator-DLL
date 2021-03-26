@@ -271,7 +271,7 @@ namespace MolecularWeightCalculator
         /// <param name="formulaIn">Input/output: The properly formatted formula to parse</param>
         /// <param name="chargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
         /// <param name="results">Output: Table of results</param>
-        /// <param name="convolutedMSData2DOneBased">2D array of MSData (mass and intensity pairs)</param>
+        /// <param name="convolutedMSData2D">2D array of MSData (mass and intensity pairs)</param>
         /// <param name="convolutedMSDataCount">Number of data points in ConvolutedMSData2DOneBased</param>
         /// <param name="addProtonChargeCarrier">If addProtonChargeCarrier is false, then still convolute by charge, but doesn't add a proton</param>
         /// <param name="headerIsotopicAbundances">Header to use in <paramref name="results"/></param>
@@ -286,14 +286,14 @@ namespace MolecularWeightCalculator
         /// </remarks>
         public short ComputeIsotopicAbundances(
             ref string formulaIn, short chargeState, out string results,
-            out double[,] convolutedMSData2DOneBased, out int convolutedMSDataCount,
+            out double[,] convolutedMSData2D, out int convolutedMSDataCount,
             bool addProtonChargeCarrier = true,
             string headerIsotopicAbundances = "Isotopic Abundances for",
             string headerMassToCharge = "Mass",
             string headerFraction = "Fraction",
             string headerIntensity = "Intensity")
         {
-            return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref formulaIn, chargeState, out results, out convolutedMSData2DOneBased, out convolutedMSDataCount, addProtonChargeCarrier, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
+            return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref formulaIn, chargeState, out results, out convolutedMSData2D, out convolutedMSDataCount, addProtonChargeCarrier, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
         }
 
         /// <summary>
