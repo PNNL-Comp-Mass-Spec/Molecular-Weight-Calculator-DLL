@@ -2298,9 +2298,9 @@ namespace MolecularWeightCalculator.Formula
         /// Get the current element mode
         /// </summary>
         /// <returns>
-        /// emAverageMass  = 1
-        /// emIsotopicMass = 2
-        /// emIntegerMass  = 3
+        /// ElementMassMode.Average  = 1
+        /// ElementMassMode.Isotopic = 2
+        /// ElementMassMode.Integer  = 3
         /// </returns>
         public ElementMassMode GetElementModeInternal()
         {
