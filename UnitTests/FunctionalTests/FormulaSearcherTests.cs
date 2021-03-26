@@ -40,7 +40,7 @@ namespace UnitTests.FunctionalTests
         }
 
         [Test]
-        public void FormulaFinderByMass()
+        public void FindByMass()
         {
 
             // Search for 200 Da, +/- 0.05 Da
@@ -94,6 +94,16 @@ namespace UnitTests.FunctionalTests
             // Search for percent composition results, maximum mass 400 Da
             var results = mwtWin.FormulaFinder.FindMatchesByPercentComposition(400d, 1d, searchOptions);
             ShowFormulaFinderResults(searchOptions, results, false, true);
+        }
+
+        [Test]
+        public void FindByMassPPMBounded()
+        {
+            searchOptions.SearchMode = FormulaSearchModes.Bounded;
+
+            // Search for 200 Da, +/- 250 ppm
+            var results = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
+            ShowFormulaFinderResults(searchOptions, results, true);
         }
 
         private void ShowFormulaFinderResults(
