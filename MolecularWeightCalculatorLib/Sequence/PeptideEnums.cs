@@ -2,7 +2,7 @@
 
 namespace MolecularWeightCalculator.Sequence
 {
-    [ComVisible(true)]
+    [Guid("D2E8E61C-ACE9-4D5F-9531-2D237DB31609"), ComVisible(true)]
     public enum CTerminusGroupType
     {
         Hydroxyl = 0,
@@ -10,7 +10,7 @@ namespace MolecularWeightCalculator.Sequence
         None = 2
     }
 
-    [ComVisible(true)]
+    [Guid("DFBF68F5-FF11-4950-9A59-767DA221453B"), ComVisible(true)]
     public enum NTerminusGroupType
     {
         Hydrogen = 0,
@@ -23,7 +23,7 @@ namespace MolecularWeightCalculator.Sequence
         None = 6
     }
 
-    [ComVisible(true)]
+    [Guid("F9B6D73E-A347-4174-97D6-9560D9F7DB66"), ComVisible(true)]
     public enum IonType
     {
         AIon = 0,

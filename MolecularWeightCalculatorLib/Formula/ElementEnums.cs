@@ -2,7 +2,7 @@
 
 namespace MolecularWeightCalculator.Formula
 {
-    [ComVisible(true)]
+    [Guid("D2E4106D-07BC-46C4-9FAA-7B286E8527AA"), ComVisible(true)]
     public enum ElementMassMode
     {
         Average = 1,
@@ -10,7 +10,7 @@ namespace MolecularWeightCalculator.Formula
         Integer = 3
     }
 
-    [ComVisible(true)]
+    [Guid("3BF63FE7-A86E-4C78-9A86-D3762F7292D4"), ComVisible(true)]
     public enum StdDevMode
     {
         Short = 0,
@@ -18,7 +18,7 @@ namespace MolecularWeightCalculator.Formula
         Decimal = 2
     }
 
-    [ComVisible(true)]
+    [Guid("D9D6E8B4-1990-46F2-B838-B86E447C1D20"), ComVisible(true)]
     public enum CaseConversionMode
     {
         ConvertCaseUp = 0,

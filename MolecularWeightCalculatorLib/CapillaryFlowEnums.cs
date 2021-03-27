@@ -3,14 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator
 {
-    [ComVisible(true)]
+    [Guid("9DACDA73-0875-41D8-AECA-90651C7DC510"), ComVisible(true)]
     public enum CapillaryType
     {
         OpenTubularCapillary = 0,
         PackedCapillary
     }
 
-    [ComVisible(true)]
+    [Guid("ED5D8D28-FE6D-4FE4-B0F6-1F521971A3D1"), ComVisible(true)]
     public enum UnitOfPressure
     {
         Psi = 0,
@@ -22,7 +22,7 @@ namespace MolecularWeightCalculator
         DynesPerSquareCm
     }
 
-    [ComVisible(true)]
+    [Guid("76D1C162-CAE8-4921-9928-DF229775B629"), ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfLength
     {
@@ -33,14 +33,14 @@ namespace MolecularWeightCalculator
         Inches
     }
 
-    [ComVisible(true)]
+    [Guid("FDB804A9-0A8C-469E-86CB-3040A7B5116C"), ComVisible(true)]
     public enum UnitOfViscosity
     {
         Poise = 0,
         CentiPoise
     }
 
-    [ComVisible(true)]
+    [Guid("88C1C17B-88A2-4B1F-B739-C78FD27D6FEB"), ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfFlowRate
     {
@@ -49,7 +49,7 @@ namespace MolecularWeightCalculator
         NLPerMin
     }
 
-    [ComVisible(true)]
+    [Guid("5191EEFB-1AB7-452D-BF6D-D8F6139B53DB"), ComVisible(true)]
     public enum UnitOfLinearVelocity
     {
         CmPerHr = 0,
@@ -60,7 +60,7 @@ namespace MolecularWeightCalculator
         MmPerSec
     }
 
-    [ComVisible(true)]
+    [Guid("94F70EBF-8E33-42A2-83C0-F98BD138078E"), ComVisible(true)]
     public enum UnitOfTime
     {
         Hours = 0,
@@ -68,7 +68,7 @@ namespace MolecularWeightCalculator
         Seconds
     }
 
-    [ComVisible(true)]
+    [Guid("97E85E7B-3319-4FC3-87E5-60D3B5A28B91"), ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfVolume
     {
@@ -78,7 +78,7 @@ namespace MolecularWeightCalculator
         PL
     }
 
-    [ComVisible(true)]
+    [Guid("1DAEC84C-DD67-4E62-9975-53B74C22BF3C"), ComVisible(true)]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfConcentration
     {
@@ -96,7 +96,7 @@ namespace MolecularWeightCalculator
         NgPerUL
     }
 
-    [ComVisible(true)]
+    [Guid("19EFF331-E247-4733-BF5C-F9E87285DF87"), ComVisible(true)]
     public enum UnitOfTemperature
     {
         Celsius = 0,
@@ -104,7 +104,7 @@ namespace MolecularWeightCalculator
         Fahrenheit
     }
 
-    [ComVisible(true)]
+    [Guid("5726243F-E12C-409E-AC8F-1095436C397D"), ComVisible(true)]
     public enum UnitOfMassFlowRate
     {
         PmolPerMin = 0,
@@ -116,7 +116,7 @@ namespace MolecularWeightCalculator
         MolesPerMin
     }
 
-    [ComVisible(true)]
+    [Guid("0E982894-E072-4122-930D-B5E4583BB31E"), ComVisible(true)]
     public enum UnitOfMolarAmount
     {
         Moles = 0,
@@ -128,7 +128,7 @@ namespace MolecularWeightCalculator
         AttoMoles
     }
 
-    [ComVisible(true)]
+    [Guid("D00EA5CC-DC9C-44CE-A96F-649793625D1B"), ComVisible(true)]
     public enum UnitOfDiffusionCoefficient
     {
         CmSquaredPerHr = 0,
@@ -136,7 +136,7 @@ namespace MolecularWeightCalculator
         CmSquaredPerSec
     }
 
-    [ComVisible(true)]
+    [Guid("DE5DBA1F-A19C-4EB2-AFF4-7F3770ECFB5F"), ComVisible(true)]
     public enum AutoComputeMode
     {
         BackPressure = 0,

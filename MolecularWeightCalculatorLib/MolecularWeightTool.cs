@@ -8,7 +8,7 @@ using MolecularWeightCalculator.Sequence;
 
 namespace MolecularWeightCalculator
 {
-    [ComVisible(true)]
+    [Guid("D8D174CF-429F-4848-B372-6554672A2F86"), ComVisible(true)]
     public enum AbbrevRecognitionMode
     {
         NormalOnly = 0,
@@ -16,7 +16,7 @@ namespace MolecularWeightCalculator
         NoAbbreviations = 2
     }
 
-    [ComVisible(true)]
+    [Guid("2947251C-9281-49BD-8D68-30934337FADC"), ComVisible(true)]
     public enum ElementStatsType
     {
         Mass = 0,
