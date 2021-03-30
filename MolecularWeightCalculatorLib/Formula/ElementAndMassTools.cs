@@ -4116,7 +4116,7 @@ namespace MolecularWeightCalculator.Formula
                 else if (char.IsDigit(workChar[0]) || workChar == ComputationOptions.DecimalSeparator.ToString())
                 {
                     // Number or period, so super or subscript it if needed
-                    if (charIndex == 1)
+                    if (charIndex == 0)
                     {
                         // at beginning of line, so leave it alone. Probably out of place
                         rtf += workChar;
