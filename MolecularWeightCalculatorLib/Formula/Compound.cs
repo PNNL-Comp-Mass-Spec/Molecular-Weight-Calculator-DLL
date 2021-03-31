@@ -60,7 +60,7 @@ namespace MolecularWeightCalculator.Formula
         public string ConvertToEmpirical()
         {
             // Converts mFormula to its empirical formula and returns the result
-            var result = mElementAndMassRoutines.ConvertFormulaToEmpirical(mFormula);
+            var result = mElementAndMassRoutines.Parser.ConvertFormulaToEmpirical(mFormula);
             UpdateErrorAndCaution();
 
             if (string.IsNullOrEmpty(ErrorDescription))
@@ -87,7 +87,7 @@ namespace MolecularWeightCalculator.Formula
         public string ExpandAbbreviations()
         {
             // Expands abbreviations in mFormula and returns the result
-            var result = mElementAndMassRoutines.ExpandAbbreviationsInFormula(mFormula);
+            var result = mElementAndMassRoutines.Parser.ExpandAbbreviationsInFormula(mFormula);
             UpdateErrorAndCaution();
 
             if (string.IsNullOrEmpty(ErrorDescription))
@@ -162,7 +162,7 @@ namespace MolecularWeightCalculator.Formula
 
             try
             {
-                mElementAndMassRoutines.ComputePercentComposition(mComputationStats);
+                mElementAndMassRoutines.Parser.ComputePercentComposition(mComputationStats);
 
                 for (var elementId = 1; elementId <= ElementsAndAbbrevs.ELEMENT_COUNT; elementId++)
                 {
@@ -241,7 +241,7 @@ namespace MolecularWeightCalculator.Formula
 
         private void UpdateErrorAndCaution()
         {
-            CautionDescription = mElementAndMassRoutines.GetCautionDescription();
+            CautionDescription = mElementAndMassRoutines.Parser.GetCautionDescription();
             ErrorDescription = mElementAndMassRoutines.GetErrorDescription();
             ErrorId = mElementAndMassRoutines.GetErrorId();
         }
@@ -254,9 +254,9 @@ namespace MolecularWeightCalculator.Formula
             // If gComputationOptions.CaseConversion = ccConvertCaseUp then mFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
             mComputationStats = new ComputationStats();
-            mElementAndMassRoutines.ParseFormulaPublic(ref mFormattedFormula, mComputationStats, false, mValueForX);
+            mElementAndMassRoutines.Parser.ParseFormulaPublic(ref mFormattedFormula, mComputationStats, false, mValueForX);
 
-            mElementAndMassRoutines.ComputePercentComposition(mComputationStats);
+            mElementAndMassRoutines.Parser.ComputePercentComposition(mComputationStats);
 
             UpdateErrorAndCaution();
         }

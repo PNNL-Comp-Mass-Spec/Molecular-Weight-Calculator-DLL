@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MolecularWeightCalculator.Formula
 {
@@ -24,6 +22,8 @@ namespace MolecularWeightCalculator.Formula
         }
 
         private readonly ElementAndMassTools mMassCalc;
+        private FormulaParser Parser => mMassCalc.Parser;
+        private FormulaOptions Options => mMassCalc.ComputationOptions;
 
         public const int ELEMENT_COUNT = 103;
         internal const int MAX_ISOTOPES = 11;
@@ -130,7 +130,7 @@ namespace MolecularWeightCalculator.Formula
                 stats.Comment = comment;
             }
 
-            stats.Mass = mMassCalc.ComputeFormulaWeight(ref formula);
+            stats.Mass = Parser.ComputeFormulaWeight(ref formula);
             if (stats.Mass < 0d)
             {
                 // Error occurred computing mass for abbreviation
@@ -206,10 +206,10 @@ namespace MolecularWeightCalculator.Formula
             }
 
             // Note: mAbbrevStats is 0-based
-            if (mMassCalc.ComputationOptions.AbbrevRecognitionMode != AbbrevRecognitionMode.NoAbbreviations)
+            if (Options.AbbrevRecognitionMode != AbbrevRecognitionMode.NoAbbreviations)
             {
                 bool includeAmino;
-                if (mMassCalc.ComputationOptions.AbbrevRecognitionMode == AbbrevRecognitionMode.NormalPlusAminoAcids)
+                if (Options.AbbrevRecognitionMode == AbbrevRecognitionMode.NormalPlusAminoAcids)
                 {
                     includeAmino = true;
                 }
@@ -625,7 +625,7 @@ namespace MolecularWeightCalculator.Formula
 
             foreach (var stats in mAbbrevStats)
             {
-                stats.Mass = mMassCalc.ComputeFormulaWeight(stats.Formula);
+                stats.Mass = Parser.ComputeFormulaWeight(stats.Formula);
                 if (stats.Mass < 0d)
                 {
                     // Error occurred computing mass for abbreviation
@@ -784,7 +784,7 @@ namespace MolecularWeightCalculator.Formula
             for (var index = 0; index < mAbbrevStats.Count; index++)
             {
                 var formula = mAbbrevStats[index].Formula;
-                mAbbrevStats[index].Mass = mMassCalc.ComputeFormulaWeight(ref formula);
+                mAbbrevStats[index].Mass = Parser.ComputeFormulaWeight(ref formula);
                 mAbbrevStats[index].Formula = formula;
             }
         }
@@ -976,7 +976,7 @@ namespace MolecularWeightCalculator.Formula
                             // Make sure the abbreviation's formula is valid
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
                             var computationStats = new ComputationStats();
-                            mMassCalc.ParseFormulaPublic(ref formula, computationStats);
+                            Parser.ParseFormulaPublic(ref formula, computationStats);
 
                             errorId = mMassCalc.GetErrorId();
                             if (errorId != 0)

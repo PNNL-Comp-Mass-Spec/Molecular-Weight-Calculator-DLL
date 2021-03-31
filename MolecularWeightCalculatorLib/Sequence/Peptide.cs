@@ -1777,7 +1777,7 @@ namespace MolecularWeightCalculator.Sequence
             // Free Acid = OH
             // Amide = NH2
 
-            mCTerminus.Mass = mElementAndMassRoutines.ComputeFormulaWeight(ref formula);
+            mCTerminus.Mass = mElementAndMassRoutines.Parser.ComputeFormulaWeight(ref formula);
             mCTerminus.Formula = formula;
             if (mCTerminus.Mass < 0d)
             {
@@ -1953,7 +1953,7 @@ namespace MolecularWeightCalculator.Sequence
             // Carbamyl = CONH2
             // PTC = C7H6NS
 
-            mNTerminus.Mass = mElementAndMassRoutines.ComputeFormulaWeight(ref formula);
+            mNTerminus.Mass = mElementAndMassRoutines.Parser.ComputeFormulaWeight(ref formula);
             mNTerminus.Formula = formula;
             if (mNTerminus.Mass < 0d)
             {
@@ -2478,19 +2478,19 @@ namespace MolecularWeightCalculator.Sequence
                 mChargeCarrierMass = mElementAndMassRoutines.Elements.GetChargeCarrierMass();
 
                 // Update standard mass values
-                mMassHOH = mElementAndMassRoutines.ComputeFormulaWeight("HOH");
-                mMassNH3 = mElementAndMassRoutines.ComputeFormulaWeight("NH3");
-                mMassH3PO4 = mElementAndMassRoutines.ComputeFormulaWeight("H3PO4");
-                mMassHydrogen = mElementAndMassRoutines.ComputeFormulaWeight("H");
+                mMassHOH = mElementAndMassRoutines.Parser.ComputeFormulaWeight("HOH");
+                mMassNH3 = mElementAndMassRoutines.Parser.ComputeFormulaWeight("NH3");
+                mMassH3PO4 = mElementAndMassRoutines.Parser.ComputeFormulaWeight("H3PO4");
+                mMassHydrogen = mElementAndMassRoutines.Parser.ComputeFormulaWeight("H");
 
                 // Phosphorylation is the loss of OH and the addition of H2PO4, for a net change of HPO3
-                mMassPhosphorylation = mElementAndMassRoutines.ComputeFormulaWeight("HPO3");
+                mMassPhosphorylation = mElementAndMassRoutines.Parser.ComputeFormulaWeight("HPO3");
 
                 // The immonium mass is equal to the mass of CO minus the mass of H, thus typically 26.9871
-                mImmoniumMassDifference = mElementAndMassRoutines.ComputeFormulaWeight("CO") - mMassHydrogen;
-                mHistidineFW = mElementAndMassRoutines.ComputeFormulaWeight("His");
-                mPhenylalanineFW = mElementAndMassRoutines.ComputeFormulaWeight("Phe");
-                mTyrosineFW = mElementAndMassRoutines.ComputeFormulaWeight("Tyr");
+                mImmoniumMassDifference = mElementAndMassRoutines.Parser.ComputeFormulaWeight("CO") - mMassHydrogen;
+                mHistidineFW = mElementAndMassRoutines.Parser.ComputeFormulaWeight("His");
+                mPhenylalanineFW = mElementAndMassRoutines.Parser.ComputeFormulaWeight("Phe");
+                mTyrosineFW = mElementAndMassRoutines.Parser.ComputeFormulaWeight("Tyr");
 
                 mElementAndMassRoutines.Elements.SetElementMode(elementModeSaved);
             }

@@ -1255,7 +1255,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         // Found a normal abbreviation
                         mElementAndMassRoutines.Elements.GetAbbreviation(symbolReference, out _, out var abbrevFormula, out charge, out _);
 
-                        mass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
+                        mass = mElementAndMassRoutines.Parser.ComputeFormulaWeight(abbrevFormula);
 
                         candidateElement.Mass = mass;
 
@@ -1352,7 +1352,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         // Found a normal abbreviation
                         mElementAndMassRoutines.Elements.GetAbbreviation(symbolReference, out var matchedAbbrevSymbol, out var abbrevFormula, out charge, out _);
 
-                        mass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
+                        mass = mElementAndMassRoutines.Parser.ComputeFormulaWeight(abbrevFormula);
 
                         // Returns weight of element/abbreviation, but also charge
                         potentialElementStats[potentialElementCount, 0] = mass;
