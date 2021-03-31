@@ -478,81 +478,14 @@ namespace MolecularWeightCalculator.Formula
                 var insideBrackets = false;
 
                 var dashPos = -1;
-                var newFormula = string.Empty;
-                var newFormulaRightHalf = string.Empty;
 
                 var loneCarbonOrSilicon = 0;
 
                 // Look for the > symbol
                 // If found, this means take First Part minus the Second Part
-                var minusSymbolLoc = formula.IndexOf(">", StringComparison.Ordinal);
-                if (minusSymbolLoc >= 0)
+                if (formula.Contains(">"))
                 {
-                    var computationStatsRightHalf = new ComputationStats();
-                    // Look for the first occurrence of >
-                    charIndex = 0;
-                    var matchFound = false;
-                    do
-                    {
-                        if (formula.Substring(charIndex, 1) == ">")
-                        {
-                            matchFound = true;
-                            var leftHalf = formula.Substring(0, Math.Min(formula.Length, charIndex));
-                            var rightHalf = formula.Substring(charIndex + 1);
-
-                            // Parse the first half
-                            newFormula = ParseFormulaRecursive(leftHalf, computationStats, abbrevSymbolStack, expandAbbreviations, out var leftStdDevSum, out _, valueForX, charCountPrior, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
-                            stdDevSum += leftStdDevSum;
-
-                            // Parse the second half
-                            var abbrevSymbolStackRightHalf = new AbbrevSymbolStack();
-                            newFormulaRightHalf = ParseFormulaRecursive(rightHalf, computationStatsRightHalf, abbrevSymbolStackRightHalf, expandAbbreviations, out _, out _, valueForX, charCountPrior + charIndex, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
-                            break;
-                        }
-
-                        charIndex++;
-                    }
-                    while (charIndex < formula.Length);
-
-                    if (matchFound)
-                    {
-                        // Update formula
-                        formula = newFormula + ">" + newFormulaRightHalf;
-
-                        // Update computationStats by subtracting the atom counts of the first half minus the second half
-                        // If any atom counts become < 0 then, then raise an error
-                        for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT; elementIndex++)
-                        {
-                            var element = computationStats.Elements[elementIndex];
-                            if (Elements.ElementStats[elementIndex].Mass * element.Count + element.IsotopicCorrection >= Elements.ElementStats[elementIndex].Mass * computationStatsRightHalf.Elements[elementIndex].Count + computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection)
-                            {
-                                element.Count -= -computationStatsRightHalf.Elements[elementIndex].Count;
-                                if (element.Count < 0d)
-                                {
-                                    // This shouldn't happen
-                                    Console.WriteLine(".Count is less than 0 in ParseFormulaRecursive; this shouldn't happen");
-                                    element.Count = 0d;
-                                }
-
-                                if (Math.Abs(computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection) > float.Epsilon)
-                                {
-                                    element.IsotopicCorrection -= computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection;
-                                }
-                            }
-                            else
-                            {
-                                // Invalid Formula; raise error
-                                mErrorParams.ErrorId = 30;
-                                mErrorParams.ErrorPosition = charIndex;
-                            }
-
-                            if (mErrorParams.ErrorId != 0)
-                                break;
-                        }
-
-                        // Adjust the overall charge
-                        computationStats.Charge -= computationStatsRightHalf.Charge;
-                    }
+                    charIndex = ParseFormulaSubtraction(ref formula, computationStats, abbrevSymbolStack, expandAbbreviations, out stdDevSum, valueForX, charCountPrior, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
                 }
                 else
                 {
@@ -657,7 +590,7 @@ namespace MolecularWeightCalculator.Formula
                                                         var subFormula = formula.Substring(charIndex + 1, parenthClose - (charIndex + 1));
 
                                                         // Note, must pass parenthMultiplier * adjacentNum to preserve previous parentheses stuff
-                                                        newFormula = ParseFormulaRecursive(subFormula, computationStats, abbrevSymbolStack, expandAbbreviations, out var newStdDevSum, out var carbonSiliconCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
+                                                        var newFormula = ParseFormulaRecursive(subFormula, computationStats, abbrevSymbolStack, expandAbbreviations, out var newStdDevSum, out var carbonSiliconCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
                                                         stdDevSum += newStdDevSum;
 
                                                         // If expanding abbreviations, then newFormula might be longer than formula, must add this onto charIndex also
@@ -1278,6 +1211,89 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
+        /// Handle formula subtraction, where the formula is in the format "formula1&gt;formula2"
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <param name="computationStats"></param>
+        /// <param name="abbrevSymbolStack"></param>
+        /// <param name="expandAbbreviations"></param>
+        /// <param name="stdDevSum"></param>
+        /// <param name="valueForX"></param>
+        /// <param name="charCountPrior"></param>
+        /// <param name="parenthMultiplier"></param>
+        /// <param name="dashMultiplierPrior"></param>
+        /// <param name="bracketMultiplierPrior"></param>
+        /// <param name="parenthLevelPrevious"></param>
+        /// <returns></returns>
+        private int ParseFormulaSubtraction(
+            ref string formula,
+            ComputationStats computationStats,
+            AbbrevSymbolStack abbrevSymbolStack,
+            bool expandAbbreviations,
+            out double stdDevSum,
+            double valueForX = 1.0d,
+            int charCountPrior = 0,
+            double parenthMultiplier = 1.0d,
+            double dashMultiplierPrior = 1.0d,
+            double bracketMultiplierPrior = 1.0d,
+            short parenthLevelPrevious = 0)
+        {
+            // Get the index of the first occurrence of >
+            var minusSymbolLoc = formula.IndexOf(">", StringComparison.Ordinal);
+            var computationStatsRightHalf = new ComputationStats();
+
+            var leftHalf = formula.Substring(0, Math.Min(formula.Length, minusSymbolLoc));
+            var rightHalf = formula.Substring(minusSymbolLoc + 1);
+
+            // Parse the first half
+            var newFormula = ParseFormulaRecursive(leftHalf, computationStats, abbrevSymbolStack, expandAbbreviations, out var leftStdDevSum, out _, valueForX, charCountPrior, parenthMultiplier, dashMultiplierPrior, bracketMultiplierPrior, parenthLevelPrevious);
+            stdDevSum = leftStdDevSum;
+
+            // Parse the second half
+            var abbrevSymbolStackRightHalf = new AbbrevSymbolStack();
+            var newFormulaRightHalf = ParseFormulaRecursive(rightHalf, computationStatsRightHalf, abbrevSymbolStackRightHalf, expandAbbreviations, out _, out _, valueForX, charCountPrior + minusSymbolLoc, parenthMultiplier, dashMultiplierPrior, bracketMultiplierPrior, parenthLevelPrevious);
+
+            // Update formula
+            formula = newFormula + ">" + newFormulaRightHalf;
+
+            // Update computationStats by subtracting the atom counts of the first half minus the second half
+            // If any atom counts become < 0 then, then raise an error
+            for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT; elementIndex++)
+            {
+                var element = computationStats.Elements[elementIndex];
+                if (Elements.ElementStats[elementIndex].Mass * element.Count + element.IsotopicCorrection >= Elements.ElementStats[elementIndex].Mass * computationStatsRightHalf.Elements[elementIndex].Count + computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection)
+                {
+                    element.Count -= -computationStatsRightHalf.Elements[elementIndex].Count;
+                    if (element.Count < 0d)
+                    {
+                        // This shouldn't happen
+                        Console.WriteLine(".Count is less than 0 in ParseFormulaRecursive; this shouldn't happen");
+                        element.Count = 0d;
+                    }
+
+                    if (Math.Abs(computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection) > float.Epsilon)
+                    {
+                        element.IsotopicCorrection -= computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection;
+                    }
+                }
+                else
+                {
+                    // Invalid Formula; raise error
+                    mErrorParams.ErrorId = 30;
+                    mErrorParams.ErrorPosition = minusSymbolLoc;
+                }
+
+                if (mErrorParams.ErrorId != 0)
+                    break;
+            }
+
+            // Adjust the overall charge
+            computationStats.Charge -= computationStatsRightHalf.Charge;
+
+            return minusSymbolLoc;
+        }
+
+        /// <summary>
         /// Looks for a number and returns it if found
         /// </summary>
         /// <param name="work">Input</param>
@@ -1353,6 +1369,7 @@ namespace MolecularWeightCalculator.Formula
 
             return NumberConverter.CDblSafe(foundNum);
         }
+
         internal void ResetErrorParams()
         {
             mErrorParams.Reset();
