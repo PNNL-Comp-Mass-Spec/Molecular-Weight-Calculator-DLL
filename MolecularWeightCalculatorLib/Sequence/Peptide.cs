@@ -1105,7 +1105,7 @@ namespace MolecularWeightCalculator.Sequence
             returnResidueEnd = 0;
             var nameList = string.Empty;
 
-            do
+            while (true)
             {
                 var currentName = GetTrypticName(proteinResidues, peptideResidues, out var currentResidueStart, out var currentResidueEnd, ICR2LSCompatible, ruleResidues, exceptionResidues, terminiiSymbol, ignoreCase, currentSearchLoc);
 
@@ -1135,7 +1135,7 @@ namespace MolecularWeightCalculator.Sequence
                     break;
                 }
             }
-            while (true);
+
             return nameList;
         }
 
@@ -1338,7 +1338,7 @@ namespace MolecularWeightCalculator.Sequence
             // Optionally, returns the position of the start and end residues
             // using returnResidueStart and returnResidueEnd
 
-            int ruleResidueLoc;
+            var ruleResidueLoc = -1;
             var prevStartLoc = default(int);
 
             string matchingFragment;
@@ -1360,7 +1360,7 @@ namespace MolecularWeightCalculator.Sequence
 
             var startLoc = 0;
             short currentTrypticPeptideNumber = 0;
-            do
+            while (currentTrypticPeptideNumber < desiredPeptideNumber)
             {
                 ruleResidueLoc = GetTrypticNameFindNextCleavageLoc(proteinResidues, terminiiSymbol, startLoc, ruleResidues, exceptionResidues, terminiiSymbol);
                 if (ruleResidueLoc >= 0)
@@ -1381,7 +1381,6 @@ namespace MolecularWeightCalculator.Sequence
                     break;
                 }
             }
-            while (currentTrypticPeptideNumber < desiredPeptideNumber);
 
             if (currentTrypticPeptideNumber > 0 && prevStartLoc >= 0)
             {

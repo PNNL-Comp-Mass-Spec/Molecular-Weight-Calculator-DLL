@@ -491,8 +491,7 @@ namespace MolecularWeightCalculator.Formula
                 {
                     // Formula does not contain >
                     // Parse it
-                    charIndex = 0;
-                    do
+                    for (charIndex = 0; charIndex < formula.Length; charIndex++)
                     {
                         char1 = formula.Substring(charIndex, 1);
                         var char2 = charIndex + 1 < formula.Length ? formula.Substring(charIndex + 1, 1) : "";
@@ -1160,10 +1159,7 @@ namespace MolecularWeightCalculator.Formula
                         {
                             charIndex = formula.Length;
                         }
-
-                        charIndex++;
                     }
-                    while (charIndex < formula.Length);
                 }
 
                 if (insideBrackets)
