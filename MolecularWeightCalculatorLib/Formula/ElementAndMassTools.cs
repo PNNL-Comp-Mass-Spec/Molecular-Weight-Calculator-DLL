@@ -45,8 +45,8 @@ namespace MolecularWeightCalculator.Formula
 
             mAbbrevStats = new List<AbbrevStatsData>(60);
 
-            mCautionStatements = new Dictionary<string, string>(50);
-            mMessageStatements = new Dictionary<int, string>(220);
+            Messages = new Messages(ComputationOptions);
+
             mMasterSymbolsList = new List<SymbolLookupInfo>();
 
             mProgressStepDescription = string.Empty;
@@ -63,10 +63,8 @@ namespace MolecularWeightCalculator.Formula
         public const int ELEMENT_COUNT = 103;
         public const int MAX_ABBREV_COUNT = 500;
 
-        private const int MESSAGE_STATEMENT_DIM_COUNT = 1600;
         internal const int MAX_ABBREV_LENGTH = 6;
         internal const int MAX_ISOTOPES = 11;
-        private const int MAX_CAUTION_STATEMENTS = 100;
 
         private const char EMPTY_STRING_CHAR = '~';
         private const char RTF_HEIGHT_ADJUST_CHAR = '~'; // A hidden character to adjust the height of RTF Text Boxes when using superscripts
@@ -237,6 +235,8 @@ namespace MolecularWeightCalculator.Formula
 
         public FormulaOptions ComputationOptions { get; } = new FormulaOptions();
 
+        internal Messages Messages { get; }
+
         /// <summary>
         /// Stores the elements in alphabetical order, with Key==Symbol, and Value==Index in <see cref="mElementStats"/>
         /// Used for constructing empirical formulas
@@ -262,17 +262,6 @@ namespace MolecularWeightCalculator.Formula
         /// Includes both abbreviations and amino acids
         /// </summary>
         private readonly List<AbbrevStatsData> mAbbrevStats;
-
-        /// <summary>
-        /// CautionStatements.Key holds the symbol combo to look for
-        /// CautionStatements.Value holds the caution statement
-        /// </summary>
-        private readonly Dictionary<string, string> mCautionStatements;
-
-        /// <summary>
-        /// Error messages
-        /// </summary>
-        private readonly Dictionary<int, string> mMessageStatements;
 
         private readonly ErrorDescription mErrorParams = new ErrorDescription();
 
@@ -424,7 +413,7 @@ namespace MolecularWeightCalculator.Formula
                     break;
 
                 var test = formulaExcerpt.Substring(0, length);
-                var newCaution = LookupCautionStatement(test);
+                var newCaution = Messages.LookupCautionStatement(test);
                 if (!string.IsNullOrEmpty(newCaution))
                 {
                     AddToCautionDescription(newCaution);
@@ -624,7 +613,7 @@ namespace MolecularWeightCalculator.Formula
                 if (workingFormulaMass < 0d)
                 {
                     // Error occurred; information is stored in ErrorParams
-                    results = LookupMessage(350) + ": " + LookupMessage(mErrorParams.ErrorId);
+                    results = Messages.LookupMessage(350) + ": " + Messages.LookupMessage(mErrorParams.ErrorId);
                     return -1;
                 }
 
@@ -682,7 +671,7 @@ namespace MolecularWeightCalculator.Formula
                     if (workingFormulaMass < 0d)
                     {
                         // Error occurred; information is stored in ErrorParams
-                        results = LookupMessage(350) + ": " + LookupMessage(mErrorParams.ErrorId);
+                        results = Messages.LookupMessage(350) + ": " + Messages.LookupMessage(mErrorParams.ErrorId);
                         return -1;
                     }
                 }
@@ -693,7 +682,7 @@ namespace MolecularWeightCalculator.Formula
                     count = computationStats.Elements[elementIndex].Count;
                     if (Math.Abs(count - (int)Math.Round(count)) > float.Epsilon)
                     {
-                        results = LookupMessage(350) + ": " + LookupMessage(805) + ": " + mElementStats[elementIndex].Symbol + count;
+                        results = Messages.LookupMessage(350) + ": " + Messages.LookupMessage(805) + ": " + mElementStats[elementIndex].Symbol + count;
                         return -1;
                     }
                 }
@@ -1051,7 +1040,7 @@ namespace MolecularWeightCalculator.Formula
                 if (mAbortProcessing)
                 {
                     // Process Aborted
-                    results = LookupMessage(940);
+                    results = Messages.LookupMessage(940);
                     return -1;
                 }
 
@@ -1092,7 +1081,7 @@ namespace MolecularWeightCalculator.Formula
                 if (mAbortProcessing)
                 {
                     // Process Aborted
-                    results = LookupMessage(940);
+                    results = Messages.LookupMessage(940);
                     return -1;
                 }
 
@@ -2164,33 +2153,6 @@ namespace MolecularWeightCalculator.Formula
             return returnSymbol;
         }
 
-        public int GetCautionStatementCountInternal()
-        {
-            return mCautionStatements.Count;
-        }
-
-        public List<string> GetCautionStatementSymbolsInternal()
-        {
-            return mCautionStatements.Keys.ToList();
-        }
-
-        /// <summary>
-        /// Get a caution statement for the given symbol combo
-        /// </summary>
-        /// <param name="symbolCombo">symbol combo for the caution statement</param>
-        /// <param name="cautionStatement">Output: caution statement text</param>
-        /// <returns>0 if success, 1 if an invalid ID</returns>
-        public int GetCautionStatementInternal(string symbolCombo, out string cautionStatement)
-        {
-            if (mCautionStatements.TryGetValue(symbolCombo, out cautionStatement))
-            {
-                return 0;
-            }
-
-            cautionStatement = string.Empty;
-            return 1;
-        }
-
         public string GetCautionDescription()
         {
             return mCautionDescription;
@@ -2355,7 +2317,7 @@ namespace MolecularWeightCalculator.Formula
         {
             if (mErrorParams.ErrorId != 0)
             {
-                return LookupMessage(mErrorParams.ErrorId);
+                return Messages.LookupMessage(mErrorParams.ErrorId);
             }
 
             return "";
@@ -2374,47 +2336,6 @@ namespace MolecularWeightCalculator.Formula
         public int GetErrorPosition()
         {
             return mErrorParams.ErrorPosition;
-        }
-
-        public int GetMessageStatementMaxId()
-        {
-            return mMessageStatements.Keys.Max();
-        }
-
-        /// <summary>
-        /// Get message text using message ID
-        /// </summary>
-        /// <param name="messageId"></param>
-        /// <param name="appendText"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// GetMessageStringInternal simply returns the message for <paramref name="messageId"/>
-        /// LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
-        /// </remarks>
-        public string GetMessageStatementInternal(int messageId, string appendText = "")
-        {
-            if (mMessageStatements.TryGetValue(messageId, out var message))
-            {
-                // Append Prefix to certain strings
-                switch (messageId)
-                {
-                    // Add Error: to the front of certain error codes
-                    case var @case when 1 <= @case && @case <= 99:
-                    case 120:
-                    case 130:
-                    case 140:
-                    case 260:
-                    case 270:
-                    case 300:
-                        message = GetMessageStatementInternal(350) + ": " + message;
-                        break;
-                }
-
-                // Now append the text
-                return message + appendText;
-            }
-
-            return "";
         }
 
         /// <summary>
@@ -2594,83 +2515,6 @@ namespace MolecularWeightCalculator.Formula
             }
         }
 
-        private string LookupCautionStatement(string compareText)
-        {
-            if (mCautionStatements.TryGetValue(compareText, out var message))
-            {
-                return message;
-            }
-
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Looks up the message for <paramref name="messageId"/>
-        /// Also appends any data in <paramref name="appendText"/> to the message
-        /// </summary>
-        /// <param name="messageId"></param>
-        /// <param name="appendText"></param>
-        /// <returns>The complete message</returns>
-        internal string LookupMessage(int messageId, string appendText = "")
-        {
-            if (mMessageStatements.Count == 0)
-                MemoryLoadMessageStatements();
-
-            // First assume we can't find the message number
-            var message = "General unspecified error";
-
-            // Now try to find it
-            if (messageId < MESSAGE_STATEMENT_DIM_COUNT)
-            {
-                if (mMessageStatements[messageId].Length > 0)
-                {
-                    message = mMessageStatements[messageId];
-                }
-            }
-
-            // Now prepend Prefix to certain strings
-            switch (messageId)
-            {
-                // Add Error: to the front of certain error codes
-                case var @case when 1 <= @case && @case <= 99:
-                case 120:
-                case 130:
-                case 140:
-                case 260:
-                case 270:
-                case 300:
-                    {
-                        message = LookupMessage(350) + ": " + message;
-                        break;
-                    }
-            }
-
-            // Now append the text
-            message += appendText;
-
-            // messageId's 1 and 18 may need to have an addendum added
-            if (messageId == 1)
-            {
-                if (ComputationOptions.CaseConversion == CaseConversionMode.ExactCase)
-                {
-                    message += " (" + LookupMessage(680) + ")";
-                }
-            }
-            else if (messageId == 18)
-            {
-                if (!ComputationOptions.BracketsAsParentheses)
-                {
-                    message += " (" + LookupMessage(685) + ")";
-                }
-                else
-                {
-                    message += " (" + LookupMessage(690) + ")";
-                }
-            }
-
-            return message;
-        }
-
         /// <summary>
         /// Converts <paramref name="massToConvert"/> to ppm, based on the value of <paramref name="currentMz"/>
         /// </summary>
@@ -2724,9 +2568,7 @@ namespace MolecularWeightCalculator.Formula
             // Needed here to load abbreviations into the list
             ConstructMasterSymbolsList();
 
-            MemoryLoadCautionStatements();
-
-            MemoryLoadMessageStatements();
+            Messages.MemoryLoadAllStatements();
         }
 
         public void MemoryLoadAbbreviations()
@@ -2823,15 +2665,6 @@ namespace MolecularWeightCalculator.Formula
             // GLU   E   C5H7NO3     129.04259  129.1155      1               4.5
             // CYS   C   C3H5NOS     103.00919  103.1388      0               8.6
             // ARG   R   C6H12N4O    156.10111  156.1875      1              12.0
-        }
-
-        /// <summary>
-        /// Define the caution statements
-        /// </summary>
-        /// <remarks>Use ClearCautionStatements and AddCautionStatement to set these based on language</remarks>
-        public void MemoryLoadCautionStatements()
-        {
-            ElementAndMassInMemoryData.MemoryLoadCautionStatementsEnglish(mCautionStatements);
         }
 
         /// <summary>
@@ -2941,33 +2774,28 @@ namespace MolecularWeightCalculator.Formula
             }
         }
 
-        public void MemoryLoadMessageStatements()
-        {
-            ElementAndMassInMemoryData.MemoryLoadMessageStatementsEnglish(mMessageStatements);
-        }
-
         private void MwtWinDllErrorHandler(string callingProcedure, Exception ex)
         {
             string message;
 
             if (ex is OverflowException)
             {
-                message = LookupMessage(590);
+                message = Messages.LookupMessage(590);
                 if (ShowErrorMessageDialogs)
                 {
-                    MessageBox.Show(LookupMessage(590), LookupMessage(350), MessageBoxButtons.OK);
+                    MessageBox.Show(Messages.LookupMessage(590), Messages.LookupMessage(350), MessageBoxButtons.OK);
                 }
 
                 LogMessage(message, MessageType.Error);
             }
             else
             {
-                message = LookupMessage(600) + ": " + ex.Message + Environment.NewLine + " (" + callingProcedure + " handler)";
-                message += Environment.NewLine + LookupMessage(605);
+                message = Messages.LookupMessage(600) + ": " + ex.Message + Environment.NewLine + " (" + callingProcedure + " handler)";
+                message += Environment.NewLine + Messages.LookupMessage(605);
 
                 if (ShowErrorMessageDialogs)
                 {
-                    MessageBox.Show(message, LookupMessage(350), MessageBoxButtons.OK);
+                    MessageBox.Show(message, Messages.LookupMessage(350), MessageBoxButtons.OK);
                 }
 
                 // Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
@@ -3574,17 +3402,17 @@ namespace MolecularWeightCalculator.Formula
                                                 if (caretValDifference >= isoDifferenceTop)
                                                 {
                                                     // Probably too high isotopic mass
-                                                    AddToCautionDescription(LookupMessage(660) + ": " + mElementStats[symbolReference].Symbol + " - " + caretVal + " " + LookupMessage(665) + " " + mElementStats[symbolReference].Mass);
+                                                    AddToCautionDescription(Messages.LookupMessage(660) + ": " + mElementStats[symbolReference].Symbol + " - " + caretVal + " " + Messages.LookupMessage(665) + " " + mElementStats[symbolReference].Mass);
                                                 }
                                                 else if (caretVal < symbolReference)
                                                 {
                                                     // Definitely too low isotopic mass
-                                                    AddToCautionDescription(LookupMessage(670) + ": " + mElementStats[symbolReference].Symbol + " - " + symbolReference + " " + LookupMessage(675));
+                                                    AddToCautionDescription(Messages.LookupMessage(670) + ": " + mElementStats[symbolReference].Symbol + " - " + symbolReference + " " + Messages.LookupMessage(675));
                                                 }
                                                 else if (caretValDifference <= isoDifferenceBottom)
                                                 {
                                                     // Probably too low isotopic mass
-                                                    AddToCautionDescription(LookupMessage(662) + ": " + mElementStats[symbolReference].Symbol + " - " + caretVal + " " + LookupMessage(665) + " " + mElementStats[symbolReference].Mass);
+                                                    AddToCautionDescription(Messages.LookupMessage(662) + ": " + mElementStats[symbolReference].Symbol + " - " + caretVal + " " + Messages.LookupMessage(665) + " " + mElementStats[symbolReference].Mass);
                                                 }
 
                                                 // Put in isotopic correction factor
@@ -4186,11 +4014,6 @@ namespace MolecularWeightCalculator.Formula
             }
         }
 
-        public void RemoveAllCautionStatementsInternal()
-        {
-            mCautionStatements.Clear();
-        }
-
         public void RemoveAllAbbreviationsInternal()
         {
             mAbbrevStats.Clear();
@@ -4242,16 +4065,6 @@ namespace MolecularWeightCalculator.Formula
             }
 
             return removed ? 0 : 1;
-        }
-
-        /// <summary>
-        /// Look for the caution statement and remove it
-        /// </summary>
-        /// <param name="cautionSymbol"></param>
-        /// <returns>0 if found and removed; 1 if error</returns>
-        public int RemoveCautionStatementInternal(string cautionSymbol)
-        {
-            return mCautionStatements.Remove(cautionSymbol) ? 0 : 1;
         }
 
         public void ResetErrorParamsInternal()
@@ -4600,61 +4413,6 @@ namespace MolecularWeightCalculator.Formula
             return mErrorParams.ErrorId;
         }
 
-        /// <summary>
-        /// Adds a new caution statement or updates an existing one (based on <paramref name="symbolCombo"/>)
-        /// </summary>
-        /// <param name="symbolCombo"></param>
-        /// <param name="newCautionStatement"></param>
-        /// <returns>0 if successful, otherwise, returns an Error ID</returns>
-        public int SetCautionStatementInternal(string symbolCombo, string newCautionStatement)
-        {
-            ResetErrorParamsInternal();
-
-            if (symbolCombo.Length >= 1 && symbolCombo.Length <= MAX_ABBREV_LENGTH)
-            {
-                // Make sure all the characters in symbolCombo are letters
-                if (IsStringAllLetters(symbolCombo))
-                {
-                    if (newCautionStatement.Length > 0)
-                    {
-                        // See if symbolCombo is present in CautionStatements[]
-                        var alreadyPresent = mCautionStatements.ContainsKey(symbolCombo);
-
-                        if (!alreadyPresent && mCautionStatements.Count >= MAX_CAUTION_STATEMENTS)
-                        {
-                            // Too many caution statements
-                            mErrorParams.ErrorId = 1215;
-                        }
-                        else if (!alreadyPresent)
-                        {
-                            mCautionStatements.Add(symbolCombo, newCautionStatement);
-                        }
-                        else
-                        {
-                            mCautionStatements[symbolCombo] = newCautionStatement;
-                        }
-                    }
-                    else
-                    {
-                        // Caution description length is 0
-                        mErrorParams.ErrorId = 1210;
-                    }
-                }
-                else
-                {
-                    // Caution symbol doesn't just contain letters
-                    mErrorParams.ErrorId = 1205;
-                }
-            }
-            else
-            {
-                // Symbol length is 0 or is greater than MAX_ABBREV_LENGTH
-                mErrorParams.ErrorId = 1200;
-            }
-
-            return mErrorParams.ErrorId;
-        }
-
         public void SetChargeCarrierMassInternal(double mass)
         {
             mChargeCarrierMass = mass;
@@ -4766,23 +4524,6 @@ namespace MolecularWeightCalculator.Formula
             {
                 GeneralErrorHandler("ElementAndMassTools.SetElementModeInternal", ex);
             }
-        }
-
-        /// <summary>
-        /// Used to replace the default message strings with foreign language equivalent ones
-        /// </summary>
-        /// <param name="messageId"></param>
-        /// <param name="newMessage"></param>
-        /// <returns>0 if success; 1 if failure</returns>
-        public int SetMessageStatementInternal(int messageId, string newMessage)
-        {
-            if (messageId >= 1 && messageId <= MESSAGE_STATEMENT_DIM_COUNT && newMessage.Length > 0)
-            {
-                mMessageStatements[messageId] = newMessage;
-                return 0;
-            }
-
-            return 1;
         }
 
         public void SetShowErrorMessageDialogs(bool value)

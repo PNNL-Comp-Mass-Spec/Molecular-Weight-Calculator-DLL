@@ -67,9 +67,10 @@
     <Compile Include="Formula\ElementInfo.cs" />
     <Compile Include="Formula\ElementMem.cs" />
     <Compile Include="Formula\ElementUseStats.cs" />
+    <Compile Include="Formula\FormulaOptions.cs" />
     <Compile Include="Formula\IsotopeInfo.cs" />
     <Compile Include="Formula\IsotopicAtomInfo.cs" />
-    <Compile Include="Formula\FormulaOptions.cs" />
+    <Compile Include="Formula\Messages.cs" />
     <Compile Include="Formula\PercentCompositionInfo.cs" />
     <Compile Include="FormulaFinder\CandidateElement.cs" />
     <Compile Include="FormulaFinder\CandidateElementTolerances.cs" />

@@ -451,7 +451,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if success, 1 if an invalid ID</returns>
         public int GetCautionStatement(string symbolCombo, out string cautionStatement)
         {
-            return mElementAndMassRoutines.GetCautionStatementInternal(symbolCombo, out cautionStatement);
+            return mElementAndMassRoutines.Messages.GetCautionStatement(symbolCombo, out cautionStatement);
         }
 
         /// <summary>
@@ -460,7 +460,7 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public int GetCautionStatementCount()
         {
-            return mElementAndMassRoutines.GetCautionStatementCountInternal();
+            return mElementAndMassRoutines.Messages.GetCautionStatementCount();
         }
 
         /// <summary>
@@ -469,7 +469,7 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public List<string> GetCautionStatementSymbols()
         {
-            return mElementAndMassRoutines.GetCautionStatementSymbolsInternal();
+            return mElementAndMassRoutines.Messages.GetCautionStatementSymbols();
         }
 
         /// <summary>
@@ -577,12 +577,12 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public string GetMessageStatement(int messageId, string appendText = "")
         {
-            return mElementAndMassRoutines.GetMessageStatementInternal(messageId, appendText);
+            return mElementAndMassRoutines.Messages.GetMessageStatement(messageId, appendText);
         }
 
         public int GetMessageStatementMaxId()
         {
-            return mElementAndMassRoutines.GetMessageStatementMaxId();
+            return mElementAndMassRoutines.Messages.GetMessageStatementMaxId();
         }
 
         /// <summary>
@@ -606,7 +606,7 @@ namespace MolecularWeightCalculator
 
         public void RemoveAllCautionStatements()
         {
-            mElementAndMassRoutines.RemoveAllCautionStatementsInternal();
+            mElementAndMassRoutines.Messages.RemoveAllCautionStatements();
         }
 
         public double MassToPPM(double massToConvert, double currentMz)
@@ -643,7 +643,7 @@ namespace MolecularWeightCalculator
 
         public int RemoveCautionStatement(string cautionSymbol)
         {
-            return mElementAndMassRoutines.RemoveCautionStatementInternal(cautionSymbol);
+            return mElementAndMassRoutines.Messages.RemoveCautionStatement(cautionSymbol);
         }
 
         public void ResetAbbreviations()
@@ -653,7 +653,7 @@ namespace MolecularWeightCalculator
 
         public void ResetCautionStatements()
         {
-            mElementAndMassRoutines.MemoryLoadCautionStatements();
+            mElementAndMassRoutines.Messages.MemoryLoadCautionStatements();
         }
 
         public void ResetElement(short elementId, ElementStatsType specificStatToReset)
@@ -663,7 +663,7 @@ namespace MolecularWeightCalculator
 
         public void ResetMessageStatements()
         {
-            mElementAndMassRoutines.MemoryLoadMessageStatements();
+            mElementAndMassRoutines.Messages.MemoryLoadMessageStatements();
         }
 
         /// <summary>
@@ -727,7 +727,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if successful, otherwise, returns an Error ID</returns>
         public int SetCautionStatement(string symbolCombo, string newCautionStatement)
         {
-            return mElementAndMassRoutines.SetCautionStatementInternal(symbolCombo, newCautionStatement);
+            return mElementAndMassRoutines.Messages.SetCautionStatement(symbolCombo, newCautionStatement);
         }
 
         public void SetChargeCarrierMass(double mass)
@@ -782,7 +782,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if success; 1 if failure</returns>
         public int SetMessageStatement(int messageId, string newMessage)
         {
-            return mElementAndMassRoutines.SetMessageStatementInternal(messageId, newMessage);
+            return mElementAndMassRoutines.Messages.SetMessageStatement(messageId, newMessage);
         }
 
         public void SortAbbreviations()
