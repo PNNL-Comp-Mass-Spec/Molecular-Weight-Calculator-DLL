@@ -525,10 +525,10 @@ namespace MolecularWeightCalculator.Formula
                         int numLength;
                         double adjacentNum;
                         int addonCount;
-                        switch ((int)char1[0])
+                        switch (char1[0])
                         {
-                            case 40:
-                            case 123: // (    Record its position
+                            case '(':
+                            case '{': // ( or {    Record its position
                                 // See if a number is present just after the opening parenthesis
                                 if (char.IsDigit(char2[0]) || char2 == ".")
                                 {
@@ -543,75 +543,73 @@ namespace MolecularWeightCalculator.Formula
                                     parenthLevel = 1;
                                     for (var parenthClose = charIndex + 1; parenthClose < formula.Length; parenthClose++)
                                     {
-                                        switch (formula.Substring(parenthClose, 1) ?? "")
+                                        var bracketChar = formula[parenthClose];
+                                        switch (bracketChar)
                                         {
-                                            case "(":
-                                            case "{":
-                                            case "[":
+                                            case '[':
+                                                if (ComputationOptions.BracketsAsParentheses)
+                                                    goto case '(';
+
+                                                // Do not count the bracket
+                                                break;
+
+                                            case '(':
+                                            case '{':
                                                 // Another opening parentheses
                                                 // increment parenthLevel
-                                                if (!ComputationOptions.BracketsAsParentheses && formula.Substring(parenthClose, 1) == "[")
-                                                {
-                                                    // Do not count the bracket
-                                                }
-                                                else
-                                                {
-                                                    parenthLevel += 1;
-                                                }
+                                                parenthLevel += 1;
 
                                                 break;
 
-                                            case ")":
-                                            case "}":
-                                            case "]":
-                                                if (!ComputationOptions.BracketsAsParentheses && formula.Substring(parenthClose, 1) == "]")
+                                            case ']':
+                                                if (ComputationOptions.BracketsAsParentheses)
+                                                    goto case ')';
+
+                                                // Do not count the bracket
+                                                break;
+                                            case ')':
+                                            case '}':
+                                                parenthLevel -= 1;
+                                                if (parenthLevel == 0)
                                                 {
-                                                    // Do not count the bracket
-                                                }
-                                                else
-                                                {
-                                                    parenthLevel -= 1;
-                                                    if (parenthLevel == 0)
+                                                    adjacentNum = ParseNum(formula.Substring(parenthClose + 1), out numLength);
+                                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+
+                                                    if (adjacentNum < 0d)
                                                     {
-                                                        adjacentNum = ParseNum(formula.Substring(parenthClose + 1), out numLength);
-                                                        CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
-
-                                                        if (adjacentNum < 0d)
-                                                        {
-                                                            adjacentNum = 1.0d;
-                                                            addonCount = 0;
-                                                        }
-                                                        else
-                                                        {
-                                                            addonCount = numLength;
-                                                        }
-
-                                                        var subFormula = formula.Substring(charIndex + 1, parenthClose - (charIndex + 1));
-
-                                                        // Note, must pass parenthMultiplier * adjacentNum to preserve previous parentheses stuff
-                                                        var newFormula = ParseFormulaRecursive(subFormula, computationStats, abbrevSymbolStack, expandAbbreviations, out var newStdDevSum, out var carbonSiliconCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
-                                                        stdDevSum += newStdDevSum;
-
-                                                        // If expanding abbreviations, then newFormula might be longer than formula, must add this onto charIndex also
-                                                        var expandAbbrevAdd = newFormula.Length - subFormula.Length;
-
-                                                        // Must replace the part of the formula parsed with the newFormula part, in case the formula was expanded or elements were capitalized
-                                                        formula = formula.Substring(0, charIndex + 1) + newFormula + formula.Substring(parenthClose);
-                                                        charIndex = parenthClose + addonCount + expandAbbrevAdd;
-
-                                                        // Correct charge
-                                                        if (carbonSiliconCount > 0)
-                                                        {
-                                                            computationStats.Charge = (float)(computationStats.Charge - 2d * adjacentNum);
-                                                            if (adjacentNum > 1d && carbonSiliconCount > 1)
-                                                            {
-                                                                computationStats.Charge = (float)(computationStats.Charge - 2d * (adjacentNum - 1d) * (carbonSiliconCount - 1));
-                                                            }
-                                                        }
-
-                                                        // exit the loop;
-                                                        parenthClose = formula.Length;
+                                                        adjacentNum = 1.0d;
+                                                        addonCount = 0;
                                                     }
+                                                    else
+                                                    {
+                                                        addonCount = numLength;
+                                                    }
+
+                                                    var subFormula = formula.Substring(charIndex + 1, parenthClose - (charIndex + 1));
+
+                                                    // Note, must pass parenthMultiplier * adjacentNum to preserve previous parentheses stuff
+                                                    var newFormula = ParseFormulaRecursive(subFormula, computationStats, abbrevSymbolStack, expandAbbreviations, out var newStdDevSum, out var carbonSiliconCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
+                                                    stdDevSum += newStdDevSum;
+
+                                                    // If expanding abbreviations, then newFormula might be longer than formula, must add this onto charIndex also
+                                                    var expandAbbrevAdd = newFormula.Length - subFormula.Length;
+
+                                                    // Must replace the part of the formula parsed with the newFormula part, in case the formula was expanded or elements were capitalized
+                                                    formula = formula.Substring(0, charIndex + 1) + newFormula + formula.Substring(parenthClose);
+                                                    charIndex = parenthClose + addonCount + expandAbbrevAdd;
+
+                                                    // Correct charge
+                                                    if (carbonSiliconCount > 0)
+                                                    {
+                                                        computationStats.Charge = (float)(computationStats.Charge - 2d * adjacentNum);
+                                                        if (adjacentNum > 1d && carbonSiliconCount > 1)
+                                                        {
+                                                            computationStats.Charge = (float)(computationStats.Charge - 2d * (adjacentNum - 1d) * (carbonSiliconCount - 1));
+                                                        }
+                                                    }
+
+                                                    // exit the loop;
+                                                    parenthClose = formula.Length;
                                                 }
 
                                                 break;
@@ -629,15 +627,15 @@ namespace MolecularWeightCalculator.Formula
                                 prevSymbolReference = 0;
                                 break;
 
-                            case 41:
-                            case 125: // )    Repeat a section of a formula
+                            case ')':
+                            case '}': // )    Repeat a section of a formula
                                 // Should have been skipped
                                 // Unmatched closing parentheses
                                 mErrorParams.ErrorId = 4;
                                 mErrorParams.ErrorPosition = charIndex;
                                 break;
 
-                            case 45: // -
+                            case '-': // -
                                 // Used to denote a leading coefficient
                                 adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
                                 CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
@@ -665,9 +663,9 @@ namespace MolecularWeightCalculator.Formula
                                 prevSymbolReference = 0;
                                 break;
 
-                            case 44:
-                            case 46:
-                            case var @case when 48 <= @case && @case <= 57: // . or , and Numbers 0 to 9
+                            case ',':
+                            case '.':
+                            case var @case when '0' <= @case && @case <= '9': // . or , and Numbers 0 to 9
                                 // They should only be encountered as a leading coefficient
                                 // Should have been bypassed when the coefficient was processed
                                 if (charIndex == 0)
@@ -706,7 +704,7 @@ namespace MolecularWeightCalculator.Formula
                                 prevSymbolReference = 0;
                                 break;
 
-                            case 91: // [
+                            case '[': // [
                                 if (char2.ToUpper() == "X")
                                 {
                                     if (char3 == "e")
@@ -752,7 +750,7 @@ namespace MolecularWeightCalculator.Formula
                                 prevSymbolReference = 0;
                                 break;
 
-                            case 93: // ]
+                            case ']': // ]
                                 adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
                                 CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
@@ -783,10 +781,10 @@ namespace MolecularWeightCalculator.Formula
 
                                 break;
 
-                            case var case1 when 65 <= case1 && case1 <= 90:
-                            case var case2 when 97 <= case2 && case2 <= 122:
-                            case 43:
-                            case 95: // Uppercase A to Z and lowercase a to z, and the plus (+) sign, and the underscore (_)
+                            case var case1 when 'A' <= case1 && case1 <= 'Z': // A-Z
+                            case var case2 when 'a' <= case2 && case2 <= 'z': // a-z
+                            case '+':
+                            case '_': // Uppercase A to Z and lowercase a to z, and the plus (+) sign, and the underscore (_)
                                 addonCount = 0;
                                 adjacentNum = 0d;
 
@@ -1078,7 +1076,7 @@ namespace MolecularWeightCalculator.Formula
                                 prevSymbolReference = symbolReference;
                                 break;
 
-                            case 94: // ^ (caret)
+                            case '^': // ^ (caret)
                                 adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
                                 CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
@@ -1287,6 +1285,11 @@ namespace MolecularWeightCalculator.Formula
             computationStats.Charge -= computationStatsRightHalf.Charge;
 
             return minusSymbolLoc;
+        }
+
+        private int Parse()
+        {
+            return 0;
         }
 
         /// <summary>
