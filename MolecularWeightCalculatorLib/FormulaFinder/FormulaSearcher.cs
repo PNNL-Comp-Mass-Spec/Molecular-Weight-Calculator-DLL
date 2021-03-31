@@ -920,7 +920,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             if (elementCounts.C + elementCounts.Si >= 1)
             {
-                if (elementCounts.H > 0 && Math.Abs(mElementAndMassRoutines.GetElementStatInternal(1, ElementStatsType.Charge) - 1d) < float.Epsilon)
+                if (elementCounts.H > 0 && Math.Abs(mElementAndMassRoutines.Elements.GetElementStat(1, ElementStatsType.Charge) - 1d) < float.Epsilon)
                 {
                     // Since carbon or silicon are present, assume the hydrogens should be negative
                     // Subtract elementNum.H * 2 since hydrogen is assigned a +1 charge if ElementStats[1].Charge = 1
@@ -1197,11 +1197,11 @@ namespace MolecularWeightCalculator.FormulaFinder
 
                 float charge;
                 double mass;
-                if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
+                if (mElementAndMassRoutines.Elements.IsValidElementSymbol(item.Key))
                 {
-                    var elementId = mElementAndMassRoutines.GetElementIdInternal(item.Key);
+                    var elementId = mElementAndMassRoutines.Elements.GetElementId(item.Key);
 
-                    mElementAndMassRoutines.GetElementInternal(elementId, out _, out mass, out _, out charge, out _);
+                    mElementAndMassRoutines.Elements.GetElement(elementId, out _, out mass, out _, out charge, out _);
 
                     candidateElement.Mass = mass;
                     candidateElement.Charge = charge;
@@ -1245,7 +1245,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         }
 
                         // See if this is an abbreviation
-                        var symbolReference = mElementAndMassRoutines.GetAbbreviationIdInternal(abbrevSymbol);
+                        var symbolReference = mElementAndMassRoutines.Elements.GetAbbreviationId(abbrevSymbol);
                         if (symbolReference < 0)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
@@ -1253,7 +1253,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         }
 
                         // Found a normal abbreviation
-                        mElementAndMassRoutines.GetAbbreviationInternal(symbolReference, out _, out var abbrevFormula, out charge, out _);
+                        mElementAndMassRoutines.Elements.GetAbbreviation(symbolReference, out _, out var abbrevFormula, out charge, out _);
 
                         mass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
 
@@ -1290,11 +1290,11 @@ namespace MolecularWeightCalculator.FormulaFinder
 
                 float charge;
                 double mass;
-                if (mElementAndMassRoutines.IsValidElementSymbol(item.Key))
+                if (mElementAndMassRoutines.Elements.IsValidElementSymbol(item.Key))
                 {
-                    var elementId = mElementAndMassRoutines.GetElementIdInternal(item.Key);
+                    var elementId = mElementAndMassRoutines.Elements.GetElementId(item.Key);
 
-                    mElementAndMassRoutines.GetElementInternal(elementId, out _, out mass, out _, out charge, out _);
+                    mElementAndMassRoutines.Elements.GetElement(elementId, out _, out mass, out _, out charge, out _);
 
                     potentialElementStats[potentialElementCount, 0] = mass;
                     potentialElementStats[potentialElementCount, 1] = charge;
@@ -1342,7 +1342,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         const int defaultCharge = 0;
 
                         // See if this is an abbreviation
-                        var symbolReference = mElementAndMassRoutines.GetAbbreviationIdInternal(abbrevSymbol);
+                        var symbolReference = mElementAndMassRoutines.Elements.GetAbbreviationId(abbrevSymbol);
                         if (symbolReference < 0)
                         {
                             ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
@@ -1350,7 +1350,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         }
 
                         // Found a normal abbreviation
-                        mElementAndMassRoutines.GetAbbreviationInternal(symbolReference, out var matchedAbbrevSymbol, out var abbrevFormula, out charge, out _);
+                        mElementAndMassRoutines.Elements.GetAbbreviation(symbolReference, out var matchedAbbrevSymbol, out var abbrevFormula, out charge, out _);
 
                         mass = mElementAndMassRoutines.ComputeFormulaWeight(abbrevFormula);
 

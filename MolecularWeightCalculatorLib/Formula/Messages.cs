@@ -199,7 +199,7 @@ namespace MolecularWeightCalculator.Formula
         internal int SetCautionStatement(string symbolCombo, string newCautionStatement)
         {
             var errorId = 0;
-            if (symbolCombo.Length >= 1 && symbolCombo.Length <= ElementAndMassTools.MAX_ABBREV_LENGTH)
+            if (symbolCombo.Length >= 1 && symbolCombo.Length <= ElementsAndAbbrevs.MAX_ABBREV_LENGTH)
             {
                 // Make sure all the characters in symbolCombo are letters
                 if (symbolCombo.All(char.IsLetter))
@@ -534,7 +534,7 @@ namespace MolecularWeightCalculator.Formula
             messages.Add(1160, "Offset Increment");
             messages.Add(1165, "Aligning Ions");
 
-            messages.Add(1200, "Caution symbol must be 1 to " + ElementAndMassTools.MAX_ABBREV_LENGTH + " characters long");
+            messages.Add(1200, "Caution symbol must be 1 to " + ElementsAndAbbrevs.MAX_ABBREV_LENGTH + " characters long");
             messages.Add(1205, "Caution symbol most only contain letters");
             messages.Add(1210, "Caution description length cannot be 0");
             messages.Add(1215, "Too many caution statements.  Unable to add another one.");

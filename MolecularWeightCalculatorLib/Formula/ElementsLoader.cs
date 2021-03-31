@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace MolecularWeightCalculator.Formula
 {
     [ComVisible(false)]
-    internal class ElementAndMassInMemoryData
+    internal class ElementsLoader
     {
         // Ignore Spelling: csv, txt, frm, isoData
 
@@ -13,7 +13,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         public static ElementMem[] MemoryLoadElements()
         {
-            var elementData = new ElementMem[ElementAndMassTools.ELEMENT_COUNT + 1];
+            var elementData = new ElementMem[ElementsAndAbbrevs.ELEMENT_COUNT + 1];
 
             // Data Load Statements
             // Uncertainties from CRC Handbook of Chemistry and Physics
@@ -461,7 +461,7 @@ namespace MolecularWeightCalculator.Formula
             // Note: We stored data in the isoData[] array above
             // then copy to the ElementStats[] array here for the purposes of
             // decreasing the size of this method
-            for (var elementIndex = 1; elementIndex <= ElementAndMassTools.ELEMENT_COUNT - 1; elementIndex++)
+            for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT - 1; elementIndex++)
             {
                 var stats = elementStats[elementIndex];
                 short isotopeIndex = 0;
@@ -469,7 +469,7 @@ namespace MolecularWeightCalculator.Formula
                 {
                     stats.Isotopes.Add(isotope);
                     isotopeIndex++;
-                    if (isotopeIndex > ElementAndMassTools.MAX_ISOTOPES)
+                    if (isotopeIndex > ElementsAndAbbrevs.MAX_ISOTOPES)
                         break;
                 }
 

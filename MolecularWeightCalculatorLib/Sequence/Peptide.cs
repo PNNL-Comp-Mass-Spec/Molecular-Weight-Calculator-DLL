@@ -322,14 +322,14 @@ namespace MolecularWeightCalculator.Sequence
                 }
                 else
                 {
-                    symbol3Letter = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, true);
+                    symbol3Letter = mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(symbol, true);
                     if (symbol3Letter.Length == 0)
                     {
                         symbol3Letter = symbol;
                     }
                 }
 
-                abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(symbol3Letter, true);
+                abbrevId = mElementAndMassRoutines.Elements.GetAbbreviationId(symbol3Letter, true);
             }
             else
             {
@@ -340,7 +340,7 @@ namespace MolecularWeightCalculator.Sequence
             residue.Phosphorylated = false;
             if (abbrevId >= 0)
             {
-                residue.Mass = mElementAndMassRoutines.GetAbbreviationMass(abbrevId);
+                residue.Mass = mElementAndMassRoutines.Elements.GetAbbreviationMass(abbrevId);
             }
             else
             {
@@ -713,7 +713,7 @@ namespace MolecularWeightCalculator.Sequence
             }
             else
             {
-                searchResidue3Letter = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(residueSymbol, true);
+                searchResidue3Letter = mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(residueSymbol, true);
             }
 
             var residueCount = 0;
@@ -761,7 +761,7 @@ namespace MolecularWeightCalculator.Sequence
                 symbol = mResidues[residueIndex].Symbol;
 
                 if (!use3LetterCode)
-                    symbol = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, false);
+                    symbol = mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(symbol, false);
             }
 
             return symbol;
@@ -798,7 +798,7 @@ namespace MolecularWeightCalculator.Sequence
                 }
                 else
                 {
-                    var symbol1Letter = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol3Letter, false);
+                    var symbol1Letter = mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(symbol3Letter, false);
                     if ((symbol1Letter ?? "") == string.Empty)
                         symbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER;
                     sequence += symbol1Letter;
@@ -1658,7 +1658,7 @@ namespace MolecularWeightCalculator.Sequence
                 else if (char.IsLetter(workingSequence[1]) && char.IsLetter(workingSequence[2]) && char.IsLetter(workingSequence[3]))
                 {
                     // Formula starts with 4 characters and the first is H, see if the first 3 characters are a valid amino acid code
-                    var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(workingSequence.Substring(0, 3), true);
+                    var abbrevId = mElementAndMassRoutines.Elements.GetAbbreviationId(workingSequence.Substring(0, 3), true);
 
                     if (abbrevId < 0)
                     {
@@ -1689,7 +1689,7 @@ namespace MolecularWeightCalculator.Sequence
                 else if (char.IsLetter(workingSequence[stringLength - 3]))
                 {
                     // Formula ends with 3 characters and the last two are OH, see if the last 3 characters are a valid amino acid code
-                    var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(workingSequence.Substring(stringLength - 3, 3), true);
+                    var abbrevId = mElementAndMassRoutines.Elements.GetAbbreviationId(workingSequence.Substring(stringLength - 3, 3), true);
 
                     if (abbrevId < 0)
                     {
@@ -2024,7 +2024,7 @@ namespace MolecularWeightCalculator.Sequence
             }
             else
             {
-                threeLetterSymbol = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbol, true);
+                threeLetterSymbol = mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(symbol, true);
             }
 
             if (threeLetterSymbol.Length == 0)
@@ -2213,7 +2213,7 @@ namespace MolecularWeightCalculator.Sequence
                             // Character found
                             // Look up 3 letter symbol
                             // If none is found, this will return an empty string
-                            threeLetterSymbol = mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(oneLetterSymbol, true);
+                            threeLetterSymbol = mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(oneLetterSymbol, true);
 
                             if (threeLetterSymbol.Length == 0)
                                 threeLetterSymbol = UNKNOWN_SYMBOL;
@@ -2258,7 +2258,7 @@ namespace MolecularWeightCalculator.Sequence
                             {
                                 threeLetterSymbol = firstChar.ToUpper() + sequence.Substring(index + 1, 2).ToLower();
 
-                                if (mElementAndMassRoutines.GetAbbreviationIdInternal(threeLetterSymbol, true) == -1)
+                                if (mElementAndMassRoutines.Elements.GetAbbreviationId(threeLetterSymbol, true) == -1)
                                 {
                                     // 3 letter symbol not found
                                     // Add anyway, but mark as Xxx
@@ -2369,12 +2369,12 @@ namespace MolecularWeightCalculator.Sequence
             {
                 var residue = mResidues[index];
 
-                var abbrevId = mElementAndMassRoutines.GetAbbreviationIdInternal(residue.Symbol, true);
+                var abbrevId = mElementAndMassRoutines.Elements.GetAbbreviationId(residue.Symbol, true);
 
                 if (abbrevId >= 0)
                 {
                     validResidueCount += 1;
-                    residue.Mass = mElementAndMassRoutines.GetAbbreviationMass(abbrevId);
+                    residue.Mass = mElementAndMassRoutines.Elements.GetAbbreviationMass(abbrevId);
 
                     var phosphorylationMassAdded = false;
 
@@ -2471,11 +2471,11 @@ namespace MolecularWeightCalculator.Sequence
         {
             try
             {
-                var elementModeSaved = mElementAndMassRoutines.GetElementModeInternal();
+                var elementModeSaved = mElementAndMassRoutines.Elements.GetElementMode();
 
-                mElementAndMassRoutines.SetElementModeInternal(ElementMassMode.Isotopic);
+                mElementAndMassRoutines.Elements.SetElementMode(ElementMassMode.Isotopic);
 
-                mChargeCarrierMass = mElementAndMassRoutines.GetChargeCarrierMassInternal();
+                mChargeCarrierMass = mElementAndMassRoutines.Elements.GetChargeCarrierMass();
 
                 // Update standard mass values
                 mMassHOH = mElementAndMassRoutines.ComputeFormulaWeight("HOH");
@@ -2492,7 +2492,7 @@ namespace MolecularWeightCalculator.Sequence
                 mPhenylalanineFW = mElementAndMassRoutines.ComputeFormulaWeight("Phe");
                 mTyrosineFW = mElementAndMassRoutines.ComputeFormulaWeight("Tyr");
 
-                mElementAndMassRoutines.SetElementModeInternal(elementModeSaved);
+                mElementAndMassRoutines.Elements.SetElementMode(elementModeSaved);
             }
             catch (Exception ex)
             {

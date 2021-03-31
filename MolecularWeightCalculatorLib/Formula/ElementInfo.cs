@@ -24,7 +24,7 @@ namespace MolecularWeightCalculator.Formula
             Charge = charge;
             Mass = mass;
             Uncertainty = uncertainty;
-            Isotopes = new List<IsotopeInfo>(ElementAndMassTools.MAX_ISOTOPES);
+            Isotopes = new List<IsotopeInfo>(ElementsAndAbbrevs.MAX_ISOTOPES);
         }
 
         public override string ToString()

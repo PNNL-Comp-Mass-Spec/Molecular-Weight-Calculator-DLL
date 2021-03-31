@@ -13,7 +13,7 @@ namespace MolecularWeightCalculator.Formula
 
         public ComputationStats()
         {
-            const int ElementCount = ElementAndMassTools.ELEMENT_COUNT + 1;
+            const int ElementCount = ElementsAndAbbrevs.ELEMENT_COUNT + 1;
 
             Charge = 0;
             StandardDeviation = 0;

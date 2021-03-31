@@ -126,7 +126,7 @@ namespace MolecularWeightCalculator
                 if (value >= AbbrevRecognitionMode.NormalOnly & value <= AbbrevRecognitionMode.NoAbbreviations)
                 {
                     mElementAndMassRoutines.ComputationOptions.AbbrevRecognitionMode = value;
-                    mElementAndMassRoutines.ConstructMasterSymbolsList();
+                    mElementAndMassRoutines.Elements.ConstructMasterSymbolsList();
                 }
             }
         }
@@ -250,7 +250,7 @@ namespace MolecularWeightCalculator
 
         public void ClearError()
         {
-            mElementAndMassRoutines.ResetErrorParamsInternal();
+            mElementAndMassRoutines.ResetErrorParams();
         }
 
         /// <summary>
@@ -405,7 +405,7 @@ namespace MolecularWeightCalculator
             out string comment,
             out bool invalidSymbolOrFormula)
         {
-            return mElementAndMassRoutines.GetAbbreviationInternal(
+            return mElementAndMassRoutines.Elements.GetAbbreviation(
                 abbreviationId, out symbol, out formula,
                 out charge, out isAminoAcid, out oneLetterSymbol,
                 out comment, out invalidSymbolOrFormula);
@@ -417,12 +417,12 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public int GetAbbreviationCount()
         {
-            return mElementAndMassRoutines.GetAbbreviationCountInternal();
+            return mElementAndMassRoutines.Elements.GetAbbreviationCount();
         }
 
         public int GetAbbreviationCountMax()
         {
-            return ElementAndMassTools.MAX_ABBREV_COUNT;
+            return ElementsAndAbbrevs.MAX_ABBREV_COUNT;
         }
 
         /// <summary>
@@ -432,7 +432,7 @@ namespace MolecularWeightCalculator
         /// <returns>ID if found, otherwise -1</returns>
         public int GetAbbreviationId(string symbol)
         {
-            return mElementAndMassRoutines.GetAbbreviationIdInternal(symbol);
+            return mElementAndMassRoutines.Elements.GetAbbreviationId(symbol);
         }
 
         public string GetAminoAcidSymbolConversion(string symbolToFind, bool oneLetterTo3Letter)
@@ -440,7 +440,7 @@ namespace MolecularWeightCalculator
             // If bln1LetterTo3Letter = True, then converting 1 letter codes to 3 letter codes
             // Returns the symbol, if found
             // Otherwise, returns ""
-            return mElementAndMassRoutines.GetAminoAcidSymbolConversionInternal(symbolToFind, oneLetterTo3Letter);
+            return mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(symbolToFind, oneLetterTo3Letter);
         }
 
         /// <summary>
@@ -483,7 +483,7 @@ namespace MolecularWeightCalculator
 
         public double GetChargeCarrierMass()
         {
-            return mElementAndMassRoutines.GetChargeCarrierMassInternal();
+            return mElementAndMassRoutines.Elements.GetChargeCarrierMass();
         }
 
         /// <summary>
@@ -498,7 +498,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if success, 1 if failure</returns>
         public int GetElement(short elementId, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount)
         {
-            return mElementAndMassRoutines.GetElementInternal(elementId, out symbol, out mass, out uncertainty, out charge, out isotopeCount);
+            return mElementAndMassRoutines.Elements.GetElement(elementId, out symbol, out mass, out uncertainty, out charge, out isotopeCount);
         }
 
         /// <summary>
@@ -507,7 +507,7 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public int GetElementCount()
         {
-            return mElementAndMassRoutines.GetElementCountInternal();
+            return mElementAndMassRoutines.Elements.GetElementCount();
         }
 
         /// <summary>
@@ -517,7 +517,7 @@ namespace MolecularWeightCalculator
         /// <returns>ID if found, otherwise 0</returns>
         public int GetElementId(string symbol)
         {
-            return mElementAndMassRoutines.GetElementIdInternal(symbol);
+            return mElementAndMassRoutines.Elements.GetElementId(symbol);
         }
 
         /// <summary>
@@ -530,7 +530,7 @@ namespace MolecularWeightCalculator
         /// <returns>0 if a valid ID, 1 if invalid</returns>
         public int GetElementIsotopes(short elementId, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
-            return mElementAndMassRoutines.GetElementIsotopesInternal(elementId, out isotopeCount, out isotopeMasses, out isotopeAbundances);
+            return mElementAndMassRoutines.Elements.GetElementIsotopes(elementId, out isotopeCount, out isotopeMasses, out isotopeAbundances);
         }
 
         /// <summary>
@@ -543,7 +543,7 @@ namespace MolecularWeightCalculator
         /// </returns>
         public ElementMassMode GetElementMode()
         {
-            return mElementAndMassRoutines.GetElementModeInternal();
+            return mElementAndMassRoutines.Elements.GetElementMode();
         }
 
         /// <summary>
@@ -554,7 +554,7 @@ namespace MolecularWeightCalculator
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         public string GetElementSymbol(short elementId)
         {
-            return mElementAndMassRoutines.GetElementSymbolInternal(elementId);
+            return mElementAndMassRoutines.Elements.GetElementSymbol(elementId);
         }
 
         /// <summary>
@@ -566,7 +566,7 @@ namespace MolecularWeightCalculator
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         public double GetElementStat(short elementId, ElementStatsType elementStat)
         {
-            return mElementAndMassRoutines.GetElementStatInternal(elementId, elementStat);
+            return mElementAndMassRoutines.Elements.GetElementStat(elementId, elementStat);
         }
 
         /// <summary>
@@ -601,7 +601,7 @@ namespace MolecularWeightCalculator
 
         public void RemoveAllAbbreviations()
         {
-            mElementAndMassRoutines.RemoveAllAbbreviationsInternal();
+            mElementAndMassRoutines.Elements.RemoveAllAbbreviations();
         }
 
         public void RemoveAllCautionStatements()
@@ -628,17 +628,17 @@ namespace MolecularWeightCalculator
         /// </remarks>
         public void RecomputeAbbreviationMasses()
         {
-            mElementAndMassRoutines.RecomputeAbbreviationMassesInternal();
+            mElementAndMassRoutines.Elements.RecomputeAbbreviationMasses();
         }
 
         public int RemoveAbbreviation(string abbreviationSymbol)
         {
-            return mElementAndMassRoutines.RemoveAbbreviationInternal(abbreviationSymbol);
+            return mElementAndMassRoutines.Elements.RemoveAbbreviation(abbreviationSymbol);
         }
 
         public int RemoveAbbreviationById(int abbreviationId)
         {
-            return mElementAndMassRoutines.RemoveAbbreviationByIdInternal(abbreviationId);
+            return mElementAndMassRoutines.Elements.RemoveAbbreviationById(abbreviationId);
         }
 
         public int RemoveCautionStatement(string cautionSymbol)
@@ -648,7 +648,7 @@ namespace MolecularWeightCalculator
 
         public void ResetAbbreviations()
         {
-            mElementAndMassRoutines.MemoryLoadAbbreviations();
+            mElementAndMassRoutines.Elements.MemoryLoadAbbreviations();
         }
 
         public void ResetCautionStatements()
@@ -658,7 +658,7 @@ namespace MolecularWeightCalculator
 
         public void ResetElement(short elementId, ElementStatsType specificStatToReset)
         {
-            mElementAndMassRoutines.MemoryLoadElements(GetElementMode(), elementId, specificStatToReset);
+            mElementAndMassRoutines.Elements.MemoryLoadElements(GetElementMode(), elementId, specificStatToReset);
         }
 
         public void ResetMessageStatements()
@@ -689,7 +689,7 @@ namespace MolecularWeightCalculator
             string comment = "",
             bool validateFormula = true)
         {
-            return mElementAndMassRoutines.SetAbbreviationInternal(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
+            return mElementAndMassRoutines.Elements.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
         }
 
         /// <summary>
@@ -716,7 +716,7 @@ namespace MolecularWeightCalculator
             string comment = "",
             bool validateFormula = true)
         {
-            return mElementAndMassRoutines.SetAbbreviationByIdInternal((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
+            return mElementAndMassRoutines.Elements.SetAbbreviationById((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
         }
 
         /// <summary>
@@ -732,7 +732,7 @@ namespace MolecularWeightCalculator
 
         public void SetChargeCarrierMass(double mass)
         {
-            mElementAndMassRoutines.SetChargeCarrierMassInternal(mass);
+            mElementAndMassRoutines.Elements.SetChargeCarrierMass(mass);
         }
 
         /// <summary>
@@ -748,7 +748,7 @@ namespace MolecularWeightCalculator
             float charge,
             bool recomputeAbbreviationMasses = true)
         {
-            return mElementAndMassRoutines.SetElementInternal(symbol, mass, uncertainty, charge, recomputeAbbreviationMasses);
+            return mElementAndMassRoutines.Elements.SetElement(symbol, mass, uncertainty, charge, recomputeAbbreviationMasses);
         }
 
         /// <summary>
@@ -761,7 +761,7 @@ namespace MolecularWeightCalculator
         /// <returns></returns>
         public int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances)
         {
-            return mElementAndMassRoutines.SetElementIsotopesInternal(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
+            return mElementAndMassRoutines.Elements.SetElementIsotopes(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
         }
 
         /// <summary>
@@ -771,7 +771,7 @@ namespace MolecularWeightCalculator
         /// <param name="forceMemoryLoadElementValues">Set to true if you want to force a reload of element weights, even if not changing element modes</param>
         public void SetElementMode(ElementMassMode elementMode, bool forceMemoryLoadElementValues = false)
         {
-            mElementAndMassRoutines.SetElementModeInternal(elementMode, forceMemoryLoadElementValues);
+            mElementAndMassRoutines.Elements.SetElementMode(elementMode, forceMemoryLoadElementValues);
         }
 
         /// <summary>
@@ -787,7 +787,7 @@ namespace MolecularWeightCalculator
 
         public void SortAbbreviations()
         {
-            mElementAndMassRoutines.SortAbbreviationsInternal();
+            mElementAndMassRoutines.Elements.SortAbbreviations();
         }
 
         /// <summary>
@@ -817,7 +817,7 @@ namespace MolecularWeightCalculator
         /// <returns>Count of the number of invalid abbreviations found</returns>
         public int ValidateAllAbbreviations()
         {
-            return mElementAndMassRoutines.ValidateAllAbbreviationsInternal();
+            return mElementAndMassRoutines.Elements.ValidateAllAbbreviations();
         }
 
         ~MolecularWeightTool()
