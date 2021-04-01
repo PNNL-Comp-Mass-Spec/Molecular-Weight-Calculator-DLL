@@ -456,707 +456,704 @@ namespace MolecularWeightCalculator.Formula
             // Lowercase letters are 97 to 122
             // [ and ] are 91 and 93
             // ^ is 94
-            // is 95
-
-            int symbolLength = default;
-            var caretPresent = default(bool);
-
-            double caretVal = default;
-            var char1 = string.Empty;
-
-            short prevSymbolReference = default;
-            int parenthLevel = default;
+            // _ is 95
 
             stdDevSum = 0;
             carbonOrSiliconReturnCount = 0;
 
             try
             {
-                int charIndex;
                 var dashMultiplier = dashMultiplierPrior;
                 var bracketMultiplier = bracketMultiplierPrior;
+
+                // Look for the > symbol
+                // If found, this means take First Part minus the Second Part
+                if (formula.Contains(">"))
+                {
+                    formula = ParseFormulaSubtraction(formula, computationStats, abbrevSymbolStack, expandAbbreviations, out stdDevSum, valueForX, charCountPrior, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
+                    return formula;
+                }
+
+                var symbolLength = 0;
+                var caretPresent = false;
+
+                var caretVal = 0.0;
+                var char1 = string.Empty;
+
+                short prevSymbolReference = 0;
+                var parenthLevel = 0;
+
                 var insideBrackets = false;
 
                 var dashPos = -1;
 
                 var loneCarbonOrSilicon = 0;
 
-                // Look for the > symbol
-                // If found, this means take First Part minus the Second Part
-                if (formula.Contains(">"))
+                // Formula does not contain >
+                // Parse it
+                int charIndex;
+                for (charIndex = 0; charIndex < formula.Length; charIndex++)
                 {
-                    charIndex = ParseFormulaSubtraction(ref formula, computationStats, abbrevSymbolStack, expandAbbreviations, out stdDevSum, valueForX, charCountPrior, parenthMultiplier, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
-                }
-                else
-                {
-                    // Formula does not contain >
-                    // Parse it
-                    for (charIndex = 0; charIndex < formula.Length; charIndex++)
+                    char1 = formula.Substring(charIndex, 1);
+                    var char2 = charIndex + 1 < formula.Length ? formula.Substring(charIndex + 1, 1) : "";
+                    var char3 = charIndex + 2 < formula.Length ? formula.Substring(charIndex + 2, 1) : "";
+                    var charRemain = charIndex + 3 < formula.Length ? formula.Substring(charIndex + 3) : "";
+                    if (ComputationOptions.CaseConversion != CaseConversionMode.ExactCase)
+                        char1 = char1.ToUpper();
+
+                    if (ComputationOptions.BracketsAsParentheses)
                     {
-                        char1 = formula.Substring(charIndex, 1);
-                        var char2 = charIndex + 1 < formula.Length ? formula.Substring(charIndex + 1, 1) : "";
-                        var char3 = charIndex + 2 < formula.Length ? formula.Substring(charIndex + 2, 1) : "";
-                        var charRemain = charIndex + 3 < formula.Length ? formula.Substring(charIndex + 3) : "";
-                        if (ComputationOptions.CaseConversion != CaseConversionMode.ExactCase)
-                            char1 = char1.ToUpper();
+                        char1 = char1.Replace("[", "(").Replace("]", ")");
+                    }
 
-                        if (ComputationOptions.BracketsAsParentheses)
-                        {
-                            if (char1 == "[")
-                                char1 = "(";
-                            if (char1 == "]")
-                                char1 = ")";
-                        }
+                    if (string.IsNullOrEmpty(char1))
+                        char1 = EMPTY_STRING_CHAR.ToString();
+                    if (string.IsNullOrEmpty(char2))
+                        char2 = EMPTY_STRING_CHAR.ToString();
+                    if (string.IsNullOrEmpty(char3))
+                        char3 = EMPTY_STRING_CHAR.ToString();
+                    if (string.IsNullOrEmpty(charRemain))
+                        charRemain = EMPTY_STRING_CHAR.ToString();
 
-                        if (string.IsNullOrEmpty(char1))
-                            char1 = EMPTY_STRING_CHAR.ToString();
-                        if (string.IsNullOrEmpty(char2))
-                            char2 = EMPTY_STRING_CHAR.ToString();
-                        if (string.IsNullOrEmpty(char3))
-                            char3 = EMPTY_STRING_CHAR.ToString();
-                        if (string.IsNullOrEmpty(charRemain))
-                            charRemain = EMPTY_STRING_CHAR.ToString();
+                    var formulaExcerpt = char1 + char2 + char3 + charRemain;
 
-                        var formulaExcerpt = char1 + char2 + char3 + charRemain;
+                    // Check for needed caution statements
+                    CheckCaution(formulaExcerpt);
 
-                        // Check for needed caution statements
-                        CheckCaution(formulaExcerpt);
+                    int numLength;
+                    double adjacentNum;
+                    int addonCount;
+                    switch (char1[0])
+                    {
+                        case '(':
+                        case '{': // ( or {    Record its position
+                            // See if a number is present just after the opening parenthesis
+                            if (char.IsDigit(char2[0]) || char2 == ".")
+                            {
+                                // Misplaced number
+                                mErrorParams.ErrorId = 14;
+                                mErrorParams.ErrorPosition = charIndex;
+                            }
 
-                        int numLength;
-                        double adjacentNum;
-                        int addonCount;
-                        switch (char1[0])
-                        {
-                            case '(':
-                            case '{': // ( or {    Record its position
-                                // See if a number is present just after the opening parenthesis
-                                if (char.IsDigit(char2[0]) || char2 == ".")
+                            if (mErrorParams.ErrorId == 0)
+                            {
+                                // search for closing parenthesis
+                                parenthLevel = 1;
+                                for (var parenthClose = charIndex + 1; parenthClose < formula.Length; parenthClose++)
                                 {
-                                    // Misplaced number
-                                    mErrorParams.ErrorId = 14;
-                                    mErrorParams.ErrorPosition = charIndex;
-                                }
-
-                                if (mErrorParams.ErrorId == 0)
-                                {
-                                    // search for closing parenthesis
-                                    parenthLevel = 1;
-                                    for (var parenthClose = charIndex + 1; parenthClose < formula.Length; parenthClose++)
+                                    var bracketChar = formula[parenthClose];
+                                    switch (bracketChar)
                                     {
-                                        var bracketChar = formula[parenthClose];
-                                        switch (bracketChar)
-                                        {
-                                            case '[':
-                                                if (ComputationOptions.BracketsAsParentheses)
-                                                    goto case '(';
+                                        case '[':
+                                            if (ComputationOptions.BracketsAsParentheses)
+                                                goto case '(';
 
-                                                // Do not count the bracket
-                                                break;
+                                            // Do not count the bracket
+                                            break;
 
-                                            case '(':
-                                            case '{':
-                                                // Another opening parentheses
-                                                // increment parenthLevel
-                                                parenthLevel += 1;
+                                        case '(':
+                                        case '{':
+                                            // Another opening parentheses
+                                            // increment parenthLevel
+                                            parenthLevel += 1;
 
-                                                break;
+                                            break;
 
-                                            case ']':
-                                                if (ComputationOptions.BracketsAsParentheses)
-                                                    goto case ')';
+                                        case ']':
+                                            if (ComputationOptions.BracketsAsParentheses)
+                                                goto case ')';
 
-                                                // Do not count the bracket
-                                                break;
-                                            case ')':
-                                            case '}':
-                                                parenthLevel -= 1;
-                                                if (parenthLevel == 0)
+                                            // Do not count the bracket
+                                            break;
+                                        case ')':
+                                        case '}':
+                                            parenthLevel -= 1;
+                                            if (parenthLevel == 0)
+                                            {
+                                                adjacentNum = ParseNum(formula.Substring(parenthClose + 1), out numLength);
+                                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+
+                                                if (adjacentNum < 0d)
                                                 {
-                                                    adjacentNum = ParseNum(formula.Substring(parenthClose + 1), out numLength);
-                                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
-
-                                                    if (adjacentNum < 0d)
-                                                    {
-                                                        adjacentNum = 1.0d;
-                                                        addonCount = 0;
-                                                    }
-                                                    else
-                                                    {
-                                                        addonCount = numLength;
-                                                    }
-
-                                                    var subFormula = formula.Substring(charIndex + 1, parenthClose - (charIndex + 1));
-
-                                                    // Note, must pass parenthMultiplier * adjacentNum to preserve previous parentheses stuff
-                                                    var newFormula = ParseFormulaRecursive(subFormula, computationStats, abbrevSymbolStack, expandAbbreviations, out var newStdDevSum, out var carbonSiliconCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
-                                                    stdDevSum += newStdDevSum;
-
-                                                    // If expanding abbreviations, then newFormula might be longer than formula, must add this onto charIndex also
-                                                    var expandAbbrevAdd = newFormula.Length - subFormula.Length;
-
-                                                    // Must replace the part of the formula parsed with the newFormula part, in case the formula was expanded or elements were capitalized
-                                                    formula = formula.Substring(0, charIndex + 1) + newFormula + formula.Substring(parenthClose);
-                                                    charIndex = parenthClose + addonCount + expandAbbrevAdd;
-
-                                                    // Correct charge
-                                                    if (carbonSiliconCount > 0)
-                                                    {
-                                                        computationStats.Charge = (float)(computationStats.Charge - 2d * adjacentNum);
-                                                        if (adjacentNum > 1d && carbonSiliconCount > 1)
-                                                        {
-                                                            computationStats.Charge = (float)(computationStats.Charge - 2d * (adjacentNum - 1d) * (carbonSiliconCount - 1));
-                                                        }
-                                                    }
-
-                                                    // exit the loop;
-                                                    parenthClose = formula.Length;
+                                                    adjacentNum = 1.0d;
+                                                    addonCount = 0;
+                                                }
+                                                else
+                                                {
+                                                    addonCount = numLength;
                                                 }
 
-                                                break;
-                                        }
+                                                var subFormula = formula.Substring(charIndex + 1, parenthClose - (charIndex + 1));
+
+                                                // Note, must pass parenthMultiplier * adjacentNum to preserve previous parentheses stuff
+                                                var newFormula = ParseFormulaRecursive(subFormula, computationStats, abbrevSymbolStack, expandAbbreviations, out var newStdDevSum, out var carbonSiliconCount, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, (short)(parenthLevelPrevious + 1));
+                                                stdDevSum += newStdDevSum;
+
+                                                // If expanding abbreviations, then newFormula might be longer than formula, must add this onto charIndex also
+                                                var expandAbbrevAdd = newFormula.Length - subFormula.Length;
+
+                                                // Must replace the part of the formula parsed with the newFormula part, in case the formula was expanded or elements were capitalized
+                                                formula = formula.Substring(0, charIndex + 1) + newFormula + formula.Substring(parenthClose);
+                                                charIndex = parenthClose + addonCount + expandAbbrevAdd;
+
+                                                // Correct charge
+                                                if (carbonSiliconCount > 0)
+                                                {
+                                                    computationStats.Charge = (float)(computationStats.Charge - 2d * adjacentNum);
+                                                    if (adjacentNum > 1d && carbonSiliconCount > 1)
+                                                    {
+                                                        computationStats.Charge = (float)(computationStats.Charge - 2d * (adjacentNum - 1d) * (carbonSiliconCount - 1));
+                                                    }
+                                                }
+
+                                                // exit the loop;
+                                                parenthClose = formula.Length;
+                                            }
+
+                                            break;
                                     }
                                 }
+                            }
 
-                                if (parenthLevel > 0 && mErrorParams.ErrorId == 0)
-                                {
-                                    // Missing closing parenthesis
-                                    mErrorParams.ErrorId = 3;
-                                    mErrorParams.ErrorPosition = charIndex;
-                                }
-
-                                prevSymbolReference = 0;
-                                break;
-
-                            case ')':
-                            case '}': // )    Repeat a section of a formula
-                                // Should have been skipped
-                                // Unmatched closing parentheses
-                                mErrorParams.ErrorId = 4;
+                            if (parenthLevel > 0 && mErrorParams.ErrorId == 0)
+                            {
+                                // Missing closing parenthesis
+                                mErrorParams.ErrorId = 3;
                                 mErrorParams.ErrorPosition = charIndex;
-                                break;
+                            }
 
-                            case '-': // -
-                                // Used to denote a leading coefficient
-                                adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                            prevSymbolReference = 0;
+                            break;
 
-                                if (adjacentNum > 0d)
-                                {
-                                    dashPos = charIndex + numLength;
-                                    dashMultiplier = adjacentNum * dashMultiplierPrior;
-                                    charIndex += numLength;
-                                }
-                                else if (Math.Abs(adjacentNum) < float.Epsilon)
-                                {
-                                    // Cannot have 0 after a dash
-                                    mErrorParams.ErrorId = 5;
-                                    mErrorParams.ErrorPosition = charIndex + 1;
-                                }
-                                else
-                                {
-                                    // No number is present, that's just fine
-                                    // Make sure defaults are set, though
-                                    dashPos = -1;
-                                    dashMultiplier = dashMultiplierPrior;
-                                }
+                        case ')':
+                        case '}': // )    Repeat a section of a formula
+                            // Should have been skipped
+                            // Unmatched closing parentheses
+                            mErrorParams.ErrorId = 4;
+                            mErrorParams.ErrorPosition = charIndex;
+                            break;
 
-                                prevSymbolReference = 0;
-                                break;
+                        case '-': // -
+                            // Used to denote a leading coefficient
+                            adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                            CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
-                            case ',':
-                            case '.':
-                            case var @case when '0' <= @case && @case <= '9': // . or , and Numbers 0 to 9
-                                // They should only be encountered as a leading coefficient
-                                // Should have been bypassed when the coefficient was processed
-                                if (charIndex == 0)
-                                {
-                                    // Formula starts with a number -- multiply section by number (until next dash)
-                                    adjacentNum = ParseNum(formulaExcerpt, out numLength);
-                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                            if (adjacentNum > 0d)
+                            {
+                                dashPos = charIndex + numLength;
+                                dashMultiplier = adjacentNum * dashMultiplierPrior;
+                                charIndex += numLength;
+                            }
+                            else if (Math.Abs(adjacentNum) < float.Epsilon)
+                            {
+                                // Cannot have 0 after a dash
+                                mErrorParams.ErrorId = 5;
+                                mErrorParams.ErrorPosition = charIndex + 1;
+                            }
+                            else
+                            {
+                                // No number is present, that's just fine
+                                // Make sure defaults are set, though
+                                dashPos = -1;
+                                dashMultiplier = dashMultiplierPrior;
+                            }
 
-                                    if (adjacentNum >= 0d)
-                                    {
-                                        dashPos = charIndex + numLength - 1;
-                                        dashMultiplier = adjacentNum * dashMultiplierPrior;
-                                        charIndex += numLength - 1;
-                                    }
-                                    else
-                                    {
-                                        // A number less then zero should have been handled by CatchParseNumError above
-                                        // Make sure defaults are set, though
-                                        dashPos = -1;
-                                        dashMultiplier = dashMultiplierPrior;
-                                    }
-                                }
-                                else if (NumberConverter.CDblSafe(formula.Substring(charIndex - 1, 1)) > 0d)
-                                {
-                                    // Number too large
-                                    mErrorParams.ErrorId = 7;
-                                    mErrorParams.ErrorPosition = charIndex;
-                                }
-                                else
-                                {
-                                    // Misplaced number
-                                    mErrorParams.ErrorId = 14;
-                                    mErrorParams.ErrorPosition = charIndex;
-                                }
+                            prevSymbolReference = 0;
+                            break;
 
-                                prevSymbolReference = 0;
-                                break;
-
-                            case '[': // [
-                                if (char2.ToUpper() == "X")
-                                {
-                                    if (char3 == "e")
-                                    {
-                                        adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                                        CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
-                                    }
-                                    else
-                                    {
-                                        adjacentNum = valueForX;
-                                        numLength = 1;
-                                    }
-                                }
-                                else
-                                {
-                                    adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
-                                }
-
-                                if (mErrorParams.ErrorId == 0)
-                                {
-                                    if (insideBrackets)
-                                    {
-                                        // No Nested brackets.
-                                        mErrorParams.ErrorId = 16;
-                                        mErrorParams.ErrorPosition = charIndex;
-                                    }
-                                    else if (adjacentNum < 0d)
-                                    {
-                                        // No number after bracket
-                                        mErrorParams.ErrorId = 12;
-                                        mErrorParams.ErrorPosition = charIndex + 1;
-                                    }
-                                    else
-                                    {
-                                        // Coefficient for bracketed section.
-                                        insideBrackets = true;
-                                        bracketMultiplier = adjacentNum * bracketMultiplierPrior; // Take times bracketMultiplierPrior in case it wasn't 1 to start with
-                                        charIndex += numLength;
-                                    }
-                                }
-
-                                prevSymbolReference = 0;
-                                break;
-
-                            case ']': // ]
-                                adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                        case ',':
+                        case '.':
+                        case var @case when '0' <= @case && @case <= '9': // . or , and Numbers 0 to 9
+                            // They should only be encountered as a leading coefficient
+                            // Should have been bypassed when the coefficient was processed
+                            if (charIndex == 0)
+                            {
+                                // Formula starts with a number -- multiply section by number (until next dash)
+                                adjacentNum = ParseNum(formulaExcerpt, out numLength);
                                 CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
                                 if (adjacentNum >= 0d)
                                 {
-                                    // Number following bracket
-                                    mErrorParams.ErrorId = 11;
-                                    mErrorParams.ErrorPosition = charIndex + 1;
-                                }
-                                else if (insideBrackets)
-                                {
-                                    if (dashPos >= 0)
-                                    {
-                                        // Need to set dashPos and dashMultiplier back to defaults, since a dash number goes back to one inside brackets
-                                        dashPos = -1;
-                                        dashMultiplier = 1d;
-                                    }
-
-                                    insideBrackets = false;
-                                    bracketMultiplier = bracketMultiplierPrior;
+                                    dashPos = charIndex + numLength - 1;
+                                    dashMultiplier = adjacentNum * dashMultiplierPrior;
+                                    charIndex += numLength - 1;
                                 }
                                 else
                                 {
-                                    // Unmatched bracket
-                                    mErrorParams.ErrorId = 15;
+                                    // A number less then zero should have been handled by CatchParseNumError above
+                                    // Make sure defaults are set, though
+                                    dashPos = -1;
+                                    dashMultiplier = dashMultiplierPrior;
+                                }
+                            }
+                            else if (NumberConverter.CDblSafe(formula.Substring(charIndex - 1, 1)) > 0d)
+                            {
+                                // Number too large
+                                mErrorParams.ErrorId = 7;
+                                mErrorParams.ErrorPosition = charIndex;
+                            }
+                            else
+                            {
+                                // Misplaced number
+                                mErrorParams.ErrorId = 14;
+                                mErrorParams.ErrorPosition = charIndex;
+                            }
+
+                            prevSymbolReference = 0;
+                            break;
+
+                        case '[': // [
+                            if (char2.ToUpper() == "X")
+                            {
+                                if (char3 == "e")
+                                {
+                                    adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                                }
+                                else
+                                {
+                                    adjacentNum = valueForX;
+                                    numLength = 1;
+                                }
+                            }
+                            else
+                            {
+                                adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                            }
+
+                            if (mErrorParams.ErrorId == 0)
+                            {
+                                if (insideBrackets)
+                                {
+                                    // No Nested brackets.
+                                    mErrorParams.ErrorId = 16;
                                     mErrorParams.ErrorPosition = charIndex;
                                 }
-
-                                break;
-
-                            case var case1 when 'A' <= case1 && case1 <= 'Z': // A-Z
-                            case var case2 when 'a' <= case2 && case2 <= 'z': // a-z
-                            case '+':
-                            case '_': // Uppercase A to Z and lowercase a to z, and the plus (+) sign, and the underscore (_)
-                                addonCount = 0;
-                                adjacentNum = 0d;
-
-                                var symbolMatchType = Elements.CheckElemAndAbbrev(formulaExcerpt, out var symbolReference);
-
-                                switch (symbolMatchType)
+                                else if (adjacentNum < 0d)
                                 {
-                                    case SymbolMatchMode.Element:
-                                        // Found an element
-                                        // SymbolReference is the elemental number
-                                        var elementStats = Elements.ElementStats[symbolReference];
-                                        symbolLength = elementStats.Symbol.Length;
-                                        if (symbolLength == 0)
+                                    // No number after bracket
+                                    mErrorParams.ErrorId = 12;
+                                    mErrorParams.ErrorPosition = charIndex + 1;
+                                }
+                                else
+                                {
+                                    // Coefficient for bracketed section.
+                                    insideBrackets = true;
+                                    bracketMultiplier = adjacentNum * bracketMultiplierPrior; // Take times bracketMultiplierPrior in case it wasn't 1 to start with
+                                    charIndex += numLength;
+                                }
+                            }
+
+                            prevSymbolReference = 0;
+                            break;
+
+                        case ']': // ]
+                            adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                            CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+
+                            if (adjacentNum >= 0d)
+                            {
+                                // Number following bracket
+                                mErrorParams.ErrorId = 11;
+                                mErrorParams.ErrorPosition = charIndex + 1;
+                            }
+                            else if (insideBrackets)
+                            {
+                                if (dashPos >= 0)
+                                {
+                                    // Need to set dashPos and dashMultiplier back to defaults, since a dash number goes back to one inside brackets
+                                    dashPos = -1;
+                                    dashMultiplier = 1d;
+                                }
+
+                                insideBrackets = false;
+                                bracketMultiplier = bracketMultiplierPrior;
+                            }
+                            else
+                            {
+                                // Unmatched bracket
+                                mErrorParams.ErrorId = 15;
+                                mErrorParams.ErrorPosition = charIndex;
+                            }
+
+                            break;
+
+                        case var case1 when 'A' <= case1 && case1 <= 'Z': // A-Z
+                        case var case2 when 'a' <= case2 && case2 <= 'z': // a-z
+                        case '+':
+                        case '_': // Uppercase A to Z and lowercase a to z, and the plus (+) sign, and the underscore (_)
+                            addonCount = 0;
+                            adjacentNum = 0d;
+
+                            var symbolMatchType = Elements.CheckElemAndAbbrev(formulaExcerpt, out var symbolReference);
+
+                            switch (symbolMatchType)
+                            {
+                                case SymbolMatchMode.Element:
+                                    // Found an element
+                                    // SymbolReference is the elemental number
+                                    var elementStats = Elements.ElementStats[symbolReference];
+                                    symbolLength = elementStats.Symbol.Length;
+                                    if (symbolLength == 0)
+                                    {
+                                        // No elements in ElementStats yet
+                                        // Set symbolLength to 1
+                                        symbolLength = 1;
+                                    }
+                                    // Look for number after element
+                                    adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
+                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+
+                                    if (adjacentNum < 0d)
+                                    {
+                                        adjacentNum = 1d;
+                                    }
+
+                                    // Note that numLength = 0 if adjacentNum was -1 or otherwise < 0
+                                    addonCount = numLength + symbolLength - 1;
+
+                                    if (Math.Abs(adjacentNum) < float.Epsilon)
+                                    {
+                                        // Zero after element
+                                        mErrorParams.ErrorId = 5;
+                                        mErrorParams.ErrorPosition = charIndex + symbolLength;
+                                    }
+                                    else
+                                    {
+                                        double atomCountToAdd;
+                                        if (!caretPresent)
                                         {
-                                            // No elements in ElementStats yet
-                                            // Set symbolLength to 1
-                                            symbolLength = 1;
+                                            atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
+                                            var element = computationStats.Elements[symbolReference];
+                                            element.Count += atomCountToAdd;
+                                            element.Used = true; // Element is present tag
+                                            stdDevSum += atomCountToAdd * Math.Pow(elementStats.Uncertainty, 2d);
+
+                                            var compStats = computationStats;
+                                            // Compute charge
+                                            if (symbolReference == 1)
+                                            {
+                                                // Dealing with hydrogen
+                                                switch (prevSymbolReference)
+                                                {
+                                                    case 1:
+                                                    case var case3 when 3 <= case3 && case3 <= 6:
+                                                    case var case4 when 11 <= case4 && case4 <= 14:
+                                                    case var case5 when 19 <= case5 && case5 <= 32:
+                                                    case var case6 when 37 <= case6 && case6 <= 50:
+                                                    case var case7 when 55 <= case7 && case7 <= 82:
+                                                    case var case8 when 87 <= case8 && case8 <= 109:
+                                                        // Hydrogen is -1 with metals (non-halides)
+                                                        compStats.Charge = (float)(compStats.Charge + atomCountToAdd * -1);
+                                                        break;
+                                                    default:
+                                                        compStats.Charge = (float)(compStats.Charge + atomCountToAdd * elementStats.Charge);
+                                                        break;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                compStats.Charge = (float)(compStats.Charge + atomCountToAdd * elementStats.Charge);
+                                            }
+
+                                            if (symbolReference == 6 || symbolReference == 14)
+                                            {
+                                                // Sum up number lone C and Si (not in abbreviations)
+                                                loneCarbonOrSilicon = (int)Math.Round(loneCarbonOrSilicon + adjacentNum);
+                                            }
                                         }
-                                        // Look for number after element
+                                        else
+                                        {
+                                            //caretPresent = true;
+                                            // Check to make sure isotopic mass is reasonable
+                                            double isoDifferenceTop = NumberConverter.CIntSafe(0.63d * symbolReference + 6d);
+                                            double isoDifferenceBottom = NumberConverter.CIntSafe(0.008d * Math.Pow(symbolReference, 2d) - 0.4d * symbolReference - 6d);
+                                            var caretValDifference = caretVal - symbolReference * 2;
+
+                                            if (caretValDifference >= isoDifferenceTop)
+                                            {
+                                                // Probably too high isotopic mass
+                                                AddToCautionDescription(Messages.LookupMessage(660) + ": " + elementStats.Symbol + " - " + caretVal + " " + Messages.LookupMessage(665) + " " + elementStats.Mass);
+                                            }
+                                            else if (caretVal < symbolReference)
+                                            {
+                                                // Definitely too low isotopic mass
+                                                AddToCautionDescription(Messages.LookupMessage(670) + ": " + elementStats.Symbol + " - " + symbolReference + " " + Messages.LookupMessage(675));
+                                            }
+                                            else if (caretValDifference <= isoDifferenceBottom)
+                                            {
+                                                // Probably too low isotopic mass
+                                                AddToCautionDescription(Messages.LookupMessage(662) + ": " + elementStats.Symbol + " - " + caretVal + " " + Messages.LookupMessage(665) + " " + elementStats.Mass);
+                                            }
+
+                                            // Put in isotopic correction factor
+                                            atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
+                                            var element = computationStats.Elements[symbolReference];
+                                            // Increment element counting bin
+                                            element.Count += atomCountToAdd;
+
+                                            // Store information in .Isotopes[]
+                                            // Increment the isotope counting bin
+                                            var isotope = new IsotopicAtomInfo();
+                                            element.Isotopes.Add(isotope);
+                                            isotope.Count += atomCountToAdd;
+                                            isotope.Mass = caretVal;
+
+                                            // Add correction amount to computationStats.Elements[SymbolReference].IsotopicCorrection
+                                            element.IsotopicCorrection += (caretVal * atomCountToAdd - elementStats.Mass * atomCountToAdd);
+
+                                            // Set bit that element is present
+                                            element.Used = true;
+
+                                            // Assume no error in caret value, no need to change stdDevSum
+
+                                            // Reset caretPresent
+                                            caretPresent = false;
+                                        }
+
+                                        if (ComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
+                                        {
+                                            formula = formula.Substring(0, charIndex) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
+                                        }
+
+                                        charIndex += addonCount;
+                                    }
+
+                                    break;
+
+                                case SymbolMatchMode.Abbreviation:
+                                    // Found an abbreviation or amino acid
+                                    // SymbolReference is the abbrev or amino acid number
+
+                                    if (IsPresentInAbbrevSymbolStack(abbrevSymbolStack, symbolReference))
+                                    {
+                                        // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
+                                        // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
+                                        // Furthermore, can't have this either: Lor = C6H5Tal and Tal = H4O2Vin and Vin = S3Lor
+                                        mErrorParams.ErrorId = 28;
+                                        mErrorParams.ErrorPosition = charIndex;
+                                    }
+                                    // Found an abbreviation
+                                    else if (caretPresent)
+                                    {
+                                        // Cannot have isotopic mass for an abbreviation, including deuterium
+                                        if (char1.ToUpper() == "D" && char2 != "y")
+                                        {
+                                            // Isotopic mass used for Deuterium
+                                            mErrorParams.ErrorId = 26;
+                                            mErrorParams.ErrorPosition = charIndex;
+                                        }
+                                        else
+                                        {
+                                            mErrorParams.ErrorId = 24;
+                                            mErrorParams.ErrorPosition = charIndex;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Parse abbreviation
+                                        // Simply treat it like a formula surrounded by parentheses
+                                        // Thus, find the number after the abbreviation, then call ParseFormulaRecursive, sending it the formula for the abbreviation
+                                        // Update the abbrevSymbolStack before calling so that we can check for circular abbreviation references
+
+                                        // Record the abbreviation length
+                                        var abbrevStats = Elements.AbbrevStats[symbolReference];
+                                        symbolLength = abbrevStats.Symbol.Length;
+
+                                        // Look for number after abbrev/amino
                                         adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
                                         CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
 
                                         if (adjacentNum < 0d)
                                         {
                                             adjacentNum = 1d;
-                                        }
-
-                                        // Note that numLength = 0 if adjacentNum was -1 or otherwise < 0
-                                        addonCount = numLength + symbolLength - 1;
-
-                                        if (Math.Abs(adjacentNum) < float.Epsilon)
-                                        {
-                                            // Zero after element
-                                            mErrorParams.ErrorId = 5;
-                                            mErrorParams.ErrorPosition = charIndex + symbolLength;
+                                            addonCount = symbolLength - 1;
                                         }
                                         else
                                         {
-                                            double atomCountToAdd;
-                                            if (!caretPresent)
-                                            {
-                                                atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
-                                                var element = computationStats.Elements[symbolReference];
-                                                element.Count += atomCountToAdd;
-                                                element.Used = true; // Element is present tag
-                                                stdDevSum += atomCountToAdd * Math.Pow(elementStats.Uncertainty, 2d);
+                                            addonCount = numLength + symbolLength - 1;
+                                        }
 
-                                                var compStats = computationStats;
-                                                // Compute charge
-                                                if (symbolReference == 1)
+                                        // Add this abbreviation symbol to the Abbreviation Symbol Stack
+                                        abbrevSymbolStack.Add(symbolReference);
+
+                                        // Compute the charge prior to calling ParseFormulaRecursive
+                                        // During the call to ParseFormulaRecursive, computationStats.Charge will be
+                                        // modified according to the atoms in the abbreviation's formula
+                                        // This is not what we want; instead, we want to use the defined charge for the abbreviation
+                                        // We'll use the atomCountToAdd variable here, though instead of an atom count, it's really an abbreviation occurrence count
+                                        var atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
+                                        var chargeSaved = (float)(computationStats.Charge + atomCountToAdd * abbrevStats.Charge);
+
+                                        // When parsing an abbreviation, do not pass on the value of expandAbbreviations
+                                        // This way, an abbreviation containing an abbreviation will only get expanded one level
+                                        ParseFormulaRecursive(abbrevStats.Formula, computationStats, abbrevSymbolStack, false, out var abbrevStdDevSum, out _, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
+                                        stdDevSum += abbrevStdDevSum;
+
+                                        // Update the charge to chargeSaved
+                                        computationStats.Charge = chargeSaved;
+
+                                        // Remove this symbol from the Abbreviation Symbol Stack
+                                        abbrevSymbolStack.RemoveMostRecent();
+
+                                        if (mErrorParams.ErrorId == 0)
+                                        {
+                                            if (expandAbbreviations)
+                                            {
+                                                // Replace abbreviation with empirical formula
+                                                var replace = abbrevStats.Formula;
+
+                                                // Look for a number after the abbreviation or amino acid
+                                                adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
+                                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+
+                                                if (replace.IndexOf(">", StringComparison.Ordinal) >= 0)
                                                 {
-                                                    // Dealing with hydrogen
-                                                    switch (prevSymbolReference)
+                                                    // The > symbol means take First Part minus the Second Part
+                                                    // If we are parsing a sub formula inside parentheses, or if there are
+                                                    // symbols (elements, abbreviations, or numbers) after the abbreviation, then
+                                                    // we cannot let the > symbol remain in the abbreviation
+                                                    // For example, if Jk = C6H5Cl2>HCl
+                                                    // and the user enters Jk2 then chooses Expand Abbreviations
+                                                    // Then, naively we might replace this with (C6H5Cl2>HCl)2
+                                                    // However, this will generate an error because (C6H5Cl2>HCl)2 gets split
+                                                    // to (C6H5Cl2 and HCl)2 which will both generate an error
+                                                    // The only option is to convert the abbreviation to its empirical formula
+                                                    if (parenthLevelPrevious > 0 || parenthLevel > 0 || charIndex + symbolLength <= formula.Length)
                                                     {
-                                                        case 1:
-                                                        case var case3 when 3 <= case3 && case3 <= 6:
-                                                        case var case4 when 11 <= case4 && case4 <= 14:
-                                                        case var case5 when 19 <= case5 && case5 <= 32:
-                                                        case var case6 when 37 <= case6 && case6 <= 50:
-                                                        case var case7 when 55 <= case7 && case7 <= 82:
-                                                        case var case8 when 87 <= case8 && case8 <= 109:
-                                                            // Hydrogen is -1 with metals (non-halides)
-                                                            compStats.Charge = (float)(compStats.Charge + atomCountToAdd * -1);
-                                                            break;
-                                                        default:
-                                                            compStats.Charge = (float)(compStats.Charge + atomCountToAdd * elementStats.Charge);
-                                                            break;
+                                                        replace = ConvertFormulaToEmpirical(replace);
                                                     }
+                                                }
+
+                                                if (adjacentNum < 0d)
+                                                {
+                                                    // No number after abbreviation
+                                                    formula = formula.Substring(0, charIndex) + replace + formula.Substring(charIndex + symbolLength);
+                                                    symbolLength = replace.Length;
+                                                    adjacentNum = 1d;
+                                                    addonCount = symbolLength - 1;
                                                 }
                                                 else
                                                 {
-                                                    compStats.Charge = (float)(compStats.Charge + atomCountToAdd * elementStats.Charge);
+                                                    // Number after abbreviation -- must put abbreviation in parentheses
+                                                    // Parentheses can handle integer or decimal number
+                                                    replace = "(" + replace + ")";
+                                                    formula = formula.Substring(0, charIndex) + replace + formula.Substring(charIndex + symbolLength);
+                                                    symbolLength = replace.Length;
+                                                    addonCount = numLength + symbolLength - 1;
                                                 }
-
-                                                if (symbolReference == 6 || symbolReference == 14)
-                                                {
-                                                    // Sum up number lone C and Si (not in abbreviations)
-                                                    loneCarbonOrSilicon = (int)Math.Round(loneCarbonOrSilicon + adjacentNum);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                //caretPresent = true;
-                                                // Check to make sure isotopic mass is reasonable
-                                                double isoDifferenceTop = NumberConverter.CIntSafe(0.63d * symbolReference + 6d);
-                                                double isoDifferenceBottom = NumberConverter.CIntSafe(0.008d * Math.Pow(symbolReference, 2d) - 0.4d * symbolReference - 6d);
-                                                var caretValDifference = caretVal - symbolReference * 2;
-
-                                                if (caretValDifference >= isoDifferenceTop)
-                                                {
-                                                    // Probably too high isotopic mass
-                                                    AddToCautionDescription(Messages.LookupMessage(660) + ": " + elementStats.Symbol + " - " + caretVal + " " + Messages.LookupMessage(665) + " " + elementStats.Mass);
-                                                }
-                                                else if (caretVal < symbolReference)
-                                                {
-                                                    // Definitely too low isotopic mass
-                                                    AddToCautionDescription(Messages.LookupMessage(670) + ": " + elementStats.Symbol + " - " + symbolReference + " " + Messages.LookupMessage(675));
-                                                }
-                                                else if (caretValDifference <= isoDifferenceBottom)
-                                                {
-                                                    // Probably too low isotopic mass
-                                                    AddToCautionDescription(Messages.LookupMessage(662) + ": " + elementStats.Symbol + " - " + caretVal + " " + Messages.LookupMessage(665) + " " + elementStats.Mass);
-                                                }
-
-                                                // Put in isotopic correction factor
-                                                atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
-                                                var element = computationStats.Elements[symbolReference];
-                                                // Increment element counting bin
-                                                element.Count += atomCountToAdd;
-
-                                                // Store information in .Isotopes[]
-                                                // Increment the isotope counting bin
-                                                var isotope = new IsotopicAtomInfo();
-                                                element.Isotopes.Add(isotope);
-                                                isotope.Count += atomCountToAdd;
-                                                isotope.Mass = caretVal;
-
-                                                // Add correction amount to computationStats.Elements[SymbolReference].IsotopicCorrection
-                                                element.IsotopicCorrection += (caretVal * atomCountToAdd - elementStats.Mass * atomCountToAdd);
-
-                                                // Set bit that element is present
-                                                element.Used = true;
-
-                                                // Assume no error in caret value, no need to change stdDevSum
-
-                                                // Reset caretPresent
-                                                caretPresent = false;
                                             }
 
                                             if (ComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
                                             {
                                                 formula = formula.Substring(0, charIndex) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
                                             }
-
-                                            charIndex += addonCount;
                                         }
-
-                                        break;
-
-                                    case SymbolMatchMode.Abbreviation:
-                                        // Found an abbreviation or amino acid
-                                        // SymbolReference is the abbrev or amino acid number
-
-                                        if (IsPresentInAbbrevSymbolStack(abbrevSymbolStack, symbolReference))
-                                        {
-                                            // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
-                                            // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
-                                            // Furthermore, can't have this either: Lor = C6H5Tal and Tal = H4O2Vin and Vin = S3Lor
-                                            mErrorParams.ErrorId = 28;
-                                            mErrorParams.ErrorPosition = charIndex;
-                                        }
-                                        // Found an abbreviation
-                                        else if (caretPresent)
-                                        {
-                                            // Cannot have isotopic mass for an abbreviation, including deuterium
-                                            if (char1.ToUpper() == "D" && char2 != "y")
-                                            {
-                                                // Isotopic mass used for Deuterium
-                                                mErrorParams.ErrorId = 26;
-                                                mErrorParams.ErrorPosition = charIndex;
-                                            }
-                                            else
-                                            {
-                                                mErrorParams.ErrorId = 24;
-                                                mErrorParams.ErrorPosition = charIndex;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // Parse abbreviation
-                                            // Simply treat it like a formula surrounded by parentheses
-                                            // Thus, find the number after the abbreviation, then call ParseFormulaRecursive, sending it the formula for the abbreviation
-                                            // Update the abbrevSymbolStack before calling so that we can check for circular abbreviation references
-
-                                            // Record the abbreviation length
-                                            var abbrevStats = Elements.AbbrevStats[symbolReference];
-                                            symbolLength = abbrevStats.Symbol.Length;
-
-                                            // Look for number after abbrev/amino
-                                            adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
-                                            CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
-
-                                            if (adjacentNum < 0d)
-                                            {
-                                                adjacentNum = 1d;
-                                                addonCount = symbolLength - 1;
-                                            }
-                                            else
-                                            {
-                                                addonCount = numLength + symbolLength - 1;
-                                            }
-
-                                            // Add this abbreviation symbol to the Abbreviation Symbol Stack
-                                            abbrevSymbolStack.Add(symbolReference);
-
-                                            // Compute the charge prior to calling ParseFormulaRecursive
-                                            // During the call to ParseFormulaRecursive, computationStats.Charge will be
-                                            // modified according to the atoms in the abbreviation's formula
-                                            // This is not what we want; instead, we want to use the defined charge for the abbreviation
-                                            // We'll use the atomCountToAdd variable here, though instead of an atom count, it's really an abbreviation occurrence count
-                                            var atomCountToAdd = adjacentNum * bracketMultiplier * parenthMultiplier * dashMultiplier;
-                                            var chargeSaved = (float)(computationStats.Charge + atomCountToAdd * abbrevStats.Charge);
-
-                                            // When parsing an abbreviation, do not pass on the value of expandAbbreviations
-                                            // This way, an abbreviation containing an abbreviation will only get expanded one level
-                                            ParseFormulaRecursive(abbrevStats.Formula, computationStats, abbrevSymbolStack, false, out var abbrevStdDevSum, out _, valueForX, charCountPrior + charIndex, parenthMultiplier * adjacentNum, dashMultiplier, bracketMultiplier, parenthLevelPrevious);
-                                            stdDevSum += abbrevStdDevSum;
-
-                                            // Update the charge to chargeSaved
-                                            computationStats.Charge = chargeSaved;
-
-                                            // Remove this symbol from the Abbreviation Symbol Stack
-                                            abbrevSymbolStack.RemoveMostRecent();
-
-                                            if (mErrorParams.ErrorId == 0)
-                                            {
-                                                if (expandAbbreviations)
-                                                {
-                                                    // Replace abbreviation with empirical formula
-                                                    var replace = abbrevStats.Formula;
-
-                                                    // Look for a number after the abbreviation or amino acid
-                                                    adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
-                                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
-
-                                                    if (replace.IndexOf(">", StringComparison.Ordinal) >= 0)
-                                                    {
-                                                        // The > symbol means take First Part minus the Second Part
-                                                        // If we are parsing a sub formula inside parentheses, or if there are
-                                                        // symbols (elements, abbreviations, or numbers) after the abbreviation, then
-                                                        // we cannot let the > symbol remain in the abbreviation
-                                                        // For example, if Jk = C6H5Cl2>HCl
-                                                        // and the user enters Jk2 then chooses Expand Abbreviations
-                                                        // Then, naively we might replace this with (C6H5Cl2>HCl)2
-                                                        // However, this will generate an error because (C6H5Cl2>HCl)2 gets split
-                                                        // to (C6H5Cl2 and HCl)2 which will both generate an error
-                                                        // The only option is to convert the abbreviation to its empirical formula
-                                                        if (parenthLevelPrevious > 0 || parenthLevel > 0 || charIndex + symbolLength <= formula.Length)
-                                                        {
-                                                            replace = ConvertFormulaToEmpirical(replace);
-                                                        }
-                                                    }
-
-                                                    if (adjacentNum < 0d)
-                                                    {
-                                                        // No number after abbreviation
-                                                        formula = formula.Substring(0, charIndex) + replace + formula.Substring(charIndex + symbolLength);
-                                                        symbolLength = replace.Length;
-                                                        adjacentNum = 1d;
-                                                        addonCount = symbolLength - 1;
-                                                    }
-                                                    else
-                                                    {
-                                                        // Number after abbreviation -- must put abbreviation in parentheses
-                                                        // Parentheses can handle integer or decimal number
-                                                        replace = "(" + replace + ")";
-                                                        formula = formula.Substring(0, charIndex) + replace + formula.Substring(charIndex + symbolLength);
-                                                        symbolLength = replace.Length;
-                                                        addonCount = numLength + symbolLength - 1;
-                                                    }
-                                                }
-
-                                                if (ComputationOptions.CaseConversion == CaseConversionMode.ConvertCaseUp)
-                                                {
-                                                    formula = formula.Substring(0, charIndex) + formula.Substring(charIndex, 1).ToUpper() + formula.Substring(charIndex + 1);
-                                                }
-                                            }
-                                        }
-
-                                        charIndex += addonCount;
-                                        break;
-
-                                    default:
-                                        // Element not Found
-                                        if (char1.ToUpper() == "X")
-                                        {
-                                            // X for solver but no preceding bracket
-                                            mErrorParams.ErrorId = 18;
-                                        }
-                                        else
-                                        {
-                                            mErrorParams.ErrorId = 1;
-                                        }
-
-                                        mErrorParams.ErrorPosition = charIndex;
-                                        break;
-                                }
-
-                                prevSymbolReference = symbolReference;
-                                break;
-
-                            case '^': // ^ (caret)
-                                adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
-
-                                if (mErrorParams.ErrorId != 0)
-                                {
-                                    // Problem, don't go on.
-                                }
-                                else
-                                {
-                                    var nextCharIndex = charIndex + 1 + numLength;
-                                    var charAsc = 0;
-                                    if (nextCharIndex < formula.Length)
-                                    {
-                                        charAsc = formula[nextCharIndex];
                                     }
 
-                                    if (adjacentNum >= 0d)
+                                    charIndex += addonCount;
+                                    break;
+
+                                default:
+                                    // Element not Found
+                                    if (char1.ToUpper() == "X")
                                     {
-                                        if (charAsc >= 65 && charAsc <= 90 || charAsc >= 97 && charAsc <= 122) // Uppercase A to Z and lowercase a to z
-                                        {
-                                            caretPresent = true;
-                                            caretVal = adjacentNum;
-                                            charIndex += numLength;
-                                        }
-                                        else
-                                        {
-                                            // No letter after isotopic mass
-                                            mErrorParams.ErrorId = 22;
-                                            mErrorParams.ErrorPosition = charIndex + numLength + 1;
-                                        }
+                                        // X for solver but no preceding bracket
+                                        mErrorParams.ErrorId = 18;
                                     }
                                     else
                                     {
-                                        // Adjacent number is < 0 or not present
-                                        // Record error
-                                        caretPresent = false;
-                                        if (formula.Substring(charIndex + 1, 1) == "-")
-                                        {
-                                            // Negative number following caret
-                                            mErrorParams.ErrorId = 23;
-                                            mErrorParams.ErrorPosition = charIndex + 1;
-                                        }
-                                        else
-                                        {
-                                            // No number following caret
-                                            mErrorParams.ErrorId = 20;
-                                            mErrorParams.ErrorPosition = charIndex + 1;
-                                        }
+                                        mErrorParams.ErrorId = 1;
                                     }
+
+                                    mErrorParams.ErrorPosition = charIndex;
+                                    break;
+                            }
+
+                            prevSymbolReference = symbolReference;
+                            break;
+
+                        case '^': // ^ (caret)
+                            adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
+                            CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+
+                            if (mErrorParams.ErrorId != 0)
+                            {
+                                // Problem, don't go on.
+                            }
+                            else
+                            {
+                                var nextCharIndex = charIndex + 1 + numLength;
+                                var charAsc = 0;
+                                if (nextCharIndex < formula.Length)
+                                {
+                                    charAsc = formula[nextCharIndex];
                                 }
 
-                                break;
-
-                            default:
-                                // There shouldn't be anything else (except the ~ filler character). If there is, we'll just ignore it
-                                break;
-                        }
-
-                        if (charIndex == formula.Length - 1)
-                        {
-                            // Need to make sure compounds are present after a leading coefficient after a dash
-                            if (dashMultiplier > 0d)
-                            {
-                                if (charIndex != dashPos)
+                                if (adjacentNum >= 0d)
                                 {
-                                    // Things went fine, no need to set anything
+                                    if (charAsc >= 65 && charAsc <= 90 || charAsc >= 97 && charAsc <= 122) // Uppercase A to Z and lowercase a to z
+                                    {
+                                        caretPresent = true;
+                                        caretVal = adjacentNum;
+                                        charIndex += numLength;
+                                    }
+                                    else
+                                    {
+                                        // No letter after isotopic mass
+                                        mErrorParams.ErrorId = 22;
+                                        mErrorParams.ErrorPosition = charIndex + numLength + 1;
+                                    }
                                 }
                                 else
                                 {
-                                    // No compounds after leading coefficient after dash
-                                    mErrorParams.ErrorId = 25;
-                                    mErrorParams.ErrorPosition = charIndex;
+                                    // Adjacent number is < 0 or not present
+                                    // Record error
+                                    caretPresent = false;
+                                    if (formula.Substring(charIndex + 1, 1) == "-")
+                                    {
+                                        // Negative number following caret
+                                        mErrorParams.ErrorId = 23;
+                                        mErrorParams.ErrorPosition = charIndex + 1;
+                                    }
+                                    else
+                                    {
+                                        // No number following caret
+                                        mErrorParams.ErrorId = 20;
+                                        mErrorParams.ErrorPosition = charIndex + 1;
+                                    }
                                 }
                             }
-                        }
 
-                        if (mErrorParams.ErrorId != 0)
+                            break;
+
+                        default:
+                            // There shouldn't be anything else (except the ~ filler character). If there is, we'll just ignore it
+                            break;
+                    }
+
+                    if (charIndex == formula.Length - 1)
+                    {
+                        // Need to make sure compounds are present after a leading coefficient after a dash
+                        if (dashMultiplier > 0d)
                         {
-                            charIndex = formula.Length;
+                            if (charIndex != dashPos)
+                            {
+                                // Things went fine, no need to set anything
+                            }
+                            else
+                            {
+                                // No compounds after leading coefficient after dash
+                                mErrorParams.ErrorId = 25;
+                                mErrorParams.ErrorPosition = charIndex;
+                            }
                         }
+                    }
+
+                    if (mErrorParams.ErrorId != 0)
+                    {
+                        charIndex = formula.Length;
                     }
                 }
 
@@ -1207,20 +1204,8 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Handle formula subtraction, where the formula is in the format "formula1&gt;formula2"
         /// </summary>
-        /// <param name="formula"></param>
-        /// <param name="computationStats"></param>
-        /// <param name="abbrevSymbolStack"></param>
-        /// <param name="expandAbbreviations"></param>
-        /// <param name="stdDevSum"></param>
-        /// <param name="valueForX"></param>
-        /// <param name="charCountPrior"></param>
-        /// <param name="parenthMultiplier"></param>
-        /// <param name="dashMultiplierPrior"></param>
-        /// <param name="bracketMultiplierPrior"></param>
-        /// <param name="parenthLevelPrevious"></param>
-        /// <returns></returns>
-        private int ParseFormulaSubtraction(
-            ref string formula,
+        private string ParseFormulaSubtraction(
+            string formula,
             ComputationStats computationStats,
             AbbrevSymbolStack abbrevSymbolStack,
             bool expandAbbreviations,
@@ -1284,12 +1269,7 @@ namespace MolecularWeightCalculator.Formula
             // Adjust the overall charge
             computationStats.Charge -= computationStatsRightHalf.Charge;
 
-            return minusSymbolLoc;
-        }
-
-        private int Parse()
-        {
-            return 0;
+            return formula;
         }
 
         /// <summary>
