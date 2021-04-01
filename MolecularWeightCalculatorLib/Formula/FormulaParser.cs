@@ -146,10 +146,34 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Compute the weight of a formula (or abbreviation)
         /// </summary>
+        /// <param name="formula">Input</param>
+        /// <param name="stdDev">Computed standard deviation</param>
+        /// <returns>The formula mass, or -1 if an error occurs</returns>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
+        public double ComputeFormulaWeight(string formula, out double stdDev)
+        {
+            return ComputeFormulaWeight(ref formula, out stdDev);
+        }
+
+        /// <summary>
+        /// Compute the weight of a formula (or abbreviation)
+        /// </summary>
         /// <param name="formula">Input/output: updated by ParseFormulaPublic</param>
         /// <returns>The formula mass, or -1 if an error occurs</returns>
         /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(ref string formula)
+        {
+            return ComputeFormulaWeight(ref formula, out _);
+        }
+
+        /// <summary>
+        /// Compute the weight of a formula (or abbreviation)
+        /// </summary>
+        /// <param name="formula">Input/output: updated by ParseFormulaPublic</param>
+        /// <param name="stdDev">Computed standard deviation</param>
+        /// <returns>The formula mass, or -1 if an error occurs</returns>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
+        public double ComputeFormulaWeight(ref string formula, out double stdDev)
         {
             var computationStats = new ComputationStats();
 
@@ -157,9 +181,11 @@ namespace MolecularWeightCalculator.Formula
 
             if (mErrorParams.ErrorId == 0)
             {
+                stdDev = computationStats.StandardDeviation;
                 return computationStats.TotalMass;
             }
 
+            stdDev = 0;
             return -1;
         }
 
@@ -373,8 +399,6 @@ namespace MolecularWeightCalculator.Formula
             bool expandAbbreviations = false,
             double valueForX = 1)
         {
-            var abbrevSymbolStack = new AbbrevSymbolStack();
-
             try
             {
                 var stdDevSum = 0.0d;
@@ -387,6 +411,7 @@ namespace MolecularWeightCalculator.Formula
 
                 if (formula.Length > 0)
                 {
+                    var abbrevSymbolStack = new AbbrevSymbolStack();
                     formula = ParseFormulaRecursive(formula, computationStats, abbrevSymbolStack, expandAbbreviations, out stdDevSum, out _, valueForX);
                 }
 

@@ -23,6 +23,11 @@ namespace MolecularWeightCalculator.Formula
         public double Mass { get; set; }
 
         /// <summary>
+        /// Computed standard deviation for quick reference
+        /// </summary>
+        public double StdDev { get; set; }
+
+        /// <summary>
         /// Charge state
         /// </summary>
         public float Charge { get; set; }
@@ -53,6 +58,7 @@ namespace MolecularWeightCalculator.Formula
             Symbol = symbol;
             Formula = formula;
             Mass = 0d;
+            StdDev = 0;
             Charge = charge;
             OneLetterSymbol = oneLetterSymbol.ToUpper();
             IsAminoAcid = isAminoAcid;
