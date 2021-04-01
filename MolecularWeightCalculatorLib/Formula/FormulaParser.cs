@@ -1329,7 +1329,7 @@ namespace MolecularWeightCalculator.Formula
 
             if (string.IsNullOrEmpty(work))
                 work = EMPTY_STRING_CHAR.ToString();
-            if ((work[0] < 48 || work[0] > 57) && work.Substring(0, 1) != ComputationOptions.DecimalSeparator.ToString() && !(work.Substring(0, 1) == "-" && allowNegative))
+            if ((work[0] < '0' || work[0] > '9') && work[0] != ComputationOptions.DecimalSeparator && !(work[0] == '-' && allowNegative))
             {
                 numLength = 0; // No number found
                 return -1;
@@ -1338,8 +1338,8 @@ namespace MolecularWeightCalculator.Formula
             // Start of string is a number or a decimal point, or (if allowed) a negative sign
             for (var index = 0; index < work.Length; index++)
             {
-                var working = work.Substring(index, 1);
-                if (char.IsDigit(working[0]) || working == ComputationOptions.DecimalSeparator.ToString() || allowNegative && working == "-")
+                var working = work[index];
+                if (char.IsDigit(working) || working == ComputationOptions.DecimalSeparator || allowNegative && working == '-')
                 {
                     foundNum += working;
                 }
