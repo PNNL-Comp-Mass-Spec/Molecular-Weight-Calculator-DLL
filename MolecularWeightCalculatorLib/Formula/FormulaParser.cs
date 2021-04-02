@@ -1267,7 +1267,7 @@ namespace MolecularWeightCalculator.Formula
                 var element = computationStats.Elements[elementIndex];
                 if (Elements.ElementStats[elementIndex].Mass * element.Count + element.IsotopicCorrection >= Elements.ElementStats[elementIndex].Mass * computationStatsRightHalf.Elements[elementIndex].Count + computationStatsRightHalf.Elements[elementIndex].IsotopicCorrection)
                 {
-                    element.Count -= -computationStatsRightHalf.Elements[elementIndex].Count;
+                    element.Count -= computationStatsRightHalf.Elements[elementIndex].Count;
                     if (element.Count < 0d)
                     {
                         // This shouldn't happen

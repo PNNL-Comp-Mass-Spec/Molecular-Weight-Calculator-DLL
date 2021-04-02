@@ -36,7 +36,10 @@ namespace UnitTests
         [TestCase("Co(Bpy)(CO)4",         327.15760000, 326.98160280)]
         [TestCase("^13C6H6-.1H2O",         85.84916800,  85.84800402)]
         [TestCase("HGlyLeuTyrOH",         351.39762000, 351.17941200)]
-        [TestCase("BrCH2(CH2)7CH2Br>CH8", 306.12144000, 304.04011160)]
+        [TestCase("BrCH2(CH2)7CH2Br>CH8", 265.97300000, 263.91491800)]
+        [TestCase("C6H6-H2O-2ZnHgMg-U",   914.72602000, 913.87795180)]
+        [TestCase("2FeCl3-6H2O",          432.49788000, 429.74638120)]
+        [TestCase("C6H5Cl3>H3Cl2>HCl",    145.99342000, 144.96117980)]
         public void ComputeMass(string formula, double expectedAvgMass, double expectedMonoMass)
         {
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
