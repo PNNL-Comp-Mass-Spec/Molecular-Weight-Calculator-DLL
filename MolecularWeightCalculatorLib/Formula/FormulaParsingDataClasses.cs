@@ -58,6 +58,21 @@ namespace MolecularWeightCalculator.Formula
         public string FormulaCorrected => string.Join(">", FormulaSections.Select(x => x.Components.FormulaCorrected));
 
         /// <summary>
+        /// Computed formula mass
+        /// </summary>
+        public double Mass => Stats.TotalMass;
+
+        /// <summary>
+        /// Computed standard deviation of the formula mass
+        /// </summary>
+        public double StandardDeviation => Stats.StandardDeviation;
+
+        /// <summary>
+        /// Computed charge
+        /// </summary>
+        public float Charge => Stats.Charge;
+
+        /// <summary>
         /// Computation stats for the first <see cref="FormulaData"/> object in <see cref="FormulaSections"/>
         /// </summary>
         public ComputationStats Stats => FormulaSections.First().Stats;

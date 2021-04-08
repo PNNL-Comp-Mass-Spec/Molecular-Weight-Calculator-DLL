@@ -21,6 +21,21 @@ namespace MolecularWeightCalculator.Formula
         string FormulaCorrected { get; }
 
         /// <summary>
+        /// Computed formula mass
+        /// </summary>
+        double Mass { get; }
+
+        /// <summary>
+        /// Computed standard deviation of the formula mass
+        /// </summary>
+        double StandardDeviation { get; }
+
+        /// <summary>
+        /// Computed charge
+        /// </summary>
+        float Charge { get; }
+
+        /// <summary>
         /// Computation stats for the formula
         /// </summary>
         ComputationStats Stats { get; }
