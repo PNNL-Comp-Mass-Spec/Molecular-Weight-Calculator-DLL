@@ -96,8 +96,8 @@ namespace UnitTests
         public void ComputeMassStressTest(string formula, bool bracketsAsParentheses = false)
         {
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
-            var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
-            ReportParseData(mMwtWinAvg);
+            var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
+            ReportParseData(parseData);
             Assert.Greater(resultDaAvg, 0);
         }
 
@@ -153,9 +153,9 @@ namespace UnitTests
         public void ComputeMassErrorTests(string formula, string note = "", bool bracketsAsParentheses = false)
         {
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
-            var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
-            ReportParseData(mMwtWinAvg);
-            Assert.AreNotEqual(0, mMwtWinAvg.ErrorId);
+            var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
+            ReportParseData(parseData);
+            Assert.AreNotEqual(0, parseData.ErrorData.ErrorId);
         }
 
         [Test]
@@ -203,12 +203,58 @@ namespace UnitTests
 
         public void ComputeMassCautionMessageTests(string formula)
         {
-            var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
-            ReportParseData(mMwtWinAvg);
+            var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
+            ReportParseData(parseData);
         }
 
+        private void ReportParseData(IFormulaParseData data)
+        {
+            if (!string.IsNullOrWhiteSpace(data.CautionDescription))
+            {
+                Console.WriteLine("Cautions: {0}", data.CautionDescription);
+                Console.WriteLine();
+            }
+
+            if (data.ErrorData.ErrorId == 0)
+            {
+                Console.WriteLine(data.FormulaCorrected);
+                var stats = data.Stats;
+
+                Console.WriteLine("StDev:  {0}", stats.StandardDeviation);
+                Console.WriteLine("Mass:   {0}", stats.TotalMass);
+                Console.WriteLine("Charge: {0}", stats.Charge);
+            }
+            else
+            {
+                Console.WriteLine(data.FormulaOriginal);
+                Console.WriteLine("ErrorId:          {0}", data.ErrorData.ErrorId);
+                Console.WriteLine("ErrorPos:         {0}", data.ErrorData.ErrorPosition);
+                Console.WriteLine("ErrorChar:        {0}", data.ErrorData.ErrorCharacter);
+                Console.WriteLine("ErrorDescription: {0}", data.ErrorData.ErrorDescription);
+                Console.WriteLine();
+                string markedFormula;
+                var formula = data.Formula;
+                var position = data.ErrorData.ErrorPosition;
+                if (position >= formula.Length)
+                {
+                    markedFormula = formula + "''";
+                }
+                else if (position == formula.Length - 1)
+                {
+                    markedFormula = formula.Substring(0, position) + "'" + formula[position] + "'";
+                }
+                else
+                {
+                    markedFormula = formula.Substring(0, position) + "'" + formula[position] + "'" + formula.Substring(position + 1);
+                }
+                Console.WriteLine("Highlight: {0}", markedFormula);
+            }
+        }
+
+        // ReSharper disable once UnusedMember.Local
         private void ReportParseData(MolecularWeightTool mwt)
         {
+            // Use this in comparison to the other ReportParseData method... (results should be the same)
             var compound = mwt.Compound;
             if (!string.IsNullOrWhiteSpace(compound.CautionDescription))
             {
