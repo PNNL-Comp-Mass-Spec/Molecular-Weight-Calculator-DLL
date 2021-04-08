@@ -253,7 +253,9 @@ namespace MolecularWeightCalculator.Formula
             // mFormattedFormula is passed ByRef
             // If gComputationOptions.CaseConversion = ccConvertCaseUp then mFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
-            mElementAndMassRoutines.Parser.ParseFormulaPublic(ref mFormattedFormula, out mComputationStats, false, mValueForX);
+            var formulaParseData = mElementAndMassRoutines.Parser.ParseFormula(mFormattedFormula, false, mValueForX);
+            mFormattedFormula = formulaParseData.FormulaCorrected;
+            mComputationStats = formulaParseData.Stats;
 
             mElementAndMassRoutines.Parser.ComputePercentComposition(mComputationStats);
 

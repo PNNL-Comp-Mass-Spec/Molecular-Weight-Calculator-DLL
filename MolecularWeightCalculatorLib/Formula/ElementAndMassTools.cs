@@ -280,8 +280,10 @@ namespace MolecularWeightCalculator.Formula
 
                 // Parse Formula to determine if valid and number of each element
                 var formula = formulaIn;
-                var workingFormulaMass = Parser.ParseFormulaPublic(ref formula, out var computationStats, false);
-                mLastErrorId = Parser.GetErrorId();
+                var data = Parser.ParseFormula(formula, false);
+                var workingFormulaMass = data.Mass;
+                mLastErrorId = data.ErrorData.ErrorId;
+                var computationStats = data.Stats;
 
                 if (workingFormulaMass < 0d)
                 {
@@ -339,8 +341,10 @@ namespace MolecularWeightCalculator.Formula
                     }
 
                     // Re-Parse Formula since D's are now ^2.014H
-                    workingFormulaMass = Parser.ParseFormulaPublic(ref formula, out computationStats, false);
-                    mLastErrorId = Parser.GetErrorId();
+                    data = Parser.ParseFormula(formula, false);
+                    workingFormulaMass = data.Mass;
+                    mLastErrorId = data.ErrorData.ErrorId;
+                    computationStats = data.Stats;
 
                     if (workingFormulaMass < 0d)
                     {

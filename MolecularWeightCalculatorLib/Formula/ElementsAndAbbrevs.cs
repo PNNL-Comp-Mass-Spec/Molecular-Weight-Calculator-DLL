@@ -988,9 +988,10 @@ namespace MolecularWeightCalculator.Formula
                         {
                             // Make sure the abbreviation's formula is valid
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
-                            Parser.ParseFormulaPublic(ref formula, out _);
+                            var data = Parser.ParseFormula(formula);
+                            formula = data.FormulaCorrected;
 
-                            errorId = mMassCalc.GetErrorId();
+                            errorId = data.ErrorData.ErrorId;
                             if (errorId != 0)
                             {
                                 // An error occurred while parsing
