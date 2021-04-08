@@ -312,8 +312,8 @@ namespace MolecularWeightCalculator.Formula
                             }
                             else
                             {
-                                var asciiOfNext = (int)formula[index + 1];
-                                if (asciiOfNext < 97 || asciiOfNext > 122)
+                                var asciiOfNext = formula[index + 1];
+                                if (asciiOfNext < 'a' || asciiOfNext > 'z')
                                 {
                                     replaceDeuterium = true;
                                 }
