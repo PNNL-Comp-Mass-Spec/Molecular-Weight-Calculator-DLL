@@ -396,11 +396,13 @@ namespace MolecularWeightCalculator.Formula
             return (-1).ToString();
         }
 
+        [Obsolete("Use value from IFormulaParseData.CautionDescription instead")]
         public string GetCautionDescription()
         {
             return mLastFormulaParsed.CautionDescription;
         }
 
+        [Obsolete("Use value from IFormulaParseData.ErrorData.ErrorDescription instead")]
         public string GetErrorDescription()
         {
             if (mLastFormulaParsed.HasError)
@@ -411,16 +413,19 @@ namespace MolecularWeightCalculator.Formula
             return "";
         }
 
+        // TODO: [Obsolete("Use value from IFormulaParseData.ErrorData.ErrorId instead")]
         public int GetErrorId()
         {
             return mLastFormulaParsed.Error.ErrorId;
         }
 
+        // TODO: [Obsolete("Use value from IFormulaParseData.ErrorData.ErrorCharacter instead")]
         public string GetErrorCharacter()
         {
             return mLastFormulaParsed.Error.ErrorCharacter;
         }
 
+        // TODO: [Obsolete("Use value from IFormulaParseData.ErrorData.ErrorPosition instead")]
         public int GetErrorPosition()
         {
             return mLastFormulaParsed.Error.ErrorPosition;
@@ -438,6 +443,7 @@ namespace MolecularWeightCalculator.Formula
         /// ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
         /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
         /// </remarks>
+        [Obsolete("Change to use ParseFormula instead.")]
         public double ParseFormulaPublic(
             ref string formula,
             out ComputationStats computationStats,
