@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.Formula
@@ -52,6 +53,19 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         public bool InvalidSymbolOrFormula { get; set; }
 
+        /// <summary>
+        /// Element counts for this abbreviation. Key is element symbol reference, value is count for that element.
+        /// </summary>
+        public IReadOnlyDictionary<int, double> ElementCounts => elementCounts;
+
+        /// <summary>
+        /// Isotopic correction for this abbreviation. Key is element symbol reference, value is the isotopic correction for the element, for this abbreviation.
+        /// </summary>
+        public IReadOnlyDictionary<int, double> ElementIsotopicCorrection => elementIsotopicCorrection;
+
+        private Dictionary<int, double> elementCounts = new Dictionary<int, double>();
+        private Dictionary<int, double> elementIsotopicCorrection = new Dictionary<int, double>();
+
         public AbbrevStatsData(string symbol, string formula, float charge, bool isAminoAcid, string oneLetterSymbol = "", string comment = "", bool invalidSymbolOrFormula = false)
         {
             InvalidSymbolOrFormula = invalidSymbolOrFormula;
@@ -63,6 +77,26 @@ namespace MolecularWeightCalculator.Formula
             OneLetterSymbol = oneLetterSymbol.ToUpper();
             IsAminoAcid = isAminoAcid;
             Comment = comment;
+        }
+
+        public void AddElement(int elementSymbolReference, double count, double isotopicCorrection)
+        {
+            if (elementCounts.ContainsKey(elementSymbolReference))
+            {
+                elementCounts[elementSymbolReference] += count;
+                elementIsotopicCorrection[elementSymbolReference] += isotopicCorrection;
+            }
+            else
+            {
+                elementCounts.Add(elementSymbolReference, count);
+                elementIsotopicCorrection.Add(elementSymbolReference, isotopicCorrection);
+            }
+        }
+
+        public void ClearElements()
+        {
+            elementCounts.Clear();
+            elementIsotopicCorrection.Clear();
         }
 
         public override string ToString()

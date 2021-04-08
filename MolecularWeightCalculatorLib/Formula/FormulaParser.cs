@@ -208,6 +208,46 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
+        /// Compute the weight of an abbreviation
+        /// </summary>
+        /// <param name="abbrev">Abbreviation to update with mass, stDev, and element counts</param>
+        /// <param name="updateFormula">If true, also update the formula</param>
+        /// <returns>True if no error, or false if an error occurred</returns>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
+        internal bool ComputeAbbrevWeight(AbbrevStatsData abbrev, bool updateFormula = false)
+        {
+            var computationStats = new ComputationStats();
+            var formula = abbrev.Formula;
+
+            ParseFormulaPublic(ref formula, computationStats, false);
+
+            if (mErrorParams.ErrorId == 0)
+            {
+                if (updateFormula)
+                {
+                    abbrev.Formula = formula;
+                }
+
+                abbrev.StdDev = computationStats.StandardDeviation;
+                abbrev.Mass = computationStats.TotalMass;
+
+                abbrev.ClearElements();
+                for (var i = 1; i <= ElementsAndAbbrevs.ELEMENT_COUNT; i++)
+                {
+                    var element = computationStats.Elements[i];
+                    if (element.Used)
+                    {
+                        abbrev.AddElement(i, element.Count, element.IsotopicCorrection);
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Compute percent composition of the elements defined in <paramref name="computationStats"/>
         /// </summary>
         /// <param name="computationStats">Input/output</param>

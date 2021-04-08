@@ -130,9 +130,7 @@ namespace MolecularWeightCalculator.Formula
                 stats.Comment = comment;
             }
 
-            stats.Mass = Parser.ComputeFormulaWeight(ref formula, out var stdDev);
-            stats.StdDev = stdDev;
-            if (stats.Mass < 0d)
+            if (!Parser.ComputeAbbrevWeight(stats))
             {
                 // Error occurred computing mass for abbreviation
                 stats.Mass = 0d;
@@ -626,9 +624,7 @@ namespace MolecularWeightCalculator.Formula
 
             foreach (var stats in mAbbrevStats)
             {
-                stats.Mass = Parser.ComputeFormulaWeight(stats.Formula, out var stdDev);
-                stats.StdDev = stdDev;
-                if (stats.Mass < 0d)
+                if (!Parser.ComputeAbbrevWeight(stats))
                 {
                     // Error occurred computing mass for abbreviation
                     stats.Mass = 0d;
@@ -785,10 +781,7 @@ namespace MolecularWeightCalculator.Formula
         {
             for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                var formula = mAbbrevStats[index].Formula;
-                mAbbrevStats[index].Mass = Parser.ComputeFormulaWeight(ref formula, out var stdDev);
-                mAbbrevStats[index].StdDev = stdDev;
-                mAbbrevStats[index].Formula = formula;
+                Parser.ComputeAbbrevWeight(mAbbrevStats[index], true);
             }
         }
 
