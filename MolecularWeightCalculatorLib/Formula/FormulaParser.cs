@@ -128,32 +128,6 @@ namespace MolecularWeightCalculator.Formula
             }
         }
 
-        private void CatchParseNumError(double adjacentNum, int numSizing, int curCharacter, int symbolLength)
-        {
-            if (adjacentNum < 0d && numSizing == 0)
-            {
-                switch (adjacentNum)
-                {
-                    case -1:
-                        // No number, but no error
-                        // That's OK
-                        break;
-                    case -3:
-                        // Error: No number after decimal point
-                        mErrorParams.SetError(12, curCharacter + symbolLength);
-                        break;
-                    case -4:
-                        // Error: More than one decimal point
-                        mErrorParams.SetError(27, curCharacter + symbolLength);
-                        break;
-                    default:
-                        // Error: General number error
-                        mErrorParams.SetError(14, curCharacter + symbolLength);
-                        break;
-                }
-            }
-        }
-
         /// <summary>
         /// Compute the weight of a formula (or abbreviation)
         /// </summary>
@@ -603,10 +577,9 @@ namespace MolecularWeightCalculator.Formula
                                             parenthLevel -= 1;
                                             if (parenthLevel == 0)
                                             {
-                                                adjacentNum = ParseNum(formula.Substring(parenthClose + 1), out numLength);
-                                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                                                adjacentNum = ParseNumberAtStart(formula.Substring(parenthClose + 1), out numLength, mErrorParams, charIndex + symbolLength);
 
-                                                if (adjacentNum < 0d)
+                                                if (adjacentNum < 0d || numLength == 0)
                                                 {
                                                     adjacentNum = 1.0d;
                                                     addonCount = 0;
@@ -666,8 +639,7 @@ namespace MolecularWeightCalculator.Formula
 
                         case '-': // -
                             // Used to denote a leading coefficient
-                            adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                            CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                            adjacentNum = ParseNumberAtStart(char2 + char3 + charRemain, out numLength, mErrorParams, charIndex + symbolLength);
 
                             if (adjacentNum > 0d)
                             {
@@ -675,7 +647,7 @@ namespace MolecularWeightCalculator.Formula
                                 dashMultiplier = adjacentNum * dashMultiplierPrior;
                                 charIndex += numLength;
                             }
-                            else if (Math.Abs(adjacentNum) < float.Epsilon)
+                            else if (Math.Abs(adjacentNum) < float.Epsilon && numLength > 0)
                             {
                                 // Cannot have 0 after a dash
                                 mErrorParams.SetError(5, charIndex + 1);
@@ -699,10 +671,9 @@ namespace MolecularWeightCalculator.Formula
                             if (charIndex == 0)
                             {
                                 // Formula starts with a number -- multiply section by number (until next dash)
-                                adjacentNum = ParseNum(formulaExcerpt, out numLength);
-                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                                adjacentNum = ParseNumberAtStart(formulaExcerpt, out numLength, mErrorParams, charIndex + symbolLength);
 
-                                if (adjacentNum >= 0d)
+                                if (adjacentNum >= 0d && numLength > 0)
                                 {
                                     dashPos = charIndex + numLength - 1;
                                     dashMultiplier = adjacentNum * dashMultiplierPrior;
@@ -735,8 +706,7 @@ namespace MolecularWeightCalculator.Formula
                             {
                                 if (char3 == "e")
                                 {
-                                    adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                                    adjacentNum = ParseNumberAtStart(char2 + char3 + charRemain, out numLength, mErrorParams, charIndex + symbolLength);
                                 }
                                 else
                                 {
@@ -746,8 +716,7 @@ namespace MolecularWeightCalculator.Formula
                             }
                             else
                             {
-                                adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                                adjacentNum = ParseNumberAtStart(char2 + char3 + charRemain, out numLength, mErrorParams, charIndex + symbolLength);
                             }
 
                             if (mErrorParams.ErrorId == 0)
@@ -757,7 +726,7 @@ namespace MolecularWeightCalculator.Formula
                                     // No Nested brackets.
                                     mErrorParams.SetError(16, charIndex);
                                 }
-                                else if (adjacentNum < 0d)
+                                else if (adjacentNum < 0d || numLength == 0)
                                 {
                                     // No number after bracket
                                     mErrorParams.SetError(12, charIndex + 1);
@@ -775,10 +744,9 @@ namespace MolecularWeightCalculator.Formula
                             break;
 
                         case ']': // ]
-                            adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                            CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                            adjacentNum = ParseNumberAtStart(char2 + char3 + charRemain, out numLength, mErrorParams, charIndex + symbolLength);
 
-                            if (adjacentNum >= 0d)
+                            if (adjacentNum >= 0d && numLength > 0)
                             {
                                 // Number following bracket
                                 mErrorParams.SetError(11, charIndex + 1);
@@ -826,10 +794,9 @@ namespace MolecularWeightCalculator.Formula
                                         symbolLength = 1;
                                     }
                                     // Look for number after element
-                                    adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
-                                    CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                                    adjacentNum = ParseNumberAtStart(formula.Substring(charIndex + symbolLength), out numLength, mErrorParams, charIndex + symbolLength);
 
-                                    if (adjacentNum < 0d)
+                                    if (adjacentNum < 0d || numLength == 0)
                                     {
                                         adjacentNum = 1d;
                                     }
@@ -982,10 +949,9 @@ namespace MolecularWeightCalculator.Formula
                                         symbolLength = abbrevStats.Symbol.Length;
 
                                         // Look for number after abbrev/amino
-                                        adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
-                                        CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                                        adjacentNum = ParseNumberAtStart(formula.Substring(charIndex + symbolLength), out numLength, mErrorParams, charIndex + symbolLength);
 
-                                        if (adjacentNum < 0d)
+                                        if (adjacentNum < 0d || numLength == 0)
                                         {
                                             adjacentNum = 1d;
                                             addonCount = symbolLength - 1;
@@ -1025,8 +991,7 @@ namespace MolecularWeightCalculator.Formula
                                                 var replace = abbrevStats.Formula;
 
                                                 // Look for a number after the abbreviation or amino acid
-                                                adjacentNum = ParseNum(formula.Substring(charIndex + symbolLength), out numLength);
-                                                CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                                                adjacentNum = ParseNumberAtStart(formula.Substring(charIndex + symbolLength), out numLength, mErrorParams, charIndex + symbolLength);
 
                                                 if (replace.IndexOf(">", StringComparison.Ordinal) >= 0)
                                                 {
@@ -1046,7 +1011,7 @@ namespace MolecularWeightCalculator.Formula
                                                     }
                                                 }
 
-                                                if (adjacentNum < 0d)
+                                                if (adjacentNum < 0d || numLength == 0)
                                                 {
                                                     // No number after abbreviation
                                                     formula = formula.Substring(0, charIndex) + replace + formula.Substring(charIndex + symbolLength);
@@ -1094,8 +1059,7 @@ namespace MolecularWeightCalculator.Formula
                             break;
 
                         case '^': // ^ (caret)
-                            adjacentNum = ParseNum(char2 + char3 + charRemain, out numLength);
-                            CatchParseNumError(adjacentNum, numLength, charIndex, symbolLength);
+                            adjacentNum = ParseNumberAtStart(char2 + char3 + charRemain, out numLength, mErrorParams, charIndex + symbolLength);
 
                             if (mErrorParams.ErrorId != 0)
                             {
@@ -1110,7 +1074,7 @@ namespace MolecularWeightCalculator.Formula
                                     charAsc = formula[nextCharIndex];
                                 }
 
-                                if (adjacentNum >= 0d)
+                                if (adjacentNum >= 0d && numLength > 0)
                                 {
                                     if (charAsc >= 65 && charAsc <= 90 || charAsc >= 97 && charAsc <= 122) // Uppercase A to Z and lowercase a to z
                                     {
@@ -1285,23 +1249,17 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Looks for a number and returns it if found
+        /// Parse a number and log any errors to <paramref name="error"/>
         /// </summary>
-        /// <param name="work">Input</param>
-        /// <param name="numLength">Output: length of the number</param>
-        /// <param name="allowNegative"></param>
+        /// <param name="work">string for extracting a number; will extract all numerical characters from the start of the string, support the decimal separator</param>
+        /// <param name="numLength">Length of the number string found at the start of <paramref name="work"/>; 0 if no number found or an error occurred</param>
+        /// <param name="error"><see cref="ErrorDetails"/> object for storing any error that occurs</param>
+        /// <param name="currentIndex">index of the first character of <paramref name="work"/> in the larger string being parsed, for reporting error location in <paramref name="error"/></param>
+        /// <param name="allowNegative">If true, a leading '-' will not be treated as an error/no number found.</param>
         /// <returns>
         /// Parsed number if found
-        /// If not a number, returns a negative number for the error code and sets numLength = 0
-        /// </returns>
-        /// <remarks>
-        /// Error codes:
-        /// -1 = No number
-        /// -2 =                                             (unused)
-        /// -3 = No number at all or (more likely) no number after decimal point
-        /// -4 = More than one decimal point
-        /// </remarks>
-        private double ParseNum(string work, out int numLength, bool allowNegative = false)
+        /// If not a number, returns '0', with an error code set and numLength = 0</returns>
+        private double ParseNumberAtStart(string work, out int numLength, ErrorDetails error, int currentIndex, bool allowNegative = false)
         {
             if (ComputationOptions.DecimalSeparator == default(char))
             {
@@ -1318,8 +1276,8 @@ namespace MolecularWeightCalculator.Formula
                 work = EMPTY_STRING_CHAR.ToString();
             if ((work[0] < '0' || work[0] > '9') && work[0] != ComputationOptions.DecimalSeparator && !(work[0] == '-' && allowNegative))
             {
-                numLength = 0; // No number found
-                return -1;
+                numLength = 0; // No number found; not really an error; just return '0', and handle that externally
+                return 0;
             }
 
             // Start of string is a number or a decimal point, or (if allowed) a negative sign
@@ -1339,26 +1297,37 @@ namespace MolecularWeightCalculator.Formula
             if (foundNum.Length == 0 || foundNum == ComputationOptions.DecimalSeparator.ToString())
             {
                 // No number at all or (more likely) no number after decimal point
-                foundNum = (-3).ToString();
                 numLength = 0;
+                // highlight the decimal point
+                error.SetError(12, currentIndex, work.Substring(0, 1));
+                return 0;
             }
-            else
+
+            // Check for more than one decimal point (. or ,)
+            var decPtCount = foundNum.Count(c => c == ComputationOptions.DecimalSeparator);
+
+            if (decPtCount > 1)
             {
-                // Check for more than one decimal point (. or ,)
-                var decPtCount = foundNum.Count(c => c == ComputationOptions.DecimalSeparator);
-
-                if (decPtCount > 1)
-                {
-                    // more than one decPtCount
-                    foundNum = (-4).ToString();
-                    numLength = 0;
-                }
+                // more than one decPtCount
+                numLength = 0;
+                // Error: More than one decimal point, highlight the whole bad number
+                error.SetError(27, currentIndex, foundNum);
+                return 0;
             }
 
-            if (numLength < 0)
-                numLength = (short)foundNum.Length;
+            // TODO: Also check for more than one '-' when allowNegative is true.
 
-            return NumberConverter.CDblSafe(foundNum);
+            if (double.TryParse(foundNum, out var num))
+            {
+                numLength = foundNum.Length;
+                return num;
+            }
+
+            // Error: General number error, highlight the entire failed string.
+            error.SetError(14, currentIndex, foundNum);
+            numLength = 0;
+
+            return 0;
         }
 
         internal void ResetErrorParams()
