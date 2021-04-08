@@ -27,32 +27,6 @@ namespace MolecularWeightCalculator.Formula
         private string mCautionDescription;
         public FormulaOptions ComputationOptions { get; }
 
-        internal class ErrorDetails
-        {
-            public int ErrorId { get; private set; } // Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
-            public int ErrorPosition { get; set; }
-            public string ErrorCharacter { get; set; }
-
-            public void SetError(int errorId, int errorPosition, string errorCharacter = "")
-            {
-                ErrorId = errorId;
-                ErrorPosition = errorPosition;
-                ErrorCharacter = errorCharacter;
-            }
-
-            public void Reset()
-            {
-                ErrorCharacter = "";
-                ErrorId = 0;
-                ErrorPosition = 0;
-            }
-
-            public override string ToString()
-            {
-                return "ErrorID " + ErrorId + " at " + ErrorPosition + ": " + ErrorCharacter;
-            }
-        }
-
         private class AbbrevSymbolStack
         {
             public List<short> SymbolReferenceStack { get; }

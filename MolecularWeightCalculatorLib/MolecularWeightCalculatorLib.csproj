@@ -70,6 +70,8 @@
     <Compile Include="Formula\ElementUseStats.cs" />
     <Compile Include="Formula\FormulaOptions.cs" />
     <Compile Include="Formula\FormulaParser.cs" />
+    <Compile Include="Formula\FormulaParsingDataClasses.cs" />
+    <Compile Include="Formula\IFormulaParseData.cs" />
     <Compile Include="Formula\IsotopeInfo.cs" />
     <Compile Include="Formula\IsotopicAtomInfo.cs" />
     <Compile Include="Formula\Messages.cs" />
