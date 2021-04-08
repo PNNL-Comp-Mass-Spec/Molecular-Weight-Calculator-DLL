@@ -15,6 +15,7 @@ namespace UnitTests
         //
 
         private const double MATCHING_MASS_EPSILON = 0.0000001;
+        private const double MATCHING_CHARGE_EPSILON = 0.05;
 
         private MolecularWeightTool mMwtWinAvg;
         private MolecularWeightTool mMwtWinIso;
@@ -53,158 +54,170 @@ namespace UnitTests
         }
 
         [Test]
-        [TestCase("^13C6H6-H2O")]
-        [TestCase("^13C6H6[.1H2O]", false)]
-        [TestCase("^13C6H6[H2O]2", true)]
-        [TestCase("^13C6H6[H2O]", true)]
-        [TestCase("13C6H6-6H2O")]
-        [TestCase("Et2O")]
-        //[TestCase("")]
-        [TestCase("CaOCH4(CH2)7Br")] // TODO: stdDev difference (-8.67e-19) (but it's insignificant)
-        [TestCase("canyoch4(ch2)7br")] // TODO: stdDev difference (-8.67e-19) (but it's insignificant)
-        [TestCase("F(DCH2)7Br")]
-        [TestCase("Pt(CH2)7Br-[5Ca123456789]")]
-        [TestCase("Pt(CH2)7Br-[5Ca123456789H]")]
-        [TestCase("-[2.5CaH]", false)]
-        [TestCase("^42CaH")]
-        [TestCase("^98CaH")]
-        [TestCase("^18CaH")]
-        [TestCase("(CH2)7Br-3.2CaH")]
-        [TestCase("[2CaOH]-K")]
-        [TestCase("K-[2CaOH]")]
-        [TestCase("H2Ca2KO2")]
-        [TestCase("H2O^23.9Ca")]
-        [TestCase("^13C6H6")]
-        [TestCase("C6H6")]
-        [TestCase("C6H3^19.8Ar")]
-        [TestCase("C6H3^19.8arpbbb")]
-        [TestCase("C6H3^19.88Ar4Pb>Ar")]
-        [TestCase("C6>C4")]
-        //[TestCase("")]
-        [TestCase("DCH2")]
-        [TestCase("^23CaH")]
-        //[TestCase("")]
-        [TestCase("C6>C4")]
-        [TestCase("HGly5.3Leu2.2Tyr0.03OH")]
-        [TestCase("HGly5.3leu2.2tyr0.03oh")]
-        [TestCase("HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe")]
-        [TestCase("CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr")]
-        [TestCase("hhelibebcnofnenamgalsipsClArKcasctivcrmnfeconicuzngageassebrkrrbsryzrnbmotcrurhpdagcdinsnsbteixe")]
-        [TestCase("csbalaceprndpmsmeugdtbdyhoertmybluhftawreosirptauhgtlpbbipoatrnfrraacthpaunppuamcmbkcfesfmmdnolr")]
-        [TestCase("cdinsnsbteixecsbalaceprndpm")]
-        [TestCase("CdInSnSbTeIXeCsBaLaCePrNdPm")]
-        public void ComputeMassStressTest(string formula, bool bracketsAsParentheses = false)
+        [TestCase("^13C6H6-H2O", 102.06292, 102.0575118, -6)]
+        [TestCase("^13C6H6[.1H2O]", 85.849168, 85.84800402, -6)]
+        [TestCase("^13C6H6[H2O]", 102.06292, 102.0575118, -6, true)]
+        [TestCase("^13C6H6[H2O]2", 120.0782, 120.068076, -6, true)]
+        [TestCase("13C6H6-6H2O", 1123.5456, 1122.673704, 222)]
+        [TestCase("Et2O", 74.1216, 74.073161, 0)]
+        [TestCase("DCH2", 16.04058, 16.0296492, 3)]
+        //[TestCase("", 0, 0, 0)]
+        [TestCase("CaOCH4(CH2)7Br", 250.20992, 249.0166848, 13)] // TODO: stdDev difference (-8.67e-19) (but it's insignificant)
+        [TestCase("canyoch4(ch2)7br", 353.12251, 351.9256148, 13)] // TODO: stdDev difference (-8.67e-19) (but it's insignificant)
+        [TestCase("F(DCH2)7Br", 211.1864632, 210.1242836, 19)]
+        [TestCase("Pt(CH2)7Br-[5Ca123456789]", 24739506320.878063, 24668266196.894161, 1234567936)]
+        [TestCase("Pt(CH2)7Br-[5Ca123456789H]", 24739506325.917763, 24668266201.933285, 1234567936)]
+        [TestCase("-[2.5CaH]", 102.71485, 102.426039, 2.5)]
+        [TestCase("^18CaH", 19.00794, 19.0078246, -1)]
+        [TestCase("^23CaH", 24.00794, 24.0078246, -1)]
+        [TestCase("^42CaH", 43.00794, 43.0078246, -1)]
+        [TestCase("^98CaH", 99.00794, 99.0078246, -1)]
+        [TestCase("(CH2)7Br-3.2CaH", 309.565068, 308.13321031, 16.2)]
+        [TestCase("[2CaOH]-K", 153.26898, 152.8943692, 3)]
+        [TestCase("K-[2CaOH]", 153.26898, 152.8943692, 3)]
+        [TestCase("H2Ca2KO2", 153.26898, 152.8943692, 3)]
+        [TestCase("H2O^23.9Ca", 41.91528, 41.9105642, 0)]
+        [TestCase("^13C6H6", 84.04764, 84.0469476, -6)]
+        [TestCase("C6H6", 78.11184, 78.0469476, 8)]
+        [TestCase("C6H3^19.8Ar", 94.88802, 94.8234738, 11)]
+        [TestCase("C6H3^19.8arpbbb", 323.71002, 324.8187248, 19)]
+        [TestCase("C6H3^19.88Ar4Pb>Ar", 321.86002, 322.5577318, 13)]
+        [TestCase("C6>C4", 24.0214, 24, 4)]
+        //[TestCase("", 0, 0, 0)]
+        [TestCase("HGly5.3Leu2.2Tyr0.03OH", 574.229583, 573.901147922, 0)]
+        [TestCase("HGly5.3leu2.2tyr0.03oh", 574.229583, 573.901147922, 0)]
+        [TestCase("HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe", 3357.7013952, 3357.0639367, 80)]
+        [TestCase("hhelibebcnofnenamgalsipsClArKcasctivcrmnfeconicuzngageassebrkrrbsryzrnbmotcrurhpdagcdinsnsbteixe", 3586.7961552, 3596.0659477, 88)]
+        [TestCase("CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr", 9710.62118, 9728.379096, 154)]
+        [TestCase("csbalaceprndpmsmeugdtbdyhoertmybluhftawreosirptauhgtlpbbipoatrnfrraacthpaunppuamcmbkcfesfmmdnolr", 9710.62118, 9728.379096, 154)]
+        [TestCase("cdinsnsbteixecsbalaceprndpm", 1832.80777, 1835.765967, 22)]
+        [TestCase("CdInSnSbTeIXeCsBaLaCePrNdPm", 1832.80777, 1835.765967, 22)]
+        public void ComputeMassStressTest(string formula, double expectedAvgMass, double expectedMonoMass, double expectedCharge, bool bracketsAsParentheses = false)
         {
+            Console.WriteLine("Average Mass:");
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
-            var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
-            ReportParseData(parseData);
+            var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseDataAvg);
+            ReportParseData(parseDataAvg);
             Assert.Greater(resultDaAvg, 0);
+            Assert.AreEqual(expectedAvgMass, resultDaAvg, MATCHING_MASS_EPSILON, "Actual mass does not match expected average mass");
+            Assert.AreEqual(expectedCharge, parseDataAvg.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
+
+            Console.WriteLine("");
+            Console.WriteLine("Isotopic Mass:");
+            mMwtWinIso.BracketsTreatedAsParentheses = bracketsAsParentheses;
+            var resultDaIso = mMwtWinIso.ComputeMassExtra(formula, out var parseDataIso);
+            ReportParseData(parseDataIso);
+            Assert.Greater(resultDaIso, 0);
+            Assert.AreEqual(expectedMonoMass, resultDaIso, MATCHING_MASS_EPSILON, "Actual mass does not match expected isotopic mass");
+            Assert.AreEqual(expectedCharge, parseDataIso.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
         }
 
         [Test]
-        [TestCase("^13C6H6-H2O0")]
-        [TestCase("^13C6H6[.1H2O]", "", true)] // TODO: Error position/char (7/('['->'(') -> 8/'.') - outputting the '[' or '(' might not be simple in the new                                                                         // TODO: VB6: '[', new: '.'; - outputting the '[' or '(' might not be simple in the new
-        [TestCase("^13C6H6[H2O]")]
-        [TestCase("^13C6H6[.1H2O]2")]
-        [TestCase("^13C6H6(.1H2O)2")]                                                                          // TODO: VB6: '(', new: '.'
-        [TestCase("^13C6H6[.1H2O")]                                                                            // TODO: VB6: '~'(end), new: '['
-        [TestCase("^13C6H6-0H2O")]
-        [TestCase("^13C6H6(H2O")]
-        [TestCase("^13C6H6H2O)")]
-        [TestCase("^13C6H6(H2O}")] // TODO: Succeeds now, needs to fail with mismatched parentheses.
-        [TestCase("C6H5>H6")]
-        [TestCase("^32PheOH", "24: isotope on abbreviation")]
-        [TestCase("^13C6H6-H2O.")]
-        [TestCase("^13C6H6.0.1H2O", "27: multiple decimals in number")]
-        [TestCase("^13C6H6-3.0.1H2O", "27: multiple decimals in number")]
-        [TestCase("^13C6H6[3.0.1H2O]", "27: multiple decimals in number")]
-        //[TestCase("")]
-        [TestCase("C6H6>")]                                                                                     // TODO: ErrorChar: VB6 (no error), new '>'
-        [TestCase(">Ca")]
-        [TestCase("^13C6H6-3")]
-        //[TestCase("")]
-        [TestCase("CaNzOCH4(CH2)7Br")] // TODO: ErrorChar capitalization?
-        [TestCase("CaNOCH4(CgH2)7Br")] // TODO: ErrorChar capitalization?
-        [TestCase("F(D(CH2)7Br")]
-        [TestCase("FD)(CH2)7Br")]
-        [TestCase("FD(CH2}7Br")] // TODO: Succeeds now, needs to fail with mismatched parentheses.
-        [TestCase("Pt(C0H2)7Br")]
-        [TestCase("Pt(CH2)7Br0")]
-        [TestCase("(CH2)7Br-[2CaH]5")]
-        [TestCase("-[CaH]")]                                                                                   // TODO: VB6: 'C', new: '['
-        [TestCase("[.CaH]")]
-        [TestCase("^.CaH")]
-        [TestCase("(CH2)7Br-[2CaH")]
-        [TestCase("(CH2)7Br-2CaH]")]
-        [TestCase("[2Ca[O]H]-")]
-        [TestCase("^CaH")] // TODO: Error position/char (1/'^'  -> 1/'C')                                                                                                             // TODO: VB6: 'C', new: '^'
-        [TestCase("^23CaH^")] // ErrorPosition: 7 -> 6                                                                                                                                // TODO: VB6: '~'(end), new: '^'
-        [TestCase("^23CaH^6")] // TODO: Error position/char (8/'^' -> 7/'6') (old position is high by 2, should be 6)                                                                 // TODO: VB6: '~'(end), new: '6' (best would probably be ^)
-        [TestCase("H2O^-23Ca")]
-        [TestCase("C6H3^8D3")]
-        [TestCase("C6H3^8Gly3")]
-        [TestCase("C6H3^19.88.9ArPb")]
-        [TestCase("C6H3^19.88Ar2Pb>Ar")]
-        [TestCase("C6H6>Ca")]
-        //[TestCase("")]
-        [TestCase("hgly5.3leu2.2tyr0.03oh")]
-        [TestCase("sipsclarkcas")]
-
-        public void ComputeMassErrorTests(string formula, string note = "", bool bracketsAsParentheses = false)
+        [TestCase(5, "^13C6H6-H2O0", 11, "0 directly after an element")]
+        [TestCase(14, "^13C6H6[.1H2O]", 8, "Misplaced number", true)] // TODO: VB6: '[', new: '.'; - outputting the '[' or '(' might not be simple in the new
+        [TestCase(12, "^13C6H6[H2O]", 7, "number must be present after a bracket")]
+        [TestCase(11, "^13C6H6[.1H2O]2", 14, "follow left brackets, not right brackets")]
+        [TestCase(14, "^13C6H6(.1H2O)2", 8, "Misplaced number")] // TODO: VB6: '(', new: '.'
+        [TestCase(13, "^13C6H6[.1H2O", 7, "Missing closing bracket")] // TODO: VB6: '~'(end), new: '['
+        [TestCase(5, "^13C6H6-0H2O", 8, "0 directly after an element or dash")]
+        [TestCase(3, "^13C6H6(H2O", 7, "Missing closing parentheses")]
+        [TestCase(4, "^13C6H6H2O)", 10, "Unmatched parentheses")]
+        [TestCase(4, "^13C6H6(H2O}", 11, "Unmatched parentheses")] // TODO: Succeeds now, needs to fail with mismatched parentheses.
+        [TestCase(30, "C6H5>H6", 4, "Invalid formula subtraction")]
+        [TestCase(24, "^32PheOH", 3, "masses are not allowed for abbreviations")]
+        [TestCase(12, "^13C6H6-H2O.", 11, "present after a bracket and/or after the decimal")]
+        [TestCase(27, "^13C6H6.0.1H2O", 6, "more than one decimal point")]
+        [TestCase(27, "^13C6H6-3.0.1H2O", 8, "more than one decimal point")]
+        [TestCase(27, "^13C6H6[3.0.1H2O]", 8, "more than one decimal point")]
+        //[TestCase(0, "", 0, "")]
+        [TestCase(30, "C6H6>", 4, "Invalid formula subtraction")] // TODO: ErrorChar: VB6 (no error), new '>'
+        [TestCase(30, ">Ca", 0, "Invalid formula subtraction")]
+        [TestCase(25, "^13C6H6-3", 8, "present after the leading coefficient")]
+        //[TestCase(0, "", 0, "")]
+        [TestCase(1, "CaNzOCH4(CH2)7Br", 3, "Unknown")] // TODO: ErrorChar capitalization?
+        [TestCase(1, "CaNOCH4(CgH2)7Br", 9, "Unknown")] // TODO: ErrorChar capitalization?
+        [TestCase(3, "F(D(CH2)7Br", 1, "Missing closing parentheses")]
+        [TestCase(4, "FD)(CH2)7Br", 2, "Unmatched parentheses")]
+        [TestCase(4, "FD(CH2}7Br", 6, "Unmatched parentheses")] // TODO: Succeeds now, needs to fail with mismatched parentheses.
+        [TestCase(5, "Pt(C0H2)7Br", 4, "0 directly after an element or dash ")]
+        [TestCase(5, "Pt(CH2)7Br0", 10, "0 directly after an element or dash")]
+        [TestCase(11, "(CH2)7Br-[2CaH]5", 15, "Numbers should follow left brackets, not right brackets")]
+        [TestCase(12, "-[CaH]", 1, "number must be present after a bracket")] // TODO: VB6: 'C', new: '['
+        [TestCase(12, "[.CaH]", 0, "number must be present after a bracket")]
+        [TestCase(20, "^.CaH", 0, "number following the caret")]
+        [TestCase(13, "(CH2)7Br-[2CaH", 9, "Missing closing bracket")]
+        [TestCase(15, "(CH2)7Br-2CaH]", 13, "unmatched bracket")]
+        [TestCase(16, "[2Ca[O]H]-", 4, "nested brackets")]
+        [TestCase(20, "^CaH", 0, "number following the caret")] // TODO: VB6: 'C', new: '^'
+        [TestCase(20, "^23CaH^", 6, "number following the caret")] // TODO: VB6: '~'(end), new: '^'
+        [TestCase(22, "^23CaH^6", 7, "present after the isotopic mass after the caret")] // TODO: VB6: '~'(end), new: '6' (best would probably be ^)
+        [TestCase(23, "H2O^-23Ca", 4, "Negative isotopic masses are not allowed")]
+        [TestCase(26, "C6H3^8D3", 6, "masses are not allowed for abbreviations; D is an abbreviation")]
+        [TestCase(24, "C6H3^8Gly3", 6, "masses are not allowed for abbreviations")]
+        [TestCase(27, "C6H3^19.88.9ArPb", 5, "more than one decimal point")]
+        [TestCase(30, "C6H3^19.88Ar2Pb>Ar", 15, "Invalid formula subtraction")]
+        [TestCase(30, "C6H6>Ca", 4, "Invalid formula subtraction")]
+        //[TestCase(0, "", 0, "")]
+        [TestCase(1, "hgly5.3leu2.2tyr0.03oh", 2, "unknown")]
+        [TestCase(1, "sipsclarkcas", 7, "unknown")]
+        public void ComputeMassErrorTests(int errorIdExpected, string formula, int expectedPosition, string messageExcerpt, bool bracketsAsParentheses = false)
         {
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
             var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
             ReportParseData(parseData);
-            Assert.AreNotEqual(0, parseData.ErrorData.ErrorId);
+            Assert.AreEqual(errorIdExpected, parseData.ErrorData.ErrorId);
+            Assert.AreEqual(expectedPosition, parseData.ErrorData.ErrorPosition);
+            Assert.GreaterOrEqual(parseData.ErrorData.ErrorDescription.IndexOf(messageExcerpt, StringComparison.OrdinalIgnoreCase), 0, "excerpt not found in reported message statement");
         }
 
         [Test]
-        [TestCase("bi")]
-        [TestCase("bk")]
-        [TestCase("bu")]
-        [TestCase("cd")]
-        [TestCase("cf")]
-        [TestCase("co")]
-        [TestCase("cs")]
-        [TestCase("cu")]
-        [TestCase("dy")]
-        [TestCase("hf")]
-        [TestCase("ho")]
-        [TestCase("in")]
-        [TestCase("nb")]
-        [TestCase("nd")]
-        [TestCase("ni")]
-        [TestCase("no")]
-        [TestCase("np")]
-        [TestCase("os")]
-        [TestCase("pd")]
-        [TestCase("ph")]
-        [TestCase("pu")]
-        [TestCase("py")]
-        [TestCase("sb")]
-        [TestCase("sc")]
-        [TestCase("si")]
-        [TestCase("sn")]
-        [TestCase("TI")]
-        [TestCase("yb")]
-        [TestCase("BPY")]
-        [TestCase("BPy")]
-        [TestCase("bpy")]
-        [TestCase("cys")]
-        [TestCase("his")]
-        [TestCase("hoh")]
-        [TestCase("hyp")]
-        [TestCase("Oac")]
-        [TestCase("oac")]
-        [TestCase("Pro")]
-        [TestCase("prO")]
-        [TestCase("val")]
-        [TestCase("vAl")]
-
-        public void ComputeMassCautionMessageTests(string formula)
+        [TestCase("bi", "bismuth")]
+        [TestCase("bk", "berkelium")]
+        [TestCase("bu", "butyl group")]
+        [TestCase("cd", "cadmium")]
+        [TestCase("cf", "californium")]
+        [TestCase("co", "cobalt")]
+        [TestCase("cs", "cesium")]
+        [TestCase("cu", "copper")]
+        [TestCase("dy", "dysprosium")]
+        [TestCase("hf", "hafnium")]
+        [TestCase("ho", "holmium")]
+        [TestCase("in", "indium")]
+        [TestCase("nb", "niobium")]
+        [TestCase("nd", "neodymium")]
+        [TestCase("ni", "nickel")]
+        [TestCase("no", "nobelium")]
+        [TestCase("np", "neptunium")]
+        [TestCase("os", "osmium")]
+        [TestCase("pd", "palladium")]
+        [TestCase("ph", "phenyl")]
+        [TestCase("pu", "plutonium")]
+        [TestCase("py", "pyridine")]
+        [TestCase("sb", "antimony")]
+        [TestCase("sc", "scandium")]
+        [TestCase("si", "silicon")]
+        [TestCase("sn", "sulfur-nitrogen")]
+        [TestCase("TI", "tritium-iodine")]
+        [TestCase("yb", "yttrium-boron")]
+        [TestCase("BPY", "boron-phosphorus-yttrium")]
+        [TestCase("BPy", "boron-pyridine")]
+        [TestCase("bpy", "bipyridine")]
+        [TestCase("cys", "cysteine")]
+        [TestCase("his", "histidine")]
+        [TestCase("hoh", "holmium")]
+        [TestCase("hyp", "hydroxyproline")]
+        [TestCase("Oac", "acetate")]
+        [TestCase("oac", "acetate")]
+        [TestCase("Pro", "proline")]
+        [TestCase("prO", "praseodymium-oxygen")]
+        [TestCase("val", "valine")]
+        [TestCase("vAl", "vanadium-aluminum")]
+        public void ComputeMassCautionMessageTests(string formula, string cautionExcerpt)
         {
             var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
             ReportParseData(parseData);
+
+            Assert.GreaterOrEqual(parseData.CautionDescription.IndexOf(cautionExcerpt, StringComparison.OrdinalIgnoreCase), 0, "excerpt not found in reported caution statement");
         }
 
         private void ReportParseData(IFormulaParseData data)

@@ -15,38 +15,12 @@ namespace UnitTests.FunctionalTests
     public class WorkflowTests
     {
         [Test]
-        public void TestWorkflowCS()
+        [TestCase(ElementMassMode.Average)]
+        [TestCase(ElementMassMode.Isotopic)]
+        public void TestMwtWinFeatures(ElementMassMode elementMode)
         {
             // Instantiate the Molecular Weight Calculator
-            var mwtWin = new MolecularWeightTool();
-
-            TestMwtWinFeatures(mwtWin, ElementMassMode.Average);
-
-            Console.WriteLine();
-            Console.WriteLine("Percent composition");
-            var percentCompositionByElement = mwtWin.Compound.GetPercentCompositionForAllElements();
-
-            foreach (var item in percentCompositionByElement)
-            {
-                Console.WriteLine(item.Key + ": " + item.Value);
-            }
-
-            Console.WriteLine();
-            TestMwtWinFeatures(mwtWin, ElementMassMode.Isotopic);
-
-            Console.WriteLine();
-            Console.WriteLine();
-
-            var fragTest = new FragSpecTest(ref mwtWin);
-            fragTest.TestAccessFunctions();
-
-            Console.WriteLine();
-        }
-
-        private void TestMwtWinFeatures(
-            MolecularWeightTool mwtWin,
-            ElementMassMode elementMode)
-        {
+            var mwtWin = new MolecularWeightTool(elementMode);
             var elementModeDescription = elementMode switch
             {
                 ElementMassMode.Average => "Average",
@@ -115,6 +89,15 @@ namespace UnitTests.FunctionalTests
                 mwtWin.Compound.SetFormula(testFormula);
                 Console.WriteLine(testFormula + " auto-capitalizes to " + mwtWin.Compound.FormulaCapitalized);
                 Console.WriteLine("{0,-18}  {1}", elementModeDescription + " Mass:", mwtWin.Compound.Mass);
+
+                Console.WriteLine();
+                Console.WriteLine("Percent composition");
+                var percentCompositionByElement = mwtWin.Compound.GetPercentCompositionForAllElements();
+
+                foreach (var item in percentCompositionByElement)
+                {
+                    Console.WriteLine(item.Key + ": " + item.Value);
+                }
             }
         }
     }

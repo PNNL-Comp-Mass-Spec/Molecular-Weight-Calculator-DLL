@@ -2,6 +2,7 @@
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Sequence;
+using NUnit.Framework;
 
 namespace UnitTests.FunctionalTests
 {
@@ -10,22 +11,20 @@ namespace UnitTests.FunctionalTests
      * It also demonstrates how to compute the theoretical isotopic distribution for the peptide
      * Written by Matthew Monroe for PNNL in 2010
      */
-    internal class FragSpecTest
+    [TestFixture]
+    public class FragSpecTest
     {
         // Ignore Spelling: frag, Arg
 
-        private readonly MolecularWeightTool mMwtWin;
+        private MolecularWeightTool mMwtWin;
 
-        public FragSpecTest()
+        [OneTimeSetUp]
+        public void Setup()
         {
-            mMwtWin = new MolecularWeightTool();
+            mMwtWin = new MolecularWeightTool(ElementMassMode.Isotopic);
         }
 
-        public FragSpecTest(ref MolecularWeightTool mwtWin)
-        {
-            mMwtWin = mwtWin;
-        }
-
+        [Test]
         public void TestAccessFunctions()
         {
             // Set the element mode (average, monoisotopic, or integer)
