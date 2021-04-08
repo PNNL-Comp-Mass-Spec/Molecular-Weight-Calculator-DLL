@@ -358,26 +358,26 @@ namespace MolecularWeightCalculator.Formula
         {
             try
             {
-                var stdDevSum = 0.0d;
-
                 // Reset ErrorParams to clear any prior errors
                 mErrorParams.Reset();
 
                 // Reset Caution Description
                 mCautionDescription = "";
 
-                if (formula.Length > 0)
+                if (string.IsNullOrWhiteSpace(formula))
                 {
-                    var abbrevSymbolStack = new AbbrevSymbolStack();
-                    formula = ParseFormulaRecursive(formula, computationStats, abbrevSymbolStack, expandAbbreviations, out stdDevSum, out _, valueForX);
+                    mComputationStatsSaved = computationStats.Clone();
+                    return 0;
                 }
+
+                var abbrevSymbolStack = new AbbrevSymbolStack();
+                formula = ParseFormulaRecursive(formula, computationStats, abbrevSymbolStack, expandAbbreviations, out var stdDevSum, out _, valueForX);
 
                 // Copy computationStats to mComputationStatsSaved
                 mComputationStatsSaved = computationStats.Clone();
 
                 if (mErrorParams.ErrorId == 0)
                 {
-
                     // Compute the standard deviation
                     computationStats.StandardDeviation = Math.Sqrt(stdDevSum);
 
