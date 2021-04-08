@@ -29,9 +29,16 @@ namespace MolecularWeightCalculator.Formula
 
         internal class ErrorDetails
         {
-            public int ErrorId { get; set; } // Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
+            public int ErrorId { get; private set; } // Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
             public int ErrorPosition { get; set; }
             public string ErrorCharacter { get; set; }
+
+            public void SetError(int errorId, int errorPosition, string errorCharacter = "")
+            {
+                ErrorId = errorId;
+                ErrorPosition = errorPosition;
+                ErrorCharacter = errorCharacter;
+            }
 
             public void Reset()
             {
@@ -133,18 +140,15 @@ namespace MolecularWeightCalculator.Formula
                         break;
                     case -3:
                         // Error: No number after decimal point
-                        mErrorParams.ErrorId = 12;
-                        mErrorParams.ErrorPosition = curCharacter + symbolLength;
+                        mErrorParams.SetError(12, curCharacter + symbolLength);
                         break;
                     case -4:
                         // Error: More than one decimal point
-                        mErrorParams.ErrorId = 27;
-                        mErrorParams.ErrorPosition = curCharacter + symbolLength;
+                        mErrorParams.SetError(27, curCharacter + symbolLength);
                         break;
                     default:
                         // Error: General number error
-                        mErrorParams.ErrorId = 14;
-                        mErrorParams.ErrorPosition = curCharacter + symbolLength;
+                        mErrorParams.SetError(14, curCharacter + symbolLength);
                         break;
                 }
             }
@@ -561,8 +565,7 @@ namespace MolecularWeightCalculator.Formula
                             if (char.IsDigit(char2[0]) || char2 == ".")
                             {
                                 // Misplaced number
-                                mErrorParams.ErrorId = 14;
-                                mErrorParams.ErrorPosition = charIndex;
+                                mErrorParams.SetError(14, charIndex);
                             }
 
                             if (mErrorParams.ErrorId == 0)
@@ -648,8 +651,7 @@ namespace MolecularWeightCalculator.Formula
                             if (parenthLevel > 0 && mErrorParams.ErrorId == 0)
                             {
                                 // Missing closing parenthesis
-                                mErrorParams.ErrorId = 3;
-                                mErrorParams.ErrorPosition = charIndex;
+                                mErrorParams.SetError(3, charIndex);
                             }
 
                             prevSymbolReference = 0;
@@ -659,8 +661,7 @@ namespace MolecularWeightCalculator.Formula
                         case '}': // )    Repeat a section of a formula
                             // Should have been skipped
                             // Unmatched closing parentheses
-                            mErrorParams.ErrorId = 4;
-                            mErrorParams.ErrorPosition = charIndex;
+                            mErrorParams.SetError(4, charIndex);
                             break;
 
                         case '-': // -
@@ -677,8 +678,7 @@ namespace MolecularWeightCalculator.Formula
                             else if (Math.Abs(adjacentNum) < float.Epsilon)
                             {
                                 // Cannot have 0 after a dash
-                                mErrorParams.ErrorId = 5;
-                                mErrorParams.ErrorPosition = charIndex + 1;
+                                mErrorParams.SetError(5, charIndex + 1);
                             }
                             else
                             {
@@ -719,14 +719,12 @@ namespace MolecularWeightCalculator.Formula
                             else if (NumberConverter.CDblSafe(formula.Substring(charIndex - 1, 1)) > 0d)
                             {
                                 // Number too large
-                                mErrorParams.ErrorId = 7;
-                                mErrorParams.ErrorPosition = charIndex;
+                                mErrorParams.SetError(7, charIndex);
                             }
                             else
                             {
                                 // Misplaced number
-                                mErrorParams.ErrorId = 14;
-                                mErrorParams.ErrorPosition = charIndex;
+                                mErrorParams.SetError(14, charIndex);
                             }
 
                             prevSymbolReference = 0;
@@ -757,14 +755,12 @@ namespace MolecularWeightCalculator.Formula
                                 if (insideBrackets)
                                 {
                                     // No Nested brackets.
-                                    mErrorParams.ErrorId = 16;
-                                    mErrorParams.ErrorPosition = charIndex;
+                                    mErrorParams.SetError(16, charIndex);
                                 }
                                 else if (adjacentNum < 0d)
                                 {
                                     // No number after bracket
-                                    mErrorParams.ErrorId = 12;
-                                    mErrorParams.ErrorPosition = charIndex + 1;
+                                    mErrorParams.SetError(12, charIndex + 1);
                                 }
                                 else
                                 {
@@ -785,8 +781,7 @@ namespace MolecularWeightCalculator.Formula
                             if (adjacentNum >= 0d)
                             {
                                 // Number following bracket
-                                mErrorParams.ErrorId = 11;
-                                mErrorParams.ErrorPosition = charIndex + 1;
+                                mErrorParams.SetError(11, charIndex + 1);
                             }
                             else if (insideBrackets)
                             {
@@ -803,8 +798,7 @@ namespace MolecularWeightCalculator.Formula
                             else
                             {
                                 // Unmatched bracket
-                                mErrorParams.ErrorId = 15;
-                                mErrorParams.ErrorPosition = charIndex;
+                                mErrorParams.SetError(15, charIndex);
                             }
 
                             break;
@@ -846,8 +840,7 @@ namespace MolecularWeightCalculator.Formula
                                     if (Math.Abs(adjacentNum) < float.Epsilon)
                                     {
                                         // Zero after element
-                                        mErrorParams.ErrorId = 5;
-                                        mErrorParams.ErrorPosition = charIndex + symbolLength;
+                                        mErrorParams.SetError(5, charIndex + symbolLength);
                                     }
                                     else
                                     {
@@ -961,8 +954,7 @@ namespace MolecularWeightCalculator.Formula
                                         // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
                                         // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
                                         // Furthermore, can't have this either: Lor = C6H5Tal and Tal = H4O2Vin and Vin = S3Lor
-                                        mErrorParams.ErrorId = 28;
-                                        mErrorParams.ErrorPosition = charIndex;
+                                        mErrorParams.SetError(28, charIndex);
                                     }
                                     // Found an abbreviation
                                     else if (caretPresent)
@@ -971,13 +963,11 @@ namespace MolecularWeightCalculator.Formula
                                         if (char1.ToUpper() == "D" && char2 != "y")
                                         {
                                             // Isotopic mass used for Deuterium
-                                            mErrorParams.ErrorId = 26;
-                                            mErrorParams.ErrorPosition = charIndex;
+                                            mErrorParams.SetError(26, charIndex);
                                         }
                                         else
                                         {
-                                            mErrorParams.ErrorId = 24;
-                                            mErrorParams.ErrorPosition = charIndex;
+                                            mErrorParams.SetError(24, charIndex);
                                         }
                                     }
                                     else
@@ -1090,14 +1080,13 @@ namespace MolecularWeightCalculator.Formula
                                     if (char1.ToUpper() == "X")
                                     {
                                         // X for solver but no preceding bracket
-                                        mErrorParams.ErrorId = 18;
+                                        mErrorParams.SetError(18, charIndex);
                                     }
                                     else
                                     {
-                                        mErrorParams.ErrorId = 1;
+                                        mErrorParams.SetError(1, charIndex);
                                     }
 
-                                    mErrorParams.ErrorPosition = charIndex;
                                     break;
                             }
 
@@ -1132,8 +1121,7 @@ namespace MolecularWeightCalculator.Formula
                                     else
                                     {
                                         // No letter after isotopic mass
-                                        mErrorParams.ErrorId = 22;
-                                        mErrorParams.ErrorPosition = charIndex + numLength + 1;
+                                        mErrorParams.SetError(22, charIndex + numLength + 1);
                                     }
                                 }
                                 else
@@ -1144,14 +1132,12 @@ namespace MolecularWeightCalculator.Formula
                                     if (formula.Substring(charIndex + 1, 1) == "-")
                                     {
                                         // Negative number following caret
-                                        mErrorParams.ErrorId = 23;
-                                        mErrorParams.ErrorPosition = charIndex + 1;
+                                        mErrorParams.SetError(23, charIndex + 1);
                                     }
                                     else
                                     {
                                         // No number following caret
-                                        mErrorParams.ErrorId = 20;
-                                        mErrorParams.ErrorPosition = charIndex + 1;
+                                        mErrorParams.SetError(20, charIndex + 1);
                                     }
                                 }
                             }
@@ -1175,8 +1161,7 @@ namespace MolecularWeightCalculator.Formula
                             else
                             {
                                 // No compounds after leading coefficient after dash
-                                mErrorParams.ErrorId = 25;
-                                mErrorParams.ErrorPosition = charIndex;
+                                mErrorParams.SetError(25, charIndex);
                             }
                         }
                     }
@@ -1192,8 +1177,7 @@ namespace MolecularWeightCalculator.Formula
                     if (mErrorParams.ErrorId == 0)
                     {
                         // Missing closing bracket
-                        mErrorParams.ErrorId = 13;
-                        mErrorParams.ErrorPosition = charIndex;
+                        mErrorParams.SetError(13, charIndex);
                     }
                 }
 
@@ -1224,8 +1208,7 @@ namespace MolecularWeightCalculator.Formula
             catch (Exception ex)
             {
                 mElementTools.MwtWinDllErrorHandler("MolecularWeightCalculator_FormulaParser.ParseFormula", ex);
-                mErrorParams.ErrorId = -10;
-                mErrorParams.ErrorPosition = 0;
+                mErrorParams.SetError(-10, 0);
 
                 return formula;
             }
@@ -1288,8 +1271,7 @@ namespace MolecularWeightCalculator.Formula
                 else
                 {
                     // Invalid Formula; raise error
-                    mErrorParams.ErrorId = 30;
-                    mErrorParams.ErrorPosition = minusSymbolLoc;
+                    mErrorParams.SetError(30, minusSymbolLoc);
                 }
 
                 if (mErrorParams.ErrorId != 0)
