@@ -20,14 +20,14 @@ namespace MolecularWeightCalculator.Formula
         private ElementsAndAbbrevs Elements => mElementTools.Elements;
         private Messages Messages => mElementTools.Messages;
 
-        private readonly ErrorDescription mErrorParams = new ErrorDescription();
+        private readonly ErrorDetails mErrorParams = new ErrorDetails();
 
         private ComputationStats mComputationStatsSaved = new ComputationStats();
 
         private string mCautionDescription;
         public FormulaOptions ComputationOptions { get; }
 
-        internal class ErrorDescription
+        internal class ErrorDetails
         {
             public int ErrorId { get; set; } // Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
             public int ErrorPosition { get; set; }
