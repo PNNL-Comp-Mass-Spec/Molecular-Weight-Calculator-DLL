@@ -120,16 +120,11 @@ namespace MolecularWeightCalculator.Formula
             if (mMessageStatements.Count == 0)
                 MemoryLoadMessageStatements();
 
-            // First assume we can't find the message number
-            var message = "General unspecified error";
-
             // Now try to find it
-            if (messageId < MESSAGE_STATEMENT_DIM_COUNT)
+            if (!mMessageStatements.TryGetValue(messageId, out var message) || string.IsNullOrWhiteSpace(message))
             {
-                if (mMessageStatements[messageId].Length > 0)
-                {
-                    message = mMessageStatements[messageId];
-                }
+                //assume we can't find the message number
+                message = "General unspecified error";
             }
 
             // Now prepend Prefix to certain strings
