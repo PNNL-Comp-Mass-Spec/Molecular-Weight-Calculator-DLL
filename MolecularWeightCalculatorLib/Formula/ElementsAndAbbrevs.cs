@@ -32,7 +32,7 @@ namespace MolecularWeightCalculator.Formula
         internal const int MAX_ABBREV_LENGTH = 6;
 
         /// <summary>
-        /// Stores the elements in alphabetical order, with Key==Symbol, and Value==Index in <see cref="mElementStats"/>
+        /// Stores the elements in alphabetical order (after 'C' and 'H', which are first), with Key==Symbol, and Value==Index in <see cref="mElementStats"/>
         /// Used for constructing empirical formulas
         /// 0 to ELEMENT_COUNT - 1
         /// </summary>
@@ -66,7 +66,7 @@ namespace MolecularWeightCalculator.Formula
         private ElementMassMode mCurrentElementMode = ElementMassMode.Average;
 
         /// <summary>
-        /// List of element symbols, sorted alphabetically
+        /// List of element symbols, sorted alphabetically (except 'C' and 'H' are first and second, respectively)
         /// </summary>
         internal IReadOnlyList<KeyValuePair<string, int>> ElementAlph => mElementAlph;
 
@@ -748,7 +748,23 @@ namespace MolecularWeightCalculator.Formula
                 }
 
                 // Alphabetize mElementAlph by Key/symbol
-                mElementAlph.Sort((x, y) => string.Compare(x.Key, y.Key, StringComparison.Ordinal));
+                //mElementAlph.Sort((x, y) => string.Compare(x.Key, y.Key, StringComparison.Ordinal));
+                // Alphabetize mElementAlph by Key/symbol, except for carbon and hydrogen (put them first)
+                mElementAlph.Sort((x, y) =>
+                {
+                    // Test 'C' and 'H' on value, since number comparisons are faster than string comparisons
+                    if (x.Value == 6)
+                        return -1; // Always sort C/carbon first
+                    if (y.Value == 6)
+                        return 1; // Also, always sort C/carbon first
+                    if (x.Value == 1)
+                        return -1; // Hydrogen is always second
+                    if (y.Value == 1)
+                        return 1; // Hydrogen is always second
+
+                    // Everything else is alphabetical.
+                    return string.Compare(x.Key, y.Key, StringComparison.Ordinal);
+                });
 
                 // Also load the isotopes, since if any were loaded we just cleared them.
                 ElementsLoader.MemoryLoadIsotopes(mElementStats);

@@ -314,41 +314,18 @@ namespace MolecularWeightCalculator.Formula
                 // Convert to empirical formula
                 var empiricalFormula = "";
                 // Carbon first, then hydrogen, then the rest alphabetically
-                // This is correct to start at -2
-                for (var elementIndex = -2; elementIndex < Elements.ElementAlph.Count; elementIndex++)
+                // ElementAlph is already sorted properly as 0:{'C',6}, 1:{'H',1}, then alphabetically
+                foreach (var elementIndex in Elements.ElementAlph.Select(x => x.Value))
                 {
-                    int elementIndexToUse;
-                    if (elementIndex == -2)
-                    {
-                        // Do Carbon first
-                        elementIndexToUse = 6;
-                    }
-                    else if (elementIndex == -1)
-                    {
-                        // Then do Hydrogen
-                        elementIndexToUse = 1;
-                    }
-                    else
-                    {
-                        // Then do the rest alphabetically
-                        if (Elements.ElementAlph[elementIndex].Key == "C" || Elements.ElementAlph[elementIndex].Key == "H")
-                        {
-                            // Increment elementIndex when we encounter carbon or hydrogen
-                            elementIndex++;
-                        }
-
-                        elementIndexToUse = Elements.ElementAlph[elementIndex].Value;
-                    }
-
                     // Only display the element if it's in the formula
-                    var thisElementCount = mComputationStatsSaved.Elements[elementIndexToUse].Count;
+                    var thisElementCount = mComputationStatsSaved.Elements[elementIndex].Count;
                     if (Math.Abs(thisElementCount - 1.0d) < float.Epsilon)
                     {
-                        empiricalFormula += Elements.ElementStats[elementIndexToUse].Symbol;
+                        empiricalFormula += Elements.ElementStats[elementIndex].Symbol;
                     }
                     else if (thisElementCount > 0d)
                     {
-                        empiricalFormula += Elements.ElementStats[elementIndexToUse].Symbol + thisElementCount;
+                        empiricalFormula += Elements.ElementStats[elementIndex].Symbol + thisElementCount;
                     }
                 }
 
