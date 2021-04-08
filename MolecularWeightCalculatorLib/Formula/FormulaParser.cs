@@ -74,6 +74,24 @@ namespace MolecularWeightCalculator.Formula
                     SymbolReferenceStack.RemoveAt(SymbolReferenceStack.Count - 1);
                 }
             }
+
+            /// <summary>
+            /// Checks for presence of <paramref name="symbolReference"/>
+            /// </summary>
+            /// <param name="symbolReference"></param>
+            /// <returns>True if <paramref name="symbolReference"/> exists in the symbol stack</returns>
+            public bool IsPresent(short symbolReference)
+            {
+                foreach (var symbol in SymbolReferenceStack)
+                {
+                    if (symbol == symbolReference)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
 
         private void AddToCautionDescription(string textToAdd)
@@ -349,36 +367,6 @@ namespace MolecularWeightCalculator.Formula
         public int GetErrorPosition()
         {
             return mErrorParams.ErrorPosition;
-        }
-
-        /// <summary>
-        /// Checks for presence of <paramref name="symbolReference"/> in <paramref name="abbrevSymbolStack"/>
-        /// If found, returns true
-        /// </summary>
-        /// <param name="abbrevSymbolStack"></param>
-        /// <param name="symbolReference"></param>
-        /// <returns></returns>
-        private bool IsPresentInAbbrevSymbolStack(AbbrevSymbolStack abbrevSymbolStack, short symbolReference)
-        {
-            try
-            {
-                var found = false;
-                for (var index = 0; index < abbrevSymbolStack.SymbolReferenceStack.Count; index++)
-                {
-                    if (abbrevSymbolStack.SymbolReferenceStack[index] == symbolReference)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                return found;
-            }
-            catch (Exception ex)
-            {
-                mElementTools.GeneralErrorHandler("IsPresentInAbbrevSymbolStack", ex);
-                return false;
-            }
         }
 
         /// <summary>
@@ -951,7 +939,7 @@ namespace MolecularWeightCalculator.Formula
                                     // Found an abbreviation or amino acid
                                     // SymbolReference is the abbrev or amino acid number
 
-                                    if (IsPresentInAbbrevSymbolStack(abbrevSymbolStack, symbolReference))
+                                    if (abbrevSymbolStack.IsPresent(symbolReference))
                                     {
                                         // Circular Reference: Can't have an abbreviation referencing an abbreviation that depends upon it
                                         // For example, the following is impossible:  Lor = C6H5Tal and Tal = H4O2Lor
