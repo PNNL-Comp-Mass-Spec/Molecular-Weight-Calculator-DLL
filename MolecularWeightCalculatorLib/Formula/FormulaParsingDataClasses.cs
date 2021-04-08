@@ -21,6 +21,7 @@ namespace MolecularWeightCalculator.Formula
             ErrorId = errorId;
             ErrorPosition = errorPosition;
             ErrorCharacter = errorCharacter;
+            ErrorDescription = "";
         }
 
         public void Reset()
@@ -28,6 +29,7 @@ namespace MolecularWeightCalculator.Formula
             ErrorCharacter = "";
             ErrorId = 0;
             ErrorPosition = 0;
+            ErrorDescription = "";
         }
 
         public override string ToString()

@@ -241,8 +241,8 @@ namespace MolecularWeightCalculator.Formula
 
         private void UpdateErrorAndCaution()
         {
-            CautionDescription = FormulaParseData.CautionDescription;
-            ErrorDescription = FormulaParseData.ErrorData.ErrorDescription;
+            CautionDescription = FormulaParseData.CautionDescription ?? "";
+            ErrorDescription = FormulaParseData.ErrorData.ErrorDescription ?? "";
             ErrorId = FormulaParseData.ErrorData.ErrorId;
         }
 
@@ -287,7 +287,7 @@ namespace MolecularWeightCalculator.Formula
             set => mComputationStats.Charge = value;
         }
 
-        public string ErrorDescription { get; private set; }
+        public string ErrorDescription { get; private set; } = "";
 
         public int ErrorId { get; private set; }
 
