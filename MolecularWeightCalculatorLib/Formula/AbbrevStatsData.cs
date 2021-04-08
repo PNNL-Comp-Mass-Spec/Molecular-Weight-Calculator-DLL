@@ -63,8 +63,11 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         public IReadOnlyDictionary<int, double> ElementIsotopicCorrection => elementIsotopicCorrection;
 
+        public IReadOnlyList<string> AbbreviationsUsed => abbreviationsUsed;
+
         private Dictionary<int, double> elementCounts = new Dictionary<int, double>();
         private Dictionary<int, double> elementIsotopicCorrection = new Dictionary<int, double>();
+        private List<string> abbreviationsUsed = new List<string>();
 
         public AbbrevStatsData(string symbol, string formula, float charge, bool isAminoAcid, string oneLetterSymbol = "", string comment = "", bool invalidSymbolOrFormula = false)
         {
@@ -91,6 +94,13 @@ namespace MolecularWeightCalculator.Formula
                 elementCounts.Add(elementSymbolReference, count);
                 elementIsotopicCorrection.Add(elementSymbolReference, isotopicCorrection);
             }
+        }
+
+        public void SetUsedAbbreviations(IReadOnlyList<string> abbrevsUsed)
+        {
+            abbreviationsUsed.Clear();
+            abbreviationsUsed.Capacity = 0;
+            abbreviationsUsed.AddRange(abbrevsUsed);
         }
 
         public void ClearElements()

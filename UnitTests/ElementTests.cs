@@ -155,9 +155,7 @@ namespace UnitTests
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
             ReportParseData(mMwtWinAvg);
-            if (!(formula.Equals("C6H6>") || formula.Equals("FD(CH2}7Br") || formula.Equals("^13C6H6(H2O}")))
-                // The above formulas should fail, but currently do not.
-                Assert.AreNotEqual(0, mMwtWinAvg.ErrorId);
+            Assert.AreNotEqual(0, mMwtWinAvg.ErrorId);
         }
 
         [Test]

@@ -243,8 +243,6 @@ namespace MolecularWeightCalculator.Formula
             convolutedMSDataCount = 0;
             results = "";
 
-            var computationStats = new ComputationStats();
-
             double nextComboFractionalAbundance = default;
 
             const string deuteriumEquiv = "^2.014H";
@@ -282,7 +280,7 @@ namespace MolecularWeightCalculator.Formula
 
                 // Parse Formula to determine if valid and number of each element
                 var formula = formulaIn;
-                var workingFormulaMass = Parser.ParseFormulaPublic(ref formula, computationStats, false);
+                var workingFormulaMass = Parser.ParseFormulaPublic(ref formula, out var computationStats, false);
                 mLastErrorId = Parser.GetErrorId();
 
                 if (workingFormulaMass < 0d)
@@ -341,7 +339,7 @@ namespace MolecularWeightCalculator.Formula
                     }
 
                     // Re-Parse Formula since D's are now ^2.014H
-                    workingFormulaMass = Parser.ParseFormulaPublic(ref formula, computationStats, false);
+                    workingFormulaMass = Parser.ParseFormulaPublic(ref formula, out computationStats, false);
                     mLastErrorId = Parser.GetErrorId();
 
                     if (workingFormulaMass < 0d)
@@ -1932,7 +1930,6 @@ namespace MolecularWeightCalculator.Formula
         internal void ResetErrorParams()
         {
             mLastErrorId = 0;
-            Parser.ResetErrorParams();
         }
 
         protected void ResetProgress()

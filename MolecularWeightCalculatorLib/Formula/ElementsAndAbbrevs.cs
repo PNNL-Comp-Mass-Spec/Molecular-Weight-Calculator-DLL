@@ -629,6 +629,7 @@ namespace MolecularWeightCalculator.Formula
                     // Error occurred computing mass for abbreviation
                     stats.Mass = 0d;
                     stats.InvalidSymbolOrFormula = true;
+                    // TODO: Should probably throw an exception if there is an invalid symbol/formula at this point, since the only entries right now are the hard-coded ones...
                 }
             }
 
@@ -987,8 +988,7 @@ namespace MolecularWeightCalculator.Formula
                         {
                             // Make sure the abbreviation's formula is valid
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
-                            var computationStats = new ComputationStats();
-                            Parser.ParseFormulaPublic(ref formula, computationStats);
+                            Parser.ParseFormulaPublic(ref formula, out _);
 
                             errorId = mMassCalc.GetErrorId();
                             if (errorId != 0)
