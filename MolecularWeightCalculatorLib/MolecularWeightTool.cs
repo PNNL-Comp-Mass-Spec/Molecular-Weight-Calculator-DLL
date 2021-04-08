@@ -266,6 +266,21 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
+        /// Compute the mass of a formula
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <param name="formulaParseData">Parsing information from parsing the formula. Includes mass, stdDev, errors, and cautions.</param>
+        /// <returns>Mass of the formula</returns>
+        [ComVisible(false)]
+        public double ComputeMassExtra(string formula, out IFormulaParseData formulaParseData)
+        {
+            // Simply assigning formula to .Formula will update the Mass
+            Compound.Formula = formula;
+            formulaParseData = Compound.FormulaParseData;
+            return Compound.GetMass(false);
+        }
+
+        /// <summary>
         /// Computes the Isotopic Distribution for a formula
         /// </summary>
         /// <param name="formulaIn">Input/output: The properly formatted formula to parse</param>

@@ -241,9 +241,9 @@ namespace MolecularWeightCalculator.Formula
 
         private void UpdateErrorAndCaution()
         {
-            CautionDescription = mElementAndMassRoutines.Parser.GetCautionDescription();
-            ErrorDescription = mElementAndMassRoutines.GetErrorDescription();
-            ErrorId = mElementAndMassRoutines.GetErrorId();
+            CautionDescription = FormulaParseData.CautionDescription;
+            ErrorDescription = FormulaParseData.ErrorData.ErrorDescription;
+            ErrorId = FormulaParseData.ErrorData.ErrorId;
         }
 
         private void UpdateMass()
@@ -253,9 +253,9 @@ namespace MolecularWeightCalculator.Formula
             // mFormattedFormula is passed ByRef
             // If gComputationOptions.CaseConversion = ccConvertCaseUp then mFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
-            var formulaParseData = mElementAndMassRoutines.Parser.ParseFormula(mFormattedFormula, false, mValueForX);
-            mFormattedFormula = formulaParseData.FormulaCorrected;
-            mComputationStats = formulaParseData.Stats;
+            FormulaParseData = mElementAndMassRoutines.Parser.ParseFormula(mFormattedFormula, false, mValueForX);
+            mFormattedFormula = FormulaParseData.FormulaCorrected;
+            mComputationStats = FormulaParseData.Stats;
 
             mElementAndMassRoutines.Parser.ComputePercentComposition(mComputationStats);
 
@@ -305,6 +305,8 @@ namespace MolecularWeightCalculator.Formula
         }
 
         public string FormulaCapitalized => mFormattedFormula;
+
+        [ComVisible(false)] public IFormulaParseData FormulaParseData { get; private set; } = new FormulaParseData("");
 
         // ReSharper disable once InconsistentNaming
         public string FormulaRTF => mElementAndMassRoutines.PlainTextToRtfInternal(FormulaCapitalized, false);
