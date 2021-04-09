@@ -728,7 +728,6 @@ namespace MolecularWeightCalculator.Formula
                         {
                             // Coefficient for bracketed section.
                             var numEndIndex = charIndex + bracketNumLength;
-                            // TODO: safety check for end of line
                             var bracketComponent = new FormulaComponentGroup(insideBrackets: true)
                             {
                                 PrefixChars = formula.Substring(charIndex, bracketNumLength + 1),
@@ -736,6 +735,7 @@ namespace MolecularWeightCalculator.Formula
                             };
                             components.Add(bracketComponent);
                             component = bracketComponent;
+                            // formula.Substring(formula.Length) returns "", so we shouldn't encounter an error with this
                             ParseFormulaComponents(formula.Substring(numEndIndex + 1), data, valueForX, bracketComponent, prevPosition + numEndIndex + 1, parenDepth);
                             var bracketSegmentLength = bracketComponent.FormulaOriginal.Length;
 

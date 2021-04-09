@@ -130,6 +130,7 @@ namespace UnitTests
         [TestCase(27, "^13C6H6.0.1H2O", 6, "more than one decimal point")]
         [TestCase(27, "^13C6H6-3.0.1H2O", 8, "more than one decimal point")]
         [TestCase(27, "^13C6H6[3.0.1H2O]", 8, "more than one decimal point")]
+        [TestCase(13, "^13C6H6[3.5", 7, "missing closing bracket")]
         //[TestCase(0, "", 0, "")]
         [TestCase(30, "C6H6>", 4, "Invalid formula subtraction")] // TODO: ErrorChar: VB6 (no error), new '>'
         [TestCase(30, ">Ca", 0, "Invalid formula subtraction")]
