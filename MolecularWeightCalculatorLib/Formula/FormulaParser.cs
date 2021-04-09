@@ -900,6 +900,9 @@ namespace MolecularWeightCalculator.Formula
                             case SymbolMatchMode.Abbreviation:
                                 // Found an abbreviation or amino acid
                                 // SymbolReference is the abbrev or amino acid number
+                                // Record the abbreviation length
+                                var abbrevStats = Elements.AbbrevStats[symbolReference];
+                                var abbrevSymbolLength = abbrevStats.Symbol.Length;
 
                                 // Found an abbreviation
                                 if (isIsotope)
@@ -907,13 +910,13 @@ namespace MolecularWeightCalculator.Formula
                                     // Cannot have isotopic mass for an abbreviation, including deuterium
                                     if (char.ToUpper(currentChar) == 'D' && nextRemnant[0] != 'y')
                                     {
-                                        // Isotopic mass used for Deuterium; highlight the current character
-                                        data.Error.SetError(26, charPosition, formula.Substring(charIndex, 1));
+                                        // Isotopic mass used for Deuterium; highlight the current character/abbreviation
+                                        data.Error.SetError(26, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
                                     }
                                     else
                                     {
-                                        // Highlight the current character.
-                                        data.Error.SetError(24, charPosition, formula.Substring(charIndex, 1));
+                                        // Highlight the current character/abbreviation.
+                                        data.Error.SetError(24, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
                                     }
                                 }
                                 else
@@ -922,10 +925,6 @@ namespace MolecularWeightCalculator.Formula
                                     // Simply treat it like a formula surrounded by parentheses
                                     // Thus, find the number after the abbreviation, then call ParseFormulaRecursive, sending it the formula for the abbreviation
                                     // Update the abbrevSymbolStack before calling so that we can check for circular abbreviation references
-
-                                    // Record the abbreviation length
-                                    var abbrevStats = Elements.AbbrevStats[symbolReference];
-                                    var abbrevSymbolLength = abbrevStats.Symbol.Length;
 
                                     var abbrevComponent = new FormulaComponent(false, symbolReference);
                                     components.Add(abbrevComponent);
