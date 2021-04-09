@@ -483,34 +483,22 @@ namespace MolecularWeightCalculator.Formula
                     return formulaData;
                 }
 
+                // Parse the formula into individual elements and abbreviations
                 ParseFormulaComponents(formulaData.FormulaOriginal, formulaData, valueForX);
+                // Replace the working formula with a cleaned formula (removes whitespace and unsupported characters, unless an error occurred when parsing)
+                formulaData.ReplaceFormulaWithCorrected();
+                // Compute the mass of the formula (also determines the total element counts (and isotopic correction) of the formula
                 ComputeFormulaMass(formulaData);
                 if (expandAbbreviations)
                 {
                     ParseFormulaExpandAbbreviations(formulaData);
+                    // Replace the working formula with the updated formula (no abbreviations)
+                    formulaData.ReplaceFormulaWithCorrected();
                 }
-
-                formulaData.ReplaceFormulaWithCorrected();
 
                 mLastFormulaParsed = formulaData;
 
-                if (!formulaData.HasError)
-                {
-                    var stats = formulaData.Stats;
-
-                    // Compute the standard deviation
-                    stats.StandardDeviation = Math.Sqrt(formulaData.FormulaSections.First().StDevSum);
-
-                    // Compute the total molecular weight
-                    stats.TotalMass = 0d; // Reset total weight of compound to 0 so we can add to it
-                    for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT; elementIndex++)
-                    {
-                        // Increase total weight by multiplying the count of each element by the element's mass
-                        // In addition, add in the Isotopic Correction value
-                        stats.TotalMass = stats.TotalMass + Elements.ElementStats[elementIndex].Mass * stats.Elements[elementIndex].Count + stats.Elements[elementIndex].IsotopicCorrection;
-                    }
-                }
-                else
+                if (formulaData.HasError)
                 {
                     formulaData.Error.ErrorDescription = Messages.LookupMessage(formulaData.Error.ErrorId);
                 }
@@ -1021,14 +1009,47 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Compute the mass for a parsed formula
+        /// Computes the mass for the formula, storing it in <paramref name="formulaData"/>.Stats
+        /// </summary>
+        /// <param name="formulaData">Formula parsing data with formula parsed into components</param>
+        private void ComputeFormulaMass(FormulaParseData formulaData)
+        {
+            if (formulaData.HasError)
+            {
+                return;
+            }
+
+            DetermineTotalElementCounts(formulaData);
+
+            if (formulaData.HasError)
+            {
+                return;
+            }
+
+            var stats = formulaData.Stats;
+
+            // Compute the standard deviation
+            stats.StandardDeviation = Math.Sqrt(formulaData.FormulaSections.First().StDevSum);
+
+            // Compute the total molecular weight
+            stats.TotalMass = 0d; // Reset total weight of compound to 0 so we can add to it
+            for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT; elementIndex++)
+            {
+                // Increase total weight by multiplying the count of each element by the element's mass
+                // In addition, add in the Isotopic Correction value
+                stats.TotalMass = stats.TotalMass + Elements.ElementStats[elementIndex].Mass * stats.Elements[elementIndex].Count + stats.Elements[elementIndex].IsotopicCorrection;
+            }
+        }
+
+        /// <summary>
+        /// Determines the total element counts for a parsed formula, as well as the total difference in mass for an element when an isotope is specified.
         /// </summary>
         /// <param name="formulaData">Formula parsing data with formula parsed into components</param>
         /// <param name="currentFormula">'null' for calls from other methods (this parameter is used for recursive calls)</param>
         /// <param name="currentGroup">'null' for calls from other methods (this parameter is used for recursive calls)</param>
         /// <param name="prevPosition">Should only be used for recursive calls; position tracking for error reporting</param>
         /// <param name="multiplier">Should only be used for recursive calls</param>
-        private void ComputeFormulaMass(FormulaParseData formulaData, FormulaData currentFormula = null, FormulaComponentGroup currentGroup = null, int prevPosition = 0, double multiplier = 1)
+        private void DetermineTotalElementCounts(FormulaParseData formulaData, FormulaData currentFormula = null, FormulaComponentGroup currentGroup = null, int prevPosition = 0, double multiplier = 1)
         {
             if (formulaData.HasError)
             {
@@ -1040,13 +1061,13 @@ namespace MolecularWeightCalculator.Formula
             if (currentFormula == null && formulaData.FormulaSections.Count > 1)
             {
                 // Handle subtraction; process right-to-left
-                var previousStartPosition = formulaData.FormulaOriginal.Length;
+                var previousStartPosition = formulaData.Formula.Length;
                 FormulaData previousBlock = null;
                 for (var i = formulaData.FormulaSections.Count - 1; i >= 0; i--)
                 {
                     var currentBlock = formulaData.FormulaSections[i];
                     var startPosition = previousStartPosition - currentBlock.Components.SymbolOriginal.Length;
-                    ComputeFormulaMass(formulaData, currentBlock, currentBlock.Components, startPosition);
+                    DetermineTotalElementCounts(formulaData, currentBlock, currentBlock.Components, startPosition);
 
                     // Perform subtraction...
                     if (previousBlock != null)
@@ -1113,7 +1134,7 @@ namespace MolecularWeightCalculator.Formula
                 {
                     // Recurse, and calculate
                     // Need to properly deal with the "carbonSiliconCount" and charge.
-                    ComputeFormulaMass(formulaData, currentFormula, fcg, position, multiplier * fcg.LeadingCoefficient * fcg.Count);
+                    DetermineTotalElementCounts(formulaData, currentFormula, fcg, position, multiplier * fcg.LeadingCoefficient * fcg.Count);
 
                     // Correct charge
                     if (fcg.LoneCarbonSiliconCount > 0)
