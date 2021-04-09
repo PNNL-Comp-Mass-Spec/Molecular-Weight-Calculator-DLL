@@ -92,6 +92,7 @@ namespace UnitTests
         [TestCase("csbalaceprndpmsmeugdtbdyhoertmybluhftawreosirptauhgtlpbbipoatrnfrraacthpaunppuamcmbkcfesfmmdnolr", 9710.62118, 9728.379096, 154)]
         [TestCase("cdinsnsbteixecsbalaceprndpm", 1832.80777, 1835.765967, 22)]
         [TestCase("CdInSnSbTeIXeCsBaLaCePrNdPm", 1832.80777, 1835.765967, 22)]
+        [TestCase("sips cl arkcas", 277.768261, 276.75237, -1)] // Ignoring whitespace and characters outside of a-z, A-Z, 0-9, []{}().^>
         public void ComputeMassStressTest(string formula, double expectedAvgMass, double expectedMonoMass, double expectedCharge, bool bracketsAsParentheses = false)
         {
             Console.WriteLine("Average Mass:");
@@ -160,6 +161,8 @@ namespace UnitTests
         //[TestCase(0, "", 0, "")]
         [TestCase(1, "hgly5.3leu2.2tyr0.03oh", 2, "unknown")]
         [TestCase(1, "sipsclarkcas", 7, "unknown")]
+        [TestCase(1, "sips cl a rkcas", 8, "unknown")] // Whitespace maintained when reporting element/abbreviation parsing errors
+        [TestCase(30, "C6H3 ^19.88Ar2Pb>Ar", 15, "Invalid formula subtraction")]
         public void ComputeMassErrorTests(int errorIdExpected, string formula, int expectedPosition, string messageExcerpt, bool bracketsAsParentheses = false)
         {
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;

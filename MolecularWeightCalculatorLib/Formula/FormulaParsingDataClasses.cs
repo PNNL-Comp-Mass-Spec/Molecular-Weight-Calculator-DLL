@@ -157,7 +157,7 @@ namespace MolecularWeightCalculator.Formula
                     break;
                 }
 
-                if (FormulaOriginal.Substring(i, 1).Equals(corrected.Substring(correctedPosition, 1)))
+                if (FormulaOriginal.Substring(i, 1).Equals(corrected.Substring(correctedPosition, 1), StringComparison.OrdinalIgnoreCase))
                 {
                     output += corrected[correctedPosition];
                     correctedPosition++;
