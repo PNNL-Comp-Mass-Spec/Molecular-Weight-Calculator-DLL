@@ -38,6 +38,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         double Mass { get; }
         string MassAndStdDevString { get; }
         double StandardDeviation { get; }
-        double ValueForX { get; set; }
+        double ValueForUnknown { get; set; }
     }
 }

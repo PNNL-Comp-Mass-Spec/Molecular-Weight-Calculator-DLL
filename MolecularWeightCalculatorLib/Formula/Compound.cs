@@ -44,14 +44,14 @@ namespace MolecularWeightCalculator.Formula
             mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();
 
             mFormula = "";
-            ValueForX = 1.0d;
+            ValueForUnknown = 1.0d;
         }
 
         private string mFormula;
         private string mFormattedFormula;
-        private double mValueForX; // The value to assign to x when present after a square bracket.
-        // For example, in C6H6[xBr] if x = 1, then the formula is treated like C6H6Br
-        // If x = 2, then the formula is treated like C6H6Br2
+        private double mValueForUnknown; // The value to assign to ? when present after a square bracket.
+        // For example, in C6H6[?Br] if ? = 1, then the formula is treated like C6H6Br
+        // If ? = 2, then the formula is treated like C6H6Br2
 
         private ComputationStats mComputationStats = new ComputationStats();
 
@@ -253,7 +253,7 @@ namespace MolecularWeightCalculator.Formula
             // mFormattedFormula is passed ByRef
             // If gComputationOptions.CaseConversion = ccConvertCaseUp then mFormattedFormula is properly capitalized
             // The mass of the compound is stored in mComputationStats.TotalMass
-            FormulaParseData = mElementAndMassRoutines.Parser.ParseFormula(mFormattedFormula, false, mValueForX);
+            FormulaParseData = mElementAndMassRoutines.Parser.ParseFormula(mFormattedFormula, false, mValueForUnknown);
             mFormattedFormula = FormulaParseData.FormulaCorrected;
             mComputationStats = FormulaParseData.Stats;
 
@@ -333,13 +333,13 @@ namespace MolecularWeightCalculator.Formula
 
         public double StandardDeviation => mComputationStats.StandardDeviation;
 
-        public double ValueForX
+        public double ValueForUnknown
         {
-            get => mValueForX;
+            get => mValueForUnknown;
             set
             {
                 if (value >= 0d)
-                    mValueForX = value;
+                    mValueForUnknown = value;
             }
         }
     }

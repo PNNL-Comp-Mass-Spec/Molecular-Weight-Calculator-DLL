@@ -437,7 +437,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="formula">Input/output: formula to parse</param>
         /// <param name="computationStats">Output: additional information about the formula</param>
         /// <param name="expandAbbreviations"></param>
-        /// <param name="valueForX"></param>
+        /// <param name="valueForUnknown"></param>
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         /// <remarks>
         /// ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
@@ -448,9 +448,9 @@ namespace MolecularWeightCalculator.Formula
             ref string formula,
             out ComputationStats computationStats,
             bool expandAbbreviations = false,
-            double valueForX = 1)
+            double valueForUnknown = 1)
         {
-            var data = ParseFormula(formula, expandAbbreviations, valueForX);
+            var data = ParseFormula(formula, expandAbbreviations, valueForUnknown);
 
             formula = data.Formula;
             computationStats = data.Stats;
@@ -463,7 +463,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="formula">Input/output: formula to parse</param>
         /// <param name="expandAbbreviations"></param>
-        /// <param name="valueForX"></param>
+        /// <param name="valueForUnknown"></param>
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         /// <remarks>
         /// ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
@@ -472,7 +472,7 @@ namespace MolecularWeightCalculator.Formula
         public IFormulaParseData ParseFormula(
             string formula,
             bool expandAbbreviations = false,
-            double valueForX = 1)
+            double valueForUnknown = 1)
         {
             var formulaData = new FormulaParseData(formula ?? "");
 
@@ -484,7 +484,7 @@ namespace MolecularWeightCalculator.Formula
                 }
 
                 // Parse the formula into individual elements and abbreviations
-                ParseFormulaComponents(formulaData.FormulaOriginal, formulaData, valueForX);
+                ParseFormulaComponents(formulaData.FormulaOriginal, formulaData, valueForUnknown);
                 // Replace the working formula with a cleaned formula (removes whitespace and unsupported characters, unless an error occurred when parsing)
                 formulaData.ReplaceFormulaWithCorrected();
                 // Compute the mass of the formula (also determines the total element counts (and isotopic correction) of the formula
@@ -516,11 +516,11 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="formula">Formula (or segment) to parse</param>
         /// <param name="data">Formula parsing data object to track errors and subtraction information</param>
-        /// <param name="valueForX">Value to use for 'X' if present</param>
+        /// <param name="valueForUnknown">Value to use for '?' if present</param>
         /// <param name="components">'null' for calls from other methods (this parameter is used for recursive calls)</param>
         /// <param name="prevPosition">Should only be used for recursive calls; position tracking for error reporting</param>
         /// <param name="parenDepth">Should only be used for recursive calls</param>
-        private void ParseFormulaComponents(string formula, FormulaParseData data, double valueForX = 1, FormulaComponentGroup components = null, int prevPosition = 0, int parenDepth = 0)
+        private void ParseFormulaComponents(string formula, FormulaParseData data, double valueForUnknown = 1, FormulaComponentGroup components = null, int prevPosition = 0, int parenDepth = 0)
         {
             if (formula.Contains(">"))
             {
@@ -541,7 +541,7 @@ namespace MolecularWeightCalculator.Formula
                         break;
                     }
 
-                    ParseFormulaComponents(block, data, valueForX, data.FormulaSections[i].Components, runningLength);
+                    ParseFormulaComponents(block, data, valueForUnknown, data.FormulaSections[i].Components, runningLength);
                     // Add block.Length to get the index of '>', and 1 to get the first index after it.
                     runningLength += block.Length + 1;
 
@@ -653,7 +653,7 @@ namespace MolecularWeightCalculator.Formula
                         };
                         components.Add(groupComponent);
                         component = groupComponent;
-                        ParseFormulaComponents(nextRemnant, data, valueForX, groupComponent, prevPosition + charIndex + 1, parenDepth + 1);
+                        ParseFormulaComponents(nextRemnant, data, valueForUnknown, groupComponent, prevPosition + charIndex + 1, parenDepth + 1);
                         var groupSegmentLength = groupComponent.FormulaOriginal.Length;
 
                         if (charIndex + groupSegmentLength >= formula.Length)
@@ -700,13 +700,12 @@ namespace MolecularWeightCalculator.Formula
                             data.Error.SetError(16, charPosition, formula.Substring(charIndex, 1));
                         }
 
-                        var nextChar = nextRemnant.Length > 1 ? char.ToUpper(nextRemnant[0]) : EMPTY_STRING_CHAR;
-                        var nextChar2 = nextRemnant.Length > 2 ? nextRemnant[1] : EMPTY_STRING_CHAR;
+                        var nextChar = nextRemnant.Length > 1 ? nextRemnant[0] : EMPTY_STRING_CHAR;
                         var bracketNumLength = 0;
                         var leadingCoefficient = 0.0;
-                        if (nextChar == 'X' && nextChar2 != 'e')
+                        if (nextChar == '?')
                         {
-                            leadingCoefficient = valueForX;
+                            leadingCoefficient = valueForUnknown;
                             bracketNumLength = 1;
                         }
                         else
@@ -736,7 +735,7 @@ namespace MolecularWeightCalculator.Formula
                             components.Add(bracketComponent);
                             component = bracketComponent;
                             // formula.Substring(formula.Length) returns "", so we shouldn't encounter an error with this
-                            ParseFormulaComponents(formula.Substring(numEndIndex + 1), data, valueForX, bracketComponent, prevPosition + numEndIndex + 1, parenDepth);
+                            ParseFormulaComponents(formula.Substring(numEndIndex + 1), data, valueForUnknown, bracketComponent, prevPosition + numEndIndex + 1, parenDepth);
                             var bracketSegmentLength = bracketComponent.FormulaOriginal.Length;
 
                             if (charIndex + bracketSegmentLength >= formula.Length)
@@ -820,7 +819,7 @@ namespace MolecularWeightCalculator.Formula
                         component = dashComponent;
 
                         // Parse anything remaining; don't handle closing parenthesis here.
-                        ParseFormulaComponents(dashRemnant, data, valueForX, dashComponent, prevPosition + charIndex + dashNumLength + 1, parenDepth);
+                        ParseFormulaComponents(dashRemnant, data, valueForUnknown, dashComponent, prevPosition + charIndex + dashNumLength + 1, parenDepth);
 
                         if (dashComponent.Components.Count == 0 && !data.HasError)
                         {
@@ -947,14 +946,8 @@ namespace MolecularWeightCalculator.Formula
 
                             default:
                                 // Element not Found
-                                if (char.ToUpper(currentChar) == 'X')
-                                {
-                                    // X for solver but no preceding bracket, highlight the current character
-                                    data.Error.SetError(18, charPosition, formula.Substring(charIndex, 1));
-                                }
-                                else
-                                    // unmatched character, highlight it.
-                                    data.Error.SetError(1, charPosition, formula.Substring(charIndex, 1));
+                                // Unmatched character, highlight it.
+                                data.Error.SetError(1, charPosition, formula.Substring(charIndex, 1));
 
                                 break;
                         }
@@ -963,6 +956,11 @@ namespace MolecularWeightCalculator.Formula
 
                     case '^': // ^ (caret)
                         // Hitting this should not be possible, so just ignore it.
+                        break;
+
+                    case '?':
+                        // ? for solver but no preceding bracket, highlight the current character
+                        data.Error.SetError(18, charPosition, formula.Substring(charIndex, 1));
                         break;
 
                     default:

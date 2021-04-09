@@ -350,7 +350,7 @@ namespace MolecularWeightCalculator.Formula
             messages.Add(15, "Unmatched bracket");
             messages.Add(16, "Cannot handle nested brackets or brackets inside multiple hydrates (unless 'treat brackets as parentheses' is on)");
             messages.Add(17, "Obsolete msg: Cannot handle multiple hydrates (extras) in brackets");
-            messages.Add(18, "Unknown element ");
+            messages.Add(18, "'?' only allowed after '['");
             messages.Add(19, "Obsolete msg: Cannot start formula with a dash (-)");
             messages.Add(20, "There must be an isotopic mass number following the caret (^)");
             messages.Add(21, "Obsolete msg: Zero after caret (^); an isotopic mass of zero is not allowed");
