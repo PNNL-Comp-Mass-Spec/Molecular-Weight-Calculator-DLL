@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using MolecularWeightCalculator;
 using NUnit.Framework;
@@ -7,6 +8,59 @@ namespace UnitTests.FunctionalTests
 {
     public class PeptideTests
     {
+        private readonly IReadOnlyDictionary<int, string> expectedFragments;
+
+        public PeptideTests()
+        {
+            expectedFragments = new Dictionary<int, string>()
+            {
+                {1, "MMK"},
+                {2, "ANVTK"},
+                {3, "K"},
+                {4, "TLNEGLGLLER"},
+                {5, "VIPSR"},
+                {6, "SSNPLLTALK"},
+                {7, "VETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVR"},
+                {8, "NLGGELVELELSGQELSVR"},
+                {9, "SGGSDFK"},
+                {10, "LQTGDIEAYPPLSFPAQADVSLDGGELSR"},
+                {11, "AFSSVR"},
+                {12, "YAASNEAFQAVFR"},
+                {13, "GIK"},
+                {14, "LEHHGESAR"},
+                {15, "VVASDGYR"},
+                {16, "VAIR"},
+                {17, "DFPASGDGK"},
+                {18, "NLIIPAR"},
+                {19, "SVDELIR"},
+                {20, "VLK"},
+                {21, "DGEAR"},
+                {22, "FTYGDGMLTVTTDR"},
+                {23, "VK"},
+                {24, "MNLK"},
+                {25, "LLDGDFPDYER"},
+                {26, "VIPK"},
+                {27, "DIK"},
+                {28, "LQVTLPATALK"},
+                {29, "EAVNR"},
+                {30, "VAVLADK"},
+                {31, "NANNR"},
+                {32, "VEFLVSEGTLR"},
+                {33, "LAAEGDYGR"},
+                {34, "AQDTLSVTQGGTEQAMSLAFNAR"},
+                {35, "HVLDALGPIDGDAELLFSGSTSPAIFR"},
+                {36, "AR"},
+                {37, "R"},
+                {38, "WGR"},
+                {39, "R"},
+                {40, "VYGGHGHAAR"},
+                {41, "LR"},
+                {42, "GLLRPLR"},
+                {43, "GMSALAHHPESSPPLEPRPEFA"},
+                {44, ""},
+            };
+        }
+
         [Test]
         public void TestTrypticName()
         {
@@ -56,6 +110,7 @@ namespace UnitTests.FunctionalTests
             {
                 peptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)fragIndex, out _, out _);
                 Console.WriteLine("Tryptic fragment " + fragIndex + ": " + peptideFragMwtWin);
+                Assert.AreEqual(peptideFragMwtWin, expectedFragments[fragIndex], "Fragment did not match expected sequence");
                 fragIndex += 1;
             }
             while (peptideFragMwtWin.Length > 0);
