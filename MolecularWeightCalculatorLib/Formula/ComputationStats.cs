@@ -31,7 +31,7 @@ namespace MolecularWeightCalculator.Formula
         public ComputationStats Clone()
         {
             // Start with a shallow copy for all value members
-            var cloned = (ComputationStats)MemberwiseClone();
+            var cloned = (ComputationStats)MemberwiseClone(); // NOTE: can't use then when trying to create deep copies of lists, when the object reference is readonly
 
             // Finish with a deep copy for all reference members
             cloned.Elements = new ElementUseStats[Elements.Length];

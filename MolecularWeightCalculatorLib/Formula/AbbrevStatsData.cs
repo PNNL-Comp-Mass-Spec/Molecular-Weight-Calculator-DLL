@@ -54,19 +54,13 @@ namespace MolecularWeightCalculator.Formula
         public bool InvalidSymbolOrFormula { get; internal set; }
 
         /// <summary>
-        /// Element counts for this abbreviation. Key is element symbol reference, value is count for that element.
+        /// Element counts for this abbreviation. Key is element symbol reference, value element use information.
         /// </summary>
-        public IReadOnlyDictionary<int, double> ElementCounts => elementCounts;
-
-        /// <summary>
-        /// Isotopic correction for this abbreviation. Key is element symbol reference, value is the isotopic correction for the element, for this abbreviation.
-        /// </summary>
-        public IReadOnlyDictionary<int, double> ElementIsotopicCorrection => elementIsotopicCorrection;
+        public IReadOnlyDictionary<int, IElementUseStats> ElementsUsed => elementsUsed;
 
         public IReadOnlyList<string> AbbreviationsUsed => abbreviationsUsed;
 
-        private Dictionary<int, double> elementCounts = new Dictionary<int, double>();
-        private Dictionary<int, double> elementIsotopicCorrection = new Dictionary<int, double>();
+        private Dictionary<int, IElementUseStats> elementsUsed = new Dictionary<int, IElementUseStats>();
         private List<string> abbreviationsUsed = new List<string>();
 
         public AbbrevStatsData(string symbol, string formula, float charge, bool isAminoAcid, string oneLetterSymbol = "", string comment = "", bool invalidSymbolOrFormula = false)
@@ -82,18 +76,23 @@ namespace MolecularWeightCalculator.Formula
             Comment = comment;
         }
 
-        public void AddElement(int elementSymbolReference, double count, double isotopicCorrection)
+        public void AddUsedElements(IReadOnlyList<ElementUseStats> elements)
         {
-            if (elementCounts.ContainsKey(elementSymbolReference))
+            elementsUsed.Clear();
+
+            for (var i = 1; i <= ElementsAndAbbrevs.ELEMENT_COUNT; i++)
             {
-                elementCounts[elementSymbolReference] += count;
-                elementIsotopicCorrection[elementSymbolReference] += isotopicCorrection;
+                var element = elements[i];
+                if (element.Used)
+                {
+                    elementsUsed.Add(i, element.Clone());
+                }
             }
-            else
-            {
-                elementCounts.Add(elementSymbolReference, count);
-                elementIsotopicCorrection.Add(elementSymbolReference, isotopicCorrection);
-            }
+        }
+
+        public void ClearElements()
+        {
+            elementsUsed.Clear();
         }
 
         public void SetUsedAbbreviations(IReadOnlyList<string> abbrevsUsed)
@@ -101,12 +100,6 @@ namespace MolecularWeightCalculator.Formula
             abbreviationsUsed.Clear();
             abbreviationsUsed.Capacity = 0;
             abbreviationsUsed.AddRange(abbrevsUsed);
-        }
-
-        public void ClearElements()
-        {
-            elementCounts.Clear();
-            elementIsotopicCorrection.Clear();
         }
 
         public override string ToString()

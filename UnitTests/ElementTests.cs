@@ -225,6 +225,18 @@ namespace UnitTests
         }
 
         [Test]
+        [TestCase("D","^2.014H")]
+        [TestCase("D2CH", "C^2.014H2H")]
+        [TestCase("D2CH^3H3", "C^2.014H2^3H3H")]
+        [TestCase("D2C^13C5H^3H3", "^13C5C^2.014H2^3H3H")]
+        public void ConvertToEmpiricalTests(string formula, string expectedEmpirical)
+        {
+            mMwtWinAvg.Compound.Formula = formula;
+            var empirical = mMwtWinAvg.Compound.ConvertToEmpirical();
+            Assert.AreEqual(expectedEmpirical, empirical);
+        }
+
+        [Test]
         public void CircularReferenceHandlingTests()
         {
             var mwt = new MolecularWeightTool(ElementMassMode.Average);

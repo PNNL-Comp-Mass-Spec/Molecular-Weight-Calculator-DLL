@@ -179,16 +179,7 @@ namespace MolecularWeightCalculator.Formula
 
                 abbrev.StdDev = computationStats.StandardDeviation;
                 abbrev.Mass = computationStats.TotalMass;
-
-                abbrev.ClearElements();
-                for (var i = 1; i <= ElementsAndAbbrevs.ELEMENT_COUNT; i++)
-                {
-                    var element = computationStats.Elements[i];
-                    if (element.Used)
-                    {
-                        abbrev.AddElement(i, element.Count, element.IsotopicCorrection);
-                    }
-                }
+                abbrev.AddUsedElements(computationStats.Elements);
             }
 
             return data.Error.ErrorId;
@@ -301,32 +292,22 @@ namespace MolecularWeightCalculator.Formula
         /// <remarks></remarks>
         public string ConvertFormulaToEmpirical(string formula)
         {
-            // TODO: Also needs to support isotopes used in abbreviations....
             // Call ParseFormulaPublic to compute the formula's mass and fill computationStats
             var data = (FormulaParseData)ParseFormula(formula);
 
             if (data.Error.ErrorId == 0)
             {
-                var computationStats = data.Stats;
-                // Convert to empirical formula
-                var empiricalFormula = "";
-                // Carbon first, then hydrogen, then the rest alphabetically
-                // ElementAlph is already sorted properly as 0:{'C',6}, 1:{'H',1}, then alphabetically
-                foreach (var elementIndex in Elements.ElementAlph.Select(x => x.Value))
+                var stats = data.Stats;
+                var elementsUsed = new Dictionary<int, IElementUseStats>();
+                for (var i = 1; i <= ElementsAndAbbrevs.ELEMENT_COUNT; i++)
                 {
-                    // Only display the element if it's in the formula
-                    var thisElementCount = computationStats.Elements[elementIndex].Count;
-                    if (Math.Abs(thisElementCount - 1.0d) < float.Epsilon)
+                    if (stats.Elements[i].Used)
                     {
-                        empiricalFormula += Elements.ElementStats[elementIndex].Symbol;
-                    }
-                    else if (thisElementCount > 0d)
-                    {
-                        empiricalFormula += Elements.ElementStats[elementIndex].Symbol + thisElementCount;
+                        elementsUsed.Add(i, stats.Elements[i]);
                     }
                 }
 
-                return empiricalFormula;
+                return ConvertFormulaToEmpirical(elementsUsed);
             }
 
             return (-1).ToString();
@@ -338,9 +319,8 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="elementCounts"></param>
         /// <returns>The empirical formula, or -1 if an error</returns>
         /// <remarks></remarks>
-        public string ConvertFormulaToEmpirical(IReadOnlyDictionary<int, double> elementCounts)
+        public string ConvertFormulaToEmpirical(IReadOnlyDictionary<int, IElementUseStats> elementCounts)
         {
-            // TODO: Also needs to support isotopes used in abbreviations....
             if (elementCounts.Count == 0)
             {
                 return (-1).ToString();
@@ -352,16 +332,32 @@ namespace MolecularWeightCalculator.Formula
             // ElementAlph is already sorted properly as 0:{'C',6}, 1:{'H',1}, then alphabetically
             foreach (var elementIndex in Elements.ElementAlph.Select(x => x.Value))
             {
-                if (elementCounts.TryGetValue(elementIndex, out var count))
+                if (elementCounts.TryGetValue(elementIndex, out var stats))
                 {
                     // Only display the element if it's in the formula
-                    if (Math.Abs(count - 1.0) < float.Epsilon)
+                    var elementCount = stats.Count;
+                    var isotopesCount = 0.0;
+                    foreach (var isotope in stats.IsotopesUsed.OrderBy(x => x.Mass))
+                    {
+                        isotopesCount += isotope.Count;
+                        if (Math.Abs(isotope.Count - 1.0) < float.Epsilon)
+                        {
+                            empiricalFormula += $"^{isotope.Mass}{Elements.ElementStats[elementIndex].Symbol}";
+                        }
+                        else if (isotope.Count > 0)
+                        {
+                            empiricalFormula += $"^{isotope.Mass}{Elements.ElementStats[elementIndex].Symbol}{isotope.Count}";
+                        }
+                    }
+
+                    elementCount -= isotopesCount;
+                    if (Math.Abs(elementCount - 1.0) < float.Epsilon)
                     {
                         empiricalFormula += Elements.ElementStats[elementIndex].Symbol;
                     }
-                    else if (count > 0)
+                    else if (elementCount > 0)
                     {
-                        empiricalFormula += Elements.ElementStats[elementIndex].Symbol + count;
+                        empiricalFormula += Elements.ElementStats[elementIndex].Symbol + elementCount;
                     }
                 }
             }
@@ -914,7 +910,7 @@ namespace MolecularWeightCalculator.Formula
                                     // Cannot use an invalid abbreviation. Should only occur when parsing abbreviations
                                     data.Error.SetError(32, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
                                 }
-                                else if (abbrevStats.ElementCounts.Count == 0)
+                                else if (abbrevStats.ElementsUsed.Count == 0)
                                 {
                                     // Cannot return success if the abbreviation has not yet been parsed, so set an error
                                     data.Error.SetError(31, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
@@ -1082,6 +1078,7 @@ namespace MolecularWeightCalculator.Formula
                             var element = cStats.Elements[elementIndex];
                             if (Elements.ElementStats[elementIndex].Mass * element.Count + element.IsotopicCorrection >= Elements.ElementStats[elementIndex].Mass * pStats.Elements[elementIndex].Count + pStats.Elements[elementIndex].IsotopicCorrection)
                             {
+                                element.Used = true;
                                 element.Count -= pStats.Elements[elementIndex].Count;
                                 if (element.Count < 0d)
                                 {
@@ -1220,10 +1217,7 @@ namespace MolecularWeightCalculator.Formula
 
                             // Store information in .Isotopes[]
                             // Increment the isotope counting bin
-                            var isotope = new IsotopicAtomInfo();
-                            element.Isotopes.Add(isotope);
-                            isotope.Count += addCount;
-                            isotope.Mass = component.Isotope;
+                            element.AddIsotope(component.Isotope, addCount);
 
                             // Add correction amount to computationStats.Elements[SymbolReference].IsotopicCorrection
                             element.IsotopicCorrection += component.Isotope * addCount - elementStats.Mass * addCount;
@@ -1249,10 +1243,15 @@ namespace MolecularWeightCalculator.Formula
                         currentFormula.StDevSum += addCount * Math.Pow(abbrevStats.StdDev, 2);
 
                         // Add the element data from the abbreviation to the element tracking.
-                        foreach (var item in abbrevStats.ElementCounts)
+                        foreach (var item in abbrevStats.ElementsUsed)
                         {
-                            stats.Elements[item.Key].Count += addCount * item.Value;
-                            stats.Elements[item.Key].IsotopicCorrection += addCount * abbrevStats.ElementIsotopicCorrection[item.Key];
+                            stats.Elements[item.Key].Used = true;
+                            stats.Elements[item.Key].Count += addCount * item.Value.Count;
+                            stats.Elements[item.Key].IsotopicCorrection += addCount * item.Value.IsotopicCorrection;
+                            foreach (var isotope in item.Value.IsotopesUsed)
+                            {
+                                stats.Elements[item.Key].AddIsotope(isotope.Mass, addCount * isotope.Count);
+                            }
                         }
                     }
                 }
@@ -1313,7 +1312,7 @@ namespace MolecularWeightCalculator.Formula
                     if (abbrevFormula.Contains(">"))
                     {
                         // Use empirical formula instead of formula with subtraction
-                        abbrevFormula = ConvertFormulaToEmpirical(abbrevStats.ElementCounts);
+                        abbrevFormula = ConvertFormulaToEmpirical(abbrevStats.ElementsUsed);
                     }
 
                     if (Math.Abs(component.Count - 1) >= double.Epsilon)

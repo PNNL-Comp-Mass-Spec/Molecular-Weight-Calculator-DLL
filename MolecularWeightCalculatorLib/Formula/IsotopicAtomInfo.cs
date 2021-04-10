@@ -3,7 +3,7 @@
 namespace MolecularWeightCalculator.Formula
 {
     [ComVisible(false)]
-    public class IsotopicAtomInfo
+    public class IsotopicAtomInfo : IIsotopicAtomInfo
     {
         public double Count { get; set; } // Can have non-integer counts of atoms, e.g. ^13C5.5
         public double Mass { get; set; }
@@ -18,5 +18,12 @@ namespace MolecularWeightCalculator.Formula
         {
             return $"{Count}x{Mass:F2}";
         }
+    }
+
+    [ComVisible(false)]
+    public interface IIsotopicAtomInfo
+    {
+        public double Count { get; } // Can have non-integer counts of atoms, e.g. ^13C5.5
+        public double Mass { get; }
     }
 }
