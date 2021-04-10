@@ -224,6 +224,77 @@ namespace UnitTests
             Assert.GreaterOrEqual(parseData.CautionDescription.IndexOf(cautionExcerpt, StringComparison.OrdinalIgnoreCase), 0, "excerpt not found in reported caution statement");
         }
 
+        [Test]
+        public void CircularReferenceHandlingTests()
+        {
+            var mwt = new MolecularWeightTool(ElementMassMode.Average);
+            var mass = mwt.ComputeMassExtra("TryCo", out var parseData);
+            //ReportParseData(parseData);
+            // Error expected (unknown element):
+            Assert.AreEqual(1, parseData.ErrorData.ErrorId);
+
+            var error = mwt.SetAbbreviation("Try", "FailH2O2", 1, false);
+            // Error expected (unknown element):
+            Assert.AreEqual(1, error);
+
+            mass = mwt.ComputeMassExtra("TryCo", out parseData);
+            //ReportParseData(parseData);
+            // Error expected (unknown element):
+            Assert.AreEqual(1, parseData.ErrorData.ErrorId);
+
+            error = mwt.SetAbbreviation("Fail", "TryCaOH", 1, false);
+            // Error expected (circular reference), A->B->A:
+            Assert.AreEqual(28, error);
+
+            mass = mwt.ComputeMassExtra("TryCo", out parseData);
+            //ReportParseData(parseData);
+            // Error expected (unknown element):
+            Assert.AreEqual(1, parseData.ErrorData.ErrorId);
+
+            error = mwt.SetAbbreviation("Fail", "TrierCaOH", 1, false);
+            // Error expected (invalid abbreviation, due to bad dependency):
+            Assert.AreEqual(32, error);
+
+            mass = mwt.ComputeMassExtra("TryCo", out parseData);
+            //ReportParseData(parseData);
+            // Error expected (unknown element):
+            Assert.AreEqual(1, parseData.ErrorData.ErrorId);
+
+            error = mwt.SetAbbreviation("Trier", "TryOH", 1, false);
+            // Error expected (circular reference), A->B->C->A:
+            Assert.AreEqual(28, error);
+
+            mass = mwt.ComputeMassExtra("TryCo", out parseData);
+            //ReportParseData(parseData);
+            // Error expected (unknown element):
+            Assert.AreEqual(1, parseData.ErrorData.ErrorId);
+
+            error = mwt.SetAbbreviation("Trier", "Trier", 1, false);
+            // Error expected (circular reference), A->A:
+            Assert.AreEqual(28, error);
+
+            mass = mwt.ComputeMassExtra("TryCo", out parseData);
+            //ReportParseData(parseData);
+            // Error expected (unknown element):
+            Assert.AreEqual(1, parseData.ErrorData.ErrorId);
+
+            error = mwt.SetAbbreviation("Trier", "C6H12O6", 1, false);
+            // No error expected:
+            Assert.AreEqual(0, error);
+
+            mass = mwt.ComputeMassExtra("TryCo", out parseData);
+            ReportParseData(parseData);
+            // No error expected:
+            Assert.AreEqual(0, parseData.ErrorData.ErrorId);
+            Assert.AreEqual(218.0469, mass, MATCHING_MASS_EPSILON);
+
+            mass = mwt.ComputeMassExtra("TryCoFail", out parseData);
+            ReportParseData(parseData);
+            // No error expected:
+            Assert.AreEqual(0, parseData.ErrorData.ErrorId);
+            Assert.AreEqual(383.22392, mass, MATCHING_MASS_EPSILON);
+        }
+
         private void ReportParseData(IFormulaParseData data)
         {
             if (!string.IsNullOrWhiteSpace(data.CautionDescription))
@@ -234,7 +305,7 @@ namespace UnitTests
 
             if (data.ErrorData.ErrorId == 0)
             {
-                Console.WriteLine(data.FormulaCorrected);
+                Console.WriteLine(data.Formula);
                 var stats = data.Stats;
 
                 Console.WriteLine("StDev:  {0}", stats.StandardDeviation);

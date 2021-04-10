@@ -16,11 +16,6 @@ namespace MolecularWeightCalculator.Formula
         string Formula { get; }
 
         /// <summary>
-        /// The corrected formula (appropriate capitalization, expanded abbreviations, etc.). May not be correct when an error occurs.
-        /// </summary>
-        string FormulaCorrected { get; }
-
-        /// <summary>
         /// Computed formula mass
         /// </summary>
         double Mass { get; }

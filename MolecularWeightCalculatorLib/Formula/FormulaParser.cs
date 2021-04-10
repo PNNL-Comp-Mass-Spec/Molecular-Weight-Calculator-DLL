@@ -148,14 +148,15 @@ namespace MolecularWeightCalculator.Formula
         /// Compute the weight of an abbreviation
         /// </summary>
         /// <param name="abbrev">Abbreviation to update with mass, stDev, and element counts</param>
-        /// <param name="updateFormula">If true, also update the formula</param>
-        /// <returns>True if no error, or false if an error occurred</returns>
-        /// <remarks>Error information is stored in ErrorParams</remarks>
-        internal bool ComputeAbbrevWeight(AbbrevStatsData abbrev, bool updateFormula = false)
+        /// <returns>ErrorId: 0 if no error.</returns>
+        internal int ComputeAbbrevWeight(AbbrevStatsData abbrev)
         {
             var formula = abbrev.Formula;
 
             var data = (FormulaParseData)ParseFormula(formula, false);
+
+            // Set the used abbreviations here (regardless of success) for circular reference checks
+            abbrev.SetUsedAbbreviations(data.AbbreviationUsage.Keys.ToList());
 
             if (data.AbbreviationUsage.Count > 0)
             {
@@ -174,11 +175,6 @@ namespace MolecularWeightCalculator.Formula
 
             if (data.Error.ErrorId == 0)
             {
-                if (updateFormula)
-                {
-                    abbrev.Formula = formula;
-                }
-
                 var computationStats = data.Stats;
 
                 abbrev.StdDev = computationStats.StandardDeviation;
@@ -193,13 +189,9 @@ namespace MolecularWeightCalculator.Formula
                         abbrev.AddElement(i, element.Count, element.IsotopicCorrection);
                     }
                 }
-
-                abbrev.SetUsedAbbreviations(data.AbbreviationUsage.Keys.ToList());
-
-                return true;
             }
 
-            return false;
+            return data.Error.ErrorId;
         }
 
         /// <summary>
@@ -390,7 +382,7 @@ namespace MolecularWeightCalculator.Formula
 
             if (data.Error.ErrorId == 0)
             {
-                return data.FormulaCorrected;
+                return data.Formula;
             }
 
             return (-1).ToString();
@@ -903,20 +895,29 @@ namespace MolecularWeightCalculator.Formula
                                 var abbrevStats = Elements.AbbrevStats[symbolReference];
                                 var abbrevSymbolLength = abbrevStats.Symbol.Length;
 
-                                // Found an abbreviation
-                                if (isIsotope)
+                                // Store the abbreviation for the circular reference checks (if parsing an abbreviation formula)
+                                // Need to store this regardless of parsing success to prevent infinite loops if a circular reference does occur.
+                                data.AddAbbreviationUsage(abbrevStats.Symbol, prevPosition + charIndex);
+
+                                if (isIsotope && char.ToUpper(currentChar) == 'D' && nextRemnant[0] != 'y')
                                 {
-                                    // Cannot have isotopic mass for an abbreviation, including deuterium
-                                    if (char.ToUpper(currentChar) == 'D' && nextRemnant[0] != 'y')
-                                    {
-                                        // Isotopic mass used for Deuterium; highlight the current character/abbreviation
-                                        data.Error.SetError(26, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
-                                    }
-                                    else
-                                    {
-                                        // Highlight the current character/abbreviation.
-                                        data.Error.SetError(24, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
-                                    }
+                                    // Isotopic mass used for Deuterium; highlight the current character/abbreviation
+                                    data.Error.SetError(26, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
+                                }
+                                else if (isIsotope)
+                                {
+                                    // Cannot have isotopic mass for an abbreviation; highlight the current character/abbreviation.
+                                    data.Error.SetError(24, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
+                                }
+                                else if (abbrevStats.InvalidSymbolOrFormula)
+                                {
+                                    // Cannot use an invalid abbreviation. Should only occur when parsing abbreviations
+                                    data.Error.SetError(32, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
+                                }
+                                else if (abbrevStats.ElementCounts.Count == 0)
+                                {
+                                    // Cannot return success if the abbreviation has not yet been parsed, so set an error
+                                    data.Error.SetError(31, charPosition, formula.Substring(charIndex, abbrevSymbolLength));
                                 }
                                 else
                                 {
@@ -1239,9 +1240,6 @@ namespace MolecularWeightCalculator.Formula
 
                         // Record the abbreviation length
                         var abbrevStats = Elements.AbbrevStats[symbolReference];
-
-                        // Store the abbreviation for the circular reference checks (if parsing an abbreviation formula)
-                        formulaData.AddAbbreviationUsage(abbrevStats.Symbol, position);
 
                         // Use the defined charge for the abbreviation
                         // addCount is an abbreviation occurrence count

@@ -93,54 +93,6 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Add an abbreviation
-        /// </summary>
-        /// <param name="abbrevIndex"></param>
-        /// <param name="symbol"></param>
-        /// <param name="formula"></param>
-        /// <param name="charge"></param>
-        /// <param name="isAminoAcid"></param>
-        /// <param name="oneLetter"></param>
-        /// <param name="comment"></param>
-        /// <param name="invalidSymbolOrFormula"></param>
-        /// <returns><paramref name="formula"/> with format standardized by ParseFormulaPublic</returns>
-        private string AddAbbreviationWork(
-            short abbrevIndex, string symbol,
-            string formula, float charge,
-            bool isAminoAcid,
-            string oneLetter = "",
-            string comment = "",
-            bool invalidSymbolOrFormula = false)
-        {
-            AbbrevStatsData stats;
-            if (abbrevIndex < 0 || abbrevIndex >= mAbbrevStats.Count)
-            {
-                stats = new AbbrevStatsData(symbol, formula, charge, isAminoAcid, oneLetter, comment, invalidSymbolOrFormula);
-                mAbbrevStats.Add(stats);
-            }
-            else
-            {
-                stats = mAbbrevStats[abbrevIndex];
-                stats.InvalidSymbolOrFormula = invalidSymbolOrFormula;
-                stats.Symbol = symbol;
-                stats.Formula = formula;
-                stats.Charge = charge;
-                stats.OneLetterSymbol = oneLetter.ToUpper();
-                stats.IsAminoAcid = isAminoAcid;
-                stats.Comment = comment;
-            }
-
-            if (!Parser.ComputeAbbrevWeight(stats))
-            {
-                // Error occurred computing mass for abbreviation
-                stats.Mass = 0d;
-                stats.InvalidSymbolOrFormula = true;
-            }
-
-            return formula;
-        }
-
-        /// <summary>
         /// Examines the formula excerpt to determine if it is an element, abbreviation, amino acid, or unknown
         /// </summary>
         /// <param name="formulaExcerpt"></param>
@@ -561,17 +513,12 @@ namespace MolecularWeightCalculator.Formula
             // TODO: Consider calling this as part of the constructor
             MemoryLoadElements(elementMode);
 
-            // Reconstruct master symbols list
-            // This is needed here to properly load the abbreviations
-            ConstructMasterSymbolsList();
-
             MemoryLoadAbbreviations();
-
-            // Reconstruct master symbols list
-            // Needed here to load abbreviations into the list
-            ConstructMasterSymbolsList();
         }
 
+        /// <summary>
+        /// Loads the hard-coded abbreviations; also calls <see cref="ConstructMasterSymbolsList"/> when done
+        /// </summary>
         public void MemoryLoadAbbreviations()
         {
             mAbbrevStats.Clear();
@@ -622,16 +569,8 @@ namespace MolecularWeightCalculator.Formula
             mAbbrevStats.Add(new AbbrevStatsData("Ts", "CH3C6H4SOO", -1, false, "", "Tosyl"));
             mAbbrevStats.Add(new AbbrevStatsData("Urea", "H2NCONH2", 0f, false, "", "Urea"));
 
-            foreach (var stats in mAbbrevStats)
-            {
-                if (!Parser.ComputeAbbrevWeight(stats))
-                {
-                    // Error occurred computing mass for abbreviation
-                    stats.Mass = 0d;
-                    stats.InvalidSymbolOrFormula = true;
-                    // TODO: Should probably throw an exception if there is an invalid symbol/formula at this point, since the only entries right now are the hard-coded ones...
-                }
-            }
+            // Compute the masses for all abbreviations. Also calls ConstructMasterSymbolsList()
+            RecomputeAbbreviationMasses();
 
             // Note Asx or B is often used for Asp or Asn
             // Note Glx or Z is often used for Glu or Gln
@@ -669,7 +608,7 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Load elements and isotopes
+        /// Load elements and isotopes; also calls <see cref="ConstructMasterSymbolsList"/> and <see cref="RecomputeAbbreviationMasses"/> when done
         /// </summary>
         /// <param name="elementMode">Element mode: 1 for average weights, 2 for monoisotopic weights, 3 for integer weights</param>
         /// <param name="specificElement"></param>
@@ -789,17 +728,67 @@ namespace MolecularWeightCalculator.Formula
                         break;
                 }
             }
+
+            // Reconstruct master symbols list
+            // This is needed here to properly load the abbreviations
+            ConstructMasterSymbolsList();
+            // Also update and existing abbreviations
+            RecomputeAbbreviationMasses();
         }
 
         /// <summary>
-        /// Recomputes the Mass for all of the loaded abbreviations
+        /// Recomputes the Mass for all of the loaded abbreviations; also calls <see cref="ConstructMasterSymbolsList"/>
         /// </summary>
-        internal void RecomputeAbbreviationMasses()
+        /// <returns>ErrorID: '0' for no error</returns>
+        internal int RecomputeAbbreviationMasses()
         {
-            for (var index = 0; index < mAbbrevStats.Count; index++)
+            if (mAbbrevStats.Count == 0)
             {
-                Parser.ComputeAbbrevWeight(mAbbrevStats[index], true);
+                return 0;
             }
+
+            // Reset the values that can affect computation; also allows later resolving of a dependency on another abbreviation.
+            foreach (var stats in mAbbrevStats)
+            {
+                stats.InvalidSymbolOrFormula = false;
+                stats.ClearElements();
+            }
+
+            // Rebuild the master symbols list; this will temporarily add all abbreviations to the list (since we reset the invalid flag)
+            ConstructMasterSymbolsList();
+
+            var retryList = new List<AbbrevStatsData>(mAbbrevStats);
+            var lastErrorId = 0;
+
+            // Loop to allow abbreviations to depend on other abbreviations without requiring a specific calculation order.
+            while (retryList.Count > 0)
+            {
+                var toRetry = new List<AbbrevStatsData>(mAbbrevStats.Count);
+                foreach (var stats in retryList)
+                {
+                    var errorId = Parser.ComputeAbbrevWeight(stats);
+                    if (errorId == 31)
+                    {
+                        // Error occurred: abbreviation depends on another abbreviation that has not yet been parsed
+                        // Retry later
+                        toRetry.Add(stats);
+                    }
+                    else if (errorId != 0)
+                    {
+                        // Error occurred parsing abbreviation or computing mass; usually bad formula or circular reference.
+                        stats.Mass = 0d;
+                        stats.InvalidSymbolOrFormula = true;
+                        lastErrorId = errorId;
+                    }
+                }
+
+                retryList = toRetry;
+            }
+
+            // Rebuild the master symbols list; this time it will exclude any abbreviations that were marked as invalid.
+            ConstructMasterSymbolsList();
+
+            return lastErrorId;
         }
 
         internal void RemoveAllAbbreviations()
@@ -909,7 +898,7 @@ namespace MolecularWeightCalculator.Formula
 
             if (abbrevId >= 1)
             {
-                SetAbbreviationById((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
+                errorId = SetAbbreviationById((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
             }
 
             return errorId;
@@ -989,7 +978,7 @@ namespace MolecularWeightCalculator.Formula
                             // Make sure the abbreviation's formula is valid
                             // This will also auto-capitalize the formula if auto-capitalize is turned on
                             var data = Parser.ParseFormula(formula);
-                            formula = data.FormulaCorrected;
+                            formula = data.Formula;
 
                             errorId = data.ErrorData.ErrorId;
                             if (errorId != 0)
@@ -1001,9 +990,16 @@ namespace MolecularWeightCalculator.Formula
                             }
                         }
 
-                        AddAbbreviationWork(abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, invalidSymbolOrFormula);
+                        var stats = new AbbrevStatsData(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, invalidSymbolOrFormula);
 
-                        ConstructMasterSymbolsList();
+                        if (abbrevId < 0 || abbrevId >= mAbbrevStats.Count)
+                            mAbbrevStats.Add(stats);
+                        else
+                            mAbbrevStats[abbrevId] = stats;
+
+                        // Compute the mass, handling any now-resolved abbreviation dependencies
+                        // Also calls ConstructMasterSymbolsList();
+                        errorId = RecomputeAbbreviationMasses();
                     }
                 }
                 else
@@ -1124,8 +1120,6 @@ namespace MolecularWeightCalculator.Formula
                     mCurrentElementMode = newElementMode;
 
                     MemoryLoadElements(mCurrentElementMode);
-                    ConstructMasterSymbolsList();
-                    RecomputeAbbreviationMasses();
                 }
             }
             catch (Exception ex)

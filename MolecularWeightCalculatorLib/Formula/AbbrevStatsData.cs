@@ -10,48 +10,48 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// The symbol for the abbreviation, e.g. Ph for the phenyl group or Ala for alanine (3 letter codes for amino acids)
         /// </summary>
-        public string Symbol { get; set; }
+        public string Symbol { get; }
 
         /// <summary>
         /// Empirical formula
         /// Cannot contain other abbreviations
         /// </summary>
-        public string Formula { get; set; }
+        public string Formula { get; }
 
         /// <summary>
         /// Computed mass for quick reference
         /// </summary>
-        public double Mass { get; set; }
+        public double Mass { get; internal set; }
 
         /// <summary>
         /// Computed standard deviation for quick reference
         /// </summary>
-        public double StdDev { get; set; }
+        public double StdDev { get; internal set; }
 
         /// <summary>
         /// Charge state
         /// </summary>
-        public float Charge { get; set; }
+        public float Charge { get; internal set; }
 
         /// <summary>
         /// True if an amino acid
         /// </summary>
-        public bool IsAminoAcid { get; set; }
+        public bool IsAminoAcid { get; }
 
         /// <summary>
         /// One letter symbol (only used for amino acids)
         /// </summary>
-        public string OneLetterSymbol { get; set; }
+        public string OneLetterSymbol { get; }
 
         /// <summary>
         /// Description of the abbreviation
         /// </summary>
-        public string Comment { get; set; }
+        public string Comment { get; }
 
         /// <summary>
         /// True if this abbreviation has an invalid symbol or formula
         /// </summary>
-        public bool InvalidSymbolOrFormula { get; set; }
+        public bool InvalidSymbolOrFormula { get; internal set; }
 
         /// <summary>
         /// Element counts for this abbreviation. Key is element symbol reference, value is count for that element.
@@ -114,6 +114,11 @@ namespace MolecularWeightCalculator.Formula
             return Symbol + ": " + Formula;
         }
 
+        /// <summary>
+        /// Sort comparator: sort alphabetically.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public int CompareTo(AbbrevStatsData other)
         {
             if (ReferenceEquals(this, other)) return 0;

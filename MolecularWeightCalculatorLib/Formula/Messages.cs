@@ -363,6 +363,8 @@ namespace MolecularWeightCalculator.Formula
             messages.Add(28, "Circular abbreviation reference; can't have an abbreviation referencing a second abbreviation that depends upon the first one");
             messages.Add(29, "Obsolete msg: Cannot run percent solver until one or more lines are locked to a value.");
             messages.Add(30, "Invalid formula subtraction; one or more atoms (or too many atoms) in the right-hand formula are missing (or less abundant) in the left-hand formula");
+            messages.Add(31, "Cannot use an abbreviation that has not yet been parsed.");
+            messages.Add(32, "Cannot use an invalid abbreviation.");
 
             // Cases 50 through 74 are used during the % Solver routine
             messages.Add(50, "Target value is greater than 100%, an impossible value.");
