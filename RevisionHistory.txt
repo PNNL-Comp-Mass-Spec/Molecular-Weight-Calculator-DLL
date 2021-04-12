@@ -1,5 +1,13 @@
 MwtWinDll.NET Change Log
 
+Version 4.1.7768; April 12, 2021
+	- Convert to C#
+		- Includes renaming classes/methods and significant refactoring; DLL is now "MolecularWeightCalculatorLib.dll"
+		- Removed a number of "ByRef" parameters, or replaced them with "out" parameters.
+	- Fix some long-broken functionality
+	- Add COM Interface support to replace the VB6 COM/ActiveX DLL (includes 64-bit support)
+	- Significant testing for proper functionality vs. old VB.Net version, and some additional testing comparing the the VB6 version.
+
 Version 3.6.7321; January 17, 2020
 	- Fix bug in clsMwtWin.vb
 		- Load defaults (and call MemoryLoadAll) prior to instantiating the peptide class

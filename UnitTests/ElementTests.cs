@@ -298,13 +298,13 @@ namespace UnitTests
             ReportParseData(parseData);
             // No error expected:
             Assert.AreEqual(0, parseData.ErrorData.ErrorId);
-            Assert.AreEqual(218.0469, mass, MATCHING_MASS_EPSILON);
+            Assert.AreEqual(330.1891, mass, MATCHING_MASS_EPSILON);
 
             mass = mwt.ComputeMassExtra("TryCoFail", out parseData);
             ReportParseData(parseData);
             // No error expected:
             Assert.AreEqual(0, parseData.ErrorData.ErrorId);
-            Assert.AreEqual(383.22392, mass, MATCHING_MASS_EPSILON);
+            Assert.AreEqual(567.43032, mass, MATCHING_MASS_EPSILON);
         }
 
         private void ReportParseData(IFormulaParseData data)
