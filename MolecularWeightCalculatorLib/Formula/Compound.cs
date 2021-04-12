@@ -14,7 +14,7 @@ namespace MolecularWeightCalculator.Formula
         // The compound class can be used to represent a compound
         // Use the Formula Property to enter the compound's formula
         // Use ErrorDescription and CautionDescription to see if there are any problems with the formula
-        // Custom abbreviations can be defined using the SetAbbreviationInternal() function in ElementAndMassRoutines()
+        // Custom abbreviations can be defined using the SetAbbreviation() function in ElementAndMassTools()
         // Note that the standard amino acids and 16 other abbreviations are defined by default (see MemoryLoadAbbreviations())
 
         // Use the Mass Property to get the mass of the compound
@@ -309,7 +309,7 @@ namespace MolecularWeightCalculator.Formula
         [ComVisible(false)] public IFormulaParseData FormulaParseData { get; private set; } = new FormulaParseData("");
 
         // ReSharper disable once InconsistentNaming
-        public string FormulaRTF => mElementAndMassRoutines.PlainTextToRtfInternal(FormulaCapitalized, false);
+        public string FormulaRTF => mElementAndMassRoutines.PlainTextToRtf(FormulaCapitalized, false);
 
         public double Mass => GetMass();
 

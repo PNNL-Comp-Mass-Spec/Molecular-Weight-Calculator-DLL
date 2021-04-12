@@ -183,7 +183,7 @@ namespace MolecularWeightCalculator.Sequence
             while (compareIndex < sequenceStrLength)
             {
                 var testChar = partialSequence.Substring(compareIndex, 1);
-                if (mElementAndMassRoutines.IsModSymbolInternal(testChar))
+                if (mElementAndMassRoutines.IsModSymbol(testChar))
                 {
                     modSymbolGroup += testChar;
                 }
@@ -453,7 +453,7 @@ namespace MolecularWeightCalculator.Sequence
                                     else
                                     {
                                         // Compute mass at higher charge
-                                        convolutedMass = (float)mElementAndMassRoutines.ConvoluteMassInternal(baseMass, 1, chargeIndex, mChargeCarrierMass);
+                                        convolutedMass = (float)mElementAndMassRoutines.ConvoluteMass(baseMass, 1, chargeIndex, mChargeCarrierMass);
                                     }
 
                                     if (chargeIndex > 1 && baseMass < chargeThreshold[chargeIndex])
@@ -1909,7 +1909,7 @@ namespace MolecularWeightCalculator.Sequence
                 for (var index = 0; index < modSymbol.Length; index++)
                 {
                     var testChar = modSymbol.Substring(index, 1);
-                    if (!mElementAndMassRoutines.IsModSymbolInternal(testChar))
+                    if (!mElementAndMassRoutines.IsModSymbol(testChar))
                     {
                         errorId = -1;
                     }

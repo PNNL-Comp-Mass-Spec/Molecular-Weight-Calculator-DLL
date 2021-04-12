@@ -308,7 +308,7 @@ namespace MolecularWeightCalculator
             string headerFraction = "Fraction",
             string headerIntensity = "Intensity")
         {
-            return mElementAndMassRoutines.ComputeIsotopicAbundancesInternal(ref formulaIn, chargeState, out results, out convolutedMSData2D, out convolutedMSDataCount, addProtonChargeCarrier, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
+            return mElementAndMassRoutines.ComputeIsotopicAbundances(ref formulaIn, chargeState, out results, out convolutedMSData2D, out convolutedMSDataCount, addProtonChargeCarrier, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
         }
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace MolecularWeightCalculator
         /// <remarks></remarks>
         public double ConvoluteMass(double massMz, short currentCharge, short desiredCharge = 1, double chargeCarrierMass = 0)
         {
-            return mElementAndMassRoutines.ConvoluteMassInternal(massMz, currentCharge, desiredCharge, chargeCarrierMass);
+            return mElementAndMassRoutines.ConvoluteMass(massMz, currentCharge, desiredCharge, chargeCarrierMass);
         }
 
         /// <summary>
@@ -611,7 +611,7 @@ namespace MolecularWeightCalculator
         /// </remarks>
         public bool IsModSymbol(string symbol)
         {
-            return mElementAndMassRoutines.IsModSymbolInternal(symbol);
+            return mElementAndMassRoutines.IsModSymbol(symbol);
         }
 
         public void RemoveAllAbbreviations()
@@ -626,12 +626,12 @@ namespace MolecularWeightCalculator
 
         public double MassToPPM(double massToConvert, double currentMz)
         {
-            return mElementAndMassRoutines.MassToPPMInternal(massToConvert, currentMz);
+            return mElementAndMassRoutines.MassToPPM(massToConvert, currentMz);
         }
 
         public double MonoMassToMz(double monoisotopicMass, short charge, double chargeCarrierMass = 0)
         {
-            return mElementAndMassRoutines.MonoMassToMzInternal(monoisotopicMass, charge, chargeCarrierMass);
+            return mElementAndMassRoutines.MonoMassToMz(monoisotopicMass, charge, chargeCarrierMass);
         }
 
         /// <summary>
@@ -822,7 +822,7 @@ namespace MolecularWeightCalculator
             bool overrideErrorId = false,
             int errorIdOverride = 0)
         {
-            return mElementAndMassRoutines.PlainTextToRtfInternal(textToConvert, calculatorMode, highlightCharFollowingPercentSign, overrideErrorId, errorIdOverride);
+            return mElementAndMassRoutines.PlainTextToRtf(textToConvert, calculatorMode, highlightCharFollowingPercentSign, overrideErrorId, errorIdOverride);
         }
 
         /// <summary>

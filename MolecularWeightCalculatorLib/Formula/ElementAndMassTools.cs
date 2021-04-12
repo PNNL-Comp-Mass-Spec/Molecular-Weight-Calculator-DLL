@@ -226,7 +226,7 @@ namespace MolecularWeightCalculator.Formula
         /// Returns M+H values if <paramref name="chargeState"/>=1
         /// Returns convoluted m/z if <paramref name="chargeState"/> is &gt; 1
         /// </remarks>
-        public short ComputeIsotopicAbundancesInternal(
+        internal short ComputeIsotopicAbundances(
             ref string formulaIn,
             short chargeState,
             out string results,
@@ -839,7 +839,7 @@ namespace MolecularWeightCalculator.Formula
                     {
                         if (addProtonChargeCarrier)
                         {
-                            convolutedMSData2D[massIndex, 0] = ConvoluteMassInternal(convolutedMSData2D[massIndex, 0], 0, chargeState);
+                            convolutedMSData2D[massIndex, 0] = ConvoluteMass(convolutedMSData2D[massIndex, 0], 0, chargeState);
                         }
                         else
                         {
@@ -1178,7 +1178,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="chargeCarrierMass">Charge carrier mass.  If 0, this function will use mChargeCarrierMass instead</param>
         /// <returns>The new m/z value</returns>
         /// <remarks>To return the neutral mass, set <paramref name="desiredCharge"/> to 0</remarks>
-        public double ConvoluteMassInternal(
+        internal double ConvoluteMass(
             double massMz,
             short currentCharge,
             short desiredCharge = 1,
@@ -1545,7 +1545,7 @@ namespace MolecularWeightCalculator.Formula
         /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
         /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
         /// </remarks>
-        public bool IsModSymbolInternal(string testChar)
+        internal bool IsModSymbol(string testChar)
         {
             bool isModSymbol;
 
@@ -1665,7 +1665,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="massToConvert"></param>
         /// <param name="currentMz"></param>
         /// <returns></returns>
-        public double MassToPPMInternal(double massToConvert, double currentMz)
+        internal double MassToPPM(double massToConvert, double currentMz)
         {
             if (currentMz > 0d)
             {
@@ -1682,7 +1682,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="charge"></param>
         /// <param name="chargeCarrierMass">If this is 0, uses mChargeCarrierMass</param>
         /// <returns></returns>
-        public double MonoMassToMzInternal(
+        internal double MonoMassToMz(
             double monoisotopicMass,
             short charge,
             double chargeCarrierMass = 0)
@@ -1691,7 +1691,7 @@ namespace MolecularWeightCalculator.Formula
                 chargeCarrierMass = Elements.ChargeCarrierMass;
 
             // Call ConvoluteMass to convert to the desired charge state
-            return ConvoluteMassInternal(monoisotopicMass + chargeCarrierMass, 1, charge, chargeCarrierMass);
+            return ConvoluteMass(monoisotopicMass + chargeCarrierMass, 1, charge, chargeCarrierMass);
         }
 
         public void MemoryLoadAll(ElementMassMode elementMode)
@@ -1748,7 +1748,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="overrideErrorId"></param>
         /// <param name="errorIdOverride"></param>
         /// <returns></returns>
-        public string PlainTextToRtfInternal(
+        internal string PlainTextToRtf(
             string workText,
             bool calculatorMode = false,
             bool highlightCharFollowingPercentSign = true,
@@ -1772,7 +1772,7 @@ namespace MolecularWeightCalculator.Formula
 
             // ReSharper restore CommentTypo
 
-            if ((workText ?? "") == string.Empty)
+            if (string.IsNullOrWhiteSpace(workText))
             {
                 // Return a blank RTF string
                 return rtf + "}";

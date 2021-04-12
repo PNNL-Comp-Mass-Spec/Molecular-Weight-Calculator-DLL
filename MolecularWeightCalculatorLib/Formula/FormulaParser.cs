@@ -115,7 +115,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Compute the weight of a formula (or abbreviation)
         /// </summary>
-        /// <param name="formula">Input/output: updated by ParseFormulaPublic</param>
+        /// <param name="formula">Input/output: updated by ParseFormula</param>
         /// <returns>The formula mass, or -1 if an error occurs</returns>
         /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(ref string formula)
@@ -126,7 +126,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Compute the weight of a formula (or abbreviation)
         /// </summary>
-        /// <param name="formula">Input/output: updated by ParseFormulaPublic</param>
+        /// <param name="formula">Input/output: updated by ParseFormula</param>
         /// <param name="stdDev">Computed standard deviation</param>
         /// <returns>The formula mass, or -1 if an error occurs</returns>
         /// <remarks>Error information is stored in ErrorParams</remarks>
@@ -292,7 +292,7 @@ namespace MolecularWeightCalculator.Formula
         /// <remarks></remarks>
         public string ConvertFormulaToEmpirical(string formula)
         {
-            // Call ParseFormulaPublic to compute the formula's mass and fill computationStats
+            // Call ParseFormula to compute the formula's mass and fill computationStats
             var data = (FormulaParseData)ParseFormula(formula);
 
             if (data.Error.ErrorId == 0)
@@ -432,7 +432,7 @@ namespace MolecularWeightCalculator.Formula
         /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
         /// </remarks>
         [Obsolete("Change to use ParseFormula instead.")]
-        public double ParseFormulaPublic(
+        public double ParseFormula(
             ref string formula,
             out ComputationStats computationStats,
             bool expandAbbreviations = false,

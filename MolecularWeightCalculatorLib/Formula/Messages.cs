@@ -64,7 +64,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="appendText"></param>
         /// <returns></returns>
         /// <remarks>
-        /// GetMessageStringInternal simply returns the message for <paramref name="messageId"/>
+        /// GetMessageStatement simply returns the message for <paramref name="messageId"/>
         /// LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
         /// </remarks>
         internal string GetMessageStatement(int messageId, string appendText = "")

@@ -86,7 +86,7 @@ namespace MolecularWeightCalculator.Formula
             set => mChargeCarrierMass = value;
         }
 
-        public ElementMassMode ElementModeInternal
+        public ElementMassMode ElementMode
         {
             get => mCurrentElementMode;
             set => SetElementMode(value);
@@ -1124,7 +1124,7 @@ namespace MolecularWeightCalculator.Formula
             }
             catch (Exception ex)
             {
-                mMassCalc.GeneralErrorHandler("ElementAndMassTools.SetElementModeInternal", ex);
+                mMassCalc.GeneralErrorHandler("ElementAndMassTools.SetElementMode", ex);
             }
         }
 
