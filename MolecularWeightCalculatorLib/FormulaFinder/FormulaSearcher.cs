@@ -1071,13 +1071,19 @@ namespace MolecularWeightCalculator.FormulaFinder
                     MultipleSearchMath(sortedElementStats.Count, searchOptions, out var mzSearchChargeMin, out var mzSearchChargeMax);
 
                     for (var currentMzCharge = mzSearchChargeMin; currentMzCharge <= mzSearchChargeMax; currentMzCharge++)
+                    {
                         // Call the RecursiveMWFinder repeatedly, sending targetWeight * x each time to search for target, target*2, target*3, etc.
-                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 0, 0d, targetMass * currentMzCharge, massToleranceDa, 0d, currentMzCharge);
+                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 
+                            0, 0d, targetMass * currentMzCharge, massToleranceDa,
+                            0d, currentMzCharge);
+                    }
                 }
                 else
                 {
                     //RecursiveMWFinder(results, searchOptions, ppmMode, potentialElements, potentialElementStats, 0, potentialElementCount, potentialElementPointers, 0, targetMass, massToleranceDa, 0, 0)
-                    RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 0, 0d, targetMass, massToleranceDa, 0d, 0);
+                    RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 
+                        0, 0d, targetMass, massToleranceDa, 
+                        0d, 0);
                 }
 
                 ComputeSortKeys(results);
