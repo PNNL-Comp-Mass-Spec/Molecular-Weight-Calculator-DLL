@@ -1002,7 +1002,7 @@ namespace MolecularWeightCalculator.Formula
 
                     if (searchForMinimumXVal)
                     {
-                        if (xySummation.Count <= 0)
+                        if (xySummation.Count == 0)
                         {
                             minimalSummationIndex = 0;
                         }
@@ -1058,7 +1058,7 @@ namespace MolecularWeightCalculator.Formula
                     bool appendNewData;
 
                     // First, see if the first XValue in dataToAdd is larger than the last XValue in xySummation
-                    if (xySummation.Count <= 0)
+                    if (xySummation.Count == 0)
                     {
                         appendNewData = true;
                     }

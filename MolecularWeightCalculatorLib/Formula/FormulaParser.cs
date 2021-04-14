@@ -1072,7 +1072,7 @@ namespace MolecularWeightCalculator.Formula
                         // If any atom counts become < 0 then, then raise an error
                         for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT; elementIndex++)
                         {
-                            if (pStats.Elements[elementIndex].Count <= 0)
+                            if (pStats.Elements[elementIndex].Count == 0)
                                 continue;
 
                             var element = cStats.Elements[elementIndex];
