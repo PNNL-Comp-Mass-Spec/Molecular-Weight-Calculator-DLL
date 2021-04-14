@@ -28,9 +28,13 @@ namespace UnitTests
         public void TestEmpiricalFormula(string formulaIn, string expectedOutput)
         {
             mMwtWinAvg.Compound.Formula = formulaIn;
-            var output = mMwtWinAvg.Compound.ConvertToEmpirical();
+            var output1 = mMwtWinAvg.Compound.ConvertToEmpirical();
 
-            Assert.AreEqual(expectedOutput, output);
+            mMwtWinIso.Compound.Formula = formulaIn;
+            var output2 = mMwtWinIso.Compound.ConvertToEmpirical();
+
+            Assert.AreEqual(expectedOutput, output1);
+            Assert.AreEqual(expectedOutput, output2);
         }
     }
 }

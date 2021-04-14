@@ -108,9 +108,13 @@ namespace UnitTests
             mMwtWinIso.BracketsTreatedAsParentheses = bracketsAsParentheses;
             var resultDaIso = mMwtWinIso.ComputeMassExtra(formula, out var parseDataIso);
             ReportParseData(parseDataIso);
+
             Assert.Greater(resultDaIso, 0);
             Assert.AreEqual(expectedMonoMass, resultDaIso, MATCHING_MASS_EPSILON, "Actual mass does not match expected isotopic mass");
             Assert.AreEqual(expectedCharge, parseDataIso.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
+
+            Console.WriteLine();
+            ReportParseData(mMwtWinIso);
         }
 
         [Test]
