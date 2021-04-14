@@ -462,8 +462,9 @@ namespace MwtWinDllTest
             results.AppendText(resultString);
 
             results.AppendText("Convert isotopic distribution to Gaussian");
+
             var xyVals = new List<KeyValuePair<double, double>>();
-            for (var index = 1; index <= convolutedMSDataCount; index++)
+            for (var index = 0; index < convolutedMSDataCount; index++)
                 xyVals.Add(new KeyValuePair<double, double>(convolutedMSData2DOneBased[index, 0], convolutedMSData2DOneBased[index, 1]));
 
             const int resolution = 2000;
