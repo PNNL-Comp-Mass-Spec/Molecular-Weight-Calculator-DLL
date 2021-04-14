@@ -269,12 +269,15 @@ namespace UnitTests.FunctionalTests
             var gaussianData = mMwtWin.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor);
 
             var gaussianResults = new StringBuilder();
-            gaussianResults.AppendLine("m/z" + "\t" + "Intensity");
+            gaussianResults.AppendFormat("{0}\t{1}", "m/z", "Intensity");
+            gaussianResults.AppendLine();
+
             foreach (var point in gaussianData)
             {
                 if (point.Key >= 15175d && point.Key < 15193d)
                 {
-                    gaussianResults.AppendLine(point.Key.ToString("0.000") + "\t" + point.Value.ToString("0.000"));
+                    gaussianResults.AppendFormat("{0:F3}\t{1:F3}", point.Key, point.Value);
+                    gaussianResults.AppendLine();
                 }
             }
 
