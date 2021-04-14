@@ -366,10 +366,9 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Set the isotopes for the element
         /// </summary>
         /// <param name="symbol"></param>
-        /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances);
+        int SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances);
 
         void SetElementMode(ElementMassMode elementMode, bool forceMemoryLoadElementValues = false);
 

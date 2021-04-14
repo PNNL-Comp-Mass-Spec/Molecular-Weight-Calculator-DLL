@@ -1066,11 +1066,10 @@ namespace MolecularWeightCalculator.Formula
         /// Set the isotopes for the element
         /// </summary>
         /// <param name="symbol"></param>
-        /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
         /// <returns>0 if success, 1 if symbol not found</returns>
-        internal int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances)
+        internal int SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
         {
             if (string.IsNullOrWhiteSpace(symbol))
             {

@@ -58,7 +58,7 @@ namespace UnitTests.FunctionalTests
                 Assert.AreEqual(isotopeCount, isotopeCount2);
                 Assert.AreEqual(0, result);
 
-                result = mMwtWin.SetElementIsotopes(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
+                result = mMwtWin.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
                 Assert.AreEqual(0, result);
             }
 

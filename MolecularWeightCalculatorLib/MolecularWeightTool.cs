@@ -743,12 +743,11 @@ namespace MolecularWeightCalculator
         /// Set the isotopes for the element
         /// </summary>
         /// <param name="symbol"></param>
-        /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        public int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances)
+        public int SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
         {
-            return mElementAndMassRoutines.Elements.SetElementIsotopes(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
+            return mElementAndMassRoutines.Elements.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
         }
 
         /// <summary>
