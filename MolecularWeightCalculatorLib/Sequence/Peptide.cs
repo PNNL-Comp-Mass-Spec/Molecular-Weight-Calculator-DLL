@@ -860,11 +860,11 @@ namespace MolecularWeightCalculator.Sequence
             }
 
             var residueCount = 0;
-            for (var residueIndex = 0; residueIndex < mResidues.Count; residueIndex++)
+            foreach (var residue in mResidues)
             {
-                if (mResidues[residueIndex].Symbol == searchResidue3Letter)
+                if (residue.Symbol == searchResidue3Letter)
                 {
-                    residueCount += 1;
+                    residueCount++;
                 }
             }
 
@@ -949,9 +949,9 @@ namespace MolecularWeightCalculator.Sequence
 
                 if (includeModificationSymbols)
                 {
-                    for (var modIndex = 0; modIndex < residue.ModificationIDs.Count; modIndex++)
+                    foreach (var modificationId in residue.ModificationIDs)
                     {
-                        var error = GetModificationSymbol(residue.ModificationIDs[modIndex], out var modSymbol, out _, out _, out _);
+                        var error = GetModificationSymbol(modificationId, out var modSymbol, out _, out _, out _);
                         if (error == 0)
                         {
                             sequence += modSymbol;
@@ -2543,10 +2543,8 @@ namespace MolecularWeightCalculator.Sequence
                 runningTotal -= mMassHydrogen;
             }
 
-            for (var index = 0; index < mResidues.Count; index++)
+            foreach (var residue in mResidues)
             {
-                var residue = mResidues[index];
-
                 var abbrevId = mElementAndMassRoutines.Elements.GetAbbreviationId(residue.Symbol, true);
 
                 if (abbrevId >= 0)
@@ -2558,12 +2556,12 @@ namespace MolecularWeightCalculator.Sequence
 
                     // Compute the mass, including the modifications
                     residue.MassWithMods = residue.Mass;
-                    for (var modIndex = 0; modIndex < residue.ModificationIDs.Count; modIndex++)
+                    foreach (var modificationId in residue.ModificationIDs)
                     {
-                        if (residue.ModificationIDs[modIndex] < mModificationSymbols.Count)
+                        if (modificationId < mModificationSymbols.Count)
                         {
-                            residue.MassWithMods += mModificationSymbols[residue.ModificationIDs[modIndex]].ModificationMass;
-                            if (mModificationSymbols[residue.ModificationIDs[modIndex]].IndicatesPhosphorylation)
+                            residue.MassWithMods += mModificationSymbols[modificationId].ModificationMass;
+                            if (mModificationSymbols[modificationId].IndicatesPhosphorylation)
                             {
                                 phosphorylationMassAdded = true;
                             }
@@ -2571,7 +2569,7 @@ namespace MolecularWeightCalculator.Sequence
                         else
                         {
                             // Invalid ModificationID
-                            Console.WriteLine("Invalid ModificationID: " + residue.ModificationIDs[modIndex]);
+                            Console.WriteLine("Invalid ModificationID: " + modificationId);
                         }
                     }
 

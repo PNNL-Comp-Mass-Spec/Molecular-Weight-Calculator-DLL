@@ -1361,12 +1361,13 @@ namespace MolecularWeightCalculator.Formula
             }
 
             // Start of string is a number or a decimal point, or (if allowed) a negative sign
-            for (var index = 0; index < work.Length; index++)
+            foreach (var character in work)
             {
-                var working = work[index];
-                if (char.IsDigit(working) || working == ComputationOptions.DecimalSeparator || allowNegative && working == '-')
+                if (char.IsDigit(character) ||
+                    character == ComputationOptions.DecimalSeparator ||
+                    allowNegative && character == '-')
                 {
-                    foundNum += working;
+                    foundNum += character;
                 }
                 else
                 {
