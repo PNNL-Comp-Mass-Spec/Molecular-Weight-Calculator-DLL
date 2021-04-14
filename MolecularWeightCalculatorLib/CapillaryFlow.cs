@@ -983,33 +983,27 @@ namespace MolecularWeightCalculator
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private double FactorConcentration(UnitOfConcentration units, double sampleMass = 0d)
         {
-            double factor;
-
             if (Math.Abs(sampleMass) < float.Epsilon)
             {
-                factor = -1;
-            }
-            else
-            {
-                factor = units switch
-                {
-                    UnitOfConcentration.Molar => 1.0d,
-                    UnitOfConcentration.MilliMolar => 1d / 1000.0d,
-                    UnitOfConcentration.MicroMolar => 1d / 1000000.0d,
-                    UnitOfConcentration.NanoMolar => 1d / 1000000000.0d,
-                    UnitOfConcentration.PicoMolar => 1d / 1000000000000.0d,
-                    UnitOfConcentration.FemtoMolar => 1d / 1.0E+15d,
-                    UnitOfConcentration.AttoMolar => 1d / 1.0E+18d,
-                    UnitOfConcentration.MgPerML => 1d / sampleMass, // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
-                    UnitOfConcentration.UgPerML => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                    UnitOfConcentration.NgPerML => 1d / (sampleMass * 1000000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
-                    UnitOfConcentration.UgPerUL => 1d / sampleMass, // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
-                    UnitOfConcentration.NgPerUL => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
-                    _ => -1
-                };
+                return -1;
             }
 
-            return factor;
+            return units switch
+            {
+                UnitOfConcentration.Molar => 1.0d,
+                UnitOfConcentration.MilliMolar => 1d / 1000.0d,
+                UnitOfConcentration.MicroMolar => 1d / 1000000.0d,
+                UnitOfConcentration.NanoMolar => 1d / 1000000000.0d,
+                UnitOfConcentration.PicoMolar => 1d / 1000000000000.0d,
+                UnitOfConcentration.FemtoMolar => 1d / 1.0E+15d,
+                UnitOfConcentration.AttoMolar => 1d / 1.0E+18d,
+                UnitOfConcentration.MgPerML => 1d / sampleMass, // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                UnitOfConcentration.UgPerML => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                UnitOfConcentration.NgPerML => 1d / (sampleMass * 1000000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                UnitOfConcentration.UgPerUL => 1d / sampleMass, // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                UnitOfConcentration.NgPerUL => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                _ => -1
+            };
         }
 
         /// <summary>

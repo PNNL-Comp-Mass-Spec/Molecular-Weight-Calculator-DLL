@@ -1369,34 +1369,29 @@ namespace MolecularWeightCalculator.Formula
             var runningSum = new int[atomCount];
             try
             {
-                int predictedCombos;
                 if (atomCount == 1 || isotopeCount == 1)
                 {
-                    predictedCombos = isotopeCount;
+                    return isotopeCount;
                 }
-                else
+
+                // Initialize runningSum[]
+                for (var atomIndex = 0; atomIndex < atomCount; atomIndex++)
+                    runningSum[atomIndex] = atomIndex + 2;
+
+                for (var isotopeIndex = 3; isotopeIndex <= isotopeCount; isotopeIndex++)
                 {
-                    // Initialize runningSum[]
-                    for (var atomIndex = 0; atomIndex < atomCount; atomIndex++)
-                        runningSum[atomIndex] = atomIndex + 2;
-
-                    for (var isotopeIndex = 3; isotopeIndex <= isotopeCount; isotopeIndex++)
+                    var previousComputedValue = isotopeIndex;
+                    for (var atomIndex = 1; atomIndex < atomCount; atomIndex++)
                     {
-                        var previousComputedValue = isotopeIndex;
-                        for (var atomIndex = 1; atomIndex < atomCount; atomIndex++)
-                        {
-                            // Compute new count for this AtomIndex
-                            runningSum[atomIndex] = previousComputedValue + runningSum[atomIndex];
+                        // Compute new count for this AtomIndex
+                        runningSum[atomIndex] = previousComputedValue + runningSum[atomIndex];
 
-                            // Also place result in RunningSum(AtomIndex)
-                            previousComputedValue = runningSum[atomIndex];
-                        }
+                        // Also place result in RunningSum(AtomIndex)
+                        previousComputedValue = runningSum[atomIndex];
                     }
-
-                    predictedCombos = runningSum[atomCount - 1];
                 }
 
-                return predictedCombos;
+                return runningSum[atomCount - 1];
             }
             catch (Exception ex)
             {

@@ -427,44 +427,38 @@ namespace MolecularWeightCalculator
             double sampleMass = -1,
             double sampleDensity = 0d)
         {
-            double factor;
-
             if (Math.Abs(sampleMass) < float.Epsilon)
             {
-                factor = -1;
-            }
-            else
-            {
-                // Determine the Amount multiplication factor
-                factor = units switch
-                {
-                    Unit.Moles => 1d,
-                    Unit.Millimoles => 1d / 1000.0d,
-                    Unit.MicroMoles => 1d / 1000000.0d,
-                    Unit.NanoMoles => 1d / 1000000000.0d,
-                    Unit.PicoMoles => 1d / 1000000000000.0d,
-                    Unit.FemtoMoles => 1d / 1.0E+15d,
-                    Unit.AttoMoles => 1d / 1.0E+18d,
-                    Unit.Kilograms => 1000.0d / sampleMass,
-                    Unit.Grams => 1d / sampleMass,
-                    Unit.Milligrams => 1d / (sampleMass * 1000.0d),
-                    Unit.Micrograms => 1d / (sampleMass * 1000000.0d),
-                    Unit.Pounds => 1000.0d / (sampleMass * POUNDS_PER_KG),
-                    Unit.Ounces => 1000.0d / (sampleMass * POUNDS_PER_KG * 16d),
-                    Unit.Liters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.L),
-                    Unit.DeciLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.DL),
-                    Unit.MilliLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.ML),
-                    Unit.MicroLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.UL),
-                    Unit.NanoLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.NL),
-                    Unit.PicoLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.PL),
-                    Unit.Gallons => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Gallons),
-                    Unit.Quarts => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Quarts),
-                    Unit.Pints => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Pints),
-                    _ => -1
-                };
+                return -1;
             }
 
-            return factor;
+            // Determine the Amount multiplication factor
+            return units switch
+            {
+                Unit.Moles => 1d,
+                Unit.Millimoles => 1d / 1000.0d,
+                Unit.MicroMoles => 1d / 1000000.0d,
+                Unit.NanoMoles => 1d / 1000000000.0d,
+                Unit.PicoMoles => 1d / 1000000000000.0d,
+                Unit.FemtoMoles => 1d / 1.0E+15d,
+                Unit.AttoMoles => 1d / 1.0E+18d,
+                Unit.Kilograms => 1000.0d / sampleMass,
+                Unit.Grams => 1d / sampleMass,
+                Unit.Milligrams => 1d / (sampleMass * 1000.0d),
+                Unit.Micrograms => 1d / (sampleMass * 1000000.0d),
+                Unit.Pounds => 1000.0d / (sampleMass * POUNDS_PER_KG),
+                Unit.Ounces => 1000.0d / (sampleMass * POUNDS_PER_KG * 16d),
+                Unit.Liters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.L),
+                Unit.DeciLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.DL),
+                Unit.MilliLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.ML),
+                Unit.MicroLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.UL),
+                Unit.NanoLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.NL),
+                Unit.PicoLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.PL),
+                Unit.Gallons => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Gallons),
+                Unit.Quarts => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Quarts),
+                Unit.Pints => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.Pints),
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -475,34 +469,28 @@ namespace MolecularWeightCalculator
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private double FactorConcentration(UnitOfMoleMassConcentration units, double sampleMass = 0d)
         {
-            double factor;
-
             if (Math.Abs(sampleMass) < float.Epsilon)
             {
-                factor = -1;
-            }
-            else
-            {
-                factor = units switch
-                {
-                    UnitOfMoleMassConcentration.Molar => 1.0d,
-                    UnitOfMoleMassConcentration.MilliMolar => 1d / 1000.0d,
-                    UnitOfMoleMassConcentration.MicroMolar => 1d / 1000000.0d,
-                    UnitOfMoleMassConcentration.NanoMolar => 1d / 1000000000.0d,
-                    UnitOfMoleMassConcentration.PicoMolar => 1d / 1000000000000.0d,
-                    UnitOfMoleMassConcentration.FemtoMolar => 1d / 1.0E+15d,
-                    UnitOfMoleMassConcentration.AttoMolar => 1d / 1.0E+18d,
-                    UnitOfMoleMassConcentration.MgPerDL => 1d / sampleMass / 100.0d, // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
-                    UnitOfMoleMassConcentration.MgPerML => 1d / sampleMass, // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
-                    UnitOfMoleMassConcentration.UgPerML => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                    UnitOfMoleMassConcentration.NgPerML => 1d / (sampleMass * 1000000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
-                    UnitOfMoleMassConcentration.UgPerUL => 1d / sampleMass, // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
-                    UnitOfMoleMassConcentration.NgPerUL => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
-                    _ => -1
-                };
+               return -1;
             }
 
-            return factor;
+            return units switch
+            {
+                UnitOfMoleMassConcentration.Molar => 1.0d,
+                UnitOfMoleMassConcentration.MilliMolar => 1d / 1000.0d,
+                UnitOfMoleMassConcentration.MicroMolar => 1d / 1000000.0d,
+                UnitOfMoleMassConcentration.NanoMolar => 1d / 1000000000.0d,
+                UnitOfMoleMassConcentration.PicoMolar => 1d / 1000000000000.0d,
+                UnitOfMoleMassConcentration.FemtoMolar => 1d / 1.0E+15d,
+                UnitOfMoleMassConcentration.AttoMolar => 1d / 1.0E+18d,
+                UnitOfMoleMassConcentration.MgPerDL => 1d / sampleMass / 100.0d, // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
+                UnitOfMoleMassConcentration.MgPerML => 1d / sampleMass, // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                UnitOfMoleMassConcentration.UgPerML => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                UnitOfMoleMassConcentration.NgPerML => 1d / (sampleMass * 1000000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                UnitOfMoleMassConcentration.UgPerUL => 1d / sampleMass, // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                UnitOfMoleMassConcentration.NgPerUL => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                _ => -1
+            };
         }
 
         /// <summary>
