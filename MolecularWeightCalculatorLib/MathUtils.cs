@@ -11,7 +11,6 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="number">Integer number between 0 and 170</param>
         /// <returns>The factorial, or -1 if an error</returns>
-        /// <remarks></remarks>
         public static double Factorial(int number)
         {
             try

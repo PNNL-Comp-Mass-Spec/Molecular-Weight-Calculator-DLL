@@ -32,7 +32,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// Percent complete, between 0 and 100
         /// </summary>
-        /// <remarks></remarks>
         double PercentComplete { get; }
 
         /// <summary>
@@ -45,7 +44,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Add a candidate element, abbreviation, or monoisotopic mass
         /// </summary>
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
-        /// <remarks></remarks>
         void AddCandidateElement(string elementSymbolAbbrevOrMass);
 
         /// <summary>
@@ -53,7 +51,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
         /// <param name="targetPercentComposition">Target percent composition</param>
-        /// <remarks></remarks>
         void AddCandidateElement(string elementSymbolAbbrevOrMass, double targetPercentComposition);
 
         /// <summary>
@@ -70,7 +67,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
         /// <param name="elementTolerances">Search tolerances, including % composition range and Min/Max count when using a bounded search</param>
-        /// <remarks></remarks>
         void AddCandidateElement(string elementSymbolAbbrevOrMass, CandidateElementTolerances elementTolerances);
 
         /// <summary>
@@ -79,7 +75,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="targetMass"></param>
         /// <param name="massTolerancePPM"></param>
         /// <param name="searchOptions">If null, uses default search options</param>
-        /// <returns></returns>
         SearchResult[] FindMatchesByMassPPMGetArray(double targetMass, double massTolerancePPM, SearchOptions searchOptions = null);
 
         /// <summary>
@@ -88,7 +83,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="targetMass"></param>
         /// <param name="massToleranceDa"></param>
         /// <param name="searchOptions">If null, uses default search options</param>
-        /// <returns></returns>
         SearchResult[] FindMatchesByMassGetArray(double targetMass, double massToleranceDa, SearchOptions searchOptions = null);
 
         SearchResult[] FindMatchesByPercentCompositionGetArray(double maximumFormulaMass, double percentTolerance, SearchOptions searchOptions);
@@ -96,7 +90,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// Reset to defaults
         /// </summary>
-        /// <remarks></remarks>
         void Reset();
     }
 }

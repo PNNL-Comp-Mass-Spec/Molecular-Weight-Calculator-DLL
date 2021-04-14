@@ -291,7 +291,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="formula"></param>
         /// <returns>The empirical formula, or -1 if an error</returns>
-        /// <remarks></remarks>
         public string ConvertFormulaToEmpirical(string formula)
         {
             // Call ParseFormula to compute the formula's mass and fill computationStats
@@ -320,7 +319,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="elementCounts"></param>
         /// <returns>The empirical formula, or -1 if an error</returns>
-        /// <remarks></remarks>
         public string ConvertFormulaToEmpirical(IReadOnlyDictionary<int, IElementUseStats> elementCounts)
         {
             if (elementCounts.Count == 0)
@@ -373,7 +371,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="formula"></param>
         /// <returns>Returns the result, or -1 if an error</returns>
-        /// <remarks></remarks>
         public string ExpandAbbreviationsInFormula(string formula)
         {
             // Call ExpandAbbreviationsInFormula to compute the formula's mass

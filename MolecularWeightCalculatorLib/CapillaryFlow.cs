@@ -239,7 +239,6 @@ namespace MolecularWeightCalculator
         /// Computes the back pressure, stores in .BackPressure, and returns it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeBackPressure(UnitOfPressure units = UnitOfPressure.Psi)
         {
             double backPressure;
@@ -283,7 +282,6 @@ namespace MolecularWeightCalculator
         /// Computes the column length, stores in .ColumnLength, and returns it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeColumnLength(UnitOfLength units = UnitOfLength.CM)
         {
             double columnLength;
@@ -342,7 +340,6 @@ namespace MolecularWeightCalculator
         /// Computes the column length, stores in .ColumnLength, and returns it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeColumnId(UnitOfLength units = UnitOfLength.Microns)
         {
             double radius;
@@ -384,7 +381,6 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="units"></param>
         /// <param name="recalculateVolFlowRate"></param>
-        /// <returns></returns>
         public double ComputeDeadTime(UnitOfTime units = UnitOfTime.Minutes, bool recalculateVolFlowRate = true)
         {
             double deadTime;
@@ -445,7 +441,6 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="units"></param>
         /// <param name="recalculateVolFlowRate"></param>
-        /// <returns></returns>
         public double ComputeLinearVelocity(UnitOfLinearVelocity units = UnitOfLinearVelocity.CmPerSec, bool recalculateVolFlowRate = true)
         {
             double linearVelocity;
@@ -481,7 +476,6 @@ namespace MolecularWeightCalculator
         /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeMassFlowRate(UnitOfMassFlowRate units = UnitOfMassFlowRate.FmolPerSec)
         {
             ComputeMassRateValues();
@@ -492,7 +486,6 @@ namespace MolecularWeightCalculator
         /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeMassRateMolesInjected(UnitOfMolarAmount units = UnitOfMolarAmount.FemtoMoles)
         {
             ComputeMassRateValues();
@@ -511,7 +504,6 @@ namespace MolecularWeightCalculator
         /// and mExtraColumnBroadeningParameters.DiffusionCoefficient
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(UnitOfLinearVelocity units = UnitOfLinearVelocity.CmPerSec)
         {
             var optimumLinearVelocity = default(double);
@@ -563,7 +555,6 @@ namespace MolecularWeightCalculator
         /// Computes the Volumetric flow rate, stores in .VolumetricFlowRate, and returns it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeVolFlowRate(UnitOfFlowRate units = UnitOfFlowRate.NLPerMin)
         {
             double volFlowRate;
@@ -611,7 +602,6 @@ namespace MolecularWeightCalculator
         /// <param name="newBackPressure">Output: new back pressure</param>
         /// <param name="units"></param>
         /// <param name="pressureUnits"></param>
-        /// <returns></returns>
         public double ComputeVolFlowRateUsingDeadTime(
             out double newBackPressure,
             UnitOfFlowRate units = UnitOfFlowRate.NLPerMin,
@@ -658,7 +648,6 @@ namespace MolecularWeightCalculator
         /// <param name="concentrationIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <returns></returns>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public double ConvertConcentration(double concentrationIn, UnitOfConcentration currentUnits, UnitOfConcentration newUnits)
         {
@@ -981,7 +970,6 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="units"></param>
         /// <param name="sampleMass"></param>
-        /// <returns></returns>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private double FactorConcentration(UnitOfConcentration units, double sampleMass = 0d)
         {
@@ -1018,7 +1006,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to Cm
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorLength(UnitOfLength units)
         {
             return units switch
@@ -1036,7 +1023,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to Cm/Min
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorLinearVelocity(UnitOfLinearVelocity units)
         {
             return units switch
@@ -1055,7 +1041,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to moles/min
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorMassFlowRate(UnitOfMassFlowRate units)
         {
             return units switch
@@ -1075,7 +1060,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to moles
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorMoles(UnitOfMolarAmount units)
         {
             return units switch
@@ -1095,7 +1079,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to dynes per cm^2
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorPressure(UnitOfPressure units)
         {
             return units switch
@@ -1115,7 +1098,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to minutes
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorTime(UnitOfTime units)
         {
             return units switch
@@ -1131,7 +1113,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to cm^2/sec
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorDiffusionCoeff(UnitOfDiffusionCoefficient units)
         {
             return units switch
@@ -1147,7 +1128,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to poise
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorViscosity(UnitOfViscosity units)
         {
             return units switch
@@ -1162,7 +1142,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to mL/min
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorVolFlowRate(UnitOfFlowRate units)
         {
             return units switch
@@ -1178,7 +1157,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to mL
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         private double FactorVolume(UnitOfVolume units)
         {
             return units switch

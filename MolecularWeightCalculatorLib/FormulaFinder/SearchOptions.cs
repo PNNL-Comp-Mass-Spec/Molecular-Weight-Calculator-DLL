@@ -13,7 +13,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// When true, compute the overall charge of each compound
         /// </summary>
-        /// <remarks></remarks>
         public bool FindCharge
         {
             get => mFindCharge;
@@ -90,7 +89,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <remarks></remarks>
         public SearchOptions()
         {
             FindCharge = true;

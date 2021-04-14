@@ -195,7 +195,6 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Get the number of abbreviations in memory
         /// </summary>
-        /// <returns></returns>
         internal int GetAbbreviationCount()
         {
             return mAbbrevStats.Count;
@@ -453,7 +452,6 @@ namespace MolecularWeightCalculator.Formula
         /// Return the element symbol for the given element ID
         /// </summary>
         /// <param name="elementId"></param>
-        /// <returns></returns>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         internal string GetElementSymbol(short elementId)
         {
@@ -475,7 +473,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="elementId">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
-        /// <returns></returns>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         internal double GetElementStat(short elementId, ElementStatsType elementStat)
         {
@@ -1029,7 +1026,6 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="recomputeAbbreviationMasses">Set to False if updating several elements</param>
-        /// <returns></returns>
         internal int SetElement(string symbol, double mass,
             double uncertainty, float charge,
             bool recomputeAbbreviationMasses = true)

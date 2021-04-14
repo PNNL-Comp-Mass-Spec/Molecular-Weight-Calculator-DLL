@@ -12,14 +12,12 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Computes the Final Concentration, storing in .FinalConcentration, and returning it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeDilutionFinalConcentration(UnitOfMoleMassConcentration units = UnitOfMoleMassConcentration.Molar);
 
         /// <summary>
         /// Computes the Initial Concentration, storing in .InitialConcentration, and returning it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeDilutionInitialConcentration(UnitOfMoleMassConcentration units = UnitOfMoleMassConcentration.Molar);
 
         /// <summary>
@@ -30,7 +28,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
         /// <param name="stockSolutionUnits"></param>
         /// <param name="dilutingSolventUnits"></param>
-        /// <returns></returns>
         double ComputeDilutionRequiredStockAndDilutingSolventVolumes(
             out double newDilutingSolventVolume,
             UnitOfExtendedVolume stockSolutionUnits = UnitOfExtendedVolume.ML,
@@ -42,7 +39,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
         /// <param name="totalVolumeUnits"></param>
         /// <param name="dilutingSolventUnits"></param>
-        /// <returns></returns>
         double ComputeDilutionTotalVolume(
             out double newDilutingSolventVolume,
             UnitOfExtendedVolume totalVolumeUnits = UnitOfExtendedVolume.ML,
@@ -75,7 +71,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="amountIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <returns></returns>
         double ConvertAmount(double amountIn, Unit currentUnits, Unit newUnits);
 
         /// <summary>
@@ -84,7 +79,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="concentrationIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <returns></returns>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         double ConvertConcentration(double concentrationIn, UnitOfMoleMassConcentration currentUnits, UnitOfMoleMassConcentration newUnits);
 

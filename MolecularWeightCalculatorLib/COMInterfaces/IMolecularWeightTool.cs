@@ -43,7 +43,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// Percent complete: ranges from 0 to 100, but can contain decimal percentage values
         /// </summary>
-        /// <returns></returns>
         float ProgressPercentComplete { get; }
 
         string RtfFontName { get; set; }
@@ -107,8 +106,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="currentCharge">Current charge (0 means neutral mass)</param>
         /// <param name="desiredCharge">Desired charge (0 means neutral mass)</param>
         /// <param name="chargeCarrierMass">Custom charge carrier mass (0 means use default, usually 1.00727649)</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         double ConvoluteMass(double massMz, short currentCharge, short desiredCharge = 1, double chargeCarrierMass = 0);
 
         /// <summary>
@@ -163,7 +160,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// Get the number of abbreviations in memory
         /// </summary>
-        /// <returns></returns>
         int GetAbbreviationCount();
 
         int GetAbbreviationCountMax();
@@ -188,13 +184,11 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// Get the number of Caution Statements in memory
         /// </summary>
-        /// <returns></returns>
         int GetCautionStatementCount();
 
         /// <summary>
         /// Get the symbolCombos for Caution Statements in memory as an array. This version is for supporting COM interop because COM does not support generic types
         /// </summary>
-        /// <returns></returns>
         string[] GetCautionStatementSymbolsArray();
 
         double GetChargeCarrierMass();
@@ -214,7 +208,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// Returns the number of elements in memory
         /// </summary>
-        /// <returns></returns>
         int GetElementCount();
 
         /// <summary>
@@ -248,7 +241,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Return the element symbol for the given element ID
         /// </summary>
         /// <param name="elementId"></param>
-        /// <returns></returns>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         string GetElementSymbol(short elementId);
 
@@ -257,7 +249,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="elementId">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
-        /// <returns></returns>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         double GetElementStat(short elementId, ElementStatsType elementStat);
 
@@ -266,7 +257,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="appendText"></param>
-        /// <returns></returns>
         string GetMessageStatement(int messageId, string appendText = "");
 
         int GetMessageStatementMaxId();
@@ -275,7 +265,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Returns True if the first letter of <paramref name="symbol"/> is a ModSymbol
         /// </summary>
         /// <param name="symbol"></param>
-        /// <returns></returns>
         /// <remarks>
         /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
         /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
@@ -369,7 +358,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="recomputeAbbreviationMasses">Set to false if updating several elements</param>
-        /// <returns></returns>
         int SetElement(string symbol, double mass, double uncertainty,
             float charge,
             bool recomputeAbbreviationMasses = true);
@@ -381,7 +369,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        /// <returns></returns>
         int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances);
 
         void SetElementMode(ElementMassMode elementMode, bool forceMemoryLoadElementValues = false);
@@ -404,7 +391,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="highlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
         /// <param name="overrideErrorId"></param>
         /// <param name="errorIdOverride"></param>
-        /// <returns></returns>
         // ReSharper disable once InconsistentNaming
         string TextToRTF(
             string textToConvert,

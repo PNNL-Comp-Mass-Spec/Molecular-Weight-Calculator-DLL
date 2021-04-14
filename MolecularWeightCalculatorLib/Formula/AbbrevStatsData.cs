@@ -111,7 +111,6 @@ namespace MolecularWeightCalculator.Formula
         /// Sort comparator: sort alphabetically.
         /// </summary>
         /// <param name="other"></param>
-        /// <returns></returns>
         public int CompareTo(AbbrevStatsData other)
         {
             if (ReferenceEquals(this, other)) return 0;

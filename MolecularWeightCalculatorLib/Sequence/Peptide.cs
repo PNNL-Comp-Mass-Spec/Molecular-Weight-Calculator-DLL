@@ -357,7 +357,6 @@ namespace MolecularWeightCalculator.Sequence
         /// </summary>
         /// <param name="fragSpectrum"></param>
         /// <returns>The number of ions in fragSpectrum[]</returns>
-        /// <remarks></remarks>
         public int GetFragmentationMasses(out FragmentationSpectrumData[] fragSpectrum)
         {
             var fragSpectraData = GetFragmentationMasses();
@@ -884,8 +883,6 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="terminiiSymbol"></param>
         /// <param name="ignoreCase"></param>
         /// <param name="proteinSearchStartLoc"></param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         public string GetTrypticName(string proteinResidues, string peptideResidues,
             out int returnResidueStart,
             out int returnResidueEnd,
@@ -1078,7 +1075,6 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="proteinSearchStartLoc"></param>
         /// <param name="listDelimiter"></param>
         /// <returns>The number of matches</returns>
-        /// <remarks></remarks>
         public string GetTrypticNameMultipleMatches(string proteinResidues,
             string peptideResidues,
             out int returnMatchCount,
@@ -1999,7 +1995,6 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="symbol"></param>
         /// <param name="is3LetterCode"></param>
         /// <param name="phosphorylated"></param>
-        /// <returns></returns>
         public int SetResidue(int residueIndex,
             string symbol,
             bool is3LetterCode = true,
@@ -2065,7 +2060,6 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="residueIndex">0-based index of residue</param>
         /// <param name="modificationCount"></param>
         /// <param name="modificationIDs">0-based array</param>
-        /// <returns></returns>
         public int SetResidueModifications(int residueIndex, short modificationCount, int[] modificationIDs)
         {
             // Sets the modifications for a specific residue

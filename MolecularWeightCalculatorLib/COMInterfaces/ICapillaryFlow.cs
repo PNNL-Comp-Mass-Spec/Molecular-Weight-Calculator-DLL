@@ -12,14 +12,12 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Computes the back pressure, stores in .BackPressure, and returns it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeBackPressure(UnitOfPressure units = UnitOfPressure.Psi);
 
         /// <summary>
         /// Computes the column length, stores in .ColumnLength, and returns it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeColumnLength(UnitOfLength units = UnitOfLength.CM);
 
         double ComputeColumnVolume(UnitOfVolume units = 0);
@@ -28,7 +26,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Computes the column length, stores in .ColumnLength, and returns it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeColumnId(UnitOfLength units = UnitOfLength.Microns);
 
         /// <summary>
@@ -36,7 +33,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="units"></param>
         /// <param name="recalculateVolFlowRate"></param>
-        /// <returns></returns>
         double ComputeDeadTime(UnitOfTime units = UnitOfTime.Minutes, bool recalculateVolFlowRate = true);
 
         double ComputeExtraColumnBroadeningResultantPeakWidth(UnitOfTime units = UnitOfTime.Seconds);
@@ -46,21 +42,18 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="units"></param>
         /// <param name="recalculateVolFlowRate"></param>
-        /// <returns></returns>
         double ComputeLinearVelocity(UnitOfLinearVelocity units = UnitOfLinearVelocity.CmPerSec, bool recalculateVolFlowRate = true);
 
         /// <summary>
         /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeMassFlowRate(UnitOfMassFlowRate units = UnitOfMassFlowRate.FmolPerSec);
 
         /// <summary>
         /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeMassRateMolesInjected(UnitOfMolarAmount units = UnitOfMolarAmount.FemtoMoles);
 
         /// <summary>
@@ -69,7 +62,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// and mExtraColumnBroadeningParameters.DiffusionCoefficient
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(UnitOfLinearVelocity units = UnitOfLinearVelocity.CmPerSec);
 
         double ComputeMeCNViscosity(double percentAcetonitrile, double temperature, UnitOfTemperature temperatureUnits = UnitOfTemperature.Celsius, UnitOfViscosity viscosityUnits = UnitOfViscosity.Poise);
@@ -78,7 +70,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Computes the Volumetric flow rate, stores in .VolumetricFlowRate, and returns it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         double ComputeVolFlowRate(UnitOfFlowRate units = UnitOfFlowRate.NLPerMin);
 
         /// <summary>
@@ -88,7 +79,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="newBackPressure">Output: new back pressure</param>
         /// <param name="units"></param>
         /// <param name="pressureUnits"></param>
-        /// <returns></returns>
         double ComputeVolFlowRateUsingDeadTime(
             out double newBackPressure,
             UnitOfFlowRate units = UnitOfFlowRate.NLPerMin,
@@ -100,7 +90,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="concentrationIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <returns></returns>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         double ConvertConcentration(double concentrationIn, UnitOfConcentration currentUnits, UnitOfConcentration newUnits);
 

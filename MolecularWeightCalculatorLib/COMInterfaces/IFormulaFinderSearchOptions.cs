@@ -12,7 +12,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// When true, compute the overall charge of each compound
         /// </summary>
-        /// <remarks></remarks>
         bool FindCharge { get; set; }
 
         /// <summary>

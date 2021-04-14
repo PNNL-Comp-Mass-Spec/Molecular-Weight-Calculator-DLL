@@ -14,7 +14,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="fragSpectrum"></param>
         /// <returns>The number of ions in fragSpectrum[]</returns>
-        /// <remarks></remarks>
         int GetFragmentationMasses(out FragmentationSpectrumData[] fragSpectrum);
 
         //// Commented out because COM does not support generic types
@@ -60,8 +59,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="terminiiSymbol"></param>
         /// <param name="ignoreCase"></param>
         /// <param name="proteinSearchStartLoc"></param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         string GetTrypticName(string proteinResidues, string peptideResidues,
             out int returnResidueStart,
             out int returnResidueEnd,
@@ -95,7 +92,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="proteinSearchStartLoc"></param>
         /// <param name="listDelimiter"></param>
         /// <returns>The number of matches</returns>
-        /// <remarks></remarks>
         string GetTrypticNameMultipleMatches(string proteinResidues,
             string peptideResidues,
             out int returnMatchCount,
@@ -180,7 +176,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="symbol"></param>
         /// <param name="is3LetterCode"></param>
         /// <param name="phosphorylated"></param>
-        /// <returns></returns>
         int SetResidue(int residueIndex,
             string symbol,
             bool is3LetterCode = true,
@@ -192,7 +187,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="residueIndex">0-based index of residue</param>
         /// <param name="modificationCount"></param>
         /// <param name="modificationIDs">0-based array</param>
-        /// <returns></returns>
         int SetResidueModifications(int residueIndex, short modificationCount, int[] modificationIDs);
 
         /// <summary>

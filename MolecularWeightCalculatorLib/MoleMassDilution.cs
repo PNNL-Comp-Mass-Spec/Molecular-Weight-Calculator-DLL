@@ -151,7 +151,6 @@ namespace MolecularWeightCalculator
         /// Computes the Final Concentration, storing in .FinalConcentration, and returning it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeDilutionFinalConcentration(UnitOfMoleMassConcentration units = UnitOfMoleMassConcentration.Molar)
         {
             if (Math.Abs(mDilutionValues.TotalFinalVolume) > float.Epsilon)
@@ -174,7 +173,6 @@ namespace MolecularWeightCalculator
         /// Computes the Initial Concentration, storing in .InitialConcentration, and returning it
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         public double ComputeDilutionInitialConcentration(UnitOfMoleMassConcentration units = UnitOfMoleMassConcentration.Molar)
         {
             if (Math.Abs(mDilutionValues.StockSolutionVolume) > float.Epsilon)
@@ -201,7 +199,6 @@ namespace MolecularWeightCalculator
         /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
         /// <param name="stockSolutionUnits"></param>
         /// <param name="dilutingSolventUnits"></param>
-        /// <returns></returns>
         public double ComputeDilutionRequiredStockAndDilutingSolventVolumes(
             out double newDilutingSolventVolume,
             UnitOfExtendedVolume stockSolutionUnits = UnitOfExtendedVolume.ML,
@@ -235,7 +232,6 @@ namespace MolecularWeightCalculator
         /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
         /// <param name="totalVolumeUnits"></param>
         /// <param name="dilutingSolventUnits"></param>
-        /// <returns></returns>
         public double ComputeDilutionTotalVolume(
             out double newDilutingSolventVolume,
             UnitOfExtendedVolume totalVolumeUnits = UnitOfExtendedVolume.ML,
@@ -319,7 +315,6 @@ namespace MolecularWeightCalculator
         /// <param name="amountIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <returns></returns>
         public double ConvertAmount(double amountIn, Unit currentUnits, Unit newUnits)
         {
             if (currentUnits == newUnits)
@@ -366,7 +361,6 @@ namespace MolecularWeightCalculator
         /// <param name="concentrationIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <returns></returns>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public double ConvertConcentration(double concentrationIn, UnitOfMoleMassConcentration currentUnits, UnitOfMoleMassConcentration newUnits)
         {
@@ -424,7 +418,6 @@ namespace MolecularWeightCalculator
         /// <param name="units"></param>
         /// <param name="sampleMass">required for mass-based units</param>
         /// <param name="sampleDensity">required for volume-based units</param>
-        /// <returns></returns>
         private double FactorAmount(
             Unit units,
             double sampleMass = -1,
@@ -475,7 +468,6 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="units"></param>
         /// <param name="sampleMass">required for mass-based units</param>
-        /// <returns></returns>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private double FactorConcentration(UnitOfMoleMassConcentration units, double sampleMass = 0d)
         {
@@ -513,7 +505,6 @@ namespace MolecularWeightCalculator
         /// Multiplication factor for converting from <paramref name="units"/> to mL
         /// </summary>
         /// <param name="units"></param>
-        /// <returns></returns>
         /// <remarks>An extended version of the FactorVolume function in CapillaryFlow</remarks>
         private double FactorVolumeExtended(UnitOfExtendedVolume units)
         {

@@ -194,7 +194,6 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Percent complete; ranges from 0 to 100, but can contain decimal percentage values
         /// </summary>
-        /// <returns></returns>
         public float ProgressPercentComplete => (float)Math.Round(mProgressPercentComplete, 2);
 
         public bool ShowErrorMessageDialogs { get; set; }
@@ -893,7 +892,6 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="resolutionMass">The m/z value at which the resolution applies</param>
         /// <param name="qualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
         /// <returns>Gaussian spectrum data</returns>
-        /// <remarks></remarks>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor)
         {
             // xyVals is 0-based (thus ranging from 0 to xyVals.count-1)
@@ -1304,7 +1302,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="atomCount"></param>
         /// <param name="isotopeCount"></param>
-        /// <returns></returns>
         private int FindCombosPredictIterations(int atomCount, short isotopeCount)
         {
             // Empirically determined the following results and figured out that the RunningSum()
@@ -1531,7 +1528,6 @@ namespace MolecularWeightCalculator.Formula
         /// Returns True if the first letter of <paramref name="testChar"/> is a ModSymbol
         /// </summary>
         /// <param name="testChar"></param>
-        /// <returns></returns>
         /// <remarks>
         /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
         /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
@@ -1657,7 +1653,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="massToConvert"></param>
         /// <param name="currentMz"></param>
-        /// <returns></returns>
         internal double MassToPPM(double massToConvert, double currentMz)
         {
             if (currentMz > 0d)
@@ -1674,7 +1669,6 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="monoisotopicMass"></param>
         /// <param name="charge"></param>
         /// <param name="chargeCarrierMass">If this is 0, uses mChargeCarrierMass</param>
-        /// <returns></returns>
         internal double MonoMassToMz(
             double monoisotopicMass,
             short charge,
@@ -1740,7 +1734,6 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="highlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
         /// <param name="overrideErrorId"></param>
         /// <param name="errorIdOverride"></param>
-        /// <returns></returns>
         internal string PlainTextToRtf(
             string workText,
             bool calculatorMode = false,
@@ -2115,7 +2108,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="work"></param>
         /// <param name="length"></param>
-        /// <returns></returns>
         public string SpacePad(string work, short length)
         {
             if (work.Length < length)
@@ -2146,7 +2138,6 @@ namespace MolecularWeightCalculator.Formula
         /// Update the progress description
         /// </summary>
         /// <param name="progressStepDescription">Description of the current processing occurring</param>
-        /// <remarks></remarks>
         protected void UpdateProgress(string progressStepDescription)
         {
             UpdateProgress(progressStepDescription, mProgressPercentComplete);
@@ -2156,7 +2147,6 @@ namespace MolecularWeightCalculator.Formula
         /// Update the progress
         /// </summary>
         /// <param name="percentComplete">Value between 0 and 100, indicating percent complete</param>
-        /// <remarks></remarks>
         protected void UpdateProgress(float percentComplete)
         {
             UpdateProgress(ProgressStepDescription, percentComplete);
@@ -2167,7 +2157,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="progressStepDescription">Description of the current processing occurring</param>
         /// <param name="percentComplete">Value between 0 and 100, indicating percent complete</param>
-        /// <remarks></remarks>
         protected void UpdateProgress(string progressStepDescription, float percentComplete)
         {
             var descriptionChanged = !string.Equals(progressStepDescription, mProgressStepDescription);

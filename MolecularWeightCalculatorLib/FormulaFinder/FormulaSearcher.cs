@@ -79,7 +79,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// Element symbols to consider when finding empirical formulas
         /// </summary>
         /// <value></value>
-        /// <returns></returns>
         /// <remarks>The values in the dictionary are target percent composition values; only used if you call FindMatchesByPercentComposition</remarks>
         public Dictionary<string, CandidateElementTolerances> CandidateElements
         {
@@ -120,7 +119,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Percent complete, between 0 and 100
         /// </summary>
-        /// <remarks></remarks>
         public double PercentComplete { get; private set; }
 
         #endregion
@@ -134,7 +132,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <remarks></remarks>
         public FormulaSearcher(ElementAndMassTools elementAndMassTools)
         {
             mElementAndMassRoutines = elementAndMassTools;
@@ -160,7 +157,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// Add a candidate element, abbreviation, or monoisotopic mass
         /// </summary>
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
-        /// <remarks></remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass)
         {
             var elementTolerances = GetDefaultCandidateElementTolerance();
@@ -173,7 +169,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// </summary>
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
         /// <param name="targetPercentComposition">Target percent composition</param>
-        /// <remarks></remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, double targetPercentComposition)
         {
             var elementTolerances = GetDefaultCandidateElementTolerance(targetPercentComposition);
@@ -198,7 +193,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// </summary>
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
         /// <param name="elementTolerances">Search tolerances, including % composition range and Min/Max count when using a bounded search</param>
-        /// <remarks></remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, CandidateElementTolerances elementTolerances)
         {
             if (mCandidateElements.ContainsKey(elementSymbolAbbrevOrMass))
@@ -217,8 +211,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="targetMass"></param>
         /// <param name="massTolerancePPM"></param>
         /// <param name="searchOptions">If null, uses default search options</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         public List<SearchResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, SearchOptions searchOptions = null)
         {
             var massToleranceDa = massTolerancePPM * targetMass / 1000000.0d;
@@ -237,7 +229,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="targetMass"></param>
         /// <param name="massTolerancePPM"></param>
         /// <param name="searchOptions">If null, uses default search options</param>
-        /// <returns></returns>
         public SearchResult[] FindMatchesByMassPPMGetArray(double targetMass, double massTolerancePPM, SearchOptions searchOptions = null)
         {
             return FindMatchesByMassPPM(targetMass, massTolerancePPM, searchOptions).ToArray();
@@ -249,8 +240,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="targetMass"></param>
         /// <param name="massToleranceDa"></param>
         /// <param name="searchOptions">If null, uses default search options</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         public List<SearchResult> FindMatchesByMass(double targetMass, double massToleranceDa, SearchOptions searchOptions = null)
         {
             if (searchOptions == null)
@@ -268,7 +257,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="targetMass"></param>
         /// <param name="massToleranceDa"></param>
         /// <param name="searchOptions">If null, uses default search options</param>
-        /// <returns></returns>
         public SearchResult[] FindMatchesByMassGetArray(double targetMass, double massToleranceDa, SearchOptions searchOptions = null)
         {
             return FindMatchesByMass(targetMass, massToleranceDa, searchOptions).ToArray();
@@ -297,7 +285,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Reset to defaults
         /// </summary>
-        /// <remarks></remarks>
         public void Reset()
         {
             mCandidateElements.Clear();
@@ -349,8 +336,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="ppmMode"></param>
         /// <param name="calculationMode"></param>
         /// <param name="sortedElementStats"></param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         private List<SearchResult> BoundedSearch(
             double targetMass,
             double massToleranceDa,
@@ -906,7 +891,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="elementCounts"></param>
         /// <param name="chargeOk"></param>
         /// <returns>Corrected charge</returns>
-        /// <remarks></remarks>
         private double CorrectChargeEmpirical(
             SearchOptions searchOptions,
             double totalCharge,
@@ -988,7 +972,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="targetCountStats"></param>
         /// <returns>True if all of the elements are present in the given counts (extra elements may also be present),
         /// false one or more is not found or has the wrong occurrence count</returns>
-        /// <remarks></remarks>
         private bool EmpiricalFormulaHasElementCounts(
             IDictionary<string, int> empiricalResultSymbols,
             Dictionary<string, int> targetCountStats)
@@ -1404,7 +1387,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="targetMass"></param>
         /// <param name="totalCharge"></param>
         /// <param name="empiricalResultSymbols"></param>
-        /// <remarks></remarks>
         private SearchResult GetSearchResult(
             SearchOptions searchOptions,
             bool ppmMode,
@@ -1501,8 +1483,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
         /// <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
         /// <param name="maximumFormulaMass">Only used when calculationMode is MatchPercentComposition</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         private List<SearchResult> OldFormulaFinder(
             SearchOptions searchOptions,
             bool ppmMode,
@@ -1917,7 +1897,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="potentialChargeTotal"></param>
         /// <param name="multipleMtoZCharge">When searchOptions.FindTargetMZ is false, this will be 0; otherwise, the current charge being searched for</param>
         /// <param name="potentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
-        /// <remarks></remarks>
         private void RecursiveMWFinder(
             ICollection<SearchResult> results,
             SearchOptions searchOptions,
@@ -2052,7 +2031,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="maximumFormulaMass"></param>
         /// <param name="potentialChargeTotal"></param>
         /// <param name="searchOptions"></param>
-        /// <remarks></remarks>
         private void RecursivePCompFinder(
             ICollection<SearchResult> results,
             SearchOptions searchOptions,

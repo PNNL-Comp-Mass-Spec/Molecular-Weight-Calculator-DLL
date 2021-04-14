@@ -193,7 +193,6 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Percent complete: ranges from 0 to 100, but can contain decimal percentage values
         /// </summary>
-        /// <returns></returns>
         public float ProgressPercentComplete => mElementAndMassRoutines.ProgressPercentComplete;
 
         public string RtfFontName
@@ -304,7 +303,6 @@ namespace MolecularWeightCalculator
         /// <param name="resolutionMass">The m/z value at which the resolution applies</param>
         /// <param name="qualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
         /// <returns>Gaussian spectrum data</returns>
-        /// <remarks></remarks>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor = 50)
         {
             return mElementAndMassRoutines.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor);
@@ -317,8 +315,6 @@ namespace MolecularWeightCalculator
         /// <param name="currentCharge">Current charge (0 means neutral mass)</param>
         /// <param name="desiredCharge">Desired charge (0 means neutral mass)</param>
         /// <param name="chargeCarrierMass">Custom charge carrier mass (0 means use default, usually 1.00727649)</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         public double ConvoluteMass(double massMz, short currentCharge, short desiredCharge = 1, double chargeCarrierMass = 0)
         {
             return mElementAndMassRoutines.ConvoluteMass(massMz, currentCharge, desiredCharge, chargeCarrierMass);
@@ -327,7 +323,6 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Determine the decimal point symbol (period or comma)
         /// </summary>
-        /// <returns></returns>
         internal static char DetermineDecimalPoint()
         {
             try
@@ -414,7 +409,6 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Get the number of abbreviations in memory
         /// </summary>
-        /// <returns></returns>
         public int GetAbbreviationCount()
         {
             return mElementAndMassRoutines.Elements.GetAbbreviationCount();
@@ -457,7 +451,6 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Get the number of Caution Statements in memory
         /// </summary>
-        /// <returns></returns>
         public int GetCautionStatementCount()
         {
             return mElementAndMassRoutines.Messages.GetCautionStatementCount();
@@ -466,7 +459,6 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Get the symbolCombos for Caution Statements in memory
         /// </summary>
-        /// <returns></returns>
         public List<string> GetCautionStatementSymbols()
         {
             return mElementAndMassRoutines.Messages.GetCautionStatementSymbols();
@@ -475,7 +467,6 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Get the symbolCombos for Caution Statements in memory as an array. This version is for supporting COM interop because COM does not support generic types
         /// </summary>
-        /// <returns></returns>
         public string[] GetCautionStatementSymbolsArray()
         {
             return GetCautionStatementSymbols().ToArray();
@@ -504,7 +495,6 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Returns the number of elements in memory
         /// </summary>
-        /// <returns></returns>
         public int GetElementCount()
         {
             return mElementAndMassRoutines.Elements.GetElementCount();
@@ -550,7 +540,6 @@ namespace MolecularWeightCalculator
         /// Return the element symbol for the given element ID
         /// </summary>
         /// <param name="elementId"></param>
-        /// <returns></returns>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         public string GetElementSymbol(short elementId)
         {
@@ -562,7 +551,6 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="elementId">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
-        /// <returns></returns>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         public double GetElementStat(short elementId, ElementStatsType elementStat)
         {
@@ -574,7 +562,6 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="appendText"></param>
-        /// <returns></returns>
         public string GetMessageStatement(int messageId, string appendText = "")
         {
             return mElementAndMassRoutines.Messages.GetMessageStatement(messageId, appendText);
@@ -589,7 +576,6 @@ namespace MolecularWeightCalculator
         /// Returns True if the first letter of <paramref name="symbol"/> is a ModSymbol
         /// </summary>
         /// <param name="symbol"></param>
-        /// <returns></returns>
         /// <remarks>
         /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
         /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
@@ -743,7 +729,6 @@ namespace MolecularWeightCalculator
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="recomputeAbbreviationMasses">Set to false if updating several elements</param>
-        /// <returns></returns>
         public int SetElement(string symbol, double mass, double uncertainty,
             float charge,
             bool recomputeAbbreviationMasses = true)
@@ -758,7 +743,6 @@ namespace MolecularWeightCalculator
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        /// <returns></returns>
         public int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances)
         {
             return mElementAndMassRoutines.Elements.SetElementIsotopes(symbol, isotopeCount, isotopeMasses, isotopeAbundances);
@@ -798,7 +782,6 @@ namespace MolecularWeightCalculator
         /// <param name="highlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
         /// <param name="overrideErrorId"></param>
         /// <param name="errorIdOverride"></param>
-        /// <returns></returns>
         // ReSharper disable once InconsistentNaming
         public string TextToRTF(
             string textToConvert,

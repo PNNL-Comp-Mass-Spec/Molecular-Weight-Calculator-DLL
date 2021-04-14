@@ -64,7 +64,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="appendText"></param>
-        /// <returns></returns>
         /// <remarks>
         /// GetMessageStatement simply returns the message for <paramref name="messageId"/>
         /// LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
