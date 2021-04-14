@@ -371,7 +371,7 @@ namespace MolecularWeightCalculator.Formula
             // Cases 50 through 74 are used during the % Solver routine
             messages.Add(50, "Target value is greater than 100%, an impossible value.");
 
-            // Cases 75 through 99 are used in frmCalculator
+            // Cases 75 through 99 are used in the Calculator GUI
             messages.Add(75, "Letters are not allowed in the calculator line");
             messages.Add(76, "Missing closing parenthesis");
             messages.Add(77, "Unmatched parentheses");
@@ -391,7 +391,7 @@ namespace MolecularWeightCalculator.Formula
             messages.Add(91, "You tried to divide a number by zero.  Please correct the problem and recalculate.");
             messages.Add(92, "Spaces are not allowed in mathematical expressions");
 
-            // Note that tags 93 and 94 are also used on frmMain
+            // Note that tags 93 and 94 are also used on the Main GUI
             messages.Add(93, "Use a period for a decimal point");
             messages.Add(94, "Use a comma for a decimal point");
             messages.Add(95, "A number must be present after a decimal point");

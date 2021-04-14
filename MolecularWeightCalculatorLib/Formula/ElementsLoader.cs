@@ -18,7 +18,7 @@ namespace MolecularWeightCalculator.Formula
             // Data Load Statements
             // Uncertainties from CRC Handbook of Chemistry and Physics
             // For Radioactive elements, the most stable isotope is NOT used;
-            // instead, an average Mol. Weight is used, just like with other elements.
+            // instead, an average molecular weight is used, just like with other elements.
             // Data obtained from the Perma-Chart Science Series periodic table, 1993.
             // Uncertainties from CRC Handbook of Chemistry and Physics, except for
             // Radioactive elements, where uncertainty was estimated to be .n5 where

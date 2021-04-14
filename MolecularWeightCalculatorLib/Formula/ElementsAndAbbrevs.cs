@@ -630,7 +630,7 @@ namespace MolecularWeightCalculator.Formula
             // Data Load Statements
             // Uncertainties from CRC Handbook of Chemistry and Physics
             // For Radioactive elements, the most stable isotope is NOT used;
-            // instead, an average Mol. Weight is used, just like with other elements.
+            // instead, an average molecular weight is used, just like with other elements.
             // Data obtained from the Perma-Chart Science Series periodic table, 1993.
             // Uncertainties from CRC Handbook of Chemistry and Physics, except for
             // Radioactive elements, where uncertainty was estimated to be .n5 where
@@ -648,15 +648,11 @@ namespace MolecularWeightCalculator.Formula
                 SetChargeCarrierMass(defaultChargeCarrierMassMonoiso);
             }
 
-            // elementNames stores the element names
-            // elemVals[elementIndex,1] stores the element's weight
-            // elemVals[elementIndex,2] stores the element's uncertainty
-            // elemVals[elementIndex,3] stores the element's charge
-            // Note: We could make this array of type ElementInfo, but the size of this method would increase dramatically
             var elementMemoryData = ElementsLoader.MemoryLoadElements();
 
+            // Assign delegate functions to be used when instantiating an ElementInfo instance for each element
             // Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights
-            // Reduce branching - use Func<> to get the correct value based on the settings
+
             Func<ElementMem, double> getMass;
             Func<ElementMem, double> getUncertainty;
             switch (elementMode)

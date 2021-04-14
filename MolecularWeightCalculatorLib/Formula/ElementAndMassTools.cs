@@ -571,7 +571,7 @@ namespace MolecularWeightCalculator.Formula
                                 //
                                 rigorousMethodUsed = true;
 
-                                // AbundDenom and AbundSuffix are only needed if using the easily-overflowed factorial method
+                                // Abundance denominator and abundance suffix are only needed if using the easily-overflowed factorial method
                                 var abundDenom = 1d;
                                 var abundSuffix = 1d;
                                 var stats = Elements.ElementStats[masterElementIndex];
@@ -736,12 +736,6 @@ namespace MolecularWeightCalculator.Formula
 
                     statItem.ResultsCount = index + 1;
                 }
-
-                // Examine IsoStats[] to predict the number of ConvolutionIterations
-                // Commented out because the only calculated value is not used anywhere.
-                //long predictedConvIterations = isoStats[0].ResultsCount;
-                //for (var index = 1; index < isoStats.Count; index++)
-                //    predictedConvIterations *= isoStats[index].ResultsCount;
 
                 ResetProgress("Finding Isotopic Abundances: Convoluting results");
 
