@@ -510,7 +510,7 @@ namespace MolecularWeightCalculator
         /// <param name="units"></param>
         public double ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(UnitOfLinearVelocity units = UnitOfLinearVelocity.CmPerSec)
         {
-            var optimumLinearVelocity = default(double);
+            var optimumLinearVelocity = 0.0;
 
             if (Math.Abs(mCapillaryFlowParameters.ParticleDiameter) > float.Epsilon)
             {
@@ -825,7 +825,7 @@ namespace MolecularWeightCalculator
 
         public double ConvertTemperature(double temperatureIn, UnitOfTemperature currentUnits, UnitOfTemperature newUnits)
         {
-            var value = default(double);
+            var value = 0.0;
             if (currentUnits == newUnits)
             {
                 return temperatureIn;

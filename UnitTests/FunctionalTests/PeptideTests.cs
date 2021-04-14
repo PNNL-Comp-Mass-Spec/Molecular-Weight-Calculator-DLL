@@ -72,7 +72,7 @@ namespace UnitTests.FunctionalTests
             const string possibleResidues = "ACDEFGHIKLMNPQRSTVWY";
 
             string peptideFragMwtWin;
-            const int matchCount = default(int);
+            const int matchCount = 0;
 
             var mMwtWin = new MolecularWeightTool();
 

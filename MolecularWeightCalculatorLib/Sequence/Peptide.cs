@@ -329,7 +329,7 @@ namespace MolecularWeightCalculator.Sequence
                 // Step through modSymbolGroup to see if all of it or parts of it match any of the defined
                 // modification symbols
 
-                int modificationId = default;
+                var modificationId = 0;
                 var matchFound = false;
                 int subPartLength;
                 for (subPartLength = modSymbolGroup.Length; subPartLength >= 1; subPartLength -= 1)
@@ -1498,7 +1498,7 @@ namespace MolecularWeightCalculator.Sequence
             // using returnResidueStart and returnResidueEnd
 
             var ruleResidueLoc = -1;
-            var prevStartLoc = default(int);
+            var prevStartLoc = 0;
 
             string matchingFragment;
 
@@ -2540,8 +2540,8 @@ namespace MolecularWeightCalculator.Sequence
 
         private void UpdateResidueMasses()
         {
-            var validResidueCount = default(int);
-            var protonatedNTerminus = default(bool);
+            var validResidueCount = 0;
+            var protonatedNTerminus = false;
 
             if (mDelayUpdateResidueMass)
                 return;

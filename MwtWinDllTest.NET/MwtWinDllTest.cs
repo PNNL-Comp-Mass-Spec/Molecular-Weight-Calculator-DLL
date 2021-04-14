@@ -689,7 +689,7 @@ namespace MwtWinDllTest
             const string possibleResidues = "ACDEFGHIKLMNPQRSTVWY";
 
             string peptideFragMwtWin;
-            const int matchCount = default(int);
+            const int matchCount = 0;
 
             var results = new frmTextbrowser();
 

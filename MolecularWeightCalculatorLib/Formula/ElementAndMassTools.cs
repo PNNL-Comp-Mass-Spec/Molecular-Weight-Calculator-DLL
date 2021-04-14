@@ -280,17 +280,17 @@ namespace MolecularWeightCalculator.Formula
             convolutedMSDataCount = 0;
             results = string.Empty;
 
-            double nextComboFractionalAbundance = default;
+            var nextComboFractionalAbundance = 0.0;
 
             const string deuteriumEquiv = "^2.014H";
 
             const double minAbundanceToKeep = 0.000001d;
             const double cutoffForRatioMethod = 0.00001d;
 
-            var explicitIsotopesPresent = default(bool);
-            var explicitIsotopeCount = default(short);
+            var explicitIsotopesPresent = false;
+            var explicitIsotopeCount = 0;
 
-            double logRho = default;
+            var logRho = 0.0;
 
             // Make sure formula is not blank
             if (string.IsNullOrEmpty(formulaIn))
@@ -416,7 +416,7 @@ namespace MolecularWeightCalculator.Formula
                 }
 
                 // Determine the number of elements present in formula
-                short elementCount = 0;
+                var elementCount = 0;
                 for (var atomicNumber = 1; atomicNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; atomicNumber++)
                 {
                     if (computationStats.Elements[atomicNumber].Used)

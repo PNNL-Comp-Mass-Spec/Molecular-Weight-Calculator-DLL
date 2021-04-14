@@ -741,6 +741,7 @@ namespace MolecularWeightCalculator.Formula
             // Reconstruct master symbols list
             // This is needed here to properly load the abbreviations
             ConstructMasterSymbolsList();
+
             // Also update and existing abbreviations
             RecomputeAbbreviationMasses();
         }
@@ -813,7 +814,7 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>0 if found and removed; 1 if error</returns>
         internal int RemoveAbbreviation(string abbreviationSymbol)
         {
-            var removed = default(bool);
+            var removed = false;
 
             abbreviationSymbol = abbreviationSymbol?.ToLower();
 
@@ -1043,7 +1044,7 @@ namespace MolecularWeightCalculator.Formula
             double uncertainty, float charge,
             bool recomputeAbbreviationMasses = true)
         {
-            var found = default(bool);
+            var found = false;
 
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
@@ -1084,7 +1085,7 @@ namespace MolecularWeightCalculator.Formula
                 return 1;
             }
 
-            var found = default(bool);
+            var found = false;
 
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
@@ -1147,7 +1148,7 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>Count of the number of invalid abbreviations found</returns>
         internal int ValidateAllAbbreviations()
         {
-            var invalidAbbreviationCount = default(short);
+            var invalidAbbreviationCount = 0;
 
             for (short abbrevIndex = 0; abbrevIndex < mAbbrevStats.Count; abbrevIndex++)
             {
