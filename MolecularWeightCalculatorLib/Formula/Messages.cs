@@ -191,7 +191,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="symbolCombo"></param>
         /// <param name="newCautionStatement"></param>
-        /// <returns>0 if successful, otherwise, returns an Error ID</returns>
+        /// <returns>0 if success, otherwise, returns an Error ID</returns>
         internal int SetCautionStatement(string symbolCombo, string newCautionStatement)
         {
             var errorId = 0;
@@ -245,7 +245,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="newMessage"></param>
-        /// <returns>0 if success; 1 if failure</returns>
+        /// <returns>0 if success, 1 if failure</returns>
         internal int SetMessageStatement(int messageId, string newMessage)
         {
             if (messageId is >= 1 and <= MESSAGE_STATEMENT_DIM_COUNT && newMessage.Length > 0)

@@ -193,7 +193,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// Defines the peptide sequence
         /// </summary>
         /// <param name="sequence">Peptide sequence using 1-letter amino acid symbols</param>
-        /// <returns>0 if success or 1 if an error</returns>
+        /// <returns>0 if success, 1 if an error</returns>
         /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
         int SetSequence1LetterSymbol(string sequence);
 
@@ -203,7 +203,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="sequence">Peptide sequence</param>
         /// <param name="is3LetterCode">Set to true for 3-letter amino acid symbols, false for 1-letter symbols (for example, R.ABCDEF.R)</param>
         /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to true to check for and remove prefix and suffix residues when <paramref name="is3LetterCode"/> = false</param>
-        /// <returns>0 if success or 1 if an error</returns>
+        /// <returns>0 if success, 1 if an error</returns>
         /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
         int SetSequence(string sequence,
             bool is3LetterCode,
@@ -219,7 +219,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to true to check for and remove prefix and suffix residues when <paramref name="is3LetterCode"/> = false</param>
         /// <param name="threeLetterCheckForPrefixHandSuffixOH">Set to true to check for and remove prefix H and OH when <paramref name="is3LetterCode"/> = true</param>
         /// <param name="addMissingModificationSymbols">Set to true to automatically add missing modification symbols (though the mod masses will be 0)</param>
-        /// <returns>0 if success or 1 if an error</returns>
+        /// <returns>0 if success, 1 if an error</returns>
         /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
         int SetSequence(string sequence,
             NTerminusGroupType nTerminus = NTerminusGroupType.Hydrogen,

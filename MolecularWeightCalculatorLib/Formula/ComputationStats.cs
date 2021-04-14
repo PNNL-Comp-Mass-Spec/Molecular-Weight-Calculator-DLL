@@ -5,10 +5,26 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     public class ComputationStats
     {
-        public ElementUseStats[] Elements { get; private set; }        // 1-based array, ranging from 1 to ELEMENT_COUNT
+        /// <summary>
+        /// Element statistics
+        /// </summary>
+        /// <remarks>
+        /// 1-based array, ranging from 1 to ELEMENT_COUNT
+        /// </remarks>
+        public ElementUseStats[] Elements { get; private set; }
+
         public double TotalMass { get; set; }
-        public PercentCompositionInfo[] PercentCompositions { get; private set; } // 1-based array, ranging from 1 to ELEMENT_COUNT
+
+        /// <summary>
+        /// Percent composition info
+        /// </summary>
+        /// <remarks>
+        /// 1-based array, ranging from 1 to ELEMENT_COUNT
+        /// </remarks>
+        public PercentCompositionInfo[] PercentCompositions { get; private set; }
+
         public float Charge { get; set; }
+
         public double StandardDeviation { get; set; }
 
         public ComputationStats()
@@ -31,7 +47,8 @@ namespace MolecularWeightCalculator.Formula
         public ComputationStats Clone()
         {
             // Start with a shallow copy for all value members
-            var cloned = (ComputationStats)MemberwiseClone(); // NOTE: can't use then when trying to create deep copies of lists, when the object reference is readonly
+            // NOTE: can't use this when trying to create deep copies of lists, when the object reference is read only
+            var cloned = (ComputationStats)MemberwiseClone();
 
             // Finish with a deep copy for all reference members
             cloned.Elements = new ElementUseStats[Elements.Length];

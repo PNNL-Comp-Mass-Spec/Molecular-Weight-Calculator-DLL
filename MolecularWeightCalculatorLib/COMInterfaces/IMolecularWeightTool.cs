@@ -116,7 +116,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="formula">Output: empirical formula</param>
         /// <param name="charge">Output: charge</param>
         /// <param name="isAminoAcid">Output: true if an amino acid</param>
-        /// <returns> 0 if success, 1 if failure</returns>
+        /// <returns>0 if success, 1 if failure</returns>
         int GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid);
@@ -131,7 +131,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="isAminoAcid">Output: true if an amino acid</param>
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
-        /// <returns> 0 if success, 1 if failure</returns>
+        /// <returns>0 if success, 1 if failure</returns>
         int GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid,
@@ -149,7 +149,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
         /// <param name="invalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
-        /// <returns> 0 if success, 1 if failure</returns>
+        /// <returns>0 if success, 1 if failure</returns>
         int GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid,
@@ -303,7 +303,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="oneLetterSymbol"></param>
         /// <param name="comment"></param>
         /// <param name="validateFormula">If true, make sure the formula is valid</param>
-        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <returns>0 if success, otherwise an error ID</returns>
         /// <remarks>
         /// It is useful to set <paramref name="validateFormula"/> = False when you're defining all of the abbreviations at once,
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
@@ -327,7 +327,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="oneLetterSymbol"></param>
         /// <param name="comment"></param>
         /// <param name="validateFormula">If true, make sure the formula is valid</param>
-        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <returns>0 if success, otherwise an error ID</returns>
         /// <remarks>
         /// It is useful to set <paramref name="validateFormula"/> = False when you're defining all of the abbreviations at once,
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
@@ -345,7 +345,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="symbolCombo"></param>
         /// <param name="newCautionStatement"></param>
-        /// <returns>0 if successful, otherwise, returns an Error ID</returns>
+        /// <returns>0 if success, otherwise, returns an Error ID</returns>
         int SetCautionStatement(string symbolCombo, string newCautionStatement);
 
         void SetChargeCarrierMass(double mass);
@@ -378,7 +378,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="newMessage"></param>
-        /// <returns>0 if success; 1 if failure</returns>
+        /// <returns>0 if success, 1 if failure</returns>
         int SetMessageStatement(int messageId, string newMessage);
 
         void SortAbbreviations();

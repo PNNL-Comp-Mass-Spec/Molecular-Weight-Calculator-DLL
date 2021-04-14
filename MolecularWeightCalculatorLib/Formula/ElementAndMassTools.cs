@@ -1869,7 +1869,7 @@ namespace MolecularWeightCalculator.Formula
                     }
                     else if (!calculatorMode && (char.IsLetter(workCharPrev[0]) || workCharPrev == ")" || workCharPrev == @"\}" || workCharPrev == "+" || workCharPrev == "_" || rtf.Substring(rtf.Length - 6, 3) == "sub"))
                     {
-                        // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
+                        // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscript
                         // But, don't use subscripts in calculator
                         rtf += @"{\sub " + workChar + "}";
                     }

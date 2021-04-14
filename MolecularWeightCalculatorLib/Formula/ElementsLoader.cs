@@ -15,15 +15,15 @@ namespace MolecularWeightCalculator.Formula
         {
             var elementData = new ElementMem[ElementsAndAbbrevs.ELEMENT_COUNT + 1];
 
-            // Data Load Statements
-            // Uncertainties from CRC Handbook of Chemistry and Physics
+            // Data obtained from the Perma-Chart Science Series periodic table, 1993.
             // For Radioactive elements, the most stable isotope is NOT used;
             // instead, an average molecular weight is used, just like with other elements.
-            // Data obtained from the Perma-Chart Science Series periodic table, 1993.
+
             // Uncertainties from CRC Handbook of Chemistry and Physics, except for
             // Radioactive elements, where uncertainty was estimated to be .n5 where
             // specificElementProperty represents the number digits after the decimal point but before the last
             // number of the molecular weight.
+
             // For example, for No, MW = 259.1009 (±0.0005)
 
             // Assigning element names, Charges, integer weight, isotopic weight, average weight, and average weight uncertainty

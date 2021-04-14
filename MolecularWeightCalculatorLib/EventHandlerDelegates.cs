@@ -11,7 +11,7 @@ namespace MolecularWeightCalculator
     /// <param name="taskDescription"></param>
     /// <param name="percentComplete">Ranges from 0 to 100, but can contain decimal percentage values</param>
     [ComVisible(false)]
-    public delegate void ProgressChangedEventHandler(string taskDescription, float percentComplete);     // PercentComplete ranges from 0 to 100, but can contain decimal percentage values
+    public delegate void ProgressChangedEventHandler(string taskDescription, float percentComplete);
 
     [ComVisible(false)]
     public delegate void ProgressCompleteEventHandler();

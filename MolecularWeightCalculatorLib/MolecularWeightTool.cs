@@ -55,7 +55,7 @@ namespace MolecularWeightCalculator
 
         // Ignore Spelling: Arial, Bryson, interop, Nikša, xyVals
 
-        private const string PROGRAM_DATE = "March 20, 2021";
+        private const string PROGRAM_DATE = "April 14, 2021";
 
         /// <summary>
         /// Constructor, assumes the elements are using average masses
@@ -94,7 +94,8 @@ namespace MolecularWeightCalculator
             Peptide = new Peptide(mElementAndMassRoutines);
 
             // Does not re-load the elements or cause extra re-calculations because the masses loaded above were already the average masses
-            SetElementMode(elementMode, false); // Use "false" to avoid re-loading all of the elements and isotopes unless it is actually necessary.
+            // Use "false" to avoid re-loading all of the elements and isotopes unless it is actually necessary
+            SetElementMode(elementMode, false);
 
             Compound = new Compound(mElementAndMassRoutines);
             FormulaFinder = new FormulaSearcher(mElementAndMassRoutines);
@@ -662,7 +663,7 @@ namespace MolecularWeightCalculator
         /// <param name="oneLetterSymbol"></param>
         /// <param name="comment"></param>
         /// <param name="validateFormula">If true, make sure the formula is valid</param>
-        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <returns>0 if success, otherwise an error ID</returns>
         /// <remarks>
         /// It is useful to set <paramref name="validateFormula"/> = False when you're defining all of the abbreviations at once,
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
@@ -689,7 +690,7 @@ namespace MolecularWeightCalculator
         /// <param name="oneLetterSymbol"></param>
         /// <param name="comment"></param>
         /// <param name="validateFormula">If true, make sure the formula is valid</param>
-        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <returns>0 if success, otherwise an error ID</returns>
         /// <remarks>
         /// It is useful to set <paramref name="validateFormula"/> = False when you're defining all of the abbreviations at once,
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
@@ -710,7 +711,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbolCombo"></param>
         /// <param name="newCautionStatement"></param>
-        /// <returns>0 if successful, otherwise, returns an Error ID</returns>
+        /// <returns>0 if success, otherwise, returns an Error ID</returns>
         public int SetCautionStatement(string symbolCombo, string newCautionStatement)
         {
             return mElementAndMassRoutines.Messages.SetCautionStatement(symbolCombo, newCautionStatement);
@@ -803,6 +804,9 @@ namespace MolecularWeightCalculator
             return mElementAndMassRoutines.Elements.ValidateAllAbbreviations();
         }
 
+        /// <summary>
+        /// Destructor
+        /// </summary>
         ~MolecularWeightTool()
         {
             Peptide = null;

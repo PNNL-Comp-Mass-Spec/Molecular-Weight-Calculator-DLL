@@ -81,9 +81,27 @@ namespace MolecularWeightCalculator.Sequence
 
         private class ModificationSymbol
         {
-            public string Symbol { get; } // Symbol used for modification in formula; may be 1 or more characters; for example: + ++ * ** etc.
-            public double ModificationMass { get; set; } // Normally positive, but could be negative
-            public bool IndicatesPhosphorylation { get; set; } // When true, then this symbol means a residue is phosphorylated
+            /// <summary>
+            /// Modification symbol
+            /// </summary>
+            /// <remarks>
+            /// May be 1 or more characters; for example: + ++ * ** etc.
+            /// </remarks>
+            public string Symbol { get; }
+
+            /// <summary>
+            /// Modification mass
+            /// </summary>
+            /// <remarks>
+            /// Typically positive, but can be negative
+            /// </remarks>
+            public double ModificationMass { get; set; }
+
+            /// <summary>
+            /// When true, this symbol indicates a phosphorylated residue
+            /// </summary>
+            public bool IndicatesPhosphorylation { get; set; }
+
             public string Comment { get; set; }
 
             public ModificationSymbol(string symbol, double modMass, bool indicatesPhosphorylation, string comment = "")
@@ -95,14 +113,40 @@ namespace MolecularWeightCalculator.Sequence
             }
         }
 
+        /// <summary>
+        /// Amino acid residue
+        /// </summary>
         private class Residue
         {
-            public string Symbol { get; } // 3 letter symbol
-            public double Mass { get; set; } // The mass of the residue alone (excluding any modification)
-            public double MassWithMods { get; set; } // The mass of the residue, including phosphorylation or any modification
-            public double[] IonMass { get; } // 0-based array; the masses that the a, b, and y ions ending/starting with this residue will produce in the mass spectrum (includes H+)
-            public bool Phosphorylated { get; set; } // Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
-            public List<int> ModificationIDs { get; } // 0-based array
+            /// <summary>
+            /// 3 letter symbol
+            /// </summary>
+            public string Symbol { get; }
+
+            /// <summary>
+            /// The mass of the residue alone (excluding any modification)
+            /// </summary>
+            public double Mass { get; set; }
+
+            /// <summary>
+            /// The mass of the residue, including any modification (e.g. phosphorylation)
+            /// </summary>
+            public double MassWithMods { get; set; }
+
+            /// <summary>
+            /// The masses that the a, b, and y ions ending/starting with this residue will produce in the mass spectrum (includes H+)
+            /// </summary>
+            /// <remarks>
+            /// 0-based array
+            /// </remarks>
+            public double[] IonMass { get; } //
+
+            /// <summary>
+            /// Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
+            /// </summary>
+            public bool Phosphorylated { get; set; }
+
+            public List<int> ModificationIDs { get; }
 
             public Residue()
             {
@@ -122,48 +166,132 @@ namespace MolecularWeightCalculator.Sequence
             }
         }
 
+        /// <summary>
+        /// Information on the N or C terminus of a peptide
+        /// </summary>
         private class Terminus
         {
+            /// <summary>
+            /// Formula
+            /// </summary>
             public string Formula { get; set; }
+
+            /// <summary>
+            /// Mass
+            /// </summary>
             public double Mass { get; set; }
-            public Residue PrecedingResidue { get; set; } = new(); // If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
-            public Residue FollowingResidue { get; set; } = new(); // If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
+
+            /// <summary>
+            /// Amino acid just before this peptide in the protein
+            /// </summary>
+            // ReSharper disable once UnusedAutoPropertyAccessor.Local
+            public Residue PrecedingResidue { get; set; } = new();
+
+            /// <summary>
+            /// Amino acid just after this peptide in the protein
+            /// </summary>
+            // ReSharper disable once UnusedAutoPropertyAccessor.Local
+            public Residue FollowingResidue { get; set; } = new();
         }
 
-        // Note: A peptide goes from N to C, e.g. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
-        // Residue 1 (index 0) would be Gly, Residue 2 (index 1) would be Leu, Residue 3 (index 2) would be Tyr
-        private readonly List<Residue> mResidues; // 0-based array
+        /// <summary>
+        /// Peptide residues
+        /// </summary>
+        /// <remarks>
+        /// A peptide goes from N to C, e.g. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
+        /// mResidues[0] = "Gly"
+        /// mResidues[1] = "Leu"
+        /// mResidues[2] = "Tyr"
+        /// </remarks>
+        private readonly List<Residue> mResidues;
 
-        // ModificationSymbols[] holds a list of the potential modification symbols and the mass of each modification
-        // Modification symbols can be 1 or more letters long
-        private readonly List<ModificationSymbol> mModificationSymbols; // 0-based array
+        /// <summary>
+        /// Tracks potential modification symbols and the mass of each modification
+        /// </summary>
+        /// <remarks>
+        /// Modification symbols are typically a single character, but we allow for multiple characters for the symbol
+        /// </remarks>
+        private readonly List<ModificationSymbol> mModificationSymbols;
 
-        private readonly Terminus mNTerminus = new(); // Formula on the N-Terminus
-        private readonly Terminus mCTerminus = new(); // Formula on the C-Terminus
+        /// <summary>
+        /// Formula on the N-Terminus
+        /// </summary>
+        private readonly Terminus mNTerminus = new();
+
+        /// <summary>
+        /// Formula on the C-Terminus
+        /// </summary>
+        private readonly Terminus mCTerminus = new();
+
+        /// <summary>
+        /// Peptide mass, including modifications
+        /// </summary>
         private double mTotalMass;
 
-        private string mWaterLossSymbol; // -H2O
-        private string mAmmoniaLossSymbol; // -NH3
-        private string mPhosphoLossSymbol; // -H3PO4
+        /// <summary>
+        /// Water loss: -H2O
+        /// </summary>
+        private string mWaterLossSymbol;
+
+        /// <summary>
+        /// Ammonia loss: -NH3
+        /// </summary>
+        private string mAmmoniaLossSymbol;
+
+        /// <summary>
+        /// Phospho loss: -H3PO4
+        /// </summary>
+        private string mPhosphoLossSymbol;
 
         private FragmentationSpectrumOptions mFragSpectrumOptions = new();
 
         // ReSharper disable InconsistentNaming
+
+        /// <summary>
+        /// Mass of water
+        /// </summary>
         private double mMassHOH;
+
+        /// <summary>
+        /// Mass of ammonia
+        /// </summary>
         private double mMassNH3;
+
+        /// <summary>
+        /// Mass of the phospho group, including water
+        /// </summary>
         private double mMassH3PO4;
-        // ReSharper restore InconsistentNaming
-        private double mMassPhosphorylation; // H3PO4 minus HOH = 79.9663326
-        private double mMassHydrogen; // Mass of hydrogen
-        private double mChargeCarrierMass; // H minus one electron
 
-        private double mImmoniumMassDifference; // CO minus H = 26.9871
-
-        // ReSharper disable InconsistentNaming
-        private double mHistidineFW; // 110
-        private double mPhenylalanineFW; // 120
-        private double mTyrosineFW; // 136
         // ReSharper restore InconsistentNaming
+
+        /// <summary>
+        /// Mass of the phospho group, excluding water
+        /// </summary>
+        /// <remarks>
+        /// H3PO4 minus HOH = 79.9663326
+        /// </remarks>
+        private double mMassPhosphorylation;
+
+        /// <summary>
+        /// Mass of hydrogen
+        /// </summary>
+        private double mMassHydrogen;
+
+        /// <summary>
+        /// Charge carrier mass
+        /// </summary>
+        /// <remarks>
+        /// Typically H minus one electron
+        /// </remarks>
+        private double mChargeCarrierMass;
+
+        /// <summary>
+        /// Immonium mass difference
+        /// </summary>
+        /// <remarks>
+        /// CO minus H = 26.9871
+        /// </remarks>
+        private double mImmoniumMassDifference;
 
         private bool mDelayUpdateResidueMass;
 
@@ -615,11 +743,17 @@ namespace MolecularWeightCalculator.Sequence
             return internalResidues;
         }
 
+        /// <summary>
+        /// Get information on the modification with modificationId
+        /// </summary>
+        /// <param name="modificationId"></param>
+        /// <param name="modSymbol"></param>
+        /// <param name="modificationMass"></param>
+        /// <param name="indicatesPhosphorylation"></param>
+        /// <param name="comment"></param>
+        /// <returns>0 if success, 1 if failure</returns>
         public int GetModificationSymbol(int modificationId, out string modSymbol, out double modificationMass, out bool indicatesPhosphorylation, out string comment)
         {
-            // Returns information on the modification with modificationId
-            // Returns 0 if success, 1 if failure
-
             if (modificationId >= 0 && modificationId < mModificationSymbols.Count)
             {
                 var mod = mModificationSymbols[modificationId];
@@ -669,9 +803,17 @@ namespace MolecularWeightCalculator.Sequence
             return modificationIdMatch;
         }
 
+        /// <summary>
+        /// Get information about the residue at the given index
+        /// </summary>
+        /// <param name="residueIndex"></param>
+        /// <param name="symbol"></param>
+        /// <param name="mass"></param>
+        /// <param name="isModified"></param>
+        /// <param name="modificationCount"></param>
+        /// <returns>0 if success, 1 if failure</returns>
         public int GetResidue(int residueIndex, out string symbol, out double mass, out bool isModified, out short modificationCount)
         {
-            // Returns 0 if success, 1 if failure
             if (residueIndex >= 0 && residueIndex < mResidues.Count)
             {
                 var residue = mResidues[residueIndex];
@@ -1613,11 +1755,12 @@ namespace MolecularWeightCalculator.Sequence
             };
         }
 
+        /// <summary>
+        /// Remove all residues from this peptide
+        /// </summary>
+        /// <returns>0 if success, 1 if failure</returns>
         public int RemoveAllResidues()
         {
-            // Removes all the residues
-            // Returns 0 on success, 1 on failure
-
             mResidues.Clear();
             mResidues.Capacity = 50;
             mTotalMass = 0d;
@@ -1625,22 +1768,27 @@ namespace MolecularWeightCalculator.Sequence
             return 0;
         }
 
+        /// <summary>
+        /// Remove all possible modification symbols
+        /// </summary>
+        /// <returns>0 if success, 1 if failure</returns>
+        /// <remarks>
+        /// Removing all modifications will invalidate any modifications present in a sequence
+        /// </remarks>
         public int RemoveAllModificationSymbols()
         {
-            // Removes all possible Modification Symbols
-            // Returns 0 on success, 1 on failure
-            // Removing all modifications will invalidate any modifications present in a sequence
-
             mModificationSymbols.Clear();
             mModificationSymbols.Capacity = 10;
 
             return 0;
         }
 
+        /// <summary>
+        /// Remove the leading H, if present
+        /// </summary>
+        /// <param name="workingSequence"></param>
         private void RemoveLeadingH(ref string workingSequence)
         {
-            // Returns True if a leading H is removed
-
             if (workingSequence.Length >= 4 && workingSequence.ToUpper().StartsWith("H"))
             {
                 // If next character is not a character, then remove the H and the non-letter character
@@ -1664,11 +1812,14 @@ namespace MolecularWeightCalculator.Sequence
             }
         }
 
+        /// <summary>
+        /// Remove the trailing OH, if present
+        /// </summary>
+        /// <param name="workingSequence"></param>
+        /// <returns>True if OH was removed</returns>
         // ReSharper disable once InconsistentNaming
         private bool RemoveTrailingOH(ref string workingSequence)
         {
-            // Returns True if a trailing OH is removed
-
             // ReSharper disable once InconsistentNaming
             var removedOH = false;
             var stringLength = workingSequence.Length;
@@ -1698,9 +1849,15 @@ namespace MolecularWeightCalculator.Sequence
             return removedOH;
         }
 
+        /// <summary>
+        /// Remove the modification with the given symbol
+        /// </summary>
+        /// <param name="modSymbol"></param>
+        /// <returns>
+        /// 0 if found and removed; 1 if error
+        /// </returns>
         public int RemoveModification(string modSymbol)
         {
-            // Returns 0 if found and removed; 1 if error
             if (string.IsNullOrWhiteSpace(modSymbol))
             {
                 return 1;
@@ -1725,10 +1882,15 @@ namespace MolecularWeightCalculator.Sequence
             return 1;
         }
 
+        /// <summary>
+        /// Remove the modification with the given modification Id
+        /// </summary>
+        /// <param name="modificationId"></param>
+        /// <returns>
+        /// 0 if found and removed; 1 if error
+        /// </returns>
         public int RemoveModificationById(int modificationId)
         {
-            // Returns 0 if found and removed; 1 if error
-
             bool removed;
 
             if (modificationId >= 0 && modificationId < mModificationSymbols.Count)
@@ -1749,10 +1911,13 @@ namespace MolecularWeightCalculator.Sequence
             return 1;
         }
 
+        /// <summary>
+        /// Remove the residue at the given index
+        /// </summary>
+        /// <param name="residueIndex"></param>
+        /// <returns> 0 if found and removed; 1 if error</returns>
         public int RemoveResidue(int residueIndex)
         {
-            // Returns 0 if found and removed; 1 if error
-
             if (residueIndex >= 0 && residueIndex < mResidues.Count)
             {
                 mResidues.RemoveAt(residueIndex);
@@ -1763,14 +1928,21 @@ namespace MolecularWeightCalculator.Sequence
             return 1;
         }
 
+        /// <summary>
+        /// Set the C terminus group using an empirical formula
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <param name="followingResidue"></param>
+        /// <param name="use3LetterCode"></param>
+        /// <returns>0 if success, 1 if an error</returns>
+        /// <remarks>
+        /// Typical C terminus groups
+        /// Free Acid = OH
+        /// Amide = NH2
+        /// </remarks>
         public int SetCTerminus(string formula, string followingResidue = "", bool use3LetterCode = true)
         {
-            // Returns 0 if success; 1 if error
-            var success = 0;
-
-            // Typical N terminus mods
-            // Free Acid = OH
-            // Amide = NH2
+            int success;
 
             mCTerminus.Mass = mElementAndMassRoutines.Parser.ComputeFormulaWeight(ref formula);
             mCTerminus.Formula = formula;
@@ -1791,12 +1963,16 @@ namespace MolecularWeightCalculator.Sequence
             return success;
         }
 
-        public int SetCTerminusGroup(CTerminusGroupType cTerminusGroup,
-            string followingResidue = "",
-            bool use3LetterCode = true)
+        /// <summary>
+        /// Set the C terminus group using an enum
+        /// </summary>
+        /// <param name="cTerminusGroup"></param>
+        /// <param name="followingResidue"></param>
+        /// <param name="use3LetterCode"></param>
+        /// <returns>0 if success, 1 if error</returns>
+        public int SetCTerminusGroup(CTerminusGroupType cTerminusGroup, string followingResidue = "", bool use3LetterCode = true)
         {
-            // Returns 0 if success; 1 if error
-            int error = cTerminusGroup switch
+            var error = cTerminusGroup switch
             {
                 CTerminusGroupType.Hydroxyl => SetCTerminus("OH", followingResidue, use3LetterCode),
                 CTerminusGroupType.Amide => SetCTerminus("NH2", followingResidue, use3LetterCode),
@@ -1889,10 +2065,16 @@ namespace MolecularWeightCalculator.Sequence
             mFragSpectrumOptions = newFragSpectrumOptions;
         }
 
+        /// <summary>
+        /// Adds a new modification or updates an existing one (based on modSymbol)
+        /// </summary>
+        /// <param name="modSymbol"></param>
+        /// <param name="modificationMass"></param>
+        /// <param name="indicatesPhosphorylation"></param>
+        /// <param name="comment"></param>
+        /// <returns>0 if success, -1 if an error</returns>
         public int SetModificationSymbol(string modSymbol, double modificationMass, bool indicatesPhosphorylation = false, string comment = "")
         {
-            // Adds a new modification or updates an existing one (based on modSymbol)
-            // Returns 0 if successful, otherwise, returns -1
 
             var errorId = 0;
             if (string.IsNullOrWhiteSpace(modSymbol))
@@ -1936,17 +2118,23 @@ namespace MolecularWeightCalculator.Sequence
             return errorId;
         }
 
+        /// <summary>
+        /// Set the N terminus group using an empirical formula
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <param name="precedingResidue"></param>
+        /// <param name="use3LetterCode"></param>
+        /// <returns>0 if success, 1 if an error</returns>
+        /// <remarks>
+        /// Typical N terminus groups
+        /// Hydrogen = H
+        /// Acetyl = C2OH3
+        /// PyroGlu = C5O2NH6
+        /// Carbamyl = CONH2
+        /// PTC = C7H6NS</remarks>
         public int SetNTerminus(string formula, string precedingResidue = "", bool use3LetterCode = true)
         {
-            // Returns 0 if success; 1 if error
-            var success = 0;
-
-            // Typical N terminus mods
-            // Hydrogen = H
-            // Acetyl = C2OH3
-            // PyroGlu = C5O2NH6
-            // Carbamyl = CONH2
-            // PTC = C7H6NS
+            int success;
 
             mNTerminus.Mass = mElementAndMassRoutines.Parser.ComputeFormulaWeight(ref formula);
             mNTerminus.Formula = formula;
@@ -1967,13 +2155,16 @@ namespace MolecularWeightCalculator.Sequence
             return success;
         }
 
-        public int SetNTerminusGroup(NTerminusGroupType nTerminusGroup,
-            string precedingResidue = "",
-            bool use3LetterCode = true)
+        /// <summary>
+        /// Set the N terminus group using an enum
+        /// </summary>
+        /// <param name="nTerminusGroup"></param>
+        /// <param name="precedingResidue"></param>
+        /// <param name="use3LetterCode"></param>
+        /// <returns>0 if success, 1 if error</returns>
+        public int SetNTerminusGroup(NTerminusGroupType nTerminusGroup, string precedingResidue = "", bool use3LetterCode = true)
         {
-            // Returns 0 if success; 1 if error
-
-            int error = nTerminusGroup switch
+            var error = nTerminusGroup switch
             {
                 NTerminusGroupType.Hydrogen => SetNTerminus("H", precedingResidue, use3LetterCode),
                 NTerminusGroupType.HydrogenPlusProton => SetNTerminus("HH", precedingResidue, use3LetterCode),
@@ -2060,13 +2251,12 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="residueIndex">0-based index of residue</param>
         /// <param name="modificationCount"></param>
         /// <param name="modificationIDs">0-based array</param>
+        /// <returns>0 if modifications set, 1 if an error</returns>
+        /// <remarks>
+        /// Modification Symbols are defined using successive calls to SetModificationSymbol()
+        /// </remarks>
         public int SetResidueModifications(int residueIndex, short modificationCount, int[] modificationIDs)
         {
-            // Sets the modifications for a specific residue
-            // Modification Symbols are defined using successive calls to SetModificationSymbol()
-
-            // Returns 0 if modifications set; returns 1 if an error
-
             if (residueIndex >= 0 && residueIndex < mResidues.Count && modificationCount >= 0)
             {
                 var residue = mResidues[residueIndex];
@@ -2102,7 +2292,7 @@ namespace MolecularWeightCalculator.Sequence
         /// Defines the peptide sequence
         /// </summary>
         /// <param name="sequence">Peptide sequence using 1-letter amino acid symbols</param>
-        /// <returns>0 if success or 1 if an error</returns>
+        /// <returns>0 if success, 1 if an error</returns>
         /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence1LetterSymbol(string sequence)
         {
@@ -2115,7 +2305,7 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="sequence">Peptide sequence</param>
         /// <param name="is3LetterCode">Set to true for 3-letter amino acid symbols, false for 1-letter symbols (for example, R.ABCDEF.R)</param>
         /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to true to check for and remove prefix and suffix residues when <paramref name="is3LetterCode"/> = false</param>
-        /// <returns>0 if success or 1 if an error</returns>
+        /// <returns>0 if success, 1 if an error</returns>
         /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string sequence,
             bool is3LetterCode,
@@ -2135,7 +2325,7 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to true to check for and remove prefix and suffix residues when <paramref name="is3LetterCode"/> = false</param>
         /// <param name="threeLetterCheckForPrefixHandSuffixOH">Set to true to check for and remove prefix H and OH when <paramref name="is3LetterCode"/> = true</param>
         /// <param name="addMissingModificationSymbols">Set to true to automatically add missing modification symbols (though the mod masses will be 0)</param>
-        /// <returns>0 if success or 1 if an error</returns>
+        /// <returns>0 if success, 1 if an error</returns>
         /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
         public int SetSequence(string sequence,
             NTerminusGroupType nTerminus = NTerminusGroupType.Hydrogen,

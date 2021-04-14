@@ -243,7 +243,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
         /// <param name="invalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
-        /// <returns> 0 if success, 1 if failure</returns>
+        /// <returns>0 if success, 1 if failure</returns>
         internal int GetAbbreviation(
             int abbreviationId,
             out string symbol,
@@ -624,15 +624,15 @@ namespace MolecularWeightCalculator.Formula
             const double defaultChargeCarrierMassAvg = 1.00739d;
             const double defaultChargeCarrierMassMonoiso = 1.00727649d;
 
-            // Data Load Statements
-            // Uncertainties from CRC Handbook of Chemistry and Physics
+            // Data obtained from the Perma-Chart Science Series periodic table, 1993.
             // For Radioactive elements, the most stable isotope is NOT used;
             // instead, an average molecular weight is used, just like with other elements.
-            // Data obtained from the Perma-Chart Science Series periodic table, 1993.
+
             // Uncertainties from CRC Handbook of Chemistry and Physics, except for
             // Radioactive elements, where uncertainty was estimated to be .n5 where
             // specificElementProperty represents the number digits after the decimal point but before the last
             // number of the molecular weight.
+
             // For example, for No, MW = 259.1009 (±0.0005)
 
             // Define the charge carrier mass
@@ -850,7 +850,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="oneLetterSymbol"></param>
         /// <param name="comment"></param>
         /// <param name="validateFormula">If true, make sure the formula is valid</param>
-        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <returns>0 if success, otherwise an error ID</returns>
         /// <remarks>
         /// It is useful to set <paramref name="validateFormula"/> = false when you're defining all of the abbreviations at once,
         /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
@@ -911,7 +911,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="oneLetterSymbol"></param>
         /// <param name="comment"></param>
         /// <param name="validateFormula"></param>
-        /// <returns>0 if successful, otherwise an error ID</returns>
+        /// <returns>0 if success, otherwise an error ID</returns>
         internal int SetAbbreviationById(
             short abbrevId, string symbol,
             string formula, float charge,
@@ -1063,7 +1063,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        /// <returns>0 if successful, 1 if symbol not found</returns>
+        /// <returns>0 if success, 1 if symbol not found</returns>
         internal int SetElementIsotopes(string symbol, short isotopeCount, double[] isotopeMasses, float[] isotopeAbundances)
         {
             if (string.IsNullOrWhiteSpace(symbol))
