@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.Formula
 {
+    // Ignore Spelling: struct
+
     [ComVisible(false)]
     internal enum SymbolMatchMode
     {

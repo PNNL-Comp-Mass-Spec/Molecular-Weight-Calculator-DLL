@@ -5,6 +5,8 @@
 
 namespace MolecularWeightCalculator.COMInterfaces
 {
+    // Ignore Spelling: interop
+
     [Guid("9FF841FB-A0B1-41D4-B2E3-0C7CE4FD15BC"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
     public interface IFormulaFinderSearchResult
     {

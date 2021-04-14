@@ -8,6 +8,8 @@ namespace MolecularWeightCalculator.COMInterfaces
     [Guid("9159B749-8285-44D1-995C-93BEBDF2B207"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
     public interface ICompound
     {
+        // Ignore Spelling: interop
+
         string ConvertToEmpirical();
         bool ElementPresent(short elementId);
         string ExpandAbbreviations();

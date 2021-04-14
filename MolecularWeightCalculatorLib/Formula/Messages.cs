@@ -7,7 +7,7 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     internal class Messages
     {
-        // Ignore Spelling: csv, prepend, txt
+        // Ignore Spelling: bipyridine, Bpy, csv, Cys, Hoh, hydroxyproline, Hyp, Oac, prepend, py, txt
 
         public Messages(FormulaOptions options)
         {

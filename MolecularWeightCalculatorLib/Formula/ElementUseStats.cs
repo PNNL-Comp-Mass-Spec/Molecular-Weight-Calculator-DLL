@@ -7,6 +7,8 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     public class ElementUseStats : IElementUseStats
     {
+        // Ignore Spelling: Memberwise
+
         /// <summary>
         /// True if the element is present
         /// </summary>

@@ -7,6 +7,8 @@ namespace MolecularWeightCalculator.FormulaFinder
     [Guid("4ACF7379-E609-4331-856E-45B06F408212"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
     public class SearchResult : IFormulaFinderSearchResult
     {
+        // Ignore Spelling: dm, interop
+
         public string EmpiricalFormula { get; }
 
         public Dictionary<string, int> CountsByElement { get; }

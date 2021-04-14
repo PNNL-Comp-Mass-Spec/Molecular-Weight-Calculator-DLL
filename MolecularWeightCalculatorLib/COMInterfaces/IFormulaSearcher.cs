@@ -6,6 +6,8 @@ using MolecularWeightCalculator.FormulaFinder;
 
 namespace MolecularWeightCalculator.COMInterfaces
 {
+    // Ignore Spelling: interop
+
     [Guid("FCAEBB03-02BD-46D5-9E0B-C74D81F625B7"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch), ComVisible(true)]
     public interface IFormulaSearcherEvents
     {

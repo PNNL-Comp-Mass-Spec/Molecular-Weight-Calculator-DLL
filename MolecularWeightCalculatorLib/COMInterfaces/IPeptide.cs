@@ -9,6 +9,8 @@ namespace MolecularWeightCalculator.COMInterfaces
     [Guid("BE0BB73D-727C-4607-993F-9E21626FDC13"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
     public interface IPeptide
     {
+        // Ignore Spelling: frag
+
         /// <summary>
         /// Get fragmentation masses
         /// </summary>
