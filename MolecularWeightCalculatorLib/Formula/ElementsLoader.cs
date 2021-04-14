@@ -461,11 +461,13 @@ namespace MolecularWeightCalculator.Formula
             // Note: We stored data in the isoData[] array above
             // then copy to the ElementStats[] array here for the purposes of
             // decreasing the size of this method
-            for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT - 1; elementIndex++)
+            for (var elementNumber = 1; elementNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; elementNumber++)
             {
-                var stats = elementStats[elementIndex];
+                System.Console.WriteLine(elementNumber);
+
+                var stats = elementStats[elementNumber];
                 short isotopeIndex = 0;
-                foreach (var isotope in isoData[elementIndex])
+                foreach (var isotope in isoData[elementNumber])
                 {
                     stats.Isotopes.Add(isotope);
                     isotopeIndex++;
