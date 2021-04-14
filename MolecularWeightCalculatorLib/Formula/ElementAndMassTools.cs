@@ -1111,7 +1111,7 @@ namespace MolecularWeightCalculator.Formula
                             if (Math.Round(dataToAdd[dataIndex].X, massPrecision) <= Math.Round(xySummation[summationIndex].X, massPrecision))
                             {
                                 // Within Tolerance; start combining the values here
-                                while (summationIndex <= xySummation.Count - 1)
+                                while (summationIndex < xySummation.Count)
                                 {
                                     var currentVal = xySummation[summationIndex];
                                     currentVal.Y += dataToAdd[dataIndex].Y;
