@@ -1276,7 +1276,6 @@ namespace MolecularWeightCalculator.Formula
             for (var isotopeIndex = 0; isotopeIndex < isotopeCount; isotopeIndex++)
                 workingMass = (int)Math.Round(workingMass + isoCombos[comboIndex, isotopeIndex] * Math.Round(thisElementsIsotopes[isotopeIndex].Mass, 0));
 
-            // (workingMass  - IsoStats(ElementIndex).StartingResultsMass) + 1
             return (int)Math.Round(workingMass - atomCount * Math.Round(thisElementsIsotopes[0].Mass, 0));
         }
 
