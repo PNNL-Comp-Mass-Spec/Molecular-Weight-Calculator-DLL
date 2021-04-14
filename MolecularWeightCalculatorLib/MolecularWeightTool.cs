@@ -53,7 +53,7 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        // Ignore Spelling: xyVals, Arial
+        // Ignore Spelling: Arial, Bryson, interop, Nikša, xyVals
 
         private const string PROGRAM_DATE = "March 20, 2021";
 

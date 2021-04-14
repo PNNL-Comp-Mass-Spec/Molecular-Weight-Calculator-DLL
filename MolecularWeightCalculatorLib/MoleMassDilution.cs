@@ -29,6 +29,8 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
+        // Ignore Spelling: Bryson
+
         public MoleMassDilution()
         {
             // Ignore Spelling: ug, ng

@@ -31,8 +31,8 @@ namespace MolecularWeightCalculator.Formula
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        // Ignore Spelling: alph, Convoluting, func, gaussian, Isoelectric, isoStats, Mwt
-        // Ignore Spelling: parenth, pos, prepend, struct, xyVals, yyyy-MM-dd, hh:mm:ss, tt
+        // Ignore Spelling: ansi, alph, Bryson, Convoluting, ElementsAndAbbrevs, func, gaussian, Isoelectric, isoStats, Mwt
+        // Ignore Spelling: parenth, pos, prepend, Rtf, struct, xyVals, yyyy-MM-dd, hh:mm:ss, tt
 
         /// <summary>
         /// Constructor

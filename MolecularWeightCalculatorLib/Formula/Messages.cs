@@ -7,6 +7,8 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     internal class Messages
     {
+        // Ignore Spelling: csv, prepend, txt
+
         public Messages(FormulaOptions options)
         {
             mOptions = options;

@@ -8,6 +8,8 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     internal class ElementsAndAbbrevs
     {
+        // Ignore Spelling: ElementAlph, Func, Isoelectric, unprotonated
+
         public ElementsAndAbbrevs(ElementAndMassTools massCalc)
         {
             mMassCalc = massCalc;

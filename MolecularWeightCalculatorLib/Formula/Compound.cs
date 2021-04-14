@@ -39,6 +39,8 @@ namespace MolecularWeightCalculator.Formula
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
+        // Ignore Spelling: Bryson, interop
+
         public Compound(ElementAndMassTools elementAndMassTools = null)
         {
             mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();

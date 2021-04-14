@@ -5,6 +5,8 @@ namespace MolecularWeightCalculator.FormulaFinder
     [ComVisible(false)]
     internal class CandidateElement
     {
+        // Ignore Spelling: Da
+
         public double Mass { get; set; }
         public double Charge { get; set; }
 

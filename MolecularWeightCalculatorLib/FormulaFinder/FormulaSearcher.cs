@@ -11,7 +11,7 @@ namespace MolecularWeightCalculator.FormulaFinder
     [Guid("B24497AD-A29D-4266-A33A-EF97B86EA578"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IFormulaSearcherEvents)), ComVisible(true)]
     public class FormulaSearcher : IFormulaSearcher, IFormulaSearcherEvents
     {
-        // Ignore Spelling: Da
+        // Ignore Spelling: Da, interop, MtoZ
 
         #region "Constants"
         private const int MAX_MATCHING_ELEMENTS = 10;

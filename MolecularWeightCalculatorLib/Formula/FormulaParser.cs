@@ -8,6 +8,8 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     public class FormulaParser
     {
+        // Ignore Spelling: Alph
+
         public FormulaParser(ElementAndMassTools elementTools)
         {
             ComputationOptions = elementTools.ComputationOptions;
