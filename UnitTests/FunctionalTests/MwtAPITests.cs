@@ -22,8 +22,8 @@ namespace UnitTests.FunctionalTests
         public void TestAccessFunctions()
         {
             // Test Abbreviations
-            var itemCount = mMwtWin.GetAbbreviationCount();
-            for (var index = 0; index < itemCount; index++)
+            var abbreviationCount = mMwtWin.GetAbbreviationCount();
+            for (var index = 0; index < abbreviationCount; index++)
             {
                 var result = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
                 Assert.AreEqual(0, result);
@@ -44,17 +44,17 @@ namespace UnitTests.FunctionalTests
             }
 
             // Test Element access
-            itemCount = mMwtWin.GetElementCount();
-            for (var index = 1; index <= itemCount; index++)
+            var elementCount = mMwtWin.GetElementCount();
+            for (var atomicNumber = 1; atomicNumber <= elementCount; atomicNumber++)
             {
-                var result = mMwtWin.GetElement((short) index, out var symbol, out var mass, out var uncertainty, out var charge, out var isotopeCount);
+                var result = mMwtWin.GetElement((short)atomicNumber, out var symbol, out var mass, out var uncertainty, out var charge, out var isotopeCount);
                 Assert.AreEqual(0, result);
-                Assert.AreEqual(index, mMwtWin.GetElementId(symbol));
+                Assert.AreEqual(atomicNumber, mMwtWin.GetAtomicNumber(symbol));
 
                 result = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
                 Assert.AreEqual(0, result);
 
-                result = mMwtWin.GetElementIsotopes((short) index, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
+                result = mMwtWin.GetElementIsotopes((short)atomicNumber, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
                 Assert.AreEqual(isotopeCount, isotopeCount2);
                 Assert.AreEqual(0, result);
 
@@ -63,8 +63,8 @@ namespace UnitTests.FunctionalTests
             }
 
             // Test Message Statements access
-            itemCount = mMwtWin.GetMessageStatementMaxId();
-            for (var index = 0; index <= itemCount; index++)
+            var messageStatementMaxId = mMwtWin.GetMessageStatementMaxId();
+            for (var index = 0; index <= messageStatementMaxId; index++)
             {
                 var statement = mMwtWin.GetMessageStatement(index);
 
