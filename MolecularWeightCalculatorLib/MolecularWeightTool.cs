@@ -72,9 +72,9 @@ namespace MolecularWeightCalculator
         public MolecularWeightTool(ElementMassMode elementMode)
         {
             mElementAndMassRoutines = new ElementAndMassTools();
-            mElementAndMassRoutines.ProgressChanged += mElementAndMassRoutines_ProgressChanged;
-            mElementAndMassRoutines.ProgressComplete += mElementAndMassRoutines_ProgressComplete;
-            mElementAndMassRoutines.ProgressReset += mElementAndMassRoutines_ProgressReset;
+            mElementAndMassRoutines.ProgressChanged += ElementAndMassRoutines_ProgressChanged;
+            mElementAndMassRoutines.ProgressComplete += ElementAndMassRoutines_ProgressComplete;
+            mElementAndMassRoutines.ProgressReset += ElementAndMassRoutines_ProgressReset;
 
             // Call mElementAndMassRoutines.MemoryLoadAll, which is required prior to instantiating the Peptide class.
             // We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
@@ -816,17 +816,17 @@ namespace MolecularWeightCalculator
             Compound = null;
         }
 
-        private void mElementAndMassRoutines_ProgressChanged(string taskDescription, float percentComplete)
+        private void ElementAndMassRoutines_ProgressChanged(string taskDescription, float percentComplete)
         {
             ProgressChanged?.Invoke(taskDescription, percentComplete);
         }
 
-        private void mElementAndMassRoutines_ProgressComplete()
+        private void ElementAndMassRoutines_ProgressComplete()
         {
             ProgressComplete?.Invoke();
         }
 
-        private void mElementAndMassRoutines_ProgressReset()
+        private void ElementAndMassRoutines_ProgressReset()
         {
             ProgressReset?.Invoke();
         }
