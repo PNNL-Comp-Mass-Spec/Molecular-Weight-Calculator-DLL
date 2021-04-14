@@ -1563,29 +1563,14 @@ namespace MolecularWeightCalculator.Formula
             {
                 var firstChar = testChar[0];
 
-                switch (Convert.ToInt32(firstChar))
+                isModSymbol = Convert.ToInt32(firstChar) switch
                 {
-                    case 34: // " is not allowed
-                        isModSymbol = false;
-                        break;
-                    case 40:
-                    case 41: // ( and ) are not allowed
-                        isModSymbol = false;
-                        break;
-                    case >= 44 and <= 62: // . and - and , and / and numbers and : and ; and < and = and > are not allowed
-                        isModSymbol = false;
-                        break;
-                    case >= 33 and <= 43:
-                    case 63:    // ?
-                    case 64:    // @
-                    case >= 94 and <= 96:   // ^ and _ and `
-                    case 126:   // ~
-                        isModSymbol = true;
-                        break;
-                    default:
-                        isModSymbol = false;
-                        break;
-                }
+                    34 => false,                // " is not a recognized mod symbol
+                    40 or 41 => false,          // Parentheses are not mod symbols
+                    >= 44 and <= 62 => false,   // . and - and , and / and numbers and : and ; and < and = and > are not mod symbols
+                    >= 33 and <= 43 or 63 or 64 or >= 94 and <= 96 or 126 => true,  // These are mod symbols
+                    _ => false,
+                };
             }
             else
             {
@@ -2064,21 +2049,12 @@ namespace MolecularWeightCalculator.Formula
             work = NumberConverter.CIntSafe(work);
 
             // work should now be between 0 and 9
-            switch (work)
+            thisNum = work switch
             {
-                case 0d:
-                case 1d:
-                    thisNum = 1d;
-                    break;
-                case 2d:
-                case 3d:
-                case 4d:
-                    thisNum = 2d;
-                    break;
-                default:
-                    thisNum = 5d;
-                    break;
-            }
+                0d or 1d => 1d,
+                2d or 3d or 4d => 2d,
+                _ => 5d,
+            };
 
             // Convert thisNum back to the correct magnitude
             thisNum *= Math.Pow(10d, exponentValue);

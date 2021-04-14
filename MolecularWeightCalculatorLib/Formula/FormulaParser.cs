@@ -1179,6 +1179,7 @@ namespace MolecularWeightCalculator.Formula
                                         // Hydrogen is -1 with metals (non-halides)
                                         stats.Charge = (float)(stats.Charge + addCount * -1);
                                         break;
+
                                     default:
                                         stats.Charge = (float)(stats.Charge + addCount * elementStats.Charge);
                                         break;
