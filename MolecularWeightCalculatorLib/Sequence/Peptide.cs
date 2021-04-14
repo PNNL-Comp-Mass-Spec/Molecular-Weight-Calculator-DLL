@@ -320,7 +320,7 @@ namespace MolecularWeightCalculator.Sequence
                     break;
                 }
 
-                compareIndex += 1;
+                compareIndex++;
             }
 
             var modSymbolLengthTotal = modSymbolGroup.Length;
@@ -332,7 +332,7 @@ namespace MolecularWeightCalculator.Sequence
                 var modificationId = 0;
                 var matchFound = false;
                 int subPartLength;
-                for (subPartLength = modSymbolGroup.Length; subPartLength >= 1; subPartLength -= 1)
+                for (subPartLength = modSymbolGroup.Length; subPartLength >= 1; --subPartLength)
                 {
                     // See if the modification is already defined
                     modificationId = GetModificationSymbolId(modSymbolGroup.Substring(0, subPartLength));
@@ -1277,7 +1277,7 @@ namespace MolecularWeightCalculator.Sequence
 
                     nameList += currentName;
                     currentSearchLoc = currentResidueEnd + 1;
-                    returnMatchCount += 1;
+                    returnMatchCount++;
 
                     if (returnMatchCount == 1)
                     {
@@ -2469,7 +2469,7 @@ namespace MolecularWeightCalculator.Sequence
                             else
                             {
                                 // First letter is a character, but next two are not; ignore it
-                                index += 1;
+                                index++;
                             }
                         }
                         else
@@ -2482,7 +2482,7 @@ namespace MolecularWeightCalculator.Sequence
                                 // All is fine; we can skip this
                             }
 
-                            index += 1;
+                            index++;
                         }
                     }
                 }
@@ -2564,7 +2564,7 @@ namespace MolecularWeightCalculator.Sequence
 
                 if (abbrevId >= 0)
                 {
-                    validResidueCount += 1;
+                    validResidueCount++;
                     residue.Mass = mElementAndMassRoutines.Elements.GetAbbreviationMass(abbrevId);
 
                     var phosphorylationMassAdded = false;
@@ -2631,7 +2631,7 @@ namespace MolecularWeightCalculator.Sequence
             // Now compute the y-ion and z-ion masses
             runningTotal = mCTerminus.Mass + mChargeCarrierMass;
 
-            for (var index = mResidues.Count - 1; index >= 0; index -= 1)
+            for (var index = mResidues.Count - 1; index >= 0; --index)
             {
                 var residue = mResidues[index];
                 if (residue.IonMass[(int)IonType.AIon] > 0d)

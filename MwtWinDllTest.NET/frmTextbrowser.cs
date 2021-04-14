@@ -146,7 +146,7 @@ namespace MwtWinDllTest
             }
             else
             {
-                TextFontSize -= 1f;
+                TextFontSize--;
             }
         }
 
@@ -158,7 +158,7 @@ namespace MwtWinDllTest
             }
             else
             {
-                TextFontSize += 1f;
+                TextFontSize++;
             }
         }
 

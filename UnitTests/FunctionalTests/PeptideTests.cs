@@ -111,7 +111,7 @@ namespace UnitTests.FunctionalTests
                 peptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)fragIndex, out _, out _);
                 Console.WriteLine("Tryptic fragment " + fragIndex + ": " + peptideFragMwtWin);
                 Assert.AreEqual(peptideFragMwtWin, expectedFragments[fragIndex], "Fragment did not match expected sequence");
-                fragIndex += 1;
+                fragIndex++;
             }
             while (peptideFragMwtWin.Length > 0);
 
@@ -151,7 +151,7 @@ namespace UnitTests.FunctionalTests
                         var peptideResidues = protein.Substring(residueStart, residueEnd);
                         peptideNameMwtWin[mwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(protein, peptideResidues, out _, out _, true);
 
-                        mwtWinResultCount += 1;
+                        mwtWinResultCount++;
                         if (mwtWinResultCount > mwtWinDimCount)
                         {
                             mwtWinDimCount += dimChunk;

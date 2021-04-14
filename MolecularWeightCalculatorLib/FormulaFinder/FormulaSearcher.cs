@@ -445,7 +445,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                             break;
                         }
 
-                        endIndex += 1;
+                        endIndex++;
                     }
 
                     if (int.TryParse(empiricalFormula.Substring(charIndex, endIndex - charIndex + 1), out parsedValue))
@@ -465,7 +465,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                     charIndex = endIndex;
                 }
 
-                charIndex += 1;
+                charIndex++;
             }
 
             return codeString.ToString();
@@ -680,7 +680,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             var elementCountArray = new int[potentialElementCount];
 
             foreach (var elementIndex in newPotentialElementPointers)
-                elementCountArray[elementIndex] += 1;
+                elementCountArray[elementIndex]++;
 
             return elementCountArray;
         }
@@ -928,7 +928,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                     for (var index = 1; index <= elementCounts.N + elementCounts.P; index++)
                     {
                         correctedCharge += 2d;
-                        numHalogens -= 1;
+                        numHalogens--;
 
                         if (numHalogens <= 0)
                         {
@@ -936,7 +936,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         }
 
                         correctedCharge += 2d;
-                        numHalogens -= 1;
+                        numHalogens--;
                         if (numHalogens <= 0)
                             break;
                     }
@@ -1196,7 +1196,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         candidateElement.Mass = customMass;
                         candidateElement.Charge = 0d;
 
-                        customElementCounter += 1;
+                        customElementCounter++;
 
                         // Custom elements are named C1_ or C2_ or C3_ etc.
                         candidateElement.Symbol = "C" + customElementCounter + "_";
@@ -1291,7 +1291,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                         potentialElementStats[potentialElementCount, 0] = customMass;
                         potentialElementStats[potentialElementCount, 1] = 0d;
 
-                        customElementCounter += 1;
+                        customElementCounter++;
 
                         // Custom elements are named C1_ or C2_ or C3_ etc.
                         potentialElements[potentialElementCount] = "C" + customElementCounter + "_";
@@ -1347,7 +1347,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                 targetPercents[potentialElementCount, 0] = item.Value.TargetPercentComposition - percentTolerance;  // Lower bound of target percentage
                 targetPercents[potentialElementCount, 1] = item.Value.TargetPercentComposition + percentTolerance;  // Upper bound of target percentage
 
-                potentialElementCount += 1;
+                potentialElementCount++;
             }
 
             return potentialElementCount;
@@ -1661,7 +1661,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                                                                 {
                                                                     if (percent[index] >= sortedElementStats[index].PercentCompMinimum && percent[index] <= sortedElementStats[index].PercentCompMaximum)
                                                                     {
-                                                                        subTrack += 1;
+                                                                        subTrack++;
                                                                     }
                                                                 }
 
@@ -1843,7 +1843,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             // Greatly speeds up the recursive routine
 
             // Bubble sort
-            for (var y = potentialElementCount - 1; y >= 1; y -= 1)       // Sort from end to start
+            for (var y = potentialElementCount - 1; y >= 1; --y)       // Sort from end to start
             {
                 for (var x = 0; x < y; x++)
                 {
@@ -1993,7 +1993,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                             var extra = 0;
                             while (totalMass < targetMass - massToleranceDa - sortedElementStats[currentIndex].Mass)
                             {
-                                extra += 1;
+                                extra++;
                                 totalMass += sortedElementStats[currentIndex].Mass;
                                 totalCharge += sortedElementStats[currentIndex].Charge;
                             }
@@ -2088,7 +2088,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                                 if (potentialPercents[index] >= sortedElementStats[index].PercentCompMinimum &&
                                     potentialPercents[index] <= sortedElementStats[index].PercentCompMaximum)
                                 {
-                                    percentTrack += 1;
+                                    percentTrack++;
                                 }
                             }
 
@@ -2171,7 +2171,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
         private void UpdateStatus()
         {
-            mRecursiveCount += 1;
+            mRecursiveCount++;
 
             if (mRecursiveCount <= mMaxRecursiveCount)
             {

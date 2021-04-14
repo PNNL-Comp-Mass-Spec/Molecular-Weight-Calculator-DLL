@@ -734,7 +734,7 @@ namespace MwtWinDllTest
             {
                 peptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)fragIndex, out _, out _);
                 results.AppendText("Tryptic fragment " + fragIndex + ": " + peptideFragMwtWin);
-                fragIndex += 1;
+                fragIndex++;
             }
             while (peptideFragMwtWin.Length > 0);
 
@@ -775,7 +775,7 @@ namespace MwtWinDllTest
                         var peptideResidues = protein.Substring(residueStart, residueEnd);
                         peptideNameMwtWin[mwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(protein, peptideResidues, out _, out _, true);
 
-                        mwtWinResultCount += 1;
+                        mwtWinResultCount++;
                         if (mwtWinResultCount > mwtWinDimCount)
                         {
                             mwtWinDimCount += dimChunk;

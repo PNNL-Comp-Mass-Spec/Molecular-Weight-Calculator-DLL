@@ -589,7 +589,7 @@ namespace MolecularWeightCalculator.Formula
                         for (var comboIndex = 0; comboIndex < combosFound; comboIndex++)
                         {
                             int indexToStoreAbundance;
-                            completedComboCalcs += 1;
+                            completedComboCalcs++;
 
                             percentComplete = completedComboCalcs / (float)predictedTotalComboCalcs * 100f;
                             if (completedComboCalcs % 10 == 0)
@@ -767,7 +767,7 @@ namespace MolecularWeightCalculator.Formula
                     var index = statItem.ResultsCount - 1;
                     while (statItem.MassAbundances[index] < minAbundanceToKeep)
                     {
-                        index -= 1;
+                        index--;
                         if (index == 0)
                             break;
                     }
@@ -829,7 +829,7 @@ namespace MolecularWeightCalculator.Formula
 
                 // Step Through convolutedAbundances[], starting at the end, and find the first value above MIN_ABUNDANCE_TO_KEEP
                 // Decrease convolutedMSDataCount to remove the extra values below MIN_ABUNDANCE_TO_KEEP
-                for (var massIndex = convolutedMSDataCount - 1; massIndex >= 0; massIndex -= 1)
+                for (var massIndex = convolutedMSDataCount - 1; massIndex >= 0; --massIndex)
                 {
                     if (convolutedAbundances[massIndex].Abundance > minAbundanceToKeep)
                     {
@@ -882,7 +882,7 @@ namespace MolecularWeightCalculator.Formula
                 var rowIndex = 0;
                 while (convolutedMSData2D[rowIndex, 1] < minAbundanceToKeep)
                 {
-                    rowIndex += 1;
+                    rowIndex++;
                     if (rowIndex == convolutedMSDataCount - 1)
                         break;
                 }
@@ -890,7 +890,7 @@ namespace MolecularWeightCalculator.Formula
                 // If rowIndex > 0 then remove rows from beginning since value is less than MIN_ABUNDANCE_TO_KEEP
                 if (rowIndex > 0 && rowIndex < convolutedMSDataCount - 1)
                 {
-                    rowIndex -= 1;
+                    rowIndex--;
                     // Remove rows from the start of convolutedMSData2DOneBased[] since 0 mass
                     for (var massIndex = rowIndex + 1; massIndex < convolutedMSDataCount; massIndex++)
                     {
@@ -1003,7 +1003,7 @@ namespace MolecularWeightCalculator.Formula
                 // Make sure dataToAddCount is odd
                 if (dataToAddCount % 2 == 0)
                 {
-                    dataToAddCount += 1;
+                    dataToAddCount++;
                 }
 
                 var dataToAdd = new List<XYData>(dataToAddCount);
@@ -1118,8 +1118,8 @@ namespace MolecularWeightCalculator.Formula
 
                                     xySummation[summationIndex] = currentVal;
 
-                                    summationIndex += 1;
-                                    dataIndex += 1;
+                                    summationIndex++;
+                                    dataIndex++;
                                     if (dataIndex >= dataToAddCount)
                                     {
                                         // Successfully combined all of the data
@@ -1143,7 +1143,7 @@ namespace MolecularWeightCalculator.Formula
                         while (dataIndex < dataToAddCount)
                         {
                             xySummation.Add(dataToAdd[dataIndex]);
-                            dataIndex += 1;
+                            dataIndex++;
                         }
                     }
                 }
@@ -1303,7 +1303,7 @@ namespace MolecularWeightCalculator.Formula
             if (mAbortProcessing)
                 return;
 
-            iterations += 1L;
+            iterations++;
             if (iterations % 10000L == 0L)
             {
                 Application.DoEvents();
@@ -1319,7 +1319,7 @@ namespace MolecularWeightCalculator.Formula
                 if (newAbundance > 0f)
                 {
                     result.Abundance += newAbundance;
-                    result.Multiplicity += 1;
+                    result.Multiplicity++;
                 }
             }
             else
@@ -1463,7 +1463,7 @@ namespace MolecularWeightCalculator.Formula
 
                 while (atomTrack > 0)
                 {
-                    currentRow += 1;
+                    currentRow++;
 
                     // Went to a new row; if CurrentCol > 0 then need to assign previous values to previous columns
                     if (currentCol > 0)
@@ -1472,7 +1472,7 @@ namespace MolecularWeightCalculator.Formula
                             comboResults[currentRow, colIndex] = atomTrackHistory[colIndex];
                     }
 
-                    atomTrack -= 1;
+                    atomTrack--;
                     comboResults[currentRow, currentCol] = atomTrack;
 
                     if (currentCol < maxIsotopeCount - 1)
@@ -1820,7 +1820,7 @@ namespace MolecularWeightCalculator.Formula
                             case 3:
                             case 4:
                                 // Error involves a parentheses, find last opening parenthesis, (, or opening curly bracket, {
-                                for (var charIndex2 = rtf.Length - 1; charIndex2 >= 2; charIndex2 -= 1)
+                                for (var charIndex2 = rtf.Length - 1; charIndex2 >= 2; --charIndex2)
                                 {
                                     if (rtf.Substring(charIndex2, 1) == "(")
                                     {
@@ -1840,7 +1840,7 @@ namespace MolecularWeightCalculator.Formula
                             case 13:
                             case 15:
                                 // Error involves a bracket, find last opening bracket, [
-                                for (var charIndex2 = rtf.Length - 1; charIndex2 >= 2; charIndex2 -= 1)
+                                for (var charIndex2 = rtf.Length - 1; charIndex2 >= 2; --charIndex2)
                                 {
                                     if (rtf.Substring(charIndex2, 1) == "[")
                                     {
@@ -2116,7 +2116,7 @@ namespace MolecularWeightCalculator.Formula
                 }
 
                 valueToRound = work;
-                loopCount += 1;
+                loopCount++;
                 if (loopCount > 500)
                 {
                     // Debug.Assert False
