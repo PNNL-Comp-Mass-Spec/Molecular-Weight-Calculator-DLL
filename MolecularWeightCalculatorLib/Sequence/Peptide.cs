@@ -2648,7 +2648,7 @@ namespace MolecularWeightCalculator.Sequence
                             // we need to subtract it out here
                             // However, we need to subtract out massHydrogen, and not chargeCarrierMass since the current
                             // formula's mass was computed using two hydrogens, and not one hydrogen and one charge carrier
-                            residue.IonMass[(int)IonType.YIon] = residue.IonMass[(int)IonType.YIon] - mMassHydrogen;
+                            residue.IonMass[(int)IonType.YIon] -= mMassHydrogen;
                         }
                     }
 

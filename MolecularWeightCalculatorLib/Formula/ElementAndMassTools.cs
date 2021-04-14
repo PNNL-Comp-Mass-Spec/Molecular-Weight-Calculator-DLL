@@ -872,7 +872,7 @@ namespace MolecularWeightCalculator.Formula
                         }
                         else
                         {
-                            convolutedMSData2D[massIndex, 0] = convolutedMSData2D[massIndex, 0] / chargeState;
+                            convolutedMSData2D[massIndex, 0] /= chargeState;
                         }
                     }
                 }
