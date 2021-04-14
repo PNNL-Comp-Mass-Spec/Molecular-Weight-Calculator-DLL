@@ -3,3 +3,5 @@ SVN_Path.txt
 /.vs
 *.user
 /COMInstaller/Output
+/ZippedForGitHub/*.exe
+/ZippedForGitHub/*.zip
