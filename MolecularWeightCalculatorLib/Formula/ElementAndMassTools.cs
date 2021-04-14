@@ -1558,16 +1558,18 @@ namespace MolecularWeightCalculator.Formula
                     case 34: // " is not allowed
                         isModSymbol = false;
                         break;
-                    case var @case when 40 <= @case && @case <= 41: // ( and ) are not allowed
+                    case 40:
+                    case 41: // ( and ) are not allowed
                         isModSymbol = false;
                         break;
-                    case var case1 when 44 <= case1 && case1 <= 62: // . and - and , and / and numbers and : and ; and < and = and > are not allowed
+                    case >= 44 and <= 62: // . and - and , and / and numbers and : and ; and < and = and > are not allowed
                         isModSymbol = false;
                         break;
-                    case var case2 when 33 <= case2 && case2 <= 43:
-                    case var case3 when 63 <= case3 && case3 <= 64:
-                    case var case4 when 94 <= case4 && case4 <= 96:
-                    case 126:
+                    case >= 33 and <= 43:
+                    case 63:    // ?
+                    case 64:    // @
+                    case >= 94 and <= 96:   // ^ and _ and `
+                    case 126:   // ~
                         isModSymbol = true;
                         break;
                     default:
@@ -1802,7 +1804,9 @@ namespace MolecularWeightCalculator.Formula
 
                         switch (errorId)
                         {
-                            case var @case when 2 <= @case && @case <= 4:
+                            case 2:
+                            case 3:
+                            case 4:
                                 // Error involves a parentheses, find last opening parenthesis, (, or opening curly bracket, {
                                 for (var charIndex2 = rtf.Length - 1; charIndex2 >= 2; charIndex2 -= 1)
                                 {
@@ -2058,7 +2062,9 @@ namespace MolecularWeightCalculator.Formula
                 case 1d:
                     thisNum = 1d;
                     break;
-                case var @case when 2d <= @case && @case <= 4d:
+                case 2d:
+                case 3d:
+                case 4d:
                     thisNum = 2d;
                     break;
                 default:

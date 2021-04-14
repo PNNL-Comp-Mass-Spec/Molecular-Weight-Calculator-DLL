@@ -75,7 +75,7 @@ namespace MolecularWeightCalculator.Formula
                 switch (messageId)
                 {
                     // Add Error: to the front of certain error codes
-                    case var @case when 1 <= @case && @case <= 99:
+                    case >= 1 and <= 99:
                     case 120:
                     case 130:
                     case 140:
@@ -131,7 +131,7 @@ namespace MolecularWeightCalculator.Formula
             switch (messageId)
             {
                 // Add Error: to the front of certain error codes
-                case var @case when 1 <= @case && @case <= 99:
+                case >= 1 and <= 99:
                 case 120:
                 case 130:
                 case 140:

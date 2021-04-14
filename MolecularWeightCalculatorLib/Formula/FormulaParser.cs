@@ -822,7 +822,7 @@ namespace MolecularWeightCalculator.Formula
 
                     case ',':
                     case '.':
-                    case var @case when '0' <= @case && @case <= '9': // . or , and Numbers 0 to 9
+                    case >= '0' and <= '9': // . or , and Numbers 0 to 9
                         // They should only be encountered as a leading coefficient
                         // Should have been bypassed when the coefficient was processed
                         if (charIndex == 0 && prevPosition == 0)
@@ -843,8 +843,8 @@ namespace MolecularWeightCalculator.Formula
 
                         break;
 
-                    case var case1 when 'A' <= case1 && case1 <= 'Z': // A-Z
-                    case var case2 when 'a' <= case2 && case2 <= 'z': // a-z
+                    case >= 'A' and <= 'Z':
+                    case >= 'a' and <= 'z':
                     case '+':
                     case '_': // Uppercase A to Z and lowercase a to z, and the plus (+) sign, and the underscore (_)
                         var symbolMatchType = Elements.CheckElemAndAbbrev(currentRemnant, out var symbolReference);
@@ -1166,12 +1166,12 @@ namespace MolecularWeightCalculator.Formula
                                 switch (prevElementSymbolReference)
                                 {
                                     case 1:
-                                    case var case3 when 3 <= case3 && case3 <= 6:
-                                    case var case4 when 11 <= case4 && case4 <= 14:
-                                    case var case5 when 19 <= case5 && case5 <= 32:
-                                    case var case6 when 37 <= case6 && case6 <= 50:
-                                    case var case7 when 55 <= case7 && case7 <= 82:
-                                    case var case8 when 87 <= case8 && case8 <= 109:
+                                    case >= 3 and <= 6:
+                                    case >= 11 and <= 14:
+                                    case >= 19 and <= 32:
+                                    case >= 37 and <= 50:
+                                    case >= 55 and <= 82:
+                                    case >= 87 and <= 109:
                                         // Hydrogen is -1 with metals (non-halides)
                                         stats.Charge = (float)(stats.Charge + addCount * -1);
                                         break;
