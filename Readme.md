@@ -1,16 +1,16 @@
 # Molecular Weight Calculator Library
 
-The MwtWinDll is a .NET library with utility functions for calculating the
+MolecularWeightCalculator.dll is a C# library with utility functions for calculating the
 molecular weight and percent composition of chemical formulas and amino acids.
 It recognizes user-definable abbreviations and custom elemental isotopes.
 It also includes a Mole/Mass Converter, Formula Finder, Capillary Flow 
 Modeller, Amino Acid Notation Converter, Isotopic Distribution Calculator, 
-and Peptide Sequence Fragmentation Modeller.  To use, simply include the 
-DLL in a .NET project.
+and Peptide Sequence Fragmentation Modeller.
+* To use, simply include the DLL in a .NET project.
 
 ## Downloads
 
-Release versions of the DLL can be found on GitHub at
+Release versions of the DLL can be found on GitHub at\
 https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/releases
 
 ### Continuous Integration
@@ -18,6 +18,85 @@ https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/releases
 Newer versions of the DLL can be found on the [AppVeyor CI server](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll/build/artifacts), though they get auto-deleted after 6 months.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/akbap1xwd92flnsv?svg=true)](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll)
+
+## COM Add-in
+
+MolecularWeightCalculator.dll can be added as a COM Interop reference in Excel using VBA. Steps required:
+
+* If you previously installed the VB.NET version of MolecularWeightCalculator.dll, unregister it
+  * Start an elevated command prompt by typing "Command Prompt" in the start menu, then right click the Command Prompt item and choose "Run as administrator"
+  * Run these commands (ignore any errors)
+
+```
+regsvr32 /u MwtWindll.dll
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe /u MolecularWeightCalculator.dll
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe /u MolecularWeightCalculator.dll
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe /u MwtWindll.dll
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe /u MwtWindll.dll
+```
+
+* Install the .NET Framework 4.7.2 runtime
+  * Download from https://dotnet.microsoft.com/download/dotnet-framework/net472
+* Download MolecularWeightCalcCOMInstaller.exe from the latest release on GitHub
+  * https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/releases/
+* Run MolecularWeightCalcCOMInstaller.exe
+  * Files will be installed at C:\Program Files\MolecularWeightCalculatorDll
+* Create a new Excel workbook
+* Show the Developer toolbar
+  * If hidden, right click the Ribbon (at the top of Excel) and choose "Customize the Ribbon"
+  * Look for "Developer" at the right
+  * Enable the checkbox for "Developer"
+* Click "Visual Basic" on the Developer tab of the ribbon
+* Right click the current workbook (aka current VBAProject) and choose "Insert, Module"
+* On the Tools menu, choose "References"
+* Click Browse, then navigate to C:\Program Files\MolecularWeightCalculatorDll
+* Select file MolecularWeightCalculator64.tlb and click Open
+  * Note: you select the 64-bit .tlb file and not a dll
+* The Available References list will now show "Molecular Weight Calculator .NET Library"
+  * Click OK to add the reference
+  
+
+Enter the following code, then on the Debug menu choose "Compile VBA Project"
+
+```vbscript
+Option Explicit
+
+Public Function ComputeMass(formula As String) As String
+
+On Error GoTo ErrorHandler
+
+    Dim mwtCalculator As New MolecularWeightTool
+    
+    Dim mass As Double
+    mass = mwtCalculator.ComputeMass(formula)
+    
+    ComputeMass = mass
+    Exit Function
+    
+ErrorHandler:
+    ComputeMass = "Error: " & Err.Description
+End Function
+```
+
+On the Excel worksheet, enter this in cell A1: \
+`H2O`
+
+Enter this in cell A2: \
+`=ComputeMass(A1)`
+
+When you press enter to finalize the formula, cell A2 will show \
+`18.01528`
+
+Update Cell A2 to have c6h6 and cell A2 will change to \
+`78.11184`
+
+### Example Excel File
+
+File [ComputeFormulaMasses.xlsm](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Docs/ComputeFormulaMasses.xlsm)
+at https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/tree/master/Docs is an example Excel file 
+demonstrating use of MolecularWeightCalculator.dll to compute formula masses.
+* A screenshot of the worksheet is in [ComputeFormulaMasses.png](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Docs/ComputeFormulaMasses.png)
+* The VBA code is visible in [ComputeFormulaMasses.vb](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Docs/ComputeFormulaMasses.vb)
 
 ## Contacts
 
