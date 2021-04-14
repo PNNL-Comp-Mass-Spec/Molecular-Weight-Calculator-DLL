@@ -20,12 +20,12 @@ namespace MolecularWeightCalculator.FormulaFinder
             {
                 mFindCharge = value;
 
-                if (mFindCharge == false)
-                {
-                    // Auto-disable a few options
-                    mLimitChargeRange = false;
-                    mFindTargetMz = false;
-                }
+                if (mFindCharge)
+                    return;
+
+                // Auto-disable a few options
+                mLimitChargeRange = false;
+                mFindTargetMz = false;
             }
         }
 

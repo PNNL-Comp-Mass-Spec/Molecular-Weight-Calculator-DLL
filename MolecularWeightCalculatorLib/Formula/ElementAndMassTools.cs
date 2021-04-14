@@ -1484,10 +1484,8 @@ namespace MolecularWeightCalculator.Formula
                 var errorFilePath = System.IO.Path.Combine(Environment.CurrentDirectory, "ErrorLog.txt");
 
                 // Open the file and append a new error entry
-                using (var outFile = new System.IO.StreamWriter(errorFilePath, true))
-                {
-                    outFile.WriteLine(DateTime.Now + " -- " + message + Environment.NewLine);
-                }
+                using var outFile = new System.IO.StreamWriter(errorFilePath, true);
+                outFile.WriteLine(DateTime.Now + " -- " + message + Environment.NewLine);
             }
             catch
             {
@@ -1508,10 +1506,7 @@ namespace MolecularWeightCalculator.Formula
 
         public int GetErrorId()
         {
-            if (mLastErrorId != 0)
-                return mLastErrorId;
-            else
-                return Parser.GetErrorId();
+            return mLastErrorId == 0 ? Parser.GetErrorId() : mLastErrorId;
         }
 
         public string GetErrorCharacter()

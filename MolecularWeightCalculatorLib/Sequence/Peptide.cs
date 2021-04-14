@@ -2075,47 +2075,40 @@ namespace MolecularWeightCalculator.Sequence
         /// <returns>0 if success, -1 if an error</returns>
         public int SetModificationSymbol(string modSymbol, double modificationMass, bool indicatesPhosphorylation = false, string comment = "")
         {
-
-            var errorId = 0;
             if (string.IsNullOrWhiteSpace(modSymbol))
             {
-                errorId = -1;
+                return -1;
+            }
+
+            // Make sure modSymbol contains no letters, numbers, spaces, dashes, or periods
+            for (var index = 0; index < modSymbol.Length; index++)
+            {
+                var testChar = modSymbol.Substring(index, 1);
+                if (!mElementAndMassRoutines.IsModSymbol(testChar))
+                {
+                    return -1;
+                }
+            }
+
+            // See if the modification is already present
+            var indexToUse = GetModificationSymbolId(modSymbol);
+
+            if (indexToUse == -1)
+            {
+                // Need to add the modification
+                var mod = new ModificationSymbol(modSymbol, modificationMass, indicatesPhosphorylation, comment);
+                mModificationSymbols.Add(mod);
             }
             else
             {
-                // Make sure modSymbol contains no letters, numbers, spaces, dashes, or periods
-                for (var index = 0; index < modSymbol.Length; index++)
-                {
-                    var testChar = modSymbol.Substring(index, 1);
-                    if (!mElementAndMassRoutines.IsModSymbol(testChar))
-                    {
-                        errorId = -1;
-                    }
-                }
-
-                if (errorId == 0)
-                {
-                    // See if the modification is already present
-                    var indexToUse = GetModificationSymbolId(modSymbol);
-
-                    if (indexToUse == -1)
-                    {
-                        // Need to add the modification
-                        var mod = new ModificationSymbol(modSymbol, modificationMass, indicatesPhosphorylation, comment);
-                        mModificationSymbols.Add(mod);
-                    }
-                    else
-                    {
-                        // Not updating the symbol, since we looked it up by symbol...
-                        var mod = mModificationSymbols[indexToUse];
-                        mod.ModificationMass = modificationMass;
-                        mod.IndicatesPhosphorylation = indicatesPhosphorylation;
-                        mod.Comment = comment;
-                    }
-                }
+                // Not updating the symbol, since we looked it up by symbol...
+                var mod = mModificationSymbols[indexToUse];
+                mod.ModificationMass = modificationMass;
+                mod.IndicatesPhosphorylation = indicatesPhosphorylation;
+                mod.Comment = comment;
             }
 
-            return errorId;
+            return 0;
         }
 
         /// <summary>
