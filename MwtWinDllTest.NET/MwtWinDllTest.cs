@@ -270,7 +270,7 @@ namespace MwtWinDllTest
             {
                 result = mMwtWin.GetElement((short)index, out var symbol, out mass, out var uncertainty, out var charge, out var isotopeCount);
                 Debug.Assert(result == 0, "");
-                Debug.Assert(mMwtWin.GetElementId(symbol) == index, "");
+                Debug.Assert(mMwtWin.GetAtomicNumber(symbol) == index, "");
 
                 result = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
                 Debug.Assert(result == 0, "");
