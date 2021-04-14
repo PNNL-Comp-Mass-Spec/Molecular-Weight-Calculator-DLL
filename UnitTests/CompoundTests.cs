@@ -7,8 +7,6 @@ namespace UnitTests
     [TestFixture]
     public class CompoundTests
     {
-        private const double MATCHING_MASS_EPSILON = 0.0000001;
-
         private MolecularWeightTool mMwtWinAvg;
         private MolecularWeightTool mMwtWinIso;
 

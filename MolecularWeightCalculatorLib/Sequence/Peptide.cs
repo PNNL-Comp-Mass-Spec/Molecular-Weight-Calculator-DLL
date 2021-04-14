@@ -64,7 +64,6 @@ namespace MolecularWeightCalculator.Sequence
         public const float DEFAULT_DOUBLE_CHARGE_MZ_THRESHOLD = 800f;
         public const float DEFAULT_TRIPLE_CHARGE_MZ_THRESHOLD = 900f;
 
-        private const short RESIDUE_DIM_CHUNK = 50;
         private const short MAX_MODIFICATIONS = 6; // Maximum number of modifications for a single residue
         private const string UNKNOWN_SYMBOL = "Xxx";
         private const string UNKNOWN_SYMBOL_ONE_LETTER = "X";
@@ -724,11 +723,6 @@ namespace MolecularWeightCalculator.Sequence
             UpdateResidueMasses();
 
             return mTotalMass;
-        }
-
-        private string GetInternalResidues(int currentResidueIndex, IonType ionType)
-        {
-            return GetInternalResidues(currentResidueIndex, ionType, out _);
         }
 
         private string GetInternalResidues(int currentResidueIndex, IonType ionType, out bool phosphorylated)

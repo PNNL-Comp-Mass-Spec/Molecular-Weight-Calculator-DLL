@@ -47,6 +47,7 @@ namespace MwtWinDllTest
         private MolecularWeightTool mMwtWin;
         private DataSet myDataSet;
 
+        [Obsolete("Unused")]
         private void AppendColumnToTableStyle(ref DataGridTableStyle tableStyle, string mappingName, string headerText, int width = 75, bool isReadOnly = false, bool isDateTime = false, int decimalPlaces = -1)
         {
             // If decimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places
@@ -72,6 +73,7 @@ namespace MwtWinDllTest
             tableStyle.GridColumnStyles.Add(textCol);
         }
 
+        [Obsolete("Unused")]
         private void AppendBoolColumnToTableStyle(ref DataGridTableStyle tableStyle, string mappingName, string headerText, int width = 75, bool isReadOnly = false, bool sourceIsTrueFalse = true)
         {
             // If decimalPlaces is >=0, then a format string is constructed to show the specified number of decimal places

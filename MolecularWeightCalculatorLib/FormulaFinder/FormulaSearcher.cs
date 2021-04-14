@@ -300,6 +300,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
         #endregion
 
+        [Obsolete("Deprecated")]
         private void AppendToEmpiricalFormula(StringBuilder empiricalFormula, string elementSymbol, int elementCount)
         {
             if (elementCount != 0)
