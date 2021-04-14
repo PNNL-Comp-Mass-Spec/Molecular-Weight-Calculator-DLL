@@ -684,7 +684,7 @@ namespace MolecularWeightCalculator.Sequence
                 return 0;
             }
 
-            symbol = "";
+            symbol = string.Empty;
             mass = 0;
             isModified = false;
             modificationCount = 0;

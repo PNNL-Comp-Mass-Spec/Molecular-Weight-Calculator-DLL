@@ -327,7 +327,8 @@ namespace MolecularWeightCalculator.Formula
             }
 
             // Convert to empirical formula
-            var empiricalFormula = "";
+            var empiricalFormula = string.Empty;
+
             // Carbon first, then hydrogen, then the rest alphabetically
             // ElementAlph is already sorted properly as 0:{'C',6}, 1:{'H',1}, then alphabetically
             foreach (var elementIndex in Elements.ElementAlph.Select(x => x.Value))
@@ -558,7 +559,7 @@ namespace MolecularWeightCalculator.Formula
 
                 var isIsotope = false;
                 var isotope = 0.0;
-                var isotopeText = "";
+                var isotopeText = string.Empty;
                 if (currentChar == '^') // ^ (caret)
                 {
                     // Handle ^ first, separately, since the goal is to handle a single component with each iteration of the loop.

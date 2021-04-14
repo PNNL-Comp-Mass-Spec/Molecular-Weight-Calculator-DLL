@@ -301,7 +301,7 @@ namespace MolecularWeightCalculator.Formula
             // Returns the symbol, if found
             // Otherwise, returns ""
 
-            var returnSymbol = "";
+            var returnSymbol = string.Empty;
             // Use AbbrevStats[] array to lookup code
             for (var index = 0; index < mAbbrevStats.Count; index++)
             {

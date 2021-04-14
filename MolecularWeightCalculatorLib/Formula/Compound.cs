@@ -43,7 +43,7 @@ namespace MolecularWeightCalculator.Formula
         {
             mElementAndMassRoutines = elementAndMassTools ?? new ElementAndMassTools();
 
-            mFormula = "";
+            mFormula = string.Empty;
             ValueForUnknown = 1.0d;
         }
 
@@ -287,7 +287,7 @@ namespace MolecularWeightCalculator.Formula
             set => mComputationStats.Charge = value;
         }
 
-        public string ErrorDescription { get; private set; } = "";
+        public string ErrorDescription { get; private set; } = string.Empty;
 
         public int ErrorId { get; private set; }
 

@@ -141,7 +141,7 @@ namespace UnitTests.FunctionalTests
                     mz = result.Mz;
                 }
 
-                var percentCompInfo = "";
+                var percentCompInfo = string.Empty;
                 if (percentCompositionSearch)
                 {
                     percentCompInfo = string.Join(" ", result.PercentComposition.Select(x => $"{x.Key}={x.Value:0.00}%"));

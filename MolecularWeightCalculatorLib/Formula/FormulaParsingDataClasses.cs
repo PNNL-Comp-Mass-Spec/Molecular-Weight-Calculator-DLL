@@ -21,15 +21,15 @@ namespace MolecularWeightCalculator.Formula
             ErrorId = errorId;
             ErrorPosition = errorPosition;
             ErrorCharacter = errorCharacter;
-            ErrorDescription = "";
+            ErrorDescription = string.Empty;
         }
 
         public void Reset()
         {
-            ErrorCharacter = "";
+            ErrorCharacter = string.Empty;
             ErrorId = 0;
             ErrorPosition = 0;
-            ErrorDescription = "";
+            ErrorDescription = string.Empty;
         }
 
         public override string ToString()
@@ -147,7 +147,7 @@ namespace MolecularWeightCalculator.Formula
 
             // Changes that are not due to capitalization. Could be due to '0's or whitespace added or removed
             var correctedPosition = 0;
-            var output = "";
+            var output = string.Empty;
 
             for (var i = 0; i < FormulaOriginal.Length; i++)
             {
@@ -244,12 +244,12 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Symbol, as it appears in the supplied formula
         /// </summary>
-        public virtual string SymbolOriginal { get; set; } = "";
+        public virtual string SymbolOriginal { get; set; } = string.Empty;
 
         /// <summary>
         /// Symbol, as stored in MWT (could also be expanded abbreviation)
         /// </summary>
-        public virtual string SymbolCorrected { get; set; } = "";
+        public virtual string SymbolCorrected { get; set; } = string.Empty;
 
         /// <summary>
         /// Element isotope (displayed as a superscript prefix, with '^')
@@ -287,8 +287,8 @@ namespace MolecularWeightCalculator.Formula
             Count = 1;
             IsElement = isElement;
             SymbolReference = symbolReference;
-            PrefixChars = "";
-            SuffixChars = "";
+            PrefixChars = string.Empty;
+            SuffixChars = string.Empty;
         }
 
         public override string ToString()

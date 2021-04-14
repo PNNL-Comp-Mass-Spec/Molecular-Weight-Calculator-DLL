@@ -749,7 +749,7 @@ namespace MwtWinDllTest
                 // Generate random protein
                 var proteinLengthRand = random.Next(maxProteinLength - minProteinLength + 1) + minProteinLength;
 
-                protein = "";
+                protein = string.Empty;
                 for (var residueRand = 0; residueRand < proteinLengthRand; residueRand++)
                 {
                     var newResidue = possibleResidues.Substring(random.Next(possibleResidues.Length), 1);

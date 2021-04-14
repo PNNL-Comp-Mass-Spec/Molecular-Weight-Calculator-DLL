@@ -14,7 +14,7 @@ namespace MolecularWeightCalculator.Formula
 
         public ElementInfo()
         {
-            Symbol = "";
+            Symbol = string.Empty;
             Isotopes = new List<IsotopeInfo>();
         }
 

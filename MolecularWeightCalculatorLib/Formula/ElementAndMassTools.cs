@@ -241,7 +241,7 @@ namespace MolecularWeightCalculator.Formula
         {
             convolutedMSData2D = new double[0, 0];
             convolutedMSDataCount = 0;
-            results = "";
+            results = string.Empty;
 
             double nextComboFractionalAbundance = default;
 
@@ -299,7 +299,7 @@ namespace MolecularWeightCalculator.Formula
                 if (Math.Abs(count - (int)Math.Round(count)) > float.Epsilon)
                 {
                     // Deuterium is present
-                    var modifiedFormula = "";
+                    var modifiedFormula = string.Empty;
                     short index = 0;
                     while (index < formula.Length)
                     {
@@ -1779,7 +1779,7 @@ namespace MolecularWeightCalculator.Formula
             }
 
             var superFound = false;
-            var workCharPrev = "";
+            var workCharPrev = string.Empty;
             for (var charIndex = 0; charIndex < workText.Length; charIndex++)
             {
                 var workChar = workText.Substring(charIndex, 1);
@@ -1972,7 +1972,7 @@ namespace MolecularWeightCalculator.Formula
                 }
                 else
                 {
-                    pctSign = "";
+                    pctSign = string.Empty;
                 }
 
                 if (Math.Abs(stdDev) < float.Epsilon)
