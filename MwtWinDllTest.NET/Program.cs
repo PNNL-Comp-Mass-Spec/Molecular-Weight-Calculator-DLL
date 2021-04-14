@@ -2,7 +2,7 @@
 
 namespace MwtWinDllTest
 {
-    static class Program
+    internal static class Program
     {
         // Molecular Weight Calculator Dll test program
 
