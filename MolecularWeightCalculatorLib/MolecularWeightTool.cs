@@ -293,7 +293,9 @@ namespace MolecularWeightCalculator
             string headerFraction = "Fraction",
             string headerIntensity = "Intensity")
         {
-            return mElementAndMassRoutines.ComputeIsotopicAbundances(ref formulaIn, chargeState, out results, out convolutedMSData2D, out convolutedMSDataCount, addProtonChargeCarrier, headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
+            return mElementAndMassRoutines.ComputeIsotopicAbundances(
+                ref formulaIn, chargeState, out results, out convolutedMSData2D, out convolutedMSDataCount, addProtonChargeCarrier,
+                headerIsotopicAbundances, headerMassToCharge, headerFraction, headerIntensity, false);
         }
 
         /// <summary>

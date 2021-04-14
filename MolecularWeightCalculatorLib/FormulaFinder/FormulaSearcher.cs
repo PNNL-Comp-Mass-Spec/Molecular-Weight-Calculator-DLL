@@ -1705,7 +1705,6 @@ namespace MolecularWeightCalculator.FormulaFinder
 
                                                         else if (totalMass <= multipleSearchMaxWeight + massToleranceDa)
                                                         {
-
                                                             // When searchOptions.FindTargetMZ is false, ChargeMin and ChargeMax will be 1
                                                             for (var currentCharge = searchOptions.ChargeMin; currentCharge <= searchOptions.ChargeMax; currentCharge++)
                                                             {
@@ -1737,7 +1736,6 @@ namespace MolecularWeightCalculator.FormulaFinder
                                                         }
                                                         else
                                                         {
-
                                                             // Jump out of loop since weight is too high
                                                             // Determine which variable is causing the weight to be too high
                                                             // Incrementing "s" would definitely make the weight too high, so set it to its max (so it will zero and increment "r")
@@ -1788,7 +1786,6 @@ namespace MolecularWeightCalculator.FormulaFinder
 
                                                         if (results.Count >= mMaximumHits)
                                                         {
-
                                                             // Set variables to their maximum so all the loops will end
                                                             j = ranges[0].Max;
                                                             k = ranges[1].Max;

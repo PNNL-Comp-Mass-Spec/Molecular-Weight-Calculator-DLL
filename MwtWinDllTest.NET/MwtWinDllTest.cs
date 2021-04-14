@@ -181,7 +181,6 @@ namespace MwtWinDllTest
 
         private void MakePercentCompositionDataSet(Dictionary<string, string> percentCompositionByElement)
         {
-
             // Create a DataSet.
             myDataSet = new DataSet("myDataSet");
 
@@ -191,7 +190,6 @@ namespace MwtWinDllTest
             // Create three columns, and add them to the table.
             dataTable.Columns.Add(new DataColumn("Element", typeof(string)));
             dataTable.Columns.Add(new DataColumn("Pct Comp", typeof(string)));
-
 
             // Add the table to the DataSet.
             myDataSet.Tables.Add(dataTable);
@@ -540,7 +538,6 @@ namespace MwtWinDllTest
 
         private void FormulaFinderTest1(MolecularWeightTool mwtWin, SearchOptions searchOptions, string currentTask)
         {
-
             // Search for 200 Da, +/- 0.05 Da
             var results = mwtWin.FormulaFinder.FindMatchesByMass(200d, 0.05d, searchOptions);
             ShowFormulaFinderResults(currentTask, searchOptions, results);
@@ -548,7 +545,6 @@ namespace MwtWinDllTest
 
         private void FormulaFinderTest2(MolecularWeightTool mwtWin, SearchOptions searchOptions, string currentTask)
         {
-
             // Search for 200 Da, +/- 250 ppm
             var results = mwtWin.FormulaFinder.FindMatchesByMassPPM(200d, 250d, searchOptions);
             ShowFormulaFinderResults(currentTask, searchOptions, results, true);

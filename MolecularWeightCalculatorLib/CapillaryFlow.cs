@@ -1319,7 +1319,6 @@ namespace MolecularWeightCalculator
             return ConvertVolFlowRate(mCapillaryFlowParameters.VolumetricFlowRate, UnitOfFlowRate.MLPerMin, units);
         }
 
-
         // Set Methods
         // If mAutoCompute = False, then must manually call a Compute Sub to recompute other values
 

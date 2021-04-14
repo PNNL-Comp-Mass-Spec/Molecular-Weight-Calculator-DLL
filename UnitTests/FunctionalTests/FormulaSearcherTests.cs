@@ -42,7 +42,6 @@ namespace UnitTests.FunctionalTests
         [Test]
         public void FindByMass()
         {
-
             // Search for 200 Da, +/- 0.05 Da
             var results = mwtWin.FormulaFinder.FindMatchesByMass(200d, 0.05d, searchOptions);
             ShowFormulaFinderResults(searchOptions, results);

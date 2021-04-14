@@ -99,7 +99,6 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     public interface IElementUseStats
     {
-
         /// <summary>
         /// Number of atoms of this element; can have a non-integer count, e.g., C5.5
         /// </summary>

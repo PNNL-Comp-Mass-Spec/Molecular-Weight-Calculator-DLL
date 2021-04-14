@@ -612,7 +612,10 @@ namespace MolecularWeightCalculator.Sequence
                                             ionSymbolGeneric += new string('+', chargeIndex);
                                         }
 
-                                        fragSpectrumWork.Add(new FragmentationSpectrumData(convolutedMass, intensity, ionSymbol, ionSymbolGeneric, residueIndex, residue.Symbol, chargeIndex, ionType, false));
+                                        fragSpectrumWork.Add(new FragmentationSpectrumData(
+                                            convolutedMass, intensity, ionSymbol, ionSymbolGeneric,
+                                            residueIndex, residue.Symbol,
+                                            chargeIndex, ionType, false));
 
                                         // Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
                                         // Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
@@ -622,7 +625,12 @@ namespace MolecularWeightCalculator.Sequence
                                             for (var shoulderIndex = -1; shoulderIndex <= 1; shoulderIndex += 2)
                                             {
                                                 observedMass = (float)(convolutedMass + shoulderIndex * (1d / chargeIndex));
-                                                fragSpectrumWork.Add(new FragmentationSpectrumData(observedMass, ionShoulderIntensity, SHOULDER_ION_PREFIX + ionSymbol, SHOULDER_ION_PREFIX + ionSymbolGeneric, residueIndex, residue.Symbol, chargeIndex, ionType, true));
+                                                fragSpectrumWork.Add(new FragmentationSpectrumData(
+                                                    observedMass, ionShoulderIntensity,
+                                                    SHOULDER_ION_PREFIX + ionSymbol,
+                                                    SHOULDER_ION_PREFIX + ionSymbolGeneric,
+                                                    residueIndex, residue.Symbol,
+                                                    chargeIndex, ionType, true));
                                             }
                                         }
 
@@ -634,7 +642,12 @@ namespace MolecularWeightCalculator.Sequence
                                             if (residues.Contains("Ser") || residues.Contains("Thr") || residues.Contains("Glue") || residues.Contains("Asp"))
                                             {
                                                 observedMass = (float)(convolutedMass - mMassHOH / chargeIndex);
-                                                fragSpectrumWork.Add(new FragmentationSpectrumData(observedMass, neutralLossIntensity, ionSymbol + mWaterLossSymbol, ionSymbolGeneric + mWaterLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false));
+                                                fragSpectrumWork.Add(new FragmentationSpectrumData(
+                                                    observedMass, neutralLossIntensity,
+                                                    ionSymbol + mWaterLossSymbol,
+                                                    ionSymbolGeneric + mWaterLossSymbol,
+                                                    residueIndex, residue.Symbol,
+                                                    chargeIndex, ionType, false));
                                             }
                                         }
 
@@ -645,7 +658,12 @@ namespace MolecularWeightCalculator.Sequence
                                             if (residues.Contains("Arg") || residues.Contains("Lys") || residues.Contains("Gln") || residues.Contains("Asn"))
                                             {
                                                 observedMass = (float)(convolutedMass - mMassNH3 / chargeIndex);
-                                                fragSpectrumWork.Add(new FragmentationSpectrumData(observedMass, neutralLossIntensity, ionSymbol + mAmmoniaLossSymbol, ionSymbolGeneric + mAmmoniaLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false));
+                                                fragSpectrumWork.Add(new FragmentationSpectrumData(
+                                                    observedMass, neutralLossIntensity,
+                                                    ionSymbol + mAmmoniaLossSymbol,
+                                                    ionSymbolGeneric + mAmmoniaLossSymbol,
+                                                    residueIndex, residue.Symbol,
+                                                    chargeIndex, ionType, false));
                                             }
                                         }
 
@@ -657,7 +675,12 @@ namespace MolecularWeightCalculator.Sequence
                                             if (phosphorylated)
                                             {
                                                 observedMass = (float)(convolutedMass - mMassH3PO4 / chargeIndex);
-                                                fragSpectrumWork.Add(new FragmentationSpectrumData(observedMass, neutralLossIntensity, ionSymbol + mPhosphoLossSymbol, ionSymbolGeneric + mPhosphoLossSymbol, residueIndex, residue.Symbol, chargeIndex, ionType, false));
+                                                fragSpectrumWork.Add(new FragmentationSpectrumData(
+                                                    observedMass, neutralLossIntensity,
+                                                    ionSymbol + mPhosphoLossSymbol,
+                                                    ionSymbolGeneric + mPhosphoLossSymbol,
+                                                    residueIndex, residue.Symbol,
+                                                    chargeIndex, ionType, false));
                                             }
                                         }
                                     }

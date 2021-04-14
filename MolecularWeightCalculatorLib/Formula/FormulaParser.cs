@@ -652,7 +652,10 @@ namespace MolecularWeightCalculator.Formula
                         }
 
                         var parenCloseChar = formula[charIndex + groupSegmentLength];
-                        if (!data.HasError && (currentChar == '(' && parenCloseChar != ')' || currentChar == '{' && parenCloseChar != '}' || currentChar == '[' && parenCloseChar != ']'))
+                        if (!data.HasError && (
+                            currentChar == '(' && parenCloseChar != ')' ||
+                            currentChar == '{' && parenCloseChar != '}' ||
+                            currentChar == '[' && parenCloseChar != ']'))
                         {
                             // Mismatched parentheses/curly braces: highlight the closing parenthesis/curly brace
                             data.Error.SetError(4, charPosition + groupSegmentLength, parenCloseChar.ToString());
@@ -1354,7 +1357,9 @@ namespace MolecularWeightCalculator.Formula
 
             if (string.IsNullOrEmpty(work))
                 work = EMPTY_STRING_CHAR.ToString();
-            if ((work[0] < '0' || work[0] > '9') && work[0] != ComputationOptions.DecimalSeparator && !(work[0] == '-' && allowNegative))
+            if ((work[0] < '0' || work[0] > '9') &&
+                work[0] != ComputationOptions.DecimalSeparator &&
+                !(work[0] == '-' && allowNegative))
             {
                 numLength = 0; // No number found; not really an error; just return '0', and handle that externally
                 return 0;

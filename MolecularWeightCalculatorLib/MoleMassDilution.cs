@@ -530,7 +530,6 @@ namespace MolecularWeightCalculator
             return factor;
         }
 
-
         // Get Methods
         // These retrieve the most recently computed value
         // If mAutoComputeDilution = False, must manually call a Compute Sub to recompute the value
@@ -605,7 +604,6 @@ namespace MolecularWeightCalculator
         {
             return mQuantity.SampleMass;
         }
-
 
         // Set Methods
         // If mAutoComputeDilution = False, must manually call a Compute Sub to recompute the value

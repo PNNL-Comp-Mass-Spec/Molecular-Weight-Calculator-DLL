@@ -11,12 +11,18 @@ namespace MolecularWeightCalculator.COMInterfaces
     public interface IFormulaFinderSearchResult
     {
         string EmpiricalFormula { get; }
+
         //// Commented out because it's not compatible with COM interop. See GetElementCounts() instead.
         //Dictionary<string, int> CountsByElement { get; }
+
         double Mass { get; set; }
+
         double DeltaMass { get; set; }
+
         bool DeltaMassIsPPM { get; set; }
+
         double Mz { get; set; }
+
         int ChargeState { get; set; }
 
         ///// <summary>
