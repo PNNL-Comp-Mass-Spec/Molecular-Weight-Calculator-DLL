@@ -1114,11 +1114,6 @@ namespace MolecularWeightCalculator.Formula
         {
             try
             {
-                if (newElementMode < ElementMassMode.Average || newElementMode > ElementMassMode.Integer)
-                {
-                    return;
-                }
-
                 if (newElementMode != mCurrentElementMode || forceMemoryLoadElementValues || mElementAlph.Count == 0)
                 {
                     mCurrentElementMode = newElementMode;
