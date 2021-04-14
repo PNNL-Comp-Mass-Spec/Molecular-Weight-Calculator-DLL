@@ -3,32 +3,23 @@
 
 Option Explicit
 
-Private mMwtCalculator As New MolecularWeightTool
+Private mMwtCalculatorAvg As New MolecularWeightTool
+Private mMwtCalculatorIso As New MolecularWeightTool
 
-Public Function ComputeIsotopicMass(formula As String) As Double
-
-On Error GoTo ErrorHandler
-
-    mMwtCalculator.SetElementMode (ElementMassMode.ElementMassMode_Isotopic)
-
-    Dim mass As Double
-    mass = mMwtCalculator.ComputeMass(formula)
-
-    ComputeIsotopicMass = mass
-    Exit Function
-
-ErrorHandler:
-    Debug.Print "Error: " & Err.Description
-End Function
+Private mAvgInitialized As Boolean
+Private mIsoInitialized As Boolean
 
 Public Function ComputeAverageMass(formula As String) As Double
 
 On Error GoTo ErrorHandler
 
-    mMwtCalculator.SetElementMode (ElementMassMode.ElementMassMode_Average)
+    If Not mIsoInitialized Then
+        mMwtCalculatorAvg.SetElementMode ElementMassMode_Average
+        mAvgInitialized = True
+    End If
 
     Dim mass As Double
-    mass = mMwtCalculator.ComputeMass(formula)
+    mass = mMwtCalculatorAvg.ComputeMass(formula)
 
     ComputeAverageMass = mass
     Exit Function
@@ -37,3 +28,21 @@ ErrorHandler:
     Debug.Print "Error: " & Err.Description
 End Function
 
+Public Function ComputeIsotopicMass(formula As String) As Double
+
+On Error GoTo ErrorHandler
+
+    If Not mIsoInitialized Then
+        mMwtCalculatorIso.SetElementMode ElementMassMode_Isotopic
+        mIsoInitialized = True
+    End If
+
+    Dim mass As Double
+    mass = mMwtCalculatorIso.ComputeMass(formula)
+
+    ComputeIsotopicMass = mass
+    Exit Function
+
+ErrorHandler:
+    Debug.Print "Error: " & Err.Description
+End Function
