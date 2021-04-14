@@ -37,6 +37,8 @@ namespace MolecularWeightCalculator
 
             SetAutoComputeEnabled(false);
 
+            // ReSharper disable RedundantArgumentDefaultValue
+
             SetAutoComputeMode(AutoComputeMode.VolFlowRate);
             SetCapillaryType(CapillaryType.PackedCapillary);
             SetBackPressure(3000d, UnitOfPressure.Psi);
@@ -49,6 +51,8 @@ namespace MolecularWeightCalculator
             SetMassRateConcentration(1d, UnitOfConcentration.MicroMolar);
             SetMassRateVolFlowRate(600d, UnitOfFlowRate.NLPerMin);
             SetMassRateInjectionTime(5d, UnitOfTime.Minutes);
+
+            // ReSharper restore RedundantArgumentDefaultValue
 
             // Recompute
             ComputeVolFlowRate();
@@ -834,10 +838,13 @@ namespace MolecularWeightCalculator
                     // K = C + 273
                     value = temperatureIn + 273d;
                     break;
+
                 case UnitOfTemperature.Fahrenheit:
                     // Convert to Kelvin: C = 5/9*(F-32) and K = C + 273
                     value = 5.0d / 9.0d * (temperatureIn - 32d) + 273d;
                     break;
+
+                // ReSharper disable once RedundantEmptySwitchSection
                 default:
                     // Includes UnitOfTemperature.Kelvin
                     // Assume already Kelvin
@@ -855,10 +862,13 @@ namespace MolecularWeightCalculator
                     // C = K - 273
                     value -= 273d;
                     break;
+
                 case UnitOfTemperature.Fahrenheit:
                     // Convert to Fahrenheit: C = K - 273 and F = (9/5)C + 32
                     value = 9.0d / 5.0d * (value - 273d) + 32d;
                     break;
+
+                // ReSharper disable once RedundantEmptySwitchSection
                 default:
                     // Includes UnitOfTemperature.Kelvin
                     // Already in Kelvin

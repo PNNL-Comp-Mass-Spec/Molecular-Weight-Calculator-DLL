@@ -1985,6 +1985,7 @@ namespace MolecularWeightCalculator.Formula
 
                     workText = roundedMain.ToString("0.0##E+00");
 
+                    // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                     switch (ComputationOptions.StdDevMode)
                     {
                         case StdDevMode.Short:

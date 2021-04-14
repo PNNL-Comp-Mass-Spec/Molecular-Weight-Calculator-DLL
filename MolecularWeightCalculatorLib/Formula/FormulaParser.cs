@@ -960,6 +960,7 @@ namespace MolecularWeightCalculator.Formula
                         data.Error.SetError(18, charPosition, formula.Substring(charIndex, 1));
                         break;
 
+                    // ReSharper disable once RedundantEmptySwitchSection
                     default:
                         // There shouldn't be anything else (except the ~ filler character). If there is, we'll just ignore it
                         break;

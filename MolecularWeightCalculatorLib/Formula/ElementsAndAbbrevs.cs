@@ -654,18 +654,23 @@ namespace MolecularWeightCalculator.Formula
             Func<ElementMem, double> getUncertainty;
             switch (elementMode)
             {
+                // ReSharper disable UnusedParameter.Local
                 case ElementMassMode.Integer:
                     getMass = elementMem => elementMem.MassInteger;
                     getUncertainty = elementMem => 0;
                     break;
+
                 case ElementMassMode.Isotopic:
                     getMass = elementMem => elementMem.MassIsotopic;
                     getUncertainty = elementMem => 0;
                     break;
+                // ReSharper restore UnusedParameter.Local
+
                 case ElementMassMode.Average:
                     getMass = elementMem => elementMem.MassAverage;
                     getUncertainty = elementMem => elementMem.UncertaintyAverageMass;
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(elementMode), elementMode, null);
             }
@@ -713,12 +718,16 @@ namespace MolecularWeightCalculator.Formula
                     case ElementStatsType.Mass:
                         stats.Mass = getMass(elementMemoryData[specificElement]);
                         break;
+
                     case ElementStatsType.Uncertainty:
                         stats.Uncertainty = getUncertainty(elementMemoryData[specificElement]);
                         break;
+
                     case ElementStatsType.Charge:
                         stats.Charge = elementMemoryData[specificElement].Charge;
                         break;
+
+                    // ReSharper disable once RedundantEmptySwitchSection
                     default:
                         // Ignore it
                         break;

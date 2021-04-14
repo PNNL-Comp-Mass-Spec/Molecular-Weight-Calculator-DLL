@@ -42,6 +42,8 @@ namespace MolecularWeightCalculator
 
             SetAutoComputeQuantityMode(AutoComputeQuantityMode.FindConcentration);
 
+            // ReSharper disable RedundantArgumentDefaultValue
+
             SetQuantityAmount(1d, Unit.Moles);
             SetQuantityVolume(100d, UnitOfExtendedVolume.ML);
             SetQuantityConcentration(1d, UnitOfMoleMassConcentration.Molar);
@@ -51,6 +53,8 @@ namespace MolecularWeightCalculator
             SetDilutionFinalConcentration(2d, UnitOfMoleMassConcentration.Molar);
             SetDilutionVolumeDilutingSolvent(12d, UnitOfExtendedVolume.ML);
             SetDilutionTotalFinalVolume(15d, UnitOfExtendedVolume.ML);
+
+            // ReSharper restore RedundantArgumentDefaultValue
 
             // Recompute
             ComputeQuantityAmount();

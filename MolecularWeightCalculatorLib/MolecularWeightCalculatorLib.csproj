@@ -83,6 +83,7 @@
     <Compile Include="FormulaFinder\FormulaSearchModes.cs" />
     <Compile Include="FormulaFinder\SearchOptions.cs" />
     <Compile Include="FormulaFinder\SearchResult.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="MoleMassDilution.cs" />
     <Compile Include="MolecularWeightTool.cs" />

@@ -523,12 +523,14 @@ namespace MolecularWeightCalculator.Sequence
             var ionShoulderIntensity = (float)mFragSpectrumOptions.IntensityOptions.BYIonShoulder;
             var neutralLossIntensity = (float)mFragSpectrumOptions.IntensityOptions.NeutralLoss;
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (maxCharge >= 2)
             {
                 showCharge[2] = mFragSpectrumOptions.DoubleChargeIonsShow;
                 chargeThreshold[2] = mFragSpectrumOptions.DoubleChargeIonsThreshold;
             }
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (maxCharge >= 3)
             {
                 showCharge[3] = mFragSpectrumOptions.TripleChargeIonsShow;
