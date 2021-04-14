@@ -635,7 +635,7 @@ namespace MolecularWeightCalculator.Sequence
                                         {
                                             // Loss of water only affects Ser, Thr, Asp, or Glu (S, T, E, or D)
                                             // See if the residues up to this point contain any of these residues
-                                            if (residues.Contains("Ser") || residues.Contains("Thr") || residues.Contains("Glue") || residues.Contains("Asp"))
+                                            if (residues.Contains("Ser") || residues.Contains("Thr") || residues.Contains("Glu") || residues.Contains("Asp"))
                                             {
                                                 observedMass = (float)(convolutedMass - mMassHOH / chargeIndex);
                                                 fragSpectrumWork.Add(new FragmentationSpectrumData(
