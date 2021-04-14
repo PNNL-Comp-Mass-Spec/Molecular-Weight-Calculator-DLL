@@ -123,11 +123,8 @@ namespace MolecularWeightCalculator
             get => mElementAndMassRoutines.ComputationOptions.AbbrevRecognitionMode;
             set
             {
-                if (value >= AbbrevRecognitionMode.NormalOnly & value <= AbbrevRecognitionMode.NoAbbreviations)
-                {
-                    mElementAndMassRoutines.ComputationOptions.AbbrevRecognitionMode = value;
-                    mElementAndMassRoutines.Elements.ConstructMasterSymbolsList();
-                }
+                mElementAndMassRoutines.ComputationOptions.AbbrevRecognitionMode = value;
+                mElementAndMassRoutines.Elements.ConstructMasterSymbolsList();
             }
         }
 
@@ -160,13 +157,7 @@ namespace MolecularWeightCalculator
         public CaseConversionMode CaseConversionMode
         {
             get => mElementAndMassRoutines.ComputationOptions.CaseConversion;
-            set
-            {
-                if (value >= CaseConversionMode.ConvertCaseUp & value <= CaseConversionMode.SmartCase)
-                {
-                    mElementAndMassRoutines.ComputationOptions.CaseConversion = value;
-                }
-            }
+            set => mElementAndMassRoutines.ComputationOptions.CaseConversion = value;
         }
 
         public char DecimalSeparator
@@ -238,13 +229,7 @@ namespace MolecularWeightCalculator
         public StdDevMode StdDevMode
         {
             get => mElementAndMassRoutines.ComputationOptions.StdDevMode;
-            set
-            {
-                if (value >= StdDevMode.Short & value <= StdDevMode.Decimal)
-                {
-                    mElementAndMassRoutines.ComputationOptions.StdDevMode = value;
-                }
-            }
+            set => mElementAndMassRoutines.ComputationOptions.StdDevMode = value;
         }
         #endregion
 

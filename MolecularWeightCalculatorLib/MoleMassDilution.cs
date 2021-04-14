@@ -634,10 +634,7 @@ namespace MolecularWeightCalculator
 
         public void SetAutoComputeQuantityMode(AutoComputeQuantityMode autoComputeMode)
         {
-            if (autoComputeMode >= AutoComputeQuantityMode.FindAmount && autoComputeMode <= AutoComputeQuantityMode.FindConcentration)
-            {
-                mAutoComputeQuantityMode = autoComputeMode;
-            }
+            mAutoComputeQuantityMode = autoComputeMode;
         }
 
         public void SetDilutionFinalConcentration(double concentration, UnitOfMoleMassConcentration units = UnitOfMoleMassConcentration.Molar)

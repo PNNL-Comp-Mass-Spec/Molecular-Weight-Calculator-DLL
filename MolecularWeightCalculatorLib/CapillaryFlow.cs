@@ -1340,10 +1340,7 @@ namespace MolecularWeightCalculator
 
         public void SetAutoComputeMode(AutoComputeMode autoComputeMode)
         {
-            if (autoComputeMode >= AutoComputeMode.BackPressure && autoComputeMode <= AutoComputeMode.VolFlowRateUsingDeadTime)
-            {
-                mAutoComputeMode = autoComputeMode;
-            }
+            mAutoComputeMode = autoComputeMode;
         }
 
         public void SetBackPressure(double backPressure, UnitOfPressure units = UnitOfPressure.Psi)
@@ -1354,11 +1351,7 @@ namespace MolecularWeightCalculator
 
         public void SetCapillaryType(CapillaryType capillaryType)
         {
-            if (capillaryType >= CapillaryType.OpenTubularCapillary && capillaryType <= CapillaryType.PackedCapillary)
-            {
-                mCapillaryFlowParameters.CapillaryType = capillaryType;
-            }
-
+            mCapillaryFlowParameters.CapillaryType = capillaryType;
             CheckAutoCompute();
         }
 
