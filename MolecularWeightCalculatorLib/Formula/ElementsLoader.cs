@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace MolecularWeightCalculator.Formula
 {
     [ComVisible(false)]
-    internal class ElementsLoader
+    internal static class ElementsLoader
     {
         // Ignore Spelling: csv, txt, frm, isoData
 
