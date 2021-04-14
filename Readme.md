@@ -96,6 +96,8 @@ When you press enter to finalize the formula, cell A2 will show \
 Update Cell A2 to have c6h6 and cell A2 will change to \
 `78.11184`
 
+When saving the Excel file, you must save it as a Macro-enabled workbook
+
 ### Example Excel File
 
 File [ComputeFormulaMasses.xlsm](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Docs/ComputeFormulaMasses.xlsm)
