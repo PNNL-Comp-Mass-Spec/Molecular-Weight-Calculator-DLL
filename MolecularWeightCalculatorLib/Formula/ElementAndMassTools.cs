@@ -1557,27 +1557,21 @@ namespace MolecularWeightCalculator.Formula
         /// </remarks>
         internal bool IsModSymbol(string testChar)
         {
-            bool isModSymbol;
-
-            if (testChar.Length > 0)
+            if (testChar.Length == 0)
             {
-                var firstChar = testChar[0];
-
-                isModSymbol = Convert.ToInt32(firstChar) switch
-                {
-                    34 => false,                // " is not a recognized mod symbol
-                    40 or 41 => false,          // Parentheses are not mod symbols
-                    >= 44 and <= 62 => false,   // . and - and , and / and numbers and : and ; and < and = and > are not mod symbols
-                    >= 33 and <= 43 or 63 or 64 or >= 94 and <= 96 or 126 => true,  // These are mod symbols
-                    _ => false,
-                };
-            }
-            else
-            {
-                isModSymbol = false;
+                return false;
             }
 
-            return isModSymbol;
+            var firstChar = testChar[0];
+
+            return Convert.ToInt32(firstChar) switch
+            {
+                34 => false,                // " is not a recognized mod symbol
+                40 or 41 => false,          // Parentheses are not mod symbols
+                >= 44 and <= 62 => false,   // . and - and , and / and numbers and : and ; and < and = and > are not mod symbols
+                >= 33 and <= 43 or 63 or 64 or >= 94 and <= 96 or 126 => true,  // These are mod symbols
+                _ => false,
+            };
         }
 
         private void LogMessage(string message, MessageType messageType = MessageType.Normal)
