@@ -463,7 +463,7 @@ namespace MolecularWeightCalculator.Formula
             bool expandAbbreviations = false,
             double valueForUnknown = 1)
         {
-            var formulaData = new FormulaParseData(formula ?? "");
+            var formulaData = new FormulaParseData(formula ?? string.Empty);
 
             try
             {

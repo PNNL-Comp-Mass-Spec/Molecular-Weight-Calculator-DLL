@@ -209,7 +209,7 @@ namespace MolecularWeightCalculator.Formula
         {
             for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                if ((mAbbrevStats[index].Symbol?.ToLower() ?? "") == (symbol?.ToLower() ?? ""))
+                if ((mAbbrevStats[index].Symbol?.ToLower() ?? string.Empty) == (symbol?.ToLower() ?? string.Empty))
                 {
                     if (!aminoAcidsOnly || mAbbrevStats[index].IsAminoAcid)
                     {
@@ -317,7 +317,7 @@ namespace MolecularWeightCalculator.Formula
                         compareSymbol = mAbbrevStats[index].Symbol;
                     }
 
-                    if ((compareSymbol?.ToLower() ?? "") == (symbolToFind?.ToLower() ?? ""))
+                    if ((compareSymbol?.ToLower() ?? string.Empty) == (symbolToFind?.ToLower() ?? string.Empty))
                     {
                         if (oneLetterTo3Letter)
                         {
@@ -495,12 +495,12 @@ namespace MolecularWeightCalculator.Formula
         {
             if (caseSensitive)
             {
-                var query = from item in mElementStats where (item.Symbol ?? "") == (elementSymbol ?? "") select item;
+                var query = from item in mElementStats where (item.Symbol ?? string.Empty) == (elementSymbol ?? string.Empty) select item;
                 return query.Any();
             }
             else
             {
-                var query = from item in mElementStats where (item.Symbol?.ToLower() ?? "") == (elementSymbol?.ToLower() ?? "") select item;
+                var query = from item in mElementStats where (item.Symbol?.ToLower() ?? string.Empty) == (elementSymbol?.ToLower() ?? string.Empty) select item;
                 return query.Any();
             }
         }
@@ -810,7 +810,7 @@ namespace MolecularWeightCalculator.Formula
 
             for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                if ((mAbbrevStats[index].Symbol?.ToLower() ?? "") == (abbreviationSymbol ?? ""))
+                if ((mAbbrevStats[index].Symbol?.ToLower() ?? string.Empty) == (abbreviationSymbol ?? string.Empty))
                 {
                     RemoveAbbreviationById(index);
                     removed = true;
@@ -874,7 +874,7 @@ namespace MolecularWeightCalculator.Formula
             var alreadyPresent = false;
             for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                if ((mAbbrevStats[index].Symbol?.ToUpper() ?? "") == (symbol?.ToUpper() ?? ""))
+                if ((mAbbrevStats[index].Symbol?.ToUpper() ?? string.Empty) == (symbol?.ToUpper() ?? string.Empty))
                 {
                     alreadyPresent = true;
                     abbrevId = index;
@@ -967,7 +967,7 @@ namespace MolecularWeightCalculator.Formula
 
                         if (symbolMatchType == SymbolMatchMode.Element)
                         {
-                            if ((mElementStats[symbolReference].Symbol ?? "") == symbol)
+                            if ((mElementStats[symbolReference].Symbol ?? string.Empty) == symbol)
                             {
                                 invalidSymbolOrFormula = true;
                             }
@@ -1039,7 +1039,7 @@ namespace MolecularWeightCalculator.Formula
 
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if ((symbol?.ToLower() ?? "") == (mElementStats[index].Symbol?.ToLower() ?? ""))
+                if ((symbol?.ToLower() ?? string.Empty) == (mElementStats[index].Symbol?.ToLower() ?? string.Empty))
                 {
                     var stats = mElementStats[index];
                     stats.Mass = mass;

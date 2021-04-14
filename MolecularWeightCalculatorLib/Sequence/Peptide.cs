@@ -799,7 +799,7 @@ namespace MolecularWeightCalculator.Sequence
                 else
                 {
                     var symbol1Letter = mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(symbol3Letter, false);
-                    if ((symbol1Letter ?? "") == string.Empty)
+                    if ((symbol1Letter ?? string.Empty) == string.Empty)
                         symbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER;
                     sequence += symbol1Letter;
                 }
@@ -1200,7 +1200,7 @@ namespace MolecularWeightCalculator.Sequence
 
                         for (var charLocInExceptionChars = 0; charLocInExceptionChars < exceptionSuffixResidueCount; charLocInExceptionChars++)
                         {
-                            if ((residueFollowingCleavageResidue ?? "") == exceptionSuffixResidues.Substring(charLocInExceptionChars, 1))
+                            if ((residueFollowingCleavageResidue ?? string.Empty) == exceptionSuffixResidues.Substring(charLocInExceptionChars, 1))
                             {
                                 // Exception char is the following character; can't count this as the cleavage point
 
@@ -1243,7 +1243,7 @@ namespace MolecularWeightCalculator.Sequence
                 }
             }
 
-            if (minCharLoc < 0 && (residueFollowingSearchResidues ?? "") == (terminiiSymbol ?? ""))
+            if (minCharLoc < 0 && (residueFollowingSearchResidues ?? string.Empty) == (terminiiSymbol ?? string.Empty))
             {
                 minCharLoc = searchResidues.Length;
             }
@@ -1509,11 +1509,11 @@ namespace MolecularWeightCalculator.Sequence
                 sequenceEnd = sequence.Substring(sequence.Length - 1);
             }
 
-            if (ruleResidues == (terminiiSymbol ?? ""))
+            if (ruleResidues == (terminiiSymbol ?? string.Empty))
             {
                 // Peptide database rules
                 // See if prefix and suffix are "" or are terminiiSymbol
-                if (prefix == (terminiiSymbol ?? "") && suffix == (terminiiSymbol ?? "") ||
+                if (prefix == (terminiiSymbol ?? string.Empty) && suffix == (terminiiSymbol ?? string.Empty) ||
                     prefix == string.Empty && suffix == string.Empty)
                 {
                     ruleMatchCount = 2;
@@ -1540,7 +1540,7 @@ namespace MolecularWeightCalculator.Sequence
                     if (endToCheck == 0)
                     {
                         testResidue = prefix;
-                        if (prefix == (terminiiSymbol ?? ""))
+                        if (prefix == (terminiiSymbol ?? string.Empty))
                         {
                             ruleMatchCount++;
                             skipThisEnd = true;
@@ -1561,7 +1561,7 @@ namespace MolecularWeightCalculator.Sequence
                     else
                     {
                         testResidue = sequenceEnd;
-                        if (suffix == (terminiiSymbol ?? ""))
+                        if (suffix == (terminiiSymbol ?? string.Empty))
                         {
                             ruleMatchCount++;
                             skipThisEnd = true;

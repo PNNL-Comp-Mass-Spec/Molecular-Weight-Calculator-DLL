@@ -241,8 +241,8 @@ namespace MolecularWeightCalculator.Formula
 
         private void UpdateErrorAndCaution()
         {
-            CautionDescription = FormulaParseData.CautionDescription ?? "";
-            ErrorDescription = FormulaParseData.ErrorData.ErrorDescription ?? "";
+            CautionDescription = FormulaParseData.CautionDescription ?? string.Empty;
+            ErrorDescription = FormulaParseData.ErrorData.ErrorDescription ?? string.Empty;
             ErrorId = FormulaParseData.ErrorData.ErrorId;
         }
 

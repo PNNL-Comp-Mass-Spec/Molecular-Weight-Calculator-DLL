@@ -756,7 +756,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             // Determine number of C, Si, N, P, O, S, Cl, I, F, Br and H atoms
             foreach (var item in empiricalResultSymbols)
             {
-                switch (item.Key ?? "")
+                switch (item.Key ?? string.Empty)
                 {
                     case "C":
                         elementNum.C += item.Value;

@@ -26,7 +26,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
         public override string ToString()
         {
-            if ((Symbol ?? "") == (OriginalName ?? ""))
+            if ((Symbol ?? string.Empty) == (OriginalName ?? string.Empty))
             {
                 return Symbol + ": " + Mass.ToString("0.0000") + " Da, charge " + Charge;
             }
