@@ -22,7 +22,7 @@ namespace MolecularWeightCalculator.Formula
         private ElementsAndAbbrevs Elements => mElementTools.Elements;
         private Messages Messages => mElementTools.Messages;
 
-        private FormulaParseData mLastFormulaParsed = new FormulaParseData("");
+        private FormulaParseData mLastFormulaParsed = new("");
         public FormulaOptions ComputationOptions { get; }
 
         // Used when computing abbreviation masses, to trigger errors when abbreviation circular references occur (rather than infinite loops/recursion)

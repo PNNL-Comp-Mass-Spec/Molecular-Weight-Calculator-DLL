@@ -131,7 +131,7 @@ namespace MolecularWeightCalculator.Formula
 
         #region "Class wide Variables"
 
-        public FormulaOptions ComputationOptions { get; } = new FormulaOptions();
+        public FormulaOptions ComputationOptions { get; } = new();
 
         internal Messages Messages { get; }
 

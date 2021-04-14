@@ -55,7 +55,7 @@ namespace MolecularWeightCalculator.Formula
         // For example, in C6H6[?Br] if ? = 1, then the formula is treated like C6H6Br
         // If ? = 2, then the formula is treated like C6H6Br2
 
-        private ComputationStats mComputationStats = new ComputationStats();
+        private ComputationStats mComputationStats = new();
 
         private readonly ElementAndMassTools mElementAndMassRoutines;
 

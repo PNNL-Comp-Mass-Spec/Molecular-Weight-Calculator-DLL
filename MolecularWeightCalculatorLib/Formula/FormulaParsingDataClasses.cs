@@ -87,7 +87,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Sections of the formula. Only one object, unless there are '&gt;' symbols in the formula for formula subtraction.
         /// </summary>
-        internal List<FormulaData> FormulaSections { get; } = new List<FormulaData>(1);
+        internal List<FormulaData> FormulaSections { get; } = new(1);
 
         /// <summary>
         /// The list of caution notes for the formula, as a comma+space-separated string.
@@ -97,12 +97,12 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// List of caution notes for the formula.
         /// </summary>
-        public List<string> CautionDescriptionList { get; } = new List<string>();
+        public List<string> CautionDescriptionList { get; } = new();
 
         /// <summary>
         /// Error data object for the formula parsing
         /// </summary>
-        public ErrorDetails Error { get; } = new ErrorDetails();
+        public ErrorDetails Error { get; } = new();
 
         public IErrorData ErrorData => Error;
 
@@ -119,7 +119,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Usage of abbreviations. Key is abbreviation symbol, value is index of first usage. Used for checking for circular references among abbreviations.
         /// </summary>
-        internal Dictionary<string, int> AbbreviationUsage { get; } = new Dictionary<string, int>();
+        internal Dictionary<string, int> AbbreviationUsage { get; } = new();
 
         public FormulaParseData(string formula)
         {
@@ -210,12 +210,12 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Computation stats for this section of the formula
         /// </summary>
-        public ComputationStats Stats { get; } = new ComputationStats();
+        public ComputationStats Stats { get; } = new();
 
         /// <summary>
         /// Component breakdown for this section of the formula
         /// </summary>
-        internal FormulaComponentGroup Components { get; } = new FormulaComponentGroup();
+        internal FormulaComponentGroup Components { get; } = new();
 
         /// <summary>
         /// Standard deviation (really 'variance') sum for this section of the formula
@@ -300,7 +300,7 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     internal class FormulaComponentGroup : FormulaComponent
     {
-        private readonly List<FormulaComponent> components = new List<FormulaComponent>();
+        private readonly List<FormulaComponent> components = new();
 
         /// <summary>
         /// List of components in this group

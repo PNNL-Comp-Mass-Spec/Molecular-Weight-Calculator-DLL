@@ -126,8 +126,8 @@ namespace MolecularWeightCalculator.Sequence
         {
             public string Formula { get; set; }
             public double Mass { get; set; }
-            public Residue PrecedingResidue { get; set; } = new Residue(); // If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
-            public Residue FollowingResidue { get; set; } = new Residue(); // If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
+            public Residue PrecedingResidue { get; set; } = new(); // If the peptide sequence is part of a protein, the user can record the final residue of the previous peptide sequence here
+            public Residue FollowingResidue { get; set; } = new(); // If the peptide sequence is part of a protein, the user can record the first residue of the next peptide sequence here
         }
 
         // Note: A peptide goes from N to C, e.g. HGlyLeuTyrOH has N-Terminus = H and C-Terminus = OH
@@ -138,15 +138,15 @@ namespace MolecularWeightCalculator.Sequence
         // Modification symbols can be 1 or more letters long
         private readonly List<ModificationSymbol> mModificationSymbols; // 0-based array
 
-        private readonly Terminus mNTerminus = new Terminus(); // Formula on the N-Terminus
-        private readonly Terminus mCTerminus = new Terminus(); // Formula on the C-Terminus
+        private readonly Terminus mNTerminus = new(); // Formula on the N-Terminus
+        private readonly Terminus mCTerminus = new(); // Formula on the C-Terminus
         private double mTotalMass;
 
         private string mWaterLossSymbol; // -H2O
         private string mAmmoniaLossSymbol; // -NH3
         private string mPhosphoLossSymbol; // -H3PO4
 
-        private FragmentationSpectrumOptions mFragSpectrumOptions = new FragmentationSpectrumOptions();
+        private FragmentationSpectrumOptions mFragSpectrumOptions = new();
 
         // ReSharper disable InconsistentNaming
         private double mMassHOH;

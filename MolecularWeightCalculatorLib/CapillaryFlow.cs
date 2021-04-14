@@ -189,9 +189,9 @@ namespace MolecularWeightCalculator
         private const float CM_PER_INCH = 2.54f;
         private const double PI = 3.14159265359d;
 
-        private readonly CapillaryFlowParameters mCapillaryFlowParameters = new CapillaryFlowParameters();
-        private readonly MassRateParameters mMassRateParameters = new MassRateParameters();
-        private readonly ExtraColumnBroadeningParameters mExtraColumnBroadeningParameters = new ExtraColumnBroadeningParameters();
+        private readonly CapillaryFlowParameters mCapillaryFlowParameters = new();
+        private readonly MassRateParameters mMassRateParameters = new();
+        private readonly ExtraColumnBroadeningParameters mExtraColumnBroadeningParameters = new();
 
         /// <summary>
         /// When true, automatically compute results whenever any value changes
