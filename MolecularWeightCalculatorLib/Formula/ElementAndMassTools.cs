@@ -313,7 +313,7 @@ namespace MolecularWeightCalculator.Formula
                             else
                             {
                                 var asciiOfNext = formula[index + 1];
-                                if (asciiOfNext < 'a' || asciiOfNext > 'z')
+                                if (asciiOfNext is < 'a' or > 'z')
                                 {
                                     replaceDeuterium = true;
                                 }
@@ -933,7 +933,7 @@ namespace MolecularWeightCalculator.Formula
                 if (resolution < 1)
                     resolution = 1;
 
-                if (qualityFactor < 1 || qualityFactor > 75)
+                if (qualityFactor is < 1 or > 75)
                     qualityFactor = 50;
 
                 // Compute deltaX using resolution and resolutionMass
@@ -1824,7 +1824,7 @@ namespace MolecularWeightCalculator.Formula
                         // Highlight next character and skip % sign
                         workChar = workText.Substring(charIndex + 1, 1);
                         // Handle curly brackets
-                        if (workChar == "{" || workChar == "}")
+                        if (workChar is "{" or "}")
                             workChar = @"\" + workChar;
                         rtf += @"{\cf1 " + workChar + "}";
                         charIndex++;
@@ -1858,7 +1858,7 @@ namespace MolecularWeightCalculator.Formula
                         // at beginning of line, so leave it alone. Probably out of place
                         rtf += workChar;
                     }
-                    else if (!calculatorMode && (char.IsLetter(workCharPrev[0]) || workCharPrev == ")" || workCharPrev == @"\}" || workCharPrev == "+" || workCharPrev == "_" || rtf.Substring(rtf.Length - 6, 3) == "sub"))
+                    else if (!calculatorMode && (char.IsLetter(workCharPrev[0]) || workCharPrev is ")" or @"\}" or "+" or "_" || rtf.Substring(rtf.Length - 6, 3) == "sub"))
                     {
                         // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscript
                         // But, don't use subscripts in calculator
@@ -1887,7 +1887,7 @@ namespace MolecularWeightCalculator.Formula
                 else
                 {
                     // Handle curly brackets
-                    if (workChar == "{" || workChar == "}")
+                    if (workChar is "{" or "}")
                         workChar = @"\" + workChar;
                     rtf += workChar;
                 }

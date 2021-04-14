@@ -399,8 +399,7 @@ namespace MolecularWeightCalculator.Sequence
                     ionCount++;
                     if (Math.Abs(mFragSpectrumOptions.IntensityOptions.BYIonShoulder) > 0d)
                     {
-                        if (ionIndex == IonType.BIon || ionIndex == IonType.YIon ||
-                            ionIndex == IonType.CIon || ionIndex == IonType.ZIon)
+                        if (ionIndex is IonType.BIon or IonType.YIon or IonType.CIon or IonType.ZIon)
                         {
                             ionCount += 2;
                         }
@@ -553,7 +552,7 @@ namespace MolecularWeightCalculator.Sequence
                 {
                     if (mFragSpectrumOptions.IonTypeOptions[(int)ionType].ShowIon)
                     {
-                        if ((residueIndex == 0 || residueIndex == mResidues.Count - 1) && (ionType == IonType.AIon || ionType == IonType.BIon || ionType == IonType.CIon))
+                        if ((residueIndex == 0 || residueIndex == mResidues.Count - 1) && (ionType is IonType.AIon or IonType.BIon or IonType.CIon))
                         {
                             // Don't include a, b, or c ions in the output masses for this residue
                         }
@@ -617,7 +616,7 @@ namespace MolecularWeightCalculator.Sequence
                                         // Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
                                         // Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
                                         float observedMass;
-                                        if (Math.Abs(ionShoulderIntensity) > 0f && (ionType == IonType.BIon || ionType == IonType.YIon || ionType == IonType.CIon || ionType == IonType.ZIon))
+                                        if (Math.Abs(ionShoulderIntensity) > 0f && ionType is IonType.BIon or IonType.YIon or IonType.CIon or IonType.ZIon)
                                         {
                                             for (var shoulderIndex = -1; shoulderIndex <= 1; shoulderIndex += 2)
                                             {
@@ -743,7 +742,7 @@ namespace MolecularWeightCalculator.Sequence
 
             var internalResidues = string.Empty;
             phosphorylated = false;
-            if (ionType == IonType.YIon || ionType == IonType.ZIon)
+            if (ionType is IonType.YIon or IonType.ZIon)
             {
                 for (var residueIndex = currentResidueIndex; residueIndex < mResidues.Count; residueIndex++)
                 {
@@ -2422,7 +2421,7 @@ namespace MolecularWeightCalculator.Sequence
                         // If . or - or space, then ignore it
                         // If a number, ignore it
                         // If anything else, then should have been skipped, or should be skipped
-                        else if (oneLetterSymbol == "." || oneLetterSymbol == "-" || oneLetterSymbol == " ")
+                        else if (oneLetterSymbol is "." or "-" or " ")
                         {
                             // All is fine; we can skip this
                         }
@@ -2478,7 +2477,7 @@ namespace MolecularWeightCalculator.Sequence
                             // If . or - or space, then ignore it
                             // If a number, ignore it
                             // If anything else, then should have been skipped or should be skipped
-                            if (firstChar == "." || firstChar == "-" || firstChar == " ")
+                            if (firstChar is "." or "-" or " ")
                             {
                                 // All is fine; we can skip this
                             }

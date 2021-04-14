@@ -1188,7 +1188,7 @@ namespace MolecularWeightCalculator.Formula
                                 stats.Charge = (float)(stats.Charge + addCount * elementStats.Charge);
                             }
 
-                            if (symbolReference == 6 || symbolReference == 14)
+                            if (symbolReference is 6 or 14)
                             {
                                 // Sum up number lone C and Si (not in abbreviations)
                                 loneCarbonOrSilicon = (int)Math.Round(loneCarbonOrSilicon + component.Count);
@@ -1357,7 +1357,8 @@ namespace MolecularWeightCalculator.Formula
 
             if (string.IsNullOrEmpty(work))
                 work = EMPTY_STRING_CHAR.ToString();
-            if ((work[0] < '0' || work[0] > '9') &&
+
+            if (work[0] is < '0' or > '9' &&
                 work[0] != ComputationOptions.DecimalSeparator &&
                 !(work[0] == '-' && allowNegative))
             {
