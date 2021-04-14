@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -1979,25 +1980,30 @@ namespace MolecularWeightCalculator.Formula
                     {
                         case StdDevMode.Short:
                             // StdDevType Short (Type 0)
-                            result = roundedMain.ToString();
+                            result = roundedMain.ToString(CultureInfo.InvariantCulture);
                             if (includeStandardDeviation)
+                            {
                                 result += "(" + '±' + stdDevShort + ")";
-
+                            }
                             result += pctSign;
                             break;
+
                         case StdDevMode.Scientific:
                             // StdDevType Scientific (Type 1)
                             result = roundedMain + pctSign;
                             if (includeStandardDeviation)
+                            {
                                 result += " (" + '±' + stdDev.ToString("0.000E+00") + ")";
-
+                            }
                             break;
+
                         default:
                             // StdDevType Decimal
                             result = mass.ToString("0.0####") + pctSign;
                             if (includeStandardDeviation)
+                            {
                                 result += " (" + '±' + roundedStdDev + ")";
-
+                            }
                             break;
                     }
                 }
@@ -2055,7 +2061,7 @@ namespace MolecularWeightCalculator.Formula
             var exponentValue = NumberConverter.CIntSafe(workText.Substring(workText.Length - 4));
 
             var loopCount = 0;
-            while ((valueToRound / multipleValue).ToString() != Math.Round(valueToRound / multipleValue, 0).ToString())
+            while ((valueToRound / multipleValue).ToString(CultureInfo.InvariantCulture) != Math.Round(valueToRound / multipleValue, 0).ToString(CultureInfo.InvariantCulture))
             {
                 var work = valueToRound / Math.Pow(10d, exponentValue);
                 work = double.Parse(work.ToString("0"));
