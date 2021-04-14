@@ -195,7 +195,7 @@ namespace MolecularWeightCalculator.Formula
         internal int SetCautionStatement(string symbolCombo, string newCautionStatement)
         {
             var errorId = 0;
-            if (symbolCombo.Length >= 1 && symbolCombo.Length <= ElementsAndAbbrevs.MAX_ABBREV_LENGTH)
+            if (symbolCombo.Length is >= 1 and <= ElementsAndAbbrevs.MAX_ABBREV_LENGTH)
             {
                 // Make sure all the characters in symbolCombo are letters
                 if (symbolCombo.All(char.IsLetter))
@@ -248,7 +248,7 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>0 if success; 1 if failure</returns>
         internal int SetMessageStatement(int messageId, string newMessage)
         {
-            if (messageId >= 1 && messageId <= MESSAGE_STATEMENT_DIM_COUNT && newMessage.Length > 0)
+            if (messageId is >= 1 and <= MESSAGE_STATEMENT_DIM_COUNT && newMessage.Length > 0)
             {
                 mMessageStatements[messageId] = newMessage;
                 return 0;

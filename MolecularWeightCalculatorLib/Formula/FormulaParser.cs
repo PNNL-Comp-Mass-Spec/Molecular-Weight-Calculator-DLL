@@ -577,7 +577,7 @@ namespace MolecularWeightCalculator.Formula
 
                     if (caretNum >= 0d && caretNumLength > 0)
                     {
-                        if (charAsc >= 'A' && charAsc <= 'Z' || charAsc >= 'a' && charAsc <= 'z') // Uppercase A to Z and lowercase a to z
+                        if (charAsc is >= 'A' and <= 'Z' or >= 'a' and <= 'z') // Uppercase A to Z and lowercase a to z
                         {
                             isIsotope = true;
                             isotope = caretNum;
@@ -770,7 +770,7 @@ namespace MolecularWeightCalculator.Formula
                         // Used to denote a leading coefficient
                         var dashLength = 1;
                         var numRemnant = nextRemnant;
-                        if (currentChar >= '0' && currentChar <= '9')
+                        if (currentChar is >= '0' and <= '9')
                         {
                             // handling fall-through from a leading coefficient number
                             numRemnant = currentRemnant;

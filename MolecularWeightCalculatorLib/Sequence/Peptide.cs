@@ -467,7 +467,7 @@ namespace MolecularWeightCalculator.Sequence
                                         // A, B, and C ions are numbered in increasing order: a1, a2, etc.  or b1, b2, etc.
                                         var ionSymbolGeneric = LookupIonTypeString(ionType);
                                         string ionSymbol;
-                                        if (ionType == IonType.YIon || ionType == IonType.ZIon)
+                                        if (ionType is IonType.YIon or IonType.ZIon)
                                         {
                                             ionSymbol = ionSymbolGeneric + (mResidues.Count - residueIndex);
                                         }
@@ -2043,7 +2043,7 @@ namespace MolecularWeightCalculator.Sequence
             {
                 // Only Ser, Thr, or Tyr should be phosphorylated
                 // However, if the user sets other residues as phosphorylated, we'll allow that
-                if (!(residue.Symbol == "Ser" || residue.Symbol == "Thr" || residue.Symbol == "Tyr"))
+                if (residue.Symbol is not ("Ser" or "Thr" or "Tyr"))
                 {
                     Console.WriteLine("Residue '" + residue.Symbol + "' is marked as being phosphorylated; this is unexpected");
                 }
