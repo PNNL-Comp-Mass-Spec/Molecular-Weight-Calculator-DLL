@@ -398,7 +398,7 @@ namespace MolecularWeightCalculator.Formula
                 return Messages.LookupMessage(mLastFormulaParsed.Error.ErrorId);
             }
 
-            return "";
+            return string.Empty;
         }
 
         // TODO: [Obsolete("Use value from IFormulaParseData.ErrorData.ErrorId instead")]

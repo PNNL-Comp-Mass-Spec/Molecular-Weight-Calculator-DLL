@@ -91,7 +91,7 @@ namespace MolecularWeightCalculator.Formula
                 return message + appendText;
             }
 
-            return "";
+            return string.Empty;
         }
 
         public int GetMessageStatementMaxId()

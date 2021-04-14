@@ -464,7 +464,7 @@ namespace MolecularWeightCalculator.Formula
                 return mElementStats[atomicNumber].Symbol;
             }
 
-            return "";
+            return string.Empty;
         }
 
         public List<ElementInfo> GetElements()

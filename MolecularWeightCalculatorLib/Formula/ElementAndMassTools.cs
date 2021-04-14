@@ -1535,7 +1535,7 @@ namespace MolecularWeightCalculator.Formula
                 return Messages.LookupMessage(errorId);
             }
 
-            return "";
+            return string.Empty;
         }
 
         public int GetErrorId()
