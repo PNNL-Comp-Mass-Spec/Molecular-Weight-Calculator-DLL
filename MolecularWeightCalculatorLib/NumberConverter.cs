@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace MolecularWeightCalculator
 {
     [ComVisible(false)]
-    internal class NumberConverter
+    internal static class NumberConverter
     {
         public static double CDblSafe(string work)
         {
@@ -37,7 +37,7 @@ namespace MolecularWeightCalculator
                 return CShortSafe(value);
             }
 
-            if (work.ToLower() == "true")
+            if (work.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
                 return -1;
             }
@@ -65,7 +65,7 @@ namespace MolecularWeightCalculator
                 return CIntSafe(value);
             }
 
-            if (work.ToLower() == "true")
+            if (work.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
                 return -1;
             }
