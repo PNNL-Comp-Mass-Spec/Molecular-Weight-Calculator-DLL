@@ -305,29 +305,29 @@ namespace MolecularWeightCalculator.Formula
 
             var returnSymbol = string.Empty;
             // Use AbbrevStats[] array to lookup code
-            for (var index = 0; index < mAbbrevStats.Count; index++)
+            foreach (var item in mAbbrevStats)
             {
-                if (mAbbrevStats[index].IsAminoAcid)
+                if (item.IsAminoAcid)
                 {
                     string compareSymbol;
                     if (oneLetterTo3Letter)
                     {
-                        compareSymbol = mAbbrevStats[index].OneLetterSymbol;
+                        compareSymbol = item.OneLetterSymbol;
                     }
                     else
                     {
-                        compareSymbol = mAbbrevStats[index].Symbol;
+                        compareSymbol = item.Symbol;
                     }
 
                     if ((compareSymbol?.ToLower() ?? string.Empty) == (symbolToFind?.ToLower() ?? string.Empty))
                     {
                         if (oneLetterTo3Letter)
                         {
-                            returnSymbol = mAbbrevStats[index].Symbol;
+                            returnSymbol = item.Symbol;
                         }
                         else
                         {
-                            returnSymbol = mAbbrevStats[index].OneLetterSymbol;
+                            returnSymbol = item.OneLetterSymbol;
                         }
 
                         break;
