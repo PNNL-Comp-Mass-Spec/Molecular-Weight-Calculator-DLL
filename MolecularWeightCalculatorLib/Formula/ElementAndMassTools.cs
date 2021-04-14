@@ -337,8 +337,8 @@ namespace MolecularWeightCalculator.Formula
                 {
                     // Deuterium is present
                     var modifiedFormula = string.Empty;
-                    short index = 0;
-                    while (index < formula.Length)
+
+                    for (short index = 0; index < formula.Length; index++)
                     {
                         var replaceDeuterium = false;
                         if (formula.Substring(index, 1) == "D")
@@ -373,8 +373,6 @@ namespace MolecularWeightCalculator.Formula
                                 index = 0;
                             }
                         }
-
-                        index++;
                     }
 
                     // Re-Parse Formula since D's are now ^2.014H

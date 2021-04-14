@@ -306,8 +306,8 @@ namespace MolecularWeightCalculator.Sequence
 
             // Find the entire group of potential modification symbols
             var modSymbolGroup = string.Empty;
-            var compareIndex = 0;
-            while (compareIndex < sequenceStrLength)
+
+            for (var compareIndex = 0; compareIndex < sequenceStrLength; compareIndex++)
             {
                 var testChar = partialSequence.Substring(compareIndex, 1);
                 if (mElementAndMassRoutines.IsModSymbol(testChar))
@@ -318,8 +318,6 @@ namespace MolecularWeightCalculator.Sequence
                 {
                     break;
                 }
-
-                compareIndex++;
             }
 
             var modSymbolLengthTotal = modSymbolGroup.Length;
