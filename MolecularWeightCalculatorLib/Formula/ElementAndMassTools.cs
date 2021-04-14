@@ -139,7 +139,7 @@ namespace MolecularWeightCalculator.Formula
 
         public FormulaParser Parser { get; }
 
-        private int mLastErrorId = 0;
+        private int mLastErrorId;
 
         protected bool mAbortProcessing;
 
@@ -2011,7 +2011,8 @@ namespace MolecularWeightCalculator.Formula
             }
 
             if (string.IsNullOrEmpty(result))
-                result = string.Empty;
+                return string.Empty;
+
             return result;
         }
 

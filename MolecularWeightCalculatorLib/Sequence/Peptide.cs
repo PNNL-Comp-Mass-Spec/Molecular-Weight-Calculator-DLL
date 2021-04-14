@@ -351,11 +351,6 @@ namespace MolecularWeightCalculator.Sequence
                         SetModificationSymbol(modSymbolGroup, 0d);
                         matchFound = true;
                     }
-                    else
-                    {
-                        // Ignore the modification
-                        modSymbolGroup = "0";
-                    }
 
                     modSymbolGroup = string.Empty;
                 }
@@ -464,8 +459,10 @@ namespace MolecularWeightCalculator.Sequence
                 abbrevId = -1;
             }
 
-            var residue = new Residue(symbol3Letter);
-            residue.Phosphorylated = false;
+            var residue = new Residue(symbol3Letter) {
+                Phosphorylated = false
+            };
+
             if (abbrevId >= 0)
             {
                 residue.Mass = mElementAndMassRoutines.Elements.GetAbbreviationMass(abbrevId);
@@ -1619,7 +1616,7 @@ namespace MolecularWeightCalculator.Sequence
             // Finally, if sequence = "R.IGASGEHIFIIGVDKPNR.Q" then matchesCleavageRule = True since K is ignored, but the final R.Q is valid
 
             string sequenceStart, sequenceEnd;
-            bool matchesCleavageRule = default;
+            var matchesCleavageRule = false;
 
             // Need to reset this to zero since passed ByRef
             ruleMatchCount = 0;
@@ -1681,10 +1678,6 @@ namespace MolecularWeightCalculator.Sequence
                 {
                     ruleMatchCount = 2;
                     matchesCleavageRule = true;
-                }
-                else
-                {
-                    matchesCleavageRule = false;
                 }
             }
             else

@@ -692,8 +692,8 @@ namespace MolecularWeightCalculator.Formula
                         }
 
                         var nextChar = nextRemnant.Length > 1 ? nextRemnant[0] : EMPTY_STRING_CHAR;
-                        var bracketNumLength = 0;
-                        var leadingCoefficient = 0.0;
+                        int bracketNumLength;
+                        double leadingCoefficient;
                         if (nextChar == '?')
                         {
                             leadingCoefficient = valueForUnknown;

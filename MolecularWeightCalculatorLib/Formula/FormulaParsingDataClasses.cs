@@ -220,7 +220,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Standard deviation (really 'variance') sum for this section of the formula
         /// </summary>
-        public double StDevSum { get; set; } = 0;
+        public double StDevSum { get; set; }
 
         public override string ToString()
         {
