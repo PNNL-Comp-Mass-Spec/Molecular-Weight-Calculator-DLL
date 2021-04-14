@@ -64,8 +64,8 @@ namespace MolecularWeightCalculator.Formula
 
         public IReadOnlyList<string> AbbreviationsUsed => abbreviationsUsed;
 
-        private Dictionary<int, IElementUseStats> elementsUsed = new();
-        private List<string> abbreviationsUsed = new();
+        private readonly Dictionary<int, IElementUseStats> elementsUsed = new();
+        private readonly List<string> abbreviationsUsed = new();
 
         public AbbrevStatsData(string symbol, string formula, float charge, bool isAminoAcid, string oneLetterSymbol = "", string comment = "", bool invalidSymbolOrFormula = false)
         {
