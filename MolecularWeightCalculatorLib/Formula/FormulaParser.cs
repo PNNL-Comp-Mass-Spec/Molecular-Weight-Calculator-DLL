@@ -1388,7 +1388,7 @@ namespace MolecularWeightCalculator.Formula
 
             if (decPtCount > 1)
             {
-                // more than one decPtCount
+                // more than one decimal point count
                 numLength = 0;
                 // Error: More than one decimal point, highlight the whole bad number
                 error.SetError(27, currentIndex, foundNum);
