@@ -23,7 +23,6 @@ namespace MolecularWeightCalculator
     }
 
     [Guid("76D1C162-CAE8-4921-9928-DF229775B629"), ComVisible(true)]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfLength
     {
         M = 0,
@@ -41,7 +40,6 @@ namespace MolecularWeightCalculator
     }
 
     [Guid("88C1C17B-88A2-4B1F-B739-C78FD27D6FEB"), ComVisible(true)]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfFlowRate
     {
         MLPerMin = 0,
@@ -69,7 +67,6 @@ namespace MolecularWeightCalculator
     }
 
     [Guid("97E85E7B-3319-4FC3-87E5-60D3B5A28B91"), ComVisible(true)]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfVolume
     {
         ML = 0,
@@ -79,7 +76,6 @@ namespace MolecularWeightCalculator
     }
 
     [Guid("1DAEC84C-DD67-4E62-9975-53B74C22BF3C"), ComVisible(true)]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfConcentration
     {
         Molar = 0,

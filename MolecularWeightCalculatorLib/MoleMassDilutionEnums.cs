@@ -48,7 +48,6 @@ namespace MolecularWeightCalculator
     }
 
     [Guid("0FD1BC9F-19C0-4449-B639-55A20187E6E2"), ComVisible(true)]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfExtendedVolume
     {
         L = 0,
@@ -63,7 +62,6 @@ namespace MolecularWeightCalculator
     }
 
     [Guid("5D63EAA6-FC5C-46F9-AD96-74DD8DF2BF44"), ComVisible(true)]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum UnitOfMoleMassConcentration
     {
         Molar = 0,

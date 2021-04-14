@@ -42,6 +42,7 @@
     <Compile Include="FunctionalTests\MwtAPITests.cs" />
     <Compile Include="FunctionalTests\PeptideTests.cs" />
     <Compile Include="FunctionalTests\WorkflowTests.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
