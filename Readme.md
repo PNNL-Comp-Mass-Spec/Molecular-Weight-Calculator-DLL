@@ -61,20 +61,26 @@ Enter the following code, then on the Debug menu choose "Compile VBA Project"
 ```vbscript
 Option Explicit
 
-Public Function ComputeMass(formula As String) As String
+Private mMwtCalculator As New MolecularWeightTool
+Private mIsoInitialized As Boolean
+
+Public Function ComputeIsotopicMass(formula As String) As Double
 
 On Error GoTo ErrorHandler
 
-    Dim mwtCalculator As New MolecularWeightTool
-    
+    If Not mIsoInitialized Then
+        mMwtCalculator.SetElementMode ElementMassMode_Isotopic
+        mIsoInitialized = True
+    End If
+
     Dim mass As Double
-    mass = mwtCalculator.ComputeMass(formula)
-    
-    ComputeMass = mass
+    mass = mMwtCalculator.ComputeMass(formula)
+
+    ComputeIsotopicMass = mass
     Exit Function
-    
+
 ErrorHandler:
-    ComputeMass = "Error: " & Err.Description
+    Debug.Print "Error: " & Err.Description
 End Function
 ```
 
