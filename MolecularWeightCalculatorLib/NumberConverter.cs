@@ -18,7 +18,7 @@ namespace MolecularWeightCalculator
 
         public static short CShortSafe(double work)
         {
-            if (work <= 32767d && work >= -32767)
+            if (work is >= -32767 and <= 32767d)
             {
                 return (short)Math.Round(work);
             }
@@ -46,7 +46,7 @@ namespace MolecularWeightCalculator
 
         public static int CIntSafe(double work)
         {
-            if (work <= int.MaxValue && work >= int.MinValue)
+            if (work is >= int.MinValue and <= int.MaxValue)
             {
                 return (int)Math.Round(work);
             }

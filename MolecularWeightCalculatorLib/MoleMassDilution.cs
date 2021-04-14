@@ -326,7 +326,8 @@ namespace MolecularWeightCalculator
                 return amountIn;
             }
 
-            if (currentUnits >= AMOUNT_UNITS_VOLUME_INDEX_START && currentUnits <= AMOUNT_UNITS_LIST_INDEX_MAX && newUnits >= AMOUNT_UNITS_VOLUME_INDEX_START && newUnits <= AMOUNT_UNITS_LIST_INDEX_MAX)
+            if (currentUnits is >= AMOUNT_UNITS_VOLUME_INDEX_START and <= AMOUNT_UNITS_LIST_INDEX_MAX &&
+                newUnits is >= AMOUNT_UNITS_VOLUME_INDEX_START and <= AMOUNT_UNITS_LIST_INDEX_MAX)
             {
                 // Converting from one volume unit to another volume unit
                 // No need to explicitly specify mass or density
@@ -620,7 +621,7 @@ namespace MolecularWeightCalculator
 
         public void SetAutoComputeDilutionMode(AutoComputeDilutionMode autoComputeMode)
         {
-            if (autoComputeMode >= AutoComputeDilutionMode.FindRequiredDilutionVolumes && autoComputeMode <= AutoComputeDilutionMode.FindFinalConcentration)
+            if (autoComputeMode is >= AutoComputeDilutionMode.FindRequiredDilutionVolumes and <= AutoComputeDilutionMode.FindFinalConcentration)
             {
                 mAutoComputeDilutionMode = autoComputeMode;
             }

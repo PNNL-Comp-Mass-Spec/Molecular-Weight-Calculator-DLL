@@ -1418,7 +1418,7 @@ namespace MolecularWeightCalculator
 
         public void SetInterparticlePorosity(double porosity)
         {
-            if (porosity >= 0d && porosity <= 1d)
+            if (porosity is >= 0d and <= 1d)
             {
                 mCapillaryFlowParameters.InterparticlePorosity = porosity;
             }

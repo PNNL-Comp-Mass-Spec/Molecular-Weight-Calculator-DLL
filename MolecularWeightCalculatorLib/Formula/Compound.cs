@@ -76,7 +76,7 @@ namespace MolecularWeightCalculator.Formula
         public bool ElementPresent(short elementId)
         {
             // Returns True if the element is present
-            if (elementId >= 1 && elementId <= ElementsAndAbbrevs.ELEMENT_COUNT)
+            if (elementId is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
             {
                 return mComputationStats.Elements[elementId].Used;
             }
@@ -105,7 +105,7 @@ namespace MolecularWeightCalculator.Formula
             // Return the number of atoms of a given element that are present in the formula
             // Note that the number of atoms is not necessarily an integer (e.g. C5.5)
 
-            if (elementId >= 1 && elementId <= ElementsAndAbbrevs.ELEMENT_COUNT)
+            if (elementId is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
             {
                 return mComputationStats.Elements[elementId].Count;
             }
@@ -118,7 +118,7 @@ namespace MolecularWeightCalculator.Formula
             // Returns the percent composition for element
             // Returns -1 if an invalid ID
 
-            if (elementId >= 1 && elementId <= ElementsAndAbbrevs.ELEMENT_COUNT)
+            if (elementId is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
             {
                 return mComputationStats.PercentCompositions[elementId].PercentComposition;
             }
@@ -131,7 +131,7 @@ namespace MolecularWeightCalculator.Formula
             // Returns the percent composition and standard deviation for element
             // Returns "" if an invalid ID
 
-            if (elementId >= 1 && elementId <= ElementsAndAbbrevs.ELEMENT_COUNT)
+            if (elementId is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
             {
                 var compStats = mComputationStats.PercentCompositions[elementId];
                 var elementSymbol = mElementAndMassRoutines.Elements.GetElementSymbol(elementId) + ":";

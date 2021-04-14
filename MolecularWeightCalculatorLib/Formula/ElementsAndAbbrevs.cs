@@ -364,7 +364,7 @@ namespace MolecularWeightCalculator.Formula
             out float charge,
             out short isotopeCount)
         {
-            if (elementId >= 1 && elementId <= ELEMENT_COUNT)
+            if (elementId is >= 1 and <= ELEMENT_COUNT)
             {
                 var stats = mElementStats[elementId];
                 symbol = stats.Symbol;
@@ -412,7 +412,7 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>0 if a valid ID, 1 if invalid</returns>
         internal int GetElementIsotopes(short elementId, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
-            if (elementId >= 1 && elementId <= ELEMENT_COUNT)
+            if (elementId is >= 1 and <= ELEMENT_COUNT)
             {
                 var stats = mElementStats[elementId];
                 isotopeCount = (short)stats.Isotopes.Count;
@@ -455,7 +455,7 @@ namespace MolecularWeightCalculator.Formula
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         internal string GetElementSymbol(short elementId)
         {
-            if (elementId >= 1 && elementId <= ELEMENT_COUNT)
+            if (elementId is >= 1 and <= ELEMENT_COUNT)
             {
                 return mElementStats[elementId].Symbol;
             }
@@ -477,7 +477,7 @@ namespace MolecularWeightCalculator.Formula
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         internal double GetElementStat(short elementId, ElementStatsType elementStat)
         {
-            if (elementId >= 1 && elementId <= ELEMENT_COUNT)
+            if (elementId is >= 1 and <= ELEMENT_COUNT)
             {
                 return elementStat switch
                 {
@@ -709,7 +709,7 @@ namespace MolecularWeightCalculator.Formula
                 // Also load the isotopes, since if any were loaded we just cleared them.
                 ElementsLoader.MemoryLoadIsotopes(mElementStats);
             }
-            else if (specificElement >= 1 && specificElement <= ELEMENT_COUNT)
+            else if (specificElement is >= 1 and <= ELEMENT_COUNT)
             {
                 var stats = mElementStats[specificElement];
                 switch (specificStatToReset)
