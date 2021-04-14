@@ -945,10 +945,6 @@ namespace MolecularWeightCalculator.Formula
                 if (Math.Abs(deltaX) < float.Epsilon)
                     deltaX = 1d;
 
-                // Set the Window Range to 1/10 the magnitude of the midpoint x value
-                var rangeWork = xyVals.First().Key + xValRange / 2d;
-                rangeWork = RoundToMultipleOf10(rangeWork);
-
                 var sigma = resolutionMass / resolution / Math.Sqrt(5.54d);
 
                 // Set the window range (the xValue window width range) to calculate the Gaussian representation for each data point
@@ -1124,7 +1120,7 @@ namespace MolecularWeightCalculator.Formula
                         // Need to insert a data point
 
                         // Choose the appropriate new .XVal
-                        rangeWork = xySummation[summationIndex + 1].X - xySummation[summationIndex].X;
+                        var rangeWork = xySummation[summationIndex + 1].X - xySummation[summationIndex].X;
                         if (rangeWork < minimalXValSpacing * 2d)
                         {
                             rangeWork /= 2d;
@@ -1945,7 +1941,6 @@ namespace MolecularWeightCalculator.Formula
 
             try
             {
-                double roundedMain;
                 string pctSign;
                 // includePctSign is True when formatting Percent composition values
                 if (includePctSign)
@@ -1961,9 +1956,6 @@ namespace MolecularWeightCalculator.Formula
                 {
                     // Standard deviation value is 0; simply return the result
                     result = mass.ToString("0.0####") + pctSign + " (" + '±' + "0)";
-
-                    // roundedMain is used later, must copy mass to it
-                    roundedMain = mass;
                 }
                 else
                 {
@@ -1980,9 +1972,7 @@ namespace MolecularWeightCalculator.Formula
                     var exponentValue = NumberConverter.CShortSafe(workText.Substring(workText.Length - 4));
                     var work = mass / Math.Pow(10d, exponentValue);
                     work = Math.Round(work, 0);
-                    roundedMain = work * Math.Pow(10d, exponentValue);
-
-                    workText = roundedMain.ToString("0.0##E+00");
+                    var roundedMain = work * Math.Pow(10d, exponentValue);
 
                     // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                     switch (ComputationOptions.StdDevMode)

@@ -2687,9 +2687,6 @@ namespace MolecularWeightCalculator.Sequence
 
                 // The immonium mass is equal to the mass of CO minus the mass of H, thus typically 26.9871
                 mImmoniumMassDifference = mElementAndMassRoutines.Parser.ComputeFormulaWeight("CO") - mMassHydrogen;
-                mHistidineFW = mElementAndMassRoutines.Parser.ComputeFormulaWeight("His");
-                mPhenylalanineFW = mElementAndMassRoutines.Parser.ComputeFormulaWeight("Phe");
-                mTyrosineFW = mElementAndMassRoutines.Parser.ComputeFormulaWeight("Tyr");
 
                 mElementAndMassRoutines.Elements.SetElementMode(elementModeSaved);
             }
