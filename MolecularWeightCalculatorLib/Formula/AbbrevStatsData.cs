@@ -54,8 +54,12 @@ namespace MolecularWeightCalculator.Formula
         public bool InvalidSymbolOrFormula { get; internal set; }
 
         /// <summary>
-        /// Element counts for this abbreviation. Key is element symbol reference, value element use information.
+        /// Element counts for this abbreviation
         /// </summary>
+        /// <remarks>
+        /// Keys are element atomic number
+        /// Values are usage states for each element
+        /// </remarks>
         public IReadOnlyDictionary<int, IElementUseStats> ElementsUsed => elementsUsed;
 
         public IReadOnlyList<string> AbbreviationsUsed => abbreviationsUsed;

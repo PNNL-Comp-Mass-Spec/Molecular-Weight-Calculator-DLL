@@ -327,7 +327,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         }
 
         /// <summary>
-        ///
+        /// Perform a bounded search
         /// </summary>
         /// <param name="targetMass">Only used when calculationMode is MatchMolecularWeight</param>
         /// <param name="massToleranceDa">Only used when calculationMode is MatchMolecularWeigh</param>
@@ -908,7 +908,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                     correctedCharge -= elementCounts.H * 2;
                 }
 
-                // Correct for elementNumber of C and Si
+                // Correct for number of C and Si atoms
                 if (elementCounts.C + elementCounts.Si > 1)
                 {
                     correctedCharge -= (elementCounts.C + elementCounts.Si - 1) * 2;
@@ -918,7 +918,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             if (elementCounts.N + elementCounts.P > 0 && elementCounts.C > 0)
             {
                 // Assume 2 hydrogens around each Nitrogen or Phosphorus, thus add back +2 for each H
-                // First, decrease elementNumber of halogens by elementNumber of hydrogens & halogens taken up by the carbons
+                // First, decrease number of halogens by the number of hydrogens & halogens taken up by the carbons
                 // Determine # of H taken up by all the carbons in a compound without N or P, then add back 1 H for each N and P
                 var numHalogens = elementCounts.H + elementCounts.F + elementCounts.Cl + elementCounts.Br + elementCounts.I;
                 numHalogens = numHalogens - (elementCounts.C * 2 + 2) + elementCounts.N + elementCounts.P;

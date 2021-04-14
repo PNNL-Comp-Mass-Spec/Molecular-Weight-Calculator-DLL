@@ -1088,7 +1088,7 @@ namespace MolecularWeightCalculator.Formula
                                 if (element.Count < 0d)
                                 {
                                     // This shouldn't happen
-                                    Console.WriteLine(".Count is less than 0 in ParseFormulaRecursive; this shouldn't happen");
+                                    Console.WriteLine(".Count is less than 0 in DetermineTotalElementCounts; this shouldn't happen");
                                     element.Count = 0d;
                                 }
 

@@ -32,8 +32,18 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// The index of this symbol in the list referred to by <see cref="MatchType"/>
         /// </summary>
+        /// <remarks>
+        /// For elements, this is 1-based atomic number
+        /// For abbreviations, this is a 0-based index
+        /// </remarks>
         public readonly int Index;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="index"></param>
+        /// <param name="matchType"></param>
         public SymbolLookupInfo(string symbol, int index, SymbolMatchMode matchType = SymbolMatchMode.Unknown)
         {
             Symbol = symbol;

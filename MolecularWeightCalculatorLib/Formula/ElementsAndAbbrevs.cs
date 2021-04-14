@@ -16,7 +16,10 @@ namespace MolecularWeightCalculator.Formula
 
             mElementAlph = new List<KeyValuePair<string, int>>(ELEMENT_COUNT);
             mElementStats = new ElementInfo[ELEMENT_COUNT + 1];
-            mElementStats[0] = new ElementInfo(); // 'Invalid' element at index 0
+
+            // The first element is hydrogen at mElementStats[1]
+            // Initialize a placeholder class at index 0 (indicating an 'Invalid' element)
+            mElementStats[0] = new ElementInfo();
 
             mAbbrevStats = new List<AbbrevStatsData>(60);
 
@@ -73,8 +76,9 @@ namespace MolecularWeightCalculator.Formula
         internal IReadOnlyList<KeyValuePair<string, int>> ElementAlph => mElementAlph;
 
         /// <summary>
-        /// List of elements. Index 0 is invalid, so that index should be the same as the atomic number of the element
+        /// List of elements, starting at ElementStats[1] for Hydrogen
         /// </summary>
+        /// <remarks>ElementStats[0] exists but is not a valid element</remarks>
         internal IReadOnlyList<ElementInfo> ElementStats => mElementStats;
 
         /// <summary>
