@@ -1,6 +1,9 @@
-MwtWinDll.NET Change Log
+MolecularWeightCalculator DLL Change Log
 
-Version 4.1.7768; April 12, 2021
+Version 4.1.7773; April 13, 2021
+	- Add an Excel file demonstrating usage
+
+Version 4.1.7772; April 12, 2021
 	- Convert to C#
 		- Includes renaming classes/methods and significant refactoring; DLL is now "MolecularWeightCalculatorLib.dll"
 		- Removed a number of "ByRef" parameters, or replaced them with "out" parameters.
