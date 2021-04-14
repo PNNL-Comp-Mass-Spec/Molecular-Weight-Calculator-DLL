@@ -75,12 +75,12 @@ namespace MolecularWeightCalculator.Formula
             return ErrorDescription;
         }
 
-        public bool ElementPresent(short elementId)
+        public bool ElementPresent(short atomicNumber)
         {
             // Returns True if the element is present
-            if (elementId is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
+            if (atomicNumber is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
             {
-                return mComputationStats.Elements[elementId].Used;
+                return mComputationStats.Elements[atomicNumber].Used;
             }
 
             return false;
@@ -102,41 +102,47 @@ namespace MolecularWeightCalculator.Formula
             return ErrorDescription;
         }
 
-        public double GetAtomCountForElement(short elementId)
+        public double GetAtomCountForElement(short atomicNumber)
         {
             // Return the number of atoms of a given element that are present in the formula
             // Note that the number of atoms is not necessarily an integer (e.g. C5.5)
 
-            if (elementId is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
+            if (atomicNumber is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
             {
-                return mComputationStats.Elements[elementId].Count;
+                return mComputationStats.Elements[atomicNumber].Count;
             }
 
             return 0d;
         }
 
-        public double GetPercentCompositionForElement(short elementId)
+        public double GetPercentCompositionForElement(short atomicNumber)
         {
             // Returns the percent composition for element
             // Returns -1 if an invalid ID
 
-            if (elementId is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
+            if (atomicNumber is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
             {
-                return mComputationStats.PercentCompositions[elementId].PercentComposition;
+                return mComputationStats.PercentCompositions[atomicNumber].PercentComposition;
             }
 
             return -1;
         }
 
-        public string GetPercentCompositionForElementAsString(short elementId, bool includeStandardDeviation = true)
+        /// <summary>
+        /// Get the percent composition for the element, as a string
+        /// </summary>
+        /// <param name="atomicNumber"></param>
+        /// <param name="includeStandardDeviation"></param>
+        /// <returns></returns>
+        public string GetPercentCompositionForElementAsString(short atomicNumber, bool includeStandardDeviation = true)
         {
             // Returns the percent composition and standard deviation for element
             // Returns "" if an invalid ID
 
-            if (elementId is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
+            if (atomicNumber is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
             {
-                var compStats = mComputationStats.PercentCompositions[elementId];
-                var elementSymbol = mElementAndMassRoutines.Elements.GetElementSymbol(elementId) + ":";
+                var compStats = mComputationStats.PercentCompositions[atomicNumber];
+                var elementSymbol = mElementAndMassRoutines.Elements.GetElementSymbol(atomicNumber) + ":";
                 var pctComposition = mElementAndMassRoutines.ReturnFormattedMassAndStdDev(compStats.PercentComposition, compStats.StdDeviation, includeStandardDeviation, true);
                 if (compStats.PercentComposition < 10d)
                 {
@@ -166,15 +172,15 @@ namespace MolecularWeightCalculator.Formula
             {
                 mElementAndMassRoutines.Parser.ComputePercentComposition(mComputationStats);
 
-                for (var elementId = 1; elementId <= ElementsAndAbbrevs.ELEMENT_COUNT; elementId++)
+                for (var atomicNumber = 1; atomicNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; atomicNumber++)
                 {
-                    if (mComputationStats.PercentCompositions[elementId].PercentComposition > 0d)
+                    if (mComputationStats.PercentCompositions[atomicNumber].PercentComposition > 0d)
                     {
                         var percentCompositionAndStDev = mElementAndMassRoutines.ReturnFormattedMassAndStdDev(
-                            mComputationStats.PercentCompositions[elementId].PercentComposition,
-                            mComputationStats.PercentCompositions[elementId].StdDeviation);
+                            mComputationStats.PercentCompositions[atomicNumber].PercentComposition,
+                            mComputationStats.PercentCompositions[atomicNumber].StdDeviation);
 
-                        var elementSymbol = mElementAndMassRoutines.Elements.GetElementSymbol((short)elementId);
+                        var elementSymbol = mElementAndMassRoutines.Elements.GetElementSymbol((short)atomicNumber);
 
                         if (!percentCompositionByElement.ContainsKey(elementSymbol))
                         {

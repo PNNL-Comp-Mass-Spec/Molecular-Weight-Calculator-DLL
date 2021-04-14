@@ -153,9 +153,9 @@ namespace MolecularWeightCalculator.Formula
             mMasterSymbolsList.Capacity = ELEMENT_COUNT + mAbbrevStats.Count;
 
             // Construct search list
-            for (var index = 1; index <= ELEMENT_COUNT; index++)
+            for (var atomicNumber = 1; atomicNumber <= ELEMENT_COUNT; atomicNumber++)
             {
-                mMasterSymbolsList.Add(new SymbolLookupInfo(mElementStats[index].Symbol, index, SymbolMatchMode.Element));
+                mMasterSymbolsList.Add(new SymbolLookupInfo(mElementStats[atomicNumber].Symbol, atomicNumber, SymbolMatchMode.Element));
             }
 
             // Note: mAbbrevStats is 0-based
@@ -348,9 +348,9 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Returns the settings for the element with <paramref name="elementId"/> in the ByRef variables
+        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the ByRef variables
         /// </summary>
-        /// <param name="elementId"></param>
+        /// <param name="atomicNumber"></param>
         /// <param name="symbol"></param>
         /// <param name="mass"></param>
         /// <param name="uncertainty"></param>
@@ -358,16 +358,16 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="isotopeCount"></param>
         /// <returns>0 if success, 1 if failure</returns>
         internal int GetElement(
-            short elementId,
+            short atomicNumber,
             out string symbol,
             out double mass,
             out double uncertainty,
             out float charge,
             out short isotopeCount)
         {
-            if (elementId is >= 1 and <= ELEMENT_COUNT)
+            if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
             {
-                var stats = mElementStats[elementId];
+                var stats = mElementStats[atomicNumber];
                 symbol = stats.Symbol;
                 mass = stats.Mass;
                 uncertainty = stats.Uncertainty;
@@ -390,7 +390,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns>ID if found, otherwise 0</returns>
-        internal short GetElementId(string symbol)
+        internal short GetAtomicNumber(string symbol)
         {
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
@@ -404,18 +404,18 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Returns the isotope masses and abundances for the element with <paramref name="elementId"/>
+        /// Returns the isotope masses and abundances for the element with <paramref name="atomicNumber"/>
         /// </summary>
-        /// <param name="elementId">Element ID, or atomic number</param>
+        /// <param name="atomicNumber">Element ID, or atomic number</param>
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">output, 0-based array</param>
         /// <param name="isotopeAbundances">output, 0-based array</param>
         /// <returns>0 if a valid ID, 1 if invalid</returns>
-        internal int GetElementIsotopes(short elementId, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
+        internal int GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
-            if (elementId is >= 1 and <= ELEMENT_COUNT)
+            if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
             {
-                var stats = mElementStats[elementId];
+                var stats = mElementStats[atomicNumber];
                 isotopeCount = (short)stats.Isotopes.Count;
                 isotopeMasses = new double[isotopeCount];
                 isotopeAbundances = new float[isotopeCount];
@@ -451,13 +451,13 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Return the element symbol for the given element ID
         /// </summary>
-        /// <param name="elementId"></param>
+        /// <param name="atomicNumber"></param>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
-        internal string GetElementSymbol(short elementId)
+        internal string GetElementSymbol(short atomicNumber)
         {
-            if (elementId is >= 1 and <= ELEMENT_COUNT)
+            if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
             {
-                return mElementStats[elementId].Symbol;
+                return mElementStats[atomicNumber].Symbol;
             }
 
             return "";
@@ -471,18 +471,18 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Returns a single bit of information about a single element
         /// </summary>
-        /// <param name="elementId">Element ID</param>
+        /// <param name="atomicNumber">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
-        internal double GetElementStat(short elementId, ElementStatsType elementStat)
+        internal double GetElementStat(short atomicNumber, ElementStatsType elementStat)
         {
-            if (elementId is >= 1 and <= ELEMENT_COUNT)
+            if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
             {
                 return elementStat switch
                 {
-                    ElementStatsType.Mass => mElementStats[elementId].Mass,
-                    ElementStatsType.Charge => mElementStats[elementId].Charge,
-                    ElementStatsType.Uncertainty => mElementStats[elementId].Uncertainty,
+                    ElementStatsType.Mass => mElementStats[atomicNumber].Mass,
+                    ElementStatsType.Charge => mElementStats[atomicNumber].Charge,
+                    ElementStatsType.Uncertainty => mElementStats[atomicNumber].Uncertainty,
                     _ => 0d
                 };
             }
@@ -680,12 +680,12 @@ namespace MolecularWeightCalculator.Formula
             {
                 // Updating all the elements
                 mElementAlph.Clear();
-                for (var elementIndex = 1; elementIndex <= ELEMENT_COUNT; elementIndex++)
+                for (var atomicNumber = 1; atomicNumber <= ELEMENT_COUNT; atomicNumber++)
                 {
-                    var elementMem = elementMemoryData[elementIndex];
-                    mElementStats[elementIndex] = new ElementInfo(elementMem.Symbol, elementMem.Charge, getMass(elementMem), getUncertainty(elementMem));
+                    var elementMem = elementMemoryData[atomicNumber];
+                    mElementStats[atomicNumber] = new ElementInfo(elementMem.Symbol, elementMem.Charge, getMass(elementMem), getUncertainty(elementMem));
 
-                    mElementAlph.Add(new KeyValuePair<string, int>(elementMem.Symbol, elementIndex));
+                    mElementAlph.Add(new KeyValuePair<string, int>(elementMem.Symbol, atomicNumber));
                 }
 
                 // Alphabetize mElementAlph by Key/symbol

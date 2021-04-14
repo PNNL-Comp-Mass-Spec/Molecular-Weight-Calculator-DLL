@@ -1179,9 +1179,9 @@ namespace MolecularWeightCalculator.FormulaFinder
                 double mass;
                 if (mElementAndMassRoutines.Elements.IsValidElementSymbol(item.Key))
                 {
-                    var elementId = mElementAndMassRoutines.Elements.GetElementId(item.Key);
+                    var atomicNumber = mElementAndMassRoutines.Elements.GetAtomicNumber(item.Key);
 
-                    mElementAndMassRoutines.Elements.GetElement(elementId, out _, out mass, out _, out charge, out _);
+                    mElementAndMassRoutines.Elements.GetElement(atomicNumber, out _, out mass, out _, out charge, out _);
 
                     candidateElement.Mass = mass;
                     candidateElement.Charge = charge;
@@ -1272,9 +1272,9 @@ namespace MolecularWeightCalculator.FormulaFinder
                 double mass;
                 if (mElementAndMassRoutines.Elements.IsValidElementSymbol(item.Key))
                 {
-                    var elementId = mElementAndMassRoutines.Elements.GetElementId(item.Key);
+                    var atomicNumber = mElementAndMassRoutines.Elements.GetAtomicNumber(item.Key);
 
-                    mElementAndMassRoutines.Elements.GetElement(elementId, out _, out mass, out _, out charge, out _);
+                    mElementAndMassRoutines.Elements.GetElement(atomicNumber, out _, out mass, out _, out charge, out _);
 
                     potentialElementStats[potentialElementCount, 0] = mass;
                     potentialElementStats[potentialElementCount, 1] = charge;

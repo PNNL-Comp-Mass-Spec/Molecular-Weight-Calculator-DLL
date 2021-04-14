@@ -481,18 +481,18 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Returns the settings for the element with <paramref name="elementId"/> in the ByRef variables
+        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the ByRef variables
         /// </summary>
-        /// <param name="elementId"></param>
+        /// <param name="atomicNumber"></param>
         /// <param name="symbol"></param>
         /// <param name="mass"></param>
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="isotopeCount"></param>
         /// <returns>0 if success, 1 if failure</returns>
-        public int GetElement(short elementId, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount)
+        public int GetElement(short atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount)
         {
-            return mElementAndMassRoutines.Elements.GetElement(elementId, out symbol, out mass, out uncertainty, out charge, out isotopeCount);
+            return mElementAndMassRoutines.Elements.GetElement(atomicNumber, out symbol, out mass, out uncertainty, out charge, out isotopeCount);
         }
 
         /// <summary>
@@ -508,22 +508,22 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns>ID if found, otherwise 0</returns>
-        public int GetElementId(string symbol)
+        public int GetAtomicNumber(string symbol)
         {
-            return mElementAndMassRoutines.Elements.GetElementId(symbol);
+            return mElementAndMassRoutines.Elements.GetAtomicNumber(symbol);
         }
 
         /// <summary>
-        /// Returns the isotope masses and abundances for the element with <paramref name="elementId"/>
+        /// Returns the isotope masses and abundances for the element with <paramref name="atomicNumber"/>
         /// </summary>
-        /// <param name="elementId">Element ID, or atomic number</param>
+        /// <param name="atomicNumber">Element ID, or atomic number</param>
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses"></param>
         /// <param name="isotopeAbundances"></param>
         /// <returns>0 if a valid ID, 1 if invalid</returns>
-        public int GetElementIsotopes(short elementId, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
+        public int GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
-            return mElementAndMassRoutines.Elements.GetElementIsotopes(elementId, out isotopeCount, out isotopeMasses, out isotopeAbundances);
+            return mElementAndMassRoutines.Elements.GetElementIsotopes(atomicNumber, out isotopeCount, out isotopeMasses, out isotopeAbundances);
         }
 
         /// <summary>
@@ -542,22 +542,22 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Return the element symbol for the given element ID
         /// </summary>
-        /// <param name="elementId"></param>
+        /// <param name="atomicNumber"></param>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
-        public string GetElementSymbol(short elementId)
+        public string GetElementSymbol(short atomicNumber)
         {
-            return mElementAndMassRoutines.Elements.GetElementSymbol(elementId);
+            return mElementAndMassRoutines.Elements.GetElementSymbol(atomicNumber);
         }
 
         /// <summary>
         /// Returns a single bit of information about a single element
         /// </summary>
-        /// <param name="elementId">Element ID</param>
+        /// <param name="atomicNumber">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
-        public double GetElementStat(short elementId, ElementStatsType elementStat)
+        public double GetElementStat(short atomicNumber, ElementStatsType elementStat)
         {
-            return mElementAndMassRoutines.Elements.GetElementStat(elementId, elementStat);
+            return mElementAndMassRoutines.Elements.GetElementStat(atomicNumber, elementStat);
         }
 
         /// <summary>
@@ -645,9 +645,9 @@ namespace MolecularWeightCalculator
             mElementAndMassRoutines.Messages.MemoryLoadCautionStatements();
         }
 
-        public void ResetElement(short elementId, ElementStatsType specificStatToReset)
+        public void ResetElement(short atomicNumber, ElementStatsType specificStatToReset)
         {
-            mElementAndMassRoutines.Elements.MemoryLoadElements(GetElementMode(), elementId, specificStatToReset);
+            mElementAndMassRoutines.Elements.MemoryLoadElements(GetElementMode(), atomicNumber, specificStatToReset);
         }
 
         public void ResetMessageStatements()

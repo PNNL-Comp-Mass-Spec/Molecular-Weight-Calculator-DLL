@@ -194,16 +194,16 @@ namespace MolecularWeightCalculator.COMInterfaces
         double GetChargeCarrierMass();
 
         /// <summary>
-        /// Returns the settings for the element with <paramref name="elementId"/> in the ByRef variables
+        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the ByRef variables
         /// </summary>
-        /// <param name="elementId"></param>
+        /// <param name="atomicNumber"></param>
         /// <param name="symbol"></param>
         /// <param name="mass"></param>
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="isotopeCount"></param>
         /// <returns>0 if success, 1 if failure</returns>
-        int GetElement(short elementId, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount);
+        int GetElement(short atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount);
 
         /// <summary>
         /// Returns the number of elements in memory
@@ -215,17 +215,17 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns>ID if found, otherwise 0</returns>
-        int GetElementId(string symbol);
+        int GetAtomicNumber(string symbol);
 
         /// <summary>
-        /// Returns the isotope masses and abundances for the element with <paramref name="elementId"/>
+        /// Returns the isotope masses and abundances for the element with <paramref name="atomicNumber"/>
         /// </summary>
-        /// <param name="elementId">Element ID, or atomic number</param>
+        /// <param name="atomicNumber">Element ID, or atomic number</param>
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses"></param>
         /// <param name="isotopeAbundances"></param>
         /// <returns>0 if a valid ID, 1 if invalid</returns>
-        int GetElementIsotopes(short elementId, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances);
+        int GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances);
 
         /// <summary>
         /// Get the current element mode
@@ -240,17 +240,17 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// Return the element symbol for the given element ID
         /// </summary>
-        /// <param name="elementId"></param>
+        /// <param name="atomicNumber"></param>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
-        string GetElementSymbol(short elementId);
+        string GetElementSymbol(short atomicNumber);
 
         /// <summary>
         /// Returns a single bit of information about a single element
         /// </summary>
-        /// <param name="elementId">Element ID</param>
+        /// <param name="atomicNumber">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
-        double GetElementStat(short elementId, ElementStatsType elementStat);
+        double GetElementStat(short atomicNumber, ElementStatsType elementStat);
 
         /// <summary>
         /// Get message text using message ID
@@ -290,7 +290,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         int RemoveCautionStatement(string cautionSymbol);
         void ResetAbbreviations();
         void ResetCautionStatements();
-        void ResetElement(short elementId, ElementStatsType specificStatToReset);
+        void ResetElement(short atomicNumber, ElementStatsType specificStatToReset);
         void ResetMessageStatements();
 
         /// <summary>

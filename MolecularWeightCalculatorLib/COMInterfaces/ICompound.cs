@@ -11,11 +11,11 @@ namespace MolecularWeightCalculator.COMInterfaces
         // Ignore Spelling: interop
 
         string ConvertToEmpirical();
-        bool ElementPresent(short elementId);
+        bool ElementPresent(short atomicNumber);
         string ExpandAbbreviations();
-        double GetAtomCountForElement(short elementId);
-        double GetPercentCompositionForElement(short elementId);
-        string GetPercentCompositionForElementAsString(short elementId, bool includeStandardDeviation = true);
+        double GetAtomCountForElement(short atomicNumber);
+        double GetPercentCompositionForElement(short atomicNumber);
+        string GetPercentCompositionForElementAsString(short atomicNumber, bool includeStandardDeviation = true);
 
         /// <summary>
         /// Get the percent composition for all elements in an empirical formula. This implementation is specifically for COM interop support

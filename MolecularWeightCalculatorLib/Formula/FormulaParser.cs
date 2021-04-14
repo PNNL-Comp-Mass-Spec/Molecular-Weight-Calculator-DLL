@@ -244,13 +244,13 @@ namespace MolecularWeightCalculator.Formula
         public void ComputePercentComposition(ComputationStats computationStats)
         {
             // Determine the number of elements in the formula
-            for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT; elementIndex++)
+            for (var atomicNumber = 1; atomicNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; atomicNumber++)
             {
-                var elementPctComp = computationStats.PercentCompositions[elementIndex];
+                var elementPctComp = computationStats.PercentCompositions[atomicNumber];
                 if (computationStats.TotalMass > 0d)
                 {
-                    var element = Elements.ElementStats[elementIndex];
-                    var elementUse = computationStats.Elements[elementIndex];
+                    var element = Elements.ElementStats[atomicNumber];
+                    var elementUse = computationStats.Elements[atomicNumber];
 
                     var elementTotalMass = elementUse.Count * element.Mass + elementUse.IsotopicCorrection;
 
@@ -317,7 +317,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Converts <paramref name="elementCounts"/> to its corresponding empirical formula
         /// </summary>
-        /// <param name="elementCounts"></param>
+        /// <param name="elementCounts">Dictionary where keys are atomic number and values are statistics for that element</param>
         /// <returns>The empirical formula, or -1 if an error</returns>
         public string ConvertFormulaToEmpirical(IReadOnlyDictionary<int, IElementUseStats> elementCounts)
         {
@@ -331,9 +331,9 @@ namespace MolecularWeightCalculator.Formula
 
             // Carbon first, then hydrogen, then the rest alphabetically
             // ElementAlph is already sorted properly as 0:{'C',6}, 1:{'H',1}, then alphabetically
-            foreach (var elementIndex in Elements.ElementAlph.Select(x => x.Value))
+            foreach (var atomicNumber in Elements.ElementAlph.Select(x => x.Value))
             {
-                if (elementCounts.TryGetValue(elementIndex, out var stats))
+                if (elementCounts.TryGetValue(atomicNumber, out var stats))
                 {
                     // Only display the element if it's in the formula
                     var elementCount = stats.Count;
@@ -343,22 +343,22 @@ namespace MolecularWeightCalculator.Formula
                         isotopesCount += isotope.Count;
                         if (Math.Abs(isotope.Count - 1.0) < float.Epsilon)
                         {
-                            empiricalFormula += $"^{isotope.Mass}{Elements.ElementStats[elementIndex].Symbol}";
+                            empiricalFormula += $"^{isotope.Mass}{Elements.ElementStats[atomicNumber].Symbol}";
                         }
                         else if (isotope.Count > 0)
                         {
-                            empiricalFormula += $"^{isotope.Mass}{Elements.ElementStats[elementIndex].Symbol}{isotope.Count}";
+                            empiricalFormula += $"^{isotope.Mass}{Elements.ElementStats[atomicNumber].Symbol}{isotope.Count}";
                         }
                     }
 
                     elementCount -= isotopesCount;
                     if (Math.Abs(elementCount - 1.0) < float.Epsilon)
                     {
-                        empiricalFormula += Elements.ElementStats[elementIndex].Symbol;
+                        empiricalFormula += Elements.ElementStats[atomicNumber].Symbol;
                     }
                     else if (elementCount > 0)
                     {
-                        empiricalFormula += Elements.ElementStats[elementIndex].Symbol + elementCount;
+                        empiricalFormula += Elements.ElementStats[atomicNumber].Symbol + elementCount;
                     }
                 }
             }
@@ -1031,11 +1031,11 @@ namespace MolecularWeightCalculator.Formula
 
             // Compute the total molecular weight
             stats.TotalMass = 0d; // Reset total weight of compound to 0 so we can add to it
-            for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT; elementIndex++)
+            for (var atomicNumber = 1; atomicNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; atomicNumber++)
             {
                 // Increase total weight by multiplying the count of each element by the element's mass
                 // In addition, add in the Isotopic Correction value
-                stats.TotalMass = stats.TotalMass + Elements.ElementStats[elementIndex].Mass * stats.Elements[elementIndex].Count + stats.Elements[elementIndex].IsotopicCorrection;
+                stats.TotalMass = stats.TotalMass + Elements.ElementStats[atomicNumber].Mass * stats.Elements[atomicNumber].Count + stats.Elements[atomicNumber].IsotopicCorrection;
             }
         }
 
@@ -1074,16 +1074,17 @@ namespace MolecularWeightCalculator.Formula
                         var pStats = previousBlock.Stats;
                         // Update computationStats by subtracting the atom counts of the first half minus the second half
                         // If any atom counts become < 0 then, then raise an error
-                        for (var elementIndex = 1; elementIndex <= ElementsAndAbbrevs.ELEMENT_COUNT; elementIndex++)
+                        for (var atomicNumber = 1; atomicNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; atomicNumber++)
                         {
-                            if (pStats.Elements[elementIndex].Count == 0)
+                            if (pStats.Elements[atomicNumber].Count == 0)
                                 continue;
 
-                            var element = cStats.Elements[elementIndex];
-                            if (Elements.ElementStats[elementIndex].Mass * element.Count + element.IsotopicCorrection >= Elements.ElementStats[elementIndex].Mass * pStats.Elements[elementIndex].Count + pStats.Elements[elementIndex].IsotopicCorrection)
+                            var element = cStats.Elements[atomicNumber];
+                            if (Elements.ElementStats[atomicNumber].Mass * element.Count + element.IsotopicCorrection >=
+                                Elements.ElementStats[atomicNumber].Mass * pStats.Elements[atomicNumber].Count + pStats.Elements[atomicNumber].IsotopicCorrection)
                             {
                                 element.Used = true;
-                                element.Count -= pStats.Elements[elementIndex].Count;
+                                element.Count -= pStats.Elements[atomicNumber].Count;
                                 if (element.Count < 0d)
                                 {
                                     // This shouldn't happen
@@ -1091,9 +1092,9 @@ namespace MolecularWeightCalculator.Formula
                                     element.Count = 0d;
                                 }
 
-                                if (Math.Abs(pStats.Elements[elementIndex].IsotopicCorrection) > float.Epsilon)
+                                if (Math.Abs(pStats.Elements[atomicNumber].IsotopicCorrection) > float.Epsilon)
                                 {
-                                    element.IsotopicCorrection -= pStats.Elements[elementIndex].IsotopicCorrection;
+                                    element.IsotopicCorrection -= pStats.Elements[atomicNumber].IsotopicCorrection;
                                 }
                             }
                             else
