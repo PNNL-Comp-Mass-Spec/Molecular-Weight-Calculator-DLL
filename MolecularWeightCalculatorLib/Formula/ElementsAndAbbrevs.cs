@@ -62,12 +62,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         private readonly List<AbbrevStatsData> mAbbrevStats;
 
-        /// <summary>
-        /// Charge carrier mass
-        /// 1.00727649 for monoisotopic mass or 1.00739 for average mass
-        /// </summary>
-        private double mChargeCarrierMass;
-
         private ElementMassMode mCurrentElementMode = ElementMassMode.Average;
 
         /// <summary>
@@ -86,11 +80,13 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         internal IReadOnlyList<AbbrevStatsData> AbbrevStats => mAbbrevStats;
 
-        public double ChargeCarrierMass
-        {
-            get => mChargeCarrierMass;
-            set => mChargeCarrierMass = value;
-        }
+        /// <summary>
+        /// Charge carrier mass
+        /// </summary>
+        /// <remarks>
+        /// 1.00727649 for monoisotopic mass or 1.00739 for average mass
+        /// </remarks>
+        public double ChargeCarrierMass { get; set; }
 
         public ElementMassMode ElementMode
         {
@@ -335,7 +331,7 @@ namespace MolecularWeightCalculator.Formula
 
         public double GetChargeCarrierMass()
         {
-            return mChargeCarrierMass;
+            return ChargeCarrierMass;
         }
 
         internal int GetElementCount()
@@ -1021,7 +1017,7 @@ namespace MolecularWeightCalculator.Formula
 
         internal void SetChargeCarrierMass(double mass)
         {
-            mChargeCarrierMass = mass;
+            ChargeCarrierMass = mass;
         }
 
         /// <summary>
