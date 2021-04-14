@@ -955,7 +955,7 @@ namespace MolecularWeightCalculator.Sequence
                 else
                 {
                     var symbol1Letter = mElementAndMassRoutines.Elements.GetAminoAcidSymbolConversion(symbol3Letter, false);
-                    if ((symbol1Letter ?? string.Empty) == string.Empty)
+                    if (symbol1Letter?.Length == 0)
                         symbol1Letter = UNKNOWN_SYMBOL_ONE_LETTER;
                     sequence += symbol1Letter;
                 }
@@ -1667,7 +1667,7 @@ namespace MolecularWeightCalculator.Sequence
                 // Peptide database rules
                 // See if prefix and suffix are "" or are terminiiSymbol
                 if (prefix == (terminiiSymbol ?? string.Empty) && suffix == (terminiiSymbol ?? string.Empty) ||
-                    prefix == string.Empty && suffix == string.Empty)
+                    prefix?.Length == 0 && suffix?.Length == 0)
                 {
                     ruleMatchCount = 2;
                     matchesCleavageRule = true;

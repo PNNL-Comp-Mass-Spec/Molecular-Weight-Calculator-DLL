@@ -32,7 +32,7 @@ namespace MolecularWeightCalculator
                     return 1d;
                 }
 
-                return number * Factorial((number - 1));
+                return number * Factorial(number - 1);
             }
             catch
             {

@@ -195,14 +195,8 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="elementTolerances">Search tolerances, including % composition range and Min/Max count when using a bounded search</param>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, CandidateElementTolerances elementTolerances)
         {
-            if (mCandidateElements.ContainsKey(elementSymbolAbbrevOrMass))
-            {
-                mCandidateElements[elementSymbolAbbrevOrMass] = elementTolerances;
-            }
-            else
-            {
-                mCandidateElements.Add(elementSymbolAbbrevOrMass, elementTolerances);
-            }
+            // Add or update the dictionary
+            mCandidateElements[elementSymbolAbbrevOrMass] = elementTolerances;
         }
 
         /// <summary>
@@ -441,7 +435,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                     while (endIndex + 1 < formulaLength)
                     {
                         var nextChar = empiricalFormula[endIndex + 1];
-                        if (!int.TryParse(nextChar.ToString(), out parsedValue))
+                        if (!int.TryParse(nextChar.ToString(), out _))
                         {
                             break;
                         }
@@ -1074,7 +1068,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                     for (var currentMzCharge = mzSearchChargeMin; currentMzCharge <= mzSearchChargeMax; currentMzCharge++)
                     {
                         // Call the RecursiveMWFinder repeatedly, sending targetWeight * x each time to search for target, target*2, target*3, etc.
-                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 
+                        RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats,
                             0, 0d, targetMass * currentMzCharge, massToleranceDa,
                             0d, currentMzCharge);
                     }
@@ -1082,8 +1076,8 @@ namespace MolecularWeightCalculator.FormulaFinder
                 else
                 {
                     //RecursiveMWFinder(results, searchOptions, ppmMode, potentialElements, potentialElementStats, 0, potentialElementCount, potentialElementPointers, 0, targetMass, massToleranceDa, 0, 0)
-                    RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats, 
-                        0, 0d, targetMass, massToleranceDa, 
+                    RecursiveMWFinder(results, searchOptions, ppmMode, sortedElementStats,
+                        0, 0d, targetMass, massToleranceDa,
                         0d, 0);
                 }
 
@@ -2028,13 +2022,13 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// Recursively search for target percent composition values
         /// </summary>
         /// <param name="results"></param>
+        /// <param name="searchOptions"></param>
         /// <param name="sortedElementStats"></param>
         /// <param name="startIndex"></param>
         /// <param name="potentialElementPointers">Pointers to the elements that have been added to the potential formula so far</param>
         /// <param name="potentialMassTotal">>Weight of the potential formula</param>
         /// <param name="maximumFormulaMass"></param>
         /// <param name="potentialChargeTotal"></param>
-        /// <param name="searchOptions"></param>
         private void RecursivePCompFinder(
             ICollection<SearchResult> results,
             SearchOptions searchOptions,

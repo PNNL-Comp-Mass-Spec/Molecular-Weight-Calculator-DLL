@@ -490,7 +490,7 @@ namespace MwtWinDllTest
 
             results.AppendText("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
             formulaIn = "C1255H43O2Cl";
-            success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, out resultString, out convolutedMSData2DOneBased, out convolutedMSDataCount, false);
+            success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, out resultString, out _, out _, false);
             results.AppendText(resultString);
         }
 

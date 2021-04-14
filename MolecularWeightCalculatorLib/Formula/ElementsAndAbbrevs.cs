@@ -165,15 +165,7 @@ namespace MolecularWeightCalculator.Formula
             // Note: mAbbrevStats is 0-based
             if (Options.AbbrevRecognitionMode != AbbrevRecognitionMode.NoAbbreviations)
             {
-                bool includeAmino;
-                if (Options.AbbrevRecognitionMode == AbbrevRecognitionMode.NormalPlusAminoAcids)
-                {
-                    includeAmino = true;
-                }
-                else
-                {
-                    includeAmino = false;
-                }
+                var includeAmino = Options.AbbrevRecognitionMode == AbbrevRecognitionMode.NormalPlusAminoAcids;
 
                 for (var index = 0; index < mAbbrevStats.Count; index++)
                 {
@@ -708,7 +700,7 @@ namespace MolecularWeightCalculator.Formula
                         return 1; // Hydrogen is always second
 
                     // Everything else is alphabetical.
-                    return string.Compare(x.Key, y.Key, StringComparison.Ordinal);
+                    return string.CompareOrdinal(x.Key, y.Key);
                 });
 
                 // Also load the isotopes, since if any were loaded we just cleared them.

@@ -88,7 +88,7 @@ namespace MolecularWeightCalculator.Sequence
         public int CompareTo(FragmentationSpectrumData other)
         {
             if (ReferenceEquals(this, other)) return 0;
-            if (ReferenceEquals(null, other)) return 1;
+            if (other is null) return 1;
             var massComparison = Mass.CompareTo(other.Mass);
             if (massComparison != 0) return massComparison;
             return Intensity.CompareTo(other.Intensity);

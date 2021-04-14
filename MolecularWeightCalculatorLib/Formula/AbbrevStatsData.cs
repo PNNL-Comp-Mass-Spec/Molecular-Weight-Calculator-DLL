@@ -118,8 +118,8 @@ namespace MolecularWeightCalculator.Formula
         public int CompareTo(AbbrevStatsData other)
         {
             if (ReferenceEquals(this, other)) return 0;
-            if (ReferenceEquals(null, other)) return 1;
-            return string.Compare(Symbol, other.Symbol, StringComparison.Ordinal);
+            if (other is null) return 1;
+            return string.CompareOrdinal(Symbol, other.Symbol);
         }
     }
 }

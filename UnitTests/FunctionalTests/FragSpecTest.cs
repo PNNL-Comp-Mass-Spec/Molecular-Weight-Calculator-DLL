@@ -30,10 +30,8 @@ namespace UnitTests.FunctionalTests
             // Set the element mode (average, monoisotopic, or integer)
             mMwtWin.SetElementMode(ElementMassMode.Isotopic);
 
-            var fragSpectrumOptions = new FragmentationSpectrumOptions();
-
             // Initialize fragSpectrumOptions with the defaults
-            fragSpectrumOptions = mMwtWin.Peptide.GetFragmentationSpectrumOptions();
+            var fragSpectrumOptions = mMwtWin.Peptide.GetFragmentationSpectrumOptions();
 
             // Customize the options
             fragSpectrumOptions.DoubleChargeIonsShow = true;

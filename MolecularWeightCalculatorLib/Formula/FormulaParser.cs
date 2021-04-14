@@ -216,7 +216,7 @@ namespace MolecularWeightCalculator.Formula
                         }
 
                         abbrevSymbolStack.Add(abbrev.Key);
-                        var position = CheckForAbbreviationCircularRefs(storedAbbrev.AbbreviationsUsed.ToDictionary(x => x, x => 0), abbrevSymbolStack);
+                        var position = CheckForAbbreviationCircularRefs(storedAbbrev.AbbreviationsUsed.ToDictionary(x => x, _ => 0), abbrevSymbolStack);
                         if (position >= 0)
                         {
                             return abbrev.Value;
@@ -515,7 +515,7 @@ namespace MolecularWeightCalculator.Formula
                 // Can have multiple '>' symbols in a formula (processed right-to-left), but '>' cannot occur within brackets, etc.
                 var blocks = formula.Split('>');
                 // Add sufficient FormulaData objects for the split.
-                data.FormulaSections.AddRange(Enumerable.Range(0, blocks.Length - 1).Select(x => new FormulaData()).ToArray());
+                data.FormulaSections.AddRange(Enumerable.Range(0, blocks.Length - 1).Select(_ => new FormulaData()).ToArray());
 
                 var runningLength = 0;
                 for (var i = 0; i < blocks.Length; i++)

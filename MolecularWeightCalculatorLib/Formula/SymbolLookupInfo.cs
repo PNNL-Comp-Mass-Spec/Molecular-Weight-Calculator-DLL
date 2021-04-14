@@ -58,7 +58,7 @@ namespace MolecularWeightCalculator.Formula
             var lengthCompare = other.Symbol.Length.CompareTo(Symbol.Length);
             if (lengthCompare == 0)
             {
-                return string.Compare(Symbol, other.Symbol, StringComparison.Ordinal);
+                return string.CompareOrdinal(Symbol, other.Symbol);
             }
 
             return lengthCompare;

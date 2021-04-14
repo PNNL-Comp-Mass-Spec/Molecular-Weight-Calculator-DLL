@@ -92,7 +92,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// The list of caution notes for the formula, as a comma+space-separated string.
         /// </summary>
-        public string CautionDescription => string.Join("", CautionDescriptionList);
+        public string CautionDescription => string.Concat(CautionDescriptionList);
 
         /// <summary>
         /// List of caution notes for the formula.
@@ -332,7 +332,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         public override string SymbolOriginal
         {
-            get => string.Join("", Components.Select(x => x.FormulaOriginal));
+            get => string.Concat(Components.Select(x => x.FormulaOriginal));
             set { } // No "set" allowed.
         }
 
@@ -341,7 +341,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         public override string SymbolCorrected
         {
-            get => string.Join("", Components.Select(x => x.FormulaCorrected));
+            get => string.Concat(Components.Select(x => x.FormulaCorrected));
             set { } // No "set" allowed.
         }
 
