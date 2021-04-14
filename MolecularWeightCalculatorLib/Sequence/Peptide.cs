@@ -1807,7 +1807,7 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="workingSequence"></param>
         private void RemoveLeadingH(ref string workingSequence)
         {
-            if (workingSequence.Length >= 4 && workingSequence.ToUpper().StartsWith("H"))
+            if (workingSequence.Length >= 4 && workingSequence.StartsWith("H", StringComparison.OrdinalIgnoreCase))
             {
                 // If next character is not a character, then remove the H and the non-letter character
                 if (!char.IsLetter(workingSequence[1]))
@@ -1841,7 +1841,7 @@ namespace MolecularWeightCalculator.Sequence
             // ReSharper disable once InconsistentNaming
             var removedOH = false;
             var stringLength = workingSequence.Length;
-            if (workingSequence.Length >= 5 && workingSequence.ToUpper().EndsWith("OH"))
+            if (workingSequence.Length >= 5 && workingSequence.EndsWith("OH", StringComparison.OrdinalIgnoreCase))
             {
                 // If previous character is not a character, then remove the OH
                 if (!char.IsLetter(workingSequence[stringLength - 3]))
@@ -2549,7 +2549,7 @@ namespace MolecularWeightCalculator.Sequence
 
             // The N-terminus ions are the basis for the running total
             var runningTotal = mNTerminus.Mass;
-            if (mNTerminus.Formula.ToUpper() == "HH")
+            if (string.Equals(mNTerminus.Formula, "HH", StringComparison.OrdinalIgnoreCase))
             {
                 // HydrogenPlusProton; since we add back in the proton below when computing the fragment masses,
                 // we need to subtract it out here
