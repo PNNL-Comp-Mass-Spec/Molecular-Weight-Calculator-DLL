@@ -666,10 +666,11 @@ namespace MolecularWeightCalculator.Formula
                     getUncertainty = elementMem => 0;
                     break;
                 case ElementMassMode.Average:
-                default:
                     getMass = elementMem => elementMem.MassAverage;
                     getUncertainty = elementMem => elementMem.UncertaintyAverageMass;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(elementMode), elementMode, null);
             }
 
             // Set uncertainty to 0 for all elements if using exact isotopic or integer isotopic weights

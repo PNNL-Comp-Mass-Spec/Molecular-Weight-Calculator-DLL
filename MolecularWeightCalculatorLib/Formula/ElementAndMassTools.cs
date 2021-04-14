@@ -1633,7 +1633,7 @@ namespace MolecularWeightCalculator.Formula
                 }
             }
 
-            string messageTypeText = messageType switch
+            var messageTypeText = messageType switch
             {
                 MessageType.Normal => "Normal",
                 MessageType.Error => "Error",

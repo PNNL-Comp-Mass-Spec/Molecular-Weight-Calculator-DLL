@@ -518,7 +518,7 @@ namespace MolecularWeightCalculator
         private double FactorVolumeExtended(UnitOfExtendedVolume units)
         {
             // Note: 4 quarts per gallon, 2 pints per quart
-            double factor = units switch
+            var factor = units switch
             {
                 UnitOfExtendedVolume.L => 1d * 1000.0d,
                 UnitOfExtendedVolume.DL => 1d * 100.0d,

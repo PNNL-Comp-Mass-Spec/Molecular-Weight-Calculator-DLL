@@ -366,10 +366,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             {
                 // Searching for target m/z rather than target mass
 
-                int mzSearchChargeMin;
-                int mzSearchChargeMax;
-
-                MultipleSearchMath(sortedElementStats.Count, searchOptions, out mzSearchChargeMin, out mzSearchChargeMax);
+                MultipleSearchMath(sortedElementStats.Count, searchOptions, out _, out _);
 
                 results = OldFormulaFinder(searchOptions, ppmMode, calculationMode, sortedElementStats, targetMass, massToleranceDa, maximumFormulaMass);
             }
