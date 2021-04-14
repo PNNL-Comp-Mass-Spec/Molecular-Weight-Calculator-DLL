@@ -41,7 +41,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         {
             if (DeltaMassIsPPM)
             {
-                return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.00" + " ppm");
+                return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.00") + " ppm";
             }
 
             return EmpiricalFormula + "   MW=" + Mass.ToString("0.0000") + "   dm=" + DeltaMass.ToString("0.0000");
