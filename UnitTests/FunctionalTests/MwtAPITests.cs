@@ -50,19 +50,19 @@ namespace UnitTests.FunctionalTests
             var elementCount = mMwtWin.GetElementCount();
             for (var atomicNumber = 1; atomicNumber <= elementCount; atomicNumber++)
             {
-                var result = mMwtWin.GetElement((short)atomicNumber, out var symbol, out var mass, out var uncertainty, out var charge, out var isotopeCount);
-                Assert.AreEqual(0, result);
+                var getSuccess = mMwtWin.GetElement((short)atomicNumber, out var symbol, out var mass, out var uncertainty, out var charge, out var isotopeCount);
+                Assert.True(getSuccess, "GetElement returned false");
                 Assert.AreEqual(atomicNumber, mMwtWin.GetAtomicNumber(symbol));
 
-                result = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
-                Assert.AreEqual(0, result);
+                var setSuccess = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
+                Assert.True(setSuccess, "SetElement returned false");
 
-                result = mMwtWin.GetElementIsotopes((short)atomicNumber, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
+                var getIsotopesSuccess = mMwtWin.GetElementIsotopes((short)atomicNumber, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
                 Assert.AreEqual(isotopeCount, isotopeCount2);
-                Assert.AreEqual(0, result);
+                Assert.True(getIsotopesSuccess, "GetElementIsotopes returned false");
 
-                result = mMwtWin.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
-                Assert.AreEqual(0, result);
+                var setIsotopesSuccess = mMwtWin.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
+                Assert.True(setIsotopesSuccess, "SetElementIsotopes returned false");
             }
 
             // Test Message Statements access
