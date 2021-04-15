@@ -53,13 +53,14 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Stores the element symbols, abbreviations, and amino acids in order of longest symbol length to shortest length, non-alphabetized,
         /// for use in symbol matching when parsing a formula
-        /// 0 To .Count - 1
         /// </summary>
+        /// <remarks>0 To .Count - 1</remarks>
         private readonly List<SymbolLookupInfo> mMasterSymbolsList;
 
         /// <summary>
         /// Includes both abbreviations and amino acids
         /// </summary>
+        /// <remarks>0 to .Count - 1</remarks>
         private readonly List<AbbrevStatsData> mAbbrevStats;
 
         private ElementMassMode mCurrentElementMode = ElementMassMode.Average;
@@ -274,11 +275,13 @@ namespace MolecularWeightCalculator.Formula
             return false;
         }
 
+        /// <summary>
+        /// Get the mass of the abbreviation
+        /// </summary>
+        /// <param name="abbreviationId"></param>
+        /// <returns>Mass if success, 0 if abbreviationId is invalid</returns>
         public double GetAbbreviationMass(int abbreviationId)
         {
-            // Returns the mass if success, 0 if failure
-            // Could return -1 if failure, but might mess up some calculations
-
             // This function does not recompute the abbreviation mass each time it is called
             // Rather, it uses the .Mass member of AbbrevStats
             // This requires that .Mass be updated if the abbreviation is changed, if an element is changed, or if the element mode is changed
@@ -291,6 +294,12 @@ namespace MolecularWeightCalculator.Formula
             return 0d;
         }
 
+        /// <summary>
+        /// Convert an amino acid symbol to 1-letter or 3-letter notation
+        /// </summary>
+        /// <param name="symbolToFind">Amino acid to find</param>
+        /// <param name="oneLetterTo3Letter">If true, assume symbolToFind is a one-letter amino acid symbol and return the 3-letter symbol</param>
+        /// <returns>1-letter or 3-letter amino acid symbol if found, otherwise an empty string</returns>
         internal string GetAminoAcidSymbolConversion(string symbolToFind, bool oneLetterTo3Letter)
         {
             if (string.IsNullOrWhiteSpace(symbolToFind))
@@ -891,7 +900,7 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Adds a new abbreviation or updates an existing one (based on <paramref name="abbrevId"/>)
         /// </summary>
-        /// <param name="abbrevId">If abbrevId is less than 1, adds as a new abbreviation</param>
+        /// <param name="abbrevId">0-based abbreviation id; if less than 0, adds as a new abbreviation</param>
         /// <param name="symbol"></param>
         /// <param name="formula"></param>
         /// <param name="charge"></param>

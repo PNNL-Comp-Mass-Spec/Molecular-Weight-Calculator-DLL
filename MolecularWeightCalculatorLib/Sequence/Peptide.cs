@@ -294,14 +294,17 @@ namespace MolecularWeightCalculator.Sequence
 
         private bool mDelayUpdateResidueMass;
 
+        /// <summary>
+        /// Examines partialSequence to see if it contains 1 or more modifications
+        /// If any modification symbols are found, the modification is recorded in .ModificationIDs[]
+        /// If all or part of the modification symbol is not found in ModificationSymbols[], a new entry is added to ModificationSymbols[]
+        /// </summary>
+        /// <param name="partialSequence"></param>
+        /// <param name="residueIndex"></param>
+        /// <param name="addMissingModificationSymbols"></param>
+        /// <returns>Total length of all modifications found</returns>
         private int CheckForModifications(string partialSequence, int residueIndex, bool addMissingModificationSymbols = false)
         {
-            // Looks at partialSequence to see if it contains 1 or more modifications
-            // If any modification symbols are found, the modification is recorded in .ModificationIDs[]
-            // If all or part of the modification symbol is not found in ModificationSymbols[], then a new entry
-            // is added to ModificationSymbols[]
-            // Returns the total length of all modifications found
-
             var sequenceStrLength = partialSequence.Length;
 
             // Find the entire group of potential modification symbols
@@ -321,6 +324,7 @@ namespace MolecularWeightCalculator.Sequence
             }
 
             var modSymbolLengthTotal = modSymbolGroup.Length;
+
             while (modSymbolGroup.Length > 0)
             {
                 // Step through modSymbolGroup to see if all of it or parts of it match any of the defined
@@ -425,11 +429,15 @@ namespace MolecularWeightCalculator.Sequence
             return ionCount;
         }
 
+        /// <summary>
+        /// Obtain an instance of Residue containing symbol as the residue symbol
+        /// If symbol is a valid amino acid type, also updates residue with the default information
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="use3LetterCode"></param>
+        /// <returns>Residue instance</returns>
         private Residue FillResidueStructureUsingSymbol(string symbol, bool use3LetterCode = true)
         {
-            // Returns a variable of type Residue containing symbol as the residue symbol
-            // If symbol is a valid amino acid type, then also updates residue with the default information
-
             int abbrevId;
             var symbol3Letter = string.Empty;
 
@@ -713,27 +721,34 @@ namespace MolecularWeightCalculator.Sequence
             return defaultOptions;
         }
 
+        /// <summary>
+        /// Get the mass of the entire peptide, including modifications
+        /// </summary>
+        /// <returns>Mass, in Da</returns>
         public double GetPeptideMass()
         {
-            // Returns the mass of the entire peptide
-
             // Update the residue masses in order to update mTotalMass
             UpdateResidueMasses();
 
             return mTotalMass;
         }
 
+        /// <summary>
+        /// Determines the residues preceding or following the given residue (up to and including the current residue)
+        /// If ionType is a, b, or c ions, returns residues from the N terminus
+        /// If ionType is y or ions, returns residues from the C terminus
+        /// Sets phosphorylated to true if any of the residues is Ser, Thr, or Tyr and is phosphorylated
+        /// </summary>
+        /// <param name="currentResidueIndex"></param>
+        /// <param name="ionType"></param>
+        /// <param name="phosphorylated">Output: true if a phosphorylated S, T, or Y</param>
+        /// <returns>Space separated list of residue symbols (three letter notation)</returns>
+        /// <remarks>Residue symbols are separated by a space to avoid accidental matching by the IndexOf() function</remarks>
         private string GetInternalResidues(int currentResidueIndex, IonType ionType, out bool phosphorylated)
         {
-            // Determines the residues preceding or following the given residue (up to and including the current residue)
-            // If ionType is a, b, or c ions, then returns residues from the N terminus
-            // If ionType is y or ions, then returns residues from the C terminus
-            // Also, set phosphorylated to true if any of the residues is Ser, Thr, or Tyr and is phosphorylated
-            //
-            // Note that the residue symbols are separated by a space to avoid accidental matching by the IndexOf() function
-
             var internalResidues = string.Empty;
             phosphorylated = false;
+
             if (ionType is IonType.YIon or IonType.ZIon)
             {
                 for (var residueIndex = currentResidueIndex; residueIndex < mResidues.Count; residueIndex++)
@@ -785,18 +800,21 @@ namespace MolecularWeightCalculator.Sequence
             return false;
         }
 
+        /// <summary>
+        /// The number of modifications defined
+        /// </summary>
         public int GetModificationSymbolCount()
         {
-            // Returns the number of modifications defined
-
             return mModificationSymbols.Count;
         }
 
+        /// <summary>
+        /// Get the modification symbol ID for the given modification
+        /// </summary>
+        /// <param name="modSymbol"></param>
+        /// <returns>Id if found, -1 if not found</returns>
         public int GetModificationSymbolId(string modSymbol)
         {
-            // Returns the ID for a given modification
-            // Returns -1 if not found, the ID if found
-
             if (string.IsNullOrWhiteSpace(modSymbol))
             {
                 return -1;
@@ -850,9 +868,14 @@ namespace MolecularWeightCalculator.Sequence
             return mResidues.Count;
         }
 
+        /// <summary>
+        /// Determine the number of occurrences of the given residue in the loaded sequence
+        /// </summary>
+        /// <param name="residueSymbol"></param>
+        /// <param name="use3LetterCode"></param>
+        /// <returns>Count of matching residues</returns>
         public int GetResidueCountSpecificResidue(string residueSymbol, bool use3LetterCode)
         {
-            // Returns the number of occurrences of the given residue in the loaded sequence
             if (string.IsNullOrWhiteSpace(residueSymbol))
             {
                 return 0;
@@ -881,11 +904,14 @@ namespace MolecularWeightCalculator.Sequence
             return residueCount;
         }
 
+        /// <summary>
+        /// Get the array of modification IDs
+        /// </summary>
+        /// <param name="residueIndex"></param>
+        /// <param name="modificationIDs"></param>
+        /// <returns>The number of modifications</returns>
         public int GetResidueModificationIDs(int residueIndex, out int[] modificationIDs)
         {
-            // Returns the number of Modifications
-            // Resizes modificationIDs[] to hold the values
-
             if (residueIndex >= 0 && residueIndex < mResidues.Count)
             {
                 var residue = mResidues[residueIndex];
@@ -903,10 +929,14 @@ namespace MolecularWeightCalculator.Sequence
             return 0;
         }
 
+        /// <summary>
+        /// Obtain the symbol at the given residue number, or string.Empty if an invalid residue number
+        /// </summary>
+        /// <param name="residueIndex"></param>
+        /// <param name="use3LetterCode"></param>
+        /// <returns>Symbol if residueIndex is valid, otherwise an empty string</returns>
         public string GetResidueSymbolOnly(int residueIndex, bool use3LetterCode)
         {
-            // Returns the symbol at the given residue number, or string.empty if an invalid residue number
-
             var symbol = string.Empty;
 
             if (residueIndex >= 0 && residueIndex < mResidues.Count)
@@ -1218,9 +1248,9 @@ namespace MolecularWeightCalculator.Sequence
         /// </summary>
         /// <param name="proteinResidues"></param>
         /// <param name="peptideResidues"></param>
-        /// <param name="returnMatchCount"></param>
-        /// <param name="returnResidueStart"></param>
-        /// <param name="returnResidueEnd"></param>
+        /// <param name="returnMatchCount">Output: the number of matches</param>
+        /// <param name="returnResidueStart">Output: the residue number of the start of the first match</param>
+        /// <param name="returnResidueEnd">Output: the residue number of the end of the last match</param>
         /// <param name="ICR2LSCompatible"></param>
         /// <param name="ruleResidues"></param>
         /// <param name="exceptionResidues"></param>
@@ -1229,6 +1259,7 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="proteinSearchStartLoc"></param>
         /// <param name="listDelimiter"></param>
         /// <returns>The number of matches</returns>
+        /// <remarks>See GetTrypticName for additional information</remarks>
         public string GetTrypticNameMultipleMatches(string proteinResidues,
             string peptideResidues,
             out int returnMatchCount,
@@ -1243,12 +1274,6 @@ namespace MolecularWeightCalculator.Sequence
             int proteinSearchStartLoc = 0,
             string listDelimiter = ", ")
         {
-            // Returns the number of matches in returnMatchCount
-            // returnResidueStart contains the residue number of the start of the first match
-            // returnResidueEnd contains the residue number of the end of the last match
-
-            // See GetTrypticName for additional information
-
             var currentSearchLoc = proteinSearchStartLoc;
             returnMatchCount = 0;
             returnResidueStart = 0;
@@ -1289,25 +1314,35 @@ namespace MolecularWeightCalculator.Sequence
             return nameList;
         }
 
+        /// <summary>
+        /// Finds the index of the next searchChar in searchResidues (K or R by default)
+        /// Assumes searchResidues are already upper case
+        /// Examines the residue following the matched residue
+        /// If it matches one of the characters in exceptionSuffixResidues, then the match is not counted
+        /// </summary>
+        /// <param name="searchResidues"></param>
+        /// <param name="residueFollowingSearchResidues"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="searchChars"></param>
+        /// <param name="exceptionSuffixResidues"></param>
+        /// <param name="terminiiSymbol"></param>
+        /// <returns>The index of the next searchChar, or -1 if not found</returns>
+        /// <remarks>
+        /// ResidueFollowingSearchResidues is necessary in case the potential cleavage residue is the final residue in searchResidues
+        /// We need to know the next residue to determine if it matches an exception residue
+        /// </remarks>
         private int GetTrypticNameFindNextCleavageLoc(string searchResidues, string residueFollowingSearchResidues,
             int startChar,
             string searchChars = TRYPTIC_RULE_RESIDUES,
             string exceptionSuffixResidues = TRYPTIC_EXCEPTION_RESIDUES,
             string terminiiSymbol = TERMINII_SYMBOL)
         {
-            // Finds the location of the next searchChar in searchResidues (K or R by default)
-            // Assumes searchResidues are already upper case
-            // Examines the residue following the matched residue
-            // If it matches one of the characters in exceptionSuffixResidues, then the match is not counted
-            // Note that residueFollowingSearchResidues is necessary in case the potential cleavage residue is the final residue in searchResidues
-            // We need to know the next residue to determine if it matches an exception residue
-
             // ReSharper disable CommentTypo
 
-            // For example, if searchResidues =      "IGASGEHIFIIGVDKPNR"
-            // and the protein it is part of is: TNSANFRIGASGEHIFIIGVDKPNRQPDS
-            // and searchChars = "KR while exceptionSuffixResidues  = "P"
-            // Then the K in IGASGEHIFIIGVDKPNR is ignored because the following residue is P,
+            // If searchResidues =      "IGASGEHIFIIGVDKPNR"
+            //     and the protein it is part of is: TNSANFRIGASGEHIFIIGVDKPNRQPDS
+            //     and searchChars = "KR while exceptionSuffixResidues  = "P"
+            // the K in IGASGEHIFIIGVDKPNR is ignored because the following residue is P,
             // while the R in IGASGEHIFIIGVDKPNR is OK because residueFollowingSearchResidues is Q
 
             // ReSharper restore CommentTypo
@@ -1465,7 +1500,31 @@ namespace MolecularWeightCalculator.Sequence
             return GetTrypticPeptideByFragmentNumber(proteinResidues, desiredPeptideNumber, out _, out _);
         }
 
-        public string GetTrypticPeptideByFragmentNumber(string proteinResidues,
+        // ReSharper disable CommentTypo
+
+        /// <summary>
+        /// <para>
+        /// Obtain the desired tryptic peptide from proteinResidues
+        /// </para>
+        /// <para>
+        /// For example, given proteinResidues = "IGKANRMTFGL"
+        /// if desiredPeptideNumber = 1, returns "IGK"
+        /// if desiredPeptideNumber = 2, returns "ANR"
+        /// if desiredPeptideNumber = 3, returns "MTFGL"
+        /// </para>
+        /// </summary>
+        /// <param name="proteinResidues"></param>
+        /// <param name="desiredPeptideNumber"></param>
+        /// <param name="returnResidueStart">Output: position of the start residue</param>
+        /// <param name="returnResidueEnd">Output: position of the end residue</param>
+        /// <param name="ruleResidues"></param>
+        /// <param name="exceptionResidues"></param>
+        /// <param name="terminiiSymbol"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns>The matching fragment, or an empty string</returns>
+        // ReSharper enable CommentTypo
+        public string GetTrypticPeptideByFragmentNumber(
+            string proteinResidues,
             short desiredPeptideNumber,
             out int returnResidueStart,
             out int returnResidueEnd,
@@ -1474,20 +1533,6 @@ namespace MolecularWeightCalculator.Sequence
             string terminiiSymbol = TERMINII_SYMBOL,
             bool ignoreCase = true)
         {
-            // Returns the desired tryptic peptide from proteinResidues
-
-            // ReSharper disable CommentTypo
-
-            // For example, if proteinResidues = "IGKANRMTFGL" then
-            // when desiredPeptideNumber = 1, returns "IGK"
-            // when desiredPeptideNumber = 2, returns "ANR"
-            // when desiredPeptideNumber = 3, returns "MTFGL"
-
-            // ReSharper enable CommentTypo
-
-            // Optionally, returns the position of the start and end residues
-            // using returnResidueStart and returnResidueEnd
-
             var ruleResidueLoc = -1;
             var prevStartLoc = 0;
 
@@ -1580,7 +1625,37 @@ namespace MolecularWeightCalculator.Sequence
                                                     allowPartialCleavage, out _, separationChar, terminiiSymbol, ignoreCase);
         }
 
-        public bool CheckSequenceAgainstCleavageRule(string sequence,
+        /// <summary>
+        /// Examines sequence to see if it matches the cleavage rule
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <param name="ruleResidues">Residues that define cleavage points</param>
+        /// <param name="exceptionSuffixResidues"></param>
+        /// <param name="allowPartialCleavage"></param>
+        /// <param name="ruleMatchCount">Output: the number of ends that matched the rule (0, 1, or 2); terminii are counted as rule matches</param>
+        /// <param name="separationChar"></param>
+        /// <param name="terminiiSymbol"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns>True if valid, false if invalid</returns>
+        /// <remarks>
+        /// <para>
+        /// Returns true if sequence doesn't contain any periods, and thus, can't be examined
+        /// </para>
+        /// <para>
+        /// The peptide must end in one of the residues, or in -
+        /// The preceding residue must be one of the residues or be -
+        /// EXCEPTION: if allowPartialCleavage = True, the rules need only apply to one end
+        /// Finally, the suffix residue cannot match any of the residues in exceptionSuffixResidues
+        /// </para>
+        /// <para>
+        /// For example, given ruleResidues = "KR" and exceptionSuffixResidues = "P"
+        /// If sequence = "R.AEQDDLANYGPGNGVLPSAGSSISMEK.L", matchesCleavageRule = True
+        /// However, if sequence = "R.IGASGEHIFIIGVDK.P", matchesCleavageRule = False since suffix = "P"
+        /// Finally, if sequence = "R.IGASGEHIFIIGVDKPNR.Q", matchesCleavageRule = True since K is ignored, but the final R.Q is valid
+        /// </para>
+        /// </remarks>
+        public bool CheckSequenceAgainstCleavageRule(
+            string sequence,
             string ruleResidues,
             string exceptionSuffixResidues,
             bool allowPartialCleavage,
@@ -1589,22 +1664,6 @@ namespace MolecularWeightCalculator.Sequence
             string terminiiSymbol = TERMINII_SYMBOL,
             bool ignoreCase = true)
         {
-            // Checks sequence to see if it matches the cleavage rule
-            // Returns True if valid, False if invalid
-            // Returns True if doesn't contain any periods, and thus, can't be examined
-            // The 'ref' variable ruleMatchCount can be used to retrieve the number of ends that matched the rule (0, 1, or 2); terminii are counted as rule matches
-
-            // The residues in ruleResidues specify the cleavage rule
-            // The peptide must end in one of the residues, or in -
-            // The preceding residue must be one of the residues or be -
-            // EXCEPTION: if allowPartialCleavage = True then the rules need only apply to one end
-            // Finally, the suffix residue cannot match any of the residues in exceptionSuffixResidues
-
-            // For example, if ruleResidues = "KR" and exceptionSuffixResidues = "P"
-            // Then if sequence = "R.AEQDDLANYGPGNGVLPSAGSSISMEK.L" then matchesCleavageRule = True
-            // However, if sequence = "R.IGASGEHIFIIGVDK.P" then matchesCleavageRule = False since suffix = "P"
-            // Finally, if sequence = "R.IGASGEHIFIIGVDKPNR.Q" then matchesCleavageRule = True since K is ignored, but the final R.Q is valid
-
             string sequenceStart, sequenceEnd;
             var matchesCleavageRule = false;
 
@@ -1738,10 +1797,14 @@ namespace MolecularWeightCalculator.Sequence
             return matchesCleavageRule;
         }
 
+        /// <summary>
+        /// Checks to see if testResidue matches one of the residues in ruleResidues
+        /// </summary>
+        /// <param name="testResidue"></param>
+        /// <param name="ruleResidues"></param>
+        /// <returns>True if ruleResidues contains testResidue</returns>
         private bool CheckSequenceAgainstCleavageRuleMatchTestResidue(string testResidue, string ruleResidues)
         {
-            // Checks to see if testResidue matches one of the residues in ruleResidues
-            // Used to test by Rule Residues and Exception Residues
             return ruleResidues.IndexOf(testResidue, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
