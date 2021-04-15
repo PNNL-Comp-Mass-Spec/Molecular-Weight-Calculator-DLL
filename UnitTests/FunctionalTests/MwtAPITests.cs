@@ -10,7 +10,7 @@ namespace UnitTests.FunctionalTests
 {
     public class MwtAPITests
     {
-        // Ignore Spelling: Acetyl, amol, fmol, fmoles, mol, ng, terminii
+        // Ignore Spelling: Acetyl, amol, Da, fmol, fmoles, mol, ng, terminii
         // Ignore Spelling: Ala, Arg, Cys, Glu, Gly, Lys, Phe, Tyr,
 
         private MolecularWeightTool mMwtWin;
@@ -32,21 +32,33 @@ namespace UnitTests.FunctionalTests
                 Assert.True(getSuccess, "GetAbbreviation returned false");
                 Assert.AreEqual(index, mMwtWin.GetAbbreviationId(symbol));
 
+                if (index % 5 == 0)
+                    Console.WriteLine("Abbreviation at index {0,-3} is {1,-6} with formula {2}", index, symbol, formula);
+
                 var setResult = mMwtWin.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
                 Assert.AreEqual(0, setResult, "SetAbbreviation returned error code {0}", setResult);
             }
 
+            Console.WriteLine();
+
             // Test Caution statements
+            var cautionStatementsTested = 0;
             foreach (var symbol in mMwtWin.GetCautionStatementSymbols())
             {
                 var getSuccess = mMwtWin.GetCautionStatement(symbol, out var statement);
                 Assert.True(getSuccess, "GetCautionStatement returned false");
                 Assert.True(statement.Length > 0, "GetCautionStatement returned an empty string for symbol {0}", symbol);
 
+                if (cautionStatementsTested % 5 == 0)
+                    Console.WriteLine("Caution statement {0,-3} {1}", cautionStatementsTested + 1 + ":", statement);
 
                 var setResult = mMwtWin.SetCautionStatement(symbol, statement);
                 Assert.AreEqual(0, setResult, "SetAbbreviation returned error code {0}", setResult);
+
+                cautionStatementsTested++;
             }
+
+            Console.WriteLine();
 
             // Test Element access
             var elementCount = mMwtWin.GetElementCount();
@@ -58,6 +70,8 @@ namespace UnitTests.FunctionalTests
                 Assert.True(symbol.Length > 0, "GetElement returned symbol='' for atomic number {0}", atomicNumber);
                 Assert.True(isotopeCount > 0, "GetElement returned isotopeCount 0 for element {0}", symbol);
 
+                if (atomicNumber == 1 || atomicNumber % 10 == 0)
+                    Console.WriteLine("Atomic number {0,-3} is {1,-2}, {2:F3} Da", atomicNumber, symbol, mass);
 
                 var setSuccess = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
                 Assert.True(setSuccess, "SetElement returned false");
@@ -68,13 +82,18 @@ namespace UnitTests.FunctionalTests
                 Assert.True(isotopeCount2 > 0, "GetElementIsotopes returned isotopeCount 0 for atomic number {0}", atomicNumber);
                 Assert.True(isotopeMasses.Length > 0, "GetElementIsotopes returned empty array of isotopeMasses for atomic number {0}", atomicNumber);
 
+                if (atomicNumber % 10 == 1)
+                    Console.WriteLine("  {0,-2} has {1} isotope{2}", symbol, isotopeMasses.Length, isotopeMasses.Length == 1 ? "" : "s");
 
                 var setIsotopesSuccess = mMwtWin.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
                 Assert.True(setIsotopesSuccess, "SetElementIsotopes returned false");
             }
 
+            Console.WriteLine();
+
             // Test Message Statements access
             var messageStatementMaxId = mMwtWin.GetMessageStatementMaxId();
+            var messagesFound = 0;
             for (var index = 0; index <= messageStatementMaxId; index++)
             {
                 var statement = mMwtWin.GetMessageStatement(index);
@@ -92,6 +111,10 @@ namespace UnitTests.FunctionalTests
                 if (statement.Length == 0)
                     continue;
 
+                messagesFound++;
+
+                if (messagesFound == 0 || messagesFound % 5 == 0)
+                    Console.WriteLine("Message {0,-5} {1}", index + ":", statement);
 
                 var setSuccess = mMwtWin.SetMessageStatement(index, statement);
                 Assert.True(setSuccess, "SetMessageStatement returned false");
@@ -259,7 +282,7 @@ namespace UnitTests.FunctionalTests
             fragSpectrumOptions.TripleChargeIonsShow = true;
             fragSpectrumOptions.TripleChargeIonsThreshold = 400f;
 
-            fragSpectrumOptions.IonTypeOptions[(int) IonType.AIon].ShowIon = true;
+            fragSpectrumOptions.IonTypeOptions[(int)IonType.AIon].ShowIon = true;
 
             peptide.SetFragmentationSpectrumOptions(fragSpectrumOptions);
 
