@@ -289,9 +289,22 @@ namespace MwtWinDllTest
             for (var index = 0; index <= itemCount; index++)
             {
                 var statement = mMwtWin.GetMessageStatement(index);
+                if (index == 0)
+                {
+                    Debug.Assert(statement.Length == 0);
+                    continue;
+                }
+
+                if (index < 33)
+                {
+                    Debug.Assert(statement.Length > 0);
+                }
+
+                if (statement.Length == 0)
+                    continue;
 
                 var setSuccess = mMwtWin.SetMessageStatement(index, statement);
-                Debug.Assert(setSuccess, "SetMessageStatement returned false");
+                Debug.Assert(setSuccess, string.Format("SetMessageStatement returned false for index {0}", index));
             }
 
             // Test m/z conversion

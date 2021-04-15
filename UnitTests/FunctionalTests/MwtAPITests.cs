@@ -70,8 +70,23 @@ namespace UnitTests.FunctionalTests
             for (var index = 0; index <= messageStatementMaxId; index++)
             {
                 var statement = mMwtWin.GetMessageStatement(index);
+                if (index == 0)
+                {
+                    Assert.True(statement.Length == 0, "GetMessageStatement returned a non-empty string for index 0", index);
+                    continue;
+                }
 
-                var result = mMwtWin.SetMessageStatement(index, statement);
+                if (index < 33)
+                {
+                    Assert.True(statement.Length > 0, "GetMessageStatement returned an empty string for index {0}", index);
+                }
+
+                if (statement.Length == 0)
+                    continue;
+
+
+                var setSuccess = mMwtWin.SetMessageStatement(index, statement);
+                Assert.True(setSuccess, "SetMessageStatement returned false");
             }
         }
 
