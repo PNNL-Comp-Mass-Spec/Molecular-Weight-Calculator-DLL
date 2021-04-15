@@ -2254,32 +2254,30 @@ namespace MolecularWeightCalculator.Sequence
         /// </remarks>
         public bool SetResidueModifications(int residueIndex, short modificationCount, int[] modificationIDs)
         {
-            if (residueIndex >= 0 && residueIndex < mResidues.Count && modificationCount >= 0)
+            if (residueIndex < 0 || residueIndex >= mResidues.Count || modificationCount < 0)
+                return false;
+
+            var residue = mResidues[residueIndex];
+            if (modificationCount > MAX_MODIFICATIONS)
             {
-                var residue = mResidues[residueIndex];
-                if (modificationCount > MAX_MODIFICATIONS)
-                {
-                    modificationCount = MAX_MODIFICATIONS;
-                }
+                modificationCount = MAX_MODIFICATIONS;
+            }
 
-                residue.ModificationIDs.Clear();
-                residue.Phosphorylated = false;
-                for (var index = 0; index < modificationCount; index++)
+            residue.ModificationIDs.Clear();
+            residue.Phosphorylated = false;
+            for (var index = 0; index < modificationCount; index++)
+            {
+                var newModId = modificationIDs[index];
+                if (newModId >= 0 && newModId < mModificationSymbols.Count)
                 {
-                    var newModId = modificationIDs[index];
-                    if (newModId >= 0 && newModId < mModificationSymbols.Count)
+                    residue.ModificationIDs.Add(newModId);
+
+                    // Check for phosphorylation
+                    if (mModificationSymbols[newModId].IndicatesPhosphorylation)
                     {
-                        residue.ModificationIDs.Add(newModId);
-
-                        // Check for phosphorylation
-                        if (mModificationSymbols[newModId].IndicatesPhosphorylation)
-                        {
-                            residue.Phosphorylated = true;
-                        }
+                        residue.Phosphorylated = true;
                     }
                 }
-
-                return 0;
             }
 
             return true;

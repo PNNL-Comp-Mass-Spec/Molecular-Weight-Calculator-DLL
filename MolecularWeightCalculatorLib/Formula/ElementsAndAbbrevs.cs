@@ -200,9 +200,12 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>ID if found, otherwise -1</returns>
         internal int GetAbbreviationId(string symbol, bool aminoAcidsOnly = false)
         {
+            if (string.IsNullOrWhiteSpace(symbol))
+                return -1;
+
             for (var index = 0; index < mAbbrevStats.Count; index++)
             {
-                if ((mAbbrevStats[index].Symbol?.ToLower() ?? string.Empty) == (symbol?.ToLower() ?? string.Empty))
+                if (mAbbrevStats[index].Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase))
                 {
                     if (!aminoAcidsOnly || mAbbrevStats[index].IsAminoAcid)
                     {
@@ -290,43 +293,32 @@ namespace MolecularWeightCalculator.Formula
 
         internal string GetAminoAcidSymbolConversion(string symbolToFind, bool oneLetterTo3Letter)
         {
-            // If oneLetterTo3Letter = true, then converting 1 letter codes to 3 letter codes
-            // Returns the symbol, if found
-            // Otherwise, returns ""
+            if (string.IsNullOrWhiteSpace(symbolToFind))
+                return string.Empty;
 
-            var returnSymbol = string.Empty;
             // Use AbbrevStats[] array to lookup code
             foreach (var item in mAbbrevStats)
             {
                 if (item.IsAminoAcid)
                 {
-                    string compareSymbol;
                     if (oneLetterTo3Letter)
                     {
-                        compareSymbol = item.OneLetterSymbol;
+                        if (item.OneLetterSymbol.Equals(symbolToFind, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return item.Symbol;
+                        }
                     }
                     else
                     {
-                        compareSymbol = item.Symbol;
-                    }
-
-                    if ((compareSymbol?.ToLower() ?? string.Empty) == (symbolToFind?.ToLower() ?? string.Empty))
-                    {
-                        if (oneLetterTo3Letter)
+                        if (item.Symbol.Equals(symbolToFind, StringComparison.OrdinalIgnoreCase))
                         {
-                            returnSymbol = item.Symbol;
+                            return item.OneLetterSymbol;
                         }
-                        else
-                        {
-                            returnSymbol = item.OneLetterSymbol;
-                        }
-
-                        break;
                     }
                 }
             }
 
-            return returnSymbol;
+            return string.Empty;
         }
 
         public double GetChargeCarrierMass()
@@ -918,95 +910,84 @@ namespace MolecularWeightCalculator.Formula
         {
             var invalidSymbolOrFormula = false;
 
-            var errorId = 0;
-
             if (symbol.Length < 1)
             {
                 // Symbol length is 0
-                errorId = 192;
+                return 192;
             }
-            else if (symbol.Length > MAX_ABBREV_LENGTH)
+
+            if (symbol.Length > MAX_ABBREV_LENGTH)
             {
                 // Abbreviation symbol too long
-                errorId = 190;
+                return 190;
             }
-            else if (symbol.All(char.IsLetter))
+
+            if (!symbol.All(char.IsLetter))
             {
-                if (formula.Length > 0)
+                // Symbol does not just contain letters
+                return 194;
+            }
+
+            if (formula.Length == 0)
+            {
+                // Invalid formula (actually, blank formula)
+                return 160;
+            }
+
+            // Convert symbol to proper case mode
+            symbol = symbol.Substring(0, 1).ToUpper() + symbol.Substring(1).ToLower();
+
+            // If abbrevId is < 0 or >= mAbbrevStats.Count, define it
+            if (abbrevId < 0 || abbrevId >= mAbbrevStats.Count)
+            {
+                if (mAbbrevStats.Count < MAX_ABBREV_COUNT)
                 {
-                    // Convert symbol to proper case mode
-                    symbol = symbol.Substring(0, 1).ToUpper() + symbol.Substring(1).ToLower();
-
-                    // If abbrevId is < 1 or larger than AbbrevAllCount, then define it
-                    if (abbrevId < 0 || abbrevId >= mAbbrevStats.Count)
-                    {
-                        if (mAbbrevStats.Count < MAX_ABBREV_COUNT)
-                        {
-                            abbrevId = (short)mAbbrevStats.Count;
-                        }
-                        else
-                        {
-                            // Too many abbreviations
-                            errorId = 196;
-                            abbrevId = -1;
-                        }
-                    }
-
-                    if (abbrevId >= 1)
-                    {
-                        // Make sure the abbreviation doesn't match one of the standard elements
-                        var symbolMatchType = CheckElemAndAbbrev(symbol, out var symbolReference);
-
-                        if (symbolMatchType == SymbolMatchMode.Element)
-                        {
-                            if ((mElementStats[symbolReference].Symbol ?? string.Empty) == symbol)
-                            {
-                                invalidSymbolOrFormula = true;
-                            }
-                        }
-
-                        if (!invalidSymbolOrFormula && validateFormula)
-                        {
-                            // Make sure the abbreviation's formula is valid
-                            // This will also auto-capitalize the formula if auto-capitalize is turned on
-                            var data = Parser.ParseFormula(formula);
-                            formula = data.Formula;
-
-                            errorId = data.ErrorData.ErrorId;
-                            if (errorId != 0)
-                            {
-                                // An error occurred while parsing
-                                // Already present in ErrorParams.ErrorID
-                                // We'll still add the formula, but mark it as invalid
-                                invalidSymbolOrFormula = true;
-                            }
-                        }
-
-                        var stats = new AbbrevStatsData(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, invalidSymbolOrFormula);
-
-                        if (abbrevId < 0 || abbrevId >= mAbbrevStats.Count)
-                            mAbbrevStats.Add(stats);
-                        else
-                            mAbbrevStats[abbrevId] = stats;
-
-                        // Compute the mass, handling any now-resolved abbreviation dependencies
-                        // Also calls ConstructMasterSymbolsList();
-                        errorId = RecomputeAbbreviationMasses();
-                    }
+                    abbrevId = (short)mAbbrevStats.Count;
                 }
                 else
                 {
-                    // Invalid formula (actually, blank formula)
-                    errorId = 160;
+                    // Too many abbreviations
+                    return 196;
                 }
             }
-            else
+
+            // Make sure the abbreviation doesn't match one of the standard elements
+            var symbolMatchType = CheckElemAndAbbrev(symbol, out var symbolReference);
+
+            if (symbolMatchType == SymbolMatchMode.Element)
             {
-                // Symbol does not just contain letters
-                errorId = 194;
+                if ((mElementStats[symbolReference].Symbol ?? string.Empty) == symbol)
+                {
+                    invalidSymbolOrFormula = true;
+                }
             }
 
-            return errorId;
+            if (!invalidSymbolOrFormula && validateFormula)
+            {
+                // Make sure the abbreviation's formula is valid
+                // This will also auto-capitalize the formula if auto-capitalize is turned on
+                var data = Parser.ParseFormula(formula);
+                formula = data.Formula;
+
+                if (data.ErrorData.ErrorId != 0)
+                {
+                    // An error occurred while parsing
+                    // Already present in ErrorParams.ErrorID
+                    // We'll still add the formula, but mark it as invalid
+                    invalidSymbolOrFormula = true;
+                }
+            }
+
+            var stats = new AbbrevStatsData(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, invalidSymbolOrFormula);
+
+            if (abbrevId < 0 || abbrevId >= mAbbrevStats.Count)
+                mAbbrevStats.Add(stats);
+            else
+                mAbbrevStats[abbrevId] = stats;
+
+            // Compute the mass, handling any now-resolved abbreviation dependencies
+            // Also calls ConstructMasterSymbolsList();
+            return RecomputeAbbreviationMasses();
         }
 
         internal void SetChargeCarrierMass(double mass)
@@ -1025,20 +1006,25 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>true if success, false if symbol is not a valid element symbol</returns>
         internal bool SetElement(string symbol, double mass, double uncertainty, float charge, bool recomputeAbbreviationMasses = true)
         {
+            if (string.IsNullOrWhiteSpace(symbol))
+            {
+                return false;
+            }
+
             var found = false;
 
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if ((symbol?.ToLower() ?? string.Empty) == (mElementStats[index].Symbol?.ToLower() ?? string.Empty))
-                {
-                    var stats = mElementStats[index];
-                    stats.Mass = mass;
-                    stats.Uncertainty = uncertainty;
-                    stats.Charge = charge;
+                if (!string.Equals(symbol, mElementStats[index].Symbol, StringComparison.OrdinalIgnoreCase))
+                    continue;
 
-                    found = true;
-                    break;
-                }
+                var stats = mElementStats[index];
+                stats.Mass = mass;
+                stats.Uncertainty = uncertainty;
+                stats.Charge = charge;
+
+                found = true;
+                break;
             }
 
             if (found)
@@ -1065,26 +1051,22 @@ namespace MolecularWeightCalculator.Formula
                 return false;
             }
 
-            var found = false;
-
             for (var index = 1; index <= ELEMENT_COUNT; index++)
             {
-                if (string.Equals(symbol.ToLower(), mElementStats[index].Symbol.ToLower(), StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(symbol, mElementStats[index].Symbol, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var stats = mElementStats[index];
+                stats.Isotopes.Clear();
+                for (var isotopeIndex = 0; isotopeIndex < isotopeMasses.Length; isotopeIndex++)
                 {
-                    var stats = mElementStats[index];
-                    stats.Isotopes.Clear();
-                    for (var isotopeIndex = 0; isotopeIndex < isotopeMasses.Length; isotopeIndex++)
-                    {
-                        if (isotopeIndex > MAX_ISOTOPES)
-                            break;
-                        stats.Isotopes.Add(new IsotopeInfo(isotopeMasses[isotopeIndex], isotopeAbundances[isotopeIndex]));
-                    }
-
-                    stats.Isotopes.Capacity = stats.Isotopes.Count;
-
-                    found = true;
-                    break;
+                    if (isotopeIndex > MAX_ISOTOPES)
+                        break;
+                    stats.Isotopes.Add(new IsotopeInfo(isotopeMasses[isotopeIndex], isotopeAbundances[isotopeIndex]));
                 }
+
+                stats.Isotopes.Capacity = stats.Isotopes.Count;
+                return true;
             }
 
             return false;
