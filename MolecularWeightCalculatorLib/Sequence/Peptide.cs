@@ -1829,29 +1829,23 @@ namespace MolecularWeightCalculator.Sequence
         /// <summary>
         /// Remove all residues from this peptide
         /// </summary>
-        /// <returns>0 if success, 1 if failure</returns>
-        public int RemoveAllResidues()
+        public void RemoveAllResidues()
         {
             mResidues.Clear();
             mResidues.Capacity = 50;
             mTotalMass = 0d;
-
-            return 0;
         }
 
         /// <summary>
         /// Remove all possible modification symbols
         /// </summary>
-        /// <returns>0 if success, 1 if failure</returns>
         /// <remarks>
         /// Removing all modifications will invalidate any modifications present in a sequence
         /// </remarks>
-        public int RemoveAllModificationSymbols()
+        public void RemoveAllModificationSymbols()
         {
             mModificationSymbols.Clear();
             mModificationSymbols.Capacity = 10;
-
-            return 0;
         }
 
         /// <summary>
