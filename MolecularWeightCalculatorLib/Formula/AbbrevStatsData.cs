@@ -69,6 +69,9 @@ namespace MolecularWeightCalculator.Formula
 
         public AbbrevStatsData(string symbol, string formula, float charge, bool isAminoAcid, string oneLetterSymbol = "", string comment = "", bool invalidSymbolOrFormula = false)
         {
+            if (string.IsNullOrWhiteSpace(symbol))
+                throw new Exception("Abbreviation symbol cannot be null, an empty string, or whitespace");
+
             InvalidSymbolOrFormula = invalidSymbolOrFormula;
             Symbol = symbol;
             Formula = formula;
