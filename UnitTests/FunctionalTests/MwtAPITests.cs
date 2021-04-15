@@ -41,6 +41,8 @@ namespace UnitTests.FunctionalTests
             {
                 var getSuccess = mMwtWin.GetCautionStatement(symbol, out var statement);
                 Assert.True(getSuccess, "GetCautionStatement returned false");
+                Assert.True(statement.Length > 0, "GetCautionStatement returned an empty string for symbol {0}", symbol);
+
 
                 var setResult = mMwtWin.SetCautionStatement(symbol, statement);
                 Assert.AreEqual(0, setResult, "SetAbbreviation returned error code {0}", setResult);
@@ -53,6 +55,9 @@ namespace UnitTests.FunctionalTests
                 var getSuccess = mMwtWin.GetElement((short)atomicNumber, out var symbol, out var mass, out var uncertainty, out var charge, out var isotopeCount);
                 Assert.True(getSuccess, "GetElement returned false");
                 Assert.AreEqual(atomicNumber, mMwtWin.GetAtomicNumber(symbol));
+                Assert.True(symbol.Length > 0, "GetElement returned symbol='' for atomic number {0}", atomicNumber);
+                Assert.True(isotopeCount > 0, "GetElement returned isotopeCount 0 for element {0}", symbol);
+
 
                 var setSuccess = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
                 Assert.True(setSuccess, "SetElement returned false");
@@ -60,6 +65,9 @@ namespace UnitTests.FunctionalTests
                 var getIsotopesSuccess = mMwtWin.GetElementIsotopes((short)atomicNumber, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
                 Assert.AreEqual(isotopeCount, isotopeCount2);
                 Assert.True(getIsotopesSuccess, "GetElementIsotopes returned false");
+                Assert.True(isotopeCount2 > 0, "GetElementIsotopes returned isotopeCount 0 for atomic number {0}", atomicNumber);
+                Assert.True(isotopeMasses.Length > 0, "GetElementIsotopes returned empty array of isotopeMasses for atomic number {0}", atomicNumber);
+
 
                 var setIsotopesSuccess = mMwtWin.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
                 Assert.True(setIsotopesSuccess, "SetElementIsotopes returned false");
