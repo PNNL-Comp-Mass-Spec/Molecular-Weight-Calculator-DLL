@@ -463,8 +463,6 @@ namespace MolecularWeightCalculator.Formula
             // decreasing the size of this method
             for (var elementNumber = 1; elementNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; elementNumber++)
             {
-                System.Console.WriteLine(elementNumber);
-
                 var stats = elementStats[elementNumber];
                 short isotopeIndex = 0;
                 foreach (var isotope in isoData[elementNumber])
