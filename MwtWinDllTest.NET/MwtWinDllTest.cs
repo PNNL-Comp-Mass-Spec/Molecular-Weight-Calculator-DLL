@@ -234,7 +234,6 @@ namespace MwtWinDllTest
 
         public void TestAccessFunctions()
         {
-            int result;
             double mass;
 
             var results = new frmTextbrowser();
@@ -248,41 +247,41 @@ namespace MwtWinDllTest
             var itemCount = mMwtWin.GetAbbreviationCount();
             for (var index = 0; index < itemCount; index++)
             {
-                result = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
-                Debug.Assert(result == 0, "");
+                var getSuccess = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
+                Debug.Assert(getSuccess, "GetAbbreviation returned false");
                 Debug.Assert(mMwtWin.GetAbbreviationId(symbol) == index, "");
 
-                result = mMwtWin.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
-                Debug.Assert(result == 0, "");
+                var setResultCode = mMwtWin.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
+                Debug.Assert(setResultCode == 0, string.Format("SetAbbreviation returned error code {0}", setResultCode));
             }
 
             // Test Caution statements
             foreach (var symbol in mMwtWin.GetCautionStatementSymbols())
             {
-                result = mMwtWin.GetCautionStatement(symbol, out var statement);
-                Debug.Assert(result == 0, "");
+                var getSuccess = mMwtWin.GetCautionStatement(symbol, out var statement);
+                Debug.Assert(getSuccess, "GetCautionStatement returned false");
 
-                result = mMwtWin.SetCautionStatement(symbol, statement);
-                Debug.Assert(result == 0, "");
+                var setResultCode = mMwtWin.SetCautionStatement(symbol, statement);
+                Debug.Assert(setResultCode == 0, "");
             }
 
             // Test Element access
             itemCount = mMwtWin.GetElementCount();
             for (var index = 1; index <= itemCount; index++)
             {
-                result = mMwtWin.GetElement((short)index, out var symbol, out mass, out var uncertainty, out var charge, out var isotopeCount);
-                Debug.Assert(result == 0, "");
+                var getSuccess = mMwtWin.GetElement((short)index, out var symbol, out mass, out var uncertainty, out var charge, out var isotopeCount);
+                Debug.Assert(getSuccess, "GetElement returned false");
                 Debug.Assert(mMwtWin.GetAtomicNumber(symbol) == index, "");
 
-                result = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
-                Debug.Assert(result == 0, "");
+                var setSuccess = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
+                Debug.Assert(setSuccess, "SetElement returned false");
 
-                result = mMwtWin.GetElementIsotopes((short)index, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
+                var getIsotopeSuccess = mMwtWin.GetElementIsotopes((short)index, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
                 Debug.Assert(isotopeCount == isotopeCount2, "");
-                Debug.Assert(result == 0, "");
+                Debug.Assert(getIsotopeSuccess, "GetElementIsotopes returned false");
 
-                result = mMwtWin.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
-                Debug.Assert(result == 0, "");
+                var setIsotopeSuccess = mMwtWin.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
+                Debug.Assert(setIsotopeSuccess, "SetElementIsotopes returned false");
             }
 
             // Test Message Statements access
@@ -291,7 +290,8 @@ namespace MwtWinDllTest
             {
                 var statement = mMwtWin.GetMessageStatement(index);
 
-                result = mMwtWin.SetMessageStatement(index, statement);
+                var setSuccess = mMwtWin.SetMessageStatement(index, statement);
+                Debug.Assert(setSuccess, "SetMessageStatement returned false");
             }
 
             // Test m/z conversion
@@ -316,6 +316,7 @@ namespace MwtWinDllTest
             // Test Capillary flow functions
             var capFlow = mMwtWin.CapFlow;
             capFlow.SetAutoComputeEnabled(false);
+
             capFlow.SetBackPressure(2000d, UnitOfPressure.Psi);
             capFlow.SetColumnLength(40d, UnitOfLength.CM);
             capFlow.SetColumnId(50d, UnitOfLength.Microns);

@@ -28,22 +28,22 @@ namespace UnitTests.FunctionalTests
             var abbreviationCount = mMwtWin.GetAbbreviationCount();
             for (var index = 0; index < abbreviationCount; index++)
             {
-                var result = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
-                Assert.AreEqual(0, result);
+                var getSuccess = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
+                Assert.True(getSuccess, "GetAbbreviation returned false");
                 Assert.AreEqual(index, mMwtWin.GetAbbreviationId(symbol));
 
-                result = mMwtWin.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
-                Assert.AreEqual(0, result);
+                var setResult = mMwtWin.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
+                Assert.AreEqual(0, setResult, "SetAbbreviation returned error code {0}", setResult);
             }
 
             // Test Caution statements
             foreach (var symbol in mMwtWin.GetCautionStatementSymbols())
             {
-                var result = mMwtWin.GetCautionStatement(symbol, out var statement);
-                Assert.AreEqual(0, result);
+                var getSuccess = mMwtWin.GetCautionStatement(symbol, out var statement);
+                Assert.True(getSuccess, "GetCautionStatement returned false");
 
-                result = mMwtWin.SetCautionStatement(symbol, statement);
-                Assert.AreEqual(0, result);
+                var setResult = mMwtWin.SetCautionStatement(symbol, statement);
+                Assert.AreEqual(0, setResult, "SetAbbreviation returned error code {0}", setResult);
             }
 
             // Test Element access
