@@ -5,9 +5,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>", Scope = "member", Target = "~M:UnitTests.ElementTests.CircularReferenceHandlingTests")]
-[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>", Scope = "member", Target = "~M:UnitTests.ElementTests.ComputeMassCautionMessageTests(System.String,System.String)")]
-[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>", Scope = "member", Target = "~M:UnitTests.ElementTests.ComputeMassErrorTests(System.Int32,System.String,System.Int32,System.String,System.Boolean)")]
-[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>", Scope = "member", Target = "~M:UnitTests.FunctionalTests.MwtAPITests.TestAccessFunctions")]
-[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>", Scope = "member", Target = "~M:UnitTests.FunctionalTests.MwtAPITests.TestIsotopicFunctions")]
-[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>", Scope = "member", Target = "~M:UnitTests.FunctionalTests.MwtAPITests.TestIsotopicFunctions2")]
+[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "Parentheses not needed", Scope = "member", Target = "~M:UnitTests.ElementTests.CircularReferenceHandlingTests")]
+[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "Parentheses not needed", Scope = "member", Target = "~M:UnitTests.ElementTests.ComputeMassCautionMessageTests(System.String,System.String)")]
+[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "Parentheses not needed", Scope = "member", Target = "~M:UnitTests.ElementTests.ComputeMassErrorTests(System.Int32,System.String,System.Int32,System.String,System.Boolean)")]
+[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "Parentheses not needed", Scope = "member", Target = "~M:UnitTests.FunctionalTests.MwtAPITests.TestAccessFunctions")]
+[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "Parentheses not needed", Scope = "member", Target = "~M:UnitTests.FunctionalTests.MwtAPITests.TestIsotopicFunctions")]
+[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "Parentheses not needed", Scope = "member", Target = "~M:UnitTests.FunctionalTests.MwtAPITests.TestIsotopicFunctions2")]

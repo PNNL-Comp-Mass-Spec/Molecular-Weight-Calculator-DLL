@@ -317,6 +317,8 @@ namespace MwtWinDllTest
             var capFlow = mMwtWin.CapFlow;
             capFlow.SetAutoComputeEnabled(false);
 
+            // ReSharper disable RedundantArgumentDefaultValue
+
             capFlow.SetBackPressure(2000d, UnitOfPressure.Psi);
             capFlow.SetColumnLength(40d, UnitOfLength.CM);
             capFlow.SetColumnId(50d, UnitOfLength.Microns);
@@ -324,6 +326,8 @@ namespace MwtWinDllTest
             capFlow.SetInterparticlePorosity(0.33d);
             capFlow.SetParticleDiameter(2d, UnitOfLength.Microns);
             capFlow.SetAutoComputeEnabled(true);
+
+            // ReSharper restore RedundantArgumentDefaultValue
 
             results.AppendText("");
             results.AppendText("Check capillary flow calculations");
