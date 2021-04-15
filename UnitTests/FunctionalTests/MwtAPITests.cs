@@ -10,6 +10,9 @@ namespace UnitTests.FunctionalTests
 {
     public class MwtAPITests
     {
+        // Ignore Spelling: Acetyl, amol, fmol, fmoles, mol, ng, terminii
+        // Ignore Spelling: Ala, Arg, Cys, Glu, Gly, Lys, Phe, Tyr,
+
         private MolecularWeightTool mMwtWin;
 
         [OneTimeSetUp]
