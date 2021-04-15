@@ -1332,7 +1332,7 @@ namespace MolecularWeightCalculator.Sequence
         /// We need to know the next residue to determine if it matches an exception residue
         /// </remarks>
         private int GetTrypticNameFindNextCleavageLoc(string searchResidues, string residueFollowingSearchResidues,
-            int startChar,
+            int startIndex,
             string searchChars = TRYPTIC_RULE_RESIDUES,
             string exceptionSuffixResidues = TRYPTIC_EXCEPTION_RESIDUES,
             string terminiiSymbol = TERMINII_SYMBOL)
@@ -1352,28 +1352,28 @@ namespace MolecularWeightCalculator.Sequence
 
             var exceptionSuffixResidueCount = (short)exceptionSuffixResidues.Length;
 
-            if (startChar >= searchResidues.Length)
+            if (startIndex >= searchResidues.Length)
             {
                 return searchResidues.Length;
             }
 
-            var minCharLoc = -2;
+            var minCharIndex = -2;
             for (var charLocInSearchChars = 0; charLocInSearchChars < searchChars.Length; charLocInSearchChars++)
             {
-                var charLoc = searchResidues.Substring(startChar).IndexOf(searchChars.Substring(charLocInSearchChars, 1), StringComparison.Ordinal);
+                var charIndex = searchResidues.Substring(startIndex).IndexOf(searchChars.Substring(charLocInSearchChars, 1), StringComparison.Ordinal);
 
-                if (charLoc >= 0)
+                if (charIndex >= 0)
                 {
-                    charLoc += startChar;
+                    charIndex += startIndex;
 
                     if (exceptionSuffixResidueCount > 0)
                     {
                         // Make sure suffixResidue does not match exceptionSuffixResidues
                         int exceptionCharLocInSearchResidues;
                         string residueFollowingCleavageResidue;
-                        if (charLoc < searchResidues.Length - 1)
+                        if (charIndex < searchResidues.Length - 1)
                         {
-                            exceptionCharLocInSearchResidues = charLoc + 1;
+                            exceptionCharLocInSearchResidues = charIndex + 1;
                             residueFollowingCleavageResidue = searchResidues.Substring(exceptionCharLocInSearchResidues, 1);
                         }
                         else
@@ -1391,22 +1391,22 @@ namespace MolecularWeightCalculator.Sequence
 
                                 if (exceptionCharLocInSearchResidues < searchResidues.Length - 1)
                                 {
-                                    // Recursively call this function to find the next cleavage position, using an updated startChar position
+                                    // Recursively call this function to find the next cleavage position, using an updated startIndex position
                                     var charLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(searchResidues, residueFollowingSearchResidues, exceptionCharLocInSearchResidues, searchChars, exceptionSuffixResidues, terminiiSymbol);
 
                                     if (charLocViaRecursiveSearch > 0)
                                     {
                                         // Found a residue further along that is a valid cleavage point
-                                        charLoc = charLocViaRecursiveSearch;
+                                        charIndex = charLocViaRecursiveSearch;
                                     }
                                     else
                                     {
-                                        charLoc = 0;
+                                        charIndex = 0;
                                     }
                                 }
                                 else
                                 {
-                                    charLoc = 0;
+                                    charIndex = 0;
                                 }
 
                                 break;
@@ -1415,30 +1415,30 @@ namespace MolecularWeightCalculator.Sequence
                     }
                 }
 
-                if (charLoc > 0)
+                if (charIndex > 0)
                 {
-                    if (minCharLoc < -1)
+                    if (minCharIndex < -1)
                     {
-                        minCharLoc = charLoc;
+                        minCharIndex = charIndex;
                     }
-                    else if (charLoc < minCharLoc)
+                    else if (charIndex < minCharIndex)
                     {
-                        minCharLoc = charLoc;
+                        minCharIndex = charIndex;
                     }
                 }
             }
 
-            if (minCharLoc < 0 && (residueFollowingSearchResidues ?? string.Empty) == (terminiiSymbol ?? string.Empty))
+            if (minCharIndex < 0 && (residueFollowingSearchResidues ?? string.Empty) == (terminiiSymbol ?? string.Empty))
             {
-                minCharLoc = searchResidues.Length;
+                minCharIndex = searchResidues.Length;
             }
 
-            if (minCharLoc < -1)
+            if (minCharIndex < -1)
             {
                 return 0;
             }
 
-            return minCharLoc;
+            return minCharIndex;
         }
 
         public string GetTrypticPeptideNext(string proteinResidues,
