@@ -47,16 +47,16 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="symbolCombo">symbol combo for the caution statement</param>
         /// <param name="cautionStatement">Output: caution statement text</param>
-        /// <returns>0 if success, 1 if an invalid ID</returns>
-        internal int GetCautionStatement(string symbolCombo, out string cautionStatement)
+        /// <returns>true if success, false symbolCombo is not recognized</returns>
+        internal bool GetCautionStatement(string symbolCombo, out string cautionStatement)
         {
             if (mCautionStatements.TryGetValue(symbolCombo, out cautionStatement))
             {
-                return 0;
+                return true;
             }
 
             cautionStatement = string.Empty;
-            return 1;
+            return false;
         }
 
         /// <summary>
@@ -180,10 +180,10 @@ namespace MolecularWeightCalculator.Formula
         /// Look for the caution statement and remove it
         /// </summary>
         /// <param name="cautionSymbol"></param>
-        /// <returns>0 if found and removed; 1 if error</returns>
-        internal int RemoveCautionStatement(string cautionSymbol)
+        /// <returns>true if cautionSymbol was found and removed, otherwise false</returns>
+        internal bool RemoveCautionStatement(string cautionSymbol)
         {
-            return mCautionStatements.Remove(cautionSymbol) ? 0 : 1;
+            return mCautionStatements.Remove(cautionSymbol);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="symbolCombo"></param>
         /// <param name="newCautionStatement"></param>
-        /// <returns>0 if success, otherwise, returns an Error ID</returns>
+        /// <returns>0 if success, otherwise an Error ID</returns>
         internal int SetCautionStatement(string symbolCombo, string newCautionStatement)
         {
             var errorId = 0;
@@ -245,16 +245,16 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="newMessage"></param>
-        /// <returns>0 if success, 1 if failure</returns>
-        internal int SetMessageStatement(int messageId, string newMessage)
+        /// <returns>true if success, false if an error</returns>
+        internal bool SetMessageStatement(int messageId, string newMessage)
         {
             if (messageId is >= 1 and <= MESSAGE_STATEMENT_DIM_COUNT && newMessage.Length > 0)
             {
                 mMessageStatements[messageId] = newMessage;
-                return 0;
+                return true;
             }
 
-            return 1;
+            return false;
         }
 
         public void MemoryLoadAllStatements()

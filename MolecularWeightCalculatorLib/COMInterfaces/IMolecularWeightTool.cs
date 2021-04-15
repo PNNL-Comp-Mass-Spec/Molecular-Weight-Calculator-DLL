@@ -72,13 +72,13 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="headerMassToCharge">Header to use in <paramref name="results"/></param>
         /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
         /// <param name="headerIntensity">Header to use in <paramref name="results"/></param>
-        /// <returns>0 if success, -1 if an error</returns>
+        /// <returns>true if success, false if an error</returns>
         /// <remarks>
-        /// Returns uncharged mass values if <paramref name="chargeState"/>=0,
-        /// Returns M+H values if <paramref name="chargeState"/>=1
-        /// Returns convoluted m/z if <paramref name="chargeState"/> is &gt; 1
+        /// Return results will have uncharged mass values if <paramref name="chargeState"/>=0,
+        /// Return results will have M+H values if <paramref name="chargeState"/>=1
+        /// Return results will have convoluted m/z if <paramref name="chargeState"/> is &gt; 1
         /// </remarks>
-        short ComputeIsotopicAbundances(
+        bool ComputeIsotopicAbundances(
             ref string formulaIn, short chargeState, out string results,
             out double[,] convolutedMSData2DOneBased, out int convolutedMSDataCount,
             bool addProtonChargeCarrier = true,
@@ -116,8 +116,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="formula">Output: empirical formula</param>
         /// <param name="charge">Output: charge</param>
         /// <param name="isAminoAcid">Output: true if an amino acid</param>
-        /// <returns>0 if success, 1 if failure</returns>
-        int GetAbbreviation(int abbreviationId, out string symbol,
+        /// <returns>true if success, false if abbreviationId is invalid</returns>
+        bool GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid);
 
@@ -131,8 +131,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="isAminoAcid">Output: true if an amino acid</param>
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
-        /// <returns>0 if success, 1 if failure</returns>
-        int GetAbbreviation(int abbreviationId, out string symbol,
+        /// <returns>true if success, false if abbreviationId is invalid</returns>
+        bool GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid,
             out string oneLetterSymbol,
@@ -149,8 +149,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
         /// <param name="invalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
-        /// <returns>0 if success, 1 if failure</returns>
-        int GetAbbreviation(int abbreviationId, out string symbol,
+        /// <returns>true if success, false if abbreviationId is invalid</returns>
+        bool GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid,
             out string oneLetterSymbol,
@@ -178,8 +178,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="symbolCombo">symbol combo for the caution statement</param>
         /// <param name="cautionStatement">Output: caution statement text</param>
-        /// <returns>0 if success, 1 if an invalid ID</returns>
-        int GetCautionStatement(string symbolCombo, out string cautionStatement);
+        /// <returns>true if success, false symbolCombo is not recognized</returns>
+        bool GetCautionStatement(string symbolCombo, out string cautionStatement);
 
         /// <summary>
         /// Get the number of Caution Statements in memory
@@ -194,16 +194,16 @@ namespace MolecularWeightCalculator.COMInterfaces
         double GetChargeCarrierMass();
 
         /// <summary>
-        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the ByRef variables
+        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the output variables
         /// </summary>
-        /// <param name="atomicNumber"></param>
-        /// <param name="symbol"></param>
-        /// <param name="mass"></param>
-        /// <param name="uncertainty"></param>
-        /// <param name="charge"></param>
-        /// <param name="isotopeCount"></param>
-        /// <returns>0 if success, 1 if failure</returns>
-        int GetElement(short atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount);
+        /// <param name="atomicNumber">Element atomic number (1 for hydrogen, 2 for helium, etc.)</param>
+        /// <param name="symbol">Element symbol</param>
+        /// <param name="mass">Mass</param>
+        /// <param name="uncertainty">Uncertainty of the mass</param>
+        /// <param name="charge">Charge</param>
+        /// <param name="isotopeCount">Number of isotopes</param>
+        /// <returns>true if success, false if atomicNumber is invalid</returns>
+        bool GetElement(short atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount);
 
         /// <summary>
         /// Returns the number of elements in memory
@@ -224,8 +224,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses"></param>
         /// <param name="isotopeAbundances"></param>
-        /// <returns>0 if a valid ID, 1 if invalid</returns>
-        int GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances);
+        /// <returns>true if success, false if atomicNumber is invalid</returns>
+        bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances);
 
         /// <summary>
         /// Get the current element mode
@@ -285,9 +285,9 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </remarks>
         void RecomputeAbbreviationMasses();
 
-        int RemoveAbbreviation(string abbreviationSymbol);
-        int RemoveAbbreviationById(int abbreviationId);
-        int RemoveCautionStatement(string cautionSymbol);
+        bool RemoveAbbreviation(string abbreviationSymbol);
+        bool RemoveAbbreviationById(int abbreviationId);
+        bool RemoveCautionStatement(string cautionSymbol);
         void ResetAbbreviations();
         void ResetCautionStatements();
         void ResetElement(short atomicNumber, ElementStatsType specificStatToReset);
@@ -345,7 +345,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="symbolCombo"></param>
         /// <param name="newCautionStatement"></param>
-        /// <returns>0 if success, otherwise, returns an Error ID</returns>
+        /// <returns>0 if success, otherwise an error ID</returns>
         int SetCautionStatement(string symbolCombo, string newCautionStatement);
 
         void SetChargeCarrierMass(double mass);
@@ -358,7 +358,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="recomputeAbbreviationMasses">Set to false if updating several elements</param>
-        int SetElement(string symbol, double mass, double uncertainty,
+        /// <returns>true if success, false if symbol is not a valid element symbol</returns>
+        bool SetElement(string symbol, double mass, double uncertainty,
             float charge,
             bool recomputeAbbreviationMasses = true);
 
@@ -368,7 +369,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="symbol"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        int SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances);
+        /// <returns>true if success, false if symbol is not a valid element symbol</returns>
+        bool SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances);
 
         void SetElementMode(ElementMassMode elementMode, bool forceMemoryLoadElementValues = false);
 
@@ -377,8 +379,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="newMessage"></param>
-        /// <returns>0 if success, 1 if failure</returns>
-        int SetMessageStatement(int messageId, string newMessage);
+        /// <returns>true if success, false if an error</returns>
+        bool SetMessageStatement(int messageId, string newMessage);
 
         void SortAbbreviations();
 

@@ -23,10 +23,10 @@ namespace MolecularWeightCalculator.COMInterfaces
         int GetFragmentationSpectrumRequiredDataPoints();
         FragmentationSpectrumOptions GetFragmentationSpectrumOptions();
         double GetPeptideMass();
-        int GetModificationSymbol(int modificationId, out string modSymbol, out double modificationMass, out bool indicatesPhosphorylation, out string comment);
+        bool GetModificationSymbol(int modificationId, out string modSymbol, out double modificationMass, out bool indicatesPhosphorylation, out string comment);
         int GetModificationSymbolCount();
         int GetModificationSymbolId(string modSymbol);
-        int GetResidue(int residueIndex, out string symbol, out double mass, out bool isModified, out short modificationCount);
+        bool GetResidue(int residueIndex, out string symbol, out double mass, out bool isModified, out short modificationCount);
         int GetResidueCount();
         int GetResidueCountSpecificResidue(string residueSymbol, bool use3LetterCode);
         int GetResidueModificationIDs(int residueIndex, out int[] modificationIDs);
@@ -150,26 +150,26 @@ namespace MolecularWeightCalculator.COMInterfaces
 
         double ComputeImmoniumMass(double residueMass);
         string LookupIonTypeString(IonType ionType);
-        int RemoveAllResidues();
-        int RemoveAllModificationSymbols();
+        void RemoveAllResidues();
+        void RemoveAllModificationSymbols();
         int RemoveModification(string modSymbol);
         int RemoveModificationById(int modificationId);
         int RemoveResidue(int residueIndex);
-        int SetCTerminus(string formula, string followingResidue = "", bool use3LetterCode = true);
 
-        int SetCTerminusGroup(CTerminusGroupType cTerminusGroup,
-            string followingResidue = "",
-            bool use3LetterCode = true);
+        bool SetCTerminus(string formula, string followingResidue = "", bool use3LetterCode = true);
+        bool SetCTerminusGroup(CTerminusGroupType cTerminusGroup,
+                               string followingResidue = "",
+                               bool use3LetterCode = true);
 
         void SetDefaultModificationSymbols();
         void SetDefaultOptions();
         void SetFragmentationSpectrumOptions(FragmentationSpectrumOptions newFragSpectrumOptions);
-        int SetModificationSymbol(string modSymbol, double modificationMass, bool indicatesPhosphorylation = false, string comment = "");
-        int SetNTerminus(string formula, string precedingResidue = "", bool use3LetterCode = true);
+        bool SetModificationSymbol(string modSymbol, double modificationMass, bool indicatesPhosphorylation = false, string comment = "");
 
-        int SetNTerminusGroup(NTerminusGroupType nTerminusGroup,
-            string precedingResidue = "",
-            bool use3LetterCode = true);
+        bool SetNTerminus(string formula, string precedingResidue = "", bool use3LetterCode = true);
+        bool SetNTerminusGroup(NTerminusGroupType nTerminusGroup,
+                               string precedingResidue = "",
+                               bool use3LetterCode = true);
 
         /// <summary>
         /// Set the residue at the specified index
@@ -189,15 +189,16 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="residueIndex">0-based index of residue</param>
         /// <param name="modificationCount"></param>
         /// <param name="modificationIDs">0-based array</param>
-        int SetResidueModifications(int residueIndex, short modificationCount, int[] modificationIDs);
+        /// <returns>true if success, false if an error</returns>
+        bool SetResidueModifications(int residueIndex, short modificationCount, int[] modificationIDs);
 
         /// <summary>
         /// Defines the peptide sequence
         /// </summary>
         /// <param name="sequence">Peptide sequence using 1-letter amino acid symbols</param>
-        /// <returns>0 if success, 1 if an error</returns>
+        /// <returns>true if success, false if an error</returns>
         /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
-        int SetSequence1LetterSymbol(string sequence);
+        bool SetSequence1LetterSymbol(string sequence);
 
         /// <summary>
         /// Defines the peptide sequence
@@ -205,9 +206,9 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="sequence">Peptide sequence</param>
         /// <param name="is3LetterCode">Set to true for 3-letter amino acid symbols, false for 1-letter symbols (for example, R.ABCDEF.R)</param>
         /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to true to check for and remove prefix and suffix residues when <paramref name="is3LetterCode"/> = false</param>
-        /// <returns>0 if success, 1 if an error</returns>
+        /// <returns>true if success, false if an error</returns>
         /// <remarks>If <paramref name="sequence"/> is blank or contains no valid residues, then will still return 0</remarks>
-        int SetSequence(string sequence,
+        bool SetSequence(string sequence,
             bool is3LetterCode,
             bool oneLetterCheckForPrefixAndSuffixResidues);
 
@@ -221,9 +222,9 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="oneLetterCheckForPrefixAndSuffixResidues">Set to true to check for and remove prefix and suffix residues when <paramref name="is3LetterCode"/> = false</param>
         /// <param name="threeLetterCheckForPrefixHandSuffixOH">Set to true to check for and remove prefix H and OH when <paramref name="is3LetterCode"/> = true</param>
         /// <param name="addMissingModificationSymbols">Set to true to automatically add missing modification symbols (though the mod masses will be 0)</param>
-        /// <returns>0 if success, 1 if an error</returns>
+        /// <returns>true if success, false if an error</returns>
         /// <remarks>If <paramref name="sequence" /> is blank or contains no valid residues, then will still return 0</remarks>
-        int SetSequence(string sequence,
+        bool SetSequence(string sequence,
             NTerminusGroupType nTerminus = NTerminusGroupType.Hydrogen,
             CTerminusGroupType cTerminus = CTerminusGroupType.Hydroxyl,
             bool is3LetterCode = true,

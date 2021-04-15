@@ -278,13 +278,13 @@ namespace MolecularWeightCalculator
         /// <param name="headerMassToCharge">Header to use in <paramref name="results"/></param>
         /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
         /// <param name="headerIntensity">Header to use in <paramref name="results"/></param>
-        /// <returns>0 if success, -1 if an error</returns>
+        /// <returns>true if success, false if an error</returns>
         /// <remarks>
-        /// Returns uncharged mass values if <paramref name="chargeState"/>=0,
-        /// Returns M+H values if <paramref name="chargeState"/>=1
-        /// Returns convoluted m/z if <paramref name="chargeState"/> is &gt; 1
+        /// Return results will have uncharged mass values if <paramref name="chargeState"/>=0,
+        /// Return results will have M+H values if <paramref name="chargeState"/>=1
+        /// Return results will have convoluted m/z if <paramref name="chargeState"/> is &gt; 1
         /// </remarks>
-        public short ComputeIsotopicAbundances(
+        public bool ComputeIsotopicAbundances(
             ref string formulaIn, short chargeState, out string results,
             out double[,] convolutedMSData2D, out int convolutedMSDataCount,
             bool addProtonChargeCarrier = true,
@@ -356,8 +356,8 @@ namespace MolecularWeightCalculator
         /// <param name="formula">Output: empirical formula</param>
         /// <param name="charge">Output: charge</param>
         /// <param name="isAminoAcid">Output: true if an amino acid</param>
-        /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int abbreviationId, out string symbol,
+        /// <returns>true if success, false if abbreviationId is invalid</returns>
+        public bool GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid)
         {
@@ -374,8 +374,8 @@ namespace MolecularWeightCalculator
         /// <param name="isAminoAcid">Output: true if an amino acid</param>
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
-        /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int abbreviationId, out string symbol,
+        /// <returns>true if success, false if abbreviationId is invalid</returns>
+        public bool GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid,
             out string oneLetterSymbol,
@@ -395,8 +395,8 @@ namespace MolecularWeightCalculator
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
         /// <param name="invalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
-        /// <returns> 0 if success, 1 if failure</returns>
-        public int GetAbbreviation(int abbreviationId, out string symbol,
+        /// <returns>true if success, false if abbreviationId is invalid</returns>
+        public bool GetAbbreviation(int abbreviationId, out string symbol,
             out string formula, out float charge,
             out bool isAminoAcid,
             out string oneLetterSymbol,
@@ -445,8 +445,8 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbolCombo">symbol combo for the caution statement</param>
         /// <param name="cautionStatement">Output: caution statement text</param>
-        /// <returns>0 if success, 1 if an invalid ID</returns>
-        public int GetCautionStatement(string symbolCombo, out string cautionStatement)
+        /// <returns>true if success, false symbolCombo is not recognized</returns>
+        public bool GetCautionStatement(string symbolCombo, out string cautionStatement)
         {
             return mElementAndMassRoutines.Messages.GetCautionStatement(symbolCombo, out cautionStatement);
         }
@@ -483,14 +483,14 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Returns the settings for the element with <paramref name="atomicNumber"/> in the ByRef variables
         /// </summary>
-        /// <param name="atomicNumber"></param>
-        /// <param name="symbol"></param>
-        /// <param name="mass"></param>
-        /// <param name="uncertainty"></param>
-        /// <param name="charge"></param>
-        /// <param name="isotopeCount"></param>
-        /// <returns>0 if success, 1 if failure</returns>
-        public int GetElement(short atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount)
+        /// <param name="atomicNumber">Element atomic number (1 for hydrogen, 2 for helium, etc.)</param>
+        /// <param name="symbol">Element symbol</param>
+        /// <param name="mass">Mass</param>
+        /// <param name="uncertainty">Uncertainty of the mass</param>
+        /// <param name="charge">Charge</param>
+        /// <param name="isotopeCount">Number of isotopes</param>
+        /// <returns>true if success, false if atomicNumber is invalid</returns>
+        public bool GetElement(short atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount)
         {
             return mElementAndMassRoutines.Elements.GetElement(atomicNumber, out symbol, out mass, out uncertainty, out charge, out isotopeCount);
         }
@@ -516,12 +516,12 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Returns the isotope masses and abundances for the element with <paramref name="atomicNumber"/>
         /// </summary>
-        /// <param name="atomicNumber">Element ID, or atomic number</param>
+        /// <param name="atomicNumber">Element atomic number (1 for hydrogen, 2 for helium, etc.)</param>
         /// <param name="isotopeCount"></param>
-        /// <param name="isotopeMasses"></param>
-        /// <param name="isotopeAbundances"></param>
-        /// <returns>0 if a valid ID, 1 if invalid</returns>
-        public int GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
+        /// <param name="isotopeMasses">output, 0-based array</param>
+        /// <param name="isotopeAbundances">output, 0-based array</param>
+        /// <returns>true if success, false if atomicNumber is invalid</returns>
+        public bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
             return mElementAndMassRoutines.Elements.GetElementIsotopes(atomicNumber, out isotopeCount, out isotopeMasses, out isotopeAbundances);
         }
@@ -620,17 +620,17 @@ namespace MolecularWeightCalculator
             mElementAndMassRoutines.Elements.RecomputeAbbreviationMasses();
         }
 
-        public int RemoveAbbreviation(string abbreviationSymbol)
+        public bool RemoveAbbreviation(string abbreviationSymbol)
         {
             return mElementAndMassRoutines.Elements.RemoveAbbreviation(abbreviationSymbol);
         }
 
-        public int RemoveAbbreviationById(int abbreviationId)
+        public bool RemoveAbbreviationById(int abbreviationId)
         {
             return mElementAndMassRoutines.Elements.RemoveAbbreviationById(abbreviationId);
         }
 
-        public int RemoveCautionStatement(string cautionSymbol)
+        public bool RemoveCautionStatement(string cautionSymbol)
         {
             return mElementAndMassRoutines.Messages.RemoveCautionStatement(cautionSymbol);
         }
@@ -713,7 +713,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="symbolCombo"></param>
         /// <param name="newCautionStatement"></param>
-        /// <returns>0 if success, otherwise, returns an Error ID</returns>
+        /// <returns>0 if success, otherwise an Error ID</returns>
         public int SetCautionStatement(string symbolCombo, string newCautionStatement)
         {
             return mElementAndMassRoutines.Messages.SetCautionStatement(symbolCombo, newCautionStatement);
@@ -732,7 +732,8 @@ namespace MolecularWeightCalculator
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="recomputeAbbreviationMasses">Set to false if updating several elements</param>
-        public int SetElement(string symbol, double mass, double uncertainty,
+        /// <returns>true if success, false if symbol is not a valid element symbol</returns>
+        public bool SetElement(string symbol, double mass, double uncertainty,
             float charge,
             bool recomputeAbbreviationMasses = true)
         {
@@ -745,7 +746,8 @@ namespace MolecularWeightCalculator
         /// <param name="symbol"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        public int SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
+        /// <returns>true if success, false if symbol is not a valid element symbol</returns>
+        public bool SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
         {
             return mElementAndMassRoutines.Elements.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
         }
@@ -765,8 +767,8 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="newMessage"></param>
-        /// <returns>0 if success; 1 if failure</returns>
-        public int SetMessageStatement(int messageId, string newMessage)
+        /// <returns>true if success, false if an error</returns>
+        public bool SetMessageStatement(int messageId, string newMessage)
         {
             return mElementAndMassRoutines.Messages.SetMessageStatement(messageId, newMessage);
         }

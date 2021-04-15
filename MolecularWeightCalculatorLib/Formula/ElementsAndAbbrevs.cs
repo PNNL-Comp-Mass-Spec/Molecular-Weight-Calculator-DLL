@@ -214,7 +214,7 @@ namespace MolecularWeightCalculator.Formula
             return -1;
         }
 
-        internal int GetAbbreviation(
+        internal bool GetAbbreviation(
             int abbreviationId,
             out string symbol,
             out string formula,
@@ -235,8 +235,8 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
         /// <param name="invalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
-        /// <returns>0 if success, 1 if failure</returns>
-        internal int GetAbbreviation(
+        /// <returns>true if success, false if abbreviationId is invalid</returns>
+        internal bool GetAbbreviation(
             int abbreviationId,
             out string symbol,
             out string formula,
@@ -257,7 +257,7 @@ namespace MolecularWeightCalculator.Formula
                 comment = stats.Comment;
                 invalidSymbolOrFormula = stats.InvalidSymbolOrFormula;
 
-                return 0;
+                return true;
             }
 
             symbol = string.Empty;
@@ -268,7 +268,7 @@ namespace MolecularWeightCalculator.Formula
             comment = string.Empty;
             invalidSymbolOrFormula = true;
 
-            return 1;
+            return false;
         }
 
         public double GetAbbreviationMass(int abbreviationId)
@@ -340,16 +340,16 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the ByRef variables
+        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the output variables
         /// </summary>
-        /// <param name="atomicNumber"></param>
-        /// <param name="symbol"></param>
-        /// <param name="mass"></param>
-        /// <param name="uncertainty"></param>
-        /// <param name="charge"></param>
-        /// <param name="isotopeCount"></param>
-        /// <returns>0 if success, 1 if failure</returns>
-        internal int GetElement(
+        /// <param name="atomicNumber">Element atomic number (1 for hydrogen, 2 for helium, etc.)</param>
+        /// <param name="symbol">Element symbol</param>
+        /// <param name="mass">Mass</param>
+        /// <param name="uncertainty">Uncertainty of the mass</param>
+        /// <param name="charge">Charge</param>
+        /// <param name="isotopeCount">Number of isotopes</param>
+        /// <returns>true if success, false if atomicNumber is invalid</returns>
+        internal bool GetElement(
             short atomicNumber,
             out string symbol,
             out double mass,
@@ -366,7 +366,7 @@ namespace MolecularWeightCalculator.Formula
                 charge = stats.Charge;
                 isotopeCount = (short)stats.Isotopes.Count;
 
-                return 0;
+                return true;
             }
 
             symbol = string.Empty;
@@ -374,7 +374,7 @@ namespace MolecularWeightCalculator.Formula
             uncertainty = 0d;
             charge = 0f;
             isotopeCount = 0;
-            return 1;
+            return false;
         }
 
         /// <summary>
@@ -398,12 +398,12 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Returns the isotope masses and abundances for the element with <paramref name="atomicNumber"/>
         /// </summary>
-        /// <param name="atomicNumber">Element ID, or atomic number</param>
+        /// <param name="atomicNumber">Element atomic number (1 for hydrogen, 2 for helium, etc.)</param>
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">output, 0-based array</param>
         /// <param name="isotopeAbundances">output, 0-based array</param>
-        /// <returns>0 if a valid ID, 1 if invalid</returns>
-        internal int GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
+        /// <returns>true if success, false if atomicNumber is invalid</returns>
+        internal bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
             if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
             {
@@ -417,14 +417,14 @@ namespace MolecularWeightCalculator.Formula
                     isotopeAbundances[isotopeIndex] = stats.Isotopes[isotopeIndex].Abundance;
                 }
 
-                return 0;
+                return true;
             }
 
             isotopeCount = 0;
             isotopeMasses = new double[1];
             isotopeAbundances = new float[1];
 
-            return 1;
+            return false;
         }
 
         /// <summary>
@@ -799,8 +799,8 @@ namespace MolecularWeightCalculator.Formula
         /// Look for the abbreviation and remove it
         /// </summary>
         /// <param name="abbreviationSymbol"></param>
-        /// <returns>0 if found and removed; 1 if error</returns>
-        internal int RemoveAbbreviation(string abbreviationSymbol)
+        /// <returns>true if found and removed, false abbreviationSymbol was not found</returns>
+        internal bool RemoveAbbreviation(string abbreviationSymbol)
         {
             var removed = false;
 
@@ -815,31 +815,25 @@ namespace MolecularWeightCalculator.Formula
                 }
             }
 
-            return removed ? 0 : 1;
+            return removed;
         }
 
         /// <summary>
         /// Remove the abbreviation at index <paramref name="abbreviationId"/>
         /// </summary>
         /// <param name="abbreviationId"></param>
-        /// <returns>0 if found and removed; 1 if error</returns>
-        internal int RemoveAbbreviationById(int abbreviationId)
+        /// <returns>true if found and removed, false abbreviationId is invalid</returns>
+        internal bool RemoveAbbreviationById(int abbreviationId)
         {
-            bool removed;
-
-            if (abbreviationId >= 0 && abbreviationId < mAbbrevStats.Count)
+            if (abbreviationId < 0 || abbreviationId >= mAbbrevStats.Count)
             {
-                mAbbrevStats.RemoveAt(abbreviationId);
-
-                ConstructMasterSymbolsList();
-                removed = true;
-            }
-            else
-            {
-                removed = false;
+                return false;
             }
 
-            return removed ? 0 : 1;
+            mAbbrevStats.RemoveAt(abbreviationId);
+
+            ConstructMasterSymbolsList();
+            return true;
         }
 
         /// <summary>
@@ -1028,9 +1022,8 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="recomputeAbbreviationMasses">Set to False if updating several elements</param>
-        internal int SetElement(string symbol, double mass,
-            double uncertainty, float charge,
-            bool recomputeAbbreviationMasses = true)
+        /// <returns>true if success, false if symbol is not a valid element symbol</returns>
+        internal bool SetElement(string symbol, double mass, double uncertainty, float charge, bool recomputeAbbreviationMasses = true)
         {
             var found = false;
 
@@ -1052,10 +1045,10 @@ namespace MolecularWeightCalculator.Formula
             {
                 if (recomputeAbbreviationMasses)
                     RecomputeAbbreviationMasses();
-                return 0;
+                return true;
             }
 
-            return 1;
+            return false;
         }
 
         /// <summary>
@@ -1064,12 +1057,12 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="symbol"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        /// <returns>0 if success, 1 if symbol not found</returns>
-        internal int SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
+        /// <returns>true if success, false if symbol is not a valid element symbol</returns>
+        internal bool SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
         {
             if (string.IsNullOrWhiteSpace(symbol))
             {
-                return 1;
+                return false;
             }
 
             var found = false;
@@ -1094,7 +1087,7 @@ namespace MolecularWeightCalculator.Formula
                 }
             }
 
-            return found ? 0 : 1;
+            return false;
         }
 
         /// <summary>

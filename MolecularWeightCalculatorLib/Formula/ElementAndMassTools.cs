@@ -257,13 +257,13 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
         /// <param name="headerIntensity">Header to use in <paramref name="results"/></param>
         /// <param name="useFactorials">Set to true to use Factorial math, which is typically slower; default is False</param>
-        /// <returns>0 if success, -1 if an error</returns>
+        /// <returns>true if success, false if an error</returns>
         /// <remarks>
-        /// Returns uncharged mass values if <paramref name="chargeState"/>=0,
-        /// Returns M+H values if <paramref name="chargeState"/>=1
-        /// Returns convoluted m/z if <paramref name="chargeState"/> is &gt; 1
+        /// Return results will have uncharged mass values if <paramref name="chargeState"/>=0,
+        /// Return results will have M+H values if <paramref name="chargeState"/>=1
+        /// Return results will have convoluted m/z if <paramref name="chargeState"/> is &gt; 1
         /// </remarks>
-        internal short ComputeIsotopicAbundances(
+        internal bool ComputeIsotopicAbundances(
             ref string formulaIn,
             short chargeState,
             out string results,
@@ -295,7 +295,7 @@ namespace MolecularWeightCalculator.Formula
             // Make sure formula is not blank
             if (string.IsNullOrEmpty(formulaIn))
             {
-                return -1;
+                return false;
             }
 
             mAbortProcessing = false;
@@ -326,7 +326,7 @@ namespace MolecularWeightCalculator.Formula
                 {
                     // Error occurred; information is stored in ErrorParams
                     results = Messages.LookupMessage(350) + ": " + Messages.LookupMessage(mLastErrorId);
-                    return -1;
+                    return false;
                 }
 
                 // See if Deuterium is present by looking for a fractional amount of Hydrogen
@@ -385,7 +385,7 @@ namespace MolecularWeightCalculator.Formula
                     {
                         // Error occurred; information is stored in ErrorParams
                         results = Messages.LookupMessage(350) + ": " + Messages.LookupMessage(mLastErrorId);
-                        return -1;
+                        return false;
                     }
                 }
 
@@ -396,7 +396,7 @@ namespace MolecularWeightCalculator.Formula
                     if (Math.Abs(count - (int)Math.Round(count)) > float.Epsilon)
                     {
                         results = Messages.LookupMessage(350) + ": " + Messages.LookupMessage(805) + ": " + Elements.ElementStats[atomicNumber].Symbol + count;
-                        return -1;
+                        return false;
                     }
                 }
 
@@ -431,7 +431,7 @@ namespace MolecularWeightCalculator.Formula
                 if (elementCount == 0 || Math.Abs(workingFormulaMass) < float.Epsilon)
                 {
                     // No elements or no weight
-                    return -1;
+                    return false;
                 }
 
                 // The formula seems valid, so update formulaIn
@@ -543,7 +543,7 @@ namespace MolecularWeightCalculator.Formula
                         }
 
                         LogMessage(message, MessageType.Error);
-                        return -1;
+                        return false;
                     }
 
                     var isoCombos = new int[predictedCombos, isotopeCount];
@@ -754,7 +754,7 @@ namespace MolecularWeightCalculator.Formula
                 {
                     // Process Aborted
                     results = Messages.LookupMessage(940);
-                    return -1;
+                    return false;
                 }
 
                 // Step Through IsoStats from the end to the beginning, shortening the length to the
@@ -788,7 +788,7 @@ namespace MolecularWeightCalculator.Formula
                 {
                     // Process Aborted
                     results = Messages.LookupMessage(940);
-                    return -1;
+                    return false;
                 }
 
                 // Compute mass defect (difference of initial isotope's mass from integer mass)
@@ -910,15 +910,14 @@ namespace MolecularWeightCalculator.Formula
                 }
 
                 results = output;
+                return true;
             }
             catch (Exception ex)
             {
                 MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools|ComputeIsotopicAbundances", ex);
                 mLastErrorId = 590;
-                return -1;
+                return false;
             }
-
-            return 0; // Success
         }
 
         /// <summary>
@@ -1823,6 +1822,7 @@ namespace MolecularWeightCalculator.Formula
 
                                 break;
 
+                            // ReSharper disable once RedundantEmptySwitchSection
                             default:
                                 // Nothing to highlight
                                 break;
