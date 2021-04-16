@@ -68,8 +68,11 @@ namespace UnitTests
         [TestCase("^13C6H6[.1H2O]", 85.849168, 85.84800402, -6)]
         [TestCase("^13C6H6[H2O]", 102.06292, 102.0575118, -6, true)]
         [TestCase("^13C6H6[H2O]2", 120.0782, 120.068076, -6, true)]
-        [TestCase("13C6H6-6H2O", 192.13932, 192.1103328, -6)]          // In VB6 "13C6H6" meant "13(C6H6)"; in C# it gets auto-updated to ^13C6H6
+        [TestCase("13C6H6-6H2O", 192.15945, 192.13046280, -6)]          // In VB6 "13C6H6" meant "13(C6H6)"; in C# it gets auto-updated to ^13.003355C6H6
         [TestCase("13(C6H6)-6H2O", 1123.5456, 1122.673704, 222)]
+        [TestCase("^13.003355C6H6-6H2O", 192.15945, 192.13046280, -6)]
+        [TestCase("13C4C2H6-6H2O", 190.17414, 190.1237528, 0)]
+        [TestCase("^13.003355C4C2H6-6H2O", 190.17414, 190.1237528, 0)]
         [TestCase("Et2O", 74.1216, 74.073161, 0)]
         [TestCase("DCH2", 16.04068180, 16.029751, 3)]
         //[TestCase("", 0, 0, 0)]
