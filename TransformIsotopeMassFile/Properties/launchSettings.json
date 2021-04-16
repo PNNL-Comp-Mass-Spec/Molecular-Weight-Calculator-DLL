@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TransformIsotopeMassFile": {
+      "commandName": "Project",
+      "commandLineArgs": "F:\\Documents\\Projects\\DataMining\\MolecularWeightCalculator\\Docs\\IsotopeMasses_Linearized.txt"
+    }
+  }
+}

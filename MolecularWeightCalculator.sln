@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MwtWinDllTest", "MwtWinDllTest.NET\MwtWinDllTest.csproj", "{FCA57D89-BD62-49A3-8449-8743887DC0CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformIsotopeMassFile", "TransformIsotopeMassFile\TransformIsotopeMassFile.csproj", "{486BCB72-E34A-4266-8962-139707DD8C9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{FCA57D89-BD62-49A3-8449-8743887DC0CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCA57D89-BD62-49A3-8449-8743887DC0CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCA57D89-BD62-49A3-8449-8743887DC0CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{486BCB72-E34A-4266-8962-139707DD8C9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{486BCB72-E34A-4266-8962-139707DD8C9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{486BCB72-E34A-4266-8962-139707DD8C9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{486BCB72-E34A-4266-8962-139707DD8C9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
