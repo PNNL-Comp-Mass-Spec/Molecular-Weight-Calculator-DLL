@@ -109,13 +109,21 @@ namespace UnitTests
         [TestCase("sips cl arkcas", 277.768261, 276.75237, -1)] // Ignoring whitespace and characters outside of a-z, A-Z, 0-9, []{}().^>
         public void ComputeMassStressTest(string formula, double expectedAvgMass, double expectedMonoMass, double expectedCharge, bool bracketsAsParentheses = false)
         {
+            Console.WriteLine("Formula: " + formula);
+            Console.WriteLine();
+
             Console.WriteLine("Average Mass:");
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
             var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseDataAvg);
             ReportParseData(parseDataAvg);
             Assert.Greater(resultDaAvg, 0);
-            Assert.AreEqual(expectedAvgMass, resultDaAvg, MATCHING_MASS_EPSILON, "Actual mass does not match expected average mass");
-            Assert.AreEqual(expectedCharge, parseDataAvg.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
+
+            var compareValues = expectedAvgMass > 0 || expectedMonoMass > 0 || expectedCharge != 0;
+            if (compareValues)
+            {
+                Assert.AreEqual(expectedAvgMass, resultDaAvg, MATCHING_MASS_EPSILON, "Actual mass does not match expected average mass");
+                Assert.AreEqual(expectedCharge, parseDataAvg.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
+            }
 
             Console.WriteLine("");
             Console.WriteLine("Isotopic Mass:");
@@ -124,8 +132,11 @@ namespace UnitTests
             ReportParseData(parseDataIso);
 
             Assert.Greater(resultDaIso, 0);
-            Assert.AreEqual(expectedMonoMass, resultDaIso, MATCHING_MASS_EPSILON, "Actual mass does not match expected isotopic mass");
-            Assert.AreEqual(expectedCharge, parseDataIso.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
+            if (compareValues)
+            {
+                Assert.AreEqual(expectedMonoMass, resultDaIso, MATCHING_MASS_EPSILON, "Actual mass does not match expected isotopic mass");
+                Assert.AreEqual(expectedCharge, parseDataIso.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
+            }
 
             Console.WriteLine();
             ReportParseData(mMwtWinIso);
