@@ -346,6 +346,26 @@ namespace UnitTests
             Assert.AreEqual(567.43032, mass, MATCHING_MASS_EPSILON);
         }
 
+        [Test]
+        [TestCase("BrCH2(CH2)7CH2Br", "BrCH2(CH2)7CH2Br")]
+        [TestCase("FeCl3-6H2O", "FeCl3-6H2O")]
+        [TestCase("Co(Bpy)(CO)4", "Co(C10H8N2)(CO)4")]
+        [TestCase("^13C6H6-.1H2O", "^13C6H6-.1H2O")]
+        [TestCase("HGlyLeuTyrOH", "HC2H3NOC6H11NOC9H9NO2OH")]
+        [TestCase("BrCH2(CH2)7CH2Br>CH8", "BrCH2(CH2)7CH2Br>CH8")]
+        [TestCase("C6H5Cl3>H3Cl2>HCl", "C6H5Cl3>H3Cl2>HCl")]
+        [TestCase("D10>H10", "(^2.0141018H)10>H10")]                   // In VB6, D was defined as "^2.014H"; in C#, it is "^2.0141018H"
+        public void TestExpandAbbreviations(string formula, string expectedExpandedFormula)
+        {
+            var resultDaIso = mMwtWinIso.ComputeMass(formula);
+            var expandedFormula = mMwtWinIso.Compound.ExpandAbbreviations();
+
+            Console.WriteLine("{0,-15} -> {1,-15}: {2,12:F8} Da (isotopic)",
+                formula, expandedFormula, resultDaIso);
+
+            Assert.AreEqual(expectedExpandedFormula, expandedFormula, "New formula does not match expected");
+        }
+
         private void ReportParseData(IFormulaParseData data)
         {
             if (!string.IsNullOrWhiteSpace(data.CautionDescription))
