@@ -151,7 +151,7 @@ namespace MolecularWeightCalculator.Formula
             }
 
             isoData[1].Add(new IsotopeInfo(1.0078246d, 0.99985f));
-            isoData[1].Add(new IsotopeInfo(2.014d, 0.00015f));
+            isoData[1].Add(new IsotopeInfo(2.0141018d, 0.00015f));
             isoData[2].Add(new IsotopeInfo(3.01603d, 0.00000137f));
             isoData[2].Add(new IsotopeInfo(4.0026029d, 0.99999863f));
             isoData[3].Add(new IsotopeInfo(6.01512d, 0.0759f));

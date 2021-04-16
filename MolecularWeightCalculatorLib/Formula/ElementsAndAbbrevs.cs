@@ -546,7 +546,7 @@ namespace MolecularWeightCalculator.Formula
 
             mAbbrevStats.Add(new AbbrevStatsData("Bpy", "C10H8N2", 0f, false, "", "Bipyridine"));
             mAbbrevStats.Add(new AbbrevStatsData("Bu", "C4H9", 1f, false, "", "Butyl"));
-            mAbbrevStats.Add(new AbbrevStatsData("D", "^2.014H", 1f, false, "", "Deuterium"));
+            mAbbrevStats.Add(new AbbrevStatsData("D", "^2.0141018H", 1f, false, "", "Deuterium"));
             mAbbrevStats.Add(new AbbrevStatsData("En", "C2H8N2", 0f, false, "", "Ethylenediamine"));
             mAbbrevStats.Add(new AbbrevStatsData("Et", "CH3CH2", 1f, false, "", "Ethyl"));
             mAbbrevStats.Add(new AbbrevStatsData("Me", "CH3", 1f, false, "", "Methyl"));

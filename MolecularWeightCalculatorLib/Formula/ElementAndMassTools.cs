@@ -282,7 +282,7 @@ namespace MolecularWeightCalculator.Formula
 
             var nextComboFractionalAbundance = 0.0;
 
-            const string deuteriumEquiv = "^2.014H";
+            const string deuteriumEquiv = "^2.0141018H";
 
             const double minAbundanceToKeep = 0.000001d;
             const double cutoffForRatioMethod = 0.00001d;
@@ -331,7 +331,7 @@ namespace MolecularWeightCalculator.Formula
 
                 // See if Deuterium is present by looking for a fractional amount of Hydrogen
                 // formula will contain a capital D followed by a number or another letter (or the end of formula)
-                // If found, replace each D with ^2.014H and re-compute
+                // If found, replace each D with ^2.0141018H and re-compute
                 var count = computationStats.Elements[1].Count;
                 if (Math.Abs(count - (int)Math.Round(count)) > float.Epsilon)
                 {
@@ -375,7 +375,7 @@ namespace MolecularWeightCalculator.Formula
                         }
                     }
 
-                    // Re-Parse Formula since D's are now ^2.014H
+                    // Re-Parse Formula since D's are now ^2.0141018H
                     data = Parser.ParseFormula(formula, false);
                     workingFormulaMass = data.Mass;
                     mLastErrorId = data.ErrorData.ErrorId;
