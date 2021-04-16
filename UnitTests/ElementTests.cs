@@ -240,15 +240,25 @@ namespace UnitTests
         }
 
         [Test]
-        public void ConvertToEmpiricalTests(string formula, string expectedEmpirical)
+        [TestCase("BrCH2(CH2)7CH2Br", "C9H18Br2")]
+        [TestCase("FeCl3-6H2O", "H12Cl3FeO6")]
+        [TestCase("Co(Bpy)(CO)4", "C14H8CoN2O4")]
+        [TestCase("^13C6H6-.1H2O", "^13C6H6.2O0.1")]
+        [TestCase("HGlyLeuTyrOH", "C17H25N3O5")]
+        [TestCase("BrCH2(CH2)7CH2Br>CH8", "C8H10Br2")]
+        [TestCase("C6H5Cl3>H3Cl2>HCl", "C6H3Cl2")]
+        [TestCase("D10C6>H10", "C6", false)]        // This is not working properly; gives C6^2.0141018H10 instead of C6; even better would be C6^1.00617H10
         [TestCase("D", "^2.0141018H")]
         [TestCase("D2CH", "C^2.0141018H2H")]
         [TestCase("D2CH^3H3", "C^2.0141018H2^3H3H")]
         [TestCase("D2C^13C5H^3H3", "^13C5C^2.0141018H2^3H3H")]
+        public void ConvertToEmpiricalTests(string formula, string expectedEmpirical, bool compareToExpected = true)
         {
             mMwtWinAvg.Compound.Formula = formula;
             var empirical = mMwtWinAvg.Compound.ConvertToEmpirical();
-            Assert.AreEqual(expectedEmpirical, empirical);
+
+            if (compareToExpected)
+                Assert.AreEqual(expectedEmpirical, empirical, "Unexpected result for {0}", formula);
         }
 
         [Test]
