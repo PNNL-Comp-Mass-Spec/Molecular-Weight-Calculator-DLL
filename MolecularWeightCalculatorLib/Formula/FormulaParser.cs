@@ -558,6 +558,7 @@ namespace MolecularWeightCalculator.Formula
                     }
 
                     ParseFormulaComponents(block, data, valueForUnknown, data.FormulaSections[i].Components, runningLength);
+
                     // Add block.Length to get the index of '>', and 1 to get the first index after it.
                     runningLength += block.Length + 1;
 
@@ -1145,10 +1146,12 @@ namespace MolecularWeightCalculator.Formula
                 // Handle subtraction; process right-to-left
                 var previousStartPosition = formulaData.Formula.Length;
                 FormulaData previousBlock = null;
+
                 for (var i = formulaData.FormulaSections.Count - 1; i >= 0; i--)
                 {
                     var currentBlock = formulaData.FormulaSections[i];
                     var startPosition = previousStartPosition - currentBlock.Components.SymbolOriginal.Length;
+
                     DetermineTotalElementCounts(formulaData, currentBlock, currentBlock.Components, startPosition);
 
                     // Perform subtraction...
@@ -1156,6 +1159,7 @@ namespace MolecularWeightCalculator.Formula
                     {
                         var cStats = currentBlock.Stats;
                         var pStats = previousBlock.Stats;
+
                         // Update computationStats by subtracting the atom counts of the first half minus the second half
                         // If any atom counts become < 0 then, then raise an error
                         for (var atomicNumber = 1; atomicNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; atomicNumber++)

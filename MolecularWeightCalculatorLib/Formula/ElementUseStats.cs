@@ -69,8 +69,8 @@ namespace MolecularWeightCalculator.Formula
             var found = false;
             foreach (var isotope in isotopes)
             {
-                // Comparison: double.Epsilon is really, really small;
-                // this number is smaller than the least-significant digit of any stored mass or isotope,
+                // Do not use double.Epsilon here
+                // Instead using 0.000000000001 since it is smaller than the least-significant digit of any stored mass or isotope,
                 // and probably still smaller than any precision anyone who is using this program cares about.
                 if (Math.Abs(isotope.Mass - mass) < 0.000000000001)
                 {

@@ -14,6 +14,8 @@ namespace UnitTests
         // c:nunit3-console.exe --noresult --where "method =~ /Compute*/" unittests.dll
         //
 
+        // Ignore Spelling: Bpy, cd, Da, Gly, Leu, Pos, Tyr, UniMod
+
         private const double MATCHING_MASS_EPSILON = 0.0000001;
         private const double MATCHING_CHARGE_EPSILON = 0.05;
 
@@ -39,7 +41,7 @@ namespace UnitTests
         [TestCase("HGlyLeuTyrOH", 351.39762000, 351.17941200)]
         [TestCase("BrCH2(CH2)7CH2Br>CH8", 265.97300000, 263.91491800)]
         [TestCase("C6H6-H2O-2ZnHgMg-U", 914.72602000, 913.87795180)]
-        [TestCase("57FeCl3-6H2O", 271.44978, 269.96994420)]   // In VB6 "2FeCl3-6H2O" meant "2(FeCl3)-6H2O"; in C#, 2Fe gets auto-changed to ^2Fe
+        [TestCase("57FeCl3-6H2O", 271.44978, 269.96994420)]              // In VB6 "2FeCl3-6H2O" meant "2(FeCl3)-6H2O"; in C#, 2Fe gets auto-changed to ^2Fe
         [TestCase("C6H5Cl3>H3Cl2>HCl", 145.99342000, 144.96117980)]
         [TestCase("H(5) N", 19.0464, 19.042199, 0.0001)]
         public void ComputeMass(string formula, double expectedAvgMass, double expectedMonoMass, double matchTolerance = MATCHING_MASS_EPSILON)
