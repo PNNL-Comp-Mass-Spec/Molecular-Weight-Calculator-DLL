@@ -9,6 +9,10 @@ namespace MolecularWeightCalculator.Formula
     {
         // Ignore Spelling: bipyridine, Bpy, csv, Cys, Hoh, hydroxyproline, Hyp, Oac, prepend, py, txt
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="options"></param>
         public Messages(FormulaOptions options)
         {
             mOptions = options;
@@ -334,11 +338,11 @@ namespace MolecularWeightCalculator.Formula
         private static void MemoryLoadMessageStatementsEnglish(Dictionary<int, string> messages)
         {
             messages.Clear();
-            messages.Add(1, "Unknown element");
+            messages.Add((int)MessageID.UnknownElement, "Unknown element");
             messages.Add(2, "Obsolete msg: Cannot handle more than 4 layers of embedded parentheses");
-            messages.Add(3, "Missing closing parentheses");
-            messages.Add(4, "Unmatched parentheses");
-            messages.Add(5, "Cannot have a 0 directly after an element or dash (-)");
+            messages.Add((int)MessageID.MissingClosingParentheses, "Missing closing parentheses");
+            messages.Add((int)MessageID.UnmatchedParentheses, "Unmatched parentheses");
+            messages.Add((int)MessageID.ZeroAfterElementOrDash, "Cannot have a 0 directly after an element or dash (-)");
             messages.Add(6, "Number too large or must only be after [, -, ), or caret (^)");
             messages.Add(7, "Number too large");
             messages.Add(8, "Obsolete msg: Cannot start formula with a number; use parentheses, brackets, or dash (-)");

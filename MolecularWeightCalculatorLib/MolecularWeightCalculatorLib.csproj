@@ -74,6 +74,7 @@
     <Compile Include="Formula\IFormulaParseData.cs" />
     <Compile Include="Formula\IsotopeInfo.cs" />
     <Compile Include="Formula\IsotopicAtomInfo.cs" />
+    <Compile Include="Formula\MessageEnums.cs" />
     <Compile Include="Formula\Messages.cs" />
     <Compile Include="Formula\PercentCompositionInfo.cs" />
     <Compile Include="Formula\SymbolLookupInfo.cs" />
