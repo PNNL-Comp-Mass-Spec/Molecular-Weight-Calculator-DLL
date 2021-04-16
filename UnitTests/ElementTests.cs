@@ -44,6 +44,7 @@ namespace UnitTests
         [TestCase("57FeCl3-6H2O", 271.44978, 269.96994420)]              // In VB6 "2FeCl3-6H2O" meant "2(FeCl3)-6H2O"; in C#, 2Fe gets auto-changed to ^2Fe
         [TestCase("C6H5Cl3>H3Cl2>HCl", 145.99342000, 144.96117980)]
         [TestCase("H(5) N", 19.0464, 19.042199, 0.0001)]
+        [TestCase("D10>H10", 10.061618, 10.062772)]                      // In VB6, D was defined as "^2.014H"; in C#, it is "^2.0141018H"
         public void ComputeMass(string formula, double expectedAvgMass, double expectedMonoMass, double matchTolerance = MATCHING_MASS_EPSILON)
         {
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
@@ -70,11 +71,11 @@ namespace UnitTests
         [TestCase("13C6H6-6H2O", 192.13932, 192.1103328, -6)]          // In VB6 "13C6H6" meant "13(C6H6)"; in C# it gets auto-updated to ^13C6H6
         [TestCase("13(C6H6)-6H2O", 1123.5456, 1122.673704, 222)]
         [TestCase("Et2O", 74.1216, 74.073161, 0)]
-        [TestCase("DCH2", 16.04058, 16.0296492, 3)]
+        [TestCase("DCH2", 16.04068180, 16.029751, 3)]
         //[TestCase("", 0, 0, 0)]
         [TestCase("CaOCH4(CH2)7Br", 250.20992, 249.0166848, 13)] // TODO: stdDev difference (-8.67e-19) (but it's insignificant)
         [TestCase("canyoch4(ch2)7br", 353.12251, 351.9256148, 13)] // TODO: stdDev difference (-8.67e-19) (but it's insignificant)
-        [TestCase("F(DCH2)7Br", 211.1864632, 210.1242836, 19)]
+        [TestCase("F(DCH2)7Br", 211.1871758, 210.1249962, 19)]
         [TestCase("Pt(CH2)7Br-[5Ca123456789]", 24739506320.878063, 24668266196.894161, 1234567936)]
         [TestCase("Pt(CH2)7Br-[5Ca123456789H]", 24739506325.917763, 24668266201.933285, 1234567936)]
         [TestCase("-[2.5CaH]", 102.71485, 102.426039, 2.5)]
@@ -239,11 +240,11 @@ namespace UnitTests
         }
 
         [Test]
-        [TestCase("D", "^2.014H")]
-        [TestCase("D2CH", "C^2.014H2H")]
-        [TestCase("D2CH^3H3", "C^2.014H2^3H3H")]
-        [TestCase("D2C^13C5H^3H3", "^13C5C^2.014H2^3H3H")]
         public void ConvertToEmpiricalTests(string formula, string expectedEmpirical)
+        [TestCase("D", "^2.0141018H")]
+        [TestCase("D2CH", "C^2.0141018H2H")]
+        [TestCase("D2CH^3H3", "C^2.0141018H2^3H3H")]
+        [TestCase("D2C^13C5H^3H3", "^13C5C^2.0141018H2^3H3H")]
         {
             mMwtWinAvg.Compound.Formula = formula;
             var empirical = mMwtWinAvg.Compound.ConvertToEmpirical();
