@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace TransformIsotopeMassFile
@@ -62,18 +63,26 @@ namespace TransformIsotopeMassFile
                 }
 
                 string outputFileName;
+                string elementsFileName;
                 if (inputFile.Name.EndsWith("_Linearized.txt", StringComparison.OrdinalIgnoreCase))
                 {
-                    outputFileName = inputFile.Name.Replace("_Linearized.txt", "_Tabular_WithUncertainty.txt");
+                    var baseName = inputFile.Name.Replace("_Linearized.txt", string.Empty);
+                    outputFileName = baseName + "_Tabular_WithUncertainty.txt";
+                    elementsFileName = baseName + "_Elements.txt";
                 }
                 else
                 {
-                    outputFileName = Path.GetFileNameWithoutExtension(inputFile.Name) + "_tabular.txt";
+                    var baseName = Path.GetFileNameWithoutExtension(inputFile.Name);
+                    outputFileName = baseName + "_Tabular.txt";
+                    elementsFileName = baseName + "_Elements.txt";
                 }
 
                 var outputFilePath = Path.Combine(inputFile.DirectoryName, outputFileName);
+                var elementFilePath = Path.Combine(inputFile.DirectoryName, elementsFileName);
+
                 using var reader = new StreamReader(new FileStream(inputFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
+                // This list has one entry for each isotope read from the input file
                 var isotopes = new List<IsotopeInfo>();
 
                 while (!reader.EndOfStream)
@@ -91,7 +100,11 @@ namespace TransformIsotopeMassFile
                     }
                 }
 
-                return WriteTabularIsotopeFile(isotopes, outputFilePath);
+                var writeSuccess = WriteTabularIsotopeFile(isotopes, outputFilePath);
+                if (!writeSuccess)
+                    return false;
+
+                return WriteElementsFile(isotopes, elementFilePath);
             }
             catch (Exception ex)
             {
@@ -260,6 +273,41 @@ namespace TransformIsotopeMassFile
                 Console.WriteLine("Error in ReadIsotopeInfo: " + ex.Message);
                 return false;
             }
+        }
+
+        private static bool WriteElementsFile(IEnumerable<IsotopeInfo> isotopes, string outputFilePath)
+        {
+
+            // Keys are element name, values are the list of isotopes for that element
+            var elements = new Dictionary<string, List<IsotopeInfo>>();
+            foreach (var item in isotopes)
+            {
+                if (elements.TryGetValue(item.AtomicSymbol, out var elementIsotopes))
+                {
+                    elementIsotopes.Add(item);
+                    continue;
+                }
+
+                elements.Add(item.AtomicSymbol, new List<IsotopeInfo> { item });
+            }
+
+            var mostAbundantIsotopeByElement = new List<IsotopeInfo>();
+
+            foreach (var element in elements.Keys)
+            {
+                if (element.Equals("D") || element.Equals("T"))
+                    continue;
+
+                var elementIsotopes = elements[element];
+
+                foreach (var item in (from isotope in elementIsotopes orderby isotope.IsotopicComposition descending select isotope).Take(1))
+                {
+                    mostAbundantIsotopeByElement.Add(item);
+                    break;
+                }
+            }
+
+            return WriteTabularIsotopeFile(mostAbundantIsotopeByElement, outputFilePath);
         }
 
         private static bool WriteTabularIsotopeFile(IEnumerable<IsotopeInfo> isotopes, string outputFilePath)
