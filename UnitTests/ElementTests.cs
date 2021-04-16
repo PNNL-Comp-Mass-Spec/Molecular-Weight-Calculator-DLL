@@ -32,25 +32,26 @@ namespace UnitTests
         }
 
         [Test]
-        [TestCase("BrCH2(CH2)7CH2Br",     286.04722000, 283.97751480)]
-        [TestCase("FeCl3-6H2O",           270.29478000, 268.90488320)]
-        [TestCase("Co(Bpy)(CO)4",         327.15760000, 326.98160280)]
-        [TestCase("^13C6H6-.1H2O",         85.84916800,  85.84800402)]
-        [TestCase("HGlyLeuTyrOH",         351.39762000, 351.17941200)]
+        [TestCase("BrCH2(CH2)7CH2Br", 286.04722000, 283.97751480)]
+        [TestCase("FeCl3-6H2O", 270.29478000, 268.90488320)]
+        [TestCase("Co(Bpy)(CO)4", 327.15760000, 326.98160280)]
+        [TestCase("^13C6H6-.1H2O", 85.84916800, 85.84800402)]
+        [TestCase("HGlyLeuTyrOH", 351.39762000, 351.17941200)]
         [TestCase("BrCH2(CH2)7CH2Br>CH8", 265.97300000, 263.91491800)]
-        [TestCase("C6H6-H2O-2ZnHgMg-U",   914.72602000, 913.87795180)]
-        [TestCase("2FeCl3-6H2O",          432.49788000, 429.74638120)]
-        [TestCase("C6H5Cl3>H3Cl2>HCl",    145.99342000, 144.96117980)]
-        public void ComputeMass(string formula, double expectedAvgMass, double expectedMonoMass)
+        [TestCase("C6H6-H2O-2ZnHgMg-U", 914.72602000, 913.87795180)]
+        [TestCase("57FeCl3-6H2O", 271.44978, 269.96994420)]   // In VB6 "2FeCl3-6H2O" meant "2(FeCl3)-6H2O"; in C#, 2Fe gets auto-changed to ^2Fe
+        [TestCase("C6H5Cl3>H3Cl2>HCl", 145.99342000, 144.96117980)]
+        [TestCase("H(5) N", 19.0464, 19.042199, 0.0001)]
+        public void ComputeMass(string formula, double expectedAvgMass, double expectedMonoMass, double matchTolerance = MATCHING_MASS_EPSILON)
         {
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
             var resultDaIso = mMwtWinIso.ComputeMass(formula);
 
             Console.WriteLine("{0,-22} -> {1,12:F8} Da (average) and  {2,12:F8} Da (isotopic)",
-                formula, resultDaAvg, resultDaIso);
+                mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso);
 
-            Assert.AreEqual(expectedAvgMass, resultDaAvg, MATCHING_MASS_EPSILON, "Actual mass does not match expected average mass");
-            Assert.AreEqual(expectedMonoMass, resultDaIso, MATCHING_MASS_EPSILON, "Actual mass does not match expected isotopic mass");
+            Assert.AreEqual(expectedAvgMass, resultDaAvg, matchTolerance, "Actual mass does not match expected average mass");
+            Assert.AreEqual(expectedMonoMass, resultDaIso, matchTolerance, "Actual mass does not match expected isotopic mass");
         }
 
         [Test]
@@ -58,7 +59,8 @@ namespace UnitTests
         [TestCase("^13C6H6[.1H2O]", 85.849168, 85.84800402, -6)]
         [TestCase("^13C6H6[H2O]", 102.06292, 102.0575118, -6, true)]
         [TestCase("^13C6H6[H2O]2", 120.0782, 120.068076, -6, true)]
-        [TestCase("13C6H6-6H2O", 1123.5456, 1122.673704, 222)]
+        [TestCase("13C6H6-6H2O", 192.13932, 192.1103328, -6)]          // In VB6 "13C6H6" meant "13(C6H6)"; in C# it gets auto-updated to ^13C6H6
+        [TestCase("13(C6H6)-6H2O", 1123.5456, 1122.673704, 222)]
         [TestCase("Et2O", 74.1216, 74.073161, 0)]
         [TestCase("DCH2", 16.04058, 16.0296492, 3)]
         //[TestCase("", 0, 0, 0)]
@@ -229,7 +231,7 @@ namespace UnitTests
         }
 
         [Test]
-        [TestCase("D","^2.014H")]
+        [TestCase("D", "^2.014H")]
         [TestCase("D2CH", "C^2.014H2H")]
         [TestCase("D2CH^3H3", "C^2.014H2^3H3H")]
         [TestCase("D2C^13C5H^3H3", "^13C5C^2.014H2^3H3H")]
