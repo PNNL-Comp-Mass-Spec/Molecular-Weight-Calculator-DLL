@@ -47,6 +47,12 @@ namespace UnitTests
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
             var resultDaIso = mMwtWinIso.ComputeMass(formula);
 
+            if (!mMwtWinIso.Compound.FormulaCapitalized.Equals(formula))
+            {
+                Console.WriteLine("Original formula:");
+                Console.WriteLine(formula);
+            }
+
             Console.WriteLine("{0,-22} -> {1,12:F8} Da (average) and  {2,12:F8} Da (isotopic)",
                 mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso);
 
