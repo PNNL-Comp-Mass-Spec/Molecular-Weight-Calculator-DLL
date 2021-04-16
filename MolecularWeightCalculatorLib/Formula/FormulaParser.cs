@@ -31,10 +31,19 @@ namespace MolecularWeightCalculator.Formula
         private FormulaParseData mLastFormulaParsed = new("");
         public FormulaOptions ComputationOptions { get; }
 
+        /// <summary>
+        /// Look for elements with the count specified by an integer in parentheses
+        /// </summary>
         private static readonly Regex mElementMatcher = new(@"(?<LeadingWhitespaceOrIsotope>^|\s+|\^[0-9.]+)(?<Element>[a-z]+)\((?<ElementCount>[0-9]+)\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Look for Isotopes specified by an integer before the element symbol
+        /// </summary>
         private static readonly Regex mIsotopeMatcher = new(@"(?<LeadingWhitespace>^|\s+)(?<IsotopeMass>\d+)(?<Element>[a-z]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Look for elements with a negative count specified within parentheses
+        /// </summary>
         private static readonly Regex mNegativeCountMatcher = new(@"(?<Element>[a-z]+)\((?<ElementCount>-\d+)\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // Used when computing abbreviation masses, to trigger errors when abbreviation circular references occur (rather than infinite loops/recursion)
