@@ -22,8 +22,8 @@ namespace MolecularWeightCalculator.FormulaFinder
 
         public CandidateElement(string elementOrAbbrevSymbol)
         {
-            OriginalName = string.Copy(elementOrAbbrevSymbol);
-            Symbol = string.Copy(elementOrAbbrevSymbol);
+            OriginalName = elementOrAbbrevSymbol;
+            Symbol = elementOrAbbrevSymbol;
         }
 
         public override string ToString()

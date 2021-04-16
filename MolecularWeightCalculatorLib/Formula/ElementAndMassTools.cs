@@ -2153,7 +2153,7 @@ namespace MolecularWeightCalculator.Formula
         {
             var descriptionChanged = !string.Equals(progressStepDescription, mProgressStepDescription);
 
-            mProgressStepDescription = string.Copy(progressStepDescription);
+            mProgressStepDescription = progressStepDescription;
             if (percentComplete < 0f)
             {
                 percentComplete = 0f;
