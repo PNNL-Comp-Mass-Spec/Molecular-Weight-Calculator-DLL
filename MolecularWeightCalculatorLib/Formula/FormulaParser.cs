@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MolecularWeightCalculator.Formula
 {
     [ComVisible(false)]
     public class FormulaParser
     {
-        // Ignore Spelling: Alph
+        // Ignore Spelling: Alph, UniMod
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="elementTools"></param>
         public FormulaParser(ElementAndMassTools elementTools)
         {
             ComputationOptions = elementTools.ComputationOptions;
@@ -24,6 +30,12 @@ namespace MolecularWeightCalculator.Formula
 
         private FormulaParseData mLastFormulaParsed = new("");
         public FormulaOptions ComputationOptions { get; }
+
+        private static readonly Regex mElementMatcher = new(@"(?<LeadingWhitespaceOrIsotope>^|\s+|\^[0-9.]+)(?<Element>[a-z]+)\((?<ElementCount>[0-9]+)\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex mIsotopeMatcher = new(@"(?<LeadingWhitespace>^|\s+)(?<IsotopeMass>\d+)(?<Element>[a-z]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex mNegativeCountMatcher = new(@"(?<Element>[a-z]+)\((?<ElementCount>-\d+)\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // Used when computing abbreviation masses, to trigger errors when abbreviation circular references occur (rather than infinite loops/recursion)
         private class AbbrevSymbolStack
@@ -473,8 +485,10 @@ namespace MolecularWeightCalculator.Formula
 
                 // Parse the formula into individual elements and abbreviations
                 ParseFormulaComponents(formulaData.FormulaOriginal, formulaData, valueForUnknown);
+
                 // Replace the working formula with a cleaned formula (removes whitespace and unsupported characters, unless an error occurred when parsing)
                 formulaData.ReplaceFormulaWithCorrected();
+
                 // Compute the mass of the formula (also determines the total element counts (and isotopic correction) of the formula
                 ComputeFormulaMass(formulaData);
                 if (expandAbbreviations)
@@ -510,10 +524,15 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="parenDepth">Should only be used for recursive calls</param>
         private void ParseFormulaComponents(string formula, FormulaParseData data, double valueForUnknown = 1, FormulaComponentGroup components = null, int prevPosition = 0, int parenDepth = 0)
         {
+            // If the formula contains UniMod style element counts, convert them
+            formula = ConvertFormulaNotation(formula);
+
             if (formula.Contains(">"))
             {
+                // Formula has the formula subtraction symbol
                 // Can have multiple '>' symbols in a formula (processed right-to-left), but '>' cannot occur within brackets, etc.
                 var blocks = formula.Split('>');
+
                 // Add sufficient FormulaData objects for the split.
                 data.FormulaSections.AddRange(Enumerable.Range(0, blocks.Length - 1).Select(_ => new FormulaData()).ToArray());
 
@@ -542,7 +561,8 @@ namespace MolecularWeightCalculator.Formula
                 return;
             }
 
-            // Formula does not contain >
+            // Formula does not contain the formula subtraction symbol (>)
+
             // Parse it
             // set components variable (if null)
             components ??= data.Components;
@@ -1037,6 +1057,57 @@ namespace MolecularWeightCalculator.Formula
                 // In addition, add in the Isotopic Correction value
                 stats.TotalMass = stats.TotalMass + Elements.ElementStats[atomicNumber].Mass * stats.Elements[atomicNumber].Count + stats.Elements[atomicNumber].IsotopicCorrection;
             }
+        }
+
+        /// <summary>
+        /// Convert a formula from UniMod style to the style recognized by this software
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <returns>Updated formula</returns>
+        /// <remarks>
+        /// Examples:
+        /// H(4) 13C(3) O             -> H4 ^13C3 O
+        /// H(3) C(6) N O             -> H3 C6 N O
+        /// H(12) C(6) 13C N 15N 18O  -> H12 C6 ^13C N ^15N ^18O
+        /// </remarks>
+        private static string ConvertFormulaNotation(string formula)
+        {
+            var negativeCountMatches = mNegativeCountMatcher.Matches(formula);
+
+            string updatedFormula;
+
+            if (negativeCountMatches.Count > 0)
+            {
+                var formulaToSubtract = new StringBuilder();
+                foreach (Match item in negativeCountMatches)
+                {
+                    var elementCount = int.Parse(item.Groups["ElementCount"].Value);
+                    formulaToSubtract.AppendFormat("{0}{1}", item.Groups["Element"].Value, Math.Abs(elementCount));
+                }
+
+                var updatedFormula1 = mNegativeCountMatcher.Replace(formula, string.Empty);
+
+                if (string.IsNullOrWhiteSpace(updatedFormula1))
+                {
+                    // This modification only subtracts a mass
+                    return "^0H>" + formulaToSubtract;
+                }
+
+                updatedFormula = updatedFormula1 + ">" + formulaToSubtract;
+            }
+            else
+            {
+                updatedFormula = formula;
+            }
+
+            var updatedFormula2 = mIsotopeMatcher.Match(updatedFormula).Success ?
+                                      mIsotopeMatcher.Replace(updatedFormula, @"${LeadingWhitespace}^${IsotopeMass}${Element}") :
+                                      updatedFormula;
+
+            return mElementMatcher.Match(updatedFormula2).Success ?
+                                      mElementMatcher.Replace(updatedFormula2, @"${LeadingWhitespaceOrIsotope}${Element}${ElementCount}") :
+                                      updatedFormula2;
+
         }
 
         /// <summary>
