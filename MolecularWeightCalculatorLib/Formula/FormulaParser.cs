@@ -1081,10 +1081,13 @@ namespace MolecularWeightCalculator.Formula
         /// </remarks>
         private static string ConvertFormulaNotation(string formula)
         {
+            var uniModStyle = mNegativeCountMatcher.Match(formula).Success || mIsotopeMatcher.Match(formula).Success || mElementMatcher.Match(formula).Success;
+            if (!uniModStyle)
+                return formula;
+
             var negativeCountMatches = mNegativeCountMatcher.Matches(formula);
 
             string updatedFormula;
-
             if (negativeCountMatches.Count > 0)
             {
                 var formulaToSubtract = new StringBuilder();
@@ -1113,10 +1116,11 @@ namespace MolecularWeightCalculator.Formula
                                       mIsotopeMatcher.Replace(updatedFormula, @"${LeadingWhitespace}^${IsotopeMass}${Element}") :
                                       updatedFormula;
 
-            return mElementMatcher.Match(updatedFormula2).Success ?
+            var updatedFormula3 = mElementMatcher.Match(updatedFormula2).Success ?
                                       mElementMatcher.Replace(updatedFormula2, @"${LeadingWhitespaceOrIsotope}${Element}${ElementCount}") :
                                       updatedFormula2;
 
+            return updatedFormula3.Replace("^13C", "^13.003355C").Replace("^15N", "^15.000109N").Replace("^18O", "^17.999161O").Replace("^2H", "D");
         }
 
         /// <summary>
