@@ -1114,11 +1114,11 @@ namespace MolecularWeightCalculator.Formula
             }
 
             var updatedFormula2 = mIsotopeMatcher.Match(updatedFormula).Success ?
-                                      mIsotopeMatcher.Replace(updatedFormula, @"${LeadingWhitespace}^${IsotopeMass}${Element}") :
+                                      mIsotopeMatcher.Replace(updatedFormula, "${LeadingWhitespace}^${IsotopeMass}${Element}") :
                                       updatedFormula;
 
             var updatedFormula3 = mElementMatcher.Match(updatedFormula2).Success ?
-                                      mElementMatcher.Replace(updatedFormula2, @"${LeadingWhitespaceOrIsotope}${Element}${ElementCount}") :
+                                      mElementMatcher.Replace(updatedFormula2, "${LeadingWhitespaceOrIsotope}${Element}${ElementCount}") :
                                       updatedFormula2;
 
             return updatedFormula3.Replace("^13C", "^13.003355C").Replace("^15N", "^15.000109N").Replace("^18O", "^17.999161O").Replace("^2H", "D");
