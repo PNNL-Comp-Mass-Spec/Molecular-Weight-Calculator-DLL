@@ -15,7 +15,35 @@ namespace TransformIsotopeMassFile
 
         private readonly Regex mRadioactiveElementMass = new(@"\[(?<Mass>[0-9.]+)\]", RegexOptions.Compiled);
 
+        /// <summary>
+        /// Converts an integer-based uncertainty value to an absolute number
+        /// </summary>
+        /// <param name="numericValueText"></param>
+        /// <param name="uncertaintyInteger"></param>
+        /// <returns>Uncertainty as a decimal number</returns>
+        /// <remarks>
+        /// If the input file had  "0.99636(20)"
+        /// call this method with numericValueText="0.99636" and uncertaintyInteger=20
+        /// This method will return 0.00020
+        /// </remarks>
+        private static double? ComputeAbsoluteUncertainty(string numericValueText, int uncertaintyInteger)
+        {
+            var decimalPointIndex = numericValueText.IndexOf('.');
+            if (decimalPointIndex < 0)
+            {
+                Console.WriteLine("Warning: number does not have a decimal point; cannot compute the absolute uncertainty for " + numericValueText);
+                return null;
+            }
 
+            var digitsAfterDecimal = numericValueText.Length - decimalPointIndex - 1;
+
+            var uncertaintyDigitsAsText = uncertaintyInteger.ToString();
+            var uncertaintyText = string.Format("0.{0}{1}",
+                new string('0', digitsAfterDecimal - uncertaintyDigitsAsText.Length),
+                uncertaintyDigitsAsText);
+
+            return double.Parse(uncertaintyText);
+        }
 
         private static IsotopeInfo FindClosestIsotope(
             string elementSymbol,
@@ -66,14 +94,30 @@ namespace TransformIsotopeMassFile
             return bestIsotope;
         }
 
+        /// <summary>
+        /// Check whether valueText is of the form "0.99757(16)"
+        /// If it is, extract out the numeric value and convert the uncertainty to a decimal number
+        /// </summary>
+        /// <param name="valueText"></param>
+        /// <param name="numericValue"></param>
+        /// <param name="uncertainty"></param>
+        /// <returns>True if valueText is a double followed by an integer in parentheses, otherwise false</returns>
+        /// <remarks>
+        /// If valueText is 0.99757(16), returns
+        /// numericValue = 0.99757 and
+        /// uncertainty  = 0.00016
+        /// </remarks>
         private bool GetValueAndUncertainty(string valueText, out double? numericValue, out double? uncertainty)
         {
             var match = mUncertaintyMatcher.Match(valueText);
             if (match.Success)
             {
-                numericValue = double.Parse(match.Groups["Value"].Value);
+                var numericValueText = match.Groups["Value"].Value;
+                numericValue = double.Parse(numericValueText);
+
                 var uncertaintyDigits = int.Parse(match.Groups["Uncertainty"].Value);
-                uncertainty = ComputeAbsoluteUncertainty(numericValue, uncertaintyDigits);
+                uncertainty = ComputeAbsoluteUncertainty(numericValueText, uncertaintyDigits);
+
                 return true;
             }
 
