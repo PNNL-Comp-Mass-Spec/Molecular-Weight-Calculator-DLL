@@ -11,7 +11,7 @@ namespace MolecularWeightCalculator.Formula
         public readonly string Symbol;
 
         /// <summary>
-        /// Most commonly observed charge state of this element when ionized
+        /// Oxidation state
         /// </summary>
         public readonly int Charge;
 
