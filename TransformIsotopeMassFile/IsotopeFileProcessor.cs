@@ -133,7 +133,7 @@ namespace TransformIsotopeMassFile
             return false;
         }
 
-        private string NullableValueToString(double? nullableValue)
+        private static string NullableValueToString(double? nullableValue)
         {
             return nullableValue.HasValue ? nullableValue.Value.ToString(CultureInfo.InvariantCulture) : string.Empty;
         }
@@ -353,7 +353,7 @@ namespace TransformIsotopeMassFile
             }
         }
 
-        private bool WriteElementsFile(IEnumerable<IsotopeInfo> isotopes, string outputFilePath)
+        private static bool WriteElementsFile(IEnumerable<IsotopeInfo> isotopes, string outputFilePath)
         {
             // Keys are element name, values are the list of isotopes for that element
             var elements = new Dictionary<string, List<IsotopeInfo>>();
@@ -432,7 +432,7 @@ namespace TransformIsotopeMassFile
             return WriteTabularIsotopeFile(mostAbundantIsotopeByElement, outputFilePath);
         }
 
-        private bool WriteTabularIsotopeFile(IEnumerable<IsotopeInfo> isotopes, string outputFilePath)
+        private static bool WriteTabularIsotopeFile(IEnumerable<IsotopeInfo> isotopes, string outputFilePath)
         {
             try
             {
