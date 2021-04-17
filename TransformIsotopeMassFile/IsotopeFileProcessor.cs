@@ -16,11 +16,22 @@ namespace TransformIsotopeMassFile
         private readonly Regex mRadioactiveElementMass = new(@"\[(?<Mass>[0-9.]+)\]", RegexOptions.Compiled);
 
 
-        private IsotopeInfo FindClosestIsotope(IReadOnlyList<IsotopeInfo> elementIsotopes, double bestIsotopeMass)
+
+        private static IsotopeInfo FindClosestIsotope(
+            string elementSymbol,
+            IReadOnlyList<IsotopeInfo> elementIsotopes,
+            IReadOnlyDictionary<string, double> radioactiveElementIsotopeMasses)
         {
             if (elementIsotopes.Count == 1)
             {
                 return elementIsotopes[0];
+            }
+
+            if (!radioactiveElementIsotopeMasses.TryGetValue(elementSymbol, out var bestIsotopeMass))
+            {
+                throw new Exception(string.Format(
+                    "Element {0} has more than one isotope defined, but no isotopic composition; add this element to dictionary radioactiveElementIsotopeMasses",
+                    elementSymbol));
             }
 
             var bestIsotope = elementIsotopes[0];
@@ -33,20 +44,22 @@ namespace TransformIsotopeMassFile
 
             var bestMassDifference = Math.Abs(bestIsotopeMass - bestIsotope.RelativeAtomicMass.Value);
 
-            foreach (var item in (from isotope in elementIsotopes orderby isotope.IsotopicComposition descending select isotope))
+            for (var i = 1; i < elementIsotopes.Count; i++)
             {
-                if (!item.RelativeAtomicMass.HasValue)
+                var isotope = elementIsotopes[i];
+
+                if (!isotope.RelativeAtomicMass.HasValue)
                 {
                     throw new Exception(string.Format(
-                        "Isotope {0} for {1} does not have a monoisotopic mass value stored in the RelativeAtomicMass field",
-                        item.MassNumber, item.AtomicSymbol));
+                        "{0} isotope {1} does not have a monoisotopic mass value stored in the RelativeAtomicMass field",
+                        isotope.AtomicSymbol, isotope.MassNumber));
                 }
 
-                var massDifference = Math.Abs(bestIsotopeMass - item.RelativeAtomicMass.Value);
+                var massDifference = Math.Abs(bestIsotopeMass - isotope.RelativeAtomicMass.Value);
                 if (massDifference >= bestMassDifference)
                     continue;
 
-                bestIsotope = item;
+                bestIsotope = isotope;
                 bestMassDifference = massDifference;
             }
 
@@ -336,12 +349,12 @@ namespace TransformIsotopeMassFile
 
             var mostAbundantIsotopeByElement = new List<IsotopeInfo>();
 
-            foreach (var element in elements.Keys)
+            foreach (var elementSymbol in elements.Keys)
             {
-                if (element.Equals("D") || element.Equals("T"))
+                if (elementSymbol.Equals("D") || elementSymbol.Equals("T"))
                     continue;
 
-                var elementIsotopes = elements[element];
+                var elementIsotopes = elements[elementSymbol];
                 var elementAdded = false;
 
                 foreach (var item in (from isotope in elementIsotopes orderby isotope.IsotopicComposition descending select isotope))
@@ -360,8 +373,8 @@ namespace TransformIsotopeMassFile
 
                 // Radioactive elements do not have values defined for Isotopic Composition
                 // Lookup the best isotope to use
-                var bestIsotope = FindClosestIsotope(elementIsotopes, radioactiveElementIsotopeMasses[element]);
-                mostAbundantIsotopeByElement.Add(bestIsotope);
+                var bestRadioactiveIsotope = FindClosestIsotope(elementSymbol, elementIsotopes, bestIsotopeByElement);
+                mostAbundantIsotopeByElement.Add(bestRadioactiveIsotope);
             }
 
             return WriteTabularIsotopeFile(mostAbundantIsotopeByElement, outputFilePath);
