@@ -18,6 +18,43 @@ namespace TransformIsotopeMassFile
         private readonly Regex mRadioactiveElementMass = new(@"\[(?<Mass>[0-9.]+)\]", RegexOptions.Compiled);
 
 
+        private IsotopeInfo FindClosestIsotope(IReadOnlyList<IsotopeInfo> elementIsotopes, double bestIsotopeMass)
+        {
+            if (elementIsotopes.Count == 1)
+            {
+                return elementIsotopes[0];
+            }
+
+            var bestIsotope = elementIsotopes[0];
+            if (!bestIsotope.RelativeAtomicMass.HasValue)
+            {
+                throw new Exception(string.Format(
+                    "Isotope {0} for {1} does not have a monoisotopic mass value stored in the RelativeAtomicMass field",
+                    bestIsotope.MassNumber, bestIsotope.AtomicSymbol));
+            }
+
+            var bestMassDifference = Math.Abs(bestIsotopeMass - bestIsotope.RelativeAtomicMass.Value);
+
+            foreach (var item in (from isotope in elementIsotopes orderby isotope.IsotopicComposition descending select isotope))
+            {
+                if (!item.RelativeAtomicMass.HasValue)
+                {
+                    throw new Exception(string.Format(
+                        "Isotope {0} for {1} does not have a monoisotopic mass value stored in the RelativeAtomicMass field",
+                        item.MassNumber, item.AtomicSymbol));
+                }
+
+                var massDifference = Math.Abs(bestIsotopeMass - item.RelativeAtomicMass.Value);
+                if (massDifference >= bestMassDifference)
+                    continue;
+
+                bestIsotope = item;
+                bestMassDifference = massDifference;
+            }
+
+            return bestIsotope;
+        }
+
         private bool GetValueAndUncertainty(string valueText, out double? numericValue, out double? uncertainty)
         {
             var match = mUncertaintyMatcher.Match(valueText);
@@ -277,6 +314,28 @@ namespace TransformIsotopeMassFile
                 elements.Add(item.AtomicSymbol, new List<IsotopeInfo> { item });
             }
 
+            // Keys in this dictionary are element symbols, values are the best isotopic mass for each one
+            var radioactiveElementIsotopeMasses = new Dictionary<string, double> {
+                { "Tc", 97.9072124  },
+                { "Pm", 144.9127559 },
+                { "Po", 208.9824308 },
+                { "At", 209.9871479 },
+                { "Rn", 222.0175782 },
+                { "Fr", 223.019736  },
+                { "Ra", 226.0254103 },
+                { "Ac", 227.0277523 },
+                { "Np", 237.0481736 },
+                { "Pu", 244.0642053 },
+                { "Am", 243.0613813 },
+                { "Cm", 247.0703541 },
+                { "Bk", 247.0703073 },
+                { "Cf", 251.0795886 },
+                { "Es", 252.08298   },
+                { "Fm", 257.0951061 },
+                { "Md", 258.0984315 },
+                { "No", 259.10103   }
+            };
+
             var mostAbundantIsotopeByElement = new List<IsotopeInfo>();
 
             foreach (var element in elements.Keys)
@@ -285,12 +344,26 @@ namespace TransformIsotopeMassFile
                     continue;
 
                 var elementIsotopes = elements[element];
+                var elementAdded = false;
 
-                foreach (var item in (from isotope in elementIsotopes orderby isotope.IsotopicComposition descending select isotope).Take(1))
+                foreach (var item in (from isotope in elementIsotopes orderby isotope.IsotopicComposition descending select isotope))
                 {
-                    mostAbundantIsotopeByElement.Add(item);
-                    break;
+                    if (item.IsotopicComposition.HasValue)
+                    {
+                        mostAbundantIsotopeByElement.Add(item);
+                        elementAdded = true;
+                        break;
+                    }
+
                 }
+
+                if (elementAdded)
+                    continue;
+
+                // Radioactive elements do not have values defined for Isotopic Composition
+                // Lookup the best isotope to use
+                var bestIsotope = FindClosestIsotope(elementIsotopes, radioactiveElementIsotopeMasses[element]);
+                mostAbundantIsotopeByElement.Add(bestIsotope);
             }
 
             return WriteTabularIsotopeFile(mostAbundantIsotopeByElement, outputFilePath);
