@@ -130,7 +130,7 @@ namespace MolecularWeightCalculator.Formula
             elementData[99] = new ElementMem("Es", 3, 252, 252d, 252.083d, 0.005d);
             elementData[100] = new ElementMem("Fm", 3, 257, 257d, 257.0951d, 0.0005d);
             elementData[101] = new ElementMem("Md", 3, 258, 258d, 258.1d, 0.05d);
-            elementData[102] = new ElementMem("No", 3, 269, 269d, 259.1009d, 0.0005d);
+            elementData[102] = new ElementMem("No", 2, 259, 259d, 259.1009d, 0.0005d);
             elementData[103] = new ElementMem("Lr", 3, 260, 260d, 262.11d, 0.05d);
 
             // Unused elements
