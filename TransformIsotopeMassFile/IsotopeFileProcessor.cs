@@ -355,7 +355,6 @@ namespace TransformIsotopeMassFile
 
         private bool WriteElementsFile(IEnumerable<IsotopeInfo> isotopes, string outputFilePath)
         {
-
             // Keys are element name, values are the list of isotopes for that element
             var elements = new Dictionary<string, List<IsotopeInfo>>();
             foreach (var item in isotopes)
@@ -444,11 +443,11 @@ namespace TransformIsotopeMassFile
                     "Atomic Number",
                     "Atomic Symbol",
                     "Mass Number",
-                    "Monoisotopic Mass",
-                    "Monoisotopic Mass Uncertainty",
+                    "Relative Atomic Mass (monoisotopic)",
+                    "Relative Atomic Mass Uncertainty",
                     "Isotopic Composition",
                     "Isotopic Composition Uncertainty",
-                    "Standard Atomic Weight",
+                    "Standard Atomic Weight (average mass)",
                     "Standard Weight Uncertainty",
                     "Notes"
                 };
