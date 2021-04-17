@@ -7,6 +7,7 @@ namespace MolecularWeightCalculator.Formula
     internal static class ElementsLoader
     {
         // Ignore Spelling: csv, txt, frm, isoData
+        // Ignore Spelling: Sg, Bh, Hs, Ds, Rg, Cn, Nh, Fl, Mc, Lv, Og
 
         /// <summary>
         /// Loads the element data and return it.
@@ -18,122 +19,138 @@ namespace MolecularWeightCalculator.Formula
             // Data obtained from https://www.nist.gov/pml/atomic-weights-and-isotopic-compositions-relative-atomic-masses
             // which obtained its data from https://www.ciaaw.org/atomic-weights.htm and https://www.degruyter.com/document/doi/10.1351/PAC-REP-10-06-02/html
 
-            // For Radioactive elements, the mass of the most stable isotope is stored for both the isotopic mass and the average mass
+            // For elements with a standard atomic weight range (e.g. [6.938,6.997] for Lithium), use the conventional atomic-weight,
+            // as defined in Table 3 in "Atomic weights of the elements 2013 (IUPAC Technical Report)"
+            // Published in Pure and Applied Chemistry, Volume 88, Issue 3
+            // https://doi.org/10.1515/pac-2015-0305
 
-            // Uncertainties originally from CRC Handbook of Chemistry and Physics, except for
-            // Radioactive elements, where uncertainty was estimated to be .n5 where
-            // specificElementProperty represents the number of digits after the decimal point but before the last
-            // number of the molecular weight.
+            // For radioactive elements, the mass of the most stable isotope is stored for the isotopic mass
 
-            // For example, for No, MW = 259.1009 (±0.0005)
+            // Naturally occurring radioactive elements have an average weight and associated uncertainty
+            // For the other radioactive elements, the mass of the most stable isotope is used, rounded to one decimal place
+            // When an average mass uncertainty is not available, a value of 0.0005 is used
+
+            // For example, Nobelium has average mass 259.1 (±0.0005)
 
             // Assigning element name, Charge (oxidation state), integer weight (of the isotopic mass), isotopic weight, average weight, and average weight uncertainty
-            elementData[1] = new ElementMem("H", 1, 1, 1.0078246d, 1.00794d, 0.00007d);
-            elementData[2] = new ElementMem("He", 0, 4, 4.0026029d, 4.002602d, 0.000002d);
-            elementData[3] = new ElementMem("Li", 1, 7, 7.016005d, 6.941d, 0.002d);
-            elementData[4] = new ElementMem("Be", 2, 9, 9.012183d, 9.012182d, 0.000003d);
-            elementData[5] = new ElementMem("B", 3, 11, 11.009305d, 10.811d, 0.007d);
-            elementData[6] = new ElementMem("C", 4, 12, 12d, 12.0107d, 0.0008d);
-            elementData[7] = new ElementMem("N", -3, 14, 14.003074d, 14.00674d, 0.00007d);
-            elementData[8] = new ElementMem("O", -2, 16, 15.994915d, 15.9994d, 0.0003d);
-            elementData[9] = new ElementMem("F", -1, 19, 18.9984032d, 18.9984032d, 0.0000005d);
-            elementData[10] = new ElementMem("Ne", 0, 20, 19.992439d, 20.1797d, 0.0006d);
-            elementData[11] = new ElementMem("Na", 1, 23, 22.98977d, 22.98977d, 0.000002d);
-            elementData[12] = new ElementMem("Mg", 2, 24, 23.98505d, 24.305d, 0.0006d);
-            elementData[13] = new ElementMem("Al", 3, 27, 26.981541d, 26.981538d, 0.000002d);
-            elementData[14] = new ElementMem("Si", 4, 28, 27.976928d, 28.0855d, 0.0003d);
-            elementData[15] = new ElementMem("P", -3, 31, 30.973763d, 30.973761d, 0.000002d);
-            elementData[16] = new ElementMem("S", -2, 32, 31.972072d, 32.066d, 0.006d);
-            elementData[17] = new ElementMem("Cl", -1, 35, 34.968853d, 35.4527d, 0.0009d);
-            elementData[18] = new ElementMem("Ar", 0, 40, 39.962383d, 39.948d, 0.001d);
-            elementData[19] = new ElementMem("K", 1, 39, 38.963708d, 39.0983d, 0.0001d);
-            elementData[20] = new ElementMem("Ca", 2, 40, 39.962591d, 40.078d, 0.004d);
-            elementData[21] = new ElementMem("Sc", 3, 45, 44.955914d, 44.95591d, 0.000008d);
-            elementData[22] = new ElementMem("Ti", 4, 48, 47.947947d, 47.867d, 0.001d);
-            elementData[23] = new ElementMem("V", 5, 51, 50.943963d, 50.9415d, 0.0001d);
-            elementData[24] = new ElementMem("Cr", 3, 52, 51.94051d, 51.9961d, 0.0006d);
-            elementData[25] = new ElementMem("Mn", 2, 55, 54.938046d, 54.938049d, 0.000009d);
-            elementData[26] = new ElementMem("Fe", 3, 56, 55.934939d, 55.845d, 0.002d);
-            elementData[27] = new ElementMem("Co", 2, 59, 58.933198d, 58.9332d, 0.000009d);
-            elementData[28] = new ElementMem("Ni", 2, 58, 57.935347d, 58.6934d, 0.0002d);
-            elementData[29] = new ElementMem("Cu", 2, 63, 62.929599d, 63.546d, 0.003d);
-            elementData[30] = new ElementMem("Zn", 2, 64, 63.929145d, 65.39d, 0.02d);
-            elementData[31] = new ElementMem("Ga", 3, 69, 68.925581d, 69.723d, 0.001d);
-            elementData[32] = new ElementMem("Ge", 4, 72, 71.92208d, 72.61d, 0.02d);
-            elementData[33] = new ElementMem("As", -3, 75, 74.921596d, 74.9216d, 0.00002d);
-            elementData[34] = new ElementMem("Se", -2, 80, 79.916521d, 78.96d, 0.03d);
-            elementData[35] = new ElementMem("Br", -1, 79, 78.918336d, 79.904d, 0.001d);
-            elementData[36] = new ElementMem("Kr", 0, 84, 83.911506d, 83.8d, 0.01d);
-            elementData[37] = new ElementMem("Rb", 1, 85, 84.9118d, 85.4678d, 0.0003d);
-            elementData[38] = new ElementMem("Sr", 2, 88, 87.905625d, 87.62d, 0.01d);
-            elementData[39] = new ElementMem("Y", 3, 89, 88.905856d, 88.90585d, 0.00002d);
-            elementData[40] = new ElementMem("Zr", 4, 90, 89.904708d, 91.224d, 0.002d);
-            elementData[41] = new ElementMem("Nb", 5, 93, 92.906378d, 92.90638d, 0.00002d);
-            elementData[42] = new ElementMem("Mo", 6, 98, 97.905405d, 95.94d, 0.01d);
-            elementData[43] = new ElementMem("Tc", 7, 98, 98d, 97.9072d, 0.0005d);
-            elementData[44] = new ElementMem("Ru", 4, 102, 101.90434d, 101.07d, 0.02d);
-            elementData[45] = new ElementMem("Rh", 3, 103, 102.905503d, 102.9055d, 0.00002d);
-            elementData[46] = new ElementMem("Pd", 2, 106, 105.903475d, 106.42d, 0.01d);
-            elementData[47] = new ElementMem("Ag", 1, 107, 106.905095d, 107.8682d, 0.0002d);
-            elementData[48] = new ElementMem("Cd", 2, 114, 113.903361d, 112.411d, 0.008d);
-            elementData[49] = new ElementMem("In", 3, 115, 114.903875d, 114.818d, 0.003d);
-            elementData[50] = new ElementMem("Sn", 4, 120, 119.902199d, 118.71d, 0.007d);
-            elementData[51] = new ElementMem("Sb", -3, 121, 120.903824d, 121.76d, 0.001d);
-            elementData[52] = new ElementMem("Te", -2, 130, 129.906229d, 127.6d, 0.03d);
-            elementData[53] = new ElementMem("I", -1, 127, 126.904477d, 126.90447d, 0.00003d);
-            elementData[54] = new ElementMem("Xe", 0, 132, 131.904148d, 131.29d, 0.02d);
-            elementData[55] = new ElementMem("Cs", 1, 133, 132.905433d, 132.90545d, 0.00002d);
-            elementData[56] = new ElementMem("Ba", 2, 138, 137.905236d, 137.327d, 0.007d);
-            elementData[57] = new ElementMem("La", 3, 139, 138.906355d, 138.9055d, 0.0002d);
-            elementData[58] = new ElementMem("Ce", 3, 140, 139.905442d, 140.116d, 0.001d);
-            elementData[59] = new ElementMem("Pr", 4, 141, 140.907657d, 140.90765d, 0.00002d);
-            elementData[60] = new ElementMem("Nd", 3, 142, 141.907731d, 144.24d, 0.03d);
-            elementData[61] = new ElementMem("Pm", 3, 145, 145d, 144.9127d, 0.0005d);
-            elementData[62] = new ElementMem("Sm", 3, 152, 151.919741d, 150.36d, 0.03d);
-            elementData[63] = new ElementMem("Eu", 3, 153, 152.921243d, 151.964d, 0.001d);
-            elementData[64] = new ElementMem("Gd", 3, 158, 157.924111d, 157.25d, 0.03d);
-            elementData[65] = new ElementMem("Tb", 3, 159, 158.92535d, 158.92534d, 0.00002d);
-            elementData[66] = new ElementMem("Dy", 3, 164, 163.929183d, 162.5d, 0.03d);
-            elementData[67] = new ElementMem("Ho", 3, 165, 164.930332d, 164.93032d, 0.00002d);
-            elementData[68] = new ElementMem("Er", 3, 166, 165.930305d, 167.26d, 0.03d);
-            elementData[69] = new ElementMem("Tm", 3, 169, 168.934225d, 168.93421d, 0.00002d);
-            elementData[70] = new ElementMem("Yb", 3, 174, 173.938873d, 173.04d, 0.03d);
-            elementData[71] = new ElementMem("Lu", 3, 175, 174.940785d, 174.967d, 0.001d);
-            elementData[72] = new ElementMem("Hf", 4, 180, 179.946561d, 178.49d, 0.02d);
-            elementData[73] = new ElementMem("Ta", 5, 181, 180.948014d, 180.9479d, 0.0001d);
-            elementData[74] = new ElementMem("W", 6, 184, 183.950953d, 183.84d, 0.01d);
-            elementData[75] = new ElementMem("Re", 7, 187, 186.955765d, 186.207d, 0.001d);
-            elementData[76] = new ElementMem("Os", 4, 192, 191.960603d, 190.23d, 0.03d);
-            elementData[77] = new ElementMem("Ir", 4, 193, 192.962942d, 192.217d, 0.03d);
-            elementData[78] = new ElementMem("Pt", 4, 195, 194.964785d, 195.078d, 0.002d);
-            elementData[79] = new ElementMem("Au", 3, 197, 196.96656d, 196.96655d, 0.00002d);
-            elementData[80] = new ElementMem("Hg", 2, 202, 201.970632d, 200.59d, 0.02d);
-            elementData[81] = new ElementMem("Tl", 1, 205, 204.97441d, 204.3833d, 0.0002d);
-            elementData[82] = new ElementMem("Pb", 2, 208, 207.976641d, 207.2d, 0.1d);
-            elementData[83] = new ElementMem("Bi", 3, 209, 208.980388d, 208.98038d, 0.00002d);
-            elementData[84] = new ElementMem("Po", 4, 209, 209d, 208.9824d, 0.0005d);
-            elementData[85] = new ElementMem("At", -1, 210, 210d, 209.9871d, 0.0005d);
-            elementData[86] = new ElementMem("Rn", 0, 222, 222d, 222.0176d, 0.0005d);
-            elementData[87] = new ElementMem("Fr", 1, 223, 223d, 223.0197d, 0.0005d);
-            elementData[88] = new ElementMem("Ra", 2, 227, 227d, 226.0254d, 0.0001d);
-            elementData[89] = new ElementMem("Ac", 3, 227, 227d, 227.0278d, 0.00001d);
-            elementData[90] = new ElementMem("Th", 4, 232, 232.038054d, 232.0381d, 0.0001d);
-            elementData[91] = new ElementMem("Pa", 5, 231, 231d, 231.03588d, 0.00002d);
-            elementData[92] = new ElementMem("U", 6, 238, 238.050786d, 238.0289d, 0.0001d);
-            elementData[93] = new ElementMem("Np", 5, 237, 237d, 237.0482d, 0.0005d);
-            elementData[94] = new ElementMem("Pu", 4, 244, 244d, 244.0642d, 0.0005d);
-            elementData[95] = new ElementMem("Am", 3, 243, 243d, 243.0614d, 0.0005d);
-            elementData[96] = new ElementMem("Cm", 3, 247, 247d, 247.0703d, 0.0005d);
-            elementData[97] = new ElementMem("Bk", 3, 247, 247d, 247.0703d, 0.0005d);
-            elementData[98] = new ElementMem("Cf", 3, 251, 251d, 251.0796d, 0.0005d);
-            elementData[99] = new ElementMem("Es", 3, 252, 252d, 252.083d, 0.005d);
-            elementData[100] = new ElementMem("Fm", 3, 257, 257d, 257.0951d, 0.0005d);
-            elementData[101] = new ElementMem("Md", 3, 258, 258d, 258.1d, 0.05d);
-            elementData[102] = new ElementMem("No", 2, 259, 259d, 259.1009d, 0.0005d);
-            elementData[103] = new ElementMem("Lr", 3, 260, 260d, 262.11d, 0.05d);
-
-            // Unused elements
-            // data 104,Unq,Unnilquadium,261.11,.05, 105,Unp,Unnilpentium,262.114,005, 106,Unh,Unnilhexium,263.118,.005, 107,Uns,Unnilseptium,262.12,.05
+            elementData[1] = new ElementMem("H", 1, 1, 1.00782503223, 1.008, 0.000135);
+            elementData[2] = new ElementMem("He", 0, 4, 4.00260325413, 4.002602, 0.000002);
+            elementData[3] = new ElementMem("Li", 1, 7, 7.0160034366, 6.94, 0.0295);
+            elementData[4] = new ElementMem("Be", 2, 9, 9.012183065, 9.0121831, 0.0000005);
+            elementData[5] = new ElementMem("B", 3, 11, 11.00930536, 10.81, 0.0075);
+            elementData[6] = new ElementMem("C", 4, 12, 12, 12.011, 0.001);
+            elementData[7] = new ElementMem("N", -3, 14, 14.00307400443, 14.007, 0.000425);
+            elementData[8] = new ElementMem("O", -2, 16, 15.99491461957, 15.999, 0.00037);
+            elementData[9] = new ElementMem("F", -1, 19, 18.99840316273, 18.998403163, 0.000000006);
+            elementData[10] = new ElementMem("Ne", 0, 20, 19.9924401762, 20.1797, 0.0006);
+            elementData[11] = new ElementMem("Na", 1, 23, 22.989769282, 22.98976928, 0.00000002);
+            elementData[12] = new ElementMem("Mg", 2, 24, 23.985041697, 24.305, 0.0015);
+            elementData[13] = new ElementMem("Al", 3, 27, 26.98153853, 26.9815385, 0.0000007);
+            elementData[14] = new ElementMem("Si", 4, 28, 27.97692653465, 28.085, 0.001);
+            elementData[15] = new ElementMem("P", -3, 31, 30.97376199842, 30.973761998, 0.000000005);
+            elementData[16] = new ElementMem("S", -2, 32, 31.9720711744, 32.06, 0.0085);
+            elementData[17] = new ElementMem("Cl", -1, 35, 34.968852682, 35.45, 0.0055);
+            elementData[18] = new ElementMem("Ar", 0, 40, 39.9623831237, 39.948, 0.001);
+            elementData[19] = new ElementMem("K", 1, 39, 38.9637064864, 39.0983, 0.0001);
+            elementData[20] = new ElementMem("Ca", 2, 40, 39.962590863, 40.078, 0.004);
+            elementData[21] = new ElementMem("Sc", 3, 45, 44.95590828, 44.955908, 0.000005);
+            elementData[22] = new ElementMem("Ti", 4, 48, 47.94794198, 47.867, 0.001);
+            elementData[23] = new ElementMem("V", 5, 51, 50.94395704, 50.9415, 0.0001);
+            elementData[24] = new ElementMem("Cr", 3, 52, 51.94050623, 51.9961, 0.0006);
+            elementData[25] = new ElementMem("Mn", 2, 55, 54.93804391, 54.938044, 0.000003);
+            elementData[26] = new ElementMem("Fe", 3, 56, 55.93493633, 55.845, 0.002);
+            elementData[27] = new ElementMem("Co", 2, 59, 58.93319429, 58.933194, 0.000004);
+            elementData[28] = new ElementMem("Ni", 2, 58, 57.93534241, 58.6934, 0.0004);
+            elementData[29] = new ElementMem("Cu", 2, 63, 62.92959772, 63.546, 0.003);
+            elementData[30] = new ElementMem("Zn", 2, 64, 63.92914201, 65.38, 0.02);
+            elementData[31] = new ElementMem("Ga", 3, 69, 68.9255735, 69.723, 0.001);
+            elementData[32] = new ElementMem("Ge", 4, 72, 71.922075826, 72.63, 0.008);
+            elementData[33] = new ElementMem("As", -3, 75, 74.92159457, 74.921595, 0.000006);
+            elementData[34] = new ElementMem("Se", -2, 80, 79.9165218, 78.971, 0.008);
+            elementData[35] = new ElementMem("Br", -1, 79, 78.9183376, 79.904, 0.003);
+            elementData[36] = new ElementMem("Kr", 0, 84, 83.9114977282, 83.798, 0.002);
+            elementData[37] = new ElementMem("Rb", 1, 85, 84.9117897379, 85.4678, 0.0003);
+            elementData[38] = new ElementMem("Sr", 2, 88, 87.9056125, 87.62, 0.01);
+            elementData[39] = new ElementMem("Y", 3, 89, 88.9058403, 88.90584, 0.00002);
+            elementData[40] = new ElementMem("Zr", 4, 90, 89.9046977, 91.224, 0.002);
+            elementData[41] = new ElementMem("Nb", 5, 93, 92.906373, 92.90637, 0.00002);
+            elementData[42] = new ElementMem("Mo", 6, 98, 97.90540482, 95.95, 0.01);
+            elementData[43] = new ElementMem("Tc", 7, 98, 97.9072124, 98, 0.0005);
+            elementData[44] = new ElementMem("Ru", 4, 102, 101.9043441, 101.07, 0.02);
+            elementData[45] = new ElementMem("Rh", 3, 103, 102.905498, 102.9055, 0.00002);
+            elementData[46] = new ElementMem("Pd", 2, 106, 105.9034804, 106.42, 0.01);
+            elementData[47] = new ElementMem("Ag", 1, 107, 106.9050916, 107.8682, 0.0002);
+            elementData[48] = new ElementMem("Cd", 2, 114, 113.90336509, 112.414, 0.004);
+            elementData[49] = new ElementMem("In", 3, 115, 114.903878776, 114.818, 0.001);
+            elementData[50] = new ElementMem("Sn", 4, 120, 119.90220163, 118.71, 0.007);
+            elementData[51] = new ElementMem("Sb", -3, 121, 120.903812, 121.76, 0.001);
+            elementData[52] = new ElementMem("Te", -2, 130, 129.906222748, 127.6, 0.03);
+            elementData[53] = new ElementMem("I", -1, 127, 126.9044719, 126.90447, 0.00003);
+            elementData[54] = new ElementMem("Xe", 0, 132, 131.9041550856, 131.293, 0.006);
+            elementData[55] = new ElementMem("Cs", 1, 133, 132.905451961, 132.90545196, 0.00000006);
+            elementData[56] = new ElementMem("Ba", 2, 138, 137.905247, 137.327, 0.007);
+            elementData[57] = new ElementMem("La", 3, 139, 138.9063563, 138.90547, 0.00007);
+            elementData[58] = new ElementMem("Ce", 3, 140, 139.9054431, 140.116, 0.001);
+            elementData[59] = new ElementMem("Pr", 4, 141, 140.9076576, 140.90766, 0.00002);
+            elementData[60] = new ElementMem("Nd", 3, 142, 141.907729, 144.242, 0.003);
+            elementData[61] = new ElementMem("Pm", 3, 145, 144.9127559, 145, 0.0005);
+            elementData[62] = new ElementMem("Sm", 3, 152, 151.9197397, 150.36, 0.02);
+            elementData[63] = new ElementMem("Eu", 3, 153, 152.921238, 151.964, 0.001);
+            elementData[64] = new ElementMem("Gd", 3, 158, 157.9241123, 157.25, 0.03);
+            elementData[65] = new ElementMem("Tb", 3, 159, 158.9253547, 158.92535, 0.00002);
+            elementData[66] = new ElementMem("Dy", 3, 164, 163.9291819, 162.5, 0.001);
+            elementData[67] = new ElementMem("Ho", 3, 165, 164.9303288, 164.93033, 0.00002);
+            elementData[68] = new ElementMem("Er", 3, 166, 165.9302995, 167.259, 0.003);
+            elementData[69] = new ElementMem("Tm", 3, 169, 168.9342179, 168.93422, 0.00002);
+            elementData[70] = new ElementMem("Yb", 3, 174, 173.9388664, 173.054, 0.005);
+            elementData[71] = new ElementMem("Lu", 3, 175, 174.9407752, 174.9668, 0.0001);
+            elementData[72] = new ElementMem("Hf", 4, 180, 179.946557, 178.49, 0.02);
+            elementData[73] = new ElementMem("Ta", 5, 181, 180.9479958, 180.94788, 0.00002);
+            elementData[74] = new ElementMem("W", 6, 184, 183.95093092, 183.84, 0.01);
+            elementData[75] = new ElementMem("Re", 7, 187, 186.9557501, 186.207, 0.001);
+            elementData[76] = new ElementMem("Os", 4, 192, 191.961477, 190.23, 0.03);
+            elementData[77] = new ElementMem("Ir", 4, 193, 192.9629216, 192.217, 0.003);
+            elementData[78] = new ElementMem("Pt", 4, 195, 194.9647917, 195.084, 0.009);
+            elementData[79] = new ElementMem("Au", 3, 197, 196.96656879, 196.966569, 0.000005);
+            elementData[80] = new ElementMem("Hg", 2, 202, 201.9706434, 200.592, 0.003);
+            elementData[81] = new ElementMem("Tl", 1, 205, 204.9744278, 204.38, 0.0015);
+            elementData[82] = new ElementMem("Pb", 2, 208, 207.9766525, 207.2, 0.1);
+            elementData[83] = new ElementMem("Bi", 3, 209, 208.9803991, 208.9804, 0.00001);
+            elementData[84] = new ElementMem("Po", 4, 209, 208.9824308, 209, 0.0005);
+            elementData[85] = new ElementMem("At", -1, 210, 209.9871479, 210, 0.0005);
+            elementData[86] = new ElementMem("Rn", 0, 222, 222.0175782, 222, 0.0005);
+            elementData[87] = new ElementMem("Fr", 1, 223, 223.019736, 223, 0.0005);
+            elementData[88] = new ElementMem("Ra", 2, 226, 226.0254103, 226, 0.0005);
+            elementData[89] = new ElementMem("Ac", 3, 227, 227.0277523, 227, 0.0005);
+            elementData[90] = new ElementMem("Th", 4, 232, 232.0380558, 232.0377, 0.0004);
+            elementData[91] = new ElementMem("Pa", 5, 231, 231.0358842, 231.03588, 0.00002);
+            elementData[92] = new ElementMem("U", 6, 238, 238.0507884, 238.02891, 0.00003);
+            elementData[93] = new ElementMem("Np", 5, 237, 237.0481736, 237, 0.0005);
+            elementData[94] = new ElementMem("Pu", 4, 244, 244.0642053, 244, 0.0005);
+            elementData[95] = new ElementMem("Am", 3, 243, 243.0613813, 243.1, 0.0005);
+            elementData[96] = new ElementMem("Cm", 3, 247, 247.0703541, 247.1, 0.0005);
+            elementData[97] = new ElementMem("Bk", 3, 247, 247.0703073, 247.1, 0.0005);
+            elementData[98] = new ElementMem("Cf", 3, 251, 251.0795886, 251.1, 0.0005);
+            elementData[99] = new ElementMem("Es", 3, 252, 252.08298, 252.1, 0.0005);
+            elementData[100] = new ElementMem("Fm", 3, 257, 257.0951061, 257.1, 0.0005);
+            elementData[101] = new ElementMem("Md", 3, 258, 258.0984315, 258.1, 0.0005);
+            elementData[102] = new ElementMem("No", 2, 259, 259.10103, 259.1, 0.0005);
+            elementData[103] = new ElementMem("Lr", 3, 262, 262.10961, 262.1, 0.0005);
+            elementData[104] = new ElementMem("Rf", 4, 267, 267.12179, 267.1, 0.0005);
+            elementData[105] = new ElementMem("Db", 5, 268, 268.12567, 268.1, 0.0005);
+            elementData[106] = new ElementMem("Sg", 6, 271, 271.13393, 271.1, 0.0005);
+            elementData[107] = new ElementMem("Bh", 7, 272, 272.13826, 272.1, 0.0005);
+            elementData[108] = new ElementMem("Hs", 8, 270, 270.13429, 270.1, 0.0005);
+            elementData[109] = new ElementMem("Mt", 3, 276, 276.15159, 276.2, 0.0005);
+            elementData[110] = new ElementMem("Ds", 0, 281, 281.16451, 281.2, 0.0005);
+            elementData[111] = new ElementMem("Rg", 3, 280, 280.16514, 280.2, 0.0005);
+            elementData[112] = new ElementMem("Cn", 2, 285, 285.17712, 285.2, 0.0005);
+            elementData[113] = new ElementMem("Nh", 1, 284, 284.17873, 284.2, 0.0005);
+            elementData[114] = new ElementMem("Fl", 2, 289, 289.19042, 289.2, 0.0005);
+            elementData[115] = new ElementMem("Mc", 1, 288, 288.19274, 288.2, 0.0005);
+            elementData[116] = new ElementMem("Lv", 2, 293, 293.20449, 293.2, 0.0005);
+            elementData[117] = new ElementMem("Ts", 1, 292, 292.20746, 292.2, 0.0005);
+            elementData[118] = new ElementMem("Og", 2, 294, 294.21392, 294.2, 0.0005);
 
             return elementData;
         }
@@ -462,11 +479,15 @@ namespace MolecularWeightCalculator.Formula
             // Note: We stored data in the isoData[] array above
             // then copy to the ElementStats[] array here for the purposes of
             // decreasing the size of this method
-            for (var elementNumber = 1; elementNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; elementNumber++)
+            for (var atomicNumber = 1; atomicNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; atomicNumber++)
             {
-                var stats = elementStats[elementNumber];
+                var stats = elementStats[atomicNumber];
                 short isotopeIndex = 0;
-                foreach (var isotope in isoData[elementNumber])
+
+                if (atomicNumber >= isoData.Length)
+                    continue;
+
+                foreach (var isotope in isoData[atomicNumber])
                 {
                     stats.Isotopes.Add(isotope);
                     isotopeIndex++;

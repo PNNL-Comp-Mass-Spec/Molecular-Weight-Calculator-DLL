@@ -30,7 +30,7 @@ namespace MolecularWeightCalculator.Formula
         private FormulaParser Parser => mMassCalc.Parser;
         private FormulaOptions Options => mMassCalc.ComputationOptions;
 
-        public const int ELEMENT_COUNT = 103;
+        public const int ELEMENT_COUNT = 118;
         internal const int MAX_ISOTOPES = 11;
 
         public const int MAX_ABBREV_COUNT = 500;
