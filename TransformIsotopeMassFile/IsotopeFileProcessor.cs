@@ -17,7 +17,36 @@ namespace TransformIsotopeMassFile
 
         private readonly Regex mRadioactiveElementMass = new(@"\[(?<Mass>[0-9.]+)\]", RegexOptions.Compiled);
 
-        public bool ProcessFile(FileInfo inputFile)
+
+        private bool GetValueAndUncertainty(string valueText, out double? numericValue, out double? uncertainty)
+        {
+            var match = mUncertaintyMatcher.Match(valueText);
+            if (match.Success)
+            {
+                numericValue = double.Parse(match.Groups["Value"].Value);
+                var uncertaintyDigits = int.Parse(match.Groups["Uncertainty"].Value);
+                uncertainty = ComputeAbsoluteUncertainty(numericValue, uncertaintyDigits);
+                return true;
+            }
+
+            uncertainty = null;
+
+            if (double.TryParse(valueText, out var value))
+            {
+                numericValue = value;
+                return true;
+            }
+
+            numericValue = null;
+            return false;
+        }
+
+        private string NullableValueToString(double? nullableValue)
+        {
+            return nullableValue.HasValue ? nullableValue.Value.ToString(CultureInfo.InvariantCulture) : string.Empty;
+        }
+
+        public bool ProcessFile(FileInfo inputFile, string outputFileName = "", string elementsFileName= "")
         {
             try
             {
@@ -82,28 +111,6 @@ namespace TransformIsotopeMassFile
                 Console.WriteLine("Error in ProcessFile: " + ex.Message);
                 return false;
             }
-        }
-
-        private bool GetValueAndUncertainty(string valueText, out double? numericValue, out int? uncertainty)
-        {
-            var match = mUncertaintyMatcher.Match(valueText);
-            if (match.Success)
-            {
-                numericValue = double.Parse(match.Groups["Value"].Value);
-                uncertainty = int.Parse(match.Groups["Uncertainty"].Value);
-                return true;
-            }
-
-            uncertainty = null;
-
-            if (double.TryParse(valueText, out var value))
-            {
-                numericValue = value;
-                return true;
-            }
-
-            numericValue = null;
-            return false;
         }
 
         private bool ReadIsotopeInfo(StreamReader reader, ICollection<IsotopeInfo> isotopes, string atomicNumberLine)
@@ -328,11 +335,6 @@ namespace TransformIsotopeMassFile
                 Console.WriteLine("Error in WriteTabularIsotopeFile: " + ex.Message);
                 return false;
             }
-        }
-
-        private string NullableValueToString(double? nullableValue)
-        {
-            return nullableValue.HasValue ? nullableValue.Value.ToString(CultureInfo.InvariantCulture) : string.Empty;
         }
     }
 }
