@@ -326,7 +326,9 @@ namespace TransformIsotopeMassFile
             }
 
             // Keys in this dictionary are element symbols, values are the best isotopic mass for each one
-            var radioactiveElementIsotopeMasses = new Dictionary<string, double> {
+            // This is primarily used for radioactive elements, but it is also used for Ge
+            var bestIsotopeByElement = new Dictionary<string, double> {
+                { "Ge", 71.92207583 },
                 { "Tc", 97.9072124  },
                 { "Pm", 144.9127559 },
                 { "Po", 208.9824308 },
@@ -357,6 +359,14 @@ namespace TransformIsotopeMassFile
                 var elementIsotopes = elements[elementSymbol];
                 var elementAdded = false;
 
+                if (elementSymbol.Equals("Ge"))
+                {
+                    // Even though ^74Ge is more abundant than ^72Ge (36% vs. 27%), use the isotopic mass of ^72Ge
+                    var bestIsotope = FindClosestIsotope(elementSymbol, elementIsotopes, bestIsotopeByElement);
+                    mostAbundantIsotopeByElement.Add(bestIsotope);
+                    continue;
+                }
+
                 foreach (var item in (from isotope in elementIsotopes orderby isotope.IsotopicComposition descending select isotope))
                 {
                     if (item.IsotopicComposition.HasValue)
@@ -365,7 +375,6 @@ namespace TransformIsotopeMassFile
                         elementAdded = true;
                         break;
                     }
-
                 }
 
                 if (elementAdded)
