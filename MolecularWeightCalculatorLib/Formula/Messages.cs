@@ -7,7 +7,7 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     internal class Messages
     {
-        // Ignore Spelling: bipyridine, Bpy, csv, Cys, Hoh, hydroxyproline, Hyp, Oac, prepend, py, txt
+        // Ignore Spelling: bipyridine, Bpy, csv, Cys, flerovium, Hoh, hydroxyproline, Hyp, Oac, prepend, py, txt
 
         /// <summary>
         /// Constructor
@@ -320,6 +320,7 @@ namespace MolecularWeightCalculator.Formula
             cautions.Add("BPy", "BPy means boron-pyridine; Bpy means bipyridine.  ");
             cautions.Add("Bpy", "Bpy means bipyridine.  ");
             cautions.Add("Cys", "Cys means cysteine; CYS means carbon-yttrium-sulfur.  ");
+            cautions.Add("FlI", "FlI means artificial element flerovium and iodine, FLi means fluorine and lithium.  ");
             cautions.Add("His", "His means histidine; HIS means hydrogen-iodine-sulfur.  ");
             cautions.Add("Hoh", "HoH means holmium-hydrogen; HOH means hydrogen-oxygen-hydrogen (aka water).  ");
             cautions.Add("Hyp", "Hyp means hydroxyproline; HYP means hydrogen-yttrium-phosphorus.  ");
