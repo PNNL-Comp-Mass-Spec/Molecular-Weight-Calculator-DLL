@@ -2,6 +2,8 @@
 {
     internal class IsotopeInfo
     {
+        // Ignore Spelling: Da
+
         /// <summary>
         /// Atomic number
         /// </summary>
@@ -75,6 +77,11 @@
             AtomicNumber = atomicNumber;
             AtomicSymbol = string.Empty;
             Notes = string.Empty;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}, {1} Da", AtomicSymbol, RelativeAtomicMass);
         }
     }
 }
