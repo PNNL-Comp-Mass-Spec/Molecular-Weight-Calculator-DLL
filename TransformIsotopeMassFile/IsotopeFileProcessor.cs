@@ -62,18 +62,26 @@ namespace TransformIsotopeMassFile
                     return false;
                 }
 
-                string outputFileName;
-                string elementsFileName;
+                string baseName;
+                string outputFileSuffix;
                 if (inputFile.Name.EndsWith("_Linearized.txt", StringComparison.OrdinalIgnoreCase))
                 {
-                    var baseName = inputFile.Name.Replace("_Linearized.txt", string.Empty);
-                    outputFileName = baseName + "_Tabular_WithUncertainty.txt";
-                    elementsFileName = baseName + "_Elements.txt";
+                    baseName = inputFile.Name.Replace("_Linearized.txt", string.Empty);
+                    outputFileSuffix = "_Tabular_WithUncertainty.txt";
                 }
                 else
                 {
-                    var baseName = Path.GetFileNameWithoutExtension(inputFile.Name);
-                    outputFileName = baseName + "_Tabular.txt";
+                    baseName = Path.GetFileNameWithoutExtension(inputFile.Name);
+                    outputFileSuffix = "_Tabular.txt";
+                }
+
+                if (string.IsNullOrWhiteSpace(outputFileName))
+                {
+                    outputFileName = baseName + outputFileSuffix;
+                }
+
+                if (string.IsNullOrWhiteSpace(elementsFileName))
+                {
                     elementsFileName = baseName + "_Elements.txt";
                 }
 
