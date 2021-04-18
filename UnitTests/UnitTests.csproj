@@ -35,7 +35,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompoundTests.cs" />
     <Compile Include="ElementTests.cs" />
     <Compile Include="FunctionalTests\FormulaSearcherTests.cs" />
     <Compile Include="FunctionalTests\FragSpecTest.cs" />

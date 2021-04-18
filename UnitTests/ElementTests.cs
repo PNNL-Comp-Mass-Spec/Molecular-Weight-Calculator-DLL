@@ -312,6 +312,7 @@ namespace UnitTests
         [TestCase("HGlyLeuTyrOH", "C17H25N3O5")]
         [TestCase("BrCH2(CH2)7CH2Br>CH8", "C8H10Br2")]
         [TestCase("C6H5Cl3>H3Cl2>HCl", "C6H3Cl2")]
+        [TestCase("H2C3H5C2HNO3CO2", "C6H8NO5")]
         [TestCase("D10C6>H10", "C6", false)]        // This is not working properly; gives C6^2.0141018H10 instead of C6; even better would be C6^1.00617H10
         [TestCase("D", "^2.0141018H")]
         [TestCase("D2CH", "C^2.0141018H2H")]
@@ -320,13 +321,17 @@ namespace UnitTests
         public void ConvertToEmpiricalTests(string formula, string expectedEmpirical, bool compareToExpected = true)
         {
             mMwtWinAvg.Compound.Formula = formula;
-            var empirical = mMwtWinAvg.Compound.ConvertToEmpirical();
+            var empirical1 = mMwtWinAvg.Compound.ConvertToEmpirical();
 
-            ShowAtConsoleAndLog(UnitTestWriterType.ConvertToEmpirical, string.Format("{0,-20} -> {1,-20}", formula, empirical));
+            mMwtWinIso.Compound.Formula = formula;
+            var empirical2 = mMwtWinAvg.Compound.ConvertToEmpirical();
+
+            ShowAtConsoleAndLog(UnitTestWriterType.ConvertToEmpirical, string.Format("{0,-20} -> {1,-20}", formula, empirical1));
 
             if (mCompareTextToExpected && compareToExpected)
             {
-                Assert.AreEqual(expectedEmpirical, empirical, "Unexpected result for {0}", formula);
+                Assert.AreEqual(expectedEmpirical, empirical1, "Unexpected result for {0}", formula);
+                Assert.AreEqual(expectedEmpirical, empirical2, "Unexpected result for {0}", formula);
             }
         }
 
