@@ -45,6 +45,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTestResultWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MolecularWeightCalculatorLib\MolecularWeightCalculatorLib.csproj">

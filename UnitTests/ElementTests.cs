@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
 using NUnit.Framework;
@@ -33,6 +34,13 @@ namespace UnitTests
         private MolecularWeightTool mMwtWinIso;
 
         /// <summary>
+        /// Dictionary of unit test result writers
+        /// </summary>
+        private Dictionary<UnitTestWriterType, UnitTestResultWriter> mTestResultWriters;
+
+        private bool mUniModHeaderWritten;
+
+        /// <summary>
         /// Instantiate two copies of the Molecular Weight Calculator
         /// One using average masses and one using isotopic masses
         /// </summary>
@@ -42,8 +50,25 @@ namespace UnitTests
             mMwtWinAvg = new MolecularWeightTool(ElementMassMode.Average);
             mMwtWinIso = new MolecularWeightTool(ElementMassMode.Isotopic);
 
-            mCompareValuesToExpected = false;
-            mCompareTextToExpected = false;
+            mTestResultWriters = new Dictionary<UnitTestWriterType, UnitTestResultWriter>();
+
+            InitializeResultsWriter(UnitTestWriterType.ComputeMass, "UnitTestResults_ComputeMass.txt");
+            InitializeResultsWriter(UnitTestWriterType.StressTest, "UnitTestResults_ComputeMassStressTest.txt");
+            InitializeResultsWriter(UnitTestWriterType.ConvertToEmpirical, "UnitTestResults_ConvertToEmpirical.txt");
+            InitializeResultsWriter(UnitTestWriterType.CircularReferenceHandling, "UnitTestResults_CircularReferenceHandling.txt");
+            InitializeResultsWriter(UnitTestWriterType.ExpandAbbreviations, "UnitTestResults_ExpandAbbreviations.txt");
+            InitializeResultsWriter(UnitTestWriterType.PercentComposition, "UnitTestResults_PercentComposition.txt");
+            InitializeResultsWriter(UnitTestWriterType.UniModFormulaWriter, "UnitTestResults_UniModFormulas.txt");
+
+            mUniModHeaderWritten = false;
+
+            mCompareValuesToExpected = true;
+            mCompareTextToExpected = true;
+        }
+
+        private void InitializeResultsWriter(UnitTestWriterType writerType, string resultsFileName)
+        {
+            mTestResultWriters.Add(writerType, new UnitTestResultWriter(resultsFileName));
         }
 
         [Test]
@@ -62,14 +87,10 @@ namespace UnitTests
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
             var resultDaIso = mMwtWinIso.ComputeMass(formula);
 
-            if (!mMwtWinIso.Compound.FormulaCapitalized.Equals(formula))
-            {
-                Console.WriteLine("Original formula:");
-                Console.WriteLine(formula);
-            }
+            ShowAtConsoleAndLog(UnitTestWriterType.ComputeMass, string.Format(
+                "{0,-22} -> {1,-20}: {2,12:F8} Da (average) and  {3,12:F8} Da (isotopic)",
+                formula, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso));
 
-            Console.WriteLine("{0,-22} -> {1,12:F8} Da (average) and  {2,12:F8} Da (isotopic)",
-                mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso);
             if (!mCompareValuesToExpected)
                 return;
 
@@ -123,13 +144,15 @@ namespace UnitTests
         [TestCase("sips cl arkcas", 277.768261, 276.75237, -1)] // Ignoring whitespace and characters outside of a-z, A-Z, 0-9, []{}().^>
         public void ComputeMassStressTest(string formula, double expectedAvgMass, double expectedMonoMass, double expectedCharge, bool bracketsAsParentheses = false)
         {
-            Console.WriteLine("Formula: " + formula);
-            Console.WriteLine();
+            ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
+            ShowAtConsoleAndLog(UnitTestWriterType.StressTest, "Formula: " + formula);
+            ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
 
-            Console.WriteLine("Average Mass:");
+            ShowAtConsoleAndLog(UnitTestWriterType.StressTest, "Average Mass:");
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
             var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseDataAvg);
-            ReportParseData(parseDataAvg);
+
+            ReportParseData(UnitTestWriterType.StressTest, parseDataAvg);
             Assert.Greater(resultDaAvg, 0);
 
             var compareValues = mCompareValuesToExpected && (expectedAvgMass > 0 || expectedMonoMass > 0 || expectedCharge != 0);
@@ -139,11 +162,11 @@ namespace UnitTests
                 Assert.AreEqual(expectedCharge, parseDataAvg.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
             }
 
-            Console.WriteLine("");
-            Console.WriteLine("Isotopic Mass:");
+            ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
+            ShowAtConsoleAndLog(UnitTestWriterType.StressTest, "Isotopic Mass:");
             mMwtWinIso.BracketsTreatedAsParentheses = bracketsAsParentheses;
             var resultDaIso = mMwtWinIso.ComputeMassExtra(formula, out var parseDataIso);
-            ReportParseData(parseDataIso);
+            ReportParseData(UnitTestWriterType.StressTest, parseDataIso);
 
             Assert.Greater(resultDaIso, 0);
             if (compareValues)
@@ -152,8 +175,8 @@ namespace UnitTests
                 Assert.AreEqual(expectedCharge, parseDataIso.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
             }
 
-            Console.WriteLine();
-            ReportParseData(mMwtWinIso);
+            // ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
+            // ReportParseData(UnitTestWriterType.StressTest, mMwtWinIso);
         }
 
         [Test]
@@ -211,10 +234,7 @@ namespace UnitTests
         {
             mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
             var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
-            ReportParseData(parseData);
-            Assert.AreEqual(errorIdExpected, parseData.ErrorData.ErrorId);
-            Assert.AreEqual(expectedPosition, parseData.ErrorData.ErrorPosition);
-            Assert.GreaterOrEqual(parseData.ErrorData.ErrorDescription.IndexOf(messageExcerpt, StringComparison.OrdinalIgnoreCase), 0, "excerpt not found in reported message statement");
+            ReportParseData(UnitTestWriterType.NoWriter, parseData);
 
             if (mCompareValuesToExpected)
             {
@@ -275,7 +295,7 @@ namespace UnitTests
         public void ComputeMassCautionMessageTests(string formula, string cautionExcerpt)
         {
             var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
-            ReportParseData(parseData);
+            ReportParseData(UnitTestWriterType.NoWriter, parseData);
 
             if (mCompareTextToExpected)
             {
@@ -302,6 +322,7 @@ namespace UnitTests
             mMwtWinAvg.Compound.Formula = formula;
             var empirical = mMwtWinAvg.Compound.ConvertToEmpirical();
 
+            ShowAtConsoleAndLog(UnitTestWriterType.ConvertToEmpirical, string.Format("{0,-20} -> {1,-20}", formula, empirical));
 
             if (mCompareTextToExpected && compareToExpected)
             {
@@ -314,64 +335,77 @@ namespace UnitTests
         {
             var mwt = new MolecularWeightTool(ElementMassMode.Average);
             var mass = mwt.ComputeMassExtra("TryCo", out var parseData);
-            //ReportParseData(parseData);
+
+            //ReportParseData(mCircularReferenceWriter, parseData);
+
             // Error expected (unknown element):
             Assert.AreEqual(1, parseData.ErrorData.ErrorId);
 
             var error = mwt.SetAbbreviation("Try", "FailH2O2", 1, false);
+
             // Error expected (unknown element):
             Assert.AreEqual(1, error);
 
             mass = mwt.ComputeMassExtra("TryCo", out parseData);
-            //ReportParseData(parseData);
+            //ReportParseData(mCircularReferenceWriter, parseData);
+
             // Error expected (unknown element):
             Assert.AreEqual(1, parseData.ErrorData.ErrorId);
 
             error = mwt.SetAbbreviation("Fail", "TryCaOH", 1, false);
+
             // Error expected (circular reference), A->B->A:
             Assert.AreEqual(28, error);
 
             mass = mwt.ComputeMassExtra("TryCo", out parseData);
-            //ReportParseData(parseData);
+            //ReportParseData(mCircularReferenceWriter, parseData);
+
             // Error expected (unknown element):
             Assert.AreEqual(1, parseData.ErrorData.ErrorId);
 
             error = mwt.SetAbbreviation("Fail", "TrierCaOH", 1, false);
+
             // Error expected (invalid abbreviation, due to bad dependency):
             Assert.AreEqual(32, error);
 
             mass = mwt.ComputeMassExtra("TryCo", out parseData);
-            //ReportParseData(parseData);
+            //ReportParseData(mCircularReferenceWriter, parseData);
+
             // Error expected (unknown element):
             Assert.AreEqual(1, parseData.ErrorData.ErrorId);
 
             error = mwt.SetAbbreviation("Trier", "TryOH", 1, false);
+
             // Error expected (circular reference), A->B->C->A:
             Assert.AreEqual(28, error);
 
             mass = mwt.ComputeMassExtra("TryCo", out parseData);
-            //ReportParseData(parseData);
+            //ReportParseData(mCircularReferenceWriter, parseData);
+
             // Error expected (unknown element):
             Assert.AreEqual(1, parseData.ErrorData.ErrorId);
 
             error = mwt.SetAbbreviation("Trier", "Trier", 1, false);
+
             // Error expected (circular reference), A->A:
             Assert.AreEqual(28, error);
 
             mass = mwt.ComputeMassExtra("TryCo", out parseData);
-            //ReportParseData(parseData);
+            //ReportParseData(mCircularReferenceWriter, parseData);
+
             // Error expected (unknown element):
             Assert.AreEqual(1, parseData.ErrorData.ErrorId);
 
             error = mwt.SetAbbreviation("Trier", "C6H12O6", 1, false);
+
             // No error expected:
             Assert.AreEqual(0, error);
 
             mass = mwt.ComputeMassExtra("TryCo", out parseData);
-            ReportParseData(parseData);
+            ReportParseData(UnitTestWriterType.CircularReferenceHandling, parseData);
+
             // No error expected:
             Assert.AreEqual(0, parseData.ErrorData.ErrorId);
-            Assert.AreEqual(330.1891, mass, MATCHING_MASS_EPSILON);
 
             if (mCompareValuesToExpected)
             {
@@ -379,10 +413,10 @@ namespace UnitTests
             }
 
             mass = mwt.ComputeMassExtra("TryCoFail", out parseData);
-            ReportParseData(parseData);
+            ReportParseData(UnitTestWriterType.CircularReferenceHandling, parseData);
+
             // No error expected:
             Assert.AreEqual(0, parseData.ErrorData.ErrorId);
-            Assert.AreEqual(567.43032, mass, MATCHING_MASS_EPSILON);
 
             if (mCompareValuesToExpected)
             {
@@ -404,41 +438,42 @@ namespace UnitTests
             var resultDaIso = mMwtWinIso.ComputeMass(formula);
             var expandedFormula = mMwtWinIso.Compound.ExpandAbbreviations();
 
-            Console.WriteLine("{0,-15} -> {1,-15}: {2,12:F8} Da (isotopic)",
-                formula, expandedFormula, resultDaIso);
+            ShowAtConsoleAndLog(UnitTestWriterType.ExpandAbbreviations, string.Format(
+                "{0,-20} -> {1,-23}: {2,12:F8} Da (isotopic)",
+                formula, expandedFormula, resultDaIso));
 
-            Assert.AreEqual(expectedExpandedFormula, expandedFormula, "New formula does not match expected");
             if (mCompareTextToExpected)
             {
                 Assert.AreEqual(expectedExpandedFormula, expandedFormula, "New formula does not match expected");
             }
         }
 
-        private void ReportParseData(IFormulaParseData data)
+        private void ReportParseData(UnitTestWriterType writerType, IFormulaParseData data)
         {
             if (!string.IsNullOrWhiteSpace(data.CautionDescription))
             {
-                Console.WriteLine("Cautions: {0}", data.CautionDescription);
-                Console.WriteLine();
+                ShowAtConsoleAndLog(writerType, string.Format("  Caution: {0}", data.CautionDescription));
+                ShowAtConsoleAndLog(writerType);
             }
 
             if (data.ErrorData.ErrorId == 0)
             {
-                Console.WriteLine(data.Formula);
-                var stats = data.Stats;
+                ShowAtConsoleAndLog(writerType, "  " + data.Formula);
 
-                Console.WriteLine("StDev:  {0}", stats.StandardDeviation);
-                Console.WriteLine("Mass:   {0}", stats.TotalMass);
-                Console.WriteLine("Charge: {0}", stats.Charge);
+                var stats = data.Stats;
+                ShowAtConsoleAndLog(writerType, string.Format("  StDev:  {0}", stats.StandardDeviation));
+                ShowAtConsoleAndLog(writerType, string.Format("  Mass:   {0}", stats.TotalMass));
+                ShowAtConsoleAndLog(writerType, string.Format("  Charge: {0}", stats.Charge));
             }
             else
             {
-                Console.WriteLine(data.FormulaOriginal);
-                Console.WriteLine("ErrorId:          {0}", data.ErrorData.ErrorId);
-                Console.WriteLine("ErrorPos:         {0}", data.ErrorData.ErrorPosition);
-                Console.WriteLine("ErrorChar:        {0}", data.ErrorData.ErrorCharacter);
-                Console.WriteLine("ErrorDescription: {0}", data.ErrorData.ErrorDescription);
-                Console.WriteLine();
+                ShowAtConsoleAndLog(writerType, "  " + data.FormulaOriginal);
+                ShowAtConsoleAndLog(writerType, string.Format("  ErrorId:          {0}", data.ErrorData.ErrorId));
+                ShowAtConsoleAndLog(writerType, string.Format("  ErrorPos:         {0}", data.ErrorData.ErrorPosition));
+                ShowAtConsoleAndLog(writerType, string.Format("  ErrorChar:        {0}", data.ErrorData.ErrorCharacter));
+                ShowAtConsoleAndLog(writerType, string.Format("  ErrorDescription: {0}", data.ErrorData.ErrorDescription));
+                ShowAtConsoleAndLog(writerType);
+
                 string markedFormula;
                 var formula = data.Formula;
                 var position = data.ErrorData.ErrorPosition;
@@ -454,37 +489,39 @@ namespace UnitTests
                 {
                     markedFormula = formula.Substring(0, position) + "'" + formula[position] + "'" + formula.Substring(position + 1);
                 }
-                Console.WriteLine("Highlight: {0}", markedFormula);
+
+                ShowAtConsoleAndLog(writerType, string.Format("  Highlight: {0}", markedFormula));
             }
         }
 
-        // ReSharper disable once UnusedMember.Local
-        private void ReportParseData(MolecularWeightTool mwt)
+        // ReSharper disable once SuggestBaseTypeForParameter
+        private void ReportParseData(UnitTestWriterType writerType, MolecularWeightTool mwt)
         {
             // Use this in comparison to the other ReportParseData method... (results should be the same)
             var compound = mwt.Compound;
             if (!string.IsNullOrWhiteSpace(compound.CautionDescription))
             {
-                Console.WriteLine("Cautions: {0}", compound.CautionDescription);
-                Console.WriteLine();
+                ShowAtConsoleAndLog(writerType, string.Format("  Caution: {0}", compound.CautionDescription));
+                ShowAtConsoleAndLog(writerType);
             }
 
             if (mwt.ErrorId == 0)
             {
-                Console.WriteLine(compound.FormulaCapitalized);
+                ShowAtConsoleAndLog(writerType, "  " + compound.FormulaCapitalized);
 
-                Console.WriteLine("StDev:  {0}", compound.StandardDeviation);
-                Console.WriteLine("Mass:   {0}", compound.GetMass(false));
-                Console.WriteLine("Charge: {0}", compound.Charge);
+                ShowAtConsoleAndLog(writerType, string.Format("  StDev:  {0}", compound.StandardDeviation));
+                ShowAtConsoleAndLog(writerType, string.Format("  Mass:   {0}", compound.GetMass(false)));
+                ShowAtConsoleAndLog(writerType, string.Format("  Charge: {0}", compound.Charge));
             }
             else
             {
-                Console.WriteLine(compound.Formula);
-                Console.WriteLine("ErrorId:          {0}", mwt.ErrorId);
-                Console.WriteLine("ErrorPos:         {0}", mwt.ErrorPosition);
-                Console.WriteLine("ErrorChar:        {0}", mwt.ErrorCharacter);
-                Console.WriteLine("ErrorDescription: {0}", mwt.ErrorDescription);
-                Console.WriteLine();
+                ShowAtConsoleAndLog(writerType, "  " + compound.Formula);
+                ShowAtConsoleAndLog(writerType, string.Format("  ErrorId:          {0}", mwt.ErrorId));
+                ShowAtConsoleAndLog(writerType, string.Format("  ErrorPos:         {0}", mwt.ErrorPosition));
+                ShowAtConsoleAndLog(writerType, string.Format("  ErrorChar:        {0}", mwt.ErrorCharacter));
+                ShowAtConsoleAndLog(writerType, string.Format("  ErrorDescription: {0}", mwt.ErrorDescription));
+                ShowAtConsoleAndLog(writerType);
+
                 string markedFormula;
                 var formula = compound.FormulaCapitalized;
                 var position = mwt.ErrorPosition;
@@ -500,8 +537,31 @@ namespace UnitTests
                 {
                     markedFormula = formula.Substring(0, position) + "'" + formula[position] + "'" + formula.Substring(position + 1);
                 }
-                Console.WriteLine("Highlight: {0}", markedFormula);
+
+                ShowAtConsoleAndLog(writerType, string.Format("  Highlight: {0}", markedFormula));
             }
+        }
+
+        private void ShowAtConsoleAndLog(UnitTestWriterType writerType, string text = "")
+        {
+            if (writerType != UnitTestWriterType.NoWriter)
+            {
+                if (!mTestResultWriters[writerType].FilePathShown)
+                {
+                    Console.WriteLine("Unit test results file path: ");
+                    Console.WriteLine(mTestResultWriters[writerType].ResultsFile.FullName);
+                    Console.WriteLine();
+
+                    mTestResultWriters[writerType].FilePathShown = true;
+                }
+
+                if (writerType != UnitTestWriterType.UniModFormulaWriter || !string.IsNullOrWhiteSpace(text))
+                {
+                    mTestResultWriters[writerType].WriteLine(text);
+                }
+            }
+
+            Console.WriteLine(text);
         }
 
         [Test]
@@ -1200,15 +1260,25 @@ namespace UnitTests
             double matchToleranceVsUniModMono = 0.0005,
             double matchTolerance = MATCHING_MASS_EPSILON)
         {
+            if (!mTestResultWriters[UnitTestWriterType.UniModFormulaWriter].FilePathShown)
+            {
+                ShowAtConsoleAndLog(UnitTestWriterType.UniModFormulaWriter);
+            }
+
+            if (!mUniModHeaderWritten)
+            {
+                mTestResultWriters[UnitTestWriterType.UniModFormulaWriter].WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}",
+                    "UniMod Formula", "UniMod Average Mass", "UniMod Isotopic Mass",
+                    "Updated Formula", "Computed Average Mass", "Computed Monoisotopic Mass");
+
+                mUniModHeaderWritten = true;
+            }
+
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
             var resultDaIso = mMwtWinIso.ComputeMass(formula);
 
-            // Uncomment to write the data to disk
-            // using (var writer = new StreamWriter(new FileStream(@"C:\Temp\UnimodMasses.txt", FileMode.Append, FileAccess.Write, FileShare.Read)))
-            // {
-            //     writer.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}",
-            //         formula, avgMassUniMod, monoMassUniMod, expectedUpdatedFormula, resultDaAvg, resultDaIso);
-            // }
+            mTestResultWriters[UnitTestWriterType.UniModFormulaWriter].WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}",
+                formula, avgMassUniMod, monoMassUniMod, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso);
 
             Console.WriteLine("{0,-15} -> {1,-15}: {2,12:F8} Da (average) and  {3,12:F8} Da (isotopic)",
                 formula, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso);
