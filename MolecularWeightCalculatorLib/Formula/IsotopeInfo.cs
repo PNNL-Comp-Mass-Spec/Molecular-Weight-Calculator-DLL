@@ -5,7 +5,15 @@ namespace MolecularWeightCalculator.Formula
     [ComVisible(false)]
     public class IsotopeInfo
     {
+        /// <summary>
+        /// Monoisotopic mass
+        /// </summary>
         public double Mass { get; }
+
+        /// <summary>
+        /// Relative abundance of this isotope (aka isotopic composition)
+        /// </summary>
+        /// <remarks>Value between 0 and 1</remarks>
         public float Abundance { get; }
 
         public IsotopeInfo(double mass, float abundance)

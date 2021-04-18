@@ -10,14 +10,31 @@ namespace MolecularWeightCalculator.Formula
         public double Mass { get; set; }
         public double Uncertainty { get; set; }
         public float Charge { get; set; }
-        public List<IsotopeInfo> Isotopes { get; } // Masses and Abundances of the isotopes; 0-based array, ranging from 0 to MAX_Isotopes - 1 (at most)
 
+        /// <summary>
+        /// Masses and relative abundance of isotopes tracked for this element
+        /// </summary>
+        /// <remarks>
+        /// 0-based list, ranging from 0 to MAX_ISOTOPES - 1 (at most)
+        /// </remarks>
+        public List<IsotopeInfo> Isotopes { get; }
+
+        /// <summary>
+        /// Parameterless constructor
+        /// </summary>
         public ElementInfo()
         {
             Symbol = string.Empty;
             Isotopes = new List<IsotopeInfo>();
         }
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="charge"></param>
+        /// <param name="mass"></param>
+        /// <param name="uncertainty"></param>
         public ElementInfo(string symbol, float charge, double mass, double uncertainty = 0)
         {
             Symbol = symbol;
