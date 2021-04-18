@@ -136,9 +136,9 @@ namespace UnitTests
         [TestCase("HGly5.3Leu2.2Tyr0.03OH", 574.229583, 573.901147922, 0)]
         [TestCase("HGly5.3leu2.2tyr0.03oh", 574.229583, 573.901147922, 0)]
         [TestCase("HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe", 3357.7013952, 3357.0639367, 80)]
-        [TestCase("hhelibebcnofnenamgalsipsClArKcasctivcrmnfeconicuzngageassebrkrrbsryzrnbmotcrurhpdagcdinsnsbteixe", 3586.7961552, 3596.0659477, 88)]
-        [TestCase("CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr", 9710.62118, 9728.379096, 154)]
-        [TestCase("csbalaceprndpmsmeugdtbdyhoertmybluhftawreosirptauhgtlpbbipoatrnfrraacthpaunppuamcmbkcfesfmmdnolr", 9710.62118, 9728.379096, 154)]
+        [TestCase("hhelibebcnofnenamgalsipsClArKcasctivcrmnfeconicuzngageassebrkrrbsryzrnbmotcrurhpdagcdinsnsbteixe", 3586.7961552, 3586.0659477, 87)]
+        [TestCase("CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr", 9710.62118, 9718.379096, 153)]
+        [TestCase("csbalaceprndpmsmeugdtbdyhoertmybluhftawreosirptauhgtlpbbipoatrnfrraacthpaunppuamcmbkcfesfmmdnolr", 9710.62118, 9718.379096, 153)]
         [TestCase("cdinsnsbteixecsbalaceprndpm", 1832.80777, 1835.765967, 22)]
         [TestCase("CdInSnSbTeIXeCsBaLaCePrNdPm", 1832.80777, 1835.765967, 22)]
         [TestCase("sips cl arkcas", 277.768261, 276.75237, -1)] // Ignoring whitespace and characters outside of a-z, A-Z, 0-9, []{}().^>
