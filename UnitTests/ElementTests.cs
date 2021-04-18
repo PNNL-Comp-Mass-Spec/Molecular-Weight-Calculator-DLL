@@ -305,6 +305,64 @@ namespace UnitTests
         }
 
         [Test]
+        [TestCase("BrCH2(CH2)7CH2Br", "H=6.34263 (±0.0004), C=37.78967 (±0.003), Br=55.8677 (±0.0009)")]
+        [TestCase("FeCl3-6H2O", "H=4.47485 (±0.0003), O=35.51545 (±0.0008), Cl=39.34893 (±0.001), Fe=20.66078 (±0.0008)")]
+        [TestCase("Co(Bpy)(CO)4", "H=2.46472 (±0.0002), C=51.39719 (±0.003), N=8.56269 (±9E-05), O=19.5617 (±0.0004), Co=18.0137 (±0.0002)")]
+        [TestCase("^13C6H6-.1H2O", "H=7.27931 (±0.0005), C=90.85702 (±0.0002), O=1.86366 (±4E-05)")]
+        [TestCase("HGlyLeuTyrOH", "H=7.17094 (±0.0005), C=58.10566 (±0.004), N=11.95803 (±0.0001), O=22.76538 (±0.0005)")]
+        [TestCase("BrCH2(CH2)7CH2Br>CH8", "H=3.78963 (±0.0003), C=36.12607 (±0.002), Br=60.08429 (±0.001)")]
+        [TestCase("C6H5Cl3>H3Cl2>HCl", "H=2.0712 (±0.0001), C=49.36127 (±0.003), Cl=48.56753 (±0.001)")]
+        [TestCase("H2C3H5C2HNO3CO2", "H=4.63071 (±0.0003), C=41.38494 (±0.003), N=8.04377 (±0.0001), O=45.94058 (±0.001)")]
+        [TestCase("D", "H=100.0 (±0)")]
+        [TestCase("D2CH", "H=29.54297 (±0.001), C=70.45703 (±0.006)")]
+        [TestCase("D2CH^3H3", "H=53.88808 (±0.002), C=46.11192 (±0.003)")]
+        [TestCase("D2C^13C5H^3H3", "H=15.4164 (±0.0001), C=84.5836 (±0.0007)")]
+        public void ComputePercentCompositionTests(string formula, string expectedPercentCompositionByElement)
+        {
+            mMwtWinAvg.Compound.Formula = formula;
+            var percentComposition1 = mMwtWinAvg.Compound.GetPercentCompositionForAllElements();
+
+            mMwtWinIso.Compound.Formula = formula;
+            var percentComposition2 = mMwtWinAvg.Compound.GetPercentCompositionForAllElements();
+
+            ShowAtConsoleAndLog(UnitTestWriterType.PercentComposition, formula);
+
+            foreach (var item in percentComposition1)
+            {
+                ShowAtConsoleAndLog(UnitTestWriterType.PercentComposition, string.Format("{0,-3} {1}", item.Key, item.Value));
+            }
+
+            ShowAtConsoleAndLog(UnitTestWriterType.PercentComposition);
+
+            if (mCompareTextToExpected && !string.IsNullOrWhiteSpace(expectedPercentCompositionByElement))
+            {
+                ComparePercentCompositionValues(formula, expectedPercentCompositionByElement, percentComposition1);
+                ComparePercentCompositionValues(formula, expectedPercentCompositionByElement, percentComposition2);
+            }
+        }
+
+        private static void ComparePercentCompositionValues(
+            string formula,
+            string expectedPercentCompositionByElement,
+            IReadOnlyDictionary<string, string> computedPercentComposition)
+        {
+            foreach (var item in expectedPercentCompositionByElement.Split(','))
+            {
+                var itemParts = item.Split(new[] { '=' }, 2);
+
+                var element = itemParts[0].Trim();
+                var percentComposition = itemParts[1].Trim();
+
+                if (!computedPercentComposition.TryGetValue(element, out var computedValue))
+                {
+                    Assert.Fail("Actual percent composition data does not have expected element: {0}", item);
+                }
+
+                Assert.AreEqual(computedValue, percentComposition, "Unexpected percent composition for formula {0}, element: {1}", formula, element);
+            }
+        }
+
+        [Test]
         [TestCase("BrCH2(CH2)7CH2Br", "C9H18Br2")]
         [TestCase("FeCl3-6H2O", "H12Cl3FeO6")]
         [TestCase("Co(Bpy)(CO)4", "C14H8CoN2O4")]
