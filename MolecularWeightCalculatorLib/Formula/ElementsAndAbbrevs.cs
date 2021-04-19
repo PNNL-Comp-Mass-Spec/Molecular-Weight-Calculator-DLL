@@ -617,16 +617,21 @@ namespace MolecularWeightCalculator.Formula
             const double defaultChargeCarrierMassAvg = 1.00739d;
             const double defaultChargeCarrierMassMonoiso = 1.00727649d;
 
-            // Data obtained from the Perma-Chart Science Series periodic table, 1993.
-            // For Radioactive elements, the most stable isotope is NOT used;
-            // instead, an average molecular weight is used, just like with other elements.
+            // Data obtained from https://www.nist.gov/pml/atomic-weights-and-isotopic-compositions-relative-atomic-masses
+            // which obtained its data from https://www.ciaaw.org/atomic-weights.htm and https://www.degruyter.com/document/doi/10.1351/PAC-REP-10-06-02/html
 
-            // Uncertainties from CRC Handbook of Chemistry and Physics, except for
-            // Radioactive elements, where uncertainty was estimated to be .n5 where
-            // specificElementProperty represents the number digits after the decimal point but before the last
-            // number of the molecular weight.
+            // For elements with a standard atomic weight range (e.g. [6.938,6.997] for Lithium), use the conventional atomic-weight,
+            // as defined in Table 3 in "Atomic weights of the elements 2013 (IUPAC Technical Report)"
+            // Published in Pure and Applied Chemistry, Volume 88, Issue 3
+            // https://doi.org/10.1515/pac-2015-0305
 
-            // For example, for No, MW = 259.1009 (±0.0005)
+            // For radioactive elements, the mass of the most stable isotope is stored for the isotopic mass
+
+            // Naturally occurring radioactive elements have an average weight and associated uncertainty
+            // For the other radioactive elements, the mass of the most stable isotope is used, rounded to one decimal place
+            // When an average mass uncertainty is not available, a value of 0.0005 is used
+
+            // For example, Nobelium has average mass 259.1 (±0.0005)
 
             // Define the charge carrier mass
             if (elementMode == ElementMassMode.Average)
@@ -682,7 +687,8 @@ namespace MolecularWeightCalculator.Formula
                 }
 
                 // Alphabetize mElementAlph by Key/symbol
-                //mElementAlph.Sort((x, y) => string.Compare(x.Key, y.Key, StringComparison.Ordinal));
+                // mElementAlph.Sort((x, y) => string.Compare(x.Key, y.Key, StringComparison.Ordinal));
+
                 // Alphabetize mElementAlph by Key/symbol, except for carbon and hydrogen (put them first)
                 mElementAlph.Sort((x, y) =>
                 {
