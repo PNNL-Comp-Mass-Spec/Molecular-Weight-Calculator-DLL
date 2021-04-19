@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
 using NUnit.Framework;
@@ -18,7 +19,6 @@ namespace UnitTests
         // Ignore Spelling: arkcas, Bpy, cd, Da, Gly, Leu, NOCH4, noresult, Nz, Pos, rkcas, sipsclarkcas, Tyr, UniMod
 
         // ReSharper restore CommentTypo
-
 
         private const double MATCHING_MASS_EPSILON = 0.0000001;
         private const double MATCHING_CHARGE_EPSILON = 0.05;
@@ -62,6 +62,7 @@ namespace UnitTests
             InitializeResultsWriter(UnitTestWriterType.ExpandAbbreviations, "UnitTestResults_ExpandAbbreviations.txt");
             InitializeResultsWriter(UnitTestWriterType.PercentComposition, "UnitTestResults_PercentComposition.txt");
             InitializeResultsWriter(UnitTestWriterType.UniModFormulaWriter, "UnitTestResults_UniModFormulas.txt");
+            InitializeResultsWriter(UnitTestWriterType.UnitTestCaseWriter, "UnitTestCases.txt");
 
             mUniModHeaderWritten = false;
 
@@ -89,6 +90,8 @@ namespace UnitTests
         {
             var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
             var resultDaIso = mMwtWinIso.ComputeMass(formula);
+
+            WriteUpdatedTestCase("ComputeMass", "[TestCase(\"{0}\", {1}, {2})]", formula, resultDaAvg, resultDaIso);
 
             ShowAtConsoleAndLog(UnitTestWriterType.ComputeMass, string.Format(
                 "{0,-22} -> {1,-20}: {2,12:F8} Da (average) and  {3,12:F8} Da (isotopic)",
@@ -179,6 +182,12 @@ namespace UnitTests
                 Assert.AreEqual(expectedMonoMass, resultDaIso, MATCHING_MASS_EPSILON, "Actual mass does not match expected isotopic mass");
                 Assert.AreEqual(expectedCharge, parseDataIso.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
             }
+
+            var optionalBracketsArgument = bracketsAsParentheses ? ", true" : string.Empty;
+
+            WriteUpdatedTestCase("ComputeMassStressTest",
+                "[TestCase(\"{0}\", {1}, {2}, {3}{4})]",
+                formula, resultDaAvg, resultDaIso, parseDataIso.Charge, optionalBracketsArgument);
 
             // ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
             // ReportParseData(UnitTestWriterType.StressTest, mMwtWinIso);
@@ -332,9 +341,17 @@ namespace UnitTests
 
             ShowAtConsoleAndLog(UnitTestWriterType.PercentComposition, formula);
 
+            var percentCompositionData = new StringBuilder();
             foreach (var item in percentComposition1)
             {
                 ShowAtConsoleAndLog(UnitTestWriterType.PercentComposition, string.Format("{0,-3} {1}", item.Key, item.Value));
+
+                if (percentCompositionData.Length > 0)
+                {
+                    percentCompositionData.Append(", ");
+                }
+
+                percentCompositionData.AppendFormat("{0}={1}", item.Key, item.Value);
             }
 
             ShowAtConsoleAndLog(UnitTestWriterType.PercentComposition);
@@ -344,6 +361,8 @@ namespace UnitTests
                 ComparePercentCompositionValues(formula, expectedPercentCompositionByElement, percentComposition1);
                 ComparePercentCompositionValues(formula, expectedPercentCompositionByElement, percentComposition2);
             }
+
+            WriteUpdatedTestCase("ComputePercentCompositionTests", "[TestCase(\"{0}\", \"{1}\")]", formula, percentCompositionData.ToString());
         }
 
         private static void ComparePercentCompositionValues(
@@ -396,6 +415,10 @@ namespace UnitTests
                 Assert.AreEqual(expectedEmpirical, empirical1, "Unexpected result for {0}", formula);
                 Assert.AreEqual(expectedEmpirical, empirical2, "Unexpected result for {0}", formula);
             }
+
+            var optionalCompareArgument = compareToExpected ? string.Empty : ", false";
+
+            WriteUpdatedTestCase("ConvertToEmpiricalTests", "[TestCase(\"{0}\", \"{1}\"{2})]", formula, empirical1, optionalCompareArgument);
         }
 
         [Test]
@@ -514,6 +537,8 @@ namespace UnitTests
             {
                 Assert.AreEqual(expectedExpandedFormula, expandedFormula, "New formula does not match expected");
             }
+
+            WriteUpdatedTestCase("TestExpandAbbreviations", "[TestCase(\"{0}\", \"{1}\")]", formula, expandedFormula);
         }
 
         private void ReportParseData(UnitTestWriterType writerType, IFormulaParseData data)
@@ -630,6 +655,18 @@ namespace UnitTests
             }
 
             Console.WriteLine(text);
+        }
+
+        /// <summary>
+        /// Append C# code that can be used to update test cases with new masses
+        /// </summary>
+        /// <param name="callingMethod"></param>
+        /// <param name="format"></param>
+        /// <param name="arg"></param>
+        private void WriteUpdatedTestCase(string callingMethod, string format, params object[] arg)
+        {
+            var testCaseCode = string.Format(format, arg);
+            mTestResultWriters[UnitTestWriterType.UnitTestCaseWriter].WriteLine("{0,-30} {1}", callingMethod, testCaseCode);
         }
 
         [Test]
@@ -1350,6 +1387,12 @@ namespace UnitTests
 
             Console.WriteLine("{0,-15} -> {1,-15}: {2,12:F8} Da (average) and  {3,12:F8} Da (isotopic)",
                 formula, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso);
+
+            var optionalMassToleranceArgument = Math.Abs(matchToleranceVsUniModAvg - 0.0005) < 0.000001 ? string.Empty : ", " + matchToleranceVsUniModAvg;
+
+            WriteUpdatedTestCase("TestUniModFormulas",
+                "[TestCase(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}{6})]",
+                formula, avgMassUniMod, monoMassUniMod, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso, optionalMassToleranceArgument);
 
             if (mCompareTextToExpected)
             {

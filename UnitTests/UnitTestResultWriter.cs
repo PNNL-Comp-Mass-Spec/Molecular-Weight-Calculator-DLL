@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace UnitTests
 {
@@ -16,7 +11,8 @@ namespace UnitTests
         CircularReferenceHandling = 4,
         ExpandAbbreviations = 5,
         PercentComposition = 6,
-        UniModFormulaWriter = 7
+        UniModFormulaWriter = 7,
+        UnitTestCaseWriter = 8
     }
 
     internal class UnitTestResultWriter
