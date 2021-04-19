@@ -33,8 +33,8 @@ namespace UnitTests
         /// </summary>
         private bool mCompareTextToExpected = true;
 
-        private MolecularWeightTool mMwtWinAvg;
-        private MolecularWeightTool mMwtWinIso;
+        private MolecularWeightTool mAverageMassCalculator;
+        private MolecularWeightTool mMonoisotopicMassCalculator;
 
         /// <summary>
         /// Dictionary of unit test result writers
@@ -50,8 +50,8 @@ namespace UnitTests
         [OneTimeSetUp]
         public void Setup()
         {
-            mMwtWinAvg = new MolecularWeightTool(ElementMassMode.Average);
-            mMwtWinIso = new MolecularWeightTool(ElementMassMode.Isotopic);
+            mAverageMassCalculator = new MolecularWeightTool(ElementMassMode.Average);
+            mMonoisotopicMassCalculator = new MolecularWeightTool(ElementMassMode.Isotopic);
 
             mTestResultWriters = new Dictionary<UnitTestWriterType, UnitTestResultWriter>();
 
@@ -88,20 +88,20 @@ namespace UnitTests
         [TestCase("D10>H10", 10.061018, 10.0627676777)]                  // In VB6, D was defined as "^2.014H"; in C#, it is "^2.0141018H"
         public void ComputeMass(string formula, double expectedAvgMass, double expectedMonoMass, double matchTolerance = MATCHING_MASS_EPSILON)
         {
-            var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
-            var resultDaIso = mMwtWinIso.ComputeMass(formula);
+            var averageMass = mAverageMassCalculator.ComputeMass(formula);
+            var isotopicMass = mMonoisotopicMassCalculator.ComputeMass(formula);
 
-            WriteUpdatedTestCase("ComputeMass", "[TestCase(\"{0}\", {1}, {2})]", formula, resultDaAvg, resultDaIso);
+            WriteUpdatedTestCase("ComputeMass", "[TestCase(\"{0}\", {1}, {2})]", formula, averageMass, isotopicMass);
 
             ShowAtConsoleAndLog(UnitTestWriterType.ComputeMass, string.Format(
                 "{0,-22} -> {1,-20}: {2,12:F8} Da (average) and  {3,12:F8} Da (isotopic)",
-                formula, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso));
+                formula, mMonoisotopicMassCalculator.Compound.FormulaCapitalized, averageMass, isotopicMass));
 
             if (!mCompareValuesToExpected)
                 return;
 
-            Assert.AreEqual(expectedAvgMass, resultDaAvg, matchTolerance, "Actual mass does not match expected average mass");
-            Assert.AreEqual(expectedMonoMass, resultDaIso, matchTolerance, "Actual mass does not match expected isotopic mass");
+            Assert.AreEqual(expectedAvgMass, averageMass, matchTolerance, "Actual mass does not match expected average mass");
+            Assert.AreEqual(expectedMonoMass, isotopicMass, matchTolerance, "Actual mass does not match expected isotopic mass");
         }
 
         // ReSharper disable StringLiteralTypo
@@ -155,29 +155,29 @@ namespace UnitTests
             ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
 
             ShowAtConsoleAndLog(UnitTestWriterType.StressTest, "Average Mass:");
-            mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
-            var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseDataAvg);
+            mAverageMassCalculator.BracketsTreatedAsParentheses = bracketsAsParentheses;
+            var averageMass = mAverageMassCalculator.ComputeMassExtra(formula, out var parseDataAvg);
 
             ReportParseData(UnitTestWriterType.StressTest, parseDataAvg);
-            Assert.Greater(resultDaAvg, 0);
+            Assert.Greater(averageMass, 0);
 
             var compareValues = mCompareValuesToExpected && (expectedAvgMass > 0 || expectedMonoMass > 0 || expectedCharge != 0);
             if (compareValues)
             {
-                Assert.AreEqual(expectedAvgMass, resultDaAvg, MATCHING_MASS_EPSILON, "Actual mass does not match expected average mass");
+                Assert.AreEqual(expectedAvgMass, averageMass, MATCHING_MASS_EPSILON, "Actual mass does not match expected average mass");
                 Assert.AreEqual(expectedCharge, parseDataAvg.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
             }
 
             ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
             ShowAtConsoleAndLog(UnitTestWriterType.StressTest, "Isotopic Mass:");
-            mMwtWinIso.BracketsTreatedAsParentheses = bracketsAsParentheses;
-            var resultDaIso = mMwtWinIso.ComputeMassExtra(formula, out var parseDataIso);
+            mMonoisotopicMassCalculator.BracketsTreatedAsParentheses = bracketsAsParentheses;
+            var isotopicMass = mMonoisotopicMassCalculator.ComputeMassExtra(formula, out var parseDataIso);
             ReportParseData(UnitTestWriterType.StressTest, parseDataIso);
 
-            Assert.Greater(resultDaIso, 0);
+            Assert.Greater(isotopicMass, 0);
             if (compareValues)
             {
-                Assert.AreEqual(expectedMonoMass, resultDaIso, MATCHING_MASS_EPSILON, "Actual mass does not match expected isotopic mass");
+                Assert.AreEqual(expectedMonoMass, isotopicMass, MATCHING_MASS_EPSILON, "Actual mass does not match expected isotopic mass");
                 Assert.AreEqual(expectedCharge, parseDataIso.Charge, MATCHING_CHARGE_EPSILON, "Actual charge does not match expected charge");
             }
 
@@ -185,10 +185,10 @@ namespace UnitTests
 
             WriteUpdatedTestCase("ComputeMassStressTest",
                 "[TestCase(\"{0}\", {1}, {2}, {3}{4})]",
-                formula, resultDaAvg, resultDaIso, parseDataIso.Charge, optionalBracketsArgument);
+                formula, averageMass, isotopicMass, parseDataIso.Charge, optionalBracketsArgument);
 
             // ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
-            // ReportParseData(UnitTestWriterType.StressTest, mMwtWinIso);
+            // ReportParseData(UnitTestWriterType.StressTest, mMonoisotopicMassCalculator);
         }
 
         [Test]
@@ -244,8 +244,8 @@ namespace UnitTests
         [TestCase(30, "C6H3 ^19.88Ar2Pb>Ar", 15, "Invalid formula subtraction")]
         public void ComputeMassErrorTests(int errorIdExpected, string formula, int expectedPosition, string messageExcerpt, bool bracketsAsParentheses = false)
         {
-            mMwtWinAvg.BracketsTreatedAsParentheses = bracketsAsParentheses;
-            var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
+            mAverageMassCalculator.BracketsTreatedAsParentheses = bracketsAsParentheses;
+            var averageMass = mAverageMassCalculator.ComputeMassExtra(formula, out var parseData);
             ReportParseData(UnitTestWriterType.NoWriter, parseData);
 
             if (mCompareValuesToExpected)
@@ -306,7 +306,7 @@ namespace UnitTests
         [TestCase("vAl", "vanadium-aluminum")]
         public void ComputeMassCautionMessageTests(string formula, string cautionExcerpt)
         {
-            var resultDaAvg = mMwtWinAvg.ComputeMassExtra(formula, out var parseData);
+            var averageMass = mAverageMassCalculator.ComputeMassExtra(formula, out var parseData);
             ReportParseData(UnitTestWriterType.NoWriter, parseData);
 
             if (mCompareTextToExpected)
@@ -331,11 +331,11 @@ namespace UnitTests
         [TestCase("D2C^13C5H^3H3", "H=15.4164 (±0.0002), C=84.5836 (±0.0009)")]
         public void ComputePercentCompositionTests(string formula, string expectedPercentCompositionByElement)
         {
-            mMwtWinAvg.Compound.Formula = formula;
-            var percentComposition1 = mMwtWinAvg.Compound.GetPercentCompositionForAllElements();
+            mAverageMassCalculator.Compound.Formula = formula;
+            var percentComposition1 = mAverageMassCalculator.Compound.GetPercentCompositionForAllElements();
 
-            mMwtWinIso.Compound.Formula = formula;
-            var percentComposition2 = mMwtWinAvg.Compound.GetPercentCompositionForAllElements();
+            mMonoisotopicMassCalculator.Compound.Formula = formula;
+            var percentComposition2 = mAverageMassCalculator.Compound.GetPercentCompositionForAllElements();
 
             ShowAtConsoleAndLog(UnitTestWriterType.PercentComposition, formula);
 
@@ -400,11 +400,11 @@ namespace UnitTests
         [TestCase("D2C^13C5H^3H3", "^13C5C^2.0141018H2^3H3H")]
         public void ConvertToEmpiricalTests(string formula, string expectedEmpirical, bool compareToExpected = true)
         {
-            mMwtWinAvg.Compound.Formula = formula;
-            var empirical1 = mMwtWinAvg.Compound.ConvertToEmpirical();
+            mAverageMassCalculator.Compound.Formula = formula;
+            var empirical1 = mAverageMassCalculator.Compound.ConvertToEmpirical();
 
-            mMwtWinIso.Compound.Formula = formula;
-            var empirical2 = mMwtWinAvg.Compound.ConvertToEmpirical();
+            mMonoisotopicMassCalculator.Compound.Formula = formula;
+            var empirical2 = mAverageMassCalculator.Compound.ConvertToEmpirical();
 
             ShowAtConsoleAndLog(UnitTestWriterType.ConvertToEmpirical, string.Format("{0,-20} -> {1,-20}", formula, empirical1));
 
@@ -524,12 +524,12 @@ namespace UnitTests
         [TestCase("D10>H10", "(^2.0141018H)10>H10")]                   // In VB6, D was defined as "^2.014H"; in C#, it is "^2.0141018H"
         public void TestExpandAbbreviations(string formula, string expectedExpandedFormula)
         {
-            var resultDaIso = mMwtWinIso.ComputeMass(formula);
-            var expandedFormula = mMwtWinIso.Compound.ExpandAbbreviations();
+            var isotopicMass = mMonoisotopicMassCalculator.ComputeMass(formula);
+            var expandedFormula = mMonoisotopicMassCalculator.Compound.ExpandAbbreviations();
 
             ShowAtConsoleAndLog(UnitTestWriterType.ExpandAbbreviations, string.Format(
                 "{0,-20} -> {1,-23}: {2,12:F8} Da (isotopic)",
-                formula, expandedFormula, resultDaIso));
+                formula, expandedFormula, isotopicMass));
 
             if (mCompareTextToExpected)
             {
@@ -1377,49 +1377,49 @@ namespace UnitTests
                 mUniModHeaderWritten = true;
             }
 
-            var resultDaAvg = mMwtWinAvg.ComputeMass(formula);
-            var resultDaIso = mMwtWinIso.ComputeMass(formula);
+            var averageMass = mAverageMassCalculator.ComputeMass(formula);
+            var isotopicMass = mMonoisotopicMassCalculator.ComputeMass(formula);
 
             mTestResultWriters[UnitTestWriterType.UniModFormulaWriter].WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}",
-                formula, avgMassUniMod, monoMassUniMod, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso);
+                formula, avgMassUniMod, monoMassUniMod, mMonoisotopicMassCalculator.Compound.FormulaCapitalized, averageMass, isotopicMass);
 
             Console.WriteLine("{0,-15} -> {1,-15}: {2,12:F8} Da (average) and  {3,12:F8} Da (isotopic)",
-                formula, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso);
+                formula, mMonoisotopicMassCalculator.Compound.FormulaCapitalized, averageMass, isotopicMass);
 
             var optionalMassToleranceArgument = Math.Abs(matchToleranceVsUniModAvg - 0.007) < 0.000001 ? string.Empty : ", " + matchToleranceVsUniModAvg;
 
             WriteUpdatedTestCase("TestUniModFormulas",
                 "[TestCase(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}{6})]",
-                formula, avgMassUniMod, monoMassUniMod, mMwtWinIso.Compound.FormulaCapitalized, resultDaAvg, resultDaIso, optionalMassToleranceArgument);
+                formula, avgMassUniMod, monoMassUniMod, mMonoisotopicMassCalculator.Compound.FormulaCapitalized, averageMass, isotopicMass, optionalMassToleranceArgument);
 
             if (mCompareTextToExpected)
             {
-                Assert.AreEqual(expectedUpdatedFormula, mMwtWinIso.Compound.FormulaCapitalized,
+                Assert.AreEqual(expectedUpdatedFormula, mMonoisotopicMassCalculator.Compound.FormulaCapitalized,
                     "Capitalized formula does not match the expected value");
             }
 
             if (mCompareValuesToExpected)
             {
-                Assert.AreEqual(expectedAvgMass, resultDaAvg, matchTolerance, "Actual mass does not match expected average mass");
-                Assert.AreEqual(expectedMonoMass, resultDaIso, matchTolerance, "Actual mass does not match expected isotopic mass");
+                Assert.AreEqual(expectedAvgMass, averageMass, matchTolerance, "Actual mass does not match expected average mass");
+                Assert.AreEqual(expectedMonoMass, isotopicMass, matchTolerance, "Actual mass does not match expected isotopic mass");
             }
 
-            if (resultDaIso == 0 || !mCompareValuesToExpected)
+            if (isotopicMass == 0 || !mCompareValuesToExpected)
                 return;
 
-            Assert.AreEqual(monoMassUniMod, resultDaIso, matchToleranceVsUniModMono, "Computed monoisotopic mass is not within tolerance of the UniMod mass");
+            Assert.AreEqual(monoMassUniMod, isotopicMass, matchToleranceVsUniModMono, "Computed monoisotopic mass is not within tolerance of the UniMod mass");
 
-            if (Math.Abs(avgMassUniMod - resultDaAvg) > matchToleranceVsUniModAvg)
+            if (Math.Abs(avgMassUniMod - averageMass) > matchToleranceVsUniModAvg)
             {
-                if (mMwtWinIso.Compound.FormulaCapitalized.Contains("S"))
+                if (mMonoisotopicMassCalculator.Compound.FormulaCapitalized.Contains("S"))
                 {
                     // UniMod uses a different average mass for S
-                    Assert.AreEqual(avgMassUniMod, resultDaAvg, 0.015, "Computed average mass is not within tolerance of the UniMod mass (compound with sulfur)");
+                    Assert.AreEqual(avgMassUniMod, averageMass, 0.015, "Computed average mass is not within tolerance of the UniMod mass (compound with sulfur)");
                     return;
                 }
             }
 
-            Assert.AreEqual(avgMassUniMod, resultDaAvg, matchToleranceVsUniModAvg, "Computed average mass is not within tolerance of the UniMod mass");
+            Assert.AreEqual(avgMassUniMod, averageMass, matchToleranceVsUniModAvg, "Computed average mass is not within tolerance of the UniMod mass");
         }
     }
 }
