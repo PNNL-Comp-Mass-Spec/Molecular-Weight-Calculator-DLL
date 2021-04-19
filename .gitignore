@@ -5,3 +5,4 @@ SVN_Path.txt
 /COMInstaller/Output
 /ZippedForGitHub/*.exe
 /ZippedForGitHub/*.zip
+/Docs/IsotopeMasses_All_Elements.txt
