@@ -9,6 +9,10 @@ namespace TransformIsotopeMassFile
 {
     internal class IsotopeFileProcessor
     {
+        // Ignore Spelling: Sg, Bh, Hs, Ds, Rg, Cn, Nh, Fl, Mc, Lv, Og
+
+        private readonly Dictionary<string, double> mConventionalElementMasses;
+
         private readonly Regex mUncertaintyMatcher = new(@"(?<Value>[0-9.]+)\((?<Uncertainty>\d+)#?\)", RegexOptions.Compiled);
 
         private readonly Regex mMassRangeMatcher = new(@"\[(?<StartMass>[0-9.]+),(?<EndMass>[0-9.]+)\]", RegexOptions.Compiled);
@@ -131,6 +135,38 @@ namespace TransformIsotopeMassFile
 
             numericValue = null;
             return false;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public IsotopeFileProcessor()
+        {
+            // 13 elements show a range of mass values
+            // For the average mass, use the IUPAC approved conventional mass
+
+            // The conventional mass values were obtained from Table 3
+            // "Atomic weights of the elements 2013 (IUPAC Technical Report)"
+            // Published in Pure and Applied Chemistry, Volume 88, Issue 3
+            // https://doi.org/10.1515/pac-2015-0305
+
+            mConventionalElementMasses = new Dictionary<string, double>
+            {
+                {"H", 1.008},
+                {"D", 1.008},   // Isotope of hydrogen; use the mass of the most common element for the average mass (as we do for other isotopes)
+                {"T", 1.008},   // Isotope of hydrogen
+                {"Li", 6.94},
+                {"B", 10.81},
+                {"C", 12.011},
+                {"N", 14.007},
+                {"O", 15.999},
+                {"Mg", 24.305},
+                {"Si", 28.085},
+                {"S", 32.06},
+                {"Cl", 35.45},
+                {"Br", 79.904},
+                {"Tl", 204.38}
+            };
         }
 
         private static string NullableValueToString(double? nullableValue)
@@ -306,9 +342,21 @@ namespace TransformIsotopeMassFile
                             var rangeMatch = mMassRangeMatcher.Match(value);
                             if (rangeMatch.Success)
                             {
+                                // 13 elements show a range of mass values, e.g. [6.938,6.997]
+                                // For the average mass, use the IUPAC approved conventional mass
+
                                 var startMass = double.Parse(rangeMatch.Groups["StartMass"].Value);
                                 var endMass = double.Parse(rangeMatch.Groups["EndMass"].Value);
-                                var averageMass = Math.Round((startMass + endMass) / 2, 6);
+
+                                if (!mConventionalElementMasses.TryGetValue(currentIsotope.AtomicSymbol, out var averageMass))
+                                {
+                                    Console.WriteLine("Error: unable to determine the conventional mass of {0}", currentIsotope.AtomicSymbol);
+
+                                    // Could do this, but it's not accurate:
+                                    // averageMass = Math.Round((startMass + endMass) / 2, 6);
+                                    return false;
+                                }
+
                                 var averageMassUncertainty = Math.Round((endMass - startMass) / 2, 6);
 
                                 currentIsotope.StandardAtomicWeight = averageMass;
@@ -332,6 +380,7 @@ namespace TransformIsotopeMassFile
 
                             Console.WriteLine("Error for atomic number {0}: unrecognized value for Standard Atomic Weight: {1}",
                                 currentIsotope.AtomicNumber, dataLine);
+
                             return false;
 
                         case "Notes":
