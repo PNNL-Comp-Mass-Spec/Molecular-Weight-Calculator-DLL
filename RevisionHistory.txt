@@ -1,5 +1,9 @@
 MolecularWeightCalculator DLL Change Log
 
+Version 4.2.7779; April 19, 2021
+	- Update element and isotope masses and uncertainties to use official IUPAC values from 2013
+	- Add elements 104 through 118
+
 Version 4.1.7773; April 13, 2021
 	- Add an Excel file demonstrating usage
 
