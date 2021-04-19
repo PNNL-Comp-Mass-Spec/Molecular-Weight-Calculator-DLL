@@ -55,7 +55,7 @@ namespace MolecularWeightCalculator
 
         // Ignore Spelling: Arial, Bryson, interop, Nikša, xyVals
 
-        private const string PROGRAM_DATE = "April 14, 2021";
+        private const string PROGRAM_DATE = "April 19, 2021";
 
         /// <summary>
         /// Constructor, assumes the elements are using average masses
