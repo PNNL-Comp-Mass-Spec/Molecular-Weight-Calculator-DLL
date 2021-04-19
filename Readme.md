@@ -19,6 +19,25 @@ Newer versions of the DLL can be found on the [AppVeyor CI server](https://ci.ap
 
 [![Build status](https://ci.appveyor.com/api/projects/status/akbap1xwd92flnsv?svg=true)](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll)
 
+## Data Source
+
+Element and isotope mass and percent composition values were obtained from NIST
+* https://www.nist.gov/pml/atomic-weights-and-isotopic-compositions-relative-atomic-masses
+
+The atomic weight data was published by J. Meija et al in [Atomic Weights of the Elements 2013](http://www.ciaaw.org/atomic-weights.htm), 
+and the isotopic composition data was published by M. Berglund and M.E. Wieser 
+in [Isotopic Compositions of the Elements 2009](https://doi.org/10.1351/PAC-REP-10-06-02).
+
+For elements with a standard atomic weight range (e.g. [6.938,6.997] for Lithium), the conventional atomic weight is used.
+* See Table 3 in "Atomic weights of the elements 2013 (IUPAC Technical Report)"
+* Published in Pure and Applied Chemistry, Volume 88, Issue 3, https://doi.org/10.1515/pac-2015-0305
+
+For radioactive elements, the mass of the most stable isotope is stored for the isotopic mass.
+
+Naturally occurring radioactive elements have an average weight and associated uncertainty.
+For the other radioactive elements, the mass of the most stable isotope is used, rounded to one decimal place.
+When an average mass uncertainty is not available, a value of 0.0005 is used.
+
 ## COM Add-in
 
 MolecularWeightCalculator.dll can be added as a COM Interop reference in Excel using VBA. Steps required:
