@@ -1,0 +1,12 @@
+  Caution: Co means cobalt; CO means carbon-oxygen.  
+
+  TryCo
+  StDev:  0.00455231600396985
+  Mass:   330.1891
+  Charge: 3
+  Caution: Co means cobalt; CO means carbon-oxygen.  
+
+  TryCoFail
+  StDev:  0.00642318308940357
+  Mass:   567.43032
+  Charge: 4

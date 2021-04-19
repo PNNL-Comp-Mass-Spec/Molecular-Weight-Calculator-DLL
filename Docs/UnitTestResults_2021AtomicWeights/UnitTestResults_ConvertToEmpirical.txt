@@ -1,0 +1,13 @@
+BrCH2(CH2)7CH2Br     -> C9H18Br2            
+FeCl3-6H2O           -> H12Cl3FeO6          
+Co(Bpy)(CO)4         -> C14H8CoN2O4         
+^13C6H6-.1H2O        -> ^13C6H6.2O0.1       
+HGlyLeuTyrOH         -> C17H25N3O5          
+BrCH2(CH2)7CH2Br>CH8 -> C8H10Br2            
+C6H5Cl3>H3Cl2>HCl    -> C6H3Cl2             
+H2C3H5C2HNO3CO2      -> C6H8NO5             
+D10C6>H10            -> C6^2.0141018H10     
+D                    -> ^2.0141018H         
+D2CH                 -> C^2.0141018H2H      
+D2CH^3H3             -> C^2.0141018H2^3H3H  
+D2C^13C5H^3H3        -> ^13C5C^2.0141018H2^3H3H

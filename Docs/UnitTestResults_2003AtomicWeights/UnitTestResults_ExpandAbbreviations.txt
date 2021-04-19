@@ -1,0 +1,8 @@
+BrCH2(CH2)7CH2Br     -> BrCH2(CH2)7CH2Br       : 283.97751480 Da (isotopic)
+FeCl3-6H2O           -> FeCl3-6H2O             : 268.90488320 Da (isotopic)
+Co(Bpy)(CO)4         -> Co(C10H8N2)(CO)4       : 326.98160280 Da (isotopic)
+^13C6H6-.1H2O        -> ^13C6H6-.1H2O          :  85.84800402 Da (isotopic)
+HGlyLeuTyrOH         -> HC2H3NOC6H11NOC9H9NO2OH: 351.17941200 Da (isotopic)
+BrCH2(CH2)7CH2Br>CH8 -> BrCH2(CH2)7CH2Br>CH8   : 263.91491800 Da (isotopic)
+C6H5Cl3>H3Cl2>HCl    -> C6H5Cl3>H3Cl2>HCl      : 144.96117980 Da (isotopic)
+D10>H10              -> (^2.0141018H)10>H10    :  10.06277200 Da (isotopic)

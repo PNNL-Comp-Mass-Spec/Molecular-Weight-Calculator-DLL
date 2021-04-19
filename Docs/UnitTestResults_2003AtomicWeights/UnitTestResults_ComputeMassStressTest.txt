@@ -1,0 +1,630 @@
+
+Formula: ^13C6H6-H2O
+
+Average Mass:
+  ^13C6H6-H2O
+  StDev:  0.000359444015112229
+  Mass:   102.06292
+  Charge: -6
+
+Isotopic Mass:
+  ^13C6H6-H2O
+  StDev:  0
+  Mass:   102.0575118
+  Charge: -6
+
+Formula: ^13C6H6[.1H2O]
+
+Average Mass:
+  ^13C6H6[.1H2O]
+  StDev:  0.000198443946745674
+  Mass:   85.849168
+  Charge: -6
+
+Isotopic Mass:
+  ^13C6H6[.1H2O]
+  StDev:  0
+  Mass:   85.84800402
+  Charge: -6
+
+Formula: ^13C6H6[H2O]
+
+Average Mass:
+  ^13C6H6[H2O]
+  StDev:  0.000359444015112229
+  Mass:   102.06292
+  Charge: -6
+
+Isotopic Mass:
+  ^13C6H6[H2O]
+  StDev:  0
+  Mass:   102.0575118
+  Charge: -6
+
+Formula: ^13C6H6[H2O]2
+
+Average Mass:
+  ^13C6H6[H2O]2
+  StDev:  0.000478539444560216
+  Mass:   120.0782
+  Charge: -6
+
+Isotopic Mass:
+  ^13C6H6[H2O]2
+  StDev:  0
+  Mass:   120.068076
+  Charge: -6
+
+Formula: 13C6H6-6H2O
+
+Average Mass:
+  ^13.003355C6H6-6H2O
+  StDev:  0.000792590688817374
+  Mass:   192.15945
+  Charge: -6
+
+Isotopic Mass:
+  ^13.003355C6H6-6H2O
+  StDev:  0
+  Mass:   192.1304628
+  Charge: -6
+
+Formula: 13(C6H6)-6H2O
+
+Average Mass:
+  13(C6H6)-6H2O
+  StDev:  0.00713449367509706
+  Mass:   1123.5456
+  Charge: 222
+
+Isotopic Mass:
+  13(C6H6)-6H2O
+  StDev:  0
+  Mass:   1122.673704
+  Charge: 222
+
+Formula: ^13.003355C6H6-6H2O
+
+Average Mass:
+  ^13.003355C6H6-6H2O
+  StDev:  0.000792590688817374
+  Mass:   192.15945
+  Charge: -6
+
+Isotopic Mass:
+  ^13.003355C6H6-6H2O
+  StDev:  0
+  Mass:   192.1304628
+  Charge: -6
+
+Formula: 13C4C2H6-6H2O
+
+Average Mass:
+  ^13.003355C4C2H6-6H2O
+  StDev:  0.0013813761254633
+  Mass:   190.17414
+  Charge: 0
+
+Isotopic Mass:
+  ^13.003355C4C2H6-6H2O
+  StDev:  0
+  Mass:   190.1237528
+  Charge: 0
+
+Formula: ^13.003355C4C2H6-6H2O
+
+Average Mass:
+  ^13.003355C4C2H6-6H2O
+  StDev:  0.0013813761254633
+  Mass:   190.17414
+  Charge: 0
+
+Isotopic Mass:
+  ^13.003355C4C2H6-6H2O
+  StDev:  0
+  Mass:   190.1237528
+  Charge: 0
+
+Formula: Et2O
+
+Average Mass:
+  Et2O
+  StDev:  0.00164286335402553
+  Mass:   74.1216
+  Charge: 0
+
+Isotopic Mass:
+  Et2O
+  StDev:  0
+  Mass:   74.073161
+  Charge: 0
+
+Formula: DCH2
+
+Average Mass:
+  DCH2
+  StDev:  0.000806101730552664
+  Mass:   16.0406818
+  Charge: 3
+
+Isotopic Mass:
+  DCH2
+  StDev:  0
+  Mass:   16.029751
+  Charge: 3
+
+Formula: CaOCH4(CH2)7Br
+
+Average Mass:
+  CaOCH4(CH2)7Br
+  StDev:  0.00472209699180354
+  Mass:   250.20992
+  Charge: 13
+
+Isotopic Mass:
+  CaOCH4(CH2)7Br
+  StDev:  0
+  Mass:   249.0166848
+  Charge: 13
+
+Formula: canyoch4(ch2)7br
+
+Average Mass:
+  CaNYOCH4(CH2)7Br
+  StDev:  0.00472265814981351
+  Mass:   353.12251
+  Charge: 13
+
+Isotopic Mass:
+  CaNYOCH4(CH2)7Br
+  StDev:  0
+  Mass:   351.9256148
+  Charge: 13
+
+Formula: F(DCH2)7Br
+
+Average Mass:
+  F(DCH2)7Br
+  StDev:  0.00235554669875169
+  Mass:   211.1871758
+  Charge: 19
+
+Isotopic Mass:
+  F(DCH2)7Br
+  StDev:  0
+  Mass:   210.1249962
+  Charge: 19
+
+Formula: Pt(CH2)7Br-[5Ca123456789]
+
+Average Mass:
+  Pt(CH2)7Br-[5Ca123456789]
+  StDev:  99.3807985958485
+  Mass:   24739506320.8781
+  Charge: 1.234568E+09
+
+Isotopic Mass:
+  Pt(CH2)7Br-[5Ca123456789]
+  StDev:  0
+  Mass:   24668266196.8942
+  Charge: 1.234568E+09
+
+Formula: Pt(CH2)7Br-[5Ca123456789H]
+
+Average Mass:
+  Pt(CH2)7Br-[5Ca123456789H]
+  StDev:  99.3807985959717
+  Mass:   24739506325.9178
+  Charge: 1.234568E+09
+
+Isotopic Mass:
+  Pt(CH2)7Br-[5Ca123456789H]
+  StDev:  0
+  Mass:   24668266201.9333
+  Charge: 1.234568E+09
+
+Formula: -[2.5CaH]
+
+Average Mass:
+  -[2.5CaH]
+  StDev:  0.00632552369373477
+  Mass:   102.71485
+  Charge: 2.5
+
+Isotopic Mass:
+  -[2.5CaH]
+  StDev:  0
+  Mass:   102.426039
+  Charge: 2.5
+
+Formula: ^18CaH
+
+Average Mass:
+  Caution: Warning, isotopic mass is impossibly small for element: Ca - 20 protons
+
+  ^18CaH
+  StDev:  7E-05
+  Mass:   19.00794
+  Charge: -1
+
+Isotopic Mass:
+  Caution: Warning, isotopic mass is impossibly small for element: Ca - 20 protons
+
+  ^18CaH
+  StDev:  0
+  Mass:   19.0078246
+  Charge: -1
+
+Formula: ^23CaH
+
+Average Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ca - 23 vs avg atomic wt of 40.078
+
+  ^23CaH
+  StDev:  7E-05
+  Mass:   24.00794
+  Charge: -1
+
+Isotopic Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ca - 23 vs avg atomic wt of 39.962591
+
+  ^23CaH
+  StDev:  0
+  Mass:   24.0078246
+  Charge: -1
+
+Formula: ^42CaH
+
+Average Mass:
+  ^42CaH
+  StDev:  7E-05
+  Mass:   43.00794
+  Charge: -1
+
+Isotopic Mass:
+  ^42CaH
+  StDev:  0
+  Mass:   43.0078246
+  Charge: -1
+
+Formula: ^98CaH
+
+Average Mass:
+  Caution: Warning, isotopic mass is probably too large for element: Ca - 98 vs avg atomic wt of 40.078
+
+  ^98CaH
+  StDev:  7E-05
+  Mass:   99.00794
+  Charge: -1
+
+Isotopic Mass:
+  Caution: Warning, isotopic mass is probably too large for element: Ca - 98 vs avg atomic wt of 39.962591
+
+  ^98CaH
+  StDev:  0
+  Mass:   99.0078246
+  Charge: -1
+
+Formula: (CH2)7Br-3.2CaH
+
+Average Mass:
+  (CH2)7Br-3.2CaH
+  StDev:  0.00753420732393262
+  Mass:   309.565068
+  Charge: 16.2
+
+Isotopic Mass:
+  (CH2)7Br-3.2CaH
+  StDev:  0
+  Mass:   308.13321032
+  Charge: 16.2
+
+Formula: [2CaOH]-K
+
+Average Mass:
+  [2CaOH]-K
+  StDev:  0.00567448676093266
+  Mass:   153.26898
+  Charge: 3
+
+Isotopic Mass:
+  [2CaOH]-K
+  StDev:  0
+  Mass:   152.8943692
+  Charge: 3
+
+Formula: K-[2CaOH]
+
+Average Mass:
+  K-[2CaOH]
+  StDev:  0.00567448676093266
+  Mass:   153.26898
+  Charge: 3
+
+Isotopic Mass:
+  K-[2CaOH]
+  StDev:  0
+  Mass:   152.8943692
+  Charge: 3
+
+Formula: H2Ca2KO2
+
+Average Mass:
+  H2Ca2KO2
+  StDev:  0.00567448676093266
+  Mass:   153.26898
+  Charge: 3
+
+Isotopic Mass:
+  H2Ca2KO2
+  StDev:  0
+  Mass:   152.8943692
+  Charge: 3
+
+Formula: H2O^23.9Ca
+
+Average Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ca - 23.9 vs avg atomic wt of 40.078
+
+  H2O^23.9Ca
+  StDev:  0.000315911379978626
+  Mass:   41.91528
+  Charge: 0
+
+Isotopic Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ca - 23.9 vs avg atomic wt of 39.962591
+
+  H2O^23.9Ca
+  StDev:  0
+  Mass:   41.9105642
+  Charge: 0
+
+Formula: ^13C6H6
+
+Average Mass:
+  ^13C6H6
+  StDev:  0.000171464281994822
+  Mass:   84.04764
+  Charge: -6
+
+Isotopic Mass:
+  ^13C6H6
+  StDev:  0
+  Mass:   84.0469476
+  Charge: -6
+
+Formula: C6H6
+
+Average Mass:
+  C6H6
+  StDev:  0.00196707905280901
+  Mass:   78.11184
+  Charge: 8
+
+Isotopic Mass:
+  C6H6
+  StDev:  0
+  Mass:   78.0469476
+  Charge: 8
+
+Formula: C6H3^19.8Ar
+
+Average Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.8 vs avg atomic wt of 39.948
+
+  C6H3^19.8Ar
+  StDev:  0.00196333899263474
+  Mass:   94.88802
+  Charge: 11
+
+Isotopic Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.8 vs avg atomic wt of 39.962383
+
+  C6H3^19.8Ar
+  StDev:  0
+  Mass:   94.8234738
+  Charge: 11
+
+Formula: C6H3^19.8arpbbb
+
+Average Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.8 vs avg atomic wt of 39.948
+
+  C6H3^19.8ArPbBB
+  StDev:  0.100507983265012
+  Mass:   323.71002
+  Charge: 19
+
+Isotopic Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.8 vs avg atomic wt of 39.962383
+
+  C6H3^19.8ArPbBB
+  StDev:  0
+  Mass:   324.8187248
+  Charge: 19
+
+Formula: C6H3^19.88Ar4Pb>Ar
+
+Average Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.88 vs avg atomic wt of 39.948
+
+  C6H3^19.88Ar4Pb>Ar
+  StDev:  0.100019271643019
+  Mass:   321.86002
+  Charge: 13
+
+Isotopic Mass:
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.88 vs avg atomic wt of 39.962383
+
+  C6H3^19.88Ar4Pb>Ar
+  StDev:  0
+  Mass:   322.5577318
+  Charge: 13
+
+Formula: C6>C4
+
+Average Mass:
+  C6>C4
+  StDev:  0.00195959179422654
+  Mass:   24.0214
+  Charge: 4
+
+Isotopic Mass:
+  C6>C4
+  StDev:  0
+  Mass:   24
+  Charge: 4
+
+Formula: HGly5.3Leu2.2Tyr0.03OH
+
+Average Mass:
+  HGly5.3Leu2.2Tyr0.03OH
+  StDev:  0.00405212413432757
+  Mass:   574.229583
+  Charge: 0
+
+Isotopic Mass:
+  HGly5.3Leu2.2Tyr0.03OH
+  StDev:  0
+  Mass:   573.901147922
+  Charge: 0
+
+Formula: HGly5.3leu2.2tyr0.03oh
+
+Average Mass:
+  HGly5.3Leu2.2Tyr0.03OH
+  StDev:  0.00405212413432757
+  Mass:   574.229583
+  Charge: 0
+
+Isotopic Mass:
+  HGly5.3Leu2.2Tyr0.03OH
+  StDev:  0
+  Mass:   573.901147922
+  Charge: 0
+
+Formula: HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe
+
+Average Mass:
+  Caution: Si means silicon; SI means sulfur-iodine.  Sc means scandium; SC means sulfur-carbon.  Co means cobalt; CO means carbon-oxygen.  Ni means nickel; NI means nitrogen-iodine.  Cu means copper; CU means carbon-uranium.  Nb means niobium; NB means nitrogen-boron.  Pd means palladium; PD means phosphorus-deuterium.  Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  
+
+  HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe
+  StDev:  0.0636565986465661
+  Mass:   3357.7013952
+  Charge: 80
+
+Isotopic Mass:
+  Caution: Si means silicon; SI means sulfur-iodine.  Sc means scandium; SC means sulfur-carbon.  Co means cobalt; CO means carbon-oxygen.  Ni means nickel; NI means nitrogen-iodine.  Cu means copper; CU means carbon-uranium.  Nb means niobium; NB means nitrogen-boron.  Pd means palladium; PD means phosphorus-deuterium.  Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  
+
+  HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe
+  StDev:  0
+  Mass:   3357.0639367
+  Charge: 80
+
+Formula: hhelibebcnofnenamgalsipsClArKcasctivcrmnfeconicuzngageassebrkrrbsryzrnbmotcrurhpdagcdinsnsbteixe
+
+Average Mass:
+  Caution: No means nobelium; NO means nitrogen-oxygen.  Si means silicon; SI means sulfur-iodine.  Sc means scandium; SC means sulfur-carbon.  Co means cobalt; CO means carbon-oxygen.  Ni means nickel; NI means nitrogen-iodine.  Cu means copper; CU means carbon-uranium.  Nb means niobium; NB means nitrogen-boron.  Pd means palladium; PD means phosphorus-deuterium.  Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  
+
+  HHeLiBeBCNoFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe
+  StDev:  0.0636578168903867
+  Mass:   3586.7961552
+  Charge: 87
+
+Isotopic Mass:
+  Caution: No means nobelium; NO means nitrogen-oxygen.  Si means silicon; SI means sulfur-iodine.  Sc means scandium; SC means sulfur-carbon.  Co means cobalt; CO means carbon-oxygen.  Ni means nickel; NI means nitrogen-iodine.  Cu means copper; CU means carbon-uranium.  Nb means niobium; NB means nitrogen-boron.  Pd means palladium; PD means phosphorus-deuterium.  Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  
+
+  HHeLiBeBCNoFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe
+  StDev:  0
+  Mass:   3586.0659477
+  Charge: 87
+
+Formula: CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr
+
+Average Mass:
+  Caution: Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  Dy means dysprosium; DY means deuterium-yttrium.  Ho means holmium; HO means hydrogen-oxygen.  Yb means ytterbium; YB means yttrium-boron.  Hf means hafnium; HF means hydrogen-fluorine.  Os means osmium; OS means oxygen-sulfur.  Bi means bismuth; BI means boron-iodine.  Np means neptunium; NP means nitrogen-phosphorus.  Pu means plutonium; PU means phosphorus-uranium.  Bk means berkelium; BK means boron-potassium.  Cf means californium; CF means carbon-fluorine.  No means nobelium; NO means nitrogen-oxygen.  
+
+  CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr
+  StDev:  0.152267440052035
+  Mass:   9710.62118
+  Charge: 153
+
+Isotopic Mass:
+  Caution: Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  Dy means dysprosium; DY means deuterium-yttrium.  Ho means holmium; HO means hydrogen-oxygen.  Yb means ytterbium; YB means yttrium-boron.  Hf means hafnium; HF means hydrogen-fluorine.  Os means osmium; OS means oxygen-sulfur.  Bi means bismuth; BI means boron-iodine.  Np means neptunium; NP means nitrogen-phosphorus.  Pu means plutonium; PU means phosphorus-uranium.  Bk means berkelium; BK means boron-potassium.  Cf means californium; CF means carbon-fluorine.  No means nobelium; NO means nitrogen-oxygen.  
+
+  CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr
+  StDev:  0
+  Mass:   9718.379096
+  Charge: 153
+
+Formula: csbalaceprndpmsmeugdtbdyhoertmybluhftawreosirptauhgtlpbbipoatrnfrraacthpaunppuamcmbkcfesfmmdnolr
+
+Average Mass:
+  Caution: Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  Dy means dysprosium; DY means deuterium-yttrium.  Ho means holmium; HO means hydrogen-oxygen.  Yb means ytterbium; YB means yttrium-boron.  Hf means hafnium; HF means hydrogen-fluorine.  Os means osmium; OS means oxygen-sulfur.  Bi means bismuth; BI means boron-iodine.  Np means neptunium; NP means nitrogen-phosphorus.  Pu means plutonium; PU means phosphorus-uranium.  Bk means berkelium; BK means boron-potassium.  Cf means californium; CF means carbon-fluorine.  No means nobelium; NO means nitrogen-oxygen.  
+
+  CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr
+  StDev:  0.152267440052035
+  Mass:   9710.62118
+  Charge: 153
+
+Isotopic Mass:
+  Caution: Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  Dy means dysprosium; DY means deuterium-yttrium.  Ho means holmium; HO means hydrogen-oxygen.  Yb means ytterbium; YB means yttrium-boron.  Hf means hafnium; HF means hydrogen-fluorine.  Os means osmium; OS means oxygen-sulfur.  Bi means bismuth; BI means boron-iodine.  Np means neptunium; NP means nitrogen-phosphorus.  Pu means plutonium; PU means phosphorus-uranium.  Bk means berkelium; BK means boron-potassium.  Cf means californium; CF means carbon-fluorine.  No means nobelium; NO means nitrogen-oxygen.  
+
+  CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr
+  StDev:  0
+  Mass:   9718.379096
+  Charge: 153
+
+Formula: cdinsnsbteixecsbalaceprndpm
+
+Average Mass:
+  Caution: Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  
+
+  CdInSnSbTeIXeCsBaLaCePrNdPm
+  StDev:  0.0487164417830367
+  Mass:   1832.80777
+  Charge: 22
+
+Isotopic Mass:
+  Caution: Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  
+
+  CdInSnSbTeIXeCsBaLaCePrNdPm
+  StDev:  0
+  Mass:   1835.765967
+  Charge: 22
+
+Formula: CdInSnSbTeIXeCsBaLaCePrNdPm
+
+Average Mass:
+  Caution: Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  
+
+  CdInSnSbTeIXeCsBaLaCePrNdPm
+  StDev:  0.0487164417830367
+  Mass:   1832.80777
+  Charge: 22
+
+Isotopic Mass:
+  Caution: Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  
+
+  CdInSnSbTeIXeCsBaLaCePrNdPm
+  StDev:  0
+  Mass:   1835.765967
+  Charge: 22
+
+Formula: sips cl arkcas
+
+Average Mass:
+  Caution: Si means silicon; SI means sulfur-iodine.  
+
+  SiPSClArKCaS
+  StDev:  0.00948208858849146
+  Mass:   277.768261
+  Charge: -1
+
+Isotopic Mass:
+  Caution: Si means silicon; SI means sulfur-iodine.  
+
+  SiPSClArKCaS
+  StDev:  0
+  Mass:   276.75237
+  Charge: -1
