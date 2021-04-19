@@ -9,13 +9,16 @@ namespace UnitTests
     [TestFixture]
     public class ElementTests
     {
-        //
-        // To see the Console.Writeline() results for a series of test cases for a given Test, run NUnit from the command line.  For example:
+        // ReSharper disable CommentTypo
+
+        // To see the Console.WriteLine() results for a series of test cases for a given Test, run NUnit from the command line.  For example:
         // cd "C:\Program Files (x86)\NUnit.org\nunit-console"
         // c:nunit3-console.exe --noresult --where "method =~ /Compute*/" unittests.dll
-        //
 
-        // Ignore Spelling: Bpy, cd, Da, Gly, Leu, Pos, Tyr, UniMod
+        // Ignore Spelling: arkcas, Bpy, cd, Da, Gly, Leu, NOCH4, noresult, Nz, Pos, rkcas, sipsclarkcas, Tyr, UniMod
+
+        // ReSharper restore CommentTypo
+
 
         private const double MATCHING_MASS_EPSILON = 0.0000001;
         private const double MATCHING_CHARGE_EPSILON = 0.05;
@@ -98,6 +101,7 @@ namespace UnitTests
             Assert.AreEqual(expectedMonoMass, resultDaIso, matchTolerance, "Actual mass does not match expected isotopic mass");
         }
 
+        // ReSharper disable StringLiteralTypo
         [Test]
         [TestCase("^13C6H6-H2O", 102.06292, 102.0575118, -6)]
         [TestCase("^13C6H6[.1H2O]", 85.849168, 85.84800402, -6)]
@@ -142,6 +146,7 @@ namespace UnitTests
         [TestCase("cdinsnsbteixecsbalaceprndpm", 1832.80777, 1835.765967, 22)]
         [TestCase("CdInSnSbTeIXeCsBaLaCePrNdPm", 1832.80777, 1835.765967, 22)]
         [TestCase("sips cl arkcas", 277.768261, 276.75237, -1)] // Ignoring whitespace and characters outside of a-z, A-Z, 0-9, []{}().^>
+        // ReSharper restore StringLiteralTypo
         public void ComputeMassStressTest(string formula, double expectedAvgMass, double expectedMonoMass, double expectedCharge, bool bracketsAsParentheses = false)
         {
             ShowAtConsoleAndLog(UnitTestWriterType.StressTest);
