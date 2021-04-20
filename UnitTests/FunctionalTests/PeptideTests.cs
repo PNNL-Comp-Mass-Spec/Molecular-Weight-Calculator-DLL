@@ -74,7 +74,7 @@ namespace UnitTests.FunctionalTests
             string peptideFragMwtWin;
             const int matchCount = 0;
 
-            var mMwtWin = new MolecularWeightTool();
+            var mAverageMassCalculator = new MolecularWeightTool();
 
             int mwtWinDimCount = dimChunk;
             var peptideNameMwtWin = new string[mwtWinDimCount + 1];
@@ -83,20 +83,20 @@ namespace UnitTests.FunctionalTests
             var protein = "MMKANVTKKTLNEGLGLLERVIPSRSSNPLLTALKVETSEGGLTLSGTNLEIDLSCFVPAEVQQPENFVVPAHLFAQIVRNLGGELVELELSGQELSVRSGGSDFKLQTGDIEAYPPLSFPAQADVSLDGGELSRAFSSVRYAASNEAFQAVFRGIKLEHHGESARVVASDGYRVAIRDFPASGDGKNLIIPARSVDELIRVLKDGEARFTYGDGMLTVTTDRVKMNLKLLDGDFPDYERVIPKDIKLQVTLPATALKEAVNRVAVLADKNANNRVEFLVSEGTLRLAAEGDYGRAQDTLSVTQGGTEQAMSLAFNARHVLDALGPIDGDAELLFSGSTSPAIFRARRWGRRVYGGHGHAARLRGLLRPLRGMSALAHHPESSPPLEPRPEFA";
 
             Console.WriteLine("Testing GetTrypticNameMultipleMatches() function");
-            Console.WriteLine("MatchList for NL: " + mMwtWin.Peptide.GetTrypticNameMultipleMatches(protein, "NL", matchCount));
+            Console.WriteLine("MatchList for NL: " + mAverageMassCalculator.Peptide.GetTrypticNameMultipleMatches(protein, "NL", matchCount));
             Console.WriteLine("MatchCount = " + matchCount);
 
             Console.WriteLine(string.Empty);
             Console.WriteLine("Testing GetTrypticPeptideByFragmentNumber function");
             for (var index = 1; index <= 43; index++)
             {
-                peptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)index, out var residueStart, out var residueEnd);
+                peptideFragMwtWin = mAverageMassCalculator.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)index, out var residueStart, out var residueEnd);
 
                 if (peptideFragMwtWin.Length > 1)
                 {
                     // Make sure residueStart and residueEnd are correct
                     // Do this using .GetTrypticNameMultipleMatches()
-                    var peptideName = mMwtWin.Peptide.GetTrypticNameMultipleMatches(protein, protein.Substring(residueStart, Math.Min(residueEnd - residueStart + 1, protein.Length - residueStart)));
+                    var peptideName = mAverageMassCalculator.Peptide.GetTrypticNameMultipleMatches(protein, protein.Substring(residueStart, Math.Min(residueEnd - residueStart + 1, protein.Length - residueStart)));
                     Assert.IsTrue(peptideName.IndexOf("t" + index, StringComparison.Ordinal) >= 0, $"Tryptic Peptide t{index} not found in string \"{peptideName}\"");
                 }
             }
@@ -108,7 +108,7 @@ namespace UnitTests.FunctionalTests
             var fragIndex = 1;
             do
             {
-                peptideFragMwtWin = mMwtWin.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)fragIndex, out _, out _);
+                peptideFragMwtWin = mAverageMassCalculator.Peptide.GetTrypticPeptideByFragmentNumber(protein, (short)fragIndex, out _, out _);
                 Console.WriteLine("Tryptic fragment " + fragIndex + ": " + peptideFragMwtWin);
                 Assert.AreEqual(peptideFragMwtWin, expectedFragments[fragIndex], "Fragment did not match expected sequence");
                 fragIndex++;
@@ -149,7 +149,7 @@ namespace UnitTests.FunctionalTests
                         }
 
                         var peptideResidues = protein.Substring(residueStart, residueEnd);
-                        peptideNameMwtWin[mwtWinResultCount] = mMwtWin.Peptide.GetTrypticName(protein, peptideResidues, out _, out _, true);
+                        peptideNameMwtWin[mwtWinResultCount] = mAverageMassCalculator.Peptide.GetTrypticName(protein, peptideResidues, out _, out _, true);
 
                         mwtWinResultCount++;
                         if (mwtWinResultCount > mwtWinDimCount)
@@ -162,7 +162,7 @@ namespace UnitTests.FunctionalTests
 
                 sw.Stop();
                 var mwtWinWorkTime = sw.ElapsedMilliseconds;
-                Console.WriteLine("");
+                Console.WriteLine();
                 Console.WriteLine("Processing time (" + mwtWinResultCount + " peptides) = " + mwtWinWorkTime + " msec");
             }
 

@@ -8,34 +8,35 @@ using NUnit.Framework;
 
 namespace UnitTests.FunctionalTests
 {
-    public class MwtAPITests
+    public class MwtAPITests : TestBase
     {
         // Ignore Spelling: Acetyl, amol, Da, fmol, fmoles, mol, ng, terminii
         // Ignore Spelling: Ala, Arg, Cys, Glu, Gly, Lys, Phe, Tyr,
 
-        private MolecularWeightTool mMwtWin;
-
+        /// <summary>
+        /// Initialize the Molecular Weight Calculator object
+        /// </summary>
         [OneTimeSetUp]
         public void Setup()
         {
-            mMwtWin = new MolecularWeightTool();
+            Initialize();
         }
 
         [Test]
         public void TestAccessFunctions()
         {
             // Test Abbreviations
-            var abbreviationCount = mMwtWin.GetAbbreviationCount();
+            var abbreviationCount = mMonoisotopicMassCalculator.GetAbbreviationCount();
             for (var index = 0; index < abbreviationCount; index++)
             {
-                var getSuccess = mMwtWin.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
+                var getSuccess = mMonoisotopicMassCalculator.GetAbbreviation(index, out var symbol, out var formula, out var charge, out var isAminoAcid, out var oneLetterSymbol, out var comment);
                 Assert.True(getSuccess, "GetAbbreviation returned false");
-                Assert.AreEqual(index, mMwtWin.GetAbbreviationId(symbol));
+                Assert.AreEqual(index, mMonoisotopicMassCalculator.GetAbbreviationId(symbol));
 
                 if (index % 5 == 0)
                     Console.WriteLine("Abbreviation at index {0,-3} is {1,-6} with formula {2}", index, symbol, formula);
 
-                var setResult = mMwtWin.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
+                var setResult = mMonoisotopicMassCalculator.SetAbbreviation(symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment);
                 Assert.AreEqual(0, setResult, "SetAbbreviation returned error code {0}", setResult);
             }
 
@@ -43,16 +44,16 @@ namespace UnitTests.FunctionalTests
 
             // Test Caution statements
             var cautionStatementsTested = 0;
-            foreach (var symbol in mMwtWin.GetCautionStatementSymbols())
+            foreach (var symbol in mMonoisotopicMassCalculator.GetCautionStatementSymbols())
             {
-                var getSuccess = mMwtWin.GetCautionStatement(symbol, out var statement);
+                var getSuccess = mMonoisotopicMassCalculator.GetCautionStatement(symbol, out var statement);
                 Assert.True(getSuccess, "GetCautionStatement returned false");
                 Assert.True(statement.Length > 0, "GetCautionStatement returned an empty string for symbol {0}", symbol);
 
                 if (cautionStatementsTested % 5 == 0)
                     Console.WriteLine("Caution statement {0,-3} {1}", cautionStatementsTested + 1 + ":", statement);
 
-                var setResult = mMwtWin.SetCautionStatement(symbol, statement);
+                var setResult = mMonoisotopicMassCalculator.SetCautionStatement(symbol, statement);
                 Assert.AreEqual(0, setResult, "SetAbbreviation returned error code {0}", setResult);
 
                 cautionStatementsTested++;
@@ -61,22 +62,22 @@ namespace UnitTests.FunctionalTests
             Console.WriteLine();
 
             // Test Element access
-            var elementCount = mMwtWin.GetElementCount();
+            var elementCount = mMonoisotopicMassCalculator.GetElementCount();
             for (var atomicNumber = 1; atomicNumber <= elementCount; atomicNumber++)
             {
-                var getSuccess = mMwtWin.GetElement((short)atomicNumber, out var symbol, out var mass, out var uncertainty, out var charge, out var isotopeCount);
+                var getSuccess = mMonoisotopicMassCalculator.GetElement((short)atomicNumber, out var symbol, out var mass, out var uncertainty, out var charge, out var isotopeCount);
                 Assert.True(getSuccess, "GetElement returned false");
-                Assert.AreEqual(atomicNumber, mMwtWin.GetAtomicNumber(symbol));
+                Assert.AreEqual(atomicNumber, mMonoisotopicMassCalculator.GetAtomicNumber(symbol));
                 Assert.True(symbol.Length > 0, "GetElement returned symbol='' for atomic number {0}", atomicNumber);
                 Assert.True(isotopeCount > 0, "GetElement returned isotopeCount 0 for element {0}", symbol);
 
                 if (atomicNumber == 1 || atomicNumber % 10 == 0)
                     Console.WriteLine("Atomic number {0,-3} is {1,-2}, {2:F3} Da", atomicNumber, symbol, mass);
 
-                var setSuccess = mMwtWin.SetElement(symbol, mass, uncertainty, charge, false);
+                var setSuccess = mMonoisotopicMassCalculator.SetElement(symbol, mass, uncertainty, charge, false);
                 Assert.True(setSuccess, "SetElement returned false");
 
-                var getIsotopesSuccess = mMwtWin.GetElementIsotopes((short)atomicNumber, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
+                var getIsotopesSuccess = mMonoisotopicMassCalculator.GetElementIsotopes((short)atomicNumber, out var isotopeCount2, out var isotopeMasses, out var isotopeAbundances);
                 Assert.AreEqual(isotopeCount, isotopeCount2);
                 Assert.True(getIsotopesSuccess, "GetElementIsotopes returned false");
                 Assert.True(isotopeCount2 > 0, "GetElementIsotopes returned isotopeCount 0 for atomic number {0}", atomicNumber);
@@ -85,18 +86,18 @@ namespace UnitTests.FunctionalTests
                 if (atomicNumber % 10 == 1)
                     Console.WriteLine("  {0,-2} has {1} isotope{2}", symbol, isotopeMasses.Length, isotopeMasses.Length == 1 ? "" : "s");
 
-                var setIsotopesSuccess = mMwtWin.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
+                var setIsotopesSuccess = mMonoisotopicMassCalculator.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
                 Assert.True(setIsotopesSuccess, "SetElementIsotopes returned false");
             }
 
             Console.WriteLine();
 
             // Test Message Statements access
-            var messageStatementMaxId = mMwtWin.GetMessageStatementMaxId();
+            var messageStatementMaxId = mMonoisotopicMassCalculator.GetMessageStatementMaxId();
             var messagesFound = 0;
             for (var index = 0; index <= messageStatementMaxId; index++)
             {
-                var statement = mMwtWin.GetMessageStatement(index);
+                var statement = mMonoisotopicMassCalculator.GetMessageStatement(index);
                 if (index == 0)
                 {
                     Assert.True(statement.Length == 0, "GetMessageStatement returned a non-empty string for index 0", index);
@@ -116,7 +117,7 @@ namespace UnitTests.FunctionalTests
                 if (messagesFound == 0 || messagesFound % 5 == 0)
                     Console.WriteLine("Message {0,-5} {1}", index + ":", statement);
 
-                var setSuccess = mMwtWin.SetMessageStatement(index, statement);
+                var setSuccess = mMonoisotopicMassCalculator.SetMessageStatement(index, statement);
                 Assert.True(setSuccess, "SetMessageStatement returned false");
             }
         }
@@ -127,28 +128,28 @@ namespace UnitTests.FunctionalTests
             // Test m/z conversion
             // Switch to isotopic masses
 
-            mMwtWin.SetElementMode(ElementMassMode.Isotopic);
+            mMonoisotopicMassCalculator.SetElementMode(ElementMassMode.Isotopic);
 
-            mMwtWin.Compound.SetFormula("C19H36O5NH4");
-            var mass = mMwtWin.Compound.Mass;
-            Console.WriteLine("Mass of " + mMwtWin.Compound.FormulaCapitalized + ": " + mass);
+            mMonoisotopicMassCalculator.Compound.SetFormula("C19H36O5NH4");
+            var mass = mMonoisotopicMassCalculator.Compound.Mass;
+            Console.WriteLine("Mass of " + mMonoisotopicMassCalculator.Compound.FormulaCapitalized + ": " + mass);
             for (short charge = 1; charge <= 4; charge++)
-                Console.WriteLine("  m/z of " + charge + "+: " + mMwtWin.ConvoluteMass(mass, 0, charge));
+                Console.WriteLine("  m/z of " + charge + "+: " + mMonoisotopicMassCalculator.ConvoluteMass(mass, 0, charge));
 
-            Console.WriteLine("");
+            Console.WriteLine();
 
-            mMwtWin.Compound.SetFormula("C19H36O5NH3");
-            mass = mMwtWin.Compound.Mass;
+            mMonoisotopicMassCalculator.Compound.SetFormula("C19H36O5NH3");
+            mass = mMonoisotopicMassCalculator.Compound.Mass;
             Console.WriteLine("m/z values if we first lose a hydrogen before adding a proton");
             for (short charge = 1; charge <= 4; charge++)
-                Console.WriteLine("  m/z of " + charge + "+: " + mMwtWin.ConvoluteMass(mass, 0, charge));
+                Console.WriteLine("  m/z of " + charge + "+: " + mMonoisotopicMassCalculator.ConvoluteMass(mass, 0, charge));
         }
 
         [Test]
         public void TestCapillaryFlowFunctions()
         {
             // Test Capillary flow functions
-            var capFlow = mMwtWin.CapFlow;
+            var capFlow = mMonoisotopicMassCalculator.CapFlow;
             capFlow.SetAutoComputeEnabled(false);
             capFlow.SetBackPressure(2000d, UnitOfPressure.Psi);
             capFlow.SetColumnLength(40d, UnitOfLength.CM);
@@ -169,7 +170,7 @@ namespace UnitTests.FunctionalTests
             Console.WriteLine("Column Volume:   " + capFlow.ComputeColumnVolume(UnitOfVolume.NL));
             Console.WriteLine("Dead time:       " + capFlow.ComputeDeadTime(UnitOfTime.Seconds));
 
-            Console.WriteLine("");
+            Console.WriteLine();
 
             Console.WriteLine("Repeat Computations, but in a different order (should give same results)");
             Console.WriteLine("Vol flow rate:   " + capFlow.ComputeVolFlowRate(UnitOfFlowRate.NLPerMin));
@@ -177,7 +178,7 @@ namespace UnitTests.FunctionalTests
             Console.WriteLine("Back pressure:   " + capFlow.ComputeBackPressure(UnitOfPressure.Psi));
             Console.WriteLine("Column Length:   " + capFlow.ComputeColumnLength(UnitOfLength.CM));
 
-            Console.WriteLine("");
+            Console.WriteLine();
 
             Console.WriteLine("Old Dead time: " + capFlow.GetDeadTime(UnitOfTime.Minutes));
 
@@ -193,7 +194,7 @@ namespace UnitTests.FunctionalTests
             Console.WriteLine("Vol flow rate: " + capFlow.ComputeVolFlowRateUsingDeadTime(out var newPressure, UnitOfFlowRate.NLPerMin, UnitOfPressure.Psi) + "  (confirmation of computed volumetric flow rate)");
             Console.WriteLine("New pressure: " + newPressure);
 
-            Console.WriteLine("");
+            Console.WriteLine();
 
             // Can set a new back pressure, but since auto-compute is on, and the
             // auto-compute mode is VolFlowRateUsingDeadTime, the pressure will get changed back to
@@ -240,9 +241,9 @@ namespace UnitTests.FunctionalTests
         public void TestPeptideFunctions()
         {
             // Switch to isotopic masses
-            mMwtWin.SetElementMode(ElementMassMode.Isotopic);
+            mMonoisotopicMassCalculator.SetElementMode(ElementMassMode.Isotopic);
 
-            var peptide = mMwtWin.Peptide;
+            var peptide = mMonoisotopicMassCalculator.Peptide;
             peptide.SetSequence1LetterSymbol("K.AC!YEFGHRKACY*EFGHRK.G");
             // .SetSequence1LetterSymbol("K.ACYEFGHRKACYEFGHRK.G")
 
@@ -296,14 +297,14 @@ namespace UnitTests.FunctionalTests
         public void TestIsotopicFunctions()
         {
             // Switch to isotopic masses
-            mMwtWin.SetElementMode(ElementMassMode.Isotopic);
+            mMonoisotopicMassCalculator.SetElementMode(ElementMassMode.Isotopic);
 
             // Really big formula to test with: C489 H300 F27 Fe8 N72 Ni6 O27 S9
             const short chargeState = 1;
             Console.WriteLine("Isotopic abundance test with Charge=" + chargeState);
 
             var formulaIn = "C1255H43O2Cl";
-            var success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, out var resultString, out var convolutedMSData2D, out var convolutedMSDataCount);
+            var success = mMonoisotopicMassCalculator.ComputeIsotopicAbundances(ref formulaIn, chargeState, out var resultString, out var convolutedMSData2D, out var convolutedMSDataCount);
             Console.WriteLine(resultString);
 
             Console.WriteLine("Convert isotopic distribution to Gaussian");
@@ -315,7 +316,7 @@ namespace UnitTests.FunctionalTests
             const double resolutionMass = 1000d;
             const int qualityFactor = 50;
 
-            var gaussianData = mMwtWin.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor);
+            var gaussianData = mMonoisotopicMassCalculator.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor);
 
             var gaussianResults = new StringBuilder();
             gaussianResults.AppendFormat("{0}\t{1}", "m/z", "Intensity");
@@ -337,12 +338,12 @@ namespace UnitTests.FunctionalTests
         public void TestIsotopicFunctions2()
         {
             // Switch to isotopic masses
-            mMwtWin.SetElementMode(ElementMassMode.Isotopic);
+            mMonoisotopicMassCalculator.SetElementMode(ElementMassMode.Isotopic);
 
             const short chargeState = 1;
             Console.WriteLine("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
             var formulaIn = "C1255H43O2Cl";
-            var success = mMwtWin.ComputeIsotopicAbundances(ref formulaIn, chargeState, out var resultString, out _, out _, false);
+            var success = mMonoisotopicMassCalculator.ComputeIsotopicAbundances(ref formulaIn, chargeState, out var resultString, out _, out _, false);
             Console.WriteLine(resultString);
         }
 

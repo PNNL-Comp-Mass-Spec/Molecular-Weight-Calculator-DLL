@@ -1,33 +1,20 @@
 ﻿using System;
-using MolecularWeightCalculator;
-using MolecularWeightCalculator.Formula;
 using NUnit.Framework;
 
 namespace UnitTests
 {
     [TestFixture]
-    public class MassTests
+    public class MassTests : TestBase
     {
-        //
-        // To see the Console.Writeline() results for a series of test cases for a given Test, run NUnit from the command line.  For example:
-        // cd "C:\Program Files (x86)\NUnit.org\nunit-console"
-        // c:nunit3-console.exe --noresult --where "method =~ /Monoiso*/" unittests.dll
-        //
-
-        private const double MATCHING_MASS_EPSILON = 0.0000001;
-
-        private MolecularWeightTool mMwtWinAvg;
-        private MolecularWeightTool mMwtWinIso;
+        // Ignore Spelling: Da
 
         /// <summary>
-        /// Instantiate two copies of the Molecular Weight Calculator
-        /// One using average masses and one using isotopic masses
+        /// Initialize the Molecular Weight Calculator object
         /// </summary>
         [OneTimeSetUp]
         public void Setup()
         {
-            mMwtWinAvg = new MolecularWeightTool(ElementMassMode.Average);
-            mMwtWinIso = new MolecularWeightTool(ElementMassMode.Isotopic);
+            Initialize();
         }
 
         [Test]
@@ -47,8 +34,8 @@ namespace UnitTests
         [TestCase(1530.000, 1, 3,  510.67151766)]
         public void ConvoluteMass(double currentMz, short currentCharge, short targetCharge, double expectedMz)
         {
-            var resultMH = mMwtWinIso.ConvoluteMass(currentMz, currentCharge);
-            var resultMz = mMwtWinIso.ConvoluteMass(currentMz, currentCharge, targetCharge);
+            var resultMH = mMonoisotopicMassCalculator.ConvoluteMass(currentMz, currentCharge);
+            var resultMz = mMonoisotopicMassCalculator.ConvoluteMass(currentMz, currentCharge, targetCharge);
 
             Console.WriteLine("{0,8:F3} m/z, charge {1,2}+ -> {2,2}+ is {3,10:F8} m/z",
                 currentMz, currentCharge, targetCharge, resultMz);
@@ -77,8 +64,8 @@ namespace UnitTests
         [TestCase(14565.636, 15, 972.04979000, 972.04967649)]
         public void MonoisotopicMassConversion(double monoMass, short targetCharge, double expectedMzAvg, double expectedMzIso)
         {
-            var resultMzAvg = mMwtWinAvg.MonoMassToMz(monoMass, targetCharge);
-            var resultMzIso = mMwtWinIso.MonoMassToMz(monoMass, targetCharge);
+            var resultMzAvg = mAverageMassCalculator.MonoMassToMz(monoMass, targetCharge);
+            var resultMzIso = mMonoisotopicMassCalculator.MonoMassToMz(monoMass, targetCharge);
 
             Console.WriteLine("{0,8:F3} Da -> {1,2}+ is {2,10:F8} m/z average mass, and {3,10:F8} m/z isotopic mass",
                 monoMass, targetCharge, resultMzAvg, resultMzIso);

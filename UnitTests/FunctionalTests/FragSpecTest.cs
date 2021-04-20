@@ -12,26 +12,27 @@ namespace UnitTests.FunctionalTests
      * Written by Matthew Monroe for PNNL in 2010
      */
     [TestFixture]
-    public class FragSpecTest
+    public class FragSpecTest : TestBase
     {
         // Ignore Spelling: frag, Arg
 
-        private MolecularWeightTool mMwtWin;
-
+        /// <summary>
+        /// Initialize the Molecular Weight Calculator object
+        /// </summary>
         [OneTimeSetUp]
         public void Setup()
         {
-            mMwtWin = new MolecularWeightTool(ElementMassMode.Isotopic);
+            Initialize();
         }
 
         [Test]
         public void TestAccessFunctions()
         {
             // Set the element mode (average, monoisotopic, or integer)
-            mMwtWin.SetElementMode(ElementMassMode.Isotopic);
+            mMonoisotopicMassCalculator.SetElementMode(ElementMassMode.Isotopic);
 
             // Initialize fragSpectrumOptions with the defaults
-            var fragSpectrumOptions = mMwtWin.Peptide.GetFragmentationSpectrumOptions();
+            var fragSpectrumOptions = mMonoisotopicMassCalculator.Peptide.GetFragmentationSpectrumOptions();
 
             // Customize the options
             fragSpectrumOptions.DoubleChargeIonsShow = true;
@@ -53,8 +54,8 @@ namespace UnitTests.FunctionalTests
             fragSpectrumOptions.IntensityOptions.BYIonShoulder = 0;
 
             // Customize the modification symbols
-            mMwtWin.Peptide.SetModificationSymbol("!", 57.02146, false, "Carbamidomethylation");
-            mMwtWin.Peptide.SetModificationSymbol("+", 10.0, false, "Heavy Arg");
+            mMonoisotopicMassCalculator.Peptide.SetModificationSymbol("!", 57.02146, false, "Carbamidomethylation");
+            mMonoisotopicMassCalculator.Peptide.SetModificationSymbol("+", 10.0, false, "Heavy Arg");
 
             // ReSharper disable once StringLiteralTypo
             const string newSeq = "C!ETQNPVSAR+";
@@ -62,16 +63,16 @@ namespace UnitTests.FunctionalTests
             // Obtain the fragmentation spectrum for a peptide
 
             // First define the peptide sequence
-            mMwtWin.Peptide.SetSequence1LetterSymbol(newSeq);
+            mMonoisotopicMassCalculator.Peptide.SetSequence1LetterSymbol(newSeq);
 
             // Update the options
-            mMwtWin.Peptide.SetFragmentationSpectrumOptions(fragSpectrumOptions);
+            mMonoisotopicMassCalculator.Peptide.SetFragmentationSpectrumOptions(fragSpectrumOptions);
 
             // Get the fragmentation masses
-            mMwtWin.Peptide.GetFragmentationMasses(out var fragSpectrum);
+            mMonoisotopicMassCalculator.Peptide.GetFragmentationMasses(out var fragSpectrum);
 
             // Print the results to the console
-            Console.WriteLine("Fragmentation spectrum for " + mMwtWin.Peptide.GetSequence(false, true, false, false));
+            Console.WriteLine("Fragmentation spectrum for " + mMonoisotopicMassCalculator.Peptide.GetSequence(false, true, false, false));
             Console.WriteLine();
 
             Console.WriteLine("Mass     Intensity    \tSymbol");
@@ -93,23 +94,23 @@ namespace UnitTests.FunctionalTests
             // Compute the Isotopic distribution for the peptide
             // Need to first convert to an empirical formula
             // To do this, first obtain the peptide sequence in 3-letter notation
-            var seq3Letter = mMwtWin.Peptide.GetSequence(true, false, false, true, false);
+            var seq3Letter = mMonoisotopicMassCalculator.Peptide.GetSequence(true, false, false, true, false);
 
             // Now assign to the Compound class
-            mMwtWin.Compound.SetFormula(seq3Letter);
+            mMonoisotopicMassCalculator.Compound.SetFormula(seq3Letter);
 
             // Now convert to an empirical formula
-            var s = mMwtWin.Compound.ConvertToEmpirical();
+            var s = mMonoisotopicMassCalculator.Compound.ConvertToEmpirical();
 
             short chargeState = 1;
             Console.WriteLine("Isotopic abundance test with Charge=" + chargeState);
-            mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, out var results, out _, out _);
+            mMonoisotopicMassCalculator.ComputeIsotopicAbundances(ref s, chargeState, out var results, out _, out _);
             Console.WriteLine(results);
 
             const bool addProtonChargeCarrier = false;
             chargeState = 1;
             Console.WriteLine("Isotopic abundance test with Charge=" + chargeState + "; do not add a proton charge carrier");
-            mMwtWin.ComputeIsotopicAbundances(ref s, chargeState, out results, out _, out _, addProtonChargeCarrier);
+            mMonoisotopicMassCalculator.ComputeIsotopicAbundances(ref s, chargeState, out results, out _, out _, addProtonChargeCarrier);
             Console.WriteLine(results);
         }
     }
