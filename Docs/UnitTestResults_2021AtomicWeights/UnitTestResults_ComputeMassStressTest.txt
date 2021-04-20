@@ -171,7 +171,7 @@ Formula: canyoch4(ch2)7br
 
 Average Mass:
   CaNYOCH4(CH2)7Br
-  StDev:  0.00580051506333705
+  StDev:  0.00580048920350689
   Mass:   353.12584
   Charge: 13
 
@@ -410,7 +410,7 @@ Isotopic Mass:
 Formula: C6H3^19.8Ar
 
 Average Mass:
-  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.8 vs avg atomic wt of 39.948
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.8 vs avg atomic wt of 39.95
 
   C6H3^19.8Ar
   StDev:  0.00246062492062484
@@ -428,7 +428,7 @@ Isotopic Mass:
 Formula: C6H3^19.8arpbbb
 
 Average Mass:
-  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.8 vs avg atomic wt of 39.948
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.8 vs avg atomic wt of 39.95
 
   C6H3^19.8ArPbBB
   StDev:  0.10059102681154
@@ -446,11 +446,11 @@ Isotopic Mass:
 Formula: C6H3^19.88Ar4Pb>Ar
 
 Average Mass:
-  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.88 vs avg atomic wt of 39.948
+  Caution: Warning, isotopic mass is probably too small for element: Ar - 19.88 vs avg atomic wt of 39.95
 
   C6H3^19.88Ar4Pb>Ar
   StDev:  0.100030268794001
-  Mass:   321.862
+  Mass:   321.86
   Charge: 13
 
 Isotopic Mass:
@@ -509,8 +509,8 @@ Average Mass:
   Caution: Si means silicon; SI means sulfur-iodine.  Sc means scandium; SC means sulfur-carbon.  Co means cobalt; CO means carbon-oxygen.  Ni means nickel; NI means nitrogen-iodine.  Cu means copper; CU means carbon-uranium.  Nb means niobium; NB means nitrogen-boron.  Pd means palladium; PD means phosphorus-deuterium.  Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  
 
   HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe
-  StDev:  0.057574889845665
-  Mass:   3357.818179041
+  StDev:  0.103073358965062
+  Mass:   3357.820167941
   Charge: 80
 
 Isotopic Mass:
@@ -527,8 +527,8 @@ Average Mass:
   Caution: Si means silicon; SI means sulfur-iodine.  Sc means scandium; SC means sulfur-carbon.  Co means cobalt; CO means carbon-oxygen.  Ni means nickel; NI means nitrogen-iodine.  Cu means copper; CU means carbon-uranium.  Nb means niobium; NB means nitrogen-boron.  Pd means palladium; PD means phosphorus-deuterium.  Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  
 
   HHeLiBeBCnOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe
-  StDev:  0.0575668074131305
-  Mass:   3617.000179041
+  StDev:  0.103068844484356
+  Mass:   3617.002167941
   Charge: 83
 
 Isotopic Mass:
@@ -545,8 +545,8 @@ Average Mass:
   Caution: Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  Dy means dysprosium; DY means deuterium-yttrium.  Ho means holmium; HO means hydrogen-oxygen.  Yb means ytterbium; YB means yttrium-boron.  Hf means hafnium; HF means hydrogen-fluorine.  Os means osmium; OS means oxygen-sulfur.  Bi means bismuth; BI means boron-iodine.  Np means neptunium; NP means nitrogen-phosphorus.  Pu means plutonium; PU means phosphorus-uranium.  Bk means berkelium; BK means boron-potassium.  Cf means californium; CF means carbon-fluorine.  No means nobelium; NO means nitrogen-oxygen.  
 
   CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr
-  StDev:  0.113586655576276
-  Mass:   9710.68462096
+  StDev:  0.113564643481163
+  Mass:   9710.68462196
   Charge: 153
 
 Isotopic Mass:
@@ -563,8 +563,8 @@ Average Mass:
   Caution: Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  Dy means dysprosium; DY means deuterium-yttrium.  Ho means holmium; HO means hydrogen-oxygen.  Yb means ytterbium; YB means yttrium-boron.  Hf means hafnium; HF means hydrogen-fluorine.  Os means osmium; OS means oxygen-sulfur.  Bi means bismuth; BI means boron-iodine.  Np means neptunium; NP means nitrogen-phosphorus.  Pu means plutonium; PU means phosphorus-uranium.  Bk means berkelium; BK means boron-potassium.  Cf means californium; CF means carbon-fluorine.  No means nobelium; NO means nitrogen-oxygen.  
 
   CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr
-  StDev:  0.113586655576276
-  Mass:   9710.68462096
+  StDev:  0.113564643481163
+  Mass:   9710.68462196
   Charge: 153
 
 Isotopic Mass:
@@ -581,7 +581,7 @@ Average Mass:
   Caution: Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  
 
   CdInSnSbTeIXeCsBaLaCePrNdPm
-  StDev:  0.0325922720902302
+  StDev:  0.0325922674879119
   Mass:   1832.90305196
   Charge: 22
 
@@ -599,7 +599,7 @@ Average Mass:
   Caution: Cd means cadmium; CD means carbon-deuterium.  In means indium; IN means iodine-nitrogen.  Sn means tin; SN means sulfur-nitrogen.  Sb means antimony; SB means sulfur-boron.  Cs means cesium; CS means carbon-sulfur.  Nd means neodymium; ND means nitrogen-deuterium.  
 
   CdInSnSbTeIXeCsBaLaCePrNdPm
-  StDev:  0.0325922720902302
+  StDev:  0.0325922674879119
   Mass:   1832.90305196
   Charge: 22
 
@@ -617,8 +617,8 @@ Average Mass:
   Caution: Si means silicon; SI means sulfur-iodine.  
 
   SiPSClArKCaS
-  StDev:  0.0138838035134478
-  Mass:   277.753061998
+  StDev:  0.0866141443414413
+  Mass:   277.755061998
   Charge: -1
 
 Isotopic Mass:
