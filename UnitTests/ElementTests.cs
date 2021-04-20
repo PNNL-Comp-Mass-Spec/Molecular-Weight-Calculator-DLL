@@ -136,17 +136,17 @@ namespace UnitTests
         [TestCase("C6H6", 78.114, 78.04695019338, 8)]
         [TestCase("C6H3^19.8Ar", 94.89, 94.82347509669, 11)]
         [TestCase("C6H3^19.8arpbbb", 323.71, 324.81873831669, 19)]
-        [TestCase("C6H3^19.88Ar4Pb>Ar", 321.862, 322.55774447299, 13)]
+        [TestCase("C6H3^19.88Ar4Pb>Ar", 321.86, 322.55774447299, 13)]
         [TestCase("C6>C4", 24.022, 24, 4)]
         [TestCase("HGly5.3Leu2.2Tyr0.03OH", 574.23788, 573.901163012462, 0)]
         [TestCase("HGly5.3leu2.2tyr0.03oh", 574.23788, 573.901163012462, 0)]
-        [TestCase("HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe", 3357.818179041, 3356.97101749416, 80)]
-        [TestCase("hhelibebcnofnenamgalsipsClArKcasctivcrmnfeconicuzngageassebrkrrbsryzrnbmotcrurhpdagcdinsnsbteixe", 3617.000179041, 3616.14506348973, 83)]
-        [TestCase("CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr", 9710.68462096, 9720.269822671, 153)]
-        [TestCase("csbalaceprndpmsmeugdtbdyhoertmybluhftawreosirptauhgtlpbbipoatrnfrraacthpaunppuamcmbkcfesfmmdnolr", 9710.68462096, 9720.269822671, 153)]
+        [TestCase("HHeLiBeBCNOFNeNaMgAlSiPSClArKCaScTiVCrMnFeCoNiCuZnGaGeAsSeBrKrRbSrYZrNbMoTcRuRhPdAgCdInSnSbTeIXe", 3357.820167941, 3356.97101749416, 80)]
+        [TestCase("hhelibebcnofnenamgalsipsClArKcasctivcrmnfeconicuzngageassebrkrrbsryzrnbmotcrurhpdagcdinsnsbteixe", 3617.002167941, 3616.14506348973, 83)]
+        [TestCase("CsBaLaCePrNdPmSmEuGdTbDyHoErTmYbLuHfTaWReOsIrPtAuHgTlPbBiPoAtRnFrRaAcThPaUNpPuAmCmBkCfEsFmMdNoLr", 9710.68462196, 9720.269822671, 153)]
+        [TestCase("csbalaceprndpmsmeugdtbdyhoertmybluhftawreosirptauhgtlpbbipoatrnfrraacthpaunppuamcmbkcfesfmmdnolr", 9710.68462196, 9720.269822671, 153)]
         [TestCase("cdinsnsbteixecsbalaceprndpm", 1832.90305196, 1835.6787480906, 22)]
         [TestCase("CdInSnSbTeIXeCsBaLaCePrNdPm", 1832.90305196, 1835.6787480906, 22)]
-        [TestCase("sips cl arkcas", 277.753061998, 276.75236403697, -1)]        // Test ignoring whitespace and characters outside of a-z, A-Z, 0-9, []{}().^>
+        [TestCase("sips cl arkcas", 277.755061998, 276.75236403697, -1)]                // Test ignoring whitespace and characters outside of a-z, A-Z, 0-9, []{}().^>
         // ReSharper restore StringLiteralTypo
         public void ComputeMassStressTest(string formula, double expectedAvgMass, double expectedMonoMass, double expectedCharge, bool bracketsAsParentheses = false)
         {
