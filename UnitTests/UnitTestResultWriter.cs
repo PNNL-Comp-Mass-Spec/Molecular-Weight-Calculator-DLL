@@ -2,7 +2,7 @@
 
 namespace UnitTests
 {
-    internal enum UnitTestWriterType
+    public enum UnitTestWriterType
     {
         NoWriter = 0,
         ComputeMass = 1,
@@ -15,7 +15,7 @@ namespace UnitTests
         UnitTestCaseWriter = 8
     }
 
-    internal class UnitTestResultWriter
+    public class UnitTestResultWriter
     {
         /// <summary>
         /// Set to true once the results file path has been shown at the console

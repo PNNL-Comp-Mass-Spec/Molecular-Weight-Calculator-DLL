@@ -35,6 +35,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompoundTests.cs" />
     <Compile Include="ElementTests.cs" />
     <Compile Include="FunctionalTests\FormulaSearcherTests.cs" />
     <Compile Include="FunctionalTests\FragSpecTest.cs" />
@@ -44,6 +45,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestBase.cs" />
     <Compile Include="UnitTestResultWriter.cs" />
   </ItemGroup>
   <ItemGroup>
