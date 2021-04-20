@@ -24,6 +24,11 @@ namespace MolecularWeightCalculator.Formula
             // Published in Pure and Applied Chemistry, Volume 88, Issue 3
             // https://doi.org/10.1515/pac-2015-0305
 
+            // Average mass values and/or uncertainties for 14 elements were further revised in 2018
+            // as described in "Standard Atomic Weights of 14 Chemical Elements Revised"
+            // Published in Chemistry International, Volume 40, Issue 4
+            // https://doi.org/10.1515/ci-2018-0409
+
             // For radioactive elements, the mass of the most stable isotope is stored for the isotopic mass
 
             // Naturally occurring radioactive elements have an average weight and associated uncertainty
@@ -32,7 +37,7 @@ namespace MolecularWeightCalculator.Formula
 
             // For example, Nobelium has average mass 259.1 (±0.0005)
 
-            // Assigning element name, Charge (oxidation state), integer weight (of the isotopic mass), isotopic weight, average weight, and average weight uncertainty
+            // Assigning element name, Charge (oxidation state), integer mass (of the isotopic mass), isotopic weight, average mass, and average mass uncertainty
             elementData[1] = new ElementMem("H", 1, 1, 1.00782503223, 1.008, 0.000135);
             elementData[2] = new ElementMem("He", 0, 4, 4.00260325413, 4.002602, 0.000002);
             elementData[3] = new ElementMem("Li", 1, 7, 7.0160034366, 6.94, 0.0295);
@@ -45,21 +50,21 @@ namespace MolecularWeightCalculator.Formula
             elementData[10] = new ElementMem("Ne", 0, 20, 19.9924401762, 20.1797, 0.0006);
             elementData[11] = new ElementMem("Na", 1, 23, 22.989769282, 22.98976928, 0.00000002);
             elementData[12] = new ElementMem("Mg", 2, 24, 23.985041697, 24.305, 0.0015);
-            elementData[13] = new ElementMem("Al", 3, 27, 26.98153853, 26.9815385, 0.0000007);
+            elementData[13] = new ElementMem("Al", 3, 27, 26.98153853, 26.9815384, 0.0000003);
             elementData[14] = new ElementMem("Si", 4, 28, 27.97692653465, 28.085, 0.001);
             elementData[15] = new ElementMem("P", -3, 31, 30.97376199842, 30.973761998, 0.000000005);
             elementData[16] = new ElementMem("S", -2, 32, 31.9720711744, 32.06, 0.0085);
             elementData[17] = new ElementMem("Cl", -1, 35, 34.968852682, 35.45, 0.0055);
-            elementData[18] = new ElementMem("Ar", 0, 40, 39.9623831237, 39.948, 0.001);
+            elementData[18] = new ElementMem("Ar", 0, 40, 39.9623831237, 39.95, 0.0855);
             elementData[19] = new ElementMem("K", 1, 39, 38.9637064864, 39.0983, 0.0001);
             elementData[20] = new ElementMem("Ca", 2, 40, 39.962590863, 40.078, 0.004);
             elementData[21] = new ElementMem("Sc", 3, 45, 44.95590828, 44.955908, 0.000005);
             elementData[22] = new ElementMem("Ti", 4, 48, 47.94794198, 47.867, 0.001);
             elementData[23] = new ElementMem("V", 5, 51, 50.94395704, 50.9415, 0.0001);
             elementData[24] = new ElementMem("Cr", 3, 52, 51.94050623, 51.9961, 0.0006);
-            elementData[25] = new ElementMem("Mn", 2, 55, 54.93804391, 54.938044, 0.000003);
+            elementData[25] = new ElementMem("Mn", 2, 55, 54.93804391, 54.938043, 0.000002);
             elementData[26] = new ElementMem("Fe", 3, 56, 55.93493633, 55.845, 0.002);
-            elementData[27] = new ElementMem("Co", 2, 59, 58.93319429, 58.933194, 0.000004);
+            elementData[27] = new ElementMem("Co", 2, 59, 58.93319429, 58.933194, 0.000003);
             elementData[28] = new ElementMem("Ni", 2, 58, 57.93534241, 58.6934, 0.0004);
             elementData[29] = new ElementMem("Cu", 2, 63, 62.92959772, 63.546, 0.003);
             elementData[30] = new ElementMem("Zn", 2, 64, 63.92914201, 65.38, 0.02);
@@ -71,13 +76,13 @@ namespace MolecularWeightCalculator.Formula
             elementData[36] = new ElementMem("Kr", 0, 84, 83.9114977282, 83.798, 0.002);
             elementData[37] = new ElementMem("Rb", 1, 85, 84.9117897379, 85.4678, 0.0003);
             elementData[38] = new ElementMem("Sr", 2, 88, 87.9056125, 87.62, 0.01);
-            elementData[39] = new ElementMem("Y", 3, 89, 88.9058403, 88.90584, 0.00002);
+            elementData[39] = new ElementMem("Y", 3, 89, 88.9058403, 88.90584, 0.00001);
             elementData[40] = new ElementMem("Zr", 4, 90, 89.9046977, 91.224, 0.002);
-            elementData[41] = new ElementMem("Nb", 5, 93, 92.906373, 92.90637, 0.00002);
+            elementData[41] = new ElementMem("Nb", 5, 93, 92.906373, 92.90637, 0.00001);
             elementData[42] = new ElementMem("Mo", 6, 98, 97.90540482, 95.95, 0.01);
             elementData[43] = new ElementMem("Tc", 7, 98, 97.9072124, 98, 0.0005);
             elementData[44] = new ElementMem("Ru", 4, 102, 101.9043441, 101.07, 0.02);
-            elementData[45] = new ElementMem("Rh", 3, 103, 102.905498, 102.9055, 0.00002);
+            elementData[45] = new ElementMem("Rh", 3, 103, 102.905498, 102.90549, 0.00002);
             elementData[46] = new ElementMem("Pd", 2, 106, 105.9034804, 106.42, 0.01);
             elementData[47] = new ElementMem("Ag", 1, 107, 106.9050916, 107.8682, 0.0002);
             elementData[48] = new ElementMem("Cd", 2, 114, 113.90336509, 112.414, 0.004);
@@ -91,17 +96,17 @@ namespace MolecularWeightCalculator.Formula
             elementData[56] = new ElementMem("Ba", 2, 138, 137.905247, 137.327, 0.007);
             elementData[57] = new ElementMem("La", 3, 139, 138.9063563, 138.90547, 0.00007);
             elementData[58] = new ElementMem("Ce", 3, 140, 139.9054431, 140.116, 0.001);
-            elementData[59] = new ElementMem("Pr", 4, 141, 140.9076576, 140.90766, 0.00002);
+            elementData[59] = new ElementMem("Pr", 4, 141, 140.9076576, 140.90766, 0.00001);
             elementData[60] = new ElementMem("Nd", 3, 142, 141.907729, 144.242, 0.003);
             elementData[61] = new ElementMem("Pm", 3, 145, 144.9127559, 145, 0.0005);
             elementData[62] = new ElementMem("Sm", 3, 152, 151.9197397, 150.36, 0.02);
             elementData[63] = new ElementMem("Eu", 3, 153, 152.921238, 151.964, 0.001);
             elementData[64] = new ElementMem("Gd", 3, 158, 157.9241123, 157.25, 0.03);
-            elementData[65] = new ElementMem("Tb", 3, 159, 158.9253547, 158.92535, 0.00002);
+            elementData[65] = new ElementMem("Tb", 3, 159, 158.9253547, 158.925354, 0.000008);
             elementData[66] = new ElementMem("Dy", 3, 164, 163.9291819, 162.5, 0.001);
-            elementData[67] = new ElementMem("Ho", 3, 165, 164.9303288, 164.93033, 0.00002);
+            elementData[67] = new ElementMem("Ho", 3, 165, 164.9303288, 164.930328, 0.000007);
             elementData[68] = new ElementMem("Er", 3, 166, 165.9302995, 167.259, 0.003);
-            elementData[69] = new ElementMem("Tm", 3, 169, 168.9342179, 168.93422, 0.00002);
+            elementData[69] = new ElementMem("Tm", 3, 169, 168.9342179, 168.934218, 0.000006);
             elementData[70] = new ElementMem("Yb", 3, 174, 173.9388664, 173.054, 0.005);
             elementData[71] = new ElementMem("Lu", 3, 175, 174.9407752, 174.9668, 0.0001);
             elementData[72] = new ElementMem("Hf", 4, 180, 179.946557, 178.49, 0.02);
@@ -109,9 +114,9 @@ namespace MolecularWeightCalculator.Formula
             elementData[74] = new ElementMem("W", 6, 184, 183.95093092, 183.84, 0.01);
             elementData[75] = new ElementMem("Re", 7, 187, 186.9557501, 186.207, 0.001);
             elementData[76] = new ElementMem("Os", 4, 192, 191.961477, 190.23, 0.03);
-            elementData[77] = new ElementMem("Ir", 4, 193, 192.9629216, 192.217, 0.003);
+            elementData[77] = new ElementMem("Ir", 4, 193, 192.9629216, 192.217, 0.002);
             elementData[78] = new ElementMem("Pt", 4, 195, 194.9647917, 195.084, 0.009);
-            elementData[79] = new ElementMem("Au", 3, 197, 196.96656879, 196.966569, 0.000005);
+            elementData[79] = new ElementMem("Au", 3, 197, 196.96656879, 196.96657, 0.00004);
             elementData[80] = new ElementMem("Hg", 2, 202, 201.9706434, 200.592, 0.003);
             elementData[81] = new ElementMem("Tl", 1, 205, 204.9744278, 204.38, 0.0015);
             elementData[82] = new ElementMem("Pb", 2, 208, 207.9766525, 207.2, 0.1);
@@ -123,7 +128,7 @@ namespace MolecularWeightCalculator.Formula
             elementData[88] = new ElementMem("Ra", 2, 226, 226.0254103, 226, 0.0005);
             elementData[89] = new ElementMem("Ac", 3, 227, 227.0277523, 227, 0.0005);
             elementData[90] = new ElementMem("Th", 4, 232, 232.0380558, 232.0377, 0.0004);
-            elementData[91] = new ElementMem("Pa", 5, 231, 231.0358842, 231.03588, 0.00002);
+            elementData[91] = new ElementMem("Pa", 5, 231, 231.0358842, 231.03588, 0.00001);
             elementData[92] = new ElementMem("U", 6, 238, 238.0507884, 238.02891, 0.00003);
             elementData[93] = new ElementMem("Np", 5, 237, 237.0481736, 237, 0.0005);
             elementData[94] = new ElementMem("Pu", 4, 244, 244.0642053, 244, 0.0005);

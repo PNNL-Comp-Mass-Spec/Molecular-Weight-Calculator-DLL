@@ -21,16 +21,19 @@ Newer versions of the DLL can be found on the [AppVeyor CI server](https://ci.ap
 
 ## Data Source
 
-Element and isotope mass and percent composition values were obtained from NIST
+Element and isotope mass and percent composition values used in the Molecular Weight Calculator were obtained from NIST
 * https://www.nist.gov/pml/atomic-weights-and-isotopic-compositions-relative-atomic-masses
 
-The atomic weight data was published by J. Meija et al in [Atomic Weights of the Elements 2013](http://www.ciaaw.org/atomic-weights.htm), 
-and the isotopic composition data was published by M. Berglund and M.E. Wieser 
-in [Isotopic Compositions of the Elements 2009](https://doi.org/10.1351/PAC-REP-10-06-02).
+The atomic weight data that NIST provides comes from [Atomic Weights of the Elements 2013](http://www.ciaaw.org/atomic-weights.htm) by J. Meija et al. 
+The isotopic composition data comes from [Isotopic Compositions of the Elements 2009](https://doi.org/10.1351/PAC-REP-10-06-02) by M. Berglund and M.E. Wieser.
 
 For elements with a standard atomic weight range (e.g. [6.938,6.997] for Lithium), the conventional atomic weight is used.
 * See Table 3 in "Atomic weights of the elements 2013 (IUPAC Technical Report)"
 * Published in Pure and Applied Chemistry, Volume 88, Issue 3, https://doi.org/10.1515/pac-2015-0305
+
+Average mass values and/or uncertainties for 14 elements were further revised in 2018
+as described in [Standard Atomic Weights of 14 Chemical Elements Revised](https://www.degruyter.com/document/doi/10.1515/ci-2018-0409/html)
+and published in Chemistry International, Volume 40, Issue 4, https://doi.org/10.1515/ci-2018-0409
 
 For radioactive elements, the mass of the most stable isotope is stored for the isotopic mass.
 
