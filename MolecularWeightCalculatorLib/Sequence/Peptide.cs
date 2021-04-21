@@ -1667,7 +1667,6 @@ namespace MolecularWeightCalculator.Sequence
             string sequenceStart, sequenceEnd;
             var matchesCleavageRule = false;
 
-            // Need to reset this to zero since passed ByRef
             ruleMatchCount = 0;
             var prefix = string.Empty;
             var suffix = string.Empty;

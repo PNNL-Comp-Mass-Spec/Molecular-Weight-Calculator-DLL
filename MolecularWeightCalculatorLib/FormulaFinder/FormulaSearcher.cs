@@ -1454,7 +1454,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="searchOptions"></param>
         /// <param name="mzSearchChargeMin"></param>
         /// <param name="mzSearchChargeMax"></param>
-        /// <remarks>searchOptions is passed ByRef because it is a value type and .MzChargeMin and .MzChargeMax are updated</remarks>
         private void MultipleSearchMath(
             int potentialElementCount,
             SearchOptions searchOptions,

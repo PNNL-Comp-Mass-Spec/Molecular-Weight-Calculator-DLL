@@ -481,7 +481,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the ByRef variables
+        /// Returns the settings for the element with <paramref name="atomicNumber"/> in the out variables
         /// </summary>
         /// <param name="atomicNumber">Element atomic number (1 for hydrogen, 2 for helium, etc.)</param>
         /// <param name="symbol">Element symbol</param>
