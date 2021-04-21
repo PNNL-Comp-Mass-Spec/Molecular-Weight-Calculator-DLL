@@ -4,6 +4,7 @@
   "assemblyVersion": {
     "precision": "build"
   },
-  "versionHeightOffset": 7779, // Remove this when updating to version 4.3
+  "__comment__": "Remove the versionHeightOffset line after updating to version 4.3",
+  "versionHeightOffset": 7779,
   "pathFilters": ["."]
 }
