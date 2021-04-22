@@ -39,6 +39,11 @@ namespace UnitTests
         protected Dictionary<UnitTestWriterType, UnitTestResultWriter> mTestResultWriters;
 
         /// <summary>
+        /// WriteUpdatedTestCase uses this list to keep track of unit test method names
+        /// </summary>
+        private readonly SortedSet<string> mUnitTestMethods = new();
+
+        /// <summary>
         /// Instantiate two copies of the Molecular Weight Calculator
         /// One using average masses and one using isotopic masses
         /// </summary>
@@ -182,6 +187,14 @@ namespace UnitTests
         /// <param name="arg"></param>
         protected void WriteUpdatedTestCase(string callingMethod, string format, params object[] arg)
         {
+            if (!mUnitTestMethods.Contains(callingMethod))
+            {
+                // Append a blank line
+                mTestResultWriters[UnitTestWriterType.UnitTestCaseWriter].WriteLine(string.Empty);
+
+                mUnitTestMethods.Add(callingMethod);
+            }
+
             var testCaseCode = string.Format(format, arg);
             mTestResultWriters[UnitTestWriterType.UnitTestCaseWriter].WriteLine("{0,-30} {1}", callingMethod, testCaseCode);
         }
