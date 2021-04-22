@@ -540,7 +540,7 @@ namespace MolecularWeightCalculator
                 double viscosityInCentiPoise;
                 if (kelvin > 0d)
                 {
-                    viscosityInCentiPoise = Math.Exp(phi * (-3.476d + 726d / kelvin) + (1d - phi) * (-5.414d + 1566d / kelvin) + phi * (1d - phi) * (-1.762d + 929d / kelvin));
+                    viscosityInCentiPoise = Math.Exp(phi * (-3.476 + 726.0 / kelvin) + (1d - phi) * (-5.414 + 1566.0 / kelvin) + phi * (-1.762 + 929.0 / kelvin));
                 }
                 else
                 {
