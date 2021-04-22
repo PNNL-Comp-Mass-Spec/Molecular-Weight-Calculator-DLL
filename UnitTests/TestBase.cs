@@ -169,6 +169,11 @@ namespace UnitTests
             Console.WriteLine(text);
         }
 
+        protected string ValueToString(double value, byte digitsAfterDecimal = 5)
+        {
+            return PRISM.StringUtilities.DblToString(value, digitsAfterDecimal);
+        }
+
         /// <summary>
         /// Append C# code that can be used to update test cases with new masses
         /// </summary>

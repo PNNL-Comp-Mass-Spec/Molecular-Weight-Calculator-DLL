@@ -60,9 +60,10 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeBackPressure(pressureUnits);
 
             WriteUpdatedTestCase("TestComputeBackPressure",
-                "[TestCase({0}, {1}, {2:F4}, {3}, CapillaryType.{4}, {5}, UnitOfPressure.{6}, {7:F5})]",
+                "[TestCase({0}, {1}, {2:F4}, {3}, CapillaryType.{4}, {5}, UnitOfPressure.{6}, {7})]",
                 columnLengthCm, columnIdMicrons, viscosityPoise, volFlowRateNanoLitersPerMinute,
-                capillaryType, particleDiameterMicrons, pressureUnits, result);
+                capillaryType, particleDiameterMicrons, pressureUnits,
+                ValueToString(result));
 
             Console.WriteLine("{0} {1} back pressure", result, pressureUnits);
 
@@ -99,11 +100,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeColumnLength(lengthUnits);
 
             WriteUpdatedTestCase("TestComputeColumnLength",
-                "[TestCase({0}, {1}, {2}, {3}, CapillaryType.{4}, {5}, UnitOfLength.{6}, {7:F5})]",
+                "[TestCase({0}, {1}, {2}, {3}, CapillaryType.{4}, {5}, UnitOfLength.{6}, {7})]",
                 pressurePSI, columnIdMicrons,
                 viscosityPoise, volFlowRateNanoLitersPerMinute,
                 capillaryType, particleDiameterMicrons,
-                lengthUnits, result);
+                lengthUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} long column", result, lengthUnits);
 
@@ -135,10 +136,10 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeColumnVolume(volumeUnits);
 
             WriteUpdatedTestCase("TestComputeColumnVolume",
-                "[TestCase({0}, {1}, CapillaryType.{2}, {3}, UnitOfVolume.{4}, {5:F5})]",
+                "[TestCase({0}, {1}, CapillaryType.{2}, {3}, UnitOfVolume.{4}, {5})]",
                 columnLengthCm, columnIdMicrons,
                 capillaryType, particleDiameterMicrons,
-                volumeUnits, result);
+                volumeUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} column volume", result, volumeUnits);
 
@@ -172,11 +173,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeColumnId(columnIdUnits);
 
             WriteUpdatedTestCase("TestComputeColumnId",
-                "[TestCase({0}, {1}, {2}, {3}, CapillaryType.{4}, {5}, UnitOfLength.{6}, {7:F5})]",
+                "[TestCase({0}, {1}, {2}, {3}, CapillaryType.{4}, {5}, UnitOfLength.{6}, {7})]",
                 pressurePSI, columnLengthCm,
                 viscosityPoise, volFlowRateNanoLitersPerMinute,
                 capillaryType, particleDiameterMicrons,
-                columnIdUnits, result);
+                columnIdUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} column i.d.", result, columnIdUnits);
 
@@ -211,11 +212,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeDeadTime(deadTimeUnits);
 
             WriteUpdatedTestCase("TestComputeDeadTime",
-                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfTime.{7}, {8:F5})]",
+                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfTime.{7}, {8})]",
                 pressurePSI, columnLengthCm, columnIdMicrons,
                 viscosityPoise, volFlowRateNanoLitersPerMinute,
                 capillaryType, particleDiameterMicrons,
-                deadTimeUnits, result);
+                deadTimeUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} dead time", result, deadTimeUnits);
 
@@ -250,11 +251,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeExtraColumnBroadeningResultantPeakWidth(peakWidthUnits);
 
             WriteUpdatedTestCase("TestComputeExtraColumnBroadening",
-                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfTime.{7}, {8:F5})]",
+                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfTime.{7}, {8})]",
                 pressurePSI, columnLengthCm, columnIdMicrons,
                 viscosityPoise, volFlowRateNanoLitersPerMinute,
                 capillaryType, particleDiameterMicrons,
-                peakWidthUnits, result);
+                peakWidthUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} wide eluted peak", result, peakWidthUnits);
 
@@ -289,11 +290,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeLinearVelocity(linearVelocityUnits);
 
             WriteUpdatedTestCase("TestComputeLinearVelocity",
-                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfLinearVelocity.{7}, {8:F5})]",
+                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfLinearVelocity.{7}, {8})]",
                 pressurePSI, columnLengthCm, columnIdMicrons,
                 viscosityPoise, volFlowRateNanoLitersPerMinute,
                 capillaryType, particleDiameterMicrons,
-                linearVelocityUnits, result);
+                linearVelocityUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} linear velocity", result, linearVelocityUnits);
 
@@ -328,11 +329,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(linearVelocityUnits);
 
             WriteUpdatedTestCase("TestComputeOptimumLinearVelocity",
-                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfLinearVelocity.{7}, {8:F5})]",
+                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfLinearVelocity.{7}, {8})]",
                 pressurePSI, columnLengthCm, columnIdMicrons,
                 viscosityPoise, volFlowRateNanoLitersPerMinute,
                 capillaryType, particleDiameterMicrons,
-                linearVelocityUnits, expectedResult);
+                linearVelocityUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} optimum linear velocity", result, linearVelocityUnits);
 
@@ -369,11 +370,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeVolFlowRate(flowRateUnits);
 
             WriteUpdatedTestCase("TestComputeVolFlowRate",
-                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfFlowRate.{7}, {8:F5})]",
+                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfFlowRate.{7}, {8})]",
                 pressurePSI, columnLengthCm, columnIdMicrons,
                 viscosityPoise, volFlowRateNanoLitersPerMinute,
                 capillaryType, particleDiameterMicrons,
-                flowRateUnits, expectedResult);
+                flowRateUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} volumetric flow rate", result, flowRateUnits);
 
@@ -407,11 +408,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeMassFlowRate(massFlowRateUnits);
 
             WriteUpdatedTestCase("TestComputeMassFlowRate",
-                "[TestCase({0}, UnitOfConcentration.{1}, {2}, UnitOfFlowRate.{3}, {4}, UnitOfTime.{5}, UnitOfMassFlowRate.{6}, {7:F5})]",
-                concentration, concentrationUnits,
+                "[TestCase({0}, {1}, UnitOfConcentration.{2}, {3}, UnitOfFlowRate.{4}, {5}, UnitOfTime.{6}, UnitOfMassFlowRate.{7}, {8})]",
+                massInGramsPerMole, concentration, concentrationUnits,
                 volFlowRate, volFlowRateUnits,
                 injectionTime, injectionTimeUnits,
-                massFlowRateUnits, result);
+                massFlowRateUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} mass flow rate", result, massFlowRateUnits);
 
@@ -445,11 +446,11 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeMassRateMolesInjected(molarAmountUnits);
 
             WriteUpdatedTestCase("TestComputeMassRateMolesInjected",
-                "[TestCase({0}, UnitOfConcentration.{1}, {2}, UnitOfFlowRate.{3}, {4}, UnitOfTime.{5}, UnitOfMolarAmount.{6}, {7:F5})]",
-                concentration, concentrationUnits,
+                "[TestCase({0}, {1}, UnitOfConcentration.{2}, {3}, UnitOfFlowRate.{4}, {5}, UnitOfTime.{6}, UnitOfMolarAmount.{7}, {8})]",
+                massInGramsPerMole, concentration, concentrationUnits,
                 volFlowRate, volFlowRateUnits,
                 injectionTime, injectionTimeUnits,
-                molarAmountUnits, result);
+                molarAmountUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} injected", result, molarAmountUnits);
 
@@ -483,8 +484,9 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeMeCNViscosity(percentAcetonitrile, temperature, temperatureUnits, viscosityUnits);
 
             WriteUpdatedTestCase("TestComputeMeCNViscosity",
-                "[TestCase({0}, {1}, UnitOfTemperature.{2}, UnitOfViscosity.{3}, {4:F5})]",
-                percentAcetonitrile, temperature, temperatureUnits, viscosityUnits, viscosity);
+                "[TestCase({0}, {1}, UnitOfTemperature.{2}, UnitOfViscosity.{3}, {4})]",
+                percentAcetonitrile, temperature, temperatureUnits,
+                viscosityUnits, ValueToString(result));
 
             var temperatureSymbol = temperatureUnits switch
             {
@@ -496,7 +498,7 @@ namespace UnitTests
 
             Console.WriteLine("Viscosity of {0}% acetonitrile in methanol at {1} deg {2} is {3} {4}",
                 percentAcetonitrile, temperature, temperatureSymbol,
-                PRISM.StringUtilities.ValueToString(result, 5), viscosityUnits);
+                ValueToString(result), viscosityUnits);
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
@@ -528,7 +530,7 @@ namespace UnitTests
             WriteUpdatedTestCase("TestComputeVolFlowRateUsingDeadTimeOpenTubular",
                 "[TestCase({0}, {1}, {2}, {3}, UnitOfFlowRate.{4}, {5})]",
                 columnLengthCm, columnIdMicrons, deadTimeSeconds, viscosityPoise,
-                flowRateUnits, PRISM.StringUtilities.ValueToString(result, 5));
+                flowRateUnits, ValueToString(result));
 
             Console.WriteLine("{0} cm, {1} um i.d. open-tubular column with a {2} second dead time has {3} {4}",
                 columnLengthCm, columnIdMicrons, deadTimeSeconds, result, flowRateUnits);
@@ -566,9 +568,9 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeVolFlowRateUsingDeadTime(out var newBackPressurePsi, flowRateUnits, UnitOfPressure.Psi);
 
             WriteUpdatedTestCase("TestComputeVolFlowRateUsingDeadTimePackedCapillary",
-                "[TestCase({0}, {1}, {2}, {3:F5}, {4}, UnitOfFlowRate.{5}, {6:F5})]",
+                "[TestCase({0}, {1}, {2}, {3:F4}, {4}, UnitOfFlowRate.{5}, {6})]",
                 columnLengthCm, columnIdMicrons, deadTimeMinutes, viscosityPoise,
-                particleDiameterMicrons, flowRateUnits, result);
+                particleDiameterMicrons, flowRateUnits, ValueToString(result));
 
             Console.WriteLine("{0} cm, {1} um i.d. packed capillary with {2} um particles and a {3} minute dead time has {4} {5}",
                 columnLengthCm, columnIdMicrons, particleDiameterMicrons, deadTimeMinutes, result, flowRateUnits);
@@ -588,8 +590,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertConcentration(concentrationIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertConcentration",
-                "[TestCase({0}, UnitOfConcentration.{1}, UnitOfConcentration.{2}, {3:F5})]",
-                concentrationIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfConcentration.{1}, UnitOfConcentration.{2}, {3})]",
+                concentrationIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", concentrationIn, currentUnits, result, newUnits);
 
@@ -607,8 +609,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertDiffusionCoefficient(diffusionCoefficientIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertDiffusionCoefficient",
-                "[TestCase({0}, UnitOfDiffusionCoefficient.{1}, UnitOfDiffusionCoefficient.{2}, {3:F5})]",
-                diffusionCoefficientIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfDiffusionCoefficient.{1}, UnitOfDiffusionCoefficient.{2}, {3})]",
+                diffusionCoefficientIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", diffusionCoefficientIn, currentUnits, result, newUnits);
 
@@ -630,8 +632,8 @@ namespace UnitTests
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", lengthIn, currentUnits, result, newUnits);
 
             WriteUpdatedTestCase("TestConvertLength",
-                "[TestCase({0}, UnitOfLength.{1}, UnitOfLength.{2}, {3:F5})]",
-                lengthIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfLength.{1}, UnitOfLength.{2}, {3})]",
+                lengthIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", lengthIn, currentUnits, result, newUnits);
 
@@ -652,8 +654,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertLinearVelocity(linearVelocityIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertLinearVelocity",
-                "[TestCase({0}, UnitOfLinearVelocity.{1}, UnitOfLinearVelocity.{2}, {3:F5})]",
-                linearVelocityIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfLinearVelocity.{1}, UnitOfLinearVelocity.{2}, {3})]",
+                linearVelocityIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", linearVelocityIn, currentUnits, result, newUnits);
 
@@ -672,8 +674,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertMassFlowRate(massFlowRateIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertMassFlowRate",
-                "[TestCase({0}, UnitOfMassFlowRate.{1}, UnitOfMassFlowRate.{2}, {3:F5})]",
-                massFlowRateIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfMassFlowRate.{1}, UnitOfMassFlowRate.{2}, {3})]",
+                massFlowRateIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", massFlowRateIn, currentUnits, result, newUnits);
 
@@ -692,8 +694,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertMoles(molesIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertMoles",
-                "[TestCase({0}, UnitOfMolarAmount.{1}, UnitOfMolarAmount.{2}, {3:F5})]",
-                molesIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfMolarAmount.{1}, UnitOfMolarAmount.{2}, {3})]",
+                molesIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", molesIn, currentUnits, result, newUnits);
 
@@ -715,8 +717,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertPressure(pressureIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertPressure",
-                "[TestCase({0}, UnitOfPressure.{1}, UnitOfPressure.{2}, {3:F5})]",
-                pressureIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfPressure.{1}, UnitOfPressure.{2}, {3})]",
+                pressureIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", pressureIn, currentUnits, result, newUnits);
 
@@ -739,8 +741,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertTemperature(temperatureIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertTemperature",
-                "[TestCase({0}, UnitOfTemperature.{1}, UnitOfTemperature.{2}, {3:F5})]",
-                temperatureIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfTemperature.{1}, UnitOfTemperature.{2}, {3})]",
+                temperatureIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", temperatureIn, currentUnits, result, newUnits);
 
@@ -760,8 +762,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertTime(timeIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertTime",
-                "[TestCase({0}, UnitOfTime.{1}, UnitOfTime.{2}, {3:F5})]",
-                timeIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfTime.{1}, UnitOfTime.{2}, {3})]",
+                timeIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", timeIn, currentUnits, result, newUnits);
 
@@ -779,8 +781,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertViscosity(viscosityIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertViscosity",
-                "[TestCase({0}, UnitOfViscosity.{1}, UnitOfViscosity.{2}, {3:F5})]",
-                viscosityIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfViscosity.{1}, UnitOfViscosity.{2}, {3})]",
+                viscosityIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", viscosityIn, currentUnits, result, newUnits);
 
@@ -799,8 +801,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertVolFlowRate(volFlowRateIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertVolFlowRate",
-                "[TestCase({0}, UnitOfFlowRate.{1}, UnitOfFlowRate.{2}, {3:F5})]",
-                volFlowRateIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfFlowRate.{1}, UnitOfFlowRate.{2}, {3})]",
+                volFlowRateIn, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", volFlowRateIn, currentUnits, result, newUnits);
 
@@ -820,8 +822,8 @@ namespace UnitTests
             var result = mMonoisotopicMassCalculator.CapFlow.ConvertVolume(volume, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertVolume",
-                "[TestCase({0}, UnitOfVolume.{1}, UnitOfVolume.{2}, {3:F5})]",
-                volume, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfVolume.{1}, UnitOfVolume.{2}, {3})]",
+                volume, currentUnits, newUnits, ValueToString(result));
 
             Console.WriteLine("{0,-3} {1,-15} => {2,-3} {3,-15}", volume, currentUnits, result, newUnits);
 

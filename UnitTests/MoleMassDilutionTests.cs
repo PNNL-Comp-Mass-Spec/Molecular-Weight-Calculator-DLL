@@ -49,14 +49,13 @@ namespace UnitTests
               "UnitOfMoleMassConcentration.{4}, " +
               "{5}, UnitOfExtendedVolume.{6}, " +
               "{7}, UnitOfExtendedVolume.{8}, " +
-              "{9:F5})]",
+              "{9})]",
               initialConcentration, initialConcentrationUnits,
               stockSolutionVolume, stockSolutionVolumeUnits,
               finalConcentrationUnits,
               dilutingSolventVolume, dilutingSolventVolumeUnits,
               totalFinalVolume, totalFinalVolumeUnits,
-              result
-            );
+              ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
@@ -88,14 +87,13 @@ namespace UnitTests
                "{3}, UnitOfMoleMassConcentration.{4}, " +
                "{5}, UnitOfExtendedVolume.{6}, " +
                "{7}, UnitOfExtendedVolume.{8}, " +
-               "{9:F5})]",
+               "{9})]",
                initialConcentrationUnits,
                stockSolutionVolume, stockSolutionVolumeUnits,
                finalConcentration, finalConcentrationUnits,
                dilutingSolventVolume, dilutingSolventVolumeUnits,
                totalFinalVolume, totalFinalVolumeUnits,
-               result
-            );
+               ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
@@ -129,13 +127,14 @@ namespace UnitTests
                "{3}, UnitOfMoleMassConcentration.{4}, " +
                "UnitOfExtendedVolume.{5}, " +
                "{6}, UnitOfExtendedVolume.{7}, " +
-               "{8:F5}, {9:F5})]",
+               "{8}, {9})]",
                initialConcentration, initialConcentrationUnits,
                stockSolutionVolumeUnits,
                finalConcentration, finalConcentrationUnits,
                dilutingSolventVolumeUnits,
                totalFinalVolume, totalFinalVolumeUnits,
-               computedStockSolutionVolume, computedDilutingSolventVolume);
+               ValueToString(computedStockSolutionVolume, 5),
+               ValueToString(computedDilutingSolventVolume, 5));
 
             if (mCompareValuesToExpected && expectedStockSolutionVolume > 0)
             {
@@ -169,19 +168,20 @@ namespace UnitTests
                 out var computedDilutingSolventVolume, totalFinalVolumeUnits, dilutingSolventVolumeUnits);
 
             WriteUpdatedTestCase("TestComputeDilutionTotalVolume",
-              "[TestCase(" +
-              "{0}, UnitOfMoleMassConcentration.{1}, " +
-              "{2}, UnitOfExtendedVolume.{3}, " +
-              "{4}, UnitOfMoleMassConcentration.{5}, " +
-              "UnitOfExtendedVolume.{6}, " +
-              "UnitOfExtendedVolume.{7}, " +
-              "{8:F5}, {9:F5})]",
-              initialConcentration, initialConcentrationUnits,
-              stockSolutionVolume, stockSolutionVolumeUnits,
-              finalConcentration, finalConcentrationUnits,
-              dilutingSolventVolumeUnits,
-              totalFinalVolumeUnits,
-              computedTotalFinalVolume, computedDilutingSolventVolume);
+                "[TestCase(" +
+                "{0}, UnitOfMoleMassConcentration.{1}, " +
+                "{2}, UnitOfExtendedVolume.{3}, " +
+                "{4}, UnitOfMoleMassConcentration.{5}, " +
+                "UnitOfExtendedVolume.{6}, " +
+                "UnitOfExtendedVolume.{7}, " +
+                "{8}, {9})]",
+                initialConcentration, initialConcentrationUnits,
+                stockSolutionVolume, stockSolutionVolumeUnits,
+                finalConcentration, finalConcentrationUnits,
+                dilutingSolventVolumeUnits,
+                totalFinalVolumeUnits,
+                ValueToString(computedTotalFinalVolume, 5),
+                ValueToString(computedDilutingSolventVolume, 5));
 
             if (mCompareValuesToExpected && expectedTotalFinalVolume > 0)
             {
@@ -218,8 +218,10 @@ namespace UnitTests
             var result = mMoleMassConverter.ComputeQuantityAmount(quantityUnit);
 
             WriteUpdatedTestCase("TestComputeQuantityAmount",
-                "[TestCase({0}, UnitOfMoleMassConcentration.{1}, {2}, UnitOfExtendedVolume.{3}, {4}, {5}, Unit.{6}, {7:F5})]",
-                concentration, concentrationUnits, volume, volumeUnits, massInGramsPerMole, densityInGramsPerML, quantityUnit, result);
+                "[TestCase({0}, UnitOfMoleMassConcentration.{1}, {2}, UnitOfExtendedVolume.{3}, {4}, {5}, Unit.{6}, {7})]",
+                concentration, concentrationUnits, volume, volumeUnits,
+                massInGramsPerMole, densityInGramsPerML, quantityUnit,
+                ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
@@ -252,8 +254,10 @@ namespace UnitTests
             var result = mMoleMassConverter.ComputeQuantityConcentration(concentrationUnit);
 
             WriteUpdatedTestCase("TestComputeQuantityConc",
-                "[TestCase({0}, Unit.{1}, {2}, UnitOfExtendedVolume.{3}, {4}, {5}, UnitOfMoleMassConcentration.{6}, {7:F5})]",
-                amount, amountUnits, volume, volumeUnits, massInGramsPerMole, densityInGramsPerML, concentrationUnit, result);
+                "[TestCase({0}, Unit.{1}, {2}, UnitOfExtendedVolume.{3}, {4}, {5}, UnitOfMoleMassConcentration.{6}, {7})]",
+                amount, amountUnits, volume, volumeUnits,
+                massInGramsPerMole, densityInGramsPerML, concentrationUnit,
+                ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
@@ -284,8 +288,10 @@ namespace UnitTests
             var result = mMoleMassConverter.ComputeQuantityVolume(volumeUnit);
 
             WriteUpdatedTestCase("TestComputeQuantityVolume",
-                "[TestCase({0}, Unit.{1}, {2}, UnitOfMoleMassConcentration.{3}, {4}, {5} UnitOfExtendedVolume.{6}, {7:F5})]",
-                amount, amountUnits, concentration, concentrationUnits, massInGramsPerMole, densityInGramsPerML, volumeUnit, result);
+                "[TestCase({0}, Unit.{1}, {2}, UnitOfMoleMassConcentration.{3}, {4}, {5} UnitOfExtendedVolume.{6}, {7})]",
+                amount, amountUnits, concentration, concentrationUnits,
+                massInGramsPerMole, densityInGramsPerML, volumeUnit,
+                ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
@@ -314,8 +320,8 @@ namespace UnitTests
             var result = mMoleMassConverter.ConvertAmount(amountIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertAmount",
-                "[TestCase({0}, Unit.{1}, Unit.{2}, {3:F5})]",
-                amountIn, currentUnits, newUnits, result);
+                "[TestCase({0}, Unit.{1}, Unit.{2}, {3})]",
+                amountIn, currentUnits, newUnits, ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
@@ -340,8 +346,9 @@ namespace UnitTests
             var result = mMoleMassConverter.ConvertConcentration(concentrationIn, currentUnits, newUnits);
 
             WriteUpdatedTestCase("TestConvertConcentration",
-                "[TestCase({0}, UnitOfConcentration.{1}, UnitOfConcentration.{2}, {3:F5})]",
-                concentrationIn, currentUnits, newUnits, result);
+                "[TestCase({0}, UnitOfMoleMassConcentration.{1}, {2}, UnitOfMoleMassConcentration.{3}, {4})]",
+                concentrationIn, currentUnits, massInGramsPerMole,
+                newUnits, ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
