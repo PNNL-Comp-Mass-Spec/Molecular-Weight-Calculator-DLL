@@ -59,9 +59,6 @@ namespace MolecularWeightCalculator
             // Recompute
             ComputeQuantityAmount();
             ComputeDilutionRequiredStockAndDilutingSolventVolumes(out _);
-
-            SetAutoComputeDilutionEnabled(true);
-            SetAutoComputeQuantityEnabled(true);
         }
 
         private const Unit AMOUNT_UNITS_VOLUME_INDEX_START = Unit.Liters;
@@ -94,11 +91,25 @@ namespace MolecularWeightCalculator
         private readonly MoleMassQuantity mQuantity = new();
         private readonly MoleMassDilutionValues mDilutionValues = new();
 
-        private bool mAutoComputeDilution; // When true, automatically compute dilution results whenever any value changes
-        private AutoComputeDilutionMode mAutoComputeDilutionMode; // The value to compute when mAutoComputeDilution is true
+        /// <summary>
+        /// When true, automatically compute dilution results whenever any value changes
+        /// </summary>
+        private bool mAutoComputeDilution;
 
-        private bool mAutoComputeQuantity; // When true, automatically compute quantities whenever any value changes
-        private AutoComputeQuantityMode mAutoComputeQuantityMode; // The value to compute when mAutoComputeQuantity is true
+        /// <summary>
+        /// The value to compute when mAutoComputeDilution is true
+        /// </summary>
+        private AutoComputeDilutionMode mAutoComputeDilutionMode;
+
+        /// <summary>
+        /// When true, automatically compute quantities whenever any value changes
+        /// </summary>
+        private bool mAutoComputeQuantity;
+
+        /// <summary>
+        /// The value to compute when mAutoComputeQuantity is true
+        /// </summary>
+        private AutoComputeQuantityMode mAutoComputeQuantityMode;
 
         /// <summary>
         /// Checks if AutoCompute Dilution is enabled
@@ -593,15 +604,23 @@ namespace MolecularWeightCalculator
             return mQuantity.SampleMass;
         }
 
-        // Set Methods
-        // If mAutoComputeDilution = False, must manually call a Compute Sub to recompute the value
-        // Similarly, if mAutoComputeQuantity = False, must manually call a Compute Sub to recompute the value
-
+        /// <summary>
+        /// Updates the auto-compute mode for dilution-related values
+        /// </summary>
+        /// <param name="autoCompute"></param>
+        /// <remarks>
+        /// When true, dilution-related values will be auto-computed based on mAutoComputeDilutionMode
+        /// When false, you must manually call a Compute method to re-compute the value
+        /// </remarks>
         public void SetAutoComputeDilutionEnabled(bool autoCompute)
         {
             mAutoComputeDilution = autoCompute;
         }
 
+        /// <summary>
+        /// Auto-compute mode for dilution-related values
+        /// </summary>
+        /// <param name="autoComputeMode"></param>
         public void SetAutoComputeDilutionMode(AutoComputeDilutionMode autoComputeMode)
         {
             if (autoComputeMode is >= AutoComputeDilutionMode.FindRequiredDilutionVolumes and <= AutoComputeDilutionMode.FindFinalConcentration)
@@ -610,11 +629,23 @@ namespace MolecularWeightCalculator
             }
         }
 
+        /// <summary>
+        /// Updates the auto-compute mode for quantity-related values
+        /// </summary>
+        /// <param name="autoCompute"></param>
+        /// <remarks>
+        /// When true, quantity-related values will be auto-computed based on mAutoComputeQuantityMode
+        /// When false, you must manually call a Compute method to re-compute the value
+        /// </remarks>
         public void SetAutoComputeQuantityEnabled(bool autoCompute)
         {
             mAutoComputeQuantity = autoCompute;
         }
 
+        /// <summary>
+        /// Auto-compute mode for quantity-related values
+        /// </summary>
+        /// <param name="autoComputeMode"></param>
         public void SetAutoComputeQuantityMode(AutoComputeQuantityMode autoComputeMode)
         {
             mAutoComputeQuantityMode = autoComputeMode;

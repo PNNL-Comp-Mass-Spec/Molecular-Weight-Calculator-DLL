@@ -58,8 +58,6 @@ namespace MolecularWeightCalculator
             ComputeVolFlowRate();
             ComputeMassRateValues();
             ComputeExtraColumnBroadeningValues();
-
-            SetAutoComputeEnabled(true);
         }
 
         #region "Private data classes"
@@ -1183,10 +1181,6 @@ namespace MolecularWeightCalculator
             };
         }
 
-        // Get Methods
-        // Gets the most recently computed value
-        // If mAutoCompute = False, then must manually call a Compute Sub to recompute the value
-
         public bool GetAutoComputeEnabled()
         {
             return mAutoCompute;
@@ -1323,14 +1317,23 @@ namespace MolecularWeightCalculator
             return ConvertVolFlowRate(mCapillaryFlowParameters.VolumetricFlowRate, UnitOfFlowRate.MLPerMin, units);
         }
 
-        // Set Methods
-        // If mAutoCompute = False, then must manually call a Compute Sub to recompute other values
-
+        /// <summary>
+        /// Updates the auto-compute mode
+        /// </summary>
+        /// <param name="autoCompute"></param>
+        /// <remarks>
+        /// When true, values will be auto-computed based on mAutoComputeMode
+        /// When false, you must manually call a Compute method to re-compute the value
+        /// </remarks>
         public void SetAutoComputeEnabled(bool autoCompute)
         {
             mAutoCompute = autoCompute;
         }
 
+        /// <summary>
+        /// The value to compute when mAutoCompute is true
+        /// </summary>
+        /// <param name="autoComputeMode"></param>
         public void SetAutoComputeMode(AutoComputeMode autoComputeMode)
         {
             mAutoComputeMode = autoComputeMode;
