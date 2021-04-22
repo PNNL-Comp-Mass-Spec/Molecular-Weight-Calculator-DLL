@@ -6,13 +6,12 @@ namespace UnitTests
 {
     public class MoleMassDilutionTests : TestBase
     {
-        // ReSharper disable once CommentTypo
         // Ignore Spelling: Conc
 
         private MoleMassDilution mMoleMassConverter;
 
         /// <summary>
-        /// Initialize the Molecular Weight Calculator objects and results writers
+        /// Initialize the Mole/Mass converter
         /// </summary>
         [OneTimeSetUp]
         public void Setup()

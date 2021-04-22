@@ -7,7 +7,7 @@ namespace UnitTests
 {
     public class CapillaryFlowTests : TestBase
     {
-        // Ignore Spelling: acetonitrile
+        // Ignore Spelling: acetonitrile, elutes
 
         /// <summary>
         /// Initialize the Molecular Weight Calculator objects and results writers
