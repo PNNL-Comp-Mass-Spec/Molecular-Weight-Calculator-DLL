@@ -498,8 +498,11 @@ namespace MolecularWeightCalculator
 
         private void ComputeMassRateValues()
         {
-            mMassRateParameters.MassFlowRate = mMassRateParameters.SampleConcentration * mMassRateParameters.VolumetricFlowRate / 1000d; // Compute mass flow rate in moles/min
-            mMassRateParameters.MolesInjected = mMassRateParameters.MassFlowRate * mMassRateParameters.InjectionTime; // Compute moles injected in moles
+            // Compute mass flow rate in moles/min
+            mMassRateParameters.MassFlowRate = mMassRateParameters.SampleConcentration * mMassRateParameters.VolumetricFlowRate / 1000d;
+
+            // Compute moles injected in moles
+            mMassRateParameters.MolesInjected = mMassRateParameters.MassFlowRate * mMassRateParameters.InjectionTime;
         }
 
         /// <summary>
@@ -522,23 +525,30 @@ namespace MolecularWeightCalculator
             return optimumLinearVelocity;
         }
 
-        // ReSharper disable once InconsistentNaming
+        /// <summary>
+        /// Compute the viscosity of an acetonitrile / methanol solution
+        /// </summary>
+        /// <param name="percentAcetonitrile">Percent acetonitrile (0 to 100)</param>
+        /// <param name="temperature">Temperature</param>
+        /// <param name="temperatureUnits">Temperature units</param>
+        /// <param name="viscosityUnits">Viscosity units</param>
+        /// <returns>Computed viscosity</returns>
         public double ComputeMeCNViscosity(double percentAcetonitrile, double temperature, UnitOfTemperature temperatureUnits = UnitOfTemperature.Celsius, UnitOfViscosity viscosityUnits = UnitOfViscosity.Poise)
         {
             try
             {
-                // compute fraction acetonitrile
-                var phi = percentAcetonitrile / 100.0d;
-                if (phi < 0d)
-                    phi = 0d;
+                // Convert percent acetonitrile to a fraction
+                var phi = percentAcetonitrile / 100.0;
+                if (phi < 0)
+                    phi = 0;
 
-                if (phi > 100d)
-                    phi = 100d;
+                if (phi > 100)
+                    phi = 100;
 
                 var kelvin = ConvertTemperature(temperature, temperatureUnits, UnitOfTemperature.Kelvin);
 
                 double viscosityInCentiPoise;
-                if (kelvin > 0d)
+                if (kelvin > 0)
                 {
                     viscosityInCentiPoise = Math.Exp(phi * (-3.476 + 726.0 / kelvin) + (1d - phi) * (-5.414 + 1566.0 / kelvin) + phi * (-1.762 + 929.0 / kelvin));
                 }
@@ -663,7 +673,7 @@ namespace MolecularWeightCalculator
             var sampleMass = mMassRateParameters.SampleMass;
 
             var factor = FactorConcentration(currentUnits, sampleMass);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -671,7 +681,7 @@ namespace MolecularWeightCalculator
             var value = concentrationIn * factor;
 
             factor = FactorConcentration(newUnits, sampleMass);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -687,7 +697,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorDiffusionCoeff(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -695,7 +705,7 @@ namespace MolecularWeightCalculator
             var value = diffusionCoefficientIn * factor;
 
             factor = FactorDiffusionCoeff(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -711,7 +721,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorLength(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -719,7 +729,7 @@ namespace MolecularWeightCalculator
             var value = lengthIn * factor;
 
             factor = FactorLength(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -735,7 +745,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorLinearVelocity(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -743,7 +753,7 @@ namespace MolecularWeightCalculator
             var value = linearVelocityIn * factor;
 
             factor = FactorLinearVelocity(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -759,7 +769,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorMassFlowRate(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -767,7 +777,7 @@ namespace MolecularWeightCalculator
             var value = massFlowRateIn * factor;
 
             factor = FactorMassFlowRate(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -783,7 +793,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorMoles(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -791,7 +801,7 @@ namespace MolecularWeightCalculator
             var value = molesIn * factor;
 
             factor = FactorMoles(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -807,7 +817,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorPressure(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -815,7 +825,7 @@ namespace MolecularWeightCalculator
             var value = pressureIn * factor;
 
             factor = FactorPressure(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -886,7 +896,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorTime(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -894,7 +904,7 @@ namespace MolecularWeightCalculator
             var value = timeIn * factor;
 
             factor = FactorTime(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -910,7 +920,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorViscosity(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -918,7 +928,7 @@ namespace MolecularWeightCalculator
             var value = viscosityIn * factor;
 
             factor = FactorViscosity(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -934,7 +944,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorVolFlowRate(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -942,7 +952,7 @@ namespace MolecularWeightCalculator
             var value = volFlowRateIn * factor;
 
             factor = FactorVolFlowRate(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
@@ -958,7 +968,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorVolume(currentUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -966,7 +976,7 @@ namespace MolecularWeightCalculator
             var value = volume * factor;
 
             factor = FactorVolume(newUnits);
-            if (Math.Abs(factor + 1d) < float.Epsilon || Math.Abs(factor) < float.Epsilon)
+            if (factor < 0 || Math.Abs(factor) < float.Epsilon)
             {
                 return -1;
             }
