@@ -242,22 +242,31 @@ namespace UnitTests
             double pressurePSI, double columnLengthCm, double columnIdMicrons,
             double viscosityPoise, double volFlowRateNanoLitersPerMinute,
             CapillaryType capillaryType, double particleDiameterMicrons,
-            UnitOfTime peakWidthUnits, double expectedResult)
+            double initialPeakWidthAtBase, UnitOfTime initialPeakWidthUnits,
+            UnitOfTime finalPeakWidthUnits, double expectedResult)
         {
             SetCapillaryValues(
                 pressurePSI, columnLengthCm, columnIdMicrons, viscosityPoise,
                 volFlowRateNanoLitersPerMinute, capillaryType, particleDiameterMicrons);
 
-            var result = mMonoisotopicMassCalculator.CapFlow.ComputeExtraColumnBroadeningResultantPeakWidth(peakWidthUnits);
+            mMonoisotopicMassCalculator.CapFlow.ComputeLinearVelocity();
+            mMonoisotopicMassCalculator.CapFlow.CopyCachedValuesToExtraColumnBroadeningContainer();
+
+            mMonoisotopicMassCalculator.CapFlow.SetExtraColumnBroadeningInitialPeakWidthAtBase(initialPeakWidthAtBase);
+
+            var result = mMonoisotopicMassCalculator.CapFlow.ComputeExtraColumnBroadeningResultantPeakWidth(finalPeakWidthUnits);
 
             WriteUpdatedTestCase("TestComputeExtraColumnBroadening",
-                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfTime.{7}, {8})]",
+                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, {7}, UnitOfTime.{8}, UnitOfTime.{9}, {10})]",
                 pressurePSI, columnLengthCm, columnIdMicrons,
                 viscosityPoise, volFlowRateNanoLitersPerMinute,
                 capillaryType, particleDiameterMicrons,
-                peakWidthUnits, ValueToString(result));
+                initialPeakWidthAtBase, initialPeakWidthUnits,
+                finalPeakWidthUnits, ValueToString(result));
 
-            Console.WriteLine("{0} {1} wide eluted peak", result, peakWidthUnits);
+            Console.WriteLine("{0} {1} wide peak will broaden to {2:F3} {3} when it elutes",
+                initialPeakWidthAtBase, TrimFromEnd(initialPeakWidthUnits, 1).ToLower(),
+                result, finalPeakWidthUnits.ToString().ToLower());
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
@@ -856,6 +865,21 @@ namespace UnitTests
 
             if (particleDiameterMicrons > 0)
                 mMonoisotopicMassCalculator.CapFlow.SetParticleDiameter(particleDiameterMicrons);
+        }
+
+        /// <summary>
+        /// Remove the specified number of characters from the end of the string
+        /// </summary>
+        /// <param name="stringOrEnum"></param>
+        /// <param name="numberOfCharacters"></param>
+        /// <returns>Truncated string</returns>
+        private string TrimFromEnd<T>(T stringOrEnum, int numberOfCharacters)
+        {
+            var value = stringOrEnum.ToString();
+
+            return numberOfCharacters >= value.Length ?
+                       string.Empty :
+                       value.Substring(0, value.Length - numberOfCharacters);
         }
     }
 }
