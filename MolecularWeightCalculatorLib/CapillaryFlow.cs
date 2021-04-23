@@ -152,7 +152,7 @@ namespace MolecularWeightCalculator
             /// <summary>
             /// Units: cm^2/sec
             /// </summary>
-            public double DiffusionCoefficient { get; set; }
+            public double DiffusionCoefficient { get; set; } = 0.000005;
 
             /// <summary>
             /// Units: cm
