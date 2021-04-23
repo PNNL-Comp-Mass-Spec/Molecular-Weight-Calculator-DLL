@@ -44,15 +44,15 @@ namespace MolecularWeightCalculator
 
             // ReSharper disable RedundantArgumentDefaultValue
 
-            SetQuantityAmount(1d, Unit.Moles);
-            SetQuantityVolume(100d, UnitOfExtendedVolume.ML);
-            SetQuantityConcentration(1d, UnitOfMoleMassConcentration.Molar);
+            SetQuantityAmount(1, Unit.Moles);
+            SetQuantityVolume(100, UnitOfExtendedVolume.ML);
+            SetQuantityConcentration(1, UnitOfMoleMassConcentration.Molar);
 
-            SetDilutionInitialConcentration(10d, UnitOfMoleMassConcentration.Molar);
-            SetDilutionVolumeStockSolution(3d, UnitOfExtendedVolume.ML);
-            SetDilutionFinalConcentration(2d, UnitOfMoleMassConcentration.Molar);
-            SetDilutionVolumeDilutingSolvent(12d, UnitOfExtendedVolume.ML);
-            SetDilutionTotalFinalVolume(15d, UnitOfExtendedVolume.ML);
+            SetDilutionInitialConcentration(10, UnitOfMoleMassConcentration.Molar);
+            SetDilutionVolumeStockSolution(3, UnitOfExtendedVolume.ML);
+            SetDilutionFinalConcentration(2, UnitOfMoleMassConcentration.Molar);
+            SetDilutionVolumeDilutingSolvent(12, UnitOfExtendedVolume.ML);
+            SetDilutionTotalFinalVolume(15, UnitOfExtendedVolume.ML);
 
             // ReSharper restore RedundantArgumentDefaultValue
 
@@ -212,11 +212,11 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                mDilutionValues.TotalFinalVolume = 0d;
+                mDilutionValues.TotalFinalVolume = 0;
             }
 
             mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
-            if (mDilutionValues.DilutingSolventVolume < 0d)
+            if (mDilutionValues.DilutingSolventVolume < 0)
                 mDilutionValues.DilutingSolventVolume = -1;
 
             return ConvertConcentration(mDilutionValues.FinalConcentration, UnitOfMoleMassConcentration.Molar, units);
@@ -234,11 +234,11 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                mDilutionValues.InitialConcentration = 0d;
+                mDilutionValues.InitialConcentration = 0;
             }
 
             mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
-            if (mDilutionValues.DilutingSolventVolume < 0d)
+            if (mDilutionValues.DilutingSolventVolume < 0)
                 mDilutionValues.DilutingSolventVolume = -1;
 
             return ConvertConcentration(mDilutionValues.InitialConcentration, UnitOfMoleMassConcentration.Molar, units);
@@ -263,12 +263,12 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                mDilutionValues.StockSolutionVolume = 0d;
+                mDilutionValues.StockSolutionVolume = 0;
             }
 
             mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
 
-            if (mDilutionValues.DilutingSolventVolume < 0d)
+            if (mDilutionValues.DilutingSolventVolume < 0)
             {
                 mDilutionValues.DilutingSolventVolume = -1;
                 mDilutionValues.StockSolutionVolume = -1;
@@ -297,21 +297,21 @@ namespace MolecularWeightCalculator
             UnitOfExtendedVolume totalVolumeUnits = UnitOfExtendedVolume.ML,
             UnitOfExtendedVolume dilutingSolventUnits = UnitOfExtendedVolume.ML)
         {
-            if (mDilutionValues.InitialConcentration > 0d && mDilutionValues.FinalConcentration > 0d)
+            if (mDilutionValues.InitialConcentration > 0 && mDilutionValues.FinalConcentration > 0)
             {
                 mDilutionValues.TotalFinalVolume = mDilutionValues.InitialConcentration * mDilutionValues.StockSolutionVolume / mDilutionValues.FinalConcentration;
-                if (mDilutionValues.TotalFinalVolume < 0d)
+                if (mDilutionValues.TotalFinalVolume < 0)
                 {
-                    mDilutionValues.TotalFinalVolume = 0d;
+                    mDilutionValues.TotalFinalVolume = 0;
                 }
             }
             else
             {
-                mDilutionValues.TotalFinalVolume = 0d;
+                mDilutionValues.TotalFinalVolume = 0;
             }
 
             mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
-            if (mDilutionValues.DilutingSolventVolume < 0d)
+            if (mDilutionValues.DilutingSolventVolume < 0)
             {
                 mDilutionValues.DilutingSolventVolume = -1;
                 newDilutingSolventVolume = -1;
@@ -349,7 +349,7 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                mQuantity.Concentration = 0d;
+                mQuantity.Concentration = 0;
             }
 
             return ConvertConcentration(mQuantity.Concentration, UnitOfMoleMassConcentration.Molar, units);
@@ -368,7 +368,7 @@ namespace MolecularWeightCalculator
             }
             else
             {
-                mQuantity.Volume = 0d;
+                mQuantity.Volume = 0;
             }
 
             return ConvertVolumeExtended(mQuantity.Volume, UnitOfExtendedVolume.L, units);
@@ -404,7 +404,7 @@ namespace MolecularWeightCalculator
             var sampleDensity = mQuantity.SampleDensity;
 
             var factor = FactorAmount(currentUnits, sampleMass, sampleDensity);
-            if (factor < 0d)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -412,7 +412,7 @@ namespace MolecularWeightCalculator
             var value = amountIn * factor;
 
             factor = FactorAmount(newUnits, sampleMass, sampleDensity);
-            if (factor <= 0d)
+            if (factor <= 0)
             {
                 return -1;
             }
@@ -437,7 +437,7 @@ namespace MolecularWeightCalculator
             var sampleMass = mQuantity.SampleMass;
 
             var factor = FactorConcentration(currentUnits, sampleMass);
-            if (factor < 0d)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -445,7 +445,7 @@ namespace MolecularWeightCalculator
             var value = concentrationIn * factor;
 
             factor = FactorConcentration(newUnits, sampleMass);
-            if (factor <= 0d)
+            if (factor <= 0)
             {
                 return -1;
             }
@@ -461,7 +461,7 @@ namespace MolecularWeightCalculator
             }
 
             var factor = FactorVolumeExtended(currentUnits);
-            if (factor < 0d)
+            if (factor < 0)
             {
                 return -1;
             }
@@ -469,7 +469,7 @@ namespace MolecularWeightCalculator
             var value = volume * factor;
 
             factor = FactorVolumeExtended(newUnits);
-            if (factor <= 0d)
+            if (factor <= 0)
             {
                 return -1;
             }
@@ -486,7 +486,7 @@ namespace MolecularWeightCalculator
         private double FactorAmount(
             Unit units,
             double sampleMass = -1,
-            double sampleDensity = 0d)
+            double sampleDensity = 0)
         {
             if (Math.Abs(sampleMass) < float.Epsilon)
             {
@@ -496,19 +496,19 @@ namespace MolecularWeightCalculator
             // Determine the Amount multiplication factor
             return units switch
             {
-                Unit.Moles => 1d,
-                Unit.Millimoles => 1d / 1000.0d,
-                Unit.MicroMoles => 1d / 1000000.0d,
-                Unit.NanoMoles => 1d / 1000000000.0d,
-                Unit.PicoMoles => 1d / 1000000000000.0d,
-                Unit.FemtoMoles => 1d / 1.0E+15d,
-                Unit.AttoMoles => 1d / 1.0E+18d,
-                Unit.Kilograms => 1000.0d / sampleMass,
-                Unit.Grams => 1d / sampleMass,
-                Unit.Milligrams => 1d / (sampleMass * 1000.0d),
-                Unit.Micrograms => 1d / (sampleMass * 1000000.0d),
-                Unit.Pounds => 1000.0d / (sampleMass * POUNDS_PER_KG),
-                Unit.Ounces => 1000.0d / (sampleMass * POUNDS_PER_KG * 16d),
+                Unit.Moles => 1,
+                Unit.Millimoles => 1 / 1000.0,
+                Unit.MicroMoles => 1 / 1000000.0,
+                Unit.NanoMoles => 1 / 1000000000.0,
+                Unit.PicoMoles => 1 / 1000000000000.0,
+                Unit.FemtoMoles => 1 / 1.0E+15,
+                Unit.AttoMoles => 1 / 1.0E+18,
+                Unit.Kilograms => 1000.0 / sampleMass,
+                Unit.Grams => 1 / sampleMass,
+                Unit.Milligrams => 1 / (sampleMass * 1000.0),
+                Unit.Micrograms => 1 / (sampleMass * 1000000.0),
+                Unit.Pounds => 1000.0 / (sampleMass * POUNDS_PER_KG),
+                Unit.Ounces => 1000.0 / (sampleMass * POUNDS_PER_KG * 16),
                 Unit.Liters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.L),
                 Unit.DeciLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.DL),
                 Unit.MilliLiters => sampleDensity / sampleMass * FactorVolumeExtended(UnitOfExtendedVolume.ML),
@@ -528,7 +528,7 @@ namespace MolecularWeightCalculator
         /// <param name="units"></param>
         /// <param name="sampleMass">required for mass-based units</param>
         /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
-        private double FactorConcentration(UnitOfMoleMassConcentration units, double sampleMass = 0d)
+        private double FactorConcentration(UnitOfMoleMassConcentration units, double sampleMass = 0)
         {
             if (Math.Abs(sampleMass) < float.Epsilon)
             {
@@ -537,19 +537,19 @@ namespace MolecularWeightCalculator
 
             return units switch
             {
-                UnitOfMoleMassConcentration.Molar => 1.0d,
-                UnitOfMoleMassConcentration.MilliMolar => 1d / 1000.0d,
-                UnitOfMoleMassConcentration.MicroMolar => 1d / 1000000.0d,
-                UnitOfMoleMassConcentration.NanoMolar => 1d / 1000000000.0d,
-                UnitOfMoleMassConcentration.PicoMolar => 1d / 1000000000000.0d,
-                UnitOfMoleMassConcentration.FemtoMolar => 1d / 1.0E+15d,
-                UnitOfMoleMassConcentration.AttoMolar => 1d / 1.0E+18d,
-                UnitOfMoleMassConcentration.MgPerDL => 1d / sampleMass / 100.0d, // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
-                UnitOfMoleMassConcentration.MgPerML => 1d / sampleMass, // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
-                UnitOfMoleMassConcentration.UgPerML => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
-                UnitOfMoleMassConcentration.NgPerML => 1d / (sampleMass * 1000000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
-                UnitOfMoleMassConcentration.UgPerUL => 1d / sampleMass, // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
-                UnitOfMoleMassConcentration.NgPerUL => 1d / (sampleMass * 1000.0d), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
+                UnitOfMoleMassConcentration.Molar => 1.0,
+                UnitOfMoleMassConcentration.MilliMolar => 1 / 1000.0,
+                UnitOfMoleMassConcentration.MicroMolar => 1 / 1000000.0,
+                UnitOfMoleMassConcentration.NanoMolar => 1 / 1000000000.0,
+                UnitOfMoleMassConcentration.PicoMolar => 1 / 1000000000000.0,
+                UnitOfMoleMassConcentration.FemtoMolar => 1 / 1.0E+15,
+                UnitOfMoleMassConcentration.AttoMolar => 1 / 1.0E+18,
+                UnitOfMoleMassConcentration.MgPerDL => 1 / sampleMass / 100.0, // 1/[(1 g / 1000 mg) * (1 / MW) * (10 dL/L)]
+                UnitOfMoleMassConcentration.MgPerML => 1 / sampleMass, // 1/[(1 g / 1000 mg) * (1 / MW) * (1000 mL/L)]
+                UnitOfMoleMassConcentration.UgPerML => 1 / (sampleMass * 1000.0), // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000 mL/L)]
+                UnitOfMoleMassConcentration.NgPerML => 1 / (sampleMass * 1000000.0), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000 mL/L)]
+                UnitOfMoleMassConcentration.UgPerUL => 1 / sampleMass, // 1/[(1 g / 1000000 ug) * (1 / MW) * (1000000 uL/L)]
+                UnitOfMoleMassConcentration.NgPerUL => 1 / (sampleMass * 1000.0), // 1/[(1 g / 1000000000 ng) * (1 / MW) * (1000000 uL/L)]
                 _ => -1
             };
         }
@@ -564,15 +564,15 @@ namespace MolecularWeightCalculator
             // Note: 4 quarts per gallon, 2 pints per quart
             var factor = units switch
             {
-                UnitOfExtendedVolume.L => 1d * 1000.0d,
-                UnitOfExtendedVolume.DL => 1d * 100.0d,
-                UnitOfExtendedVolume.ML => 1.0d,
-                UnitOfExtendedVolume.UL => 1d / 1000.0d,
-                UnitOfExtendedVolume.NL => 1d / 1000000.0d,
-                UnitOfExtendedVolume.PL => 1d / 1000000000.0d,
-                UnitOfExtendedVolume.Gallons => 1000.0d / GALLONS_PER_L,
-                UnitOfExtendedVolume.Quarts => 1000.0d / GALLONS_PER_L / 4.0d,
-                UnitOfExtendedVolume.Pints => 1000.0d / GALLONS_PER_L / 8.0d,
+                UnitOfExtendedVolume.L => 1 * 1000.0,
+                UnitOfExtendedVolume.DL => 1 * 100.0,
+                UnitOfExtendedVolume.ML => 1.0,
+                UnitOfExtendedVolume.UL => 1 / 1000.0,
+                UnitOfExtendedVolume.NL => 1 / 1000000.0,
+                UnitOfExtendedVolume.PL => 1 / 1000000000.0,
+                UnitOfExtendedVolume.Gallons => 1000.0 / GALLONS_PER_L,
+                UnitOfExtendedVolume.Quarts => 1000.0 / GALLONS_PER_L / 4.0,
+                UnitOfExtendedVolume.Pints => 1000.0 / GALLONS_PER_L / 8.0,
                 _ => -1
             };
 
@@ -751,13 +751,13 @@ namespace MolecularWeightCalculator
         // ReSharper disable once InconsistentNaming
         public void SetSampleDensity(double densityInGramsPerML)
         {
-            if (densityInGramsPerML >= 0d)
+            if (densityInGramsPerML >= 0)
             {
                 mQuantity.SampleDensity = densityInGramsPerML;
             }
             else
             {
-                mQuantity.SampleDensity = 0d;
+                mQuantity.SampleDensity = 0;
             }
 
             CheckAutoComputeQuantity();
@@ -765,13 +765,13 @@ namespace MolecularWeightCalculator
 
         public void SetSampleMass(double massInGramsPerMole)
         {
-            if (massInGramsPerMole >= 0d)
+            if (massInGramsPerMole >= 0)
             {
                 mQuantity.SampleMass = massInGramsPerMole;
             }
             else
             {
-                mQuantity.SampleMass = 0d;
+                mQuantity.SampleMass = 0;
             }
 
             CheckAutoComputeQuantity();
