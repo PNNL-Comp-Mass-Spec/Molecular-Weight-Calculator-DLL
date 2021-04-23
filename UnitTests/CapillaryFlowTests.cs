@@ -326,23 +326,17 @@ namespace UnitTests
         [TestCase(3000, 75, 75, 0.0089, 500, CapillaryType.PackedCapillary, 5, UnitOfLinearVelocity.CmPerSec, 0)]
         [TestCase(3000, 75, 75, 0.0089, 300, CapillaryType.PackedCapillary, 4, UnitOfLinearVelocity.CmPerSec, 0)]
         public void TestComputeOptimumLinearVelocity(
-            double pressurePSI, double columnLengthCm, double columnIdMicrons,
-            double viscosityPoise, double volFlowRateNanoLitersPerMinute,
-            CapillaryType capillaryType, double particleDiameterMicrons,
+            double particleDiameterMicrons, double diffusionCoefficient,
             UnitOfLinearVelocity linearVelocityUnits, double expectedResult)
         {
-            SetCapillaryValues(
-                pressurePSI, columnLengthCm, columnIdMicrons, viscosityPoise,
-                volFlowRateNanoLitersPerMinute, capillaryType, particleDiameterMicrons);
+            mMonoisotopicMassCalculator.CapFlow.SetParticleDiameter(particleDiameterMicrons);
+            mMonoisotopicMassCalculator.CapFlow.SetExtraColumnBroadeningDiffusionCoefficient(diffusionCoefficient);
 
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(linearVelocityUnits);
 
             WriteUpdatedTestCase("TestComputeOptimumLinearVelocity",
-                "[TestCase({0}, {1}, {2}, {3}, {4}, CapillaryType.{5}, {6}, UnitOfLinearVelocity.{7}, {8})]",
-                pressurePSI, columnLengthCm, columnIdMicrons,
-                viscosityPoise, volFlowRateNanoLitersPerMinute,
-                capillaryType, particleDiameterMicrons,
-                linearVelocityUnits, ValueToString(result));
+                "[TestCase({0}, {1}, UnitOfLinearVelocity.{2}, {3})]",
+                particleDiameterMicrons, diffusionCoefficient, linearVelocityUnits, ValueToString(result));
 
             Console.WriteLine("{0} {1} optimum linear velocity", result, linearVelocityUnits);
 
