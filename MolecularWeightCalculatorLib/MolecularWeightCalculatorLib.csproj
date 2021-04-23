@@ -44,7 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CapillaryFlow.cs" />
-    <Compile Include="CapillaryFlowEnums.cs" />
+    <Compile Include="CapillaryFlowTools\CapillaryFlow.cs" />
+    <Compile Include="CapillaryFlowTools\CapillaryFlowEnums.cs" />
+    <Compile Include="CapillaryFlowTools\ExtraColumnBroadening.cs" />
+    <Compile Include="CapillaryFlowTools\MassRate.cs" />
+    <Compile Include="CapillaryFlowTools\UnitConversions.cs" />
     <Compile Include="COMInterfaces\ICapillaryFlow.cs" />
     <Compile Include="COMInterfaces\ICompound.cs" />
     <Compile Include="COMInterfaces\IFormulaFinderSearchOptions.cs" />
