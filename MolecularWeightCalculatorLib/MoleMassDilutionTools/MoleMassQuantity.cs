@@ -55,12 +55,12 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         private bool mAutoCompute;
 
         /// <summary>
-        /// The value to compute when mAutoComputeQuantity is true
+        /// The value to compute when mAutoCompute is true
         /// </summary>
         private AutoComputeQuantityMode mAutoComputeMode;
 
         /// <summary>
-        /// Checks if AutoCompute Quantity is enabled
+        /// Checks if AutoCompute is enabled
         /// If yes, calls the appropriate function
         /// </summary>
         private void CheckAutoCompute()
@@ -135,8 +135,7 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
 
         // Get Methods
         // These retrieve the most recently computed value
-        // If mAutoComputeDilution = False, must manually call a Compute Sub to recompute the value
-        // Similarly, if mAutoComputeQuantity = False, must manually call a Compute Sub to recompute the value
+        // If mAutoCompute = False, must manually call a Compute Sub to recompute the value
 
         public bool GetAutoComputeEnabled()
         {
@@ -178,7 +177,7 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         /// </summary>
         /// <param name="autoCompute"></param>
         /// <remarks>
-        /// When true, quantity-related values will be auto-computed based on mAutoComputeQuantityMode
+        /// When true, quantity-related values will be auto-computed based on mAutoComputeMode
         /// When false, you must manually call a Compute method to re-compute the value
         /// </remarks>
         public void SetAutoComputeEnabled(bool autoCompute)

@@ -14,6 +14,11 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         private const float POUNDS_PER_KG = 2.20462262f;
         private const float GALLONS_PER_L = 0.264172052f;
 
+        public static short AmountsUnitListCount => (short)AMOUNT_UNITS_LIST_INDEX_MAX + 1;
+
+        public static short AmountsUnitListVolumeIndexStart => (short)AMOUNT_UNITS_VOLUME_INDEX_START;
+
+        public static short AmountsUnitListVolumeIndexEnd => (short)AMOUNT_UNITS_LIST_INDEX_MAX;
 
         /// <summary>
         /// This function uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
@@ -217,11 +222,5 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
 
             return factor;
         }
-
-        public static short AmountsUnitListCount => (short)AMOUNT_UNITS_LIST_INDEX_MAX + 1;
-
-        public static short AmountsUnitListVolumeIndexStart => (short)AMOUNT_UNITS_VOLUME_INDEX_START;
-
-        public static short AmountsUnitListVolumeIndexEnd => (short)AMOUNT_UNITS_LIST_INDEX_MAX;
     }
 }
