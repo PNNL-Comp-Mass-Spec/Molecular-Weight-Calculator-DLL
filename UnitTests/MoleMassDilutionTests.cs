@@ -218,11 +218,11 @@ namespace UnitTests
             double massInGramsPerMole, double densityInGramsPerML,
             Unit quantityUnit, double expectedResult)
         {
-            mMoleMassConverter.SetQuantityConcentration(concentration, concentrationUnits);
-            mMoleMassConverter.SetQuantityVolume(volume, volumeUnits);
-
             mMoleMassConverter.SetSampleMass(massInGramsPerMole);
             mMoleMassConverter.SetSampleDensity(densityInGramsPerML);
+
+            mMoleMassConverter.SetQuantityConcentration(concentration, concentrationUnits);
+            mMoleMassConverter.SetQuantityVolume(volume, volumeUnits);
 
             var result = mMoleMassConverter.ComputeQuantityAmount(quantityUnit);
 
@@ -254,11 +254,11 @@ namespace UnitTests
             double massInGramsPerMole, double densityInGramsPerML,
             UnitOfMoleMassConcentration concentrationUnit, double expectedResult)
         {
-            mMoleMassConverter.SetQuantityAmount(amount, amountUnits);
-            mMoleMassConverter.SetQuantityVolume(volume, volumeUnits);
-
             mMoleMassConverter.SetSampleMass(massInGramsPerMole);
             mMoleMassConverter.SetSampleDensity(densityInGramsPerML);
+
+            mMoleMassConverter.SetQuantityAmount(amount, amountUnits);
+            mMoleMassConverter.SetQuantityVolume(volume, volumeUnits);
 
             var result = mMoleMassConverter.ComputeQuantityConcentration(concentrationUnit);
 
@@ -288,11 +288,11 @@ namespace UnitTests
             double massInGramsPerMole, double densityInGramsPerML,
             UnitOfExtendedVolume volumeUnit, double expectedResult)
         {
-            mMoleMassConverter.SetQuantityAmount(amount, amountUnits);
-            mMoleMassConverter.SetQuantityConcentration(concentration, concentrationUnits);
-
             mMoleMassConverter.SetSampleMass(massInGramsPerMole);
             mMoleMassConverter.SetSampleDensity(densityInGramsPerML);
+
+            mMoleMassConverter.SetQuantityAmount(amount, amountUnits);
+            mMoleMassConverter.SetQuantityConcentration(concentration, concentrationUnits);
 
             var result = mMoleMassConverter.ComputeQuantityVolume(volumeUnit);
 
