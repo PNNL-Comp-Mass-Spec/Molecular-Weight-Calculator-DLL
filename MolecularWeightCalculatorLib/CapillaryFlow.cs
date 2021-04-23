@@ -986,6 +986,16 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
+        /// Copy linear velocity, column length, and column inner diameter to the ExtraColumnBroadening container
+        /// </summary>
+        public void CopyCachedValuesToExtraColumnBroadeningContainer()
+        {
+            mExtraColumnBroadeningParameters.LinearVelocity = mCapillaryFlowParameters.LinearVelocity;
+            mExtraColumnBroadeningParameters.OpenTubeLength = mCapillaryFlowParameters.ColumnLength;
+            mExtraColumnBroadeningParameters.OpenTubeId = mCapillaryFlowParameters.ColumnId;
+        }
+
+        /// <summary>
         /// Multiplication factor for converting from <paramref name="units"/> to M
         /// <paramref name="sampleMass"/> is required for mass-based units
         /// </summary>
