@@ -17,7 +17,6 @@ namespace UnitTests
         [OneTimeSetUp]
         public void Setup()
         {
-            Initialize();
             mMoleMassConverter = new MoleMassDilution();
 
             mTestResultWriters = new Dictionary<UnitTestWriterType, UnitTestResultWriter>();
