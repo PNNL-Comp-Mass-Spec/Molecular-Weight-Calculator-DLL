@@ -405,7 +405,7 @@ namespace UnitTests
         {
             mMonoisotopicMassCalculator.CapFlow.SetMassRateSampleMass(massInGramsPerMole);
             mMonoisotopicMassCalculator.CapFlow.SetMassRateConcentration(concentration, concentrationUnits);
-            mMonoisotopicMassCalculator.CapFlow.SetVolFlowRate(volFlowRate, volFlowRateUnits);
+            mMonoisotopicMassCalculator.CapFlow.SetMassRateVolFlowRate(volFlowRate, volFlowRateUnits);
             mMonoisotopicMassCalculator.CapFlow.SetMassRateInjectionTime(injectionTime, injectionTimeUnits);
 
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeMassFlowRate(massFlowRateUnits);
@@ -443,7 +443,7 @@ namespace UnitTests
         {
             mMonoisotopicMassCalculator.CapFlow.SetMassRateSampleMass(massInGramsPerMole);
             mMonoisotopicMassCalculator.CapFlow.SetMassRateConcentration(concentration, concentrationUnits);
-            mMonoisotopicMassCalculator.CapFlow.SetVolFlowRate(volFlowRate, volFlowRateUnits);
+            mMonoisotopicMassCalculator.CapFlow.SetMassRateVolFlowRate(volFlowRate, volFlowRateUnits);
             mMonoisotopicMassCalculator.CapFlow.SetMassRateInjectionTime(injectionTime, injectionTimeUnits);
 
             var result = mMonoisotopicMassCalculator.CapFlow.ComputeMassRateMolesInjected(molarAmountUnits);
