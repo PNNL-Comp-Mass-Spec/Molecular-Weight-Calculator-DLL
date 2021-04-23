@@ -32,13 +32,14 @@ namespace UnitTests
             double stockSolutionVolume, UnitOfExtendedVolume stockSolutionVolumeUnits,
             UnitOfMoleMassConcentration finalConcentrationUnits,
             double dilutingSolventVolume, UnitOfExtendedVolume dilutingSolventVolumeUnits,
-            double totalFinalVolume, UnitOfExtendedVolume totalFinalVolumeUnits,
             double expectedResult)
         {
+            var totalFinalVolume = AddVolumes(stockSolutionVolume, stockSolutionVolumeUnits, dilutingSolventVolume, dilutingSolventVolumeUnits);
+
             SetDilutionValues(
                 initialConcentration, initialConcentrationUnits, stockSolutionVolume, stockSolutionVolumeUnits,
                 1, UnitOfMoleMassConcentration.Molar, dilutingSolventVolume, dilutingSolventVolumeUnits,
-                totalFinalVolume, totalFinalVolumeUnits);
+                totalFinalVolume, UnitOfExtendedVolume.L,
 
             var result = mMoleMassConverter.ComputeDilutionFinalConcentration(finalConcentrationUnits);
 
@@ -48,13 +49,11 @@ namespace UnitTests
               "{2}, UnitOfExtendedVolume.{3}, " +
               "UnitOfMoleMassConcentration.{4}, " +
               "{5}, UnitOfExtendedVolume.{6}, " +
-              "{7}, UnitOfExtendedVolume.{8}, " +
               "{9})]",
               initialConcentration, initialConcentrationUnits,
               stockSolutionVolume, stockSolutionVolumeUnits,
               finalConcentrationUnits,
               dilutingSolventVolume, dilutingSolventVolumeUnits,
-              totalFinalVolume, totalFinalVolumeUnits,
               ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
@@ -70,13 +69,14 @@ namespace UnitTests
             double stockSolutionVolume, UnitOfExtendedVolume stockSolutionVolumeUnits,
             double finalConcentration, UnitOfMoleMassConcentration finalConcentrationUnits,
             double dilutingSolventVolume, UnitOfExtendedVolume dilutingSolventVolumeUnits,
-            double totalFinalVolume, UnitOfExtendedVolume totalFinalVolumeUnits,
             double expectedResult)
         {
+            var totalFinalVolume = AddVolumes(stockSolutionVolume, stockSolutionVolumeUnits, dilutingSolventVolume, dilutingSolventVolumeUnits);
+
             SetDilutionValues(
                 1, UnitOfMoleMassConcentration.Molar, stockSolutionVolume, stockSolutionVolumeUnits,
                 finalConcentration, finalConcentrationUnits, dilutingSolventVolume, dilutingSolventVolumeUnits,
-                totalFinalVolume, totalFinalVolumeUnits);
+                totalFinalVolume, UnitOfExtendedVolume.L,
 
             var result = mMoleMassConverter.ComputeDilutionInitialConcentration(initialConcentrationUnits);
 
@@ -86,13 +86,11 @@ namespace UnitTests
                "{1}, UnitOfExtendedVolume.{2}, " +
                "{3}, UnitOfMoleMassConcentration.{4}, " +
                "{5}, UnitOfExtendedVolume.{6}, " +
-               "{7}, UnitOfExtendedVolume.{8}, " +
                "{9})]",
                initialConcentrationUnits,
                stockSolutionVolume, stockSolutionVolumeUnits,
                finalConcentration, finalConcentrationUnits,
                dilutingSolventVolume, dilutingSolventVolumeUnits,
-               totalFinalVolume, totalFinalVolumeUnits,
                ValueToString(result));
 
             if (mCompareValuesToExpected && expectedResult > 0)
@@ -115,7 +113,7 @@ namespace UnitTests
             SetDilutionValues(
                 initialConcentration, initialConcentrationUnits, 1, UnitOfExtendedVolume.ML,
                 finalConcentration, finalConcentrationUnits, 1, UnitOfExtendedVolume.ML,
-                totalFinalVolume, totalFinalVolumeUnits);
+                totalFinalVolume, totalFinalVolumeUnits,
 
             var computedStockSolutionVolume = mMoleMassConverter.ComputeDilutionRequiredStockAndDilutingSolventVolumes(
                 out var computedDilutingSolventVolume, stockSolutionVolumeUnits, dilutingSolventVolumeUnits);
@@ -354,6 +352,17 @@ namespace UnitTests
             {
                 Assert.AreEqual(expectedResult, result, 0.00001);
             }
+        }
+
+        private double AddVolumes(
+            double volume1, UnitOfExtendedVolume units1,
+            double volume2, UnitOfExtendedVolume units2,
+            UnitOfExtendedVolume finalVolumeUnits = UnitOfExtendedVolume.L)
+        {
+            var totalVolume = mMoleMassConverter.ConvertVolumeExtended(volume1, units1, UnitOfExtendedVolume.L) +
+                              mMoleMassConverter.ConvertVolumeExtended(volume2, units2, UnitOfExtendedVolume.L);
+
+            return mMoleMassConverter.ConvertVolumeExtended(totalVolume, UnitOfExtendedVolume.L, finalVolumeUnits);
         }
 
         private void SetDilutionValues(
