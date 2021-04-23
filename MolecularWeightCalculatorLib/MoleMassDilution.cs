@@ -67,20 +67,58 @@ namespace MolecularWeightCalculator
         #region "Data classes"
         private class MoleMassQuantity
         {
-            public double Amount { get; set; } // In Moles
-            public double Volume { get; set; } // In L
-            public double Concentration { get; set; } // In Molar
-            public double SampleMass { get; set; } // In g
-            public double SampleDensity { get; set; } // In g/mL
+            /// <summary>
+            /// Amount, in moles
+            /// </summary>
+            public double Amount { get; set; }
+
+            /// <summary>
+            /// Volume, in L
+            /// </summary>
+            public double Volume { get; set; }
+
+            /// <summary>
+            /// Concentration, in molarity
+            /// </summary>
+            public double Concentration { get; set; }
+
+            /// <summary>
+            /// Sample mass, in g
+            /// </summary>
+            public double SampleMass { get; set; }
+
+            /// <summary>
+            /// Sample density, in g/mL
+            /// </summary>
+            public double SampleDensity { get; set; }
         }
 
         private class MoleMassDilutionValues
         {
-            public double InitialConcentration { get; set; } // In Molar
-            public double StockSolutionVolume { get; set; } // In L
-            public double FinalConcentration { get; set; } // In Molar
-            public double DilutingSolventVolume { get; set; } // In L
-            public double TotalFinalVolume { get; set; } // In L
+            /// <summary>
+            /// Initial concentration, in molarity
+            /// </summary>
+            public double InitialConcentration { get; set; }
+
+            /// <summary>
+            /// Stock solution volume, in L
+            /// </summary>
+            public double StockSolutionVolume { get; set; }
+
+            /// <summary>
+            /// Final concentration, in molarity
+            /// </summary>
+            public double FinalConcentration { get; set; }
+
+            /// <summary>
+            /// Diluting solvent volume, in L
+            /// </summary>
+            public double DilutingSolventVolume { get; set; }
+
+            /// <summary>
+            /// Total final volume, in L
+            /// </summary>
+            public double TotalFinalVolume { get; set; }
         }
 
         #endregion
@@ -247,6 +285,11 @@ namespace MolecularWeightCalculator
         /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
         /// <param name="totalVolumeUnits"></param>
         /// <param name="dilutingSolventUnits"></param>
+        /// <remarks>
+        /// If mDilutionValues.InitialConcentration is less than mDilutionValues.FinalConcentration, this represents evaporation or sublimation
+        /// In this case, the computed value for mDilutionValues.TotalFinalVolume represents the volume that the solution must be reduced to in order to obtain the final concentration
+        /// The computed value for newDilutingSolventVolume will be -1 when initialConcentration is less than finalConcentration
+        /// </remarks>
         public double ComputeDilutionTotalVolume(
             out double newDilutingSolventVolume,
             UnitOfExtendedVolume totalVolumeUnits = UnitOfExtendedVolume.ML,

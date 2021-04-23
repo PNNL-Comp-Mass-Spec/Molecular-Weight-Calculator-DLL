@@ -249,15 +249,15 @@ namespace MolecularWeightCalculator
 
             if (Math.Abs(radius) > float.Epsilon)
             {
+                // Compute pressure, in dynes/cm^2
                 if (mCapillaryFlowParameters.CapillaryType == CapillaryType.OpenTubularCapillary)
                 {
                     // Open tubular capillary
-                    backPressure = mCapillaryFlowParameters.VolumetricFlowRate * 8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength / (Math.Pow(radius, 4d) * PI * 60d); // Pressure in dynes/cm^2
+                    backPressure = mCapillaryFlowParameters.VolumetricFlowRate * 8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength / (Math.Pow(radius, 4d) * PI * 60d);
                 }
-                // Packed capillary
                 else if (Math.Abs(mCapillaryFlowParameters.ParticleDiameter) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.InterparticlePorosity) > float.Epsilon)
                 {
-                    // Flow rate in mL/sec
+                    // Packed capillary
                     backPressure = mCapillaryFlowParameters.VolumetricFlowRate * 180d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength * Math.Pow(1d - mCapillaryFlowParameters.InterparticlePorosity, 2d) / (Math.Pow(mCapillaryFlowParameters.ParticleDiameter, 2d) * Math.Pow(mCapillaryFlowParameters.InterparticlePorosity, 2d) * PI * Math.Pow(radius, 2d) * 60d) / mCapillaryFlowParameters.InterparticlePorosity;
                 }
                 else
@@ -292,15 +292,15 @@ namespace MolecularWeightCalculator
 
             if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.VolumetricFlowRate) > float.Epsilon)
             {
+                // Compute column length, in cm
                 if (mCapillaryFlowParameters.CapillaryType == CapillaryType.OpenTubularCapillary)
                 {
                     // Open tubular capillary
-                    columnLength = mCapillaryFlowParameters.BackPressure * Math.Pow(radius, 4d) * PI * 60d / (8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.VolumetricFlowRate); // Column length in cm
+                    columnLength = mCapillaryFlowParameters.BackPressure * Math.Pow(radius, 4d) * PI * 60d / (8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.VolumetricFlowRate);
                 }
-                // Packed capillary
                 else if (Math.Abs(mCapillaryFlowParameters.InterparticlePorosity - 1d) > float.Epsilon)
                 {
-                    // Flow rate in mL/sec
+                    // Packed capillary
                     columnLength = mCapillaryFlowParameters.BackPressure * Math.Pow(mCapillaryFlowParameters.ParticleDiameter, 2d) * Math.Pow(mCapillaryFlowParameters.InterparticlePorosity, 2d) * PI * Math.Pow(radius, 2d) * 60d * mCapillaryFlowParameters.InterparticlePorosity / (180d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.VolumetricFlowRate * Math.Pow(1d - mCapillaryFlowParameters.InterparticlePorosity, 2d));
                 }
                 else
@@ -353,10 +353,9 @@ namespace MolecularWeightCalculator
                     // Open tubular capillary
                     radius = Math.Pow(mCapillaryFlowParameters.VolumetricFlowRate * 8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength / (mCapillaryFlowParameters.BackPressure * PI * 60d), 0.25d);
                 }
-                // Packed capillary
                 else if (Math.Abs(mCapillaryFlowParameters.ParticleDiameter) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.InterparticlePorosity - 1d) > float.Epsilon)
                 {
-                    // Flow rate in mL/sec
+                    // Packed capillary
                     radius = Math.Pow(mCapillaryFlowParameters.VolumetricFlowRate * 180d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength * Math.Pow(1d - mCapillaryFlowParameters.InterparticlePorosity, 2d) / (mCapillaryFlowParameters.BackPressure * Math.Pow(mCapillaryFlowParameters.ParticleDiameter, 2d) * Math.Pow(mCapillaryFlowParameters.InterparticlePorosity, 2d) * PI * 60d) / mCapillaryFlowParameters.InterparticlePorosity, 0.5d);
                 }
                 else
@@ -392,7 +391,8 @@ namespace MolecularWeightCalculator
 
             if (Math.Abs(mCapillaryFlowParameters.LinearVelocity) > float.Epsilon)
             {
-                deadTime = mCapillaryFlowParameters.ColumnLength / mCapillaryFlowParameters.LinearVelocity; // Dead time in minutes
+                // Dead time, in minutes
+                deadTime = mCapillaryFlowParameters.ColumnLength / mCapillaryFlowParameters.LinearVelocity;
             }
             else
             {
@@ -416,7 +416,8 @@ namespace MolecularWeightCalculator
         {
             if (Math.Abs(mExtraColumnBroadeningParameters.LinearVelocity) > float.Epsilon && Math.Abs(mExtraColumnBroadeningParameters.DiffusionCoefficient) > float.Epsilon)
             {
-                mExtraColumnBroadeningParameters.TemporalVariance = Math.Pow(mExtraColumnBroadeningParameters.OpenTubeId, 2d) * mExtraColumnBroadeningParameters.OpenTubeLength / (96d * mExtraColumnBroadeningParameters.DiffusionCoefficient * mExtraColumnBroadeningParameters.LinearVelocity / 60d); // in sec^2
+                // Temporal variance, in sec^2
+                mExtraColumnBroadeningParameters.TemporalVariance = Math.Pow(mExtraColumnBroadeningParameters.OpenTubeId, 2d) * mExtraColumnBroadeningParameters.OpenTubeLength / (96d * mExtraColumnBroadeningParameters.DiffusionCoefficient * mExtraColumnBroadeningParameters.LinearVelocity / 60d);
             }
             else
             {
@@ -455,7 +456,8 @@ namespace MolecularWeightCalculator
             var radius = mCapillaryFlowParameters.ColumnId / 2.0d;
             if (Math.Abs(radius) > float.Epsilon)
             {
-                linearVelocity = mCapillaryFlowParameters.VolumetricFlowRate / (PI * Math.Pow(radius, 2d)); // Units in cm/min
+                // Units in cm/min
+                linearVelocity = mCapillaryFlowParameters.VolumetricFlowRate / (PI * Math.Pow(radius, 2d));
 
                 // Divide Linear Velocity by epsilon if a packed capillary
                 if (mCapillaryFlowParameters.CapillaryType == CapillaryType.PackedCapillary && Math.Abs(mCapillaryFlowParameters.InterparticlePorosity) > float.Epsilon)
@@ -575,15 +577,15 @@ namespace MolecularWeightCalculator
 
             if (Math.Abs(mCapillaryFlowParameters.SolventViscosity) > float.Epsilon && Math.Abs(mCapillaryFlowParameters.ColumnLength) > float.Epsilon)
             {
+                // Compute flow rate, in mL/min
                 if (mCapillaryFlowParameters.CapillaryType == CapillaryType.OpenTubularCapillary)
                 {
                     // Open tubular capillary
-                    volFlowRate = mCapillaryFlowParameters.BackPressure * Math.Pow(radius, 4d) * PI / (8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength); // Flow rate in mL/sec
+                    volFlowRate = mCapillaryFlowParameters.BackPressure * Math.Pow(radius, 4d) * PI / (8d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength);
                 }
-                // Packed capillary
                 else if (Math.Abs(mCapillaryFlowParameters.InterparticlePorosity - 1d) > float.Epsilon)
                 {
-                    // Flow rate in mL/sec
+                    // Packed capillary
                     volFlowRate = mCapillaryFlowParameters.BackPressure * Math.Pow(mCapillaryFlowParameters.ParticleDiameter, 2d) * Math.Pow(mCapillaryFlowParameters.InterparticlePorosity, 2d) * PI * Math.Pow(radius, 2d) * mCapillaryFlowParameters.InterparticlePorosity / (180d * mCapillaryFlowParameters.SolventViscosity * mCapillaryFlowParameters.ColumnLength * Math.Pow(1d - mCapillaryFlowParameters.InterparticlePorosity, 2d));
                 }
                 else
@@ -627,7 +629,8 @@ namespace MolecularWeightCalculator
             // First find vol flow rate that gives observed dead time
             if (Math.Abs(mCapillaryFlowParameters.ColumnDeadTime) > float.Epsilon)
             {
-                volFlowRate = mCapillaryFlowParameters.ColumnLength * (PI * Math.Pow(radius, 2d)) / mCapillaryFlowParameters.ColumnDeadTime; // Vol flow rate in mL/sec
+                // Vol flow rate in mL/min
+                volFlowRate = mCapillaryFlowParameters.ColumnLength * (PI * Math.Pow(radius, 2d)) / mCapillaryFlowParameters.ColumnDeadTime;
 
                 if (mCapillaryFlowParameters.CapillaryType == CapillaryType.PackedCapillary)
                 {

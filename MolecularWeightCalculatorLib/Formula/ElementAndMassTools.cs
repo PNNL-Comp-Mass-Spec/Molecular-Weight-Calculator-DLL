@@ -60,7 +60,10 @@ namespace MolecularWeightCalculator.Formula
 
         #region "Constants and Enums"
 
-        private const char RTF_HEIGHT_ADJUST_CHAR = '~'; // A hidden character to adjust the height of RTF Text Boxes when using superscripts
+        /// <summary>
+        /// A hidden character to adjust the height of RTF Text Boxes when using superscripts
+        /// </summary>
+        private const char RTF_HEIGHT_ADJUST_CHAR = '~';
 
         private enum MessageType
         {
@@ -488,7 +491,9 @@ namespace MolecularWeightCalculator.Formula
                 // Create an array to hold the Fractional Abundances for all the masses
                 convolutedMSDataCount = maxWeight - minWeight + 1;
                 var convolutedAbundanceStartMass = minWeight;
-                var convolutedAbundances = new IsoResultsOverallData[convolutedMSDataCount]; // Fractional abundance at each mass; 1-based array
+
+                // Fractional abundance at each mass; 1-based array
+                var convolutedAbundances = new IsoResultsOverallData[convolutedMSDataCount];
 
                 for (var i = 0; i < convolutedAbundances.Length; i++)
                 {

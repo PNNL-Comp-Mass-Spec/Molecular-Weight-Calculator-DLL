@@ -1060,7 +1060,9 @@ namespace MolecularWeightCalculator.Formula
             stats.StandardDeviation = Math.Sqrt(formulaData.FormulaSections.First().StDevSum);
 
             // Compute the total molecular weight
-            stats.TotalMass = 0d; // Reset total weight of compound to 0 so we can add to it
+
+            // Reset total weight of compound to 0 so we can add to it
+            stats.TotalMass = 0d;
             for (var atomicNumber = 1; atomicNumber <= ElementsAndAbbrevs.ELEMENT_COUNT; atomicNumber++)
             {
                 // Increase total weight by multiplying the count of each element by the element's mass
@@ -1201,7 +1203,8 @@ namespace MolecularWeightCalculator.Formula
                         cStats.Charge -= pStats.Charge;
                     }
 
-                    previousStartPosition = startPosition - 1; // subtract 1 for '>'
+                    // subtract 1 for '>'
+                    previousStartPosition = startPosition - 1;
                     previousBlock = currentBlock;
                 }
 
@@ -1243,8 +1246,11 @@ namespace MolecularWeightCalculator.Formula
                         var elementStats = Elements.ElementStats[symbolReference];
                         var element = stats.Elements[component.SymbolReference];
                         var addCount = multiplier * component.Count;
-                        element.Count += addCount; // Increment element counting bin
-                        element.Used = true; // Element is present tag
+
+                        // Increment element counting bin
+                        element.Count += addCount;
+                        element.Used = true;
+
                         if (Math.Abs(component.Isotope) < double.Epsilon)
                         {
                             // No isotope specified
@@ -1452,7 +1458,8 @@ namespace MolecularWeightCalculator.Formula
                 work[0] != ComputationOptions.DecimalSeparator &&
                 !(work[0] == '-' && allowNegative))
             {
-                numLength = 0; // No number found; not really an error; just return '0', and handle that externally
+                // No number found; not really an error; just return '0', and handle that externally
+                numLength = 0;
                 return 0;
             }
 

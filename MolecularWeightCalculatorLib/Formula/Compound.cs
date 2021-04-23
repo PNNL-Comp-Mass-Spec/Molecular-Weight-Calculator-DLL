@@ -50,10 +50,17 @@ namespace MolecularWeightCalculator.Formula
         }
 
         private string mFormula;
+
         private string mFormattedFormula;
-        private double mValueForUnknown; // The value to assign to ? when present after a square bracket.
-        // For example, in C6H6[?Br] if ? = 1, then the formula is treated like C6H6Br
-        // If ? = 2, then the formula is treated like C6H6Br2
+
+        /// <summary>
+        /// The value to assign to ? when present after a square bracket.
+        /// </summary>
+        /// <remarks>
+        /// For example, in C6H6[?Br] if ? = 1, then the formula is treated like C6H6Br
+        /// If ? = 2, then the formula is treated like C6H6Br2
+        /// </remarks>
+        private double mValueForUnknown;
 
         private ComputationStats mComputationStats = new();
 

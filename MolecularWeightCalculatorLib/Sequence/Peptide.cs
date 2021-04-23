@@ -64,8 +64,18 @@ namespace MolecularWeightCalculator.Sequence
         public const float DEFAULT_DOUBLE_CHARGE_MZ_THRESHOLD = 800f;
         public const float DEFAULT_TRIPLE_CHARGE_MZ_THRESHOLD = 900f;
 
-        private const short MAX_MODIFICATIONS = 6; // Maximum number of modifications for a single residue
+        /// <summary>
+        ///  Maximum number of modifications for a single residue
+        /// </summary>
+        private const short MAX_MODIFICATIONS = 6;
+
+        /// <summary>
+        /// Unknown amino acid symbol, 3 letter notation
+        /// </summary>
         private const string UNKNOWN_SYMBOL = "Xxx";
+        /// <summary>
+        /// Unknown amino acid symbol, 1 letter notation
+        /// </summary>
         private const string UNKNOWN_SYMBOL_ONE_LETTER = "X";
 
         internal const string TERMINII_SYMBOL = "-";
@@ -693,7 +703,8 @@ namespace MolecularWeightCalculator.Sequence
             }
 
             // Sort frag spectra by mass (using a pointer array to synchronize the arrays)
-            fragSpectrumWork.Sort(); // Uses the default comparator defined for FragmentationSpectrumData, which sorts by mass
+            // Uses the default comparator defined for FragmentationSpectrumData, which sorts by mass
+            fragSpectrumWork.Sort();
 
             return fragSpectrumWork;
         }

@@ -182,7 +182,8 @@ namespace MolecularWeightCalculator.Formula
             mMasterSymbolsList.Capacity = mMasterSymbolsList.Count;
 
             // Sort the search list
-            mMasterSymbolsList.Sort(); // Will use the IComparable implementation for longest-to-shortest, then alphabetical.
+            // Will use the IComparable implementation for longest-to-shortest, then alphabetical.
+            mMasterSymbolsList.Sort();
         }
 
         /// <summary>
@@ -693,14 +694,19 @@ namespace MolecularWeightCalculator.Formula
                 mElementAlph.Sort((x, y) =>
                 {
                     // Test 'C' and 'H' on value, since number comparisons are faster than string comparisons
+
+                    // Always sort C/carbon first
                     if (x.Value == 6)
-                        return -1; // Always sort C/carbon first
+                        return -1;
                     if (y.Value == 6)
-                        return 1; // Also, always sort C/carbon first
+                        return 1;
+
+                    // Hydrogen is always second
                     if (x.Value == 1)
-                        return -1; // Hydrogen is always second
+                        return -1;
+
                     if (y.Value == 1)
-                        return 1; // Hydrogen is always second
+                        return 1;
 
                     // Everything else is alphabetical.
                     return string.CompareOrdinal(x.Key, y.Key);
