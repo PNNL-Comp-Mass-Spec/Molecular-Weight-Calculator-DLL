@@ -272,6 +272,8 @@ namespace MolecularWeightCalculator
             {
                 mDilutionValues.DilutingSolventVolume = -1;
                 mDilutionValues.StockSolutionVolume = -1;
+                newDilutingSolventVolume = -1;
+                return -1;
             }
 
             newDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, UnitOfExtendedVolume.L, dilutingSolventUnits);
@@ -310,9 +312,14 @@ namespace MolecularWeightCalculator
 
             mDilutionValues.DilutingSolventVolume = mDilutionValues.TotalFinalVolume - mDilutionValues.StockSolutionVolume;
             if (mDilutionValues.DilutingSolventVolume < 0d)
+            {
                 mDilutionValues.DilutingSolventVolume = -1;
-
-            newDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, UnitOfExtendedVolume.L, dilutingSolventUnits);
+                newDilutingSolventVolume = -1;
+            }
+            else
+            {
+                newDilutingSolventVolume = ConvertVolumeExtended(mDilutionValues.DilutingSolventVolume, UnitOfExtendedVolume.L, dilutingSolventUnits);
+            }
 
             return ConvertVolumeExtended(mDilutionValues.TotalFinalVolume, UnitOfExtendedVolume.L, totalVolumeUnits);
         }
