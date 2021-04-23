@@ -92,7 +92,10 @@
     <Compile Include="MathUtils.cs" />
     <Compile Include="MoleMassDilution.cs" />
     <Compile Include="MolecularWeightTool.cs" />
-    <Compile Include="MoleMassDilutionEnums.cs" />
+    <Compile Include="MoleMassDilutionTools\MoleMassDilution.cs" />
+    <Compile Include="MoleMassDilutionTools\MoleMassDilutionEnums.cs" />
+    <Compile Include="MoleMassDilutionTools\MoleMassQuantity.cs" />
+    <Compile Include="MoleMassDilutionTools\UnitConversions.cs" />
     <Compile Include="NumberConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sequence\FragmentationSpectrumData.cs" />

@@ -1,6 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
+// ReSharper disable once CheckNamespace
 namespace MolecularWeightCalculator
 {
     [Guid("C4109F21-3649-44CF-BF77-8DC784C801B3"), ComVisible(true)]
