@@ -534,7 +534,8 @@ namespace UnitTests
                 columnLengthCm, columnIdMicrons, deadTimeSeconds, viscosityPoise,
                 flowRateUnits, ValueToString(result));
 
-            Console.WriteLine("{0} cm, {1} um i.d. open-tubular column with a {2} second dead time has flow {3:F2} {4}, and back pressure {5:F1} {6}",
+            Console.WriteLine(
+                "{0} cm, {1} um i.d. open-tubular column with a {2} second dead time has flow {3:F2} {4}, and back pressure {5:F1} {6}",
                 columnLengthCm, columnIdMicrons, deadTimeSeconds, result, flowRateUnits, newBackPressurePsi, UnitOfPressure.Psi);
 
             if (mCompareValuesToExpected && expectedResult > 0)
@@ -567,15 +568,16 @@ namespace UnitTests
             mMonoisotopicMassCalculator.CapFlow.SetDeadTime(deadTimeMinutes);
             mMonoisotopicMassCalculator.CapFlow.SetInterparticlePorosity(0.4d);
 
-            var result = mMonoisotopicMassCalculator.CapFlow.ComputeVolFlowRateUsingDeadTime(out var newBackPressurePsi, flowRateUnits, UnitOfPressure.Psi);
+            var result = mMonoisotopicMassCalculator.CapFlow.ComputeVolFlowRateUsingDeadTime(out var newBackPressurePsi, flowRateUnits);
 
             WriteUpdatedTestCase("TestComputeVolFlowRateUsingDeadTimePackedCapillary",
                 "[TestCase({0}, {1}, {2}, {3:F4}, {4}, UnitOfFlowRate.{5}, {6})]",
                 columnLengthCm, columnIdMicrons, deadTimeMinutes, viscosityPoise,
                 particleDiameterMicrons, flowRateUnits, ValueToString(result));
 
-            Console.WriteLine("{0} cm, {1} um i.d. packed capillary with {2} um particles and a {3} minute dead time has {4} {5}",
-                columnLengthCm, columnIdMicrons, particleDiameterMicrons, deadTimeMinutes, result, flowRateUnits);
+            Console.WriteLine(
+                "{0} cm, {1} um i.d. packed capillary with {2} um particles and a {3} minute dead time has flow {4:F2} {5}, and back pressure {6:F1} {7}",
+                columnLengthCm, columnIdMicrons, particleDiameterMicrons, deadTimeMinutes, result, flowRateUnits, newBackPressurePsi, UnitOfPressure.Psi);
 
             if (mCompareValuesToExpected && expectedResult > 0)
             {
