@@ -1455,14 +1455,13 @@ namespace MolecularWeightCalculator.Sequence
             return minCharIndex;
         }
 
-        public string GetTrypticPeptideNext(string proteinResidues,
-            int searchStartLoc)
+        public string GetTrypticPeptideNext(string proteinResidues, int startIndex)
         {
-            return GetTrypticPeptideNext(proteinResidues, searchStartLoc, out _, out _);
+            return GetTrypticPeptideNext(proteinResidues, startIndex, out _, out _);
         }
 
         public string GetTrypticPeptideNext(string proteinResidues,
-            int searchStartLoc,
+            int startIndex,
             out int returnResidueStart,
             out int returnResidueEnd,
             string ruleResidues = TRYPTIC_RULE_RESIDUES,
@@ -1478,19 +1477,19 @@ namespace MolecularWeightCalculator.Sequence
             returnResidueStart = 1;
             returnResidueEnd = 1;
 
-            if (searchStartLoc < 0)
-                searchStartLoc = 0;
+            if (startIndex < 0)
+                startIndex = 0;
 
             var proteinResiduesLength = proteinResidues.Length;
-            if (searchStartLoc >= proteinResiduesLength)
+            if (startIndex >= proteinResiduesLength)
             {
                 return string.Empty;
             }
 
-            var ruleResidueLoc = GetTrypticNameFindNextCleavageLoc(proteinResidues, terminiiSymbol, searchStartLoc, ruleResidues, exceptionResidues, terminiiSymbol);
+            var ruleResidueLoc = GetTrypticNameFindNextCleavageLoc(proteinResidues, terminiiSymbol, startIndex, ruleResidues, exceptionResidues, terminiiSymbol);
             if (ruleResidueLoc >= 0)
             {
-                returnResidueStart = searchStartLoc;
+                returnResidueStart = startIndex;
                 if (ruleResidueLoc >= proteinResiduesLength)
                 {
                     returnResidueEnd = proteinResiduesLength;
