@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.FormulaCalc"
+             xmlns:molecularWeightCalculatorGui="clr-namespace:MolecularWeightCalculatorGUI"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:FormulaViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="100" d:DesignWidth="300">
@@ -17,8 +18,10 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="3,0" Text="{Binding FormulaIndex, StringFormat=Formula {0}:}" />
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="1,0" Text="{Binding Formula}" />
-        <!--<RichTextBox Grid.Row="0" Grid.Column="1" Margin="1"><FlowDocument  /></RichTextBox>-->
+        <!--<TextBox Grid.Row="0" Grid.Column="1" Margin="1,0" Text="{Binding Formula}" />-->
+        <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="0" Grid.Column="1" Margin="1,0" TextRtf="{Binding FormulaRtf, Mode=OneWay}" TextPlain="{Binding Formula, Mode=OneWayToSource}">
+            <FlowDocument />
+        </molecularWeightCalculatorGui:RichTextBoxMulti>
         <TextBlock Grid.Row="1" Grid.Column="1" Margin="1,0">
             <Run Text="MW =" />
             <Run Text="{Binding Mass, StringFormat={}{0:0.000##}}" />

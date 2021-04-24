@@ -76,6 +76,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RichTextBoxMulti.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="AboutWindow.xaml">

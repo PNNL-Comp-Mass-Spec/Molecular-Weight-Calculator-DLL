@@ -19,6 +19,11 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         {
             mwt = molWeight;
 
+            // Set the font to Calibri, which supports Typography.Variations; Arial does not, so subscript and superscript don't appear.
+            //mwt.RtfFontName = "Calibri"; // Variations Support: Calibri, Cambria, Segoe UI
+            mwt.RtfFontName = "Cambria";
+            mwt.RtfFontSize = 10;
+
             Formulas.Add(new FormulaViewModel(1, mwt) { Formula = "BrCH2(CH2)7CH2Br", Mass = 286.04722, StDev = 0.003 });
             Formulas.Add(new FormulaViewModel(2, mwt) { Formula = "FeCl3-6H2O", Mass = 270.29478, StDev = 0.003 });
             Formulas.Add(new FormulaViewModel(3, mwt) { Formula = "Co(Bpy)(CO)4", Mass = 327.1576, StDev = 0.003 });
