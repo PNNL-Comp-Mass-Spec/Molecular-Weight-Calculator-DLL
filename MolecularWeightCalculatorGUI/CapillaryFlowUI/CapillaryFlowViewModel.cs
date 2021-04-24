@@ -67,6 +67,9 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
             this.WhenAnyValue(x => x.Data.ResultingPeakWidthUnits).Subscribe(x => Data.ResultingPeakWidth = extraCol.GetResultantPeakWidth(x));
 
             TogglePeakBroadeningCalculationsCommand = ReactiveCommand.Create(() => ShowExtraPeakBroadeningCalculations = !ShowExtraPeakBroadeningCalculations);
+            ShowExplanatoryEquationsCommand = ReactiveCommand.Create(() => ShowExplanatoryEquations());
+            ShowComputeWaterViscosityCommand = ReactiveCommand.Create(() => ShowComputeWaterViscosity());
+            ShowPeakBroadeningEquationsCommand = ReactiveCommand.Create(() => ShowPeakBroadeningEquations());
 
             LoadDefaults();
         }
@@ -367,6 +370,34 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
             Data.TemporalVarianceSquareSeconds = extraCol.GetTemporalVarianceInSquareSeconds();
             Data.ResultingPeakWidth = extraCol.GetResultantPeakWidth(Data.ResultingPeakWidthUnits);
             Data.PercentIncrease = (extraCol.GetResultantPeakWidth(Data.InitialPeakBaseWidthUnits) - Data.InitialPeakBaseWidth) / Data.InitialPeakBaseWidth * 100;
+        }
+
+        private void ShowExplanatoryEquations()
+        {
+            var window = new ExplanatoryEquationsWindow
+            {
+                DataContext = new EquationsViewModel(CapillaryType)
+            };
+            window.ShowDialog();
+        }
+
+        private void ShowComputeWaterViscosity()
+        {
+            var window = new MeCNViscosityWindow
+            {
+                // TODO: cache this to avoid resetting values whenever closed?
+                DataContext = new MeCNViscosityViewModel(this)
+            };
+            window.Show();
+        }
+
+        private void ShowPeakBroadeningEquations()
+        {
+            var window = new BroadeningEquationsWindow
+            {
+                DataContext = new EquationsViewModel(CapillaryType)
+            };
+            window.ShowDialog();
         }
     }
 }

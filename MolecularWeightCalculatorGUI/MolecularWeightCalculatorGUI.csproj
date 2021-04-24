@@ -50,6 +50,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfMath, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\WpfMath.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -63,11 +67,22 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CapillaryFlowUI\BroadeningEquationsWindow.xaml.cs">
+      <DependentUpon>BroadeningEquationsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CapillaryFlowUI\CapillaryFlowData.cs" />
     <Compile Include="CapillaryFlowUI\CapillaryFlowViewModel.cs" />
     <Compile Include="CapillaryFlowUI\CapillaryFlowWindow.xaml.cs">
       <DependentUpon>CapillaryFlowWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CapillaryFlowUI\EquationsViewModel.cs" />
+    <Compile Include="CapillaryFlowUI\ExplanatoryEquationsWindow.xaml.cs">
+      <DependentUpon>ExplanatoryEquationsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CapillaryFlowUI\MeCNViscosityWindow.xaml.cs">
+      <DependentUpon>MeCNViscosityWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CapillaryFlowUI\MeCNViscosityViewModel.cs" />
     <Compile Include="FormulaCalc\FormulaCalcView.xaml.cs">
       <DependentUpon>FormulaCalcView.xaml</DependentUpon>
     </Compile>
@@ -93,7 +108,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CapillaryFlowUI\BroadeningEquationsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CapillaryFlowUI\CapillaryFlowWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CapillaryFlowUI\ExplanatoryEquationsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CapillaryFlowUI\MeCNViscosityWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

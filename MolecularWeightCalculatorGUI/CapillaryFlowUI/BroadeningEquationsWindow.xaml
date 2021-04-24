@@ -1,0 +1,48 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.CapillaryFlowUI.BroadeningEquationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.CapillaryFlowUI"
+        xmlns:controls="clr-namespace:WpfMath.Controls;assembly=WpfMath"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:EquationsViewModel}, IsDesignTimeCreatable=True}"
+        Title="Extra-column broadening equations" Height="480" Width="650" Icon="../mwtwin.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="15" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="15" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="15" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="15" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="40" />
+            <ColumnDefinition Width="Auto" MinWidth="150" />
+            <ColumnDefinition Width="Auto" MinWidth="50" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Button Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,0,0,15" HorizontalAlignment="Center" VerticalAlignment="Bottom" MinWidth="100" Content="_Ok" IsDefault="True" IsCancel="True" Click="Close_OnClick" />
+        <controls:FormulaControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,0" SystemTextFontName="Segoe UI" Scale="15" Formula="{Binding BroadeningEquationDescriptionStart}" />
+        <controls:FormulaControl Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" Scale="15" Formula="{Binding BroadeningEquationBasic}" />
+        <controls:FormulaControl Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" SystemTextFontName="Segoe UI" Scale="15" Formula="{Binding BroadeningEquationBasicAB}" />
+        <controls:FormulaControl Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Scale="15" Formula="{Binding BroadeningEquationBasicC}" />
+        <controls:FormulaControl Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" SystemTextFontName="Segoe UI" Scale="15" Formula="{Binding BroadeningEquationBasicD}" />
+        <controls:FormulaControl Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Scale="15" Formula="{Binding BroadeningEquationExpanded}" />
+        <controls:FormulaControl Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Scale="15" Formula="{Binding BroadeningEquationReduced}" />
+        <controls:FormulaControl Grid.Row="7" Grid.Column="3" VerticalAlignment="Bottom" SystemTextFontName="Segoe UI" Scale="15" Formula="{Binding BroadeningEquationSubstituteDescription}" />
+        <controls:FormulaControl Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Scale="15" Formula="{Binding BroadeningEquationSubstituted}" />
+        <controls:FormulaControl Grid.Row="8" Grid.Column="3" VerticalAlignment="Bottom" SystemTextFontName="Segoe UI" Scale="15" Formula="{Binding BroadeningEquationSigmaT2SolveDescription}" />
+        <controls:FormulaControl Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" Scale="15" Formula="{Binding BroadeningEquationSigmaT2Solve}" />
+        <controls:FormulaControl Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="4" SystemTextFontName="Segoe UI" Scale="15" Formula="{Binding BroadeningEquationFinal}" />
+    </Grid>
+</Window>

@@ -1,0 +1,43 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.CapillaryFlowUI.ExplanatoryEquationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.CapillaryFlowUI"
+        xmlns:molecularWeightCalculator="clr-namespace:MolecularWeightCalculator;assembly=MolecularWeightCalculator"
+        xmlns:controls="clr-namespace:WpfMath.Controls;assembly=WpfMath"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:EquationsViewModel}, IsDesignTimeCreatable=True}"
+        Height="360" Width="600" Icon="../mwtwin.ico">
+    <Window.Style>
+        <Style TargetType="{x:Type Window}" BasedOn="{StaticResource {x:Type Window}}">
+            <Style.Setters>
+                <Setter Property="Title" Value="Equations for flow in an open tube" />
+            </Style.Setters>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CapillaryType}" Value="{x:Static molecularWeightCalculator:CapillaryType.PackedCapillary}">
+                    <Setter Property="Title" Value="Equations for flow in a packed capillary" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Button Grid.Row="2" Grid.Column="2" Margin="5" MinWidth="100" Content="_Ok" IsDefault="True" IsCancel="True" Click="Close_OnClick" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <controls:FormulaControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="5" VerticalAlignment="Center" Formula="{Binding LinearVelocityEquation}" />
+        <controls:FormulaControl Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Formula="{Binding DeadTimeEquation}" />
+        <controls:FormulaControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5" Formula="{Binding ColumnVolumeEquation}" />
+        <controls:FormulaControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Formula="{Binding VolumetricFlowRateEquation}" />
+        <controls:FormulaControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" SystemTextFontName="Segoe UI" Scale="18" Formula="{Binding LinearVelocityDescription}" />
+    </Grid>
+</Window>
