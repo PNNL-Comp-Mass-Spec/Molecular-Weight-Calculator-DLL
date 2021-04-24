@@ -73,6 +73,7 @@ namespace MolecularWeightCalculator.Sequence
         /// Unknown amino acid symbol, 3 letter notation
         /// </summary>
         private const string UNKNOWN_SYMBOL = "Xxx";
+
         /// <summary>
         /// Unknown amino acid symbol, 1 letter notation
         /// </summary>
@@ -148,7 +149,7 @@ namespace MolecularWeightCalculator.Sequence
             /// <remarks>
             /// 0-based array
             /// </remarks>
-            public double[] IonMass { get; } //
+            public double[] IonMass { get; }
 
             /// <summary>
             /// Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
@@ -578,7 +579,7 @@ namespace MolecularWeightCalculator.Sequence
                             var intensity = ionIntensities[(int)ionType];
 
                             // Get the list of residues preceding or following this residue
-                            // Note that the residue symbols are separated by a space to avoid accidental matching by the IndexOf() functions below
+                            // Note that the residue symbols are separated by a space to avoid accidental matching when using IndexOf()
                             var residues = GetInternalResidues(residueIndex, ionType, out var phosphorylated);
 
                             for (short chargeIndex = 1; chargeIndex <= maxCharge; chargeIndex++)
@@ -754,7 +755,9 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="ionType"></param>
         /// <param name="phosphorylated">Output: true if a phosphorylated S, T, or Y</param>
         /// <returns>Space separated list of residue symbols (three letter notation)</returns>
-        /// <remarks>Residue symbols are separated by a space to avoid accidental matching by the IndexOf() function</remarks>
+        /// <remarks>
+        /// Residue symbols are separated by a space to avoid accidental matching when using IndexOf()
+        /// </remarks>
         private string GetInternalResidues(int currentResidueIndex, IonType ionType, out bool phosphorylated)
         {
             var internalResidues = string.Empty;
@@ -1358,7 +1361,7 @@ namespace MolecularWeightCalculator.Sequence
 
             // ReSharper restore CommentTypo
 
-            // It is the calling function's responsibility to assign the correct residue to residueFollowingSearchResidues
+            // It is the calling method's responsibility to assign the correct residue to residueFollowingSearchResidues
             // If no match is found, but residueFollowingSearchResidues is "-", then the cleavage location returned is Len(searchResidues) + 1
 
             var exceptionSuffixResidueCount = (short)exceptionSuffixResidues.Length;
@@ -1402,7 +1405,7 @@ namespace MolecularWeightCalculator.Sequence
 
                                 if (exceptionCharLocInSearchResidues < searchResidues.Length - 1)
                                 {
-                                    // Recursively call this function to find the next cleavage position, using an updated startIndex position
+                                    // Recursively call this method to find the next cleavage position, using an updated startIndex position
                                     var charLocViaRecursiveSearch = GetTrypticNameFindNextCleavageLoc(searchResidues, residueFollowingSearchResidues, exceptionCharLocInSearchResidues, searchChars, exceptionSuffixResidues, terminiiSymbol);
 
                                     if (charLocViaRecursiveSearch > 0)
@@ -1526,8 +1529,8 @@ namespace MolecularWeightCalculator.Sequence
         /// </summary>
         /// <param name="proteinResidues"></param>
         /// <param name="desiredPeptideNumber"></param>
-        /// <param name="returnResidueStart">Output: position of the start residue</param>
-        /// <param name="returnResidueEnd">Output: position of the end residue</param>
+        /// <param name="returnResidueStart">Output: the residue number in the protein where the peptide starts (0 if no match)</param>
+        /// <param name="returnResidueEnd">Output: the residue number in the protein where the peptide ends (0 if no match)</param>
         /// <param name="ruleResidues"></param>
         /// <param name="exceptionResidues"></param>
         /// <param name="terminiiSymbol"></param>

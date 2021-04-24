@@ -66,7 +66,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         double ComputeQuantityVolume(UnitOfExtendedVolume units = UnitOfExtendedVolume.L);
 
         /// <summary>
-        /// This function uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
+        /// This method uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
         /// </summary>
         /// <param name="amountIn"></param>
         /// <param name="currentUnits"></param>
@@ -79,7 +79,6 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="concentrationIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         double ConvertConcentration(double concentrationIn, UnitOfMoleMassConcentration currentUnits, UnitOfMoleMassConcentration newUnits);
 
         double ConvertVolumeExtended(double volume, UnitOfExtendedVolume currentUnits, UnitOfExtendedVolume newUnits);

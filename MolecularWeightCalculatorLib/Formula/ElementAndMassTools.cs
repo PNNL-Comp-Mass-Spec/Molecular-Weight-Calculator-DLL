@@ -208,7 +208,7 @@ namespace MolecularWeightCalculator.Formula
 
         #endregion
 
-        #region "Interface Functions"
+        #region "Interface properties and Methods"
 
         public bool AbortProcessing
         {
@@ -1200,7 +1200,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="massMz"></param>
         /// <param name="currentCharge"></param>
         /// <param name="desiredCharge"></param>
-        /// <param name="chargeCarrierMass">Charge carrier mass.  If 0, this function will use mChargeCarrierMass instead</param>
+        /// <param name="chargeCarrierMass">Charge carrier mass.  If 0, this method will use mChargeCarrierMass instead</param>
         /// <returns>The new m/z value</returns>
         /// <remarks>To return the neutral mass, set <paramref name="desiredCharge"/> to 0</remarks>
         internal double ConvoluteMass(
@@ -1282,7 +1282,8 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Recursive function to Convolute the Results in <paramref name="isoStats"/> and store in <paramref name="convolutedAbundances"/>; 1-based array
+        /// Recursive method to convolute the results in <paramref name="isoStats"/> 
+        /// and store in <paramref name="convolutedAbundances"/> (1-based array)
         /// </summary>
         /// <param name="convolutedAbundances"></param>
         /// <param name="convolutedAbundanceStartMass"></param>
@@ -1404,7 +1405,7 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Recursive function to find all the combinations
+        /// Recursive method to find all the combinations
         /// of a number of atoms with the given maximum isotopic count
         /// </summary>
         /// <param name="comboResults"></param>

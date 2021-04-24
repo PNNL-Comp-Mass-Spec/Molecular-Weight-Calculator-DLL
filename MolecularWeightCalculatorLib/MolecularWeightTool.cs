@@ -118,7 +118,8 @@ namespace MolecularWeightCalculator
 
         #endregion
 
-        #region "Interface Functions"
+        #region "Interface Properties and Methods"
+
         public AbbrevRecognitionMode AbbreviationRecognitionMode
         {
             get => mElementAndMassRoutines.ComputationOptions.AbbrevRecognitionMode;

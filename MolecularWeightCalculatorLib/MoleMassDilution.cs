@@ -126,7 +126,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// This function uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
+        /// This method uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
         /// </summary>
         /// <param name="amountIn"></param>
         /// <param name="currentUnits"></param>
@@ -142,7 +142,10 @@ namespace MolecularWeightCalculator
         /// <param name="concentrationIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
+        /// <remarks>
+        /// Duplicated method, in both CapillaryFlow and MoleMassDilution
+        /// Both use UnitConversions.ConvertConcentration)
+        /// </remarks>
         public double ConvertConcentration(double concentrationIn, UnitOfMoleMassConcentration currentUnits, UnitOfMoleMassConcentration newUnits)
         {
             return UnitConversions.ConvertConcentration(concentrationIn, currentUnits, newUnits, mQuantity.GetSampleMass());

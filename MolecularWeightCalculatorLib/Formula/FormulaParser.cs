@@ -449,8 +449,8 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="valueForUnknown"></param>
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         /// <remarks>
-        /// ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
-        /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
+        /// ErrorParams will hold information on errors that occur (previous errors are cleared when this method is called)
+        /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this method)
         /// </remarks>
         [Obsolete("Change to use ParseFormula instead.")]
         public double ParseFormula(
@@ -475,8 +475,8 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="valueForUnknown"></param>
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         /// <remarks>
-        /// ErrorParams will hold information on errors that occur (previous errors are cleared when this function is called)
-        /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this function)
+        /// ErrorParams will hold information on errors that occur (previous errors are cleared when this method is called)
+        /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this method)
         /// </remarks>
         public IFormulaParseData ParseFormula(
             string formula,

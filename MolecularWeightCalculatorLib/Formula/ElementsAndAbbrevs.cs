@@ -283,7 +283,7 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>Mass if success, 0 if abbreviationId is invalid</returns>
         public double GetAbbreviationMass(int abbreviationId)
         {
-            // This function does not recompute the abbreviation mass each time it is called
+            // This method does not recompute the abbreviation mass each time it is called
             // Rather, it uses the .Mass member of AbbrevStats
             // This requires that .Mass be updated if the abbreviation is changed, if an element is changed, or if the element mode is changed
 

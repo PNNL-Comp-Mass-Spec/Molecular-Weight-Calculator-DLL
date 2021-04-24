@@ -21,9 +21,10 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         public static short AmountsUnitListVolumeIndexEnd => (short)AMOUNT_UNITS_LIST_INDEX_MAX;
 
         /// <summary>
-        /// This function uses .SampleMass and .SampleDensity if the units are mass and/or volume-based
+        /// This method uses <paramref name="sampleMassGrams"/> and <paramref name="sampleDensityGramsPermL"/> 
+        /// if the units are mass and/or volume-based
         /// </summary>
-        /// <param name="amountIn"></param>
+        /// <param name="amountIn"></param>re
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
         /// <param name="sampleMassGrams">sample mass in grams</param>
@@ -72,7 +73,6 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
         /// <param name="sampleMassGrams">sample mass in grams</param>
-        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public static double ConvertConcentration(double concentrationIn, UnitOfMoleMassConcentration currentUnits, UnitOfMoleMassConcentration newUnits, double sampleMassGrams)
         {
             if (currentUnits == newUnits)
@@ -171,7 +171,6 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         /// </summary>
         /// <param name="units"></param>
         /// <param name="sampleMass">required for mass-based units</param>
-        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private static double FactorConcentration(UnitOfMoleMassConcentration units, double sampleMass = 0)
         {
             if (Math.Abs(sampleMass) < float.Epsilon)
@@ -202,7 +201,7 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         /// Multiplication factor for converting from <paramref name="units"/> to mL
         /// </summary>
         /// <param name="units"></param>
-        /// <remarks>An extended version of the FactorVolume function in CapillaryFlow</remarks>
+        /// <remarks>An extended version of the FactorVolume method is in CapillaryFlow</remarks>
         private static double FactorVolumeExtended(UnitOfExtendedVolume units)
         {
             // Note: 4 quarts per gallon, 2 pints per quart

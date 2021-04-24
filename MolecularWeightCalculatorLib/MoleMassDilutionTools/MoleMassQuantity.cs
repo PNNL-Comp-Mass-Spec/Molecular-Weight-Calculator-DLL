@@ -61,7 +61,7 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
 
         /// <summary>
         /// Checks if AutoCompute is enabled
-        /// If yes, calls the appropriate function
+        /// If yes, calls the appropriate method
         /// </summary>
         private void CheckAutoCompute()
         {

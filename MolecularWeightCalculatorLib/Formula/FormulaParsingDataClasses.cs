@@ -9,7 +9,8 @@ namespace MolecularWeightCalculator.Formula
     internal class ErrorDetails : IErrorData
     {
         /// <summary>
-        /// Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
+        /// Contains the error number (used in the LookupMessage method).
+        /// In addition, if a program error occurs, ErrorParams.ErrorID = -10
         /// </summary>
         public int ErrorId { get; set; }
         public int ErrorPosition { get; set; }

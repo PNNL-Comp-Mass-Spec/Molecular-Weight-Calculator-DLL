@@ -50,7 +50,9 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
         private double mMolesInjected;
 
         /// <summary>
-        /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
+        /// Computes the MassFlowRate and Moles injected based on stored values for sample concentration, volumetric flow rate, and injection time
+        /// Stores the computed values in mMassFlowRate and mMolesInjected
+        /// Returns mass flow rate
         /// </summary>
         /// <param name="units"></param>
         public double ComputeMassFlowRate(UnitOfMassFlowRate units = UnitOfMassFlowRate.FmolPerSec)
@@ -60,7 +62,9 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
         }
 
         /// <summary>
-        /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
+        /// Computes the MassFlowRate and Moles injected based on stored values for sample concentration, volumetric flow rate, and injection time
+        /// Stores the computed values in mMassFlowRate and mMolesInjected
+        /// Returns moles injected
         /// </summary>
         /// <param name="units"></param>
         public double ComputeMolesInjected(UnitOfMolarAmount units = UnitOfMolarAmount.FemtoMoles)

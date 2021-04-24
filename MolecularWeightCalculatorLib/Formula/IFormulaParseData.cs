@@ -50,7 +50,8 @@ namespace MolecularWeightCalculator.Formula
     public interface IErrorData
     {
         /// <summary>
-        /// Contains the error number (used in the LookupMessage function).  In addition, if a program error occurs, ErrorParams.ErrorID = -10
+        /// Contains the error number (used in the LookupMessage method).
+        /// In addition, if a program error occurs, ErrorParams.ErrorID = -10
         /// </summary>
         int ErrorId { get; }
         int ErrorPosition { get; }

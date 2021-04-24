@@ -545,7 +545,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="empiricalResultSymbols"></param>
         /// <param name="correctedCharge"></param>
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
-        /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
+        /// <remarks>Common method to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompound(
             SearchOptions searchOptions,
             StringBuilder empiricalFormula,
@@ -622,7 +622,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="empiricalResultSymbols"></param>
         /// <param name="correctedCharge"></param>
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
-        /// <remarks>Common function to both molecular weight and percent composition matching</remarks>
+        /// <remarks>Common method to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompoundRecursive(
             SearchOptions searchOptions,
             StringBuilder empiricalFormula,
@@ -1000,8 +1000,11 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             const int numPointers = 3;
 
-            // Calculate maxRecursiveCount based on a combination function
-            var maxRecursiveCount = Combinatorial(numPointers + potentialElementCount, potentialElementCount - 1) - Combinatorial(potentialElementCount + numPointers - 2, numPointers - 1);
+            // Calculate maxRecursiveCount
+            var maxRecursiveCount =
+                Combinatorial(numPointers + potentialElementCount, potentialElementCount - 1) -
+                Combinatorial(potentialElementCount + numPointers - 2, numPointers - 1);
+
             if (maxRecursiveCount > int.MaxValue)
             {
                 mMaxRecursiveCount = int.MaxValue;

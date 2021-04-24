@@ -14,7 +14,7 @@ namespace MolecularWeightCalculator.Formula
         // The compound class can be used to represent a compound
         // Use the Formula Property to enter the compound's formula
         // Use ErrorDescription and CautionDescription to see if there are any problems with the formula
-        // Custom abbreviations can be defined using the SetAbbreviation() function in ElementAndMassTools()
+        // Custom abbreviations can be defined using the SetAbbreviation() method in ElementAndMassTools
         // Note that the standard amino acids and 16 other abbreviations are defined by default (see MemoryLoadAbbreviations())
 
         // Use the Mass Property to get the mass of the compound

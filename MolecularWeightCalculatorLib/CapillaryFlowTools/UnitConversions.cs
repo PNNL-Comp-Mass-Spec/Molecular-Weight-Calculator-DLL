@@ -8,7 +8,9 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
     {
         // Ignore Spelling: dynes, ng, ug
 
-        // Conversion Factor
+        /// <summary>
+        /// Conversion factor: number of centimeters in an inch
+        /// </summary>
         public const float CM_PER_INCH = 2.54f;
 
         /// <summary>
@@ -18,7 +20,6 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
         /// <param name="sampleMassGramsPerMole">sample mass in g/mole</param>
-        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         public static double ConvertConcentration(double concentrationIn, UnitOfConcentration currentUnits, UnitOfConcentration newUnits, double sampleMassGramsPerMole)
         {
             if (currentUnits == newUnits)
@@ -344,7 +345,6 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
         /// </summary>
         /// <param name="units"></param>
         /// <param name="sampleMass"></param>
-        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
         private static double FactorConcentration(UnitOfConcentration units, double sampleMass = 0)
         {
             if (Math.Abs(sampleMass) < float.Epsilon)

@@ -32,12 +32,11 @@ namespace MolecularWeightCalculator
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        // Ignore Spelling: Bryson
+        // Ignore Spelling: acetonitrile, Bryson
 
         // ReSharper disable once EmptyConstructor
         public CapillaryFlow()
         {
-            // Ignore Spelling: acetonitrile
         }
 
         private readonly CapillaryFlowTools.CapillaryFlow mCapillaryFlow = new();
@@ -45,7 +44,7 @@ namespace MolecularWeightCalculator
         private readonly ExtraColumnBroadening mExtraColumnBroadening = new();
 
         /// <summary>
-        /// Computes the back pressure, stores in .BackPressure, and returns it
+        /// Computes the back pressure
         /// </summary>
         /// <param name="units"></param>
         public double ComputeBackPressure(UnitOfPressure units = UnitOfPressure.Psi)
@@ -54,7 +53,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the column length, stores in .ColumnLength, and returns it
+        /// Computes the column length
         /// </summary>
         /// <param name="units"></param>
         public double ComputeColumnLength(UnitOfLength units = UnitOfLength.CM)
@@ -69,7 +68,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the column length, stores in .ColumnLength, and returns it
+        /// Computes the column inner diameter
         /// </summary>
         /// <param name="units"></param>
         public double ComputeColumnId(UnitOfLength units = UnitOfLength.Microns)
@@ -78,7 +77,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the column dead time, stores in .ColumnDeadTime, and returns it
+        /// Computes the column dead time
         /// </summary>
         /// <param name="units"></param>
         /// <param name="recalculateVolFlowRate"></param>
@@ -93,7 +92,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the Linear velocity, stores in .LinearVelocity, and returns it
+        /// Computes the linear velocity
         /// </summary>
         /// <param name="units"></param>
         /// <param name="recalculateVolFlowRate"></param>
@@ -103,7 +102,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
+        /// Computes the MassFlowRate
         /// </summary>
         /// <param name="units"></param>
         public double ComputeMassFlowRate(UnitOfMassFlowRate units = UnitOfMassFlowRate.FmolPerSec)
@@ -112,7 +111,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the MassFlowRate and Moles Injected, stores in .MassFlowRate and .MolesInjected, and returns MassFlowRate
+        /// Computes the Moles Injected
         /// </summary>
         /// <param name="units"></param>
         public double ComputeMassRateMolesInjected(UnitOfMolarAmount units = UnitOfMolarAmount.FemtoMoles)
@@ -121,9 +120,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the optimum linear velocity, based on
-        /// mCapillaryFlowParameters.ParticleDiameter
-        /// and mExtraColumnBroadeningParameters.DiffusionCoefficient
+        /// Computes the optimum linear velocity, based on stored particle diameter and diffusion coefficient values
         /// </summary>
         /// <param name="units"></param>
         public double ComputeOptimumLinearVelocityUsingParticleDiamAndDiffusionCoeff(UnitOfLinearVelocity units = UnitOfLinearVelocity.CmPerSec)
@@ -145,7 +142,7 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the Volumetric flow rate, stores in .VolumetricFlowRate, and returns it
+        /// Computes the volumetric flow rate
         /// </summary>
         /// <param name="units"></param>
         public double ComputeVolFlowRate(UnitOfFlowRate units = UnitOfFlowRate.NLPerMin)
@@ -154,8 +151,8 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Computes the Volumetric flow rate using the dead time, stores in .VolumetricFlowRate, and returns it
-        /// This requires modifying the pressure value to give the computed volumetric flow rate
+        /// Computes the volumetric flow rate using the dead time
+        /// This requires modifying the stored pressure value to give the computed volumetric flow rate
         /// </summary>
         /// <param name="newBackPressure">Output: new back pressure</param>
         /// <param name="units"></param>
@@ -174,7 +171,10 @@ namespace MolecularWeightCalculator
         /// <param name="concentrationIn"></param>
         /// <param name="currentUnits"></param>
         /// <param name="newUnits"></param>
-        /// <remarks>Duplicated function, in both CapillaryFlow and MoleMassDilution</remarks>
+        /// <remarks>
+        /// Duplicated method, in both CapillaryFlow and MoleMassDilution
+        /// Both use UnitConversions.ConvertConcentration)
+        /// </remarks>
         public double ConvertConcentration(double concentrationIn, UnitOfConcentration currentUnits, UnitOfConcentration newUnits)
         {
             return UnitConversions.ConvertConcentration(concentrationIn, currentUnits, newUnits, mMassRate.GetSampleMass());
