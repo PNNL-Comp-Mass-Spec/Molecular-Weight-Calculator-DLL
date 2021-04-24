@@ -1460,6 +1460,21 @@ namespace MolecularWeightCalculator.Sequence
             return GetTrypticPeptideNext(proteinResidues, startIndex, out _, out _);
         }
 
+        /// <summary>
+        /// Get the next tryptic peptide in proteinResidues, starting the search at startIndex
+        /// </summary>
+        /// <param name="proteinResidues"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="returnResidueStart">Output: the residue number in the protein where the peptide starts (1 if no match)</param>
+        /// <param name="returnResidueEnd">Output: the residue number in the protein where the peptide ends (1 if no match)</param>
+        /// <param name="ruleResidues"></param>
+        /// <param name="exceptionResidues"></param>
+        /// <param name="terminiiSymbol"></param>
+        /// <returns>The next tryptic peptide, or an empty string if startIndex is beyond the end of proteinResidues</returns>
+        /// <remarks>
+        /// Useful when obtaining all of the tryptic peptides for a protein, since this method will operate
+        /// much faster than repeatedly calling GetTrypticPeptideByFragmentNumber()
+        /// </remarks>
         public string GetTrypticPeptideNext(string proteinResidues,
             int startIndex,
             out int returnResidueStart,
@@ -1468,12 +1483,6 @@ namespace MolecularWeightCalculator.Sequence
             string exceptionResidues = TRYPTIC_EXCEPTION_RESIDUES,
             string terminiiSymbol = TERMINII_SYMBOL)
         {
-            // Returns the next tryptic peptide in proteinResidues, starting the search as searchStartLoc
-            // Useful when obtaining all of the tryptic peptides for a protein, since this function will operate
-            // much faster than repeatedly calling GetTrypticPeptideByFragmentNumber()
-
-            // Returns the position of the start and end residues using returnResidueStart and returnResidueEnd
-
             returnResidueStart = 1;
             returnResidueEnd = 1;
 

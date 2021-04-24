@@ -7,9 +7,20 @@ namespace MolecularWeightCalculator.Sequence
     [Guid("9CAAFE11-4A2C-4E6E-ACD2-10E7B9C870F4"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
     public class FragmentationSpectrumIntensities : IFragmentationSpectrumIntensities
     {
-        public double[] IonType { get; } // 0-based array
+        /// <summary>
+        /// Intensity to use for each ion type (0-based array)
+        /// </summary>
+        public double[] IonType { get; }
+
         // ReSharper disable once InconsistentNaming
-        public double BYIonShoulder { get; set; } // If > 0 then shoulder ions will be created by B and Y ions
+        /// <summary>
+        /// If greater than zero, the intensity to use for shoulder ions (for b and y ions)
+        /// </summary>
+        public double BYIonShoulder { get; set; }
+
+        /// <summary>
+        /// Intensity to use for neutral loss ions
+        /// </summary>
         public double NeutralLoss { get; set; }
 
         public FragmentationSpectrumIntensities()
