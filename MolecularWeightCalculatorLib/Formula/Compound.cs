@@ -322,7 +322,7 @@ namespace MolecularWeightCalculator.Formula
         [ComVisible(false)] public IFormulaParseData FormulaParseData { get; private set; } = new FormulaParseData("");
 
         // ReSharper disable once InconsistentNaming
-        public string FormulaRTF => mElementAndMassRoutines.PlainTextToRtf(FormulaCapitalized, false);
+        public string FormulaRTF => mElementAndMassRoutines.PlainTextToRtf(FormulaCapitalized, false, errorData: FormulaParseData.ErrorData);
 
         public double Mass => GetMass();
 

@@ -21,7 +21,7 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         public static short AmountsUnitListVolumeIndexEnd => (short)AMOUNT_UNITS_LIST_INDEX_MAX;
 
         /// <summary>
-        /// This method uses <paramref name="sampleMassGrams"/> and <paramref name="sampleDensityGramsPermL"/> 
+        /// This method uses <paramref name="sampleMassGrams"/> and <paramref name="sampleDensityGramsPermL"/>
         /// if the units are mass and/or volume-based
         /// </summary>
         /// <param name="amountIn"></param>re

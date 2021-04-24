@@ -1282,7 +1282,7 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Recursive method to convolute the results in <paramref name="isoStats"/> 
+        /// Recursive method to convolute the results in <paramref name="isoStats"/>
         /// and store in <paramref name="convolutedAbundances"/> (1-based array)
         /// </summary>
         /// <param name="convolutedAbundances"></param>
@@ -1739,13 +1739,42 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="highlightCharFollowingPercentSign">When true, change the character following a percent sign to red (and remove the percent sign)</param>
         /// <param name="overrideErrorId"></param>
         /// <param name="errorIdOverride"></param>
+        /// <param name="errorData"></param>
         internal string PlainTextToRtf(
             string workText,
             bool calculatorMode = false,
             bool highlightCharFollowingPercentSign = true,
             bool overrideErrorId = false,
-            int errorIdOverride = 0)
+            int errorIdOverride = 0,
+            IErrorData errorData = null)
         {
+            if (errorData == null)
+            {
+                var errorId = 0;
+                if (overrideErrorId && errorIdOverride != 0)
+                {
+                    errorId = errorIdOverride;
+                }
+                else
+                {
+                    errorId = mLastErrorId;
+                }
+
+                errorData = new ErrorDetails {ErrorId = errorId, ErrorPosition = -1};
+            }
+
+            var errorPosition = -1;
+            var errorEndPosition = -1;
+            if (errorData.ErrorId > 0)
+            {
+                errorPosition = errorData.ErrorPosition;
+                errorEndPosition = errorPosition + 1;
+                if (!string.IsNullOrWhiteSpace(errorData.ErrorCharacter))
+                {
+                    errorEndPosition = errorPosition + errorData.ErrorCharacter.Length;
+                }
+            }
+
             // ReSharper disable CommentTypo
 
             // Rtf string must begin with {{\fonttbl{\f0\fcharset0\fprq2 Times New Roman;}}\pard\plain\fs25
@@ -1769,29 +1798,20 @@ namespace MolecularWeightCalculator.Formula
                 return rtf + "}";
             }
 
-            var superFound = false;
+            //var superFound = false;
             var workCharPrev = string.Empty;
             for (var charIndex = 0; charIndex < workText.Length; charIndex++)
             {
                 var workChar = workText.Substring(charIndex, 1);
-                if (workChar == "%" && highlightCharFollowingPercentSign)
+                if (highlightCharFollowingPercentSign && (workChar == "%" ||
+                    errorData.ErrorPosition <= charIndex && charIndex < errorEndPosition))
                 {
                     // An error was found and marked by a % sign
                     // Highlight the character at the % sign, and remove the % sign
                     if (charIndex == workText.Length - 1)
                     {
                         // At end of line
-                        int errorId;
-                        if (overrideErrorId && errorIdOverride != 0)
-                        {
-                            errorId = errorIdOverride;
-                        }
-                        else
-                        {
-                            errorId = mLastErrorId;
-                        }
-
-                        switch (errorId)
+                        switch (errorData.ErrorId)
                         {
                             case 2:
                             case 3:
@@ -1834,7 +1854,7 @@ namespace MolecularWeightCalculator.Formula
                                 break;
                         }
                     }
-                    else
+                    else if (workChar == "%")
                     {
                         // Highlight next character and skip % sign
                         workChar = workText.Substring(charIndex + 1, 1);
@@ -1844,21 +1864,29 @@ namespace MolecularWeightCalculator.Formula
                         rtf += @"{\cf1 " + workChar + "}";
                         charIndex++;
                     }
+                    else
+                    {
+                        // Highlight current character
+                        // Handle curly brackets
+                        if (workChar == "{" || workChar == "}")
+                            workChar = @"\" + workChar;
+                        rtf += @"{\cf1 " + workChar + "}";
+                    }
                 }
                 else if (workChar == "^")
                 {
                     rtf += @"{\super ^}";
-                    superFound = true;
+                    //superFound = true;
                 }
                 else if (workChar == "_")
                 {
                     rtf += @"{\super}";
-                    superFound = true;
+                    //superFound = true;
                 }
                 else if (workChar == "+" && !calculatorMode)
                 {
                     rtf += @"{\super +}";
-                    superFound = true;
+                    //superFound = true;
                 }
                 else if (workChar == FormulaParser.EMPTY_STRING_CHAR.ToString())
                 {
@@ -1888,7 +1916,7 @@ namespace MolecularWeightCalculator.Formula
                     {
                         // if previous character was superscripted, then superscript this number too
                         rtf += @"{\super " + workChar + "}";
-                        superFound = true;
+                        //superFound = true;
                     }
                     else
                     {
@@ -1910,17 +1938,17 @@ namespace MolecularWeightCalculator.Formula
                 workCharPrev = workChar;
             }
 
-            if (superFound)
-            {
-                // Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUST_CHAR)
-                // It is used to add additional height to the formula line when isotopes are used
-                // It is colored white so the user does not see it
-                rtf += @"{\fs" + NumberConverter.CShortSafe(ComputationOptions.RtfFontSize * 3) + @"\cf2 " + RTF_HEIGHT_ADJUST_CHAR + "}}";
-            }
-            else
-            {
+            //if (/*superFound*/ false) // Not necessary with WPF
+            //{
+            //    // Add an extra tall character, the tilde sign (~, RTF_HEIGHT_ADJUST_CHAR)
+            //    // It is used to add additional height to the formula line when isotopes are used
+            //    // It is colored white so the user does not see it
+            //    rtf += @"{\fs" + NumberConverter.CShortSafe(ComputationOptions.RtfFontSize * 3) + @"\cf2 " + RTF_HEIGHT_ADJUST_CHAR + "}}";
+            //}
+            //else
+            //{
                 rtf += "}";
-            }
+            //}
 
             return rtf;
         }
