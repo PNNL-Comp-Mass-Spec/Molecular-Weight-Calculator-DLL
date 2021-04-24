@@ -2,8 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:MolecularWeightCalculatorGUI"
+             xmlns:utilities="clr-namespace:MolecularWeightCalculatorGUI.Utilities"
              Startup="App_OnStartup">
     <Application.Resources>
-
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <utilities:EnumDescriptionConverter x:Key="EnumDescription" />
+        <utilities:InvertBoolConverter x:Key="InvertBool" />
+        <utilities:NumberDisplayShortConverter x:Key="NumDisplay" />
     </Application.Resources>
 </Application>

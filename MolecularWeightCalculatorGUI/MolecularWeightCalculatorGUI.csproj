@@ -63,6 +63,11 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CapillaryFlowUI\CapillaryFlowData.cs" />
+    <Compile Include="CapillaryFlowUI\CapillaryFlowViewModel.cs" />
+    <Compile Include="CapillaryFlowUI\CapillaryFlowWindow.xaml.cs">
+      <DependentUpon>CapillaryFlowWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FormulaCalc\FormulaCalcView.xaml.cs">
       <DependentUpon>FormulaCalcView.xaml</DependentUpon>
     </Compile>
@@ -77,10 +82,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RichTextBoxMulti.cs" />
+    <Compile Include="Utilities\EnumDescriptionConverter.cs" />
+    <Compile Include="Utilities\InvertBoolConverter.cs" />
+    <Compile Include="Utilities\NumberDisplayShortConverter.cs" />
+    <Compile Include="Utilities\NumberFormatter.cs" />
     <Compile Include="Utilities\StringKeyValuePair.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CapillaryFlowUI\CapillaryFlowWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -126,6 +139,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit">
+      <Version>4.6.97</Version>
+    </PackageReference>
     <PackageReference Include="DynamicData">
       <Version>7.1.1</Version>
     </PackageReference>

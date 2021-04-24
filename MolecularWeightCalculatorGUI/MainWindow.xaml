@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:MolecularWeightCalculatorGUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MainViewModel}, IsDesignTimeCreatable=True}"
-        Title="Molecular Weight Calculator" Height="450" Width="500">
+        Title="Molecular Weight Calculator" Height="450" Width="500" Visibility="{Binding MainWindowVisible, Converter={StaticResource BoolToVis}}">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -55,7 +55,7 @@
                 <MenuItem Header="Show Isotopic Distribution for Current Formula" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />
                 <MenuItem Header="Math Calculator..." /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
-                <MenuItem Header="Capillary Flow Calculator..." /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
+                <MenuItem Header="Capillary Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
             </MenuItem>
             <MenuItem Header="Options">
                 <MenuItem Header="Choose Language..." />
