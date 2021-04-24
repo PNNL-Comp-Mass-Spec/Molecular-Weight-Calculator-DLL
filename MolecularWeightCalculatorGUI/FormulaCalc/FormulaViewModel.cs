@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using DynamicData.Binding;
 using MolecularWeightCalculator;
 using ReactiveUI;
 
@@ -38,6 +40,9 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             set => this.RaiseAndSetIfChanged(ref formulaRtf, value);
         }
 
+        public ObservableCollectionExtended<KeyValuePair<string, string>> PercentComposition { get; } =
+            new ObservableCollectionExtended<KeyValuePair<string, string>>();
+
         /// <summary>
         /// Default constructor needed for WPF Design-time
         /// </summary>
@@ -63,6 +68,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             StDev = compound.StandardDeviation;
             Formula = compound.FormulaCapitalized;
             FormulaRtf = compound.FormulaRTF;
+            PercentComposition.Load(compound.GetPercentCompositionForAllElements());
         }
     }
 }
