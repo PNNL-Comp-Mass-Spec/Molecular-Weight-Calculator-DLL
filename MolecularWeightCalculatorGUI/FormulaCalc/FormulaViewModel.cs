@@ -12,6 +12,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         private double mass;
         private double stDev;
         private string formulaRtf;
+        private string formulaXaml;
         private readonly MolecularWeightTool mWeight;
 
         public int FormulaIndex { get; }
@@ -38,6 +39,12 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         {
             get => formulaRtf;
             set => this.RaiseAndSetIfChanged(ref formulaRtf, value);
+        }
+
+        public string FormulaXaml
+        {
+            get => formulaXaml;
+            set => this.RaiseAndSetIfChanged(ref formulaXaml, value);
         }
 
         public ObservableCollectionExtended<KeyValuePair<string, string>> PercentComposition { get; } =
@@ -68,6 +75,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             StDev = compound.StandardDeviation;
             Formula = compound.FormulaCapitalized;
             FormulaRtf = compound.FormulaRTF;
+            FormulaXaml = compound.FormulaXaml;
             PercentComposition.Load(compound.GetPercentCompositionForAllElements());
         }
     }

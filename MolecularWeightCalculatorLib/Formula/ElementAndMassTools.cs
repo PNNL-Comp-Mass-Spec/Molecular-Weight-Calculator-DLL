@@ -1953,6 +1953,223 @@ namespace MolecularWeightCalculator.Formula
             return rtf;
         }
 
+        /// <summary>
+        /// Converts plain text to formatted XAML text
+        /// </summary>
+        /// <param name="workText"></param>
+        /// <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
+        /// <param name="errorData">Error details: error id, position, and characters</param>
+        /// <param name="highlightErrorChars">When true, change the character(s) reported in <paramref name="errorData"/></param>
+        /// <returns></returns>
+        internal string PlainTextToXaml(
+            string workText,
+            bool calculatorMode = false,
+            IErrorData errorData = null,
+            bool highlightErrorChars = true)
+        {
+            // ReSharper disable CommentTypo
+            // ReSharper disable StringLiteralTypo
+
+            if (errorData == null)
+            {
+                highlightErrorChars = false;
+                errorData = new ErrorDetails { ErrorPosition = -1 };
+            }
+            else if (errorData.ErrorId == 0)
+            {
+                highlightErrorChars = false;
+            }
+
+            //var fontSize = (int)Math.Round(ComputationOptions.RtfFontSize * 2.5);
+            var fontSize = (int)Math.Round(ComputationOptions.RtfFontSize * 1.7);
+            // var rtf = @"{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman " + ComputationOptions.RtfFontName + @";}{\f3\froman Times New Roman;}{\f4\fswiss\fprq2 System;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue255;}\deflang1033\pard\plain\f2\fs" + NumberConverter.CShortSafe(ComputationOptions.RtfFontSize * 2.5d) + " ";
+            var xamlStart =
+                @"<Section xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xml:space=""preserve"" TextAlignment=""Left"" LineHeight=""Auto"" " +
+                @"IsHyphenationEnabled=""False"" xml:lang=""en-us"" FlowDirection=""LeftToRight"" NumberSubstitution.CultureSource=""Text"" NumberSubstitution.Substitution=""AsCulture"" FontFamily=""Segoe UI"" " +
+                @"FontStyle=""Normal"" FontWeight=""Normal"" FontStretch=""Normal"" FontSize=""12"" Foreground=""#FF000000"" Typography.StandardLigatures=""True"" " +
+                @"Typography.ContextualLigatures=""True"" Typography.DiscretionaryLigatures=""False"" Typography.HistoricalLigatures=""False"" Typography.AnnotationAlternates=""0"" " +
+                @"Typography.ContextualAlternates=""True"" Typography.HistoricalForms=""False"" Typography.Kerning=""True"" Typography.CapitalSpacing=""False"" Typography.CaseSensitiveForms=""False"" " +
+                @"Typography.StylisticSet1=""False"" Typography.StylisticSet2=""False"" Typography.StylisticSet3=""False"" Typography.StylisticSet4=""False"" Typography.StylisticSet5=""False"" " +
+                @"Typography.StylisticSet6=""False"" Typography.StylisticSet7=""False"" Typography.StylisticSet8=""False"" Typography.StylisticSet9=""False"" Typography.StylisticSet10=""False"" " +
+                @"Typography.StylisticSet11=""False"" Typography.StylisticSet12=""False"" Typography.StylisticSet13=""False"" Typography.StylisticSet14=""False"" Typography.StylisticSet15=""False"" " +
+                @"Typography.StylisticSet16=""False"" Typography.StylisticSet17=""False"" Typography.StylisticSet18=""False"" Typography.StylisticSet19=""False"" Typography.StylisticSet20=""False"" " +
+                @"Typography.Fraction=""Normal"" Typography.SlashedZero=""False"" Typography.MathematicalGreek=""False"" Typography.EastAsianExpertForms=""False"" Typography.Variants=""Normal"" " +
+                @"Typography.Capitals=""Normal"" Typography.NumeralStyle=""Normal"" Typography.NumeralAlignment=""Normal"" Typography.EastAsianWidths=""Normal"" Typography.EastAsianLanguage=""Normal"" " +
+                @"Typography.StandardSwashes=""0"" Typography.ContextualSwashes=""0"" Typography.StylisticAlternates=""0""><Paragraph><Span FontFamily=""" +
+                ComputationOptions.RtfFontName + @""" FontSize=""" + fontSize + @""">";
+
+            var xamlClose = @"</Span></Paragraph></Section>";
+            // ReSharper restore StringLiteralTypo
+
+            // ReSharper restore CommentTypo
+
+            if ((workText ?? "") == string.Empty)
+            {
+                // Return a blank RTF string
+                return xamlStart + xamlClose;
+            }
+
+            var superSubscriptFontSize = (fontSize * 0.60).ToString("F2");
+
+            var xaml = "";
+            var prevSuper = false;
+            var prevSub = false;
+            var prevClose = "";
+            var workCharPrev = "";
+            var endErrorPosition = -1;
+            var endErrorText = "";
+            for (var charIndex = 0; charIndex < workText.Length; charIndex++)
+            {
+                var currSuper = false;
+                var currSub = false;
+                var currHighlight = false;
+                var endHighlight = false;
+                var workChar = workText.Substring(charIndex, 1);
+                var workCharUse = workChar;
+
+                if (charIndex == errorData.ErrorPosition && highlightErrorChars)
+                {
+                    // An error was found and reported in errorData
+                    // Highlight the character(s) reported
+                    currHighlight = true;
+                    if (string.IsNullOrWhiteSpace(errorData.ErrorCharacter) || errorData.ErrorCharacter.Length == 1)
+                    {
+                        endHighlight = true;
+                    }
+                    else
+                    {
+                        endErrorPosition = charIndex + errorData.ErrorCharacter.Length - 1;
+                    }
+                }
+                else if (charIndex == endErrorPosition && highlightErrorChars)
+                {
+                    // An error was found and reported in errorData
+                    // Highlight the character(s) reported
+                    endHighlight = true;
+                }
+
+                if (workChar == "^")
+                {
+                    currSuper = true;
+                }
+                else if (workChar == "_")
+                {
+                    currSuper = true;
+                    workCharUse = "";
+                }
+                else if (workChar == "+" && !calculatorMode)
+                {
+                    currSuper = true;
+                }
+                else if (workChar == FormulaParser.EMPTY_STRING_CHAR.ToString())
+                {
+                    // skip it, the tilde sign is used to add additional height to the formula line when isotopes are used
+                    // If it's here from a previous time, we ignore it, adding it at the end if needed (if superFound = true)
+                    workCharUse = "";
+                }
+                else if (char.IsDigit(workChar[0]) || workChar == ComputationOptions.DecimalSeparator.ToString())
+                {
+                    // Number or period, so super or subscript it if needed
+                    if (charIndex == 0)
+                    {
+                        // at beginning of line, so leave it alone. Probably out of place
+                    }
+                    else if (!calculatorMode && (char.IsLetter(workCharPrev[0]) || workCharPrev == ")" || workCharPrev == @"}" || workCharPrev == "+" || workCharPrev == "_" || prevSub))
+                    {
+                        // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
+                        // But, don't use subscripts in calculator
+                        currSub = true;
+                    }
+                    else if (!calculatorMode && ComputationOptions.BracketsAsParentheses && workCharPrev == "]")
+                    {
+                        // only subscript after closing bracket, ], if brackets are being treated as parentheses
+                        currSub = true;
+                    }
+                    else if (prevSuper)
+                    {
+                        // if previous character was superscripted, then superscript this number too
+                        currSuper = true;
+                    }
+                }
+                else if (workChar == " ")
+                {
+                    // Ignore it
+                    workCharUse = "";
+                }
+                else
+                {
+                    // Handle curly brackets; don't need special treatment for XAML
+                }
+
+                if (currHighlight)
+                {
+                    // color red
+                    xaml += prevClose + @"<Span Foreground=""Red"">";
+                    endErrorText = "</Span>";
+                    // Must force the next character (if subscript or superscript) to include the "Run" tag, for validity
+                    prevClose = "";
+                    prevSub = false;
+                    prevSuper = false;
+                }
+
+                if (prevSub != currSub || prevSuper != currSuper || xaml == "")
+                {
+                    xaml += prevClose;// + @"<Run ";
+
+                    if (currSub && !prevSub)
+                    {
+                        // Format for subscript, start of Run
+                        //xaml += @"BaselineAlignment=""Subscript"" Typography.Variants=""Subscript"" FontSize=""" + superSubscriptFontSize + @""" Text=""";
+                        xaml += @"<Run BaselineAlignment=""Subscript"" Typography.Variants=""Subscript"" Text=""";
+                        prevClose = @""" />";
+                    }
+                    else if (currSuper && !prevSuper)
+                    {
+                        // Format for subscript, start of Run
+                        //xaml += @"BaselineAlignment=""Superscript"" FontSize=""" + superSubscriptFontSize + @""" Text=""";
+                        //xaml += @"BaselineAlignment=""Top"" Typography.Variants=""Superscript"" FontSize=""" + superSubscriptFontSize + @""" Text=""";
+                        xaml += @"<Run BaselineAlignment=""Superscript"" Typography.Variants=""Superscript"" Text=""";
+                        prevClose = @""" />";
+                    }
+                    else
+                    {
+                        // Start of run
+                        // Don't need a run for "normal" text
+                        //xaml += @"Text=""";
+                        prevClose = "";
+                    }
+
+                    // Add the character
+                    xaml += workCharUse;
+                }
+                else
+                {
+                    // Add the character
+                    xaml += workCharUse;
+                }
+
+                if (endHighlight)
+                {
+                    xaml += prevClose; // Close the previous run
+                    xaml += endErrorText; // Close the error span
+                    endErrorText = "";
+                    // Must force the next character (if subscript or superscript) to include the "Run" tag, for validity
+                    prevClose = "";
+                    currSub = false;
+                    currSuper = false;
+                }
+
+                prevSub = currSub;
+                prevSuper = currSuper;
+
+                workCharPrev = workChar;
+            }
+
+            xaml += prevClose;
+
+            return xamlStart + xaml + xamlClose;
+        }
+
         internal void ResetErrorParams()
         {
             mLastErrorId = 0;
