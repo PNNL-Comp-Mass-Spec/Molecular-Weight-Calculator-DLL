@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="MolecularWeightCalculatorGUI.FormulaCalc.FormulaCalcView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.FormulaCalc"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type local:FormulaCalcViewModel}, IsDesignTimeCreatable=True}"
+             d:DesignHeight="450" d:DesignWidth="400">
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <TextBlock Text="CautionText" />
+        </StatusBar>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="10" BorderThickness="1" Margin="5" BorderBrush="DimGray">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Formulas}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:FormulaViewModel}">
+                                <local:FormulaView DataContext="{Binding BindsDirectlyToSource=True}" Margin="5,3"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+            <Button Grid.Row="0" Grid.Column="2" Margin="3" MinWidth="100" Content="_Calculate" Command="{Binding CalculateCommand}" />
+            <Button Grid.Row="1" Grid.Column="2" Margin="3" MinWidth="100" Content="_New Formula" Command="{Binding NewFormulaCommand}" />
+            <TextBlock Grid.Row="3" Grid.Column="2" Margin="3,0" Text="Quick Switch" />
+            <TextBlock Grid.Row="4" Grid.Column="2" Margin="3,0" Text="Element Mode" />
+            <RadioButton Grid.Row="6" Grid.Column="2" Margin="3,0" GroupName="elementMode" Content="_Average" IsChecked="{Binding ElementModeAverage}" />
+            <RadioButton Grid.Row="7" Grid.Column="2" Margin="3,0" GroupName="elementMode" Content="_Isotopic" IsChecked="{Binding ElementModeIsotopic}" />
+            <RadioButton Grid.Row="8" Grid.Column="2" Margin="3,0" GroupName="elementMode" Content="Inte_ger" IsChecked="{Binding ElementModeInteger}" />
+        </Grid>
+    </DockPanel>
+</UserControl>

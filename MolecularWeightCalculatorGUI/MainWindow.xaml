@@ -1,0 +1,80 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:formulaCalc="clr-namespace:MolecularWeightCalculatorGUI.FormulaCalc"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:MainViewModel}, IsDesignTimeCreatable=True}"
+        Title="Molecular Weight Calculator" Height="450" Width="500">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Edit Elements Table..." />
+                <MenuItem Header="Edit Abbreviations..." />
+                <MenuItem Header="Calculate weights from text file..." />
+                <Separator />
+                <MenuItem Header="Print Results..." />
+                <Separator />
+                <MenuItem Header="Exit..." /> <!-- TODO: keyboard shortcuts, "Esc or Alt+F4" -->
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Cut" /> <!-- TODO: keyboard shortcuts, "Ctrl+X" -->
+                <MenuItem Header="Copy" /> <!-- TODO: keyboard shortcuts, "Ctrl+C" -->
+                <MenuItem Header="Paste" /> <!-- TODO: keyboard shortcuts, "Ctrl+V" -->
+                <MenuItem Header="Delete" /> <!-- TODO: keyboard shortcuts, "Del" -->
+                <MenuItem Header="Copy Current Formula as RTF" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
+                <Separator />
+                <MenuItem Header="Copy Current Molecular Weight" /> <!-- TODO: keyboard shortcuts, "Ctrl+W" -->
+                <MenuItem Header="Copy Percent Composition Data" />
+                <Separator />
+                <MenuItem Header="Duplicate Current Formula" /> <!-- TODO: keyboard shortcuts, "F2" -->
+                <MenuItem Header="Erase All Formulas..." /> <!-- TODO: keyboard shortcuts, "F5" -->
+                <MenuItem Header="Erase Current Formula..." /> <!-- TODO: keyboard shortcuts, "F6" -->
+                <Separator />
+                <MenuItem Header="Expand Abbreviations..." />
+                <MenuItem Header="Convert to Empirical Formula..." /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Multi View" IsCheckable="True" /> <!-- TODO: keyboard shortcuts, "F8" -->
+                <MenuItem Header="Single View" IsCheckable="True" /> <!-- TODO: keyboard shortcuts, "F8" -->
+                <Separator />
+                <MenuItem Header="Percent Solver"> <!-- TODO: keyboard shortcuts, "F11" -->
+                    <MenuItem Header="Off" IsCheckable="True" />
+                    <MenuItem Header="On" IsCheckable="True" />
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Mole/Mass Converter..." /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
+                <MenuItem Header="Formula Finder..." /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
+                <MenuItem Header="Amino Acid Notation Converter..." /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
+                <Separator />
+                <MenuItem Header="Peptide Sequence Fragmentation Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
+                <MenuItem Header="Isotopic Distribution Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
+                <MenuItem Header="Show Isotopic Distribution for Current Formula" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
+                <Separator />
+                <MenuItem Header="Math Calculator..." /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
+                <MenuItem Header="Capillary Flow Calculator..." /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
+            </MenuItem>
+            <MenuItem Header="Options">
+                <MenuItem Header="Choose Language..." />
+                <MenuItem Header="Change Program Preferences..." /> <!-- TODO: keyboard shortcuts, "Ctrl+O" -->
+                <MenuItem Header="Change Formula Font..." /> <!-- TODO: keyboard shortcuts, "Ctrl+T" -->
+                <MenuItem Header="Stay on Top" /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
+                <Separator />
+                <MenuItem Header="">
+                    <MenuItem Header="Restore Default Values and Formulas..." />
+                    <MenuItem Header="Save Values and Formulas Now!" />
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="Program Overview" />
+                <MenuItem Header="Show Tool Tips" IsCheckable="True" />
+                <Separator />
+                <MenuItem Header="About MWT..." Command="{Binding ShowAboutCommand}" />
+            </MenuItem>
+        </Menu>
+        <formulaCalc:FormulaCalcView DataContext="{Binding FormulaCalc}" />
+    </DockPanel>
+</Window>
