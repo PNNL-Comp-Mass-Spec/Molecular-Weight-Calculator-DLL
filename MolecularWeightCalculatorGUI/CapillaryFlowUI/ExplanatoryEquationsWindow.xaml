@@ -8,7 +8,7 @@
         xmlns:controls="clr-namespace:WpfMath.Controls;assembly=WpfMath"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:EquationsViewModel}, IsDesignTimeCreatable=True}"
-        Height="360" Width="600" Icon="../mwtwin.ico">
+        MinHeight="360" MinWidth="500" SizeToContent="WidthAndHeight" Icon="../mwtwin.ico">
     <Window.Style>
         <Style TargetType="{x:Type Window}" BasedOn="{StaticResource {x:Type Window}}">
             <Style.Setters>

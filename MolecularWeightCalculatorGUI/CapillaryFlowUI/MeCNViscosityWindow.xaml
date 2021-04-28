@@ -9,7 +9,7 @@
         xmlns:molecularWeightCalculator="clr-namespace:MolecularWeightCalculator;assembly=MolecularWeightCalculator"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MeCNViscosityViewModel}, IsDesignTimeCreatable=True}"
-        Title="ViscosityOfH2OACNWindow" Height="290" Width="610" Icon="../mwtwin.ico">
+        Title="ViscosityOfH2OACNWindow" MinHeight="290" MinWidth="610" SizeToContent="WidthAndHeight" Icon="../mwtwin.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
