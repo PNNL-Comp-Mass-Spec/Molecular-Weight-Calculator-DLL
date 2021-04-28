@@ -463,19 +463,19 @@ namespace UnitTests
         }
 
         [Test]
-        [TestCase(5, 30, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00801)]
-        [TestCase(15, 30, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00839)]
-        [TestCase(25, 30, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.0088)]
-        [TestCase(50, 30, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00989)]
-        [TestCase(15, 25, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00916)]
-        [TestCase(25, 35, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00808)]
-        [TestCase(50, 40, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00835)]
-        [TestCase(75, 40, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00937)]
-        [TestCase(25, 23, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00996)]
-        [TestCase(25, 296.15, UnitOfTemperature.Kelvin, UnitOfViscosity.Poise, 0.00993)]
-        [TestCase(25, 73.4, UnitOfTemperature.Fahrenheit, UnitOfViscosity.Poise, 0.00996)]
-        [TestCase(20, 23, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00972)]
-        [TestCase(20, 23, UnitOfTemperature.Celsius, UnitOfViscosity.CentiPoise, 0.97227)]
+        [TestCase(5, 30, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00796)]
+        [TestCase(15, 30, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00813)]
+        [TestCase(25, 30, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00809)]
+        [TestCase(50, 30, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00712)]
+        [TestCase(15, 25, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00886)]
+        [TestCase(25, 35, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00745)]
+        [TestCase(50, 40, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00616)]
+        [TestCase(75, 40, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00474)]
+        [TestCase(25, 23, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00911)]
+        [TestCase(25, 296.15, UnitOfTemperature.Kelvin, UnitOfViscosity.Poise, 0.00911)]
+        [TestCase(25, 73.4, UnitOfTemperature.Fahrenheit, UnitOfViscosity.Poise, 0.00911)]
+        [TestCase(20, 23, UnitOfTemperature.Celsius, UnitOfViscosity.Poise, 0.00918)]
+        [TestCase(20, 23, UnitOfTemperature.Celsius, UnitOfViscosity.CentiPoise, 0.91775)]
         public void TestComputeMeCNViscosity(
             double percentAcetonitrile,
             double temperature,
@@ -735,11 +735,11 @@ namespace UnitTests
 
         [Test]
         [TestCase(100, UnitOfTemperature.Celsius, UnitOfTemperature.Fahrenheit, 212)]
-        [TestCase(100, UnitOfTemperature.Celsius, UnitOfTemperature.Kelvin, 373)]
+        [TestCase(100, UnitOfTemperature.Celsius, UnitOfTemperature.Kelvin, 373.15)]
         [TestCase(0, UnitOfTemperature.Celsius, UnitOfTemperature.Fahrenheit, 32)]
-        [TestCase(0, UnitOfTemperature.Celsius, UnitOfTemperature.Kelvin, 273)]
-        [TestCase(-80, UnitOfTemperature.Celsius, UnitOfTemperature.Kelvin, 193)]
-        [TestCase(150, UnitOfTemperature.Kelvin, UnitOfTemperature.Celsius, -273)]
+        [TestCase(0, UnitOfTemperature.Celsius, UnitOfTemperature.Kelvin, 273.15)]
+        [TestCase(-80, UnitOfTemperature.Celsius, UnitOfTemperature.Kelvin, 193.15)]
+        [TestCase(150, UnitOfTemperature.Kelvin, UnitOfTemperature.Celsius, -273.15)]
         [TestCase(150, UnitOfTemperature.Kelvin, UnitOfTemperature.Fahrenheit, -459.4)]
         public void TestConvertTemperature(double temperatureIn, UnitOfTemperature currentUnits, UnitOfTemperature newUnits, double expectedResult)
         {
