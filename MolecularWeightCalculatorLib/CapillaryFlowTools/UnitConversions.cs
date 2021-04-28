@@ -200,13 +200,13 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
             switch (currentUnits)
             {
                 case UnitOfTemperature.Celsius:
-                    // K = C + 273
-                    value = temperatureIn + 273;
+                    // K = C + 273.15
+                    value = temperatureIn + 273.15;
                     break;
 
                 case UnitOfTemperature.Fahrenheit:
-                    // Convert to Kelvin: C = 5/9*(F-32) and K = C + 273
-                    value = 5.0 / 9.0 * (temperatureIn - 32) + 273;
+                    // Convert to Kelvin: C = 5/9*(F-32) and K = C + 273.15
+                    value = 5.0 / 9.0 * (temperatureIn - 32) + 273.15;
                     break;
 
                 // ReSharper disable once RedundantEmptySwitchSection
@@ -224,13 +224,13 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
             switch (newUnits)
             {
                 case UnitOfTemperature.Celsius:
-                    // C = K - 273
-                    value -= 273;
+                    // C = K - 273.15
+                    value -= 273.15;
                     break;
 
                 case UnitOfTemperature.Fahrenheit:
-                    // Convert to Fahrenheit: C = K - 273 and F = (9/5)C + 32
-                    value = 9.0 / 5.0 * (value - 273) + 32;
+                    // Convert to Fahrenheit: C = K - 273.15 and F = (9/5)C + 32
+                    value = 9.0 / 5.0 * (value - 273.15) + 32;
                     break;
 
                 // ReSharper disable once RedundantEmptySwitchSection
