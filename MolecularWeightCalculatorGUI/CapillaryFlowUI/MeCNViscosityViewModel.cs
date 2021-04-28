@@ -43,10 +43,10 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
         public IReadOnlyList<UnitOfViscosity> ViscosityUnitOptions { get; }
 
         // Version of the equation that works properly in a full LaTeX processor, but doesn't work with WPFMath.
-        //public string ChenHorvathEquation { get; } = @"Viscosity=exp$\left[\phi\left(-3.476+{\displaystyle\frac{726}{T}}\right)+(1-\phi)\left(-5.414+{\displaystyle\frac{1566}{T}}\right)+\phi\left(-1.762+{\displaystyle\frac{929}{T}}\right)\right]$";
+        //public string ChenHorvathEquation { get; } = @"Viscosity=exp$\left[\phi\left(-3.476+{\displaystyle\frac{726}{T}}\right)+(1-\phi)\left(-5.414+{\displaystyle\frac{1566}{T}}\right)+\phi(1-\phi)\left(-1.762+{\displaystyle\frac{929}{T}}\right)\right]$";
         public string ChenHorvathEquation { get; } = @"\mathrm{Viscosity=exp}\left[\phi\left(-3.476+{\frac{726}{T}}\right)+" +
                                                      @"(1-\phi)\left(-5.414+{\frac{1566}{T}}\right)+" +
-                                                     @"\phi\left(-1.762+{\frac{929}{T}}\right)\right]";
+                                                     @"\phi(1-\phi)\left(-1.762+{\frac{929}{T}}\right)\right]";
 
         public ReactiveCommand<RxUnit, RxUnit> CopyMeCNViscosityToCapillaryFlowCommand { get; }
         public ReactiveCommand<RxUnit, RxUnit> ShowViscosityPlotCommand { get; }
