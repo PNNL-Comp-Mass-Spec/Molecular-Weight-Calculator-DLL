@@ -7,23 +7,25 @@
         xmlns:controls="clr-namespace:WpfMath.Controls;assembly=WpfMath"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:molecularWeightCalculator="clr-namespace:MolecularWeightCalculator;assembly=MolecularWeightCalculator"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MeCNViscosityViewModel}, IsDesignTimeCreatable=True}"
         Title="ViscosityOfH2OACNWindow" MinHeight="290" MinWidth="610" SizeToContent="WidthAndHeight" Icon="../mwtwin.ico">
-    <Grid>
+    <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" MinHeight="10" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" SharedSizeGroup="A" />
+            <RowDefinition Height="Auto" SharedSizeGroup="A" />
+            <RowDefinition Height="Auto" SharedSizeGroup="A" />
             <RowDefinition Height="Auto" MinHeight="10" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -39,7 +41,7 @@
         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" Margin="5,0" Text="theoretical viscosity will be computed" />
 
         <Button Grid.Row="3" Grid.Column="5" Margin="5" MinWidth="120" Content="Copy Viscosity" Command="{Binding CopyMeCNViscosityToCapillaryFlowCommand}" />
-        <Button Grid.Row="4" Grid.Column="5" Margin="5" MinWidth="120" Content="Show Viscosity Plot" Command="{Binding ShowViscosityPlotCommand}" />
+        <!--<Button Grid.Row="4" Grid.Column="5" Margin="5" MinWidth="120" Content="Show Viscosity Plot" Command="{Binding ShowViscosityPlotCommand}" />-->
         <Button Grid.Row="5" Grid.Column="5" Margin="5" MinWidth="120" Content="Defaults" Command="{Binding SetDefaultsCommand}" />
         <Button Grid.Row="5" Grid.Column="6" Margin="5" MinWidth="80" Content="Close" IsCancel="True" Click="Close_OnClick" />
 
@@ -66,8 +68,9 @@
         </ComboBox>
 
         <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="8" Margin="5,0" Text="Chen-Horvath Equation" />
-        <controls:FormulaControl Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="8" Margin="10,0" Scale="15.5" Formula="{Binding ChenHorvathEquation}" />
+        <controls:FormulaControl Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="8" Margin="10,0,-40,0" Scale="15.5" Formula="{Binding ChenHorvathEquation}" />
         <TextBlock Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="8" Margin="10,0" Text="Thompson, JD; Carr, P. Analytical Chemistry, 2002, 74, 4150-4159" />
         <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="8" Margin="10,0" Text="Chen, H; Horvath, CJ. J. Chromatography A, 1995, 705, 3" />
+        <oxy:PlotView Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="8" MinHeight="200" Margin="5" Model="{Binding ViscosityPlot}" />
     </Grid>
 </Window>
