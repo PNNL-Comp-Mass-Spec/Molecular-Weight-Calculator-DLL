@@ -16,7 +16,7 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
 
             SetAmount(1, Unit.Moles);
             SetVolume(100, UnitOfExtendedVolume.ML);
-            SetConcentration(1, UnitOfMoleMassConcentration.Molar);
+            SetConcentration(10, UnitOfMoleMassConcentration.Molar);
 
             // ReSharper restore RedundantArgumentDefaultValue
 
