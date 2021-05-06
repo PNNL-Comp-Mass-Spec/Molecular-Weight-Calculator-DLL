@@ -14,6 +14,7 @@ namespace MolecularWeightCalculatorGUI
         {
             mwt = new MolecularWeightTool();
             FormulaCalc = new FormulaCalcViewModel(mwt);
+            mzCalcVm = new MzCalculationsViewModel();
             capillaryFlowVm = new CapillaryFlowViewModel();
 
             ShowAboutCommand = ReactiveCommand.Create(ShowAboutWindow);
@@ -22,6 +23,7 @@ namespace MolecularWeightCalculatorGUI
         }
 
         private readonly MolecularWeightTool mwt;
+        private readonly MzCalculationsViewModel mzCalcVm;
         private readonly CapillaryFlowViewModel capillaryFlowVm;
         private bool mainWindowVisible = true;
 
@@ -46,7 +48,7 @@ namespace MolecularWeightCalculatorGUI
         private void OpenMassChargeConversionsWindow()
         {
             //MainWindowVisible = false;
-            var window = new MzCalculationsWindow { DataContext = new MzCalculationsViewModel() };
+            var window = new MzCalculationsWindow { DataContext = mzCalcVm };
             // TODO: ShowDialog() breaks this.WhenAnyValue(...)
             //window.ShowDialog();
             window.Show();

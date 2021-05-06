@@ -68,7 +68,7 @@ namespace MolecularWeightCalculatorGUI
 
         private static void OnTextPlainPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((RichTextBoxMulti) d).UpdateDocumentFromText((string)e.NewValue ?? "", TextTypes.Plain);
+            ((RichTextBoxMulti)d).UpdateDocumentFromText((string)e.NewValue ?? "", TextTypes.Plain);
         }
 
         private static void OnTextRtfPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
