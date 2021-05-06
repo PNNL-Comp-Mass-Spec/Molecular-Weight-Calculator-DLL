@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DynamicData.Binding;
 using MolecularWeightCalculator;
 using ReactiveUI;
+using RxUnit = System.Reactive.Unit;
 
 namespace MolecularWeightCalculatorGUI.FormulaCalc
 {
@@ -14,6 +15,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         private string formulaRtf;
         private string formulaXaml;
         private DateTime lastFocusTime = DateTime.MinValue;
+        private bool showPercentComposition = false;
         private readonly MolecularWeightTool mWeight;
 
         public int FormulaIndex { get; }
@@ -54,8 +56,16 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             set => this.RaiseAndSetIfChanged(ref lastFocusTime, value);
         }
 
+        public bool ShowPercentComposition
+        {
+            get => showPercentComposition;
+            set => this.RaiseAndSetIfChanged(ref showPercentComposition, value);
+        }
+
         public ObservableCollectionExtended<KeyValuePair<string, string>> PercentComposition { get; } =
             new ObservableCollectionExtended<KeyValuePair<string, string>>();
+
+        public ReactiveCommand<RxUnit, bool> TogglePercentCompositionCommand { get; }
 
         /// <summary>
         /// Default constructor needed for WPF Design-time
@@ -71,6 +81,8 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             Formula = "";
             FormulaRtf = "";
             mWeight = mwt;
+
+            TogglePercentCompositionCommand = ReactiveCommand.Create(() => ShowPercentComposition = !ShowPercentComposition);
         }
 
         public void Calculate()

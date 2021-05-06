@@ -25,6 +25,7 @@
         <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="0" Grid.Column="1" Margin="1,0" TextRtf="{Binding FormulaRtf, Mode=OneWay}" TextPlain="{Binding Formula, Mode=OneWayToSource}" GotFocus="TextBox_OnGotFocus">
             <FlowDocument />
         </molecularWeightCalculatorGui:RichTextBoxMulti>
+        <Button Grid.Row="1" Grid.Column="0" Margin="3,-3" VerticalContentAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Content="Pct Comp" Command="{Binding TogglePercentCompositionCommand}" />
         <TextBlock Grid.Row="1" Grid.Column="1" Margin="1,0">
             <Run Text="MW =" />
             <Run Text="{Binding Mass, StringFormat={}{0:0.000##}}" />
@@ -33,9 +34,10 @@
         <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="2" Grid.Column="1" Margin="1,0" TextXaml="{Binding FormulaXaml, Mode=OneWay}">
             <FlowDocument />
         </molecularWeightCalculatorGui:RichTextBoxMulti>
-        <ListView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" ItemsSource="{Binding PercentComposition}" Grid.IsSharedSizeScope="True">
+        <ListView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" ItemsSource="{Binding PercentComposition}" Grid.IsSharedSizeScope="True" Visibility="{Binding ShowPercentComposition, Converter={StaticResource BoolToVis}}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type utilities:StringKeyValuePair}">
+                    <!-- TODO: On Click, show window to change value for percent solver. -->
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
