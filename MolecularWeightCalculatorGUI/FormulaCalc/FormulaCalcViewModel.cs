@@ -80,7 +80,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             }
         }
 
-        private void AddNewFormula()
+        public void AddNewFormula()
         {
             var newFormula = new FormulaViewModel(Formulas.Count + 1, mwt);
             Formulas.Add(newFormula);

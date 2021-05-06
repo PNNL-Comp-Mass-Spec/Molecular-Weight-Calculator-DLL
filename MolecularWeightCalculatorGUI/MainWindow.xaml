@@ -49,7 +49,7 @@
                 <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
                 <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
                 <MenuItem Header="Formula Finder..." /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
-                <MenuItem Header="Amino Acid Notation Converter..." /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
+                <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
                 <Separator />
                 <MenuItem Header="Peptide Sequence Fragmentation Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
                 <MenuItem Header="Isotopic Distribution Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
