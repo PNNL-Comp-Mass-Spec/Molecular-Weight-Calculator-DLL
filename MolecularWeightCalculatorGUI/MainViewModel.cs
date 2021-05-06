@@ -2,6 +2,7 @@
 using MolecularWeightCalculator;
 using MolecularWeightCalculatorGUI.CapillaryFlowUI;
 using MolecularWeightCalculatorGUI.FormulaCalc;
+using MolecularWeightCalculatorGUI.MassChargeConversion;
 using ReactiveUI;
 using RxUnit = System.Reactive.Unit;
 
@@ -16,6 +17,7 @@ namespace MolecularWeightCalculatorGUI
             capillaryFlowVm = new CapillaryFlowViewModel();
 
             ShowAboutCommand = ReactiveCommand.Create(ShowAboutWindow);
+            OpenMassChargeConversionsWindowCommand = ReactiveCommand.Create(OpenMassChargeConversionsWindow);
             OpenCapillaryFlowWindowCommand = ReactiveCommand.Create(OpenCapillaryFlowWindow);
         }
 
@@ -26,6 +28,7 @@ namespace MolecularWeightCalculatorGUI
         public FormulaCalcViewModel FormulaCalc { get; }
 
         public ReactiveCommand<RxUnit, RxUnit> ShowAboutCommand { get; }
+        public ReactiveCommand<RxUnit, RxUnit> OpenMassChargeConversionsWindowCommand { get; }
         public ReactiveCommand<RxUnit, RxUnit> OpenCapillaryFlowWindowCommand { get; }
 
         public bool MainWindowVisible
@@ -38,6 +41,16 @@ namespace MolecularWeightCalculatorGUI
         {
             var window = new AboutWindow();
             window.ShowDialog();
+        }
+
+        private void OpenMassChargeConversionsWindow()
+        {
+            //MainWindowVisible = false;
+            var window = new MzCalculationsWindow { DataContext = new MzCalculationsViewModel() };
+            // TODO: ShowDialog() breaks this.WhenAnyValue(...)
+            //window.ShowDialog();
+            window.Show();
+            //MainWindowVisible = true;
         }
 
         private void OpenCapillaryFlowWindow()

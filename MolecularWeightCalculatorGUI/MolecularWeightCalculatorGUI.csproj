@@ -96,6 +96,12 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MassChargeConversion\MzCalculationsViewModel.cs" />
+    <Compile Include="MassChargeConversion\MzCalculationsWindow.xaml.cs">
+      <DependentUpon>MzCalculationsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MassChargeLevel.cs" />
+    <Compile Include="MassErrorMode.cs" />
     <Compile Include="RichTextBoxMulti.cs" />
     <Compile Include="Utilities\EnumDescriptionConverter.cs" />
     <Compile Include="Utilities\GraphPoint.cs" />
@@ -136,6 +142,10 @@
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MassChargeConversion\MzCalculationsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
