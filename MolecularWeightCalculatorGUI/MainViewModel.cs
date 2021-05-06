@@ -3,6 +3,7 @@ using MolecularWeightCalculator;
 using MolecularWeightCalculatorGUI.CapillaryFlowUI;
 using MolecularWeightCalculatorGUI.FormulaCalc;
 using MolecularWeightCalculatorGUI.MassChargeConversion;
+using MolecularWeightCalculatorGUI.MoleMassDilutionUI;
 using ReactiveUI;
 using RxUnit = System.Reactive.Unit;
 
@@ -14,15 +15,18 @@ namespace MolecularWeightCalculatorGUI
         {
             mwt = new MolecularWeightTool();
             FormulaCalc = new FormulaCalcViewModel(mwt);
+            moleMassDilutionVm = new MoleMassDilutionViewModel();
             mzCalcVm = new MzCalculationsViewModel();
             capillaryFlowVm = new CapillaryFlowViewModel();
 
             ShowAboutCommand = ReactiveCommand.Create(ShowAboutWindow);
+            OpenMoleMassDilutionWindowCommand = ReactiveCommand.Create(OpenMoleMassDilutionWindow);
             OpenMassChargeConversionsWindowCommand = ReactiveCommand.Create(OpenMassChargeConversionsWindow);
             OpenCapillaryFlowWindowCommand = ReactiveCommand.Create(OpenCapillaryFlowWindow);
         }
 
         private readonly MolecularWeightTool mwt;
+        private readonly MoleMassDilutionViewModel moleMassDilutionVm;
         private readonly MzCalculationsViewModel mzCalcVm;
         private readonly CapillaryFlowViewModel capillaryFlowVm;
         private bool mainWindowVisible = true;
@@ -30,6 +34,7 @@ namespace MolecularWeightCalculatorGUI
         public FormulaCalcViewModel FormulaCalc { get; }
 
         public ReactiveCommand<RxUnit, RxUnit> ShowAboutCommand { get; }
+        public ReactiveCommand<RxUnit, RxUnit> OpenMoleMassDilutionWindowCommand { get; }
         public ReactiveCommand<RxUnit, RxUnit> OpenMassChargeConversionsWindowCommand { get; }
         public ReactiveCommand<RxUnit, RxUnit> OpenCapillaryFlowWindowCommand { get; }
 
@@ -43,6 +48,21 @@ namespace MolecularWeightCalculatorGUI
         {
             var window = new AboutWindow();
             window.ShowDialog();
+        }
+
+        private void OpenMoleMassDilutionWindow()
+        {
+            var lastFormula = FormulaCalc.LastFocusedFormula;
+            lastFormula.Calculate();
+            moleMassDilutionVm.Data.FormulaXaml = lastFormula.FormulaXaml;
+            moleMassDilutionVm.Data.FormulaMass = lastFormula.Mass;
+
+            //MainWindowVisible = false;
+            var window = new MoleMassDilutionWindow {DataContext = moleMassDilutionVm};
+            // TODO: ShowDialog() breaks this.WhenAnyValue(...)
+            //window.ShowDialog();
+            window.Show();
+            //MainWindowVisible = true;
         }
 
         private void OpenMassChargeConversionsWindow()

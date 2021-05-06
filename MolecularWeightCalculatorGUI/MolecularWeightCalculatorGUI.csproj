@@ -102,6 +102,11 @@
     </Compile>
     <Compile Include="MassChargeLevel.cs" />
     <Compile Include="MassErrorMode.cs" />
+    <Compile Include="MoleMassDilutionUI\MoleMassData.cs" />
+    <Compile Include="MoleMassDilutionUI\MoleMassDilutionViewModel.cs" />
+    <Compile Include="MoleMassDilutionUI\MoleMassDilutionWindow.xaml.cs">
+      <DependentUpon>MoleMassDilutionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RichTextBoxMulti.cs" />
     <Compile Include="Utilities\EnumDescriptionConverter.cs" />
     <Compile Include="Utilities\GraphPoint.cs" />
@@ -144,6 +149,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MassChargeConversion\MzCalculationsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MoleMassDilutionUI\MoleMassDilutionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

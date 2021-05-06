@@ -1,0 +1,267 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.MoleMassDilutionUI.MoleMassDilutionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.MoleMassDilutionUI"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:utilities="clr-namespace:MolecularWeightCalculatorGUI.Utilities"
+        xmlns:molecularWeightCalculator="clr-namespace:MolecularWeightCalculator;assembly=MolecularWeightCalculator"
+        xmlns:molecularWeightCalculatorGui="clr-namespace:MolecularWeightCalculatorGUI"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:MoleMassDilutionViewModel}, IsDesignTimeCreatable=True}"
+        Title="Mole/Mass Converter and Dilution Calculator" Icon="../mwtwin.ico" MinHeight="320" MinWidth="740" SizeToContent="WidthAndHeight">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" IsSharedSizeScope="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="0" Grid.Column="0" DataContext="{Binding Data}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <BooleanToVisibilityConverter x:Key="BoolToVis" />
+                </Grid.Resources>
+                <RadioButton Grid.Row="0" Margin="5,0" GroupName="massSource" Content="_Use mass of compound in current formula" IsChecked="{Binding UseFormulaMass}" />
+                <RadioButton Grid.Row="1" Margin="5,0" GroupName="massSource" Content="_Enter custom numerical mass" IsChecked="{Binding UseCustomMass}" />
+                <DockPanel Grid.Row="2" LastChildFill="True" Visibility="{Binding UseFormulaMass, Converter={StaticResource BoolToVis}}">
+                    <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5" Text="Formula:" />
+                    <molecularWeightCalculatorGui:RichTextBoxMulti Margin="5,3" IsReadOnly="True" MinWidth="300" TextXaml="{Binding FormulaXaml, Mode=OneWay}">
+                        <FlowDocument />
+                    </molecularWeightCalculatorGui:RichTextBoxMulti>
+                </DockPanel>
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Visibility="{Binding UseFormulaMass, Converter={StaticResource BoolToVis}}">
+                    <TextBlock VerticalAlignment="Center" Margin="5" Text="MW =" />
+                    <xctk:DoubleUpDown Margin="5,3" MinWidth="100" IsReadOnly="True" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding FormulaMass, Mode=OneWay}" />
+                </StackPanel>
+                <StackPanel Grid.Row="4" Orientation="Horizontal" Visibility="{Binding UseCustomMass, Converter={StaticResource BoolToVis}}">
+                    <TextBlock VerticalAlignment="Center" Margin="5" Text="Custom Mass:" />
+                    <xctk:DoubleUpDown Margin="5,3" MinWidth="100" IsReadOnly="True" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding CustomMass}" />
+                    <TextBlock VerticalAlignment="Center" Margin="5" Text="g/mole" />
+                </StackPanel>
+                <StackPanel Grid.Row="5" Orientation="Horizontal" Visibility="{Binding DensityRequired, Converter={StaticResource BoolToVis}}">
+                    <TextBlock VerticalAlignment="Center" Margin="5" Text="Density" />
+                    <xctk:DoubleUpDown Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" Value="{Binding SampleDensityGramsPerMl}" />
+                    <TextBlock VerticalAlignment="Center" Margin="5" Text="g/mL" />
+                </StackPanel>
+            </Grid>
+            <GroupBox Grid.Row="1" Grid.Column="0" Margin="3,0" Header="Convert Amount">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="LeftNum" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="LeftUnits" />
+                    </Grid.ColumnDefinitions>
+                    <xctk:DoubleUpDown Grid.Row="1" Grid.Column="0" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.Amount}" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" ItemsSource="{Binding AmountUnitOptions}" SelectedItem="{Binding Data.AmountUnits}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="10,5,5,5" VerticalAlignment="Center" Text="{Binding Data.ConvertedAmount}" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" ItemsSource="{Binding AmountUnitOptions}" SelectedItem="{Binding Data.ConvertedAmountUnits}" />
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Row="2" Grid.Column="0" Margin="3,0" Header="Find Concentration">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="LeftNum" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="LeftUnits" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <utilities:EnumDescriptionConverter x:Key="EnumDescription" />
+                    </Grid.Resources>
+                    <xctk:DoubleUpDown Grid.Row="0" Grid.Column="0" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.Amount}" />
+                    <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" MinWidth="100" ItemsSource="{Binding AmountUnitOptions}" SelectedItem="{Binding Data.AmountUnits}" />
+                    <Button Grid.Row="0" Grid.Column="2" Margin="5" MinWidth="120" Content="Find Amount" Command="{Binding FindAmountCommand}" />
+                    <xctk:DoubleUpDown Grid.Row="1" Grid.Column="0" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.Volume}" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" MinWidth="100" ItemsSource="{Binding VolumeUnitOptions}" SelectedItem="{Binding Data.VolumeUnits}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type molecularWeightCalculator:UnitOfExtendedVolume}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Grid.Row="1" Grid.Column="2" Margin="5" MinWidth="120" Content="Find Volume" Command="{Binding FindVolumeCommand}" />
+                    <xctk:DoubleUpDown Grid.Row="2" Grid.Column="0" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.Concentration}" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" MinWidth="100" ItemsSource="{Binding ConcentrationUnitOptions}" SelectedItem="{Binding Data.ConcentrationUnits}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type molecularWeightCalculator:UnitOfMoleMassConcentration}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Grid.Row="2" Grid.Column="2" Margin="5" MinWidth="120" Content="Find Concentration" Command="{Binding FindConcentrationCommand}" />
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Margin="3,0" VerticalAlignment="Bottom" Header="Dilution Calculations">
+                <Grid>
+                    <Grid.Resources>
+                        <utilities:EnumDescriptionConverter x:Key="EnumDescription" />
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" Content="_Link Initial Concentration to 'Find Concentration'" IsChecked="{Binding LinkConcentrations}" />
+                    <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" Content="Link Dilution Volume Units" IsChecked="{Binding LinkDilutionVolumeUnits}" />
+                    <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" MinWidth="100" ItemsSource="{Binding DilutionFindModeOptions}" SelectedItem="{Binding DilutionFindMode}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type molecularWeightCalculator:AutoComputeDilutionMode}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Initial Concentration" />
+                    <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.InitialConcentration}">
+                        <xctk:DoubleUpDown.Style>
+                            <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding InitialConcentrationReadOnly}" Value="True">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="IsReadOnly" Value="True" />
+                                            <Setter Property="Background" Value="Yellow" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </xctk:DoubleUpDown.Style>
+                    </xctk:DoubleUpDown>
+                    <ComboBox Grid.Row="3" Grid.Column="2" Margin="5" MinWidth="100" ItemsSource="{Binding ConcentrationUnitOptions}" SelectedItem="{Binding Data.InitialConcentrationUnits}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type molecularWeightCalculator:UnitOfMoleMassConcentration}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Row="4" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Initial Solution Volume" />
+                    <xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.InitialVolume}">
+                        <xctk:DoubleUpDown.Style>
+                            <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding InitialVolumeReadOnly}" Value="True">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="IsReadOnly" Value="True" />
+                                            <Setter Property="Background" Value="Yellow" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </xctk:DoubleUpDown.Style>
+                    </xctk:DoubleUpDown>
+                    <ComboBox Grid.Row="4" Grid.Column="2" Margin="5" MinWidth="100" ItemsSource="{Binding VolumeUnitOptions}" SelectedItem="{Binding Data.InitialVolumeUnits}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type molecularWeightCalculator:UnitOfExtendedVolume}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Row="5" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Final Concentration" />
+                    <xctk:DoubleUpDown Grid.Row="5" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.FinalConcentration}">
+                        <xctk:DoubleUpDown.Style>
+                            <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding FinalConcentrationReadOnly}" Value="True">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="IsReadOnly" Value="True" />
+                                            <Setter Property="Background" Value="Yellow" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </xctk:DoubleUpDown.Style>
+                    </xctk:DoubleUpDown>
+                    <ComboBox Grid.Row="5" Grid.Column="2" Margin="5" MinWidth="100" ItemsSource="{Binding ConcentrationUnitOptions}" SelectedItem="{Binding Data.FinalConcentrationUnits}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type molecularWeightCalculator:UnitOfMoleMassConcentration}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Row="6" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Volume of Solvent Added" />
+                    <xctk:DoubleUpDown Grid.Row="6" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.AddedSolventVolume}">
+                        <xctk:DoubleUpDown.Style>
+                            <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AddedSolventVolumeReadOnly}" Value="True">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="IsReadOnly" Value="True" />
+                                            <Setter Property="Background" Value="Yellow" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </xctk:DoubleUpDown.Style>
+                    </xctk:DoubleUpDown>
+                    <ComboBox Grid.Row="6" Grid.Column="2" Margin="5" MinWidth="100" ItemsSource="{Binding VolumeUnitOptions}" SelectedItem="{Binding Data.AddedSolventVolumeUnits}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type molecularWeightCalculator:UnitOfExtendedVolume}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Row="7" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Final Solution Volume" />
+                    <xctk:DoubleUpDown Grid.Row="7" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.FinalVolume}">
+                        <xctk:DoubleUpDown.Style>
+                            <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding FinalVolumeReadOnly}" Value="True">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="IsReadOnly" Value="True" />
+                                            <Setter Property="Background" Value="Yellow" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </xctk:DoubleUpDown.Style>
+                    </xctk:DoubleUpDown>
+                    <ComboBox Grid.Row="7" Grid.Column="2" Margin="5" MinWidth="100" ItemsSource="{Binding VolumeUnitOptions}" SelectedItem="{Binding Data.FinalVolumeUnits}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type molecularWeightCalculator:UnitOfExtendedVolume}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <Button Grid.Row="1" Grid.Column="1" Margin="3" MinWidth="70" IsCancel="True" Content="Close" Click="Close_OnClick"></Button>
+    </Grid>
+</Window>

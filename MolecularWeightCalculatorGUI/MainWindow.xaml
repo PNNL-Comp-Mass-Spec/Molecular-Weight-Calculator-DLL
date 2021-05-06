@@ -46,7 +46,7 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Mole/Mass Converter..." /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
+                <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
                 <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
                 <MenuItem Header="Formula Finder..." /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
                 <MenuItem Header="Amino Acid Notation Converter..." /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
