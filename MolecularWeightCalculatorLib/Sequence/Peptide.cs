@@ -2505,7 +2505,7 @@ namespace MolecularWeightCalculator.Sequence
                         sequenceStrLength = sequence.Length;
                     }
 
-                    while (index < sequenceStrLength - 3)
+                    while (index < sequenceStrLength - 2)
                     {
                         var firstChar = sequence.Substring(index, 1);
                         if (char.IsLetter(firstChar[0]))
