@@ -13,6 +13,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         private double stDev;
         private string formulaRtf;
         private string formulaXaml;
+        private DateTime lastFocusTime = DateTime.MinValue;
         private readonly MolecularWeightTool mWeight;
 
         public int FormulaIndex { get; }
@@ -45,6 +46,12 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         {
             get => formulaXaml;
             set => this.RaiseAndSetIfChanged(ref formulaXaml, value);
+        }
+
+        public DateTime LastFocusTime
+        {
+            get => lastFocusTime;
+            set => this.RaiseAndSetIfChanged(ref lastFocusTime, value);
         }
 
         public ObservableCollectionExtended<KeyValuePair<string, string>> PercentComposition { get; } =

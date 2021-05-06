@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace MolecularWeightCalculatorGUI.FormulaCalc
 {
@@ -10,6 +12,14 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         public FormulaView()
         {
             InitializeComponent();
+        }
+
+        private void TextBox_OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is FormulaViewModel fvm)
+            {
+                fvm.LastFocusTime = DateTime.Now;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive.Linq;
 using DynamicData.Binding;
 using MolecularWeightCalculator;
@@ -24,7 +25,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             mwt.RtfFontName = "Cambria";
             mwt.RtfFontSize = 10;
 
-            Formulas.Add(new FormulaViewModel(1, mwt) { Formula = "BrCH2(CH2)7CH2Br", Mass = 286.04722, StDev = 0.003 });
+            Formulas.Add(new FormulaViewModel(1, mwt) { Formula = "BrCH2(CH2)7CH2Br", Mass = 286.04722, StDev = 0.003, LastFocusTime = DateTime.Now });
             Formulas.Add(new FormulaViewModel(2, mwt) { Formula = "FeCl3-6H2O", Mass = 270.29478, StDev = 0.003 });
             Formulas.Add(new FormulaViewModel(3, mwt) { Formula = "Co(Bpy)(CO)4", Mass = 327.1576, StDev = 0.003 });
             Formulas.Add(new FormulaViewModel(4, mwt) { Formula = "^13C6H6-.1H2O", Mass = 85.84917, StDev = 0.0002 });
@@ -47,6 +48,8 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         private bool elementModeInteger;
 
         public ObservableCollectionExtended<FormulaViewModel> Formulas { get; } = new ObservableCollectionExtended<FormulaViewModel>();
+
+        public FormulaViewModel LastFocusedFormula => Formulas.OrderByDescending(x => x.LastFocusTime).First();
 
         public ReactiveCommand<RxUnit, RxUnit> CalculateCommand { get; }
         public ReactiveCommand<RxUnit, RxUnit> NewFormulaCommand { get; }
