@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:MolecularWeightCalculatorGUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MainViewModel}, IsDesignTimeCreatable=True}"
+        WindowStartupLocation="CenterScreen"
         Title="Molecular Weight Calculator" Height="450" Width="500" Visibility="{Binding MainWindowVisible, Converter={StaticResource BoolToVis}}">
     <DockPanel>
         <Menu DockPanel.Dock="Top">

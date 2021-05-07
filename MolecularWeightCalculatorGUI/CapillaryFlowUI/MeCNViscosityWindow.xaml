@@ -10,6 +10,7 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MeCNViscosityViewModel}, IsDesignTimeCreatable=True}"
+        WindowStartupLocation="CenterScreen"
         Title="ViscosityOfH2OACNWindow" MinHeight="290" MinWidth="610" SizeToContent="WidthAndHeight" Icon="../mwtwin.ico">
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>

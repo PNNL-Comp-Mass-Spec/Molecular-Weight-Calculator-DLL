@@ -8,6 +8,7 @@
         xmlns:molecularWeightCalculator="clr-namespace:MolecularWeightCalculator;assembly=MolecularWeightCalculator"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:CapillaryFlowViewModel}, IsDesignTimeCreatable=True}"
+        WindowStartupLocation="CenterScreen"
         Title="Capillary Flow and Mass Rate Calculations" Icon="../mwtwin.ico" MinHeight="380" MinWidth="680" SizeToContent="WidthAndHeight">
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>

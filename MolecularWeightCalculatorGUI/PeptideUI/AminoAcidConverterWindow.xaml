@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.PeptideUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:AminoAcidConverterViewModel}, IsDesignTimeCreatable=True}"
+        WindowStartupLocation="CenterScreen"
         Title="Amino Acid Notation Converter" MinHeight="320" MinWidth="500" SizeToContent="WidthAndHeight">
     <Grid>
         <Grid.RowDefinitions>
