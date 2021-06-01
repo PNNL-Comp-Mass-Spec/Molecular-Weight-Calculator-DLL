@@ -1,0 +1,219 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.PeptideUI.FragmentationModellingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.PeptideUI"
+        xmlns:molecularWeightCalculatorGui="clr-namespace:MolecularWeightCalculatorGUI"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:sequence="clr-namespace:MolecularWeightCalculator.Sequence;assembly=MolecularWeightCalculator"
+        xmlns:wpfExtras="clr-namespace:WpfExtras;assembly=WpfExtras"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:FragmentationModellingViewModel}, IsDesignTimeCreatable=True}"
+        x:Name="This"
+        WindowStartupLocation="CenterOwner"
+        DataContextChanged="OnDataContextChanged"
+        Title="Peptide Sequence Fragmentation Modelling" MinHeight="550" Width="700" SizeToContent="WidthAndHeight">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7">
+            <MenuItem Header="File">
+                <MenuItem Header="Load Sequence Info..." /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
+                <MenuItem Header="Save Sequence Info..." /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
+                <Separator />
+                <MenuItem Header="Load List of Ions or .Dta file to Match..." /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
+                <Separator />
+                <MenuItem Header="Close" Click="Close_OnClick" />
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Copy Predicted Ions" />
+                <MenuItem Header="Copy Predicted Ions as RTF" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
+                <MenuItem Header="Copy Predicted Ions as HTML" />
+                <Separator />
+                <MenuItem Header="Copy Sequence Molecular Weight" /> <!-- TODO: keyboard shortcuts, "Ctrl+W" -->
+                <Separator />
+                <MenuItem Header="Paste List of Ions to Match" />
+                <MenuItem Header="Clear Match Ion List" />
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="List of Ions to Match" IsCheckable="True" /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
+                <Separator />
+                <MenuItem Header="Mass Spectrum..." /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
+                <MenuItem Header="Update Spectrum on Change" IsCheckable="True" /> <!-- TODO: keyboard shortcuts, "Ctrl+U" -->
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Ion Match List Options..." /> <!-- TODO: keyboard shortcuts, "Ctrl+O" -->
+                <MenuItem Header="Edit Residue Modification Symbols" /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
+                <Separator />
+                <MenuItem Header="Automatically Align Ions to Match..." />
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="Fragmentation Modelling" />
+            </MenuItem>
+        </Menu>
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="Sequence:" />
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" Margin="5" MinHeight="40" Text="{Binding Sequence, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+        <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding NotationOptionsSource}" SelectedItem="{Binding SelectedAminoAcidNotation}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:AminoAcidNotationMode}">
+                    <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <GroupBox Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="4" Header="Mass Information">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="5">
+                    MW = <Run Text="{Binding Mass}" />
+                </TextBlock>
+                <TextBlock Grid.Row="0" Grid.Column="1" Margin="5" Text="[M+H]1+" />
+                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" MinWidth="80" ItemsSource="{Binding MassChargeLevelOptions}" SelectedItem="{Binding MassChargeLevel}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type molecularWeightCalculatorGui:MassChargeLevel}">
+                            <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <xctk:DoubleUpDown Grid.Row="0" Grid.Column="2" Margin="5" MinWidth="100" Minimum="0" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding MassProtonated}" />
+                <xctk:DoubleUpDown Grid.Row="1" Grid.Column="2" Margin="5" MinWidth="100" Minimum="0" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding MassAtChargeLevel}" />
+                <TextBlock Grid.Row="0" Grid.Column="3" Margin="5" Text="Da" />
+                <TextBlock Grid.Row="1" Grid.Column="3" Margin="5" Text="Da" />
+                <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="4" Orientation="Vertical">
+                    <TextBlock Margin="5,2" VerticalAlignment="Center" Text="Element Mode" />
+                        <RadioButton Margin="5,2" GroupName="elementMode" Content="Average" IsChecked="{Binding ElementModeAverage}" />
+                        <RadioButton Margin="5,2" GroupName="elementMode" Content="Isotopic" IsChecked="{Binding ElementModeIsotopic}" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <DataGrid Grid.Row="4" Grid.RowSpan="5" Grid.Column="2" Grid.ColumnSpan="3" Margin="5" ItemsSource="{Binding FragmentationDataTable}" IsReadOnly="True" />
+        <GroupBox Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Header="N and C Terminus">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Text="N" />
+                <ComboBox Grid.Row="0" Grid.Column="1" Margin="5,3" ItemsSource="{Binding NTerminusGroupOptions}" SelectedItem="{Binding NTerminusGroup}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type sequence:NTerminusGroupType}">
+                            <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="C" />
+                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,3" ItemsSource="{Binding CTerminusGroupOptions}" SelectedItem="{Binding CTerminusGroup}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type sequence:CTerminusGroupType}">
+                            <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="Ion Types">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Row="0" Grid.Column="0" Margin="5,3" Content="_A Ions" IsChecked="{Binding ShowAIons}" />
+                <CheckBox Grid.Row="1" Grid.Column="0" Margin="5,3" Content="_B Ions" IsChecked="{Binding ShowBIons}" />
+                <CheckBox Grid.Row="1" Grid.Column="2" Margin="5,3" Content="_C Ions" IsChecked="{Binding ShowCIons}" />
+                <CheckBox Grid.Row="2" Grid.Column="0" Margin="5,3" Content="_Y Ions" IsChecked="{Binding ShowYIons}" />
+                <CheckBox Grid.Row="2" Grid.Column="2" Margin="5,3" Content="_Z Ions" IsChecked="{Binding ShowZIons}" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Header="Neutral Losses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="50" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ListBox x:Name="NeutralLossIons" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="5,3" ItemsSource="{Binding IonTypesList}" SelectionMode="Multiple" SelectionChanged="NeutralLossIonTypes_OnSelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type sequence:IonType}">
+                            <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <CheckBox Grid.Row="0" Grid.Column="1" Margin="5,3" Content="Loss of H2O" IsChecked="{Binding NeutralLossWater}" />
+                <CheckBox Grid.Row="1" Grid.Column="1" Margin="5,3" Content="Loss of NH3" IsChecked="{Binding NeutralLossAmmonia}" />
+                <CheckBox Grid.Row="2" Grid.Column="1" Margin="5,3" Content="Loss of PO4" IsChecked="{Binding NeutralLossPhosphate}" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Header="Charges">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Text="Threshold" />
+                <CheckBox Grid.Row="1" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="_2+ ions" IsChecked="{Binding Show2PlusCharges}" />
+                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,3" ItemsSource="{Binding ChargeThresholdOptions}" SelectedItem="{Binding TwoPlusChargesThreshold}" IsEnabled="{Binding Show2PlusCharges}" />
+                <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="_3+ ions" IsChecked="{Binding Show3PlusCharges}" />
+                <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,3" ItemsSource="{Binding ChargeThresholdOptions}" SelectedItem="{Binding ThreePlusChargesThreshold}" IsEnabled="{Binding Show3PlusCharges}" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Header="Ion Masses">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Margin="5" Text="Digits" />
+                <ComboBox Grid.Column="1" Margin="5" ItemsSource="{Binding IonMassDigitsOptions}" SelectedItem="{Binding IonMassDigits}" />
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

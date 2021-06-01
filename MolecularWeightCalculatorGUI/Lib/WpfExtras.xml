@@ -1,0 +1,623 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WpfExtras</name>
+    </assembly>
+    <members>
+        <member name="T:WpfExtras.BindingProxy">
+            <summary>
+            Binding proxy to help with DataGrid binding to base DataContext
+            </summary>
+            <remarks>https://thomaslevesque.com/2011/03/21/wpf-how-to-bind-to-data-when-the-datacontext-is-not-inherited/</remarks>
+            <example>
+            &lt;DataGrid ...&gt;
+            &lt;DataGrid.Resources&gt;
+            &lt;views:BindingProxy x:Key="BaseDC" Data="{Binding}" /&gt;
+            &lt;/DataGrid.Resources&gt;
+            &lt;DataGrid.Columns&gt;
+            ...
+            &lt;DataGridTemplateColumn ...&gt;
+            &lt;DataGridTemplateColumn.CellTemplate&gt;
+            &lt;DataTemplate&gt;
+            &lt;ComboBox ItemsSource="{Binding Source={StaticResource BaseDC}, Path=Data....}" SelectedItem="{Binding ...}" /&gt;
+            &lt;/DataTemplate&gt;
+            &lt;/DataGridTemplateColumn.CellTemplate&gt;
+            &lt;/DataGridTemplateColumn&gt;
+            ...
+            &lt;/DataGrid.Columns&gt;
+            &lt;/DataGrid&gt;
+            </example>
+        </member>
+        <member name="M:WpfExtras.BindingProxy.CreateInstanceCore">
+            <summary>
+            Local constructor called by Freezable implementation
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:WpfExtras.BindingProxy.Data">
+            <summary>
+            Data object for binding
+            </summary>
+        </member>
+        <member name="F:WpfExtras.BindingProxy.DataProperty">
+            <summary>
+            DependencyProperty definition for Data
+            </summary>
+        </member>
+        <member name="T:WpfExtras.BindingProxy`1">
+            <summary>
+            Binding proxy (generic) to help with DataGrid binding to base DataContext.
+            Any instance must override CreateNewInstance(), Data (get/set), and also add a static DataProperty set using DataProperty.AddOwner.
+            </summary>
+            <remarks>https://thomaslevesque.com/2011/03/21/wpf-how-to-bind-to-data-when-the-datacontext-is-not-inherited/</remarks>
+            <example>
+            &lt;DataGrid ...&gt;
+            &lt;DataGrid.Resources&gt;
+            &lt;views:BindingProxy x:Key="BaseDC" Data="{Binding}" /&gt;
+            &lt;/DataGrid.Resources&gt;
+            &lt;DataGrid.Columns&gt;
+            ...
+            &lt;DataGridTemplateColumn ...&gt;
+            &lt;DataGridTemplateColumn.CellTemplate&gt;
+            &lt;DataTemplate&gt;
+            &lt;ComboBox ItemsSource="{Binding Source={StaticResource BaseDC}, Path=Data....}" SelectedItem="{Binding ...}" /&gt;
+            &lt;/DataTemplate&gt;
+            &lt;/DataGridTemplateColumn.CellTemplate&gt;
+            &lt;/DataGridTemplateColumn&gt;
+            ...
+            &lt;/DataGrid.Columns&gt;
+            &lt;/DataGrid&gt;
+            </example>
+        </member>
+        <member name="M:WpfExtras.BindingProxy`1.CreateInstanceCore">
+            <summary>
+            Local constructor called by Freezable implementation
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WpfExtras.BindingProxy`1.CreateNewInstance">
+            <summary>
+            Creates a new instance of the derived instance of BindingProxy&lt;T&gt;
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:WpfExtras.BindingProxy`1.Data">
+            <summary>
+            Data object for binding
+            </summary>
+        </member>
+        <member name="F:WpfExtras.BindingProxy`1.DataProperty">
+            <summary>
+            DependencyProperty definition for Data
+            </summary>
+        </member>
+        <member name="T:WpfExtras.CueBannerOverlay.IInputOverlayable">
+            <summary>
+            Interface class for facilitating CueBanner overlays on 3rd-party controls
+            The wrapped control must inherit from System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="E:WpfExtras.CueBannerOverlay.IInputOverlayable.GotKeyboardFocus">
+            <summary>
+            GotKeyboardFocus event: should already be implemented via inheritance from UIElement
+            </summary>
+        </member>
+        <member name="E:WpfExtras.CueBannerOverlay.IInputOverlayable.LostKeyboardFocus">
+            <summary>
+            LostKeyboardFocus event: should already be implemented via inheritance from UIElement
+            </summary>
+        </member>
+        <member name="E:WpfExtras.CueBannerOverlay.IInputOverlayable.ContentChanged">
+            <summary>
+            ContentChanged event: probably needs to be implemented, and invoked when the desired trigger event is invoked.
+            </summary>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.IInputOverlayable.ShouldShowCueBanner">
+            <summary>
+            The test used to determine if the CueBanner should be displayed or not.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.IgnoreKeyboardFocusEvents">
+            <summary>
+            If true, the Got/Lost KeyboardFocus events will not be used to determine if the CueBanner should be displayed.
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.BorderBrush">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.BorderThickness">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.Background">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.Foreground">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.FontFamily">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.FontSize">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.FontStretch">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.FontStyle">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.FontWeight">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.HorizontalContentAlignment">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.VerticalContentAlignment">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.TabIndex">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.IsTabStop">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.Padding">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.IInputOverlayable.Template">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="E:WpfExtras.CueBannerOverlay.IInputOverlayable.PreviewMouseDoubleClick">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="E:WpfExtras.CueBannerOverlay.IInputOverlayable.MouseDoubleClick">
+            <summary>
+            Implemented by System.Windows.Controls.Control
+            </summary>
+        </member>
+        <member name="T:WpfExtras.CueBannerOverlay.CueBannerAdorner">
+            <summary>
+            Control for displaying text cues when a textbox/combobox is set to null
+            </summary>
+            <remarks>Copied from https://jasonkemp.ca/blog/the-missing-net-4-cue-banner-in-wpf-i-mean-watermark-in-wpf/ and https://stackoverflow.com/questions/833943/watermark-hint-text-placeholder-textbox-in-wpf </remarks>
+        </member>
+        <member name="F:WpfExtras.CueBannerOverlay.CueBannerAdorner.contentPresenter">
+            <summary>
+            <see cref="T:System.Windows.Controls.ContentPresenter"/> that holds the cue banner
+            </summary>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerAdorner.#ctor(System.Windows.UIElement,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WpfExtras.CueBannerOverlay.CueBannerAdorner"/> class
+            </summary>
+            <param name="adornedElement"><see cref="T:System.Windows.UIElement"/> to be adorned</param>
+            <param name="cueBanner">The cue banner</param>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.CueBannerAdorner.VisualChildrenCount">
+            <summary>
+            Gets the number of children for the <see cref="T:System.Windows.Media.ContainerVisual"/>.
+            </summary>
+        </member>
+        <member name="P:WpfExtras.CueBannerOverlay.CueBannerAdorner.Control">
+            <summary>
+            Gets the control that is being adorned
+            </summary>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerAdorner.GetVisualChild(System.Int32)">
+            <summary>
+            Returns a specified child <see cref="T:System.Windows.Media.Visual"/> for the parent <see cref="T:System.Windows.Media.ContainerVisual"/>.
+            </summary>
+            <param name="index">A 32-bit signed integer that represents the index value of the child <see cref="T:System.Windows.Media.Visual"/>. The value of index must be between 0 and <see cref="P:WpfExtras.CueBannerOverlay.CueBannerAdorner.VisualChildrenCount"/> - 1.</param>
+            <returns>The child <see cref="T:System.Windows.Media.Visual"/>.</returns>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerAdorner.MeasureOverride(System.Windows.Size)">
+            <summary>
+            Implements any custom measuring behavior for the adorner.
+            </summary>
+            <param name="constraint">A size to constrain the adorner to.</param>
+            <returns>A <see cref="T:System.Windows.Size"/> object representing the amount of layout space needed by the adorner.</returns>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerAdorner.ArrangeOverride(System.Windows.Size)">
+            <summary>
+            When overridden in a derived class, positions child elements and determines a size for a <see cref="T:System.Windows.FrameworkElement"/> derived class.
+            </summary>
+            <param name="finalSize">The final area within the parent that this element should use to arrange itself and its children.</param>
+            <returns>The actual size used.</returns>
+        </member>
+        <member name="T:WpfExtras.CueBannerOverlay.CueBannerService">
+            <summary>
+            Control for displaying text cues when a textbox/combobox is set to null
+            </summary>
+            <remarks>Copied from https://jasonkemp.ca/blog/the-missing-net-4-cue-banner-in-wpf-i-mean-watermark-in-wpf/ and https://stackoverflow.com/questions/833943/watermark-hint-text-placeholder-textbox-in-wpf </remarks>
+        </member>
+        <member name="F:WpfExtras.CueBannerOverlay.CueBannerService.CueBannerProperty">
+            <summary>
+            CueBanner Attached Dependency Property
+            </summary>
+        </member>
+        <member name="F:WpfExtras.CueBannerOverlay.CueBannerService.ShowCueBannerOnComboBoxUnmatchProperty">
+            <summary>
+            ShowCueBannerOnComboBoxUnmatch Attached Dependency Property
+            </summary>
+        </member>
+        <member name="F:WpfExtras.CueBannerOverlay.CueBannerService.itemsControls">
+            <summary>
+            Dictionary of ItemsControls
+            </summary>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.GetCueBanner(System.Windows.DependencyObject)">
+            <summary>
+            Gets the CueBanner property.  This dependency property indicates the CueBanner for the control.
+            </summary>
+            <param name="d"><see cref="T:System.Windows.DependencyObject"/> to get the property from</param>
+            <returns>The value of the CueBanner property</returns>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.SetCueBanner(System.Windows.DependencyObject,System.Object)">
+            <summary>
+            Sets the CueBanner property.  This dependency property indicates the CueBanner for the control.
+            </summary>
+            <param name="d"><see cref="T:System.Windows.DependencyObject"/> to set the property on</param>
+            <param name="value">value of the property</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.GetShowCueBannerOnComboBoxUnmatch(System.Windows.DependencyObject)">
+            <summary>
+            Gets the GetShowCueBannerOnComboBoxUnmatch property.  This dependency property indicates if the CueBanner should be shown when a ComboBox's SelectedItem has no match in ItemsSource.
+            </summary>
+            <param name="d"><see cref="T:System.Windows.DependencyObject"/> to get the property from</param>
+            <returns>The value of the GetShowCueBannerOnComboBoxUnmatch property</returns>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.SetShowCueBannerOnComboBoxUnmatch(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Sets the GetShowCueBannerOnComboBoxUnmatch property.  This dependency property indicates if the CueBanner should be shown when a ComboBox's SelectedItem has no match in ItemsSource.
+            </summary>
+            <param name="d"><see cref="T:System.Windows.DependencyObject"/> to set the property on</param>
+            <param name="value">value of the property</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.OnCueBannerChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Handles changes to the CueBanner property.
+            </summary>
+            <param name="d"><see cref="T:System.Windows.DependencyObject"/> that fired the event</param>
+            <param name="e">A <see cref="T:System.Windows.DependencyPropertyChangedEventArgs"/> that contains the event data.</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.Control_GotKeyboardFocus(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handle the GotFocus event on the control
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:System.Windows.RoutedEventArgs"/> that contains the event data.</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.Control_Loaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handle the Loaded and LostFocus event on the control
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:System.Windows.RoutedEventArgs"/> that contains the event data.</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.ItemsSourceChanged(System.Object,System.EventArgs)">
+            <summary>
+            Event handler for the items source changed event
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:System.EventArgs"/> that contains the event data.</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.ItemsChanged(System.Object,System.Windows.Controls.Primitives.ItemsChangedEventArgs)">
+            <summary>
+            Event handler for the items changed event
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:System.Windows.Controls.Primitives.ItemsChangedEventArgs"/> that contains the event data.</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.Control_ContentChanged(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Remove the CueBanner if the text has changed
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.RemoveCueBanner(System.Windows.UIElement)">
+            <summary>
+            Remove the CueBanner from the specified element
+            </summary>
+            <param name="control">Element to remove the CueBanner from</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.ShowCueBanner(System.Windows.Controls.Control)">
+            <summary>
+            Show the CueBanner on the specified control
+            </summary>
+            <param name="control">Control to show the CueBanner on</param>
+        </member>
+        <member name="M:WpfExtras.CueBannerOverlay.CueBannerService.ShouldShowCueBanner(System.Windows.Controls.Control)">
+            <summary>
+            Indicates whether or not the CueBanner should be shown on the specified control
+            </summary>
+            <param name="c"><see cref="T:System.Windows.Controls.Control"/> to test</param>
+            <returns>true if the CueBanner should be shown; false otherwise</returns>
+        </member>
+        <member name="T:WpfExtras.WeakDictionary`2">
+             <summary>
+             A generic dictionary, which allows both its keys and values
+             to be garbage collected if there are no other references
+             to them than from the dictionary itself.
+             </summary>
+            
+             <remarks>
+             If either the key or value of a particular entry in the dictionary
+             has been collected, then both the key and value become effectively
+             unreachable. However, left-over WeakReference objects for the key
+             and value will physically remain in the dictionary until
+             RemoveCollectedEntries is called. This will lead to a discrepancy
+             between the Count property and the number of iterations required
+             to visit all of the elements of the dictionary using its
+             enumerator or those of the Keys and Values collections. Similarly,
+             CopyTo will copy fewer than Count elements in this situation.
+             </remarks>
+             <remarks>Copied from https://blogs.msdn.microsoft.com/nicholg/2006/06/04/presenting-weakdictionarytkey-tvalue/ </remarks>
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.#ctor(System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="capacity"></param>
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="comparer"></param>
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="capacity"></param>
+            <param name="comparer"></param>
+        </member>
+        <member name="P:WpfExtras.WeakDictionary`2.Count">
+            <inheritdoc />
+            <remarks>
+            WARNING: The count returned here may include entries for which
+            either the key or value objects have already been garbage
+            collected. Call RemoveCollectedEntries to weed out collected
+            entries and update the count accordingly.</remarks>
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.Add(`0,`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.ContainsKey(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.TryGetValue(`0,`1@)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.SetValue(`0,`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.WeakDictionary`2.RemoveCollectedEntries">
+            <summary>
+            Removes the left-over weak references for entries in the dictionary
+            whose key or value has already been reclaimed by the garbage
+            collector. This will reduce the dictionary's Count by the number
+            of dead key-value pairs that were eliminated.
+            </summary>
+        </member>
+        <member name="T:WpfExtras.WeakReference2`1">
+            <summary>
+            Adds strong typing to WeakReference.Target using generics. Also,
+            the Create factory method is used in place of a constructor
+            to handle the case where target is null, but we want the
+            reference to still appear to be alive.
+            </summary>
+        </member>
+        <member name="T:WpfExtras.WeakNullReference`1">
+            <summary>
+            Provides a weak reference to a null target object, which, unlike
+            other weak references, is always considered to be alive. This
+            facilitates handling null dictionary values, which are perfectly
+            legal.
+            </summary>
+        </member>
+        <member name="T:WpfExtras.WeakKeyReference`1">
+            <summary>
+            Provides a weak reference to an object of the given type to be used in
+            a WeakDictionary along with the given comparer.
+            </summary>
+        </member>
+        <member name="T:WpfExtras.WeakKeyComparer`1">
+            <summary>
+            Compares objects of the given type or WeakKeyReferences to them
+            for equality based on the given comparer. Note that we can only
+            implement IEqualityComparer&lt;T&gt; for T = object as there is no
+            other common base between T and WeakKeyReference&lt;T&gt;. We need a
+            single comparer to handle both types because we don't want to
+            allocate a new weak reference for every lookup.
+            </summary>
+        </member>
+        <member name="T:WpfExtras.BaseDictionary`2">
+            <summary>
+            Represents a dictionary mapping keys to values.
+            </summary>
+            <remarks>
+            Provides the plumbing for the portions of IDictionary&lt;TKey,
+            TValue&gt; which can reasonably be implemented without any
+            dependency on the underlying representation of the dictionary.
+            </remarks>
+            <remarks>Copied from https://blogs.msdn.microsoft.com/nicholg/2006/06/04/implementing-idictionarytkey-tvalue-isnt-trivial/ </remarks>
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="P:WpfExtras.BaseDictionary`2.Count">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.Add(`0,`1)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.ContainsKey(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.TryGetValue(`0,`1@)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.SetValue(`0,`1)">
+            <summary>
+            Set the value of the key
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="P:WpfExtras.BaseDictionary`2.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="P:WpfExtras.BaseDictionary`2.Keys">
+            <inheritdoc />
+        </member>
+        <member name="P:WpfExtras.BaseDictionary`2.Values">
+            <inheritdoc />
+        </member>
+        <member name="P:WpfExtras.BaseDictionary`2.Item(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+             <summary>
+            
+             </summary>
+             <param name="item"></param>
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:WpfExtras.BaseDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <inheritdoc />
+        </member>
+        <member name="T:WpfExtras.WpfPropertyChangeNotifier">
+            <summary>
+            Class for monitoring propertyChanged/valueChanged dependency properties of WPF controls
+            </summary>
+            <remarks>This class takes advantage of the fact that bindings use weak references to manage associations so the
+            class will not root the object who property changes it is watching. It also uses a WeakReference to maintain a
+             reference to the object whose property it is watching without rooting that object. In this way, you can
+            maintain a collection of these objects so that you can unhook the property change later without worrying about
+            that collection rooting the object whose values you are watching.</remarks>
+            <remarks>Copied from https://stackoverflow.com/questions/23682232/how-can-i-fix-the-dependencypropertydescriptor-addvaluechanged-memory-leak-on-at and https://agsmith.wordpress.com/2008/04/07/propertydescriptor-addvaluechanged-alternative/ </remarks>
+        </member>
+        <member name="M:WpfExtras.WpfPropertyChangeNotifier.#ctor(System.Windows.DependencyObject,System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="propertySource"></param>
+            <param name="path"></param>
+        </member>
+        <member name="M:WpfExtras.WpfPropertyChangeNotifier.#ctor(System.Windows.DependencyObject,System.Windows.DependencyProperty)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="propertySource"></param>
+            <param name="property"></param>
+        </member>
+        <member name="M:WpfExtras.WpfPropertyChangeNotifier.#ctor(System.Windows.DependencyObject,System.Windows.PropertyPath)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="propertySource"></param>
+            <param name="property"></param>
+        </member>
+        <member name="P:WpfExtras.WpfPropertyChangeNotifier.PropertySource">
+            <summary>
+            Get the source of the property, if available
+            </summary>
+        </member>
+        <member name="P:WpfExtras.WpfPropertyChangeNotifier.IsSourceAlive">
+            <summary>
+            Returns false if the source has been garbage collected
+            </summary>
+        </member>
+        <member name="F:WpfExtras.WpfPropertyChangeNotifier.ValueProperty">
+            <summary>
+            Identifies the <see cref="P:WpfExtras.WpfPropertyChangeNotifier.Value"/> dependency property
+            </summary>
+        </member>
+        <member name="P:WpfExtras.WpfPropertyChangeNotifier.Value">
+            <summary>
+            Returns/sets the value of the property
+            </summary>
+            <seealso cref="F:WpfExtras.WpfPropertyChangeNotifier.ValueProperty"/>
+        </member>
+        <member name="E:WpfExtras.WpfPropertyChangeNotifier.ValueChanged">
+            <summary>
+            Event handler for valueChanged
+            </summary>
+        </member>
+        <member name="M:WpfExtras.WpfPropertyChangeNotifier.Finalize">
+            <summary>
+            Destructor
+            </summary>
+        </member>
+        <member name="M:WpfExtras.WpfPropertyChangeNotifier.Dispose">
+            <summary>
+            Clean up
+            </summary>
+        </member>
+    </members>
+</doc>

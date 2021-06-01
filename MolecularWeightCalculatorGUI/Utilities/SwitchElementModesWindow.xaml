@@ -1,0 +1,46 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.Utilities.SwitchElementModesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.Utilities"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:SwitchElementModesViewModel}, IsDesignTimeCreatable=True}"
+        WindowStartupLocation="CenterOwner"
+        Title="{Binding WindowTitle}" MinHeight="300" Width="510" SizeToContent="Height">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="15" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Margin="5" Orientation="Vertical">
+            <TextBlock Text="{Binding Message1}" TextWrapping="Wrap" />
+            <TextBlock TextWrapping="Wrap">
+                <Run Text="    " />
+                <Run Text="{Binding Message2}" />
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap">
+                <Run Text="    " />
+                <Run Text="{Binding Message3}" />
+            </TextBlock>
+        </StackPanel>
+        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="5" Text="Would you like to:" />
+        <RadioButton Grid.Row="3" Grid.Column="1" Margin="5" GroupName="updateOption" Content="Switch to _Isotopic Weight mode now." IsChecked="{Binding SwitchToIsotopic}" />
+        <RadioButton Grid.Row="4" Grid.Column="1" Margin="5" GroupName="updateOption" Content="Always automatically switch to Isotopic _Weight mode." IsChecked="{Binding SwitchToIsotopicAuto}" />
+        <RadioButton Grid.Row="5" Grid.Column="1" Margin="5" GroupName="updateOption" Content="Continue using _Average Weights." IsChecked="{Binding KeepAverage}" />
+        <CheckBox Grid.Row="7" Grid.Column="1" Margin="5" Content="_Stop showing this warning dialog." IsChecked="{Binding StopShowingWarning}" />
+        <Button Grid.Row="7" Grid.Column="3" Margin="5" MinWidth="100" Content="_Continue" IsCancel="True" IsDefault="True" Click="Close_OnClick" />
+    </Grid>
+</Window>

@@ -50,6 +50,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfExtras">
+      <HintPath>Lib\WpfExtras.dll</HintPath>
+    </Reference>
     <Reference Include="WpfMath, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\WpfMath.dll</HintPath>
@@ -111,13 +114,24 @@
     <Compile Include="PeptideUI\AminoAcidConverterWindow.xaml.cs">
       <DependentUpon>AminoAcidConverterWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PeptideUI\AminoAcidNotationMode.cs" />
+    <Compile Include="PeptideUI\FragmentationModellingViewModel.cs" />
+    <Compile Include="PeptideUI\FragmentationModellingWindow.xaml.cs">
+      <DependentUpon>FragmentationModellingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RichTextBoxMulti.cs" />
+    <Compile Include="Utilities\CollectionUtils.cs" />
     <Compile Include="Utilities\EnumDescriptionConverter.cs" />
     <Compile Include="Utilities\GraphPoint.cs" />
     <Compile Include="Utilities\InvertBoolConverter.cs" />
     <Compile Include="Utilities\NumberDisplayShortConverter.cs" />
     <Compile Include="Utilities\NumberFormatter.cs" />
     <Compile Include="Utilities\StringKeyValuePair.cs" />
+    <Compile Include="Utilities\SwitchElementModesViewModel.cs" />
+    <Compile Include="Utilities\SwitchElementModesWindow.xaml.cs">
+      <DependentUpon>SwitchElementModesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\ValueVisibilityConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="AboutWindow.xaml">
@@ -161,6 +175,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PeptideUI\AminoAcidConverterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PeptideUI\FragmentationModellingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Utilities\SwitchElementModesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

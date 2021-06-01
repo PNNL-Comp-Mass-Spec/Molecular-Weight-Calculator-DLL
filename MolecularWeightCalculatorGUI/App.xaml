@@ -9,5 +9,6 @@
         <utilities:EnumDescriptionConverter x:Key="EnumDescription" />
         <utilities:InvertBoolConverter x:Key="InvertBool" />
         <utilities:NumberDisplayShortConverter x:Key="NumDisplay" />
+        <utilities:ValueVisibilityConverter x:Key="ValueToVis" />
     </Application.Resources>
 </Application>

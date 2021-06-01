@@ -5,6 +5,7 @@ using DynamicData.Binding;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Sequence;
 using MolecularWeightCalculatorGUI.FormulaCalc;
+using MolecularWeightCalculatorGUI.Utilities;
 using ReactiveUI;
 using RxUnit = System.Reactive.Unit;
 
@@ -13,18 +14,21 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
     internal class AminoAcidConverterViewModel : ReactiveObject
     {
         [Obsolete("For WPF design-time use only", true)]
-        public AminoAcidConverterViewModel() : this(new FormulaCalcViewModel(), new Peptide(new ElementAndMassTools()))
+        public AminoAcidConverterViewModel() : this(new FormulaCalcViewModel(), new Peptide(new ElementAndMassTools()), new SwitchElementModesViewModel(), new FragmentationModellingViewModel())
         {
         }
 
-        public AminoAcidConverterViewModel(FormulaCalcViewModel formulaList, Peptide peptide)
+        public AminoAcidConverterViewModel(FormulaCalcViewModel formulaList, Peptide peptide, SwitchElementModesViewModel switchModesVm, FragmentationModellingViewModel fragModelling)
         {
+            formulas = formulaList;
+            peptideTools = peptide;
+            switchElementModesVm = switchModesVm;
+            fragModellingVm = fragModelling;
+
             OneLetterSequence = "GLY";
             SpaceEvery10Residues = true;
             SeparateResiduesWithDash = true;
-            peptideTools = peptide;
 
-            formulas = formulaList;
             AvailableFormulaDisplays = new ObservableCollectionExtended<int>(formulas.Formulas.Select(x => x.FormulaIndex));
             AvailableFormulaDisplays.Add(AvailableFormulaDisplays.Max() + 1);
 
@@ -49,6 +53,8 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
 
         private readonly FormulaCalcViewModel formulas;
         private readonly Peptide peptideTools;
+        private readonly SwitchElementModesViewModel switchElementModesVm;
+        private readonly FragmentationModellingViewModel fragModellingVm;
         private string oneLetterSequence;
         private string threeLetterSequence;
         private bool spaceEvery10Residues;
@@ -106,7 +112,14 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
 
         private void OpenModelFragmentationWindow(Window parent)
         {
-            // TODO: !!!!
+            // Check or change mode
+            switchElementModesVm.ShowWindow(true, parent);
+
+            fragModellingVm.Sequence = ThreeLetterSequence;
+            fragModellingVm.SelectedAminoAcidNotation = AminoAcidNotationMode.ThreeLetterNotation;
+
+            var window = new FragmentationModellingWindow() { DataContext = fragModellingVm };
+            window.Show();
         }
 
         private void CopySequenceToFormula(int targetFormulaId)

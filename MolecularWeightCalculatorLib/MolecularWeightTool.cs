@@ -110,6 +110,11 @@ namespace MolecularWeightCalculator
         public FormulaSearcher FormulaFinder { get; set; }
         public CapillaryFlow CapFlow { get; set; }
 
+        /// <summary>
+        /// Expose this internally for use with the GUI
+        /// </summary>
+        internal ElementAndMassTools ElementAndMass => mElementAndMassRoutines;
+
         private readonly ElementAndMassTools mElementAndMassRoutines;
 
         public event ProgressResetEventHandler ProgressReset;

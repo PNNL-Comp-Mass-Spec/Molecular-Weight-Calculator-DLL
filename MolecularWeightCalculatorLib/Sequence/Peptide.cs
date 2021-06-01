@@ -67,7 +67,7 @@ namespace MolecularWeightCalculator.Sequence
         /// <summary>
         ///  Maximum number of modifications for a single residue
         /// </summary>
-        private const short MAX_MODIFICATIONS = 6;
+        internal const short MAX_MODIFICATIONS = 6;
 
         /// <summary>
         /// Unknown amino acid symbol, 3 letter notation
@@ -88,121 +88,6 @@ namespace MolecularWeightCalculator.Sequence
         private readonly ElementAndMassTools mElementAndMassRoutines;
 
         private const IonType ION_TYPE_MAX = IonType.ZIon;
-
-        private class ModificationSymbol
-        {
-            /// <summary>
-            /// Modification symbol
-            /// </summary>
-            /// <remarks>
-            /// May be 1 or more characters; for example: + ++ * ** etc.
-            /// </remarks>
-            public string Symbol { get; }
-
-            /// <summary>
-            /// Modification mass
-            /// </summary>
-            /// <remarks>
-            /// Typically positive, but can be negative
-            /// </remarks>
-            public double ModificationMass { get; set; }
-
-            /// <summary>
-            /// When true, this symbol indicates a phosphorylated residue
-            /// </summary>
-            public bool IndicatesPhosphorylation { get; set; }
-
-            public string Comment { get; set; }
-
-            public ModificationSymbol(string symbol, double modMass, bool indicatesPhosphorylation, string comment = "")
-            {
-                Symbol = symbol;
-                ModificationMass = modMass;
-                IndicatesPhosphorylation = indicatesPhosphorylation;
-                Comment = comment;
-            }
-        }
-
-        /// <summary>
-        /// Amino acid residue
-        /// </summary>
-        private class Residue
-        {
-            /// <summary>
-            /// 3 letter symbol
-            /// </summary>
-            public string Symbol { get; }
-
-            /// <summary>
-            /// The mass of the residue alone (excluding any modification)
-            /// </summary>
-            public double Mass { get; set; }
-
-            /// <summary>
-            /// The mass of the residue, including any modification (e.g. phosphorylation)
-            /// </summary>
-            public double MassWithMods { get; set; }
-
-            /// <summary>
-            /// The masses that the a, b, and y ions ending/starting with this residue will produce in the mass spectrum (includes H+)
-            /// </summary>
-            /// <remarks>
-            /// 0-based array
-            /// </remarks>
-            public double[] IonMass { get; }
-
-            /// <summary>
-            /// Technically, only Ser, Thr, or Tyr residues can be phosphorylated (H3PO4), but if the user phosphorylates other residues, we'll allow that
-            /// </summary>
-            public bool Phosphorylated { get; set; }
-
-            public List<int> ModificationIDs { get; }
-
-            public Residue()
-            {
-                IonMass = new double[Enum.GetNames(typeof(IonType)).Length];
-                ModificationIDs = new List<int>(MAX_MODIFICATIONS);
-            }
-
-            public Residue(string symbol) : this()
-            {
-                Symbol = symbol;
-                Phosphorylated = false;
-            }
-
-            public override string ToString()
-            {
-                return $"{Symbol}: {Mass}, b {IonMass[1]}, y {IonMass[2]}";
-            }
-        }
-
-        /// <summary>
-        /// Information on the N or C terminus of a peptide
-        /// </summary>
-        private class Terminus
-        {
-            /// <summary>
-            /// Formula
-            /// </summary>
-            public string Formula { get; set; }
-
-            /// <summary>
-            /// Mass
-            /// </summary>
-            public double Mass { get; set; }
-
-            /// <summary>
-            /// Amino acid just before this peptide in the protein
-            /// </summary>
-            // ReSharper disable once UnusedAutoPropertyAccessor.Local
-            public Residue PrecedingResidue { get; set; } = new();
-
-            /// <summary>
-            /// Amino acid just after this peptide in the protein
-            /// </summary>
-            // ReSharper disable once UnusedAutoPropertyAccessor.Local
-            public Residue FollowingResidue { get; set; } = new();
-        }
 
         /// <summary>
         /// Peptide residues
@@ -719,6 +604,7 @@ namespace MolecularWeightCalculator.Sequence
 
         public FragmentationSpectrumOptions GetFragmentationSpectrumOptions()
         {
+            // TODO: No possibility of failure???
             try
             {
                 return mFragSpectrumOptions;

@@ -53,7 +53,7 @@
                 <MenuItem Header="Formula Finder..." /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
                 <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
                 <Separator />
-                <MenuItem Header="Peptide Sequence Fragmentation Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
+                <MenuItem Header="Peptide Sequence Fragmentation Modelling..." Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
                 <MenuItem Header="Isotopic Distribution Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
                 <MenuItem Header="Show Isotopic Distribution for Current Formula" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />

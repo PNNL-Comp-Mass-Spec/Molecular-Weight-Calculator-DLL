@@ -102,8 +102,11 @@
     <Compile Include="Sequence\FragmentationSpectrumIntensities.cs" />
     <Compile Include="Sequence\FragmentationSpectrumOptions.cs" />
     <Compile Include="Sequence\IonTypeOptions.cs" />
+    <Compile Include="Sequence\ModificationSymbol.cs" />
     <Compile Include="Sequence\Peptide.cs" />
     <Compile Include="Sequence\PeptideEnums.cs" />
+    <Compile Include="Sequence\Residue.cs" />
+    <Compile Include="Sequence\Terminus.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning">
