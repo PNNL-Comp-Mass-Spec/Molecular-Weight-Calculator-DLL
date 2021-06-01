@@ -12,6 +12,8 @@ namespace MolecularWeightCalculatorGUI
 {
     internal class MainViewModel : ReactiveObject
     {
+        // TODO: Localization: https://docs.microsoft.com/en-us/dotnet/desktop/wpf/advanced/wpf-globalization-and-localization-overview?view=netframeworkdesktop-4.8
+
         public MainViewModel()
         {
             mwt = new MolecularWeightTool();
