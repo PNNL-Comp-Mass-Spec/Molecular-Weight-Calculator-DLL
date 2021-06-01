@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using DynamicData.Binding;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Sequence;
@@ -40,8 +40,8 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             SelectedFormulaDisplay = AvailableFormulaDisplays.Max();
 
             ConvertOneToThreeCommand = ReactiveCommand.Create(ConvertOneToThree);
-            ConvertThreeToOneCommand     = ReactiveCommand.Create(ConvertThreeToOne);
-            ModelFragmentationCommand    = ReactiveCommand.Create(OpenModelFragmentationWindow);
+            ConvertThreeToOneCommand = ReactiveCommand.Create(ConvertThreeToOne);
+            ModelFragmentationCommand = ReactiveCommand.Create<Window>(OpenModelFragmentationWindow);
             CopySequenceToFormulaCommand = ReactiveCommand.Create(() => CopySequenceToFormula(SelectedFormulaDisplay));
 
             ConvertOneToThree();
@@ -89,7 +89,7 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
 
         public ReactiveCommand<RxUnit, RxUnit> ConvertOneToThreeCommand { get; }
         public ReactiveCommand<RxUnit, RxUnit> ConvertThreeToOneCommand { get; }
-        public ReactiveCommand<RxUnit, RxUnit> ModelFragmentationCommand { get; }
+        public ReactiveCommand<Window, RxUnit> ModelFragmentationCommand { get; }
         public ReactiveCommand<RxUnit, RxUnit> CopySequenceToFormulaCommand { get; }
 
         private void ConvertOneToThree()
@@ -104,7 +104,7 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             OneLetterSequence = peptideTools.GetSequence(false, SpaceEvery10Residues, false);
         }
 
-        private void OpenModelFragmentationWindow()
+        private void OpenModelFragmentationWindow(Window parent)
         {
             // TODO: !!!!
         }

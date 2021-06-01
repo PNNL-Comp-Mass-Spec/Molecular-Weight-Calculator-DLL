@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
-        Title="About MWT" MinHeight="320" MinWidth="450" SizeToContent="WidthAndHeight">
+        WindowStartupLocation="CenterOwner"
+        Title="About MWT" MinHeight="260" MinWidth="450" SizeToContent="WidthAndHeight">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -13,15 +13,14 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition MaxHeight="6" />
+            <RowDefinition Height="6" />
             <RowDefinition Height="Auto" />
-            <RowDefinition MaxHeight="6" />
+            <RowDefinition Height="6" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="6" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="6" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -39,12 +38,12 @@
         <TextBlock Grid.Row="3" Grid.Column="1" Margin="3,0" x:Name="Date" FontWeight="Bold" />
         <TextBlock Grid.Row="4" Grid.Column="0" Margin="3,0" Text="Written in C# and WPF" />
         <!-- TODO: Is there a higher-res version of this image? -->
-        <Image Grid.Row="4" Grid.Column="1" Grid.RowSpan="6" Margin="10,3" HorizontalAlignment="Left" VerticalAlignment="Top" Source="../mwtwin.ico" Stretch="None" />
+        <Image Grid.Row="4" Grid.Column="1" Grid.RowSpan="6" Margin="10,3" HorizontalAlignment="Left" VerticalAlignment="Top" Source="mwtwin.ico" Stretch="None" />
         <TextBlock Grid.Row="6" Grid.Column="0" Margin="3,0" Text="Matt@AlchemistMatt.Com" />
         <TextBlock Grid.Row="8" Grid.Column="0" Margin="3,0" Text="http://www.alchemistmatt.com/" />
         <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Margin="3,0" Text="https://omics.pnl.gov/software/molecular-weight-calculator" />
         <TextBlock Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Margin="3,0" Text="https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL" />
         <TextBlock Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Margin="3,0" Text="This program is Freeware; distribute freely" />
-        <Button Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="80" HorizontalAlignment="Center" Content="_OK" IsCancel="True" IsDefault="True" Click="Close_OnClick" />
+        <Button Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" Margin="8" MinWidth="80" HorizontalAlignment="Center" Content="_OK" IsCancel="True" IsDefault="True" Click="Close_OnClick" />
     </Grid>
 </Window>

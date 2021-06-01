@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.PeptideUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:AminoAcidConverterViewModel}, IsDesignTimeCreatable=True}"
-        WindowStartupLocation="CenterScreen"
+        x:Name="This"
+        WindowStartupLocation="CenterOwner"
         Title="Amino Acid Notation Converter" MinHeight="320" MinWidth="500" SizeToContent="WidthAndHeight">
     <Grid>
         <Grid.RowDefinitions>
@@ -53,7 +54,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Margin="5" MinWidth="50" Content="Model Fragmentation" Command="{Binding ModelFragmentationCommand}" />
+            <Button Grid.Column="0" Margin="5" MinWidth="50" Content="Model Fragmentation" Command="{Binding ModelFragmentationCommand}" CommandParameter="{x:Reference This}" />
             <Button Grid.Column="2" Margin="5" MinWidth="50" Content="_Copy 3 letter sequence to formula:" Command="{Binding CopySequenceToFormulaCommand}" />
             <ComboBox Grid.Column="3" Margin="5" ItemsSource="{Binding AvailableFormulaDisplays}" SelectedItem="{Binding SelectedFormulaDisplay}" />
             <Button Grid.Column="5" Margin="5" MinWidth="50" Content="Close" IsDefault="True" IsCancel="True" Click="Close_OnClick" />

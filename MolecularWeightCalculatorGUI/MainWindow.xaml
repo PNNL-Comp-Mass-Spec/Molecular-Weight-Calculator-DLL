@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:MolecularWeightCalculatorGUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MainViewModel}, IsDesignTimeCreatable=True}"
+        x:Name="This"
         WindowStartupLocation="CenterScreen"
         Title="Molecular Weight Calculator" Height="450" Width="500" Visibility="{Binding MainWindowVisible, Converter={StaticResource BoolToVis}}">
     <DockPanel>
@@ -47,16 +48,16 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
-                <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
+                <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
+                <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
                 <MenuItem Header="Formula Finder..." /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
-                <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
+                <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
                 <Separator />
                 <MenuItem Header="Peptide Sequence Fragmentation Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
                 <MenuItem Header="Isotopic Distribution Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
                 <MenuItem Header="Show Isotopic Distribution for Current Formula" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />
-                <MenuItem Header="Capillary Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
+                <MenuItem Header="Capillary Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
             </MenuItem>
             <MenuItem Header="Options">
                 <MenuItem Header="Choose Language..." />
@@ -73,7 +74,7 @@
                 <MenuItem Header="Program Overview" />
                 <MenuItem Header="Show Tool Tips" IsCheckable="True" />
                 <Separator />
-                <MenuItem Header="About MWT..." Command="{Binding ShowAboutCommand}" />
+                <MenuItem Header="About MWT..." Command="{Binding ShowAboutCommand}" CommandParameter="{x:Reference This}" />
             </MenuItem>
         </Menu>
         <formulaCalc:FormulaCalcView DataContext="{Binding FormulaCalc}" />

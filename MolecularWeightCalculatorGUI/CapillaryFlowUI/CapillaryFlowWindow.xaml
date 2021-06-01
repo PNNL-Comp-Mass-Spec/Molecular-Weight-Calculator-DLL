@@ -8,7 +8,8 @@
         xmlns:molecularWeightCalculator="clr-namespace:MolecularWeightCalculator;assembly=MolecularWeightCalculator"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:CapillaryFlowViewModel}, IsDesignTimeCreatable=True}"
-        WindowStartupLocation="CenterScreen"
+        x:Name="This"
+        WindowStartupLocation="CenterOwner"
         Title="Capillary Flow and Mass Rate Calculations" Icon="../mwtwin.ico" MinHeight="380" MinWidth="680" SizeToContent="WidthAndHeight">
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
@@ -68,7 +69,7 @@
                 <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="  Broadening Calculations  " />
             </Grid>
         </Button>
-        <Button Grid.Row="1" Grid.RowSpan="2" Grid.Column="4" Margin="5" Command="{Binding ShowExplanatoryEquationsCommand}">
+        <Button Grid.Row="1" Grid.RowSpan="2" Grid.Column="4" Margin="5" Command="{Binding ShowExplanatoryEquationsCommand}" CommandParameter="{x:Reference This}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -244,7 +245,7 @@
             <TextBlock Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" Margin="5,3" VerticalAlignment="Center" Text="Interparticle Porosity (epsilon)" Visibility="{Binding InPackedCapillaryMode, Converter={StaticResource BoolToVis}}" />
             <xctk:DoubleUpDown Grid.Row="4" Grid.Column="5" Margin="5,3" Minimum="0" TextAlignment="Left" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding Data.InterparticlePorosity}" Visibility="{Binding InPackedCapillaryMode, Converter={StaticResource BoolToVis}}" />
         </Grid>
-        <Button Grid.Row="4" Grid.Column="0" Margin="15,3,5,3" Content="Compute Water/MeCN Viscosity" Command="{Binding ShowComputeWaterViscosityCommand}" />
+        <Button Grid.Row="4" Grid.Column="0" Margin="15,3,5,3" Content="Compute Water/MeCN Viscosity" Command="{Binding ShowComputeWaterViscosityCommand}" CommandParameter="{x:Reference This}" />
         <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="6" Margin="5,0" Header="Mass Rate Calculations" Visibility="{Binding HideExtraPeakBroadeningCalculations, Converter={StaticResource BoolToVis}}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -420,7 +421,7 @@
                 </ComboBox>
                 <TextBlock Grid.Row="5" Grid.Column="3" Margin="5,3" VerticalAlignment="Center" Text="Percent Increase" />
                 <TextBlock Grid.Row="5" Grid.Column="4" Margin="5,3" VerticalAlignment="Center" Text="{Binding Data.PercentIncrease, StringFormat={}{0:0.##}%}" />
-                <Button Grid.Row="6" Grid.Column="0" Margin="5,3" Content="View Equations" Command="{Binding ShowPeakBroadeningEquationsCommand}" />
+                <Button Grid.Row="6" Grid.Column="0" Margin="5,3" Content="View Equations" Command="{Binding ShowPeakBroadeningEquationsCommand}" CommandParameter="{x:Reference This}" />
             </Grid>
         </GroupBox>
     </Grid>

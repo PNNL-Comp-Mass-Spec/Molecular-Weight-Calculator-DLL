@@ -9,7 +9,7 @@
         xmlns:molecularWeightCalculatorGui="clr-namespace:MolecularWeightCalculatorGUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MzCalculationsViewModel}, IsDesignTimeCreatable=True}"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         Title="Mass-to-Charge Conversion" MinHeight="100" MinWidth="400" SizeToContent="WidthAndHeight">
     <Grid>
         <Grid.RowDefinitions>
