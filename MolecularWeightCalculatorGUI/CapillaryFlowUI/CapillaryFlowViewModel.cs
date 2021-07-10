@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Windows;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.CapillaryFlowTools;
 using ReactiveUI;
@@ -67,9 +68,9 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
             this.WhenAnyValue(x => x.Data.ResultingPeakWidthUnits).Subscribe(x => Data.ResultingPeakWidth = extraCol.GetResultantPeakWidth(x));
 
             TogglePeakBroadeningCalculationsCommand = ReactiveCommand.Create(() => ShowExtraPeakBroadeningCalculations = !ShowExtraPeakBroadeningCalculations);
-            ShowExplanatoryEquationsCommand = ReactiveCommand.Create(() => ShowExplanatoryEquations());
-            ShowComputeWaterViscosityCommand = ReactiveCommand.Create(() => ShowComputeWaterViscosity());
-            ShowPeakBroadeningEquationsCommand = ReactiveCommand.Create(() => ShowPeakBroadeningEquations());
+            ShowExplanatoryEquationsCommand = ReactiveCommand.Create<Window>(ShowExplanatoryEquations);
+            ShowComputeWaterViscosityCommand = ReactiveCommand.Create<Window>(ShowComputeWaterViscosity);
+            ShowPeakBroadeningEquationsCommand = ReactiveCommand.Create<Window>(ShowPeakBroadeningEquations);
 
             LoadDefaults();
         }
@@ -107,9 +108,9 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
         public IReadOnlyList<UnitOfMolarAmount> MolarAmountUnitOptions { get; }
 
         public ReactiveCommand<RxUnit, bool> TogglePeakBroadeningCalculationsCommand { get; }
-        public ReactiveCommand<RxUnit, RxUnit> ShowExplanatoryEquationsCommand { get; }
-        public ReactiveCommand<RxUnit, RxUnit> ShowComputeWaterViscosityCommand { get; }
-        public ReactiveCommand<RxUnit, RxUnit> ShowPeakBroadeningEquationsCommand { get; }
+        public ReactiveCommand<Window, RxUnit> ShowExplanatoryEquationsCommand { get; }
+        public ReactiveCommand<Window, RxUnit> ShowComputeWaterViscosityCommand { get; }
+        public ReactiveCommand<Window, RxUnit> ShowPeakBroadeningEquationsCommand { get; }
 
         public CapillaryType CapillaryType
         {
@@ -372,30 +373,33 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
             Data.PercentIncrease = (extraCol.GetResultantPeakWidth(Data.InitialPeakBaseWidthUnits) - Data.InitialPeakBaseWidth) / Data.InitialPeakBaseWidth * 100;
         }
 
-        private void ShowExplanatoryEquations()
+        private void ShowExplanatoryEquations(Window parent)
         {
             var window = new ExplanatoryEquationsWindow
             {
-                DataContext = new EquationsViewModel(CapillaryType)
+                DataContext = new EquationsViewModel(CapillaryType),
+                Owner = parent
             };
             window.ShowDialog();
         }
 
-        private void ShowComputeWaterViscosity()
+        private void ShowComputeWaterViscosity(Window parent)
         {
             var window = new MeCNViscosityWindow
             {
                 // TODO: cache this to avoid resetting values whenever closed?
-                DataContext = new MeCNViscosityViewModel(this)
+                DataContext = new MeCNViscosityViewModel(this),
+                Owner = parent
             };
             window.Show();
         }
 
-        private void ShowPeakBroadeningEquations()
+        private void ShowPeakBroadeningEquations(Window parent)
         {
             var window = new BroadeningEquationsWindow
             {
-                DataContext = new EquationsViewModel(CapillaryType)
+                DataContext = new EquationsViewModel(CapillaryType),
+                Owner = parent
             };
             window.ShowDialog();
         }
