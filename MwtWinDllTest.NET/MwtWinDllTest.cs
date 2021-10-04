@@ -16,7 +16,7 @@ namespace MwtWinDllTest
     // -------------------------------------------------------------------------------
     // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
     // E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
-    // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL and https://omics.pnl.gov/
+    // Website: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL
     // -------------------------------------------------------------------------------
     //
     // Licensed under the Apache License, Version 2.0; you may not use this file except

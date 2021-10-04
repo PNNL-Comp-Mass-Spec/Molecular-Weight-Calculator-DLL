@@ -137,7 +137,7 @@ Ported to VB.NET by Nikša Blonder and Matthew Monroe in 2005 \
 Ported to C# by Bryson Gibbons in 2021 \
 
 E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov \
-Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/ \
+Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics\
 Source code: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL
 
 ## License
