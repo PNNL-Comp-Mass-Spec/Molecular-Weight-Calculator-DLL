@@ -15,8 +15,8 @@ https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/releases
 
 ### Continuous Integration
 
-Newer versions of the DLL can be found on the [AppVeyor CI server](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll/build/artifacts), though they get auto-deleted after 6 months.
-
+The latest version of the DLL may be available on the [AppVeyor CI server](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll/build/artifacts), 
+but builds are deleted after 6 months. \
 [![Build status](https://ci.appveyor.com/api/projects/status/akbap1xwd92flnsv?svg=true)](https://ci.appveyor.com/project/PNNLCompMassSpec/molecular-weight-calculator-dll)
 
 ## Data Source
