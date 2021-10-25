@@ -1745,7 +1745,7 @@ namespace MolecularWeightCalculator.Formula
         {
             if (errorData == null)
             {
-                var errorId = 0;
+                int errorId;
                 if (overrideErrorId && errorIdOverride != 0)
                 {
                     errorId = errorIdOverride;
@@ -1758,11 +1758,10 @@ namespace MolecularWeightCalculator.Formula
                 errorData = new ErrorDetails {ErrorId = errorId, ErrorPosition = -1};
             }
 
-            var errorPosition = -1;
             var errorEndPosition = -1;
             if (errorData.ErrorId > 0)
             {
-                errorPosition = errorData.ErrorPosition;
+                var errorPosition = errorData.ErrorPosition;
                 errorEndPosition = errorPosition + 1;
                 if (!string.IsNullOrWhiteSpace(errorData.ErrorCharacter))
                 {
@@ -1993,7 +1992,7 @@ namespace MolecularWeightCalculator.Formula
                 @"Typography.StandardSwashes=""0"" Typography.ContextualSwashes=""0"" Typography.StylisticAlternates=""0""><Paragraph><Span FontFamily=""" +
                 ComputationOptions.RtfFontName + @""" FontSize=""" + fontSize + @""">";
 
-            var xamlClose = @"</Span></Paragraph></Section>";
+            const string xamlClose = "</Span></Paragraph></Section>";
             // ReSharper restore StringLiteralTypo
 
             // ReSharper restore CommentTypo
@@ -2067,7 +2066,7 @@ namespace MolecularWeightCalculator.Formula
                     {
                         // at beginning of line, so leave it alone. Probably out of place
                     }
-                    else if (!calculatorMode && (char.IsLetter(workCharPrev[0]) || workCharPrev == ")" || workCharPrev == @"}" || workCharPrev == "+" || workCharPrev == "_" || prevSub))
+                    else if (!calculatorMode && (char.IsLetter(workCharPrev[0]) || workCharPrev == ")" || workCharPrev == "}" || workCharPrev == "+" || workCharPrev == "_" || prevSub))
                     {
                         // subscript if previous character was a character, parentheses, curly bracket, plus sign, or was already subscripted
                         // But, don't use subscripts in calculator
