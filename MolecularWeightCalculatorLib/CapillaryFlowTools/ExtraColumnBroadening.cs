@@ -54,7 +54,6 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
         /// </summary>
         private double mResultantPeakWidth;
 
-
         public double ComputeResultantPeakWidth(UnitOfTime units = UnitOfTime.Seconds)
         {
             ComputeValues();

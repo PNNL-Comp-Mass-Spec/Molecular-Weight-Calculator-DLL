@@ -361,7 +361,7 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
         }
 
         /// <summary>
-        /// Computes the Volumetric flow rate, stores in mVolumetricFlowRate, and returns it
+        /// Computes the volumetric flow rate, stores in mVolumetricFlowRate, and returns it
         /// </summary>
         /// <param name="units"></param>
         public double ComputeVolumetricFlowRate(UnitOfFlowRate units = UnitOfFlowRate.NLPerMin)
@@ -405,7 +405,7 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
         }
 
         /// <summary>
-        /// Computes the Volumetric flow rate using the dead time, stores in mVolumetricFlowRate, and returns it
+        /// Computes the volumetric flow rate using the dead time, stores in mVolumetricFlowRate, and returns it
         /// This requires modifying the pressure value to give the computed volumetric flow rate
         /// </summary>
         /// <param name="newBackPressure">Output: new back pressure</param>

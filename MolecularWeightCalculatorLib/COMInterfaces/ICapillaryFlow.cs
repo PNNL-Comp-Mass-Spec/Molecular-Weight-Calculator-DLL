@@ -65,13 +65,13 @@ namespace MolecularWeightCalculator.COMInterfaces
         double ComputeMeCNViscosity(double percentAcetonitrile, double temperature, UnitOfTemperature temperatureUnits = UnitOfTemperature.Celsius, UnitOfViscosity viscosityUnits = UnitOfViscosity.Poise);
 
         /// <summary>
-        /// Computes the Volumetric flow rate
+        /// Computes the volumetric flow rate
         /// </summary>
         /// <param name="units"></param>
         double ComputeVolFlowRate(UnitOfFlowRate units = UnitOfFlowRate.NLPerMin);
 
         /// <summary>
-        /// Computes the Volumetric flow rate using the dead time
+        /// Computes the volumetric flow rate using the dead time
         /// </summary>
         /// <param name="newBackPressure">Output: new back pressure</param>
         /// <param name="units"></param>
