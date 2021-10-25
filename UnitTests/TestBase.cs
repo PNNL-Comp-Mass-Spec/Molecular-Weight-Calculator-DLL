@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
 
@@ -184,8 +185,9 @@ namespace UnitTests
         /// </summary>
         /// <param name="callingMethod"></param>
         /// <param name="format"></param>
-        /// <param name="arg"></param>
-        protected void WriteUpdatedTestCase(string callingMethod, string format, params object[] arg)
+        /// <param name="args"></param>
+        [StringFormatMethod("format")]
+        protected void WriteUpdatedTestCase(string callingMethod, string format, params object[] args)
         {
             if (!mUnitTestMethods.Contains(callingMethod))
             {
@@ -195,7 +197,7 @@ namespace UnitTests
                 mUnitTestMethods.Add(callingMethod);
             }
 
-            var testCaseCode = string.Format(format, arg);
+            var testCaseCode = string.Format(format, args);
             mTestResultWriters[UnitTestWriterType.UnitTestCaseWriter].WriteLine("{0,-30} {1}", callingMethod, testCaseCode);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using JetBrains.Annotations;
 
 namespace UnitTests
 {
@@ -58,15 +59,16 @@ namespace UnitTests
         /// Append a line to the results file
         /// </summary>
         /// <param name="format"></param>
-        /// <param name="arg"></param>
-        public void WriteLine(string format, params object[] arg)
+        /// <param name="args"></param>
+        [StringFormatMethod("format")]
+        public void WriteLine(string format, params object[] args)
         {
             if (Writer == null)
             {
                 InitializeWriter();
             }
 
-            Writer.WriteLine(format, arg);
+            Writer.WriteLine(format, args);
         }
 
         /// <summary>
