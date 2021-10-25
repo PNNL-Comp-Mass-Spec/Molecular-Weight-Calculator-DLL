@@ -1998,7 +1998,7 @@ namespace MolecularWeightCalculator.Formula
 
             // ReSharper restore CommentTypo
 
-            if ((workText ?? "") == string.Empty)
+            if (string.IsNullOrEmpty(workText))
             {
                 // Return a blank RTF string
                 return xamlStart + xamlClose;
@@ -2105,7 +2105,7 @@ namespace MolecularWeightCalculator.Formula
                     prevSuper = false;
                 }
 
-                if (prevSub != currSub || prevSuper != currSuper || xaml == "")
+                if (prevSub != currSub || prevSuper != currSuper || string.IsNullOrEmpty(xaml))
                 {
                     xaml += prevClose;// + @"<Run ";
 
