@@ -60,11 +60,6 @@ namespace MolecularWeightCalculator.Formula
 
         #region "Constants and Enums"
 
-        /// <summary>
-        /// A hidden character to adjust the height of RTF Text Boxes when using superscripts
-        /// </summary>
-        private const char RTF_HEIGHT_ADJUST_CHAR = '~';
-
         private enum MessageType
         {
             Normal = 0,
@@ -2008,8 +2003,6 @@ namespace MolecularWeightCalculator.Formula
                 // Return a blank RTF string
                 return xamlStart + xamlClose;
             }
-
-            var superSubscriptFontSize = (fontSize * 0.60).ToString("F2");
 
             var xaml = "";
             var prevSuper = false;
