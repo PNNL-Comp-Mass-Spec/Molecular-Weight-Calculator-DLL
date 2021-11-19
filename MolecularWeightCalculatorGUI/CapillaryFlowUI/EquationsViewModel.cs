@@ -78,7 +78,7 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
         private const string BroadeningEquationSubstitutedTeX = @"\mathrm{d_c^{\;\;2}u\,L/(96D_m)=\sigma_t^{\;\;2}u^2}";
         private const string BroadeningEquationSigmaT2SolveDescriptionTeX = @"\text{Solving for }\mathrm{\sigma_t^{\;\;2}}";
         private const string BroadeningEquationSigmaT2SolveTeX = @"\mathrm{\sigma_t^{\;\;2}=d_c^{\;\;2}L/(96D_mu)}";
-        private const string BroadeningEquationFinalTeX = @"\text{The width at the base of a peak is }\mathrm{4\sigma_t}\text{ so a 30 second wide peak would have}\\\mathrm{\sigma_t=7.5}\text{ seconds and }\mathrm{\sigma_t^{\;\;2}=56}\text{ sec" + Super2 + @"}";
+        private const string BroadeningEquationFinalTeX = @"\text{The width at the base of a peak is }\mathrm{4\sigma_t}\text{ so a 30 second wide peak would have}\\\mathrm{\sigma_t=7.5}\text{ seconds and }\mathrm{\sigma_t^{\;\;2}=56}\text{ sec" + Super2 + "}";
 
         public string DeadTimeEquation => DeadTimeEquationTeX;
         public string ColumnVolumeEquation { get; }
