@@ -90,6 +90,7 @@
       <DependentUpon>FormulaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="FormulaCalc\FormulaViewModel.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

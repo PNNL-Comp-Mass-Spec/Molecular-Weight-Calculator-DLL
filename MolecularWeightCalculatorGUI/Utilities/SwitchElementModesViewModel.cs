@@ -8,6 +8,8 @@ namespace MolecularWeightCalculatorGUI.Utilities
 {
     internal class SwitchElementModesViewModel : ReactiveObject
     {
+        // Ignore Spelling: Daltons, Gly, Leu, Modelling, Tyr
+
         [Obsolete("For WPF design-time use only", true)]
         public SwitchElementModesViewModel() : this(new MolecularWeightTool())
         {
