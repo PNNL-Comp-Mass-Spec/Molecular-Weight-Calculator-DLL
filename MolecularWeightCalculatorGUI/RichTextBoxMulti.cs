@@ -77,7 +77,6 @@ namespace MolecularWeightCalculatorGUI
             ((RichTextBoxMulti)d).UpdateDocumentFromText((string)e.NewValue ?? "", TextTypes.Xaml);
         }
 
-
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
             base.OnTextChanged(e);

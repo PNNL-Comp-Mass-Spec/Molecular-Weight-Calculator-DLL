@@ -1797,8 +1797,8 @@ namespace MolecularWeightCalculator.Formula
             for (var charIndex = 0; charIndex < workText.Length; charIndex++)
             {
                 var workChar = workText.Substring(charIndex, 1);
-                if (highlightCharFollowingPercentSign && (workChar == "%" ||
-                    errorData.ErrorPosition <= charIndex && charIndex < errorEndPosition))
+                if (highlightCharFollowingPercentSign &&
+                    (workChar == "%" || errorData.ErrorPosition <= charIndex && charIndex < errorEndPosition))
                 {
                     // An error was found and marked by a % sign
                     // Highlight the character at the % sign, and remove the % sign
