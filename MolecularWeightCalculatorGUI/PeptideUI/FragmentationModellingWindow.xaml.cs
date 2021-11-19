@@ -28,11 +28,11 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
                 return;
             }
 
-            if (DataContext is FragmentationModellingViewModel fmvm)
+            if (DataContext is FragmentationModellingViewModel viewModel)
             {
-                fmvm.NeutralLossIonTypes.RemoveMany(e.RemovedItems.Cast<object>().Where(x => x is IonType).Cast<IonType>());
-                var added = e.AddedItems.Cast<object>().Where(x => x is IonType).Cast<IonType>().Except(fmvm.NeutralLossIonTypes).ToList();
-                fmvm.NeutralLossIonTypes.AddRange(added);
+                viewModel.NeutralLossIonTypes.RemoveMany(e.RemovedItems.Cast<object>().Where(x => x is IonType).Cast<IonType>());
+                var added = e.AddedItems.Cast<object>().Where(x => x is IonType).Cast<IonType>().Except(viewModel.NeutralLossIonTypes).ToList();
+                viewModel.NeutralLossIonTypes.AddRange(added);
             }
         }
 
@@ -41,10 +41,10 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             initializingSelection = true;
-            if (e.NewValue is FragmentationModellingViewModel fmvm)
+            if (e.NewValue is FragmentationModellingViewModel viewModel)
             {
                 NeutralLossIons.SelectedItems.Clear();
-                foreach (var ion in fmvm.NeutralLossIonTypes)
+                foreach (var ion in viewModel.NeutralLossIonTypes)
                 {
                     NeutralLossIons.SelectedItems.Add(ion);
                 }

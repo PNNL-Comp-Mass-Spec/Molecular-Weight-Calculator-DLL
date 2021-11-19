@@ -15,17 +15,10 @@ namespace MolecularWeightCalculatorGUI.Utilities
                 return string.Empty;
             }
 
-            var attrib = value.GetType().GetField(value.ToString()).GetCustomAttributes(false);
-            var desc = attrib.OfType<DescriptionAttribute>().FirstOrDefault();
+            var attribute = value.GetType().GetField(value.ToString()).GetCustomAttributes(false);
+            var desc = attribute.OfType<DescriptionAttribute>().FirstOrDefault();
 
-            if (desc == null)
-            {
-                return value.ToString();
-            }
-            else
-            {
-                return desc.Description;
-            }
+            return desc == null ? value.ToString() : desc.Description;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
