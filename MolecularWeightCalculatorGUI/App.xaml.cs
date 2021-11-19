@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using MolecularWeightCalculatorGUI.FormulaCalc;
 
 namespace MolecularWeightCalculatorGUI
 {

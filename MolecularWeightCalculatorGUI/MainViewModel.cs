@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Sequence;
 using MolecularWeightCalculatorGUI.CapillaryFlowUI;
