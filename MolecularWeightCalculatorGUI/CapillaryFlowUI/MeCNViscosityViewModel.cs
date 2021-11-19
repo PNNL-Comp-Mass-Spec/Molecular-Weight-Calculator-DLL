@@ -124,7 +124,7 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
             SolventViscosity = capFlow.ComputeMeCNViscosity(PercentAcetonitrile, Temperature, TemperatureUnits, ViscosityUnits);
 
             var points = new List<GraphPoint>(401);
-            var xUnits = "%";
+            const string xUnits = "%";
             var yUnits = ViscosityUnits.ToString();
             var maxY = 0.0;
             var minY = double.MaxValue;
