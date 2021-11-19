@@ -10,7 +10,7 @@ namespace MolecularWeightCalculatorGUI.Utilities
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || !value.GetType().IsEnum)
+            if (value?.GetType().IsEnum != true)
             {
                 return string.Empty;
             }

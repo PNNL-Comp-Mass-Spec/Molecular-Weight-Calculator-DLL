@@ -9,7 +9,7 @@ namespace MolecularWeightCalculatorGUI.Utilities
         public static IReadOnlyList<T> GetCollectionForEnum<T>(params T[] exclusions) where T : Enum
         {
             var items = Enum.GetValues(typeof(T)).Cast<T>();
-            if (exclusions != null && exclusions.Length > 0)
+            if (exclusions?.Length > 0)
             {
                 items = items.Except(exclusions);
             }
