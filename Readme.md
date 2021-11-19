@@ -122,11 +122,11 @@ When saving the Excel file, you must save it as a Macro-enabled workbook
 
 ### Example Excel File
 
-File [ComputeFormulaMasses.xlsm](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Docs/ComputeFormulaMasses.xlsm)
-at https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/tree/master/Docs is an example Excel file 
+File [ComputeFormulaMasses.xlsm](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Documentation/ComputeFormulaMasses.xlsm)
+at https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/tree/master/Documentation is an example Excel file 
 demonstrating use of MolecularWeightCalculator.dll to compute formula masses.
-* A screenshot of the worksheet is in [ComputeFormulaMasses.png](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Docs/ComputeFormulaMasses.png)
-* The VBA code is visible in [ComputeFormulaMasses.vb](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Docs/ComputeFormulaMasses.vb)
+* A screenshot of the worksheet is in [ComputeFormulaMasses.png](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Documentation/ComputeFormulaMasses.png)
+* The VBA code is visible in [ComputeFormulaMasses.vb](https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/blob/master/Documentation/ComputeFormulaMasses.vb)
 
 ## Contacts
 
