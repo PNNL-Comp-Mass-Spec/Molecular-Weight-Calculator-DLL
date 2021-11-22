@@ -110,9 +110,7 @@ namespace MolecularWeightCalculatorGUI
                 try
                 {
                     using (var memStream = new MemoryStream(Encoding.ASCII.GetBytes(text)))
-                    {
                         textRange.Load(memStream, dataFormat);
-                    }
                 }
                 catch
                 {

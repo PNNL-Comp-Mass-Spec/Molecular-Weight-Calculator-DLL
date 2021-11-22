@@ -407,7 +407,9 @@ namespace MolecularWeightCalculator.Formula
                         explicitIsotopesPresent = true;
                         explicitIsotopeCount += (short)element.Isotopes.Count;
                         foreach (var item in element.Isotopes)
+                        {
                             element.Count -= item.Count;
+                        }
                     }
                 }
 
@@ -635,7 +637,9 @@ namespace MolecularWeightCalculator.Formula
 
                                     var logSigma = 0d;
                                     for (var sigma = 1; sigma <= atomCount; sigma++)
+                                    {
                                         logSigma += Math.Log(sigma);
+                                    }
 
                                     var sumI = 0d;
                                     for (var isotopeIndex = 0; isotopeIndex < isotopeCount; isotopeIndex++)
@@ -644,7 +648,9 @@ namespace MolecularWeightCalculator.Formula
                                         {
                                             var workingSum = 0d;
                                             for (var subIndex = 1; subIndex <= isoCombos[comboIndex, isotopeIndex]; subIndex++)
+                                            {
                                                 workingSum += Math.Log(subIndex);
+                                            }
 
                                             sumI += workingSum;
                                         }
@@ -685,7 +691,9 @@ namespace MolecularWeightCalculator.Formula
                                         {
                                             var logSigma = 0d;
                                             for (var subIndex = (int)Math.Round(mPrime) + 1; subIndex <= (int)Math.Round(m); subIndex++)
+                                            {
                                                 logSigma += Math.Log(subIndex);
+                                            }
 
                                             logRho = logSigma - (m - mPrime) * Math.Log(Elements.ElementStats[atomicNumber].Isotopes[isotopeIndex].Abundance);
                                         }
@@ -693,7 +701,9 @@ namespace MolecularWeightCalculator.Formula
                                         {
                                             var logSigma = 0d;
                                             for (var subIndex = (int)Math.Round(m) + 1; subIndex <= (int)Math.Round(mPrime); subIndex++)
+                                            {
                                                 logSigma += Math.Log(subIndex);
+                                            }
 
                                             var stats = Elements.ElementStats[atomicNumber];
                                             if (stats.Isotopes[isotopeIndex].Abundance > 0f)
@@ -1271,7 +1281,9 @@ namespace MolecularWeightCalculator.Formula
         {
             var workingMass = 0;
             for (var isotopeIndex = 0; isotopeIndex < isotopeCount; isotopeIndex++)
+            {
                 workingMass = (int)Math.Round(workingMass + isoCombos[comboIndex, isotopeIndex] * Math.Round(thisElementsIsotopes[isotopeIndex].Mass, 0));
+            }
 
             return (int)Math.Round(workingMass - atomCount * Math.Round(thisElementsIsotopes[0].Mass, 0));
         }
@@ -1302,6 +1314,7 @@ namespace MolecularWeightCalculator.Formula
                 return;
 
             iterations++;
+
             if (iterations % 10000L == 0L)
             {
                 Application.DoEvents();
@@ -1323,7 +1336,9 @@ namespace MolecularWeightCalculator.Formula
             else
             {
                 for (var rowIndex = 0; rowIndex < isoStats[isoStatsIndex + 1].ResultsCount; rowIndex++)
+                {
                     ConvoluteMasses(convolutedAbundances, convolutedAbundanceStartMass, isoStats, rowIndex, newAbundance, newMassTotal, isoStatsIndex + 1, iterations);
+                }
             }
         }
 
@@ -1374,7 +1389,9 @@ namespace MolecularWeightCalculator.Formula
 
                 // Initialize runningSum[]
                 for (var atomIndex = 0; atomIndex < atomCount; atomIndex++)
+                {
                     runningSum[atomIndex] = atomIndex + 2;
+                }
 
                 for (var isotopeIndex = 3; isotopeIndex <= isotopeCount; isotopeIndex++)
                 {
@@ -1435,6 +1452,7 @@ namespace MolecularWeightCalculator.Formula
                 atomTrackHistory = new int[maxIsotopeCount];
                 atomTrackHistory[0] = atomCount;
             }
+
             if (currentIsotopeCount < 0)
             {
                 currentIsotopeCount = maxIsotopeCount;
@@ -1462,7 +1480,9 @@ namespace MolecularWeightCalculator.Formula
                     if (currentCol > 0)
                     {
                         for (var colIndex = 0; colIndex < currentCol; colIndex++)
+                        {
                             comboResults[currentRow, colIndex] = atomTrackHistory[colIndex];
+                        }
                     }
 
                     atomTrack--;
@@ -2351,7 +2371,9 @@ namespace MolecularWeightCalculator.Formula
             }
 
             while (work.Length < length)
+            {
                 work += " ";
+            }
 
             return work;
         }
@@ -2364,7 +2386,9 @@ namespace MolecularWeightCalculator.Formula
             }
 
             while (work.Length < length)
+            {
                 work = " " + work;
+            }
 
             return work;
         }

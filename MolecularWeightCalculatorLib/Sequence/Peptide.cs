@@ -415,7 +415,9 @@ namespace MolecularWeightCalculator.Sequence
 
             // Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
             for (IonType ionType = 0; ionType <= ION_TYPE_MAX; ionType++)
+            {
                 ionIntensities[(int)ionType] = (float)mFragSpectrumOptions.IntensityOptions.IonType[(int)ionType];
+            }
 
             var ionShoulderIntensity = (float)mFragSpectrumOptions.IntensityOptions.BYIonShoulder;
             var neutralLossIntensity = (float)mFragSpectrumOptions.IntensityOptions.NeutralLoss;
@@ -819,7 +821,9 @@ namespace MolecularWeightCalculator.Sequence
                 modificationIDs = new int[residue.ModificationIDs.Count];
 
                 for (var index = 0; index < residue.ModificationIDs.Count; index++)
+                {
                     modificationIDs[index] = residue.ModificationIDs[index];
+                }
 
                 return residue.ModificationIDs.Count;
             }

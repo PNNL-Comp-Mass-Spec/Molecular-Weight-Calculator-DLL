@@ -134,7 +134,9 @@ namespace UnitTests.FunctionalTests
             var mass = mMonoisotopicMassCalculator.Compound.Mass;
             Console.WriteLine("Mass of " + mMonoisotopicMassCalculator.Compound.FormulaCapitalized + ": " + mass);
             for (short charge = 1; charge <= 4; charge++)
+            {
                 Console.WriteLine("  m/z of " + charge + "+: " + mMonoisotopicMassCalculator.ConvoluteMass(mass, 0, charge));
+            }
 
             Console.WriteLine();
 
@@ -142,7 +144,9 @@ namespace UnitTests.FunctionalTests
             mass = mMonoisotopicMassCalculator.Compound.Mass;
             Console.WriteLine("m/z values if we first lose a hydrogen before adding a proton");
             for (short charge = 1; charge <= 4; charge++)
+            {
                 Console.WriteLine("  m/z of " + charge + "+: " + mMonoisotopicMassCalculator.ConvoluteMass(mass, 0, charge));
+            }
         }
 
         [Test]
@@ -309,8 +313,11 @@ namespace UnitTests.FunctionalTests
 
             Console.WriteLine("Convert isotopic distribution to Gaussian");
             var xyVals = new List<KeyValuePair<double, double>>();
+
             for (var index = 0; index < convolutedMSDataCount; index++)
+            {
                 xyVals.Add(new KeyValuePair<double, double>(convolutedMSData2D[index, 0], convolutedMSData2D[index, 1]));
+            }
 
             const int resolution = 2000;
             const double resolutionMass = 1000d;

@@ -67,7 +67,9 @@ namespace MwtWinDllTest
             {
                 textCol.Format = "0.";
                 for (var i = 0; i < decimalPlaces; i++)
+                {
                     textCol.Format += "0";
+                }
             }
 
             tableStyle.GridColumnStyles.Add(textCol);
@@ -316,7 +318,9 @@ namespace MwtWinDllTest
             mass = mMwtWin.Compound.Mass;
             results.AppendText("Mass of " + mMwtWin.Compound.FormulaCapitalized + ": " + mass);
             for (short charge = 1; charge <= 4; charge++)
+            {
                 results.AppendText("  m/z of " + charge + "+: " + mMwtWin.ConvoluteMass(mass, 0, charge));
+            }
 
             results.AppendText("");
 
@@ -324,7 +328,9 @@ namespace MwtWinDllTest
             mass = mMwtWin.Compound.Mass;
             results.AppendText("m/z values if we first lose a hydrogen before adding a proton");
             for (short charge = 1; charge <= 4; charge++)
+            {
                 results.AppendText("  m/z of " + charge + "+: " + mMwtWin.ConvoluteMass(mass, 0, charge));
+            }
 
             // Test Capillary flow functions
             var capFlow = mMwtWin.CapFlow;
@@ -483,7 +489,9 @@ namespace MwtWinDllTest
 
             var xyVals = new List<KeyValuePair<double, double>>();
             for (var index = 0; index < convolutedMSDataCount; index++)
+            {
                 xyVals.Add(new KeyValuePair<double, double>(convolutedMSData2DOneBased[index, 0], convolutedMSData2DOneBased[index, 1]));
+            }
 
             const int resolution = 2000;
             const double resolutionMass = 1000d;

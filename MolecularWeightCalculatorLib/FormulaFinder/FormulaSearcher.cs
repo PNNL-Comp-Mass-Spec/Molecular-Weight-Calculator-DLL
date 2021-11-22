@@ -369,7 +369,9 @@ namespace MolecularWeightCalculator.FormulaFinder
             var codeString = new StringBuilder();
 
             foreach (var item in results)
+            {
                 item.SortKey = ComputeSortKey(codeString, item.EmpiricalFormula);
+            }
         }
 
         private string ComputeSortKey(StringBuilder codeString, string empiricalFormula)
@@ -675,7 +677,9 @@ namespace MolecularWeightCalculator.FormulaFinder
             var elementCountArray = new int[potentialElementCount];
 
             foreach (var elementIndex in newPotentialElementPointers)
+            {
                 elementCountArray[elementIndex]++;
+            }
 
             return elementCountArray;
         }
@@ -2004,7 +2008,9 @@ namespace MolecularWeightCalculator.FormulaFinder
                             if (extra > 0)
                             {
                                 for (var pointer = 1; pointer <= extra; pointer++)
+                                {
                                     newPotentialElementPointers.Add(currentIndex);
+                                }
                             }
                         }
 
@@ -2081,7 +2087,9 @@ namespace MolecularWeightCalculator.FormulaFinder
                         {
                             // Compute % comp of each element
                             for (var index = 0; index < sortedElementStats.Count; index++)
+                            {
                                 potentialPercents[index] = elementCountArray[index] * sortedElementStats[index].Mass / totalMass * 100d;
+                            }
 
                             //if (pointerCount == 0) potentialPercents[0] = 100;
 
