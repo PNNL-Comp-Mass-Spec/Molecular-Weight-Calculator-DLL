@@ -1723,8 +1723,7 @@ namespace MolecularWeightCalculator.Sequence
                 return true;
             }
 
-            if (separationChar == null)
-                separationChar = ".";
+            separationChar ??= ".";
 
             if (!sequence.Contains(separationChar))
             {

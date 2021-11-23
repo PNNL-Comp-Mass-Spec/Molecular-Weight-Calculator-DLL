@@ -210,8 +210,8 @@ namespace MolecularWeightCalculator.FormulaFinder
         public List<SearchResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, SearchOptions searchOptions = null)
         {
             var massToleranceDa = massTolerancePPM * targetMass / 1000000.0d;
-            if (searchOptions == null)
-                searchOptions = new SearchOptions();
+
+            searchOptions ??= new SearchOptions();
 
             var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, true);
 
@@ -237,8 +237,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="searchOptions">If null, uses default search options</param>
         public List<SearchResult> FindMatchesByMass(double targetMass, double massToleranceDa, SearchOptions searchOptions = null)
         {
-            if (searchOptions == null)
-                searchOptions = new SearchOptions();
+            searchOptions ??= new SearchOptions();
 
             var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, false);
 
@@ -269,8 +268,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             double percentTolerance,
             SearchOptions searchOptions)
         {
-            if (searchOptions == null)
-                searchOptions = new SearchOptions();
+            searchOptions ??= new SearchOptions();
 
             var results = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, searchOptions);
 
@@ -1925,10 +1923,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             int multipleMtoZCharge,
             IReadOnlyCollection<int> potentialElementPointers = null)
         {
-            if (potentialElementPointers == null)
-            {
-                potentialElementPointers = new List<int>();
-            }
+            potentialElementPointers ??= new List<int>();
 
             try
             {

@@ -1617,8 +1617,7 @@ namespace MolecularWeightCalculator.Formula
 
                     try
                     {
-                        if (mLogFolderPath == null)
-                            mLogFolderPath = string.Empty;
+                        mLogFolderPath ??= string.Empty;
 
                         if (mLogFolderPath.Length > 0)
                         {
