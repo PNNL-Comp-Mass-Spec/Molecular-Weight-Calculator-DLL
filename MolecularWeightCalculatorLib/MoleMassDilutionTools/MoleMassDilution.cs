@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.MoleMassDilutionTools
 {
+    /// <summary>
+    /// Mole/mass dilution tools
+    /// </summary>
     [ComVisible(false)]
     public class MoleMassDilution
     {
@@ -177,14 +180,14 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         /// <summary>
         /// Compute the total volume following the dilution, storing in .TotalFinalVolume, and returning it
         /// </summary>
-        /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
-        /// <param name="totalVolumeUnits"></param>
-        /// <param name="dilutingSolventUnits"></param>
         /// <remarks>
         /// If InitialConcentration is less than FinalConcentration, this represents evaporation or sublimation
         /// In this case, the computed value for TotalFinalVolume represents the volume that the solution must be reduced to in order to obtain the final concentration
         /// The computed value for newDilutingSolventVolume will be -1 when initialConcentration is less than finalConcentration
         /// </remarks>
+        /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
+        /// <param name="totalVolumeUnits"></param>
+        /// <param name="dilutingSolventUnits"></param>
         public double ComputeTotalVolume(
             out double newDilutingSolventVolume,
             UnitOfExtendedVolume totalVolumeUnits = UnitOfExtendedVolume.ML,
@@ -264,11 +267,11 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         /// <summary>
         /// Updates the auto-compute mode for dilution-related values
         /// </summary>
-        /// <param name="autoCompute"></param>
         /// <remarks>
         /// When true, dilution-related values will be auto-computed based on mAutoComputeMode
         /// When false, you must manually call a Compute method to re-compute the value
         /// </remarks>
+        /// <param name="autoCompute"></param>
         public void SetAutoComputeEnabled(bool autoCompute)
         {
             mAutoCompute = autoCompute;

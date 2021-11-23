@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.MoleMassDilutionTools
 {
+    /// <summary>
+    /// Mole/mass quantity tools
+    /// </summary>
     [ComVisible(false)]
     public class MoleMassQuantity
     {
@@ -175,11 +178,11 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         /// <summary>
         /// Updates the auto-compute mode for quantity-related values
         /// </summary>
-        /// <param name="autoCompute"></param>
         /// <remarks>
         /// When true, quantity-related values will be auto-computed based on mAutoComputeMode
         /// When false, you must manually call a Compute method to re-compute the value
         /// </remarks>
+        /// <param name="autoCompute"></param>
         public void SetAutoComputeEnabled(bool autoCompute)
         {
             mAutoCompute = autoCompute;

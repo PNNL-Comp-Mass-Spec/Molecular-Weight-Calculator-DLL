@@ -27,8 +27,14 @@ namespace MolecularWeightCalculator.COMInterfaces
         ///// <remarks>The values in the dictionary are target percent composition values; only used if you call FindMatchesByPercentComposition</remarks>
         //// Commented out because COM does not support generic types, and the primary use of this is for testing.
         //Dictionary<string, FormulaFinder.CandidateElementTolerances> CandidateElements { get; set; }
-
+        /// <summary>
+        /// When true, echo messages to the console
+        /// </summary>
         bool EchoMessagesToConsole { get; set; }
+
+        /// <summary>
+        /// Maximum number of results to report
+        /// </summary>
         int MaximumHits { get; set; }
 
         /// <summary>
@@ -58,10 +64,10 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <summary>
         /// Add a candidate element, abbreviation, or monoisotopic mass
         /// </summary>
+        /// <remarks>This method should be used when defining elements for a bounded search</remarks>
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
         /// <param name="minimumCount">Minimum occurrence count</param>
         /// <param name="maximumCount">Maximum occurrence count</param>
-        /// <remarks>This method should be used when defining elements for a bounded search</remarks>
         void AddCandidateElement(string elementSymbolAbbrevOrMass, int minimumCount, int maximumCount);
 
         /// <summary>
@@ -87,6 +93,12 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="searchOptions">If null, uses default search options</param>
         SearchResult[] FindMatchesByMassGetArray(double targetMass, double massToleranceDa, SearchOptions searchOptions = null);
 
+        /// <summary>
+        /// Find empirical formulas that match target percent composition values
+        /// </summary>
+        /// <param name="maximumFormulaMass"></param>
+        /// <param name="percentTolerance"></param>
+        /// <param name="searchOptions"></param>
         SearchResult[] FindMatchesByPercentCompositionGetArray(double maximumFormulaMass, double percentTolerance, SearchOptions searchOptions);
 
         /// <summary>

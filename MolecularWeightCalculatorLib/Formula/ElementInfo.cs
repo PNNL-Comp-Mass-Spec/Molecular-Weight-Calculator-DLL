@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Element info
+    /// </summary>
     [ComVisible(false)]
     public class ElementInfo
     {

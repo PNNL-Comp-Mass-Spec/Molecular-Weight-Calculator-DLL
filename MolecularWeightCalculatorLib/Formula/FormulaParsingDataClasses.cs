@@ -5,18 +5,41 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Class for tracking parse errors in a formula
+    /// </summary>
     [ComVisible(false)]
     internal class ErrorDetails : IErrorData
     {
         /// <summary>
-        /// Contains the error number (used in the LookupMessage method).
-        /// In addition, if a program error occurs, ErrorParams.ErrorID = -10
+        /// Contains the error number (used in the LookupMessage method)
         /// </summary>
+        /// <remarks>
+        /// If a program error occurs, ErrorID is set to -10
+        /// </remarks>
         public int ErrorId { get; set; }
+
+        /// <summary>
+        /// Error position in a formula
+        /// </summary>
         public int ErrorPosition { get; set; }
+
+        /// <summary>
+        /// Error character at the error position
+        /// </summary>
         public string ErrorCharacter { get; set; }
+
+        /// <summary>
+        /// Error description
+        /// </summary>
         public string ErrorDescription { get; set; }
 
+        /// <summary>
+        /// Store error details
+        /// </summary>
+        /// <param name="errorId"></param>
+        /// <param name="errorPosition"></param>
+        /// <param name="errorCharacter"></param>
         public void SetError(int errorId, int errorPosition, string errorCharacter = "")
         {
             ErrorId = errorId;
@@ -25,6 +48,9 @@ namespace MolecularWeightCalculator.Formula
             ErrorDescription = string.Empty;
         }
 
+        /// <summary>
+        /// Reset to defaults (set ErrorId to 0)
+        /// </summary>
         public void Reset()
         {
             ErrorCharacter = string.Empty;
@@ -33,6 +59,9 @@ namespace MolecularWeightCalculator.Formula
             ErrorDescription = string.Empty;
         }
 
+        /// <summary>
+        /// Show the error Id, position, and character
+        /// </summary>
         public override string ToString()
         {
             return "ErrorID " + ErrorId + " at " + ErrorPosition + ": " + ErrorCharacter;
@@ -40,7 +69,7 @@ namespace MolecularWeightCalculator.Formula
     }
 
     /// <summary>
-    /// Holds parsing data for a formula, including separate objects for different sections for subtraction.
+    /// Holds parsing data for a formula, including separate objects for different sections for subtraction
     /// </summary>
     [ComVisible(false)]
     internal class FormulaParseData : IFormulaParseData
@@ -101,10 +130,13 @@ namespace MolecularWeightCalculator.Formula
         public List<string> CautionDescriptionList { get; } = new();
 
         /// <summary>
-        /// Error data object for the formula parsing
+        /// Error data object for formula parsing
         /// </summary>
         public ErrorDetails Error { get; } = new();
 
+        /// <summary>
+        /// Error data object for formula parsing
+        /// </summary>
         public IErrorData ErrorData => Error;
 
         /// <summary>

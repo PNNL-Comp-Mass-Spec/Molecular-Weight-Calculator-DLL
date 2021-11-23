@@ -10,7 +10,6 @@ namespace MolecularWeightCalculatorGUI.Properties
         /// <summary>
         /// This method allows accessing the GitCommitDate method in the <see cref="ThisAssembly"/> class created by class created by NerdBank.GitVersioning
         /// </summary>
-        /// <returns></returns>
         public static DateTime GetCommitDate()
         {
 #pragma warning disable CS0436 // Type conflicts with imported type

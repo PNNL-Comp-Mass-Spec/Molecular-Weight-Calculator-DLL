@@ -22,14 +22,14 @@ namespace TransformIsotopeMassFile
         /// <summary>
         /// Converts an integer-based uncertainty value to an absolute number
         /// </summary>
-        /// <param name="numericValueText"></param>
-        /// <param name="uncertaintyInteger"></param>
-        /// <returns>Uncertainty as a decimal number</returns>
         /// <remarks>
         /// If the input file had  "0.99636(20)"
         /// call this method with numericValueText="0.99636" and uncertaintyInteger=20
         /// This method will return 0.00020
         /// </remarks>
+        /// <param name="numericValueText"></param>
+        /// <param name="uncertaintyInteger"></param>
+        /// <returns>Uncertainty as a decimal number</returns>
         private static double? ComputeAbsoluteUncertainty(string numericValueText, int uncertaintyInteger)
         {
             var decimalPointIndex = numericValueText.IndexOf('.');
@@ -102,15 +102,15 @@ namespace TransformIsotopeMassFile
         /// Check whether valueText is of the form "0.99757(16)"
         /// If it is, extract out the numeric value and convert the uncertainty to a decimal number
         /// </summary>
-        /// <param name="valueText"></param>
-        /// <param name="numericValue"></param>
-        /// <param name="uncertainty"></param>
-        /// <returns>True if valueText is a double followed by an integer in parentheses, otherwise false</returns>
         /// <remarks>
         /// If valueText is 0.99757(16), returns
         /// numericValue = 0.99757 and
         /// uncertainty  = 0.00016
         /// </remarks>
+        /// <param name="valueText"></param>
+        /// <param name="numericValue"></param>
+        /// <param name="uncertainty"></param>
+        /// <returns>True if valueText is a double followed by an integer in parentheses, otherwise false</returns>
         private bool GetValueAndUncertainty(string valueText, out double? numericValue, out double? uncertainty)
         {
             var match = mUncertaintyMatcher.Match(valueText);

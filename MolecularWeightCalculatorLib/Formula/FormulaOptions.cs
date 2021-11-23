@@ -2,6 +2,9 @@
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Formula parsing options
+    /// </summary>
     [ComVisible(false)]
     public class FormulaOptions
     {

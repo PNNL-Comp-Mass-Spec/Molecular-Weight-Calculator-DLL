@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.CapillaryFlowTools
 {
+    /// <summary>
+    /// LC column broadening values
+    /// </summary>
     [ComVisible(false)]
     public class ExtraColumnBroadening
     {

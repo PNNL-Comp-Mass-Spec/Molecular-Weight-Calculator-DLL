@@ -200,8 +200,8 @@ namespace MolecularWeightCalculator.MoleMassDilutionTools
         /// <summary>
         /// Multiplication factor for converting from <paramref name="units"/> to mL
         /// </summary>
-        /// <param name="units"></param>
         /// <remarks>An extended version of the FactorVolume method is in CapillaryFlow</remarks>
+        /// <param name="units"></param>
         private static double FactorVolumeExtended(UnitOfExtendedVolume units)
         {
             // Note: 4 quarts per gallon, 2 pints per quart

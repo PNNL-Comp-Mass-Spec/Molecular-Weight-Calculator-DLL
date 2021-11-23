@@ -4,6 +4,9 @@ using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator.Sequence
 {
+    /// <summary>
+    /// MS/MS fragmentation ion intensities
+    /// </summary>
     [Guid("9CAAFE11-4A2C-4E6E-ACD2-10E7B9C870F4"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
     public class FragmentationSpectrumIntensities : IFragmentationSpectrumIntensities
     {

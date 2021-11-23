@@ -4,6 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Class tracking elements and isotopes in a formula
+    /// </summary>
     [ComVisible(false)]
     public class ElementUseStats : IElementUseStats
     {
@@ -86,6 +89,9 @@ namespace MolecularWeightCalculator.Formula
             }
         }
 
+        /// <summary>
+        /// Show either the isotope count, or "unused"
+        /// </summary>
         public override string ToString()
         {
             if (!Used)
@@ -96,14 +102,23 @@ namespace MolecularWeightCalculator.Formula
         }
     }
 
+    /// <summary>
+    /// Element use stats
+    /// </summary>
     [ComVisible(false)]
     public interface IElementUseStats
     {
         /// <summary>
-        /// Number of atoms of this element; can have a non-integer count, e.g., C5.5
+        /// Number of atoms of this element
         /// </summary>
+        /// <remarks>
+        /// Can be a decimal value, for example: C5.5
+        /// </remarks>
         public double Count { get; set; }
 
+        /// <summary>
+        /// Isotopic correction amount
+        /// </summary>
         public double IsotopicCorrection { get; set; }
 
         /// <summary>

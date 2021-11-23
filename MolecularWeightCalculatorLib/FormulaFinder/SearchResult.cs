@@ -4,6 +4,9 @@ using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator.FormulaFinder
 {
+    /// <summary>
+    /// Formula finder search result
+    /// </summary>
     [Guid("4ACF7379-E609-4331-856E-45B06F408212"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
     public class SearchResult : IFormulaFinderSearchResult
     {

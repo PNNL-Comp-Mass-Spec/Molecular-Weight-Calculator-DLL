@@ -2,6 +2,9 @@
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Isotope info
+    /// </summary>
     [ComVisible(false)]
     public class IsotopeInfo
     {

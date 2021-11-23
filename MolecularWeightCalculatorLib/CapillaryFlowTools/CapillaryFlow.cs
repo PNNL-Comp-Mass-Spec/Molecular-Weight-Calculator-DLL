@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.CapillaryFlowTools
 {
+    /// <summary>
+    /// Capillary flow tools
+    /// </summary>
     [ComVisible(false)]
     public class CapillaryFlow
     {
@@ -521,11 +524,11 @@ namespace MolecularWeightCalculator.CapillaryFlowTools
         /// <summary>
         /// Updates the auto-compute mode
         /// </summary>
-        /// <param name="autoCompute"></param>
         /// <remarks>
         /// When true, values will be auto-computed based on mAutoComputeMode
         /// When false, you must manually call a Compute method to re-compute the value
         /// </remarks>
+        /// <param name="autoCompute"></param>
         public void SetAutoComputeEnabled(bool autoCompute)
         {
             mAutoCompute = autoCompute;

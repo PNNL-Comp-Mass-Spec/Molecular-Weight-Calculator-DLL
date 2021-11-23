@@ -5,13 +5,11 @@ using MolecularWeightCalculator.COMInterfaces;
 namespace MolecularWeightCalculator
 {
     /// <summary>
-    /// Compatibility/COM wrapper for CapillaryFlowTools classes
+    /// Compatibility/COM wrapper for the Molecular Weight Calculator CapillaryFlowTools classes
     /// </summary>
     [Guid("502420CE-99CB-4674-B41A-EBF7D9A78BBA"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
     public class CapillaryFlow : ICapillaryFlow
     {
-        // Molecular Weight Calculator routines with ActiveX Class interfaces: CapillaryFlow
-
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
         // Converted to C# by Bryson Gibbons in 2021
@@ -168,13 +166,13 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Convert concentration
         /// </summary>
-        /// <param name="concentrationIn"></param>
-        /// <param name="currentUnits"></param>
-        /// <param name="newUnits"></param>
         /// <remarks>
         /// Duplicated method, in both CapillaryFlow and MoleMassDilution
         /// Both use UnitConversions.ConvertConcentration)
         /// </remarks>
+        /// <param name="concentrationIn"></param>
+        /// <param name="currentUnits"></param>
+        /// <param name="newUnits"></param>
         public double ConvertConcentration(double concentrationIn, UnitOfConcentration currentUnits, UnitOfConcentration newUnits)
         {
             return UnitConversions.ConvertConcentration(concentrationIn, currentUnits, newUnits, mMassRate.GetSampleMass());
@@ -381,11 +379,11 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Updates the auto-compute mode
         /// </summary>
-        /// <param name="autoCompute"></param>
         /// <remarks>
         /// When true, values will be auto-computed based on mAutoComputeMode
         /// When false, you must manually call a Compute method to re-compute the value
         /// </remarks>
+        /// <param name="autoCompute"></param>
         public void SetAutoComputeEnabled(bool autoCompute)
         {
             mCapillaryFlow.SetAutoComputeEnabled(autoCompute);

@@ -8,6 +8,9 @@ using MolecularWeightCalculator.Formula;
 
 namespace MolecularWeightCalculator.FormulaFinder
 {
+    /// <summary>
+    /// Formula finder class
+    /// </summary>
     [Guid("B24497AD-A29D-4266-A33A-EF97B86EA578"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IFormulaSearcherEvents)), ComVisible(true)]
     public class FormulaSearcher : IFormulaSearcher, IFormulaSearcherEvents
     {
@@ -78,7 +81,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Element symbols to consider when finding empirical formulas
         /// </summary>
-        /// <value></value>
         /// <remarks>The values in the dictionary are target percent composition values; only used if you call FindMatchesByPercentComposition</remarks>
         public Dictionary<string, CandidateElementTolerances> CandidateElements
         {
@@ -178,10 +180,10 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Add a candidate element, abbreviation, or monoisotopic mass
         /// </summary>
+        /// <remarks>This method should be used when defining elements for a bounded search</remarks>
         /// <param name="elementSymbolAbbrevOrMass">Element symbol, abbreviation symbol, or monoisotopic mass</param>
         /// <param name="minimumCount">Minimum occurrence count</param>
         /// <param name="maximumCount">Maximum occurrence count</param>
-        /// <remarks>This method should be used when defining elements for a bounded search</remarks>
         public void AddCandidateElement(string elementSymbolAbbrevOrMass, int minimumCount, int maximumCount)
         {
             var elementTolerances = GetDefaultCandidateElementTolerance(minimumCount, maximumCount);
@@ -256,6 +258,13 @@ namespace MolecularWeightCalculator.FormulaFinder
             return FindMatchesByMass(targetMass, massToleranceDa, searchOptions).ToArray();
         }
 
+        /// <summary>
+        /// Find empirical formulas that match target percent composition values
+        /// </summary>
+        /// <param name="maximumFormulaMass"></param>
+        /// <param name="percentTolerance"></param>
+        /// <param name="searchOptions"></param>
+        /// <returns>Search results, as a list</returns>
         public List<SearchResult> FindMatchesByPercentComposition(
             double maximumFormulaMass,
             double percentTolerance,
@@ -270,6 +279,13 @@ namespace MolecularWeightCalculator.FormulaFinder
             return sortedResults;
         }
 
+        /// <summary>
+        /// Find empirical formulas that match target percent composition values
+        /// </summary>
+        /// <param name="maximumFormulaMass"></param>
+        /// <param name="percentTolerance"></param>
+        /// <param name="searchOptions"></param>
+        /// <returns>Search results, as an array</returns>
         public SearchResult[] FindMatchesByPercentCompositionGetArray(double maximumFormulaMass, double percentTolerance, SearchOptions searchOptions)
         {
             // This version exists solely for COM interop support
@@ -471,12 +487,12 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Compare m/z to target
         /// </summary>
+        /// <remarks>True if the m/z is within tolerance of the target</remarks>
         /// <param name="totalMass"></param>
         /// <param name="totalCharge"></param>
         /// <param name="targetMass"></param>
         /// <param name="massToleranceDa"></param>
         /// <param name="multipleMtoZCharge"></param>
-        /// <remarks>True if the m/z is within tolerance of the target</remarks>
         private bool CheckMtoZWithTarget(
             double totalMass,
             double totalCharge,
@@ -526,6 +542,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Construct the empirical formula and verify hydrogens
         /// </summary>
+        /// <remarks>Common method to both molecular weight and percent composition matching</remarks>
         /// <param name="searchOptions"></param>
         /// <param name="empiricalFormula"></param>
         /// <param name="count1"></param>
@@ -547,7 +564,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="empiricalResultSymbols"></param>
         /// <param name="correctedCharge"></param>
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
-        /// <remarks>Common method to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompound(
             SearchOptions searchOptions,
             StringBuilder empiricalFormula,
@@ -612,6 +628,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// Construct the empirical formula and verify hydrogens
         /// </summary>
+        /// <remarks>Common method to both molecular weight and percent composition matching</remarks>
         /// <param name="searchOptions"></param>
         /// <param name="empiricalFormula"></param>
         /// <param name="sortedElementStats"></param>
@@ -624,7 +641,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="empiricalResultSymbols"></param>
         /// <param name="correctedCharge"></param>
         /// <returns>False if compound has too many hydrogens AND hydrogen checking is on, otherwise returns true</returns>
-        /// <remarks>Common method to both molecular weight and percent composition matching</remarks>
         private bool ConstructAndVerifyCompoundRecursive(
             SearchOptions searchOptions,
             StringBuilder empiricalFormula,

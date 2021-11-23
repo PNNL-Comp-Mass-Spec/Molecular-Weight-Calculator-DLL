@@ -7,11 +7,12 @@ using System.Windows.Forms;
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Molecular Weight Calculator routines with ActiveX Class interfaces: ElementAndMassTools
+    /// </summary>
     [ComVisible(false)]
     public class ElementAndMassTools
     {
-        // Molecular Weight Calculator routines with ActiveX Class interfaces: ElementAndMassTools
-
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2003
         // Converted to C# by Bryson Gibbons in 2021
@@ -244,6 +245,11 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Computes the Isotopic Distribution for a formula
         /// </summary>
+        /// <remarks>
+        /// Return results will have uncharged mass values if <paramref name="chargeState"/>=0,
+        /// Return results will have M+H values if <paramref name="chargeState"/>=1
+        /// Return results will have convoluted m/z if <paramref name="chargeState"/> is &gt; 1
+        /// </remarks>
         /// <param name="formulaIn">Input/output: The properly formatted formula to parse</param>
         /// <param name="chargeState">0 for monoisotopic (uncharged) masses; 1 or higher for convoluted m/z values</param>
         /// <param name="results">Output: Table of results</param>
@@ -255,12 +261,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="headerFraction">Header to use in <paramref name="results"/></param>
         /// <param name="headerIntensity">Header to use in <paramref name="results"/></param>
         /// <param name="useFactorials">Set to true to use Factorial math, which is typically slower; default is False</param>
-        /// <returns>true if success, false if an error</returns>
-        /// <remarks>
-        /// Return results will have uncharged mass values if <paramref name="chargeState"/>=0,
-        /// Return results will have M+H values if <paramref name="chargeState"/>=1
-        /// Return results will have convoluted m/z if <paramref name="chargeState"/> is &gt; 1
-        /// </remarks>
+        /// <returns>True if success, false if an error</returns>
         internal bool ComputeIsotopicAbundances(
             ref string formulaIn,
             short chargeState,
@@ -955,6 +956,7 @@ namespace MolecularWeightCalculator.Formula
             try
             {
                 double xValRange;
+
                 if (xyVals == null || xyVals.Count == 0)
                 {
                     return gaussianData;
@@ -1202,12 +1204,12 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Converts <paramref name="massMz"/> to the MZ that would appear at the given <paramref name="desiredCharge"/>
         /// </summary>
+        /// <remarks>To return the neutral mass, set <paramref name="desiredCharge"/> to 0</remarks>
         /// <param name="massMz"></param>
         /// <param name="currentCharge"></param>
         /// <param name="desiredCharge"></param>
         /// <param name="chargeCarrierMass">Charge carrier mass.  If 0, this method will use mChargeCarrierMass instead</param>
         /// <returns>The new m/z value</returns>
-        /// <remarks>To return the neutral mass, set <paramref name="desiredCharge"/> to 0</remarks>
         internal double ConvoluteMass(
             double massMz,
             short currentCharge,
@@ -1568,11 +1570,11 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Returns True if the first letter of <paramref name="testChar"/> is a ModSymbol
         /// </summary>
-        /// <param name="testChar"></param>
         /// <remarks>
         /// Invalid Mod Symbols are letters, numbers, ., -, space, (, or )
         /// Valid Mod Symbols are ! # $ % ampersand ' * + ? ^ ` ~
         /// </remarks>
+        /// <param name="testChar"></param>
         internal bool IsModSymbol(string testChar)
         {
             if (testChar.Length == 0)
@@ -1974,7 +1976,6 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="calculatorMode">When true, does not superscript + signs and numbers following + signs</param>
         /// <param name="errorData">Error details: error id, position, and characters</param>
         /// <param name="highlightErrorChars">When true, change the character(s) reported in <paramref name="errorData"/></param>
-        /// <returns></returns>
         internal string PlainTextToXaml(
             string workText,
             bool calculatorMode = false,

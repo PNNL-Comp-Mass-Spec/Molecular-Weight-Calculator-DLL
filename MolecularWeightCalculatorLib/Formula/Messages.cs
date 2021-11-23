@@ -51,7 +51,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="symbolCombo">symbol combo for the caution statement</param>
         /// <param name="cautionStatement">Output: caution statement text</param>
-        /// <returns>true if success, false symbolCombo is not recognized</returns>
+        /// <returns>True if success, false symbolCombo is not recognized</returns>
         internal bool GetCautionStatement(string symbolCombo, out string cautionStatement)
         {
             if (mCautionStatements.TryGetValue(symbolCombo, out cautionStatement))
@@ -66,12 +66,12 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Get message text using message ID
         /// </summary>
-        /// <param name="messageId"></param>
-        /// <param name="appendText"></param>
         /// <remarks>
         /// GetMessageStatement simply returns the message for <paramref name="messageId"/>
         /// LookupMessage formats the message, and possibly combines multiple messages, depending on the message number
         /// </remarks>
+        /// <param name="messageId"></param>
+        /// <param name="appendText"></param>
         internal string GetMessageStatement(int messageId, string appendText = "")
         {
             if (mMessageStatements.TryGetValue(messageId, out var message))
@@ -184,7 +184,7 @@ namespace MolecularWeightCalculator.Formula
         /// Look for the caution statement and remove it
         /// </summary>
         /// <param name="cautionSymbol"></param>
-        /// <returns>true if cautionSymbol was found and removed, otherwise false</returns>
+        /// <returns>True if cautionSymbol was found and removed, otherwise false</returns>
         internal bool RemoveCautionStatement(string cautionSymbol)
         {
             return mCautionStatements.Remove(cautionSymbol);
@@ -249,7 +249,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="newMessage"></param>
-        /// <returns>true if success, false if an error</returns>
+        /// <returns>True if success, false if an error</returns>
         internal bool SetMessageStatement(int messageId, string newMessage)
         {
             if (messageId is >= 1 and <= MESSAGE_STATEMENT_DIM_COUNT && newMessage.Length > 0)
@@ -276,6 +276,9 @@ namespace MolecularWeightCalculator.Formula
             MemoryLoadCautionStatementsEnglish(mCautionStatements);
         }
 
+        /// <summary>
+        /// Replaces the current message statements with the default messages
+        /// </summary>
         public void MemoryLoadMessageStatements()
         {
             MemoryLoadMessageStatementsEnglish(mMessageStatements);

@@ -6,19 +6,32 @@ using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Molecular Weight Calculator routines with ActiveX Class interfaces: Compound
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The compound class can be used to represent a compound
+    /// </para>
+    /// <para>
+    /// Use the Formula Property to enter the compound's formula
+    /// </para>
+    /// <para>
+    /// Use ErrorDescription and CautionDescription to see if there are any problems with the formula
+    /// </para>
+    /// <para>
+    /// Custom abbreviations can be defined using the SetAbbreviation() method in ElementAndMassTools
+    /// </para>
+    /// <para>
+    /// Note that the standard amino acids and 16 other abbreviations are defined by default (see MemoryLoadAbbreviations())
+    /// </para>
+    /// <para>
+    /// Use the Mass Property to get the mass of the compound
+    /// </para>
+    /// </remarks>
     [Guid("4631BE93-0F20-4E9C-96CF-BC0FBA38BF4E"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
     public class Compound : ICompound
     {
-        // Molecular Weight Calculator routines with ActiveX Class interfaces: Compound
-
-        // The compound class can be used to represent a compound
-        // Use the Formula Property to enter the compound's formula
-        // Use ErrorDescription and CautionDescription to see if there are any problems with the formula
-        // Custom abbreviations can be defined using the SetAbbreviation() method in ElementAndMassTools
-        // Note that the standard amino acids and 16 other abbreviations are defined by default (see MemoryLoadAbbreviations())
-
-        // Use the Mass Property to get the mass of the compound
-
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2002
         // Converted to C# by Bryson Gibbons in 2021
@@ -140,7 +153,6 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="atomicNumber"></param>
         /// <param name="includeStandardDeviation"></param>
-        /// <returns></returns>
         public string GetPercentCompositionForElementAsString(short atomicNumber, bool includeStandardDeviation = true)
         {
             // Returns the percent composition and standard deviation for element

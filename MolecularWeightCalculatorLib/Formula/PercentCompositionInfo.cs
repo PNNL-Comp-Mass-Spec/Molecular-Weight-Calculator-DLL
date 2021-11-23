@@ -2,6 +2,9 @@
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Percent composition info
+    /// </summary>
     [ComVisible(false)]
     public class PercentCompositionInfo
     {

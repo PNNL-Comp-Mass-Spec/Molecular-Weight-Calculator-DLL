@@ -79,14 +79,14 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Compute the total volume following the dilution, storing in .TotalFinalVolume, and returning it
         /// </summary>
-        /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
-        /// <param name="totalVolumeUnits"></param>
-        /// <param name="dilutingSolventUnits"></param>
         /// <remarks>
         /// If mDilutionValues.InitialConcentration is less than mDilutionValues.FinalConcentration, this represents evaporation or sublimation
         /// In this case, the computed value for mDilutionValues.TotalFinalVolume represents the volume that the solution must be reduced to in order to obtain the final concentration
         /// The computed value for newDilutingSolventVolume will be -1 when initialConcentration is less than finalConcentration
         /// </remarks>
+        /// <param name="newDilutingSolventVolume">Output: diluting solvent volume</param>
+        /// <param name="totalVolumeUnits"></param>
+        /// <param name="dilutingSolventUnits"></param>
         public double ComputeDilutionTotalVolume(
             out double newDilutingSolventVolume,
             UnitOfExtendedVolume totalVolumeUnits = UnitOfExtendedVolume.ML,
@@ -139,13 +139,13 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Convert concentration
         /// </summary>
-        /// <param name="concentrationIn"></param>
-        /// <param name="currentUnits"></param>
-        /// <param name="newUnits"></param>
         /// <remarks>
         /// Duplicated method, in both CapillaryFlow and MoleMassDilution
         /// Both use UnitConversions.ConvertConcentration)
         /// </remarks>
+        /// <param name="concentrationIn"></param>
+        /// <param name="currentUnits"></param>
+        /// <param name="newUnits"></param>
         public double ConvertConcentration(double concentrationIn, UnitOfMoleMassConcentration currentUnits, UnitOfMoleMassConcentration newUnits)
         {
             return UnitConversions.ConvertConcentration(concentrationIn, currentUnits, newUnits, mQuantity.GetSampleMass());
@@ -234,11 +234,11 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Updates the auto-compute mode for dilution-related values
         /// </summary>
-        /// <param name="autoCompute"></param>
         /// <remarks>
         /// When true, dilution-related values will be auto-computed based on mAutoComputeDilutionMode
         /// When false, you must manually call a Compute method to re-compute the value
         /// </remarks>
+        /// <param name="autoCompute"></param>
         public void SetAutoComputeDilutionEnabled(bool autoCompute)
         {
             mDilution.SetAutoComputeEnabled(autoCompute);
@@ -256,11 +256,11 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Updates the auto-compute mode for quantity-related values
         /// </summary>
-        /// <param name="autoCompute"></param>
         /// <remarks>
         /// When true, quantity-related values will be auto-computed based on mAutoComputeQuantityMode
         /// When false, you must manually call a Compute method to re-compute the value
         /// </remarks>
+        /// <param name="autoCompute"></param>
         public void SetAutoComputeQuantityEnabled(bool autoCompute)
         {
             mQuantity.SetAutoComputeEnabled(autoCompute);

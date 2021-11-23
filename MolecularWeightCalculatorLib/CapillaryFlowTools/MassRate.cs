@@ -2,6 +2,9 @@
 
 namespace MolecularWeightCalculator.CapillaryFlowTools
 {
+    /// <summary>
+    /// Mass flow rate tools
+    /// </summary>
     [ComVisible(false)]
     public class MassRate
     {

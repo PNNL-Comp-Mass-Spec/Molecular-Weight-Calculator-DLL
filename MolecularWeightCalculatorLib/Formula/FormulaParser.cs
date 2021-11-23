@@ -7,6 +7,9 @@ using System.Text.RegularExpressions;
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Formula parser
+    /// </summary>
     [ComVisible(false)]
     public class FormulaParser
     {
@@ -115,9 +118,9 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Compute the weight of a formula (or abbreviation)
         /// </summary>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
         /// <param name="formula">Input</param>
         /// <returns>The formula mass, or -1 if an error occurs</returns>
-        /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(string formula)
         {
             return ComputeFormulaWeight(ref formula);
@@ -126,10 +129,10 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Compute the weight of a formula (or abbreviation)
         /// </summary>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
         /// <param name="formula">Input</param>
         /// <param name="stdDev">Computed standard deviation</param>
         /// <returns>The formula mass, or -1 if an error occurs</returns>
-        /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(string formula, out double stdDev)
         {
             return ComputeFormulaWeight(ref formula, out stdDev);
@@ -138,9 +141,9 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Compute the weight of a formula (or abbreviation)
         /// </summary>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
         /// <param name="formula">Input/output: updated by ParseFormula</param>
         /// <returns>The formula mass, or -1 if an error occurs</returns>
-        /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(ref string formula)
         {
             return ComputeFormulaWeight(ref formula, out _);
@@ -149,10 +152,10 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Compute the weight of a formula (or abbreviation)
         /// </summary>
+        /// <remarks>Error information is stored in ErrorParams</remarks>
         /// <param name="formula">Input/output: updated by ParseFormula</param>
         /// <param name="stdDev">Computed standard deviation</param>
         /// <returns>The formula mass, or -1 if an error occurs</returns>
-        /// <remarks>Error information is stored in ErrorParams</remarks>
         public double ComputeFormulaWeight(ref string formula, out double stdDev)
         {
             var data = (FormulaParseData)ParseFormula(formula, false);
@@ -443,15 +446,15 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Determines the molecular weight and elemental composition of <paramref name="formula"/>
         /// </summary>
+        /// <remarks>
+        /// ErrorParams will hold information on errors that occur (previous errors are cleared when this method is called)
+        /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this method)
+        /// </remarks>
         /// <param name="formula">Input/output: formula to parse</param>
         /// <param name="computationStats">Output: additional information about the formula</param>
         /// <param name="expandAbbreviations"></param>
         /// <param name="valueForUnknown"></param>
         /// <returns>Computed molecular weight if no error; otherwise -1</returns>
-        /// <remarks>
-        /// ErrorParams will hold information on errors that occur (previous errors are cleared when this method is called)
-        /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this method)
-        /// </remarks>
         [Obsolete("Change to use ParseFormula instead.")]
         public double ParseFormula(
             ref string formula,
@@ -470,14 +473,14 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Determines the molecular weight and elemental composition of <paramref name="formula"/>
         /// </summary>
-        /// <param name="formula">Input/output: formula to parse</param>
-        /// <param name="expandAbbreviations"></param>
-        /// <param name="valueForUnknown"></param>
-        /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         /// <remarks>
         /// ErrorParams will hold information on errors that occur (previous errors are cleared when this method is called)
         /// Use ComputeFormulaWeight if you only want to know the weight of a formula (it calls this method)
         /// </remarks>
+        /// <param name="formula">Input/output: formula to parse</param>
+        /// <param name="expandAbbreviations"></param>
+        /// <param name="valueForUnknown"></param>
+        /// <returns>Computed molecular weight if no error; otherwise -1</returns>
         public IFormulaParseData ParseFormula(
             string formula,
             bool expandAbbreviations = false,
@@ -1074,14 +1077,14 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Convert a formula from UniMod style to the style recognized by this software
         /// </summary>
-        /// <param name="formula"></param>
-        /// <returns>Updated formula</returns>
         /// <remarks>
         /// Examples:
         /// H(4) 13C(3) O             -> H4 ^13C3 O
         /// H(3) C(6) N O             -> H3 C6 N O
         /// H(12) C(6) 13C N 15N 18O  -> H12 C6 ^13C N ^15N ^18O
         /// </remarks>
+        /// <param name="formula"></param>
+        /// <returns>Updated formula</returns>
         private static string ConvertFormulaNotation(string formula)
         {
             var uniModStyle = mNegativeCountMatcher.Match(formula).Success || mIsotopeMatcher.Match(formula).Success || mElementMatcher.Match(formula).Success;

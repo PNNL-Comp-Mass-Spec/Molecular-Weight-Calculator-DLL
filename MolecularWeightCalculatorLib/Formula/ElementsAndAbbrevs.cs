@@ -240,7 +240,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="oneLetterSymbol">Output: one letter symbol (only used by amino acids)</param>
         /// <param name="comment">Output: comment</param>
         /// <param name="invalidSymbolOrFormula">Output: true if an invalid symbol or formula</param>
-        /// <returns>true if success, false if abbreviationId is invalid</returns>
+        /// <returns>True if success, false if abbreviationId is invalid</returns>
         internal bool GetAbbreviation(
             int abbreviationId,
             out string symbol,
@@ -331,6 +331,9 @@ namespace MolecularWeightCalculator.Formula
             return string.Empty;
         }
 
+        /// <summary>
+        /// Get the current charge carrier mass
+        /// </summary>
         public double GetChargeCarrierMass()
         {
             return ChargeCarrierMass;
@@ -350,7 +353,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="uncertainty">Uncertainty of the mass</param>
         /// <param name="charge">Charge</param>
         /// <param name="isotopeCount">Number of isotopes</param>
-        /// <returns>true if success, false if atomicNumber is invalid</returns>
+        /// <returns>True if success, false if atomicNumber is invalid</returns>
         internal bool GetElement(
             short atomicNumber,
             out string symbol,
@@ -404,7 +407,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="isotopeCount"></param>
         /// <param name="isotopeMasses">output, 0-based array</param>
         /// <param name="isotopeAbundances">output, 0-based array</param>
-        /// <returns>true if success, false if atomicNumber is invalid</returns>
+        /// <returns>True if success, false if atomicNumber is invalid</returns>
         internal bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
             if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
@@ -445,8 +448,8 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Return the element symbol for the given element ID
         /// </summary>
-        /// <param name="atomicNumber"></param>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
+        /// <param name="atomicNumber"></param>
         internal string GetElementSymbol(short atomicNumber)
         {
             if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
@@ -465,9 +468,9 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Returns a single bit of information about a single element
         /// </summary>
+        /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         /// <param name="atomicNumber">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
-        /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         internal double GetElementStat(short atomicNumber, ElementStatsType elementStat)
         {
             if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
@@ -603,10 +606,10 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Load elements and isotopes; also calls <see cref="ConstructMasterSymbolsList"/> and <see cref="RecomputeAbbreviationMasses"/> when done
         /// </summary>
+        /// <remarks>
         /// <param name="elementMode">Element mode: 1 for average weights, 2 for monoisotopic weights, 3 for integer weights</param>
         /// <param name="specificElement"></param>
         /// <param name="specificStatToReset"></param>
-        /// <remarks>
         /// <paramref name="specificElement"/> and <paramref name="specificStatToReset"/> are zero when updating all of the elements and isotopes.
         /// nonzero <paramref name="specificElement"/> and <paramref name="specificStatToReset"/> values will set just that specific value to the default
         /// </remarks>
@@ -812,7 +815,7 @@ namespace MolecularWeightCalculator.Formula
         /// Look for the abbreviation and remove it
         /// </summary>
         /// <param name="abbreviationSymbol"></param>
-        /// <returns>true if found and removed, false abbreviationSymbol was not found</returns>
+        /// <returns>True if found and removed, false abbreviationSymbol was not found</returns>
         internal bool RemoveAbbreviation(string abbreviationSymbol)
         {
             var removed = false;
@@ -835,7 +838,7 @@ namespace MolecularWeightCalculator.Formula
         /// Remove the abbreviation at index <paramref name="abbreviationId"/>
         /// </summary>
         /// <param name="abbreviationId"></param>
-        /// <returns>true if found and removed, false abbreviationId is invalid</returns>
+        /// <returns>True if found and removed, false abbreviationId is invalid</returns>
         internal bool RemoveAbbreviationById(int abbreviationId)
         {
             if (abbreviationId < 0 || abbreviationId >= mAbbrevStats.Count)
@@ -852,6 +855,11 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Adds a new abbreviation or updates an existing one (based on <paramref name="symbol"/>)
         /// </summary>
+        /// <remarks>
+        /// It is useful to set <paramref name="validateFormula"/> = false when you're defining all of the abbreviations at once,
+        /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
+        /// defined, then the parsing of the first abbreviation will fail
+        /// </remarks>
         /// <param name="symbol"></param>
         /// <param name="formula"></param>
         /// <param name="charge"></param>
@@ -860,11 +868,6 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="comment"></param>
         /// <param name="validateFormula">If true, make sure the formula is valid</param>
         /// <returns>0 if success, otherwise an error ID</returns>
-        /// <remarks>
-        /// It is useful to set <paramref name="validateFormula"/> = false when you're defining all of the abbreviations at once,
-        /// since one abbreviation can depend upon another, and if the second abbreviation hasn't yet been
-        /// defined, then the parsing of the first abbreviation will fail
-        /// </remarks>
         internal int SetAbbreviation(
             string symbol, string formula,
             float charge, bool isAminoAcid,
@@ -1011,6 +1014,10 @@ namespace MolecularWeightCalculator.Formula
             return RecomputeAbbreviationMasses();
         }
 
+        /// <summary>
+        /// Set the charge carrier mass
+        /// </summary>
+        /// <param name="mass"></param>
         internal void SetChargeCarrierMass(double mass)
         {
             ChargeCarrierMass = mass;
@@ -1024,7 +1031,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="uncertainty"></param>
         /// <param name="charge"></param>
         /// <param name="recomputeAbbreviationMasses">Set to False if updating several elements</param>
-        /// <returns>true if success, false if symbol is not a valid element symbol</returns>
+        /// <returns>True if success, false if symbol is not a valid element symbol</returns>
         internal bool SetElement(string symbol, double mass, double uncertainty, float charge, bool recomputeAbbreviationMasses = true)
         {
             if (string.IsNullOrWhiteSpace(symbol))
@@ -1064,7 +1071,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="symbol"></param>
         /// <param name="isotopeMasses">0-based array</param>
         /// <param name="isotopeAbundances">0-based array</param>
-        /// <returns>true if success, false if symbol is not a valid element symbol</returns>
+        /// <returns>True if success, false if symbol is not a valid element symbol</returns>
         internal bool SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
         {
             if (string.IsNullOrWhiteSpace(symbol))
@@ -1083,6 +1090,7 @@ namespace MolecularWeightCalculator.Formula
                 {
                     if (isotopeIndex > MAX_ISOTOPES)
                         break;
+
                     stats.Isotopes.Add(new IsotopeInfo(isotopeMasses[isotopeIndex], isotopeAbundances[isotopeIndex]));
                 }
 

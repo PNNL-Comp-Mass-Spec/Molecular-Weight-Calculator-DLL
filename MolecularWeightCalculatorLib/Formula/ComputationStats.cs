@@ -2,6 +2,9 @@
 
 namespace MolecularWeightCalculator.Formula
 {
+    /// <summary>
+    /// Class tracking elements and percent compositions for a formula
+    /// </summary>
     [ComVisible(false)]
     public class ComputationStats
     {

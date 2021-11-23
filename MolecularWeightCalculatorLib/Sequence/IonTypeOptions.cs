@@ -2,10 +2,12 @@
 
 namespace MolecularWeightCalculator.Sequence
 {
+    /// <summary>
+    /// MS/MS fragmentation ion type options
+    /// </summary>
     [ComVisible(false)]
     public class IonTypeOptions
     {
-        // Note: A ions can have ammonia and phosphate loss, but not water loss, so this is set to false by default
         public bool ShowIon { get; set; }
         public bool NeutralLossWater { get; set; }
         public bool NeutralLossAmmonia { get; set; }

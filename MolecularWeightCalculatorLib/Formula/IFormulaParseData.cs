@@ -41,7 +41,7 @@ namespace MolecularWeightCalculator.Formula
         string CautionDescription { get; }
 
         /// <summary>
-        /// Error data object for the formula parsing
+        /// Error data object for formula parsing
         /// </summary>
         IErrorData ErrorData { get; }
     }
@@ -50,12 +50,26 @@ namespace MolecularWeightCalculator.Formula
     public interface IErrorData
     {
         /// <summary>
-        /// Contains the error number (used in the LookupMessage method).
-        /// In addition, if a program error occurs, ErrorParams.ErrorID = -10
+        /// Contains the error number (used in the LookupMessage method)
         /// </summary>
+        /// <remarks>
+        /// If a program error occurs, ErrorID is set to -10
+        /// </remarks>
         int ErrorId { get; }
+
+        /// <summary>
+        /// Error position in a formula
+        /// </summary>
         int ErrorPosition { get; }
+
+        /// <summary>
+        /// Error character at the error position
+        /// </summary>
         string ErrorCharacter { get; }
+
+        /// <summary>
+        /// Error description
+        /// </summary>
         string ErrorDescription { get; }
     }
 }

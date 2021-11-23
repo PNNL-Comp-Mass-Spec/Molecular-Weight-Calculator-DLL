@@ -4,6 +4,9 @@ using MolecularWeightCalculator.COMInterfaces;
 
 namespace MolecularWeightCalculator.Sequence
 {
+    /// <summary>
+    /// MS/MS fragmentation spectrum data
+    /// </summary>
     [Guid("F558EA24-E939-4062-9B18-58CE27972B33"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
     public class FragmentationSpectrumData : IFragmentationSpectrumData, IComparable<FragmentationSpectrumData>
     {
