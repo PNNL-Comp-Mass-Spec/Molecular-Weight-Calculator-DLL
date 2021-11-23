@@ -2102,6 +2102,7 @@ namespace MolecularWeightCalculator.Sequence
                 SetModificationSymbol("@", 15.99492d, false, "Oxidation [O]");
                 SetModificationSymbol("!", 57.02146d, false, "Carbamidomethylation [C2H3NO]");
                 SetModificationSymbol("&", 58.00548d, false, "Carboxymethylation [CH2CO2]");
+                // ReSharper disable once StringLiteralTypo
                 SetModificationSymbol("#", 71.03711d, false, "Acrylamide [CHCH2CONH2]");
                 SetModificationSymbol("$", 227.127d, false, "Cleavable ICAT [(^12C10)H17N3O3]");
                 SetModificationSymbol("%", 236.127d, false, "Cleavable ICAT [(^13C9)(^12C)H17N3O3]");
