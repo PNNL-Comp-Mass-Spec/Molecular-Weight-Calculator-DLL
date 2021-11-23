@@ -149,11 +149,6 @@ namespace MolecularWeightCalculator.Sequence
         private double mTotalMass;
 
         /// <summary>
-        /// Water loss: -H2O
-        /// </summary>
-        private string mWaterLossSymbol;
-
-        /// <summary>
         /// Ammonia loss: -NH3
         /// </summary>
         private string mAmmoniaLossSymbol;
@@ -163,14 +158,14 @@ namespace MolecularWeightCalculator.Sequence
         /// </summary>
         private string mPhosphoLossSymbol;
 
+        /// <summary>
+        /// Water loss: -H2O
+        /// </summary>
+        private string mWaterLossSymbol;
+
         private FragmentationSpectrumOptions mFragSpectrumOptions = new();
 
         // ReSharper disable InconsistentNaming
-
-        /// <summary>
-        /// Mass of water
-        /// </summary>
-        private double mMassHOH;
 
         /// <summary>
         /// Mass of ammonia
@@ -181,6 +176,11 @@ namespace MolecularWeightCalculator.Sequence
         /// Mass of the phospho group, including water
         /// </summary>
         private double mMassH3PO4;
+
+        /// <summary>
+        /// Mass of water
+        /// </summary>
+        private double mMassHOH;
 
         // ReSharper restore InconsistentNaming
 
@@ -991,19 +991,37 @@ namespace MolecularWeightCalculator.Sequence
             return sequence;
         }
 
-        public string GetSymbolWaterLoss()
+        /// <summary>
+        /// Get the ammonia loss formula
+        /// </summary>
+        /// <remarks>
+        /// Defaults to -NH3
+        /// </remarks>
+        public string GetSymbolAmmoniaLoss()
         {
-            return mWaterLossSymbol;
+            return mAmmoniaLossSymbol;
         }
 
+        /// <summary>
+        /// Get the phosphorylation loss formula
+        /// </summary>
+        /// <remarks>
+        /// Defaults to -H3PO4
+        /// </remarks>
         public string GetSymbolPhosphoLoss()
         {
             return mPhosphoLossSymbol;
         }
 
-        public string GetSymbolAmmoniaLoss()
+        /// <summary>
+        /// Get the water loss formula
+        /// </summary>
+        /// <remarks>
+        /// Defaults to -H2O
+        /// </remarks>
+        public string GetSymbolWaterLoss()
         {
-            return mAmmoniaLossSymbol;
+            return mWaterLossSymbol;
         }
 
         /// <summary>
