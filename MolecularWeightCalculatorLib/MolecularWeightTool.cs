@@ -944,6 +944,25 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Set the isotopes for the element
         /// </summary>
+        /// <remarks>
+        /// The sum of the relative abundances should be 1.00
+        /// </remarks>
+        /// <param name="symbol"></param>
+        /// <param name="isotopeMasses">List of isotope masses</param>
+        /// <param name="isotopeAbundances">List of relative isotopic abundances (values between 0 and 1)</param>
+        /// <returns>True if success, false if symbol is not a valid element symbol</returns>
+        public bool SetElementIsotopes(string symbol, List<double> isotopeMasses, List<double> isotopeAbundances)
+        {
+            var abundancesAsFloat = new float[isotopeAbundances.Count];
+
+            for (var i = 0; i < isotopeAbundances.Count; i++)
+            {
+                abundancesAsFloat[i] = (float)isotopeAbundances[i];
+            }
+
+            return ElementAndMass.Elements.SetElementIsotopes(symbol, isotopeMasses.ToArray(), abundancesAsFloat);
+        }
+
         /// <summary>
         /// Set the isotopes for the element
         /// </summary>
