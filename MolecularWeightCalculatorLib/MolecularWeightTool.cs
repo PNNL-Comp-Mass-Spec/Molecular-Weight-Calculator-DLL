@@ -67,7 +67,7 @@ namespace MolecularWeightCalculator
 
         // Ignore Spelling: Arial, Bryson, centroided, interop, Nikša, xyVals
 
-        private const string PROGRAM_DATE = "April 19, 2021";
+        private const string PROGRAM_DATE = "November 22, 2021";
 
         /// <summary>
         /// Constructor, assumes the elements are using average masses
@@ -914,6 +914,17 @@ namespace MolecularWeightCalculator
             return ElementAndMass.Elements.SetElementIsotopes(symbol, isotopeMasses, isotopeAbundances);
         }
 
+        /// <summary>
+        /// Set the isotopes for the element
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="isotopeMasses">0-based array</param>
+        /// <param name="isotopeAbundances">0-based array</param>
+        /// <returns>True if success, false if symbol is not a valid element symbol</returns>
+        public bool SetElementIsotopes(string symbol, List<double> isotopeMasses, List<float> isotopeAbundances)
+        {
+            return ElementAndMass.Elements.SetElementIsotopes(symbol, isotopeMasses.ToArray(), isotopeAbundances.ToArray());
+        }
         /// <summary>
         /// Set the element mode used for mass calculations
         /// </summary>
