@@ -10,6 +10,8 @@ namespace MolecularWeightCalculator.Sequence
     [ComVisible(false)]
     internal class Residue
     {
+        // Ignore Spelling: phosphorylates, phosphorylation, phosphorylated, Ser, Thr, Tyr
+
         /// <summary>
         /// 3 letter symbol
         /// </summary>

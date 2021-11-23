@@ -10,7 +10,7 @@ namespace UnitTests.FunctionalTests
 {
     public class MwtAPITests : TestBase
     {
-        // Ignore Spelling: Acetyl, amol, Da, fmol, fmoles, mol, ng, terminii
+        // Ignore Spelling: Acetyl, amol, Da, fmol, fmoles, mol, ng, phosphorylated, terminii
         // Ignore Spelling: Ala, Arg, Cys, Glu, Gly, Lys, Phe, Tyr,
 
         /// <summary>

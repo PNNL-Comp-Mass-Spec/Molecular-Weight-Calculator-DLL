@@ -70,7 +70,8 @@ namespace MolecularWeightCalculator.Sequence
         /// </summary>
         public FragmentationSpectrumData(
             float mass, float intensity, string ionSymbol, string ionSymbolGeneric,
-            int sourceResidue, string sourceResidueSymbol3Letter, short charge, IonType ionType, bool isShoulderIon = false)
+            int sourceResidue, string sourceResidueSymbol3Letter, short charge, IonType ionType,
+            bool isShoulderIon = false)
         {
             Mass = mass;
             Intensity = intensity;

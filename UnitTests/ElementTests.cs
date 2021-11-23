@@ -7,7 +7,7 @@ namespace UnitTests
     public class ElementTests : TestBase
     {
         // Ignore Spelling: cd, dy, nb, nd, ni, np, os, ph, pu, py, sb, sc, si, sn, yb, bpy, cys, hoh, hyp, oac
-        // Ignore Spelling: bipyridine, hydroxyproline
+        // Ignore Spelling: bipyridine, cysteine, Da, hydroxyproline, proline, valine
 
         /// <summary>
         /// Initialize the Molecular Weight Calculator objects

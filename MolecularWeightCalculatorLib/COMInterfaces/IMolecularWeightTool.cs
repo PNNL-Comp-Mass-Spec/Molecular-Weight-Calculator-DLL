@@ -8,7 +8,7 @@ using MolecularWeightCalculator.Sequence;
 
 namespace MolecularWeightCalculator.COMInterfaces
 {
-    // Ignore Spelling: interop, xyVals
+    // Ignore Spelling: centroided, interop, xyVals
 
     [Guid("5A9D3A30-60D4-4C36-AD67-C734678D1CEB"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch), ComVisible(true)]
     public interface IMolecularWeightToolEvents

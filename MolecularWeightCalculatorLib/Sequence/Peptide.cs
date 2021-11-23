@@ -32,8 +32,9 @@ namespace MolecularWeightCalculator.Sequence
         // SOFTWARE.  This notice including this sentence must appear on any copies of
         // this computer software.
 
-        // Ignore Spelling: Acetyl, acrylamide, Bryson, carbamyl, Da, frag, Carboxymethylation, immonium
-        // Ignore Spelling: methylation, phosphorylates, pyro, terminii, Xxx
+        // Ignore Spelling: Acetyl, acrylamide, Bryson, Carbamidomethylation, carbamyl, Carboxymethylation, Cleavable, Da
+        // Ignore Spelling: frag, immonium, methylation, Phospho, phosphorylated, phosphorylates, phosphorylation
+        // Ignore Spelling: Proline, pyro, terminii, tryptic, Xxx
         // Ignore Spelling: Arg, Asn, Gln, Glu, Gly, Leu, Lys, Phe, Ser, Thr, Tyr
 
         /// <summary>

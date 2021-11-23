@@ -27,6 +27,7 @@ namespace MolecularWeightCalculator
             {
                 return -32767;
             }
+
             return 32767;
         }
 
@@ -41,6 +42,7 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
+
             return 0;
         }
 
@@ -55,6 +57,7 @@ namespace MolecularWeightCalculator
             {
                 return int.MinValue;
             }
+
             return int.MaxValue;
         }
 
@@ -69,6 +72,7 @@ namespace MolecularWeightCalculator
             {
                 return -1;
             }
+
             return 0;
         }
 
@@ -85,6 +89,7 @@ namespace MolecularWeightCalculator
                 {
                     return string.Empty;
                 }
+
                 return item.ToString();
             }
             catch

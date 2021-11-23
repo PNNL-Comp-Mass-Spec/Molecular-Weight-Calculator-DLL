@@ -13,7 +13,7 @@ namespace MolecularWeightCalculatorGUI.Utilities
                 return value;
             }
 
-            return !(bool) value;
+            return !(bool)value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

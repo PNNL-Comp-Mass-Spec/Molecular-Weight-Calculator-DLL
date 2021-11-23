@@ -12,7 +12,7 @@ namespace MolecularWeightCalculator.COMInterfaces
     [Guid("BE0BB73D-727C-4607-993F-9E21626FDC13"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
     public interface IPeptide
     {
-        // Ignore Spelling: frag
+        // Ignore Spelling: acetyl, carbamyl, frag, immonium, phospho, phosphorylation, tryptic
 
         /// <summary>
         /// Get fragmentation masses
@@ -208,7 +208,6 @@ namespace MolecularWeightCalculator.COMInterfaces
             string terminiiSymbol = Peptide.TERMINII_SYMBOL,
             bool ignoreCase = true,
             int proteinSearchStartLoc = 0);
-
 
         /// <summary>
         /// Examines <paramref name="peptideResidues"/> to see where they exist in <paramref name="proteinResidues"/>
