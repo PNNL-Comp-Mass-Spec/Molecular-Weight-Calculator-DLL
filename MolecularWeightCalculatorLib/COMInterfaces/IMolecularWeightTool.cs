@@ -228,6 +228,16 @@ namespace MolecularWeightCalculator.COMInterfaces
         bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances);
 
         /// <summary>
+        /// Returns the isotope masses and abundances for the given element
+        /// </summary>
+        /// <param name="elementSymbol">Element symbol, e.g. C or Li or P</param>
+        /// <param name="isotopeCount">Output: isotope count</param>
+        /// <param name="isotopeMasses">Output: 0-based array of isotope masses</param>
+        /// <param name="isotopeAbundances">Output: 0-based array of relative abundances</param>
+        /// <returns>True if success, false if elementSymbol is invalid</returns>
+        bool GetElementIsotopes(string elementSymbol, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances);
+
+        /// <summary>
         /// Get the current element mode
         /// </summary>
         /// <returns>

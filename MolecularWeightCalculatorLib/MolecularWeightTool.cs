@@ -636,6 +636,30 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
+        /// Returns the isotope masses and relative abundances for the given element
+        /// </summary>
+        /// <param name="elementSymbol">Element symbol, e.g. C or Li or P</param>
+        /// <param name="isotopeCount">Output: isotope count</param>
+        /// <param name="isotopeMasses">Output: 0-based array of isotope masses</param>
+        /// <param name="isotopeAbundances">Output: 0-based array of relative abundances</param>
+        /// <returns>True if success, false if elementSymbol is invalid</returns>
+        public bool GetElementIsotopes(string elementSymbol, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
+        {
+            var atomicNumber = ElementAndMass.Elements.GetAtomicNumber(elementSymbol);
+
+            if (atomicNumber > 0)
+            {
+                return GetElementIsotopes(atomicNumber, out isotopeCount, out isotopeMasses, out isotopeAbundances);
+            }
+
+            isotopeCount = 0;
+            isotopeMasses = Array.Empty<double>();
+            isotopeAbundances = Array.Empty<float>();
+
+            return false;
+        }
+
+        /// <summary>
         /// Get the current element mode
         /// </summary>
         /// <returns>
