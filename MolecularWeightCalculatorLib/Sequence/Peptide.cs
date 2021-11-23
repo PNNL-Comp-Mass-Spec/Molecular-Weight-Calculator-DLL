@@ -1752,7 +1752,7 @@ namespace MolecularWeightCalculator.Sequence
                 // Peptide database rules
                 // See if prefix and suffix are "" or are terminiiSymbol
                 if (prefix == (terminiiSymbol ?? string.Empty) && suffix == (terminiiSymbol ?? string.Empty) ||
-                    prefix?.Length == 0 && suffix?.Length == 0)
+                    prefix.Length == 0 && suffix.Length == 0)
                 {
                     ruleMatchCount = 2;
                     matchesCleavageRule = true;
