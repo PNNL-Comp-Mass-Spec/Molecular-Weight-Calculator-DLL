@@ -67,9 +67,12 @@ namespace MolecularWeightCalculator.Formula
             return cloned;
         }
 
+        /// <summary>
+        /// Show the mass
+        /// </summary>
         public override string ToString()
         {
-            return $"{TotalMass:F2}";
+            return string.Format("{0:F2}", TotalMass);
         }
     }
 }

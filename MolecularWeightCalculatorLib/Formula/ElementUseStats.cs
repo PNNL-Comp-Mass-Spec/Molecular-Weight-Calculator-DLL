@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace MolecularWeightCalculator.Formula
@@ -94,11 +95,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         public override string ToString()
         {
-            if (!Used)
-            {
-                return "unused";
-            }
-            return $"{Count}";
+            return Used ? Count.ToString(CultureInfo.InvariantCulture) : "unused";
         }
     }
 

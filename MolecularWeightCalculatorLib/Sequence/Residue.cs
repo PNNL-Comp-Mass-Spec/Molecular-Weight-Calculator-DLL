@@ -52,9 +52,12 @@ namespace MolecularWeightCalculator.Sequence
             Phosphorylated = false;
         }
 
+        /// <summary>
+        /// Show the residue symbol, mass, b ion m/z, and y ion m/z
+        /// </summary>
         public override string ToString()
         {
-            return $"{Symbol}: {Mass}, b {IonMass[1]}, y {IonMass[2]}";
+            return string.Format("{0}: {1:F2}, b {2:F2}, y {3:F2}", Symbol, Mass, IonMass[1], IonMass[2]);
         }
     }
 }

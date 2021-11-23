@@ -64,9 +64,12 @@ namespace MolecularWeightCalculator.Formula
             return lengthCompare;
         }
 
+        /// <summary>
+        /// Show the symbol, match type, and index
+        /// </summary>
         public override string ToString()
         {
-            return $"{Symbol}: {MatchType} index {Index}";
+            return string.Format("{0}: {1} index {2}", Symbol, MatchType, Index);
         }
     }
 }

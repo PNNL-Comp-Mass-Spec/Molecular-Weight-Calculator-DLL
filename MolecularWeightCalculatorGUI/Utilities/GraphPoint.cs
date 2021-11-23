@@ -17,9 +17,12 @@ namespace MolecularWeightCalculatorGUI.Utilities
             YUnits = yUnits;
         }
 
+        /// <summary>
+        /// Show the X and Y values, with units
+        /// </summary>
         public override string ToString()
         {
-            return $"X: {X} {XUnits}; Y: {Y} {YUnits}";
+            return string.Format("X: {0:F2} {1}; Y: {2:F2} {3}", X, XUnits, Y, YUnits);
         }
 
         public DataPoint GetDataPoint()

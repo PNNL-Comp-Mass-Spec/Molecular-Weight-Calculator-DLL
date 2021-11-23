@@ -135,9 +135,12 @@ namespace MolecularWeightCalculator.Formula
                 MassAbundances = new float[count];
             }
 
+            /// <summary>
+            /// Show the element atomic number and atom count
+            /// </summary>
             public override string ToString()
             {
-                return $"Element {AtomicNumber}: {AtomCount} atoms";
+                return string.Format("Element {0}: {1} atoms", AtomicNumber, AtomCount);
             }
         }
 
@@ -146,9 +149,12 @@ namespace MolecularWeightCalculator.Formula
             public float Abundance { get; set; }
             public int Multiplicity { get; set; }
 
+            /// <summary>
+            /// Show the abundance
+            /// </summary>
             public override string ToString()
             {
-                return $"{Abundance:F2}";
+                return string.Format("{0:F2}", Abundance);
             }
         }
 
@@ -158,9 +164,12 @@ namespace MolecularWeightCalculator.Formula
             public double X { get; set; }
             public double Y { get; set; }
 
+            /// <summary>
+            /// Show the x and y values
+            /// </summary>
             public override string ToString()
             {
-                return $"{X:F2}: {Y:F2}";
+                return string.Format("{0:F2}, {1:F2}", X, Y);
             }
         }
 

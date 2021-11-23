@@ -25,9 +25,12 @@ namespace MolecularWeightCalculator.Formula
             return (IsotopicAtomInfo) MemberwiseClone();
         }
 
+        /// <summary>
+        /// Show isotope count and mass
+        /// </summary>
         public override string ToString()
         {
-            return $"{Count}x{Mass:F2}";
+            return string.Format("{0}x{1:F2}", Count, Mass);
         }
     }
 
