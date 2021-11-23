@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
@@ -238,7 +239,7 @@ namespace UnitTests.FunctionalTests
             capFlow.SetExtraColumnBroadeningInitialPeakWidthAtBase(30d, UnitOfTime.Seconds);
 
             Console.WriteLine("Computing broadening for 30 second wide peak through a 250 um open tube that is 5 cm long (4 cm/min)");
-            Console.WriteLine(capFlow.GetExtraColumnBroadeningResultantPeakWidth(UnitOfTime.Seconds).ToString());
+            Console.WriteLine(capFlow.GetExtraColumnBroadeningResultantPeakWidth(UnitOfTime.Seconds).ToString(CultureInfo.InvariantCulture));
         }
 
         [Test]
@@ -354,7 +355,7 @@ namespace UnitTests.FunctionalTests
             Console.WriteLine(resultString);
         }
 
-        private void OutputDataTable(int ionCount, FragmentationSpectrumData[] fragSpectrum)
+        private void OutputDataTable(int ionCount, IReadOnlyList<FragmentationSpectrumData> fragSpectrum)
         {
             // Output a table of data to the console
 

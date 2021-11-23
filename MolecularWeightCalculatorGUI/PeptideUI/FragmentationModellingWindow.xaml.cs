@@ -30,8 +30,8 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
 
             if (DataContext is FragmentationModellingViewModel viewModel)
             {
-                viewModel.NeutralLossIonTypes.RemoveMany(e.RemovedItems.Cast<object>().Where(x => x is IonType).Cast<IonType>());
-                var added = e.AddedItems.Cast<object>().Where(x => x is IonType).Cast<IonType>().Except(viewModel.NeutralLossIonTypes).ToList();
+                viewModel.NeutralLossIonTypes.RemoveMany(e.RemovedItems.Cast<object>().OfType<IonType>());
+                var added = e.AddedItems.Cast<object>().OfType<IonType>().Except(viewModel.NeutralLossIonTypes).ToList();
                 viewModel.NeutralLossIonTypes.AddRange(added);
             }
         }
