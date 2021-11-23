@@ -642,19 +642,7 @@ namespace MolecularWeightCalculator.Sequence
         /// </summary>
         public FragmentationSpectrumOptions GetFragmentationSpectrumOptions()
         {
-            // TODO: No possibility of failure???
-            try
-            {
-                return mFragSpectrumOptions;
-            }
-            catch (Exception ex)
-            {
-                mElementAndMassRoutines.GeneralErrorHandler("Peptide.GetFragmentationSpectrumOptions", ex);
-            }
-
-            var defaultOptions = new FragmentationSpectrumOptions();
-
-            return defaultOptions;
+            return mFragSpectrumOptions ?? new FragmentationSpectrumOptions();
         }
 
         /// <summary>
