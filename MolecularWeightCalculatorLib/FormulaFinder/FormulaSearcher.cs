@@ -215,8 +215,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, true);
 
-            var sortedResults = (from item in results orderby item.SortKey select item).ToList();
-            return sortedResults;
+            return (from item in results orderby item.SortKey select item).ToList();
         }
 
         /// <summary>
@@ -1379,26 +1378,22 @@ namespace MolecularWeightCalculator.FormulaFinder
 
         private CandidateElementTolerances GetDefaultCandidateElementTolerance(int minimumCount, int maximumCount)
         {
-            var elementTolerances = new CandidateElementTolerances
+            return new CandidateElementTolerances
             {
                 MinimumCount = minimumCount,    // Only used with the Bounded search mode
                 MaximumCount = maximumCount,    // Only used with the Bounded search mode
                 TargetPercentComposition = 0d   // Only used when searching for percent compositions
             };
-
-            return elementTolerances;
         }
 
         private CandidateElementTolerances GetDefaultCandidateElementTolerance(double targetPercentComposition = 0)
         {
-            var elementTolerances = new CandidateElementTolerances
+            return new CandidateElementTolerances
             {
                 MinimumCount = 0,               // Only used with the Bounded search mode
                 MaximumCount = 10,              // Only used with the Bounded search mode
                 TargetPercentComposition = targetPercentComposition   // Only used when searching for percent compositions
             };
-
-            return elementTolerances;
         }
 
         /// <summary>

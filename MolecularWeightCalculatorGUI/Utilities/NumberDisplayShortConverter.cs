@@ -10,7 +10,7 @@ namespace MolecularWeightCalculatorGUI.Utilities
         {
             if (value == null)
             {
-                return value;
+                return null;
             }
 
             if (value is string str && double.TryParse(str, out var num))
