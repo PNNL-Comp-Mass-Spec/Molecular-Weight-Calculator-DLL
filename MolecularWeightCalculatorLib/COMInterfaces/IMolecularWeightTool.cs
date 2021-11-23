@@ -218,7 +218,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         int GetAtomicNumber(string symbol);
 
         /// <summary>
-        /// Returns the isotope masses and abundances for the element with <paramref name="atomicNumber"/>
+        /// Returns the isotope masses and relative abundances for the element with <paramref name="atomicNumber"/>
         /// </summary>
         /// <param name="atomicNumber">Element ID, or atomic number</param>
         /// <param name="isotopeCount"></param>
@@ -372,6 +372,11 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <returns>True if success, false if symbol is not a valid element symbol</returns>
         bool SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances);
 
+        /// <summary>
+        /// Set the element mode used for mass calculations
+        /// </summary>
+        /// <param name="elementMode"></param>
+        /// <param name="forceMemoryLoadElementValues">Set to true if you want to force a reload of element weights, even if not changing element modes</param>
         void SetElementMode(ElementMassMode elementMode, bool forceMemoryLoadElementValues = false);
 
         /// <summary>

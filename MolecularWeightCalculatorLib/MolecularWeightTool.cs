@@ -623,12 +623,12 @@ namespace MolecularWeightCalculator
         }
 
         /// <summary>
-        /// Returns the isotope masses and abundances for the element with <paramref name="atomicNumber"/>
+        /// Returns the isotope masses and relative abundances for the element with <paramref name="atomicNumber"/>
         /// </summary>
         /// <param name="atomicNumber">Element atomic number (1 for hydrogen, 2 for helium, etc.)</param>
-        /// <param name="isotopeCount"></param>
-        /// <param name="isotopeMasses">output, 0-based array</param>
-        /// <param name="isotopeAbundances">output, 0-based array</param>
+        /// <param name="isotopeCount">Output: isotope count</param>
+        /// <param name="isotopeMasses">Output: 0-based array of isotope masses</param>
+        /// <param name="isotopeAbundances">Output: 0-based array of relative abundances</param>
         /// <returns>True if success, false if atomicNumber is invalid</returns>
         public bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
@@ -905,9 +905,12 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Set the isotopes for the element
         /// </summary>
+        /// <remarks>
+        /// The sum of the relative abundances should be 1.00
+        /// </remarks>
         /// <param name="symbol"></param>
-        /// <param name="isotopeMasses">0-based array</param>
-        /// <param name="isotopeAbundances">0-based array</param>
+        /// <param name="isotopeMasses">0-based array of isotope masses</param>
+        /// <param name="isotopeAbundances">0-based array of relative isotopic abundances (values between 0 and 1)</param>
         /// <returns>True if success, false if symbol is not a valid element symbol</returns>
         public bool SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
         {
@@ -917,14 +920,21 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Set the isotopes for the element
         /// </summary>
+        /// <summary>
+        /// Set the isotopes for the element
+        /// </summary>
+        /// <remarks>
+        /// The sum of the relative abundances should be 1.00
+        /// </remarks>
         /// <param name="symbol"></param>
-        /// <param name="isotopeMasses">0-based array</param>
-        /// <param name="isotopeAbundances">0-based array</param>
+        /// <param name="isotopeMasses">List of isotope masses</param>
+        /// <param name="isotopeAbundances">List of relative isotopic abundances (values between 0 and 1)</param>
         /// <returns>True if success, false if symbol is not a valid element symbol</returns>
         public bool SetElementIsotopes(string symbol, List<double> isotopeMasses, List<float> isotopeAbundances)
         {
             return ElementAndMass.Elements.SetElementIsotopes(symbol, isotopeMasses.ToArray(), isotopeAbundances.ToArray());
         }
+
         /// <summary>
         /// Set the element mode used for mass calculations
         /// </summary>

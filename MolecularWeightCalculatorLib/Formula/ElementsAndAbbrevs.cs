@@ -401,7 +401,7 @@ namespace MolecularWeightCalculator.Formula
         }
 
         /// <summary>
-        /// Returns the isotope masses and abundances for the element with <paramref name="atomicNumber"/>
+        /// Returns the isotope masses and relative abundances for the element with <paramref name="atomicNumber"/>
         /// </summary>
         /// <param name="atomicNumber">Element atomic number (1 for hydrogen, 2 for helium, etc.)</param>
         /// <param name="isotopeCount"></param>
@@ -1068,9 +1068,12 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Set the isotopes for the element
         /// </summary>
+        /// <remarks>
+        /// The sum of the relative abundances should be 1.00
+        /// </remarks>
         /// <param name="symbol"></param>
-        /// <param name="isotopeMasses">0-based array</param>
-        /// <param name="isotopeAbundances">0-based array</param>
+        /// <param name="isotopeMasses">0-based array of isotope masses</param>
+        /// <param name="isotopeAbundances">0-based array of relative isotopic abundances (values between 0 and 1)</param>
         /// <returns>True if success, false if symbol is not a valid element symbol</returns>
         internal bool SetElementIsotopes(string symbol, double[] isotopeMasses, float[] isotopeAbundances)
         {
