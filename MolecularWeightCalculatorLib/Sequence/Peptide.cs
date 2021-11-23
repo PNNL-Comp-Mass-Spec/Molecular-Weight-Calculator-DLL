@@ -546,7 +546,7 @@ namespace MolecularWeightCalculator.Sequence
                                         fragSpectrumWork.Add(new FragmentationSpectrumData(
                                             convolutedMass, intensity, ionSymbol, ionSymbolGeneric,
                                             residueIndex, residue.Symbol,
-                                            chargeIndex, ionType, false));
+                                            chargeIndex, ionType));
 
                                         // Add shoulder ions to PredictedSpectrum() if a B, Y, C, or Z ion and the shoulder intensity is > 0
                                         // Need to use Abs() here since user can define negative theoretical intensities (which allows for plotting a spectrum inverted)
@@ -578,7 +578,7 @@ namespace MolecularWeightCalculator.Sequence
                                                     ionSymbol + mWaterLossSymbol,
                                                     ionSymbolGeneric + mWaterLossSymbol,
                                                     residueIndex, residue.Symbol,
-                                                    chargeIndex, ionType, false));
+                                                    chargeIndex, ionType));
                                             }
                                         }
 
@@ -594,7 +594,7 @@ namespace MolecularWeightCalculator.Sequence
                                                     ionSymbol + mAmmoniaLossSymbol,
                                                     ionSymbolGeneric + mAmmoniaLossSymbol,
                                                     residueIndex, residue.Symbol,
-                                                    chargeIndex, ionType, false));
+                                                    chargeIndex, ionType));
                                             }
                                         }
 
@@ -611,7 +611,7 @@ namespace MolecularWeightCalculator.Sequence
                                                     ionSymbol + mPhosphoLossSymbol,
                                                     ionSymbolGeneric + mPhosphoLossSymbol,
                                                     residueIndex, residue.Symbol,
-                                                    chargeIndex, ionType, false));
+                                                    chargeIndex, ionType));
                                             }
                                         }
                                     }
