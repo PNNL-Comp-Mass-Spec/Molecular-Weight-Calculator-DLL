@@ -19,14 +19,9 @@ namespace MolecularWeightCalculator.COMInterfaces
     [Guid("DCDEBDEB-1B50-4FD9-B42A-D921C450E922"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
     public interface IFormulaSearcher
     {
-        ///// <summary>
-        ///// Element symbols to consider when finding empirical formulas
-        ///// </summary>
-        ///// <value></value>
-        ///// <returns></returns>
-        ///// <remarks>The values in the dictionary are target percent composition values; only used if you call FindMatchesByPercentComposition</remarks>
-        //// Commented out because COM does not support generic types, and the primary use of this is for testing.
-        //Dictionary<string, FormulaFinder.CandidateElementTolerances> CandidateElements { get; set; }
+        // Commented out because COM does not support generic types, and the primary use of this is for testing.
+        // Dictionary<string, FormulaFinder.CandidateElementTolerances> CandidateElements { get; set; }
+
         /// <summary>
         /// When true, echo messages to the console
         /// </summary>

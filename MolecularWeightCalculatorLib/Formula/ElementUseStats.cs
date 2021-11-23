@@ -45,8 +45,10 @@ namespace MolecularWeightCalculator.Formula
         public ElementUseStats Clone()
         {
             // Start with a shallow copy for all value members
-            //var cloned = (ElementUseStats) MemberwiseClone();// Nice, but also copies the read-only "isotopes" object...
-            var cloned = new ElementUseStats()
+            // Do not use MemberwiseClone, since that copies the "Isotopes" object using a shallow copy
+
+            // ReSharper disable once UseObjectOrCollectionInitializer
+            var cloned = new ElementUseStats
             {
                 Used = Used,
                 Count = Count,
