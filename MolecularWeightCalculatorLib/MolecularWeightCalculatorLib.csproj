@@ -110,7 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning">
-      <Version>3.4.244</Version>
+      <Version>3.5.107</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
