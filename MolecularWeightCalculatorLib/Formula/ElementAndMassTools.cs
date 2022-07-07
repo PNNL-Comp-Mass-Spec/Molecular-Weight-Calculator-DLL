@@ -330,12 +330,15 @@ namespace MolecularWeightCalculator.Formula
                 mLastErrorId = data.ErrorData.ErrorId;
                 var computationStats = data.Stats;
 
-                if (workingFormulaMass < 0d)
+                if (workingFormulaMass < 0d || data.ErrorData.ErrorId != 0)
                 {
                     // Error occurred; information is stored in ErrorParams
                     results = Messages.LookupMessage(350) + ": " + Messages.LookupMessage(mLastErrorId);
                     return false;
                 }
+
+                // Update with corrected formula
+                formula = data.Formula;
 
                 // See if Deuterium is present by looking for a fractional amount of Hydrogen
                 // formula will contain a capital D followed by a number or another letter (or the end of formula)
@@ -395,6 +398,9 @@ namespace MolecularWeightCalculator.Formula
                         results = Messages.LookupMessage(350) + ": " + Messages.LookupMessage(mLastErrorId);
                         return false;
                     }
+
+                    // Update with corrected formula
+                    formula = data.Formula;
                 }
 
                 // Make sure there are no fractional atoms present (need to specially handle Deuterium)
@@ -857,7 +863,7 @@ namespace MolecularWeightCalculator.Formula
                 }
 
                 var output = headerIsotopicAbundances + " " + formula + Environment.NewLine;
-                output += SpacePad("  " + headerMassToCharge, 12) + "\t" + SpacePad(headerFraction, 9) + "\t" + headerIntensity + Environment.NewLine;
+                output += SpacePad("  " + headerMassToCharge, 12) + "\t " + SpacePad(headerFraction, 9) + "\t" + headerIntensity + Environment.NewLine;
 
                 // Initialize convolutedMSData2D[]
                 convolutedMSData2D = new double[convolutedMSDataCount, 2];
@@ -922,7 +928,7 @@ namespace MolecularWeightCalculator.Formula
                 // Write to output
                 for (var massIndex = 0; massIndex < convolutedMSDataCount; massIndex++)
                 {
-                    output += SpacePadFront(convolutedMSData2D[massIndex, 0].ToString("#0.00000"), 12) + "\t";
+                    output += SpacePadFront(convolutedMSData2D[massIndex, 0].ToString("#0.00000"), 12) + "\t ";
                     output += (convolutedMSData2D[massIndex, 1] * maxAbundance / 100d).ToString("0.0000000") + "\t";
                     output += SpacePadFront(convolutedMSData2D[massIndex, 1].ToString("##0.00"), 7) + Environment.NewLine;
                     //ToDo: Fix Multiplicity
