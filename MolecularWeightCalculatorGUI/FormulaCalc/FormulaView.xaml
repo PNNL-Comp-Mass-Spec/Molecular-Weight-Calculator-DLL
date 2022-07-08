@@ -31,9 +31,9 @@
             <Run Text="{Binding Mass, StringFormat={}{0:0.000##}}" />
             <Run Text="{Binding StDev, StringFormat=(&#x00B1;{0:F3})}" />
         </TextBlock>
-        <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="2" Grid.Column="1" Margin="1,0" TextXaml="{Binding FormulaXaml, Mode=OneWay}">
+        <!-- TODO: <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="2" Grid.Column="1" Margin="1,0" TextXaml="{Binding FormulaXaml, Mode=OneWay}">
             <FlowDocument />
-        </molecularWeightCalculatorGui:RichTextBoxMulti>
+        </molecularWeightCalculatorGui:RichTextBoxMulti>-->
         <ListView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" ItemsSource="{Binding PercentComposition}" Grid.IsSharedSizeScope="True" Visibility="{Binding ShowPercentComposition, Converter={StaticResource BoolToVis}}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type utilities:StringKeyValuePair}">
