@@ -61,6 +61,8 @@
     <Compile Include="COMInterfaces\IMoleMassDilution.cs" />
     <Compile Include="COMInterfaces\IPeptide.cs" />
     <Compile Include="COMInterfaces\ICandidateElementTolerances.cs" />
+    <Compile Include="Data\XYPoint.cs" />
+    <Compile Include="Data\XYPointImmutable.cs" />
     <Compile Include="EventHandlerDelegates.cs" />
     <Compile Include="Formula\AbbrevStatsData.cs" />
     <Compile Include="Formula\Compound.cs" />

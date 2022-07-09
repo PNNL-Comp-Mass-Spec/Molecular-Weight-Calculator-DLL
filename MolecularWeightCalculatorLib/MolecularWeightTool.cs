@@ -409,7 +409,7 @@ namespace MolecularWeightCalculator
         /// <returns>Gaussian spectrum data</returns>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor = 50)
         {
-            return Gaussian.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor, ElementAndMass);
+            return Gaussian.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor, true, ElementAndMass);
         }
 
         /// <summary>

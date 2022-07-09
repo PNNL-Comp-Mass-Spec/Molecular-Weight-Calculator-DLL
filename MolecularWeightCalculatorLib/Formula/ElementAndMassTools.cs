@@ -942,7 +942,7 @@ namespace MolecularWeightCalculator.Formula
         [Obsolete("Use MolecularWeightCalculator.Tools.Gaussian.ConvertStickDataToGaussian2DArray", true)]
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor)
         {
-            return Gaussian.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor, this);
+            return Gaussian.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor, true, this);
         }
 
         /// <summary>
