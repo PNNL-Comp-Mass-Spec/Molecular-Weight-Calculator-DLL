@@ -107,6 +107,9 @@
     <Compile Include="Sequence\PeptideEnums.cs" />
     <Compile Include="Sequence\Residue.cs" />
     <Compile Include="Sequence\Terminus.cs" />
+    <Compile Include="Tools\Gaussian.cs" />
+    <Compile Include="Tools\MathTools.cs" />
+    <Compile Include="Tools\StringTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning">

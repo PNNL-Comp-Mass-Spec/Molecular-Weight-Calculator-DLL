@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using MolecularWeightCalculator.COMInterfaces;
+using MolecularWeightCalculator.Tools;
 
 namespace MolecularWeightCalculator.Formula
 {
@@ -168,7 +169,7 @@ namespace MolecularWeightCalculator.Formula
                     pctComposition = " " + pctComposition;
                 }
 
-                return mElementAndMassRoutines.SpacePad(elementSymbol, 4) + pctComposition;
+                return StringTools.SpacePad(elementSymbol, 4) + pctComposition;
             }
 
             return string.Empty;
