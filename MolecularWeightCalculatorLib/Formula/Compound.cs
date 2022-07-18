@@ -271,6 +271,10 @@ namespace MolecularWeightCalculator.Formula
         {
             CautionDescription = FormulaParseData.CautionDescription ?? string.Empty;
             ErrorDescription = FormulaParseData.ErrorData.ErrorDescription ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(ErrorDescription) && !string.IsNullOrWhiteSpace(FormulaParseData.ErrorData.ErrorCharacter))
+            {
+                ErrorDescription += ": " + FormulaParseData.ErrorData.ErrorCharacter;
+            }
             ErrorId = FormulaParseData.ErrorData.ErrorId;
         }
 

@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="400">
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom">
-            <TextBlock Text="CautionText" />
+            <TextBlock Text="{Binding CautionText}" />
         </StatusBar>
         <Grid>
             <Grid.RowDefinitions>

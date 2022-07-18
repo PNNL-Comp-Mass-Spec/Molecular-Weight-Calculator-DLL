@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="3,0" Text="{Binding FormulaIndex, StringFormat=Formula {0}:}" />
         <!--<TextBox Grid.Row="0" Grid.Column="1" Margin="1,0" Text="{Binding Formula}" />-->
-        <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="0" Grid.Column="1" Margin="1,0" TextRtf="{Binding FormulaRtf, Mode=OneWay}" TextPlain="{Binding Formula, Mode=OneWayToSource}" GotFocus="TextBox_OnGotFocus">
+        <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="0" Grid.Column="1" Margin="1,0" TextRtf="{Binding FormulaRtf, Mode=OneWay}" TextPlain="{Binding Formula, Mode=OneWayToSource}" GotFocus="TextBox_OnGotFocus" ToolTip="{Binding CautionText}">
             <FlowDocument />
         </molecularWeightCalculatorGui:RichTextBoxMulti>
         <Button Grid.Row="1" Grid.Column="0" Margin="3,-3" VerticalContentAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Content="Pct Comp" Command="{Binding TogglePercentCompositionCommand}" />

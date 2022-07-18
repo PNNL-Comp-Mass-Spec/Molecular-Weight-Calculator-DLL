@@ -46,6 +46,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         private bool elementModeAverage = true;
         private bool elementModeIsotopic;
         private bool elementModeInteger;
+        private string cautionText = "";
 
         public ObservableCollectionExtended<FormulaViewModel> Formulas { get; } = new ObservableCollectionExtended<FormulaViewModel>();
 
@@ -72,11 +73,23 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             set => this.RaiseAndSetIfChanged(ref elementModeInteger, value);
         }
 
+        public string CautionText
+        {
+            get => cautionText;
+            set => this.RaiseAndSetIfChanged(ref cautionText, value);
+        }
+
         private void Calculate()
         {
+            CautionText = "";
             foreach (var formula in Formulas)
             {
                 formula.Calculate();
+
+                if (string.IsNullOrWhiteSpace(CautionText) && !string.IsNullOrWhiteSpace(formula.CautionText))
+                {
+                    CautionText = formula.CautionText;
+                }
             }
         }
 

@@ -16,6 +16,7 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
         private string formulaXaml;
         private DateTime lastFocusTime = DateTime.MinValue;
         private bool showPercentComposition = false;
+        private string cautionText = null;
         private readonly MolecularWeightTool mWeight;
 
         public int FormulaIndex { get; }
@@ -62,6 +63,18 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             set => this.RaiseAndSetIfChanged(ref showPercentComposition, value);
         }
 
+        public string CautionText
+        {
+            get => cautionText;
+            private set => this.RaiseAndSetIfChanged(ref cautionText, value);
+        }
+
+        public int ErrorId { get; private set; }
+
+        public string ErrorDescription { get; private set; }
+
+        public string CautionDescription { get; private set; }
+
         public ObservableCollectionExtended<KeyValuePair<string, string>> PercentComposition { get; } =
             new ObservableCollectionExtended<KeyValuePair<string, string>>();
 
@@ -92,9 +105,37 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             compound.Formula = Formula;
             Mass = compound.GetMass(false);
             StDev = compound.StandardDeviation;
+            var formulaChanged = !Formula.Equals(compound.FormulaCapitalized);
             Formula = compound.FormulaCapitalized;
+            var rtfChanged = !FormulaRtf.Equals(compound.FormulaRTF);
             FormulaRtf = compound.FormulaRTF;
             FormulaXaml = compound.FormulaXaml;
+            ErrorId = compound.ErrorId;
+            ErrorDescription = compound.ErrorDescription;
+            CautionDescription = compound.CautionDescription;
+
+            if (formulaChanged && !rtfChanged)
+            {
+                this.RaisePropertyChanged(nameof(FormulaRtf));
+                this.RaisePropertyChanged(nameof(FormulaXaml));
+            }
+
+            if (compound.ErrorId != 0)
+            {
+                CautionText = ErrorDescription;
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(CautionDescription))
+            {
+                CautionText = CautionDescription;
+            }
+            else
+            {
+                // Set to null to hide the tooltip
+                CautionText = null;
+            }
+
             PercentComposition.Load(compound.GetPercentCompositionForAllElements());
         }
     }
