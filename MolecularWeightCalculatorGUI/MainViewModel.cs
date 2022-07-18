@@ -3,6 +3,7 @@ using MolecularWeightCalculator;
 using MolecularWeightCalculator.Sequence;
 using MolecularWeightCalculatorGUI.CapillaryFlowUI;
 using MolecularWeightCalculatorGUI.FormulaCalc;
+using MolecularWeightCalculatorGUI.IsotopicDistribution;
 using MolecularWeightCalculatorGUI.MassChargeConversion;
 using MolecularWeightCalculatorGUI.MoleMassDilutionUI;
 using MolecularWeightCalculatorGUI.PeptideUI;
@@ -26,6 +27,7 @@ namespace MolecularWeightCalculatorGUI
             fragModellingVm = new FragmentationModellingViewModel(mwt);
             aminoAcidConvertVm = new AminoAcidConverterViewModel(FormulaCalc, new Peptide(mwt.ElementAndMass), switchElementModesVm, fragModellingVm);
             capillaryFlowVm = new CapillaryFlowViewModel();
+            isotopicDistributionVm = new IsotopicDistributionViewModel(mwt);
 
             ShowAboutCommand = ReactiveCommand.Create<Window>(ShowAboutWindow);
             OpenMoleMassDilutionWindowCommand = ReactiveCommand.Create<Window>(OpenMoleMassDilutionWindow);
@@ -33,6 +35,8 @@ namespace MolecularWeightCalculatorGUI
             OpenAminoAcidConverterWindowCommand = ReactiveCommand.Create<Window>(OpenAminoAcidConverterWindow);
             OpenFragmentationModellingWindowCommand = ReactiveCommand.Create<Window>(OpenFragmentationModellingWindow);
             OpenCapillaryFlowWindowCommand = ReactiveCommand.Create<Window>(OpenCapillaryFlowWindow);
+            OpenIsotopicDistributionWindowCommand = ReactiveCommand.Create<Window>(OpenIsotopicDistributionWindow);
+            OpenSelectedIsotopicDistributionWindowCommand = ReactiveCommand.Create<Window>(OpenSelectedIsotopicDistributionWindow);
         }
 
         private readonly MolecularWeightTool mwt;
@@ -42,6 +46,7 @@ namespace MolecularWeightCalculatorGUI
         private readonly AminoAcidConverterViewModel aminoAcidConvertVm;
         private readonly FragmentationModellingViewModel fragModellingVm;
         private readonly CapillaryFlowViewModel capillaryFlowVm;
+        private readonly IsotopicDistributionViewModel isotopicDistributionVm;
         private bool mainWindowVisible = true;
 
         public FormulaCalcViewModel FormulaCalc { get; }
@@ -52,6 +57,8 @@ namespace MolecularWeightCalculatorGUI
         public ReactiveCommand<Window, RxUnit> OpenAminoAcidConverterWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenFragmentationModellingWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenCapillaryFlowWindowCommand { get; }
+        public ReactiveCommand<Window, RxUnit> OpenIsotopicDistributionWindowCommand { get; }
+        public ReactiveCommand<Window, RxUnit> OpenSelectedIsotopicDistributionWindowCommand { get; }
 
         public bool MainWindowVisible
         {
@@ -120,6 +127,22 @@ namespace MolecularWeightCalculatorGUI
             //window.ShowDialog();
             window.Show();
             //MainWindowVisible = true;
+        }
+
+        private void OpenIsotopicDistributionWindow(Window parent)
+        {
+            //MainWindowVisible = false;
+            var window = new IsotopicDistributionWindow() { DataContext = isotopicDistributionVm, Owner = parent };
+            // TODO: ShowDialog() breaks this.WhenAnyValue(...)
+            //window.ShowDialog();
+            window.Show();
+            //MainWindowVisible = true;
+        }
+
+        private void OpenSelectedIsotopicDistributionWindow(Window parent)
+        {
+            isotopicDistributionVm.Formula = FormulaCalc.LastFocusedFormula.Formula;
+            OpenIsotopicDistributionWindow(parent);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace MolecularWeightCalculator.Data
+﻿using System;
+
+namespace MolecularWeightCalculator.Data
 {
     public class XYPoint
     {
@@ -14,6 +16,11 @@
         public XYPointImmutable ToReadOnly()
         {
             return new XYPointImmutable(X, Y);
+        }
+
+        public XYPointImmutable ToReadOnly(Func<double, double> xTransform, Func<double, double> yTransform)
+        {
+            return new XYPointImmutable(xTransform(X), yTransform(Y));
         }
 
         /// <summary>

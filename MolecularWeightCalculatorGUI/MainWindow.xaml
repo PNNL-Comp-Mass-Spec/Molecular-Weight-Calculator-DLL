@@ -54,8 +54,8 @@
                 <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
                 <Separator />
                 <MenuItem Header="Peptide Sequence Fragmentation Modelling..." Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
-                <MenuItem Header="Isotopic Distribution Modelling..." /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
-                <MenuItem Header="Show Isotopic Distribution for Current Formula" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
+                <MenuItem Header="Isotopic Distribution Modelling..." Command="{Binding OpenIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
+                <MenuItem Header="Show Isotopic Distribution for Current Formula" Command="{Binding OpenSelectedIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />
                 <MenuItem Header="Capillary Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
             </MenuItem>
@@ -65,7 +65,7 @@
                 <MenuItem Header="Change Formula Font..." /> <!-- TODO: keyboard shortcuts, "Ctrl+T" -->
                 <MenuItem Header="Stay on Top" /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
                 <Separator />
-                <MenuItem Header="">
+                <MenuItem Header="Save and Restore Default Values">
                     <MenuItem Header="Restore Default Values and Formulas..." />
                     <MenuItem Header="Save Values and Formulas Now!" />
                 </MenuItem>

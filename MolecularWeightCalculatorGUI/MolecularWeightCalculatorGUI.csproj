@@ -91,6 +91,11 @@
     </Compile>
     <Compile Include="FormulaCalc\FormulaViewModel.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IsotopicDistribution\IsotopicDistributionViewModel.cs" />
+    <Compile Include="IsotopicDistribution\IsotopicDistributionWindow.xaml.cs">
+      <DependentUpon>IsotopicDistributionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IsotopicDistribution\IsotopicPlotMode.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -162,6 +167,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FormulaCalc\FormulaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IsotopicDistribution\IsotopicDistributionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

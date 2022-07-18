@@ -1,0 +1,136 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.IsotopicDistribution.IsotopicDistributionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.IsotopicDistribution"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:utilities="clr-namespace:MolecularWeightCalculatorGUI.Utilities"
+        xmlns:molecularWeightCalculatorGui="clr-namespace:MolecularWeightCalculatorGUI"
+        xmlns:plotting="clr-namespace:MolecularWeightCalculatorGUI.Plotting"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:IsotopicDistributionViewModel}, IsDesignTimeCreatable=True}"
+        WindowStartupLocation="CenterOwner"
+        Title="Isotopic Distribution" Height="700" Width="800">
+    <Window.Resources>
+        <utilities:EnumDescriptionConverter x:Key="EnumDescription" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0"  Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" VerticalAlignment="Center" Text="Formula:" />
+            <!--<TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6" Margin="3" Text="{Binding Formula}" />-->
+            <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6" Margin="3" TextRtf="{Binding FormulaRtf, Mode=OneWay}" TextPlain="{Binding Formula}">
+                <FlowDocument />
+            </molecularWeightCalculatorGui:RichTextBoxMulti>
+            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" MinWidth="80" Content="_Compute" Command="{Binding ComputeCommand}" />
+            <Button Grid.Row="2" Grid.Column="2" Margin="3" MinWidth="80" Content="Cop_y" Command="{Binding CopyCommand}" />
+            <Button Grid.Row="2" Grid.Column="3" Margin="3" MinWidth="80" Content="Cl_ose" Command="{Binding CloseCommand}" Click="Close_OnClick" />
+            <TextBlock Grid.Row="2" Grid.Column="5" Margin="3" VerticalAlignment="Center" Text="Charge state:" />
+            <xctk:IntegerUpDown Grid.Row="2" Grid.Column="6" Margin="3" MinWidth="50" Minimum="0" Maximum="10000" Value="{Binding ChargeState}" />
+            <CheckBox Grid.Row="3" Grid.RowSpan="2" Grid.Column="5" Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Add Proton" IsChecked="{Binding AddProtonChargeCarrier}" />
+            <TextBlock Grid.Row="4" Grid.Column="0" Margin="3" VerticalAlignment="Center" Text="Results:" />
+            <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="7" Margin="3" Text="{Binding Results}" IsReadOnly="True" FontFamily="Courier New" />
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="1" IsSharedSizeScope="true">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="0" Header="Options">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0" Margin="3" Content="_Plot Results" IsChecked="{Binding PlotResults}" />
+                    <CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" Content="_Auto-Label Peaks" IsChecked="{Binding AutoLabelPeaks}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Plot Data Color" />
+                    <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" SelectedColor="{Binding PlotColor}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Plot Type" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" ItemsSource="{Binding IsotopicPlotModes}" SelectedItem="{Binding PlotType}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:IsotopicPlotMode}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Effective Resolution" />
+                    <xctk:IntegerUpDown Grid.Row="4" Grid.Column="2" Margin="3" MinWidth="70" Minimum="1" Maximum="1000000000" Value="{Binding EffectiveResolution}" />
+                    <TextBlock Grid.Row="5" Grid.Column="0" Margin="3" Text="Effective Resolution M/Z" />
+                    <xctk:IntegerUpDown Grid.Row="5" Grid.Column="2" Margin="3" Minimum="1" Maximum="1000000000" Value="{Binding EffectiveResolutionMass}" />
+                    <TextBlock Grid.Row="7" Grid.Column="0" Margin="3" Text="Gaussian Quality Factor" />
+                    <xctk:IntegerUpDown Grid.Row="7" Grid.Column="2" Margin="3" Minimum="1" Maximum="75" Value="{Binding GaussianQualityFactor}" />
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Row="1" Header="Comparison List">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Labels" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Plot Data Color" />
+                    <xctk:ColorPicker Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" SelectedColor="{Binding ComparisonListPlotColor}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Plot Type" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" ItemsSource="{Binding IsotopicPlotModesComparison}" SelectedItem="{Binding ComparisonListPlotType}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:IsotopicPlotMode}">
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" Content="Normalize pasted ion list" IsChecked="{Binding ComparisonListNormalize}" />
+                    <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" MinWidth="80" Content="Paste list of ions to plot" Command="{Binding PasteComparisonIonListCommand}" />
+                    <Button Grid.Row="3" Grid.Column="2" Margin="3" MinWidth="80" Content="Clear list" Command="{Binding ClearComparisonIonListCommand}" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" Text="Comparison list data points:" />
+                    <TextBlock Grid.Row="4" Grid.Column="2" Margin="15,3" HorizontalAlignment="Left" Text="{Binding ComparisonListDataPoints}" />
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <plotting:PlotView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding Spectrum}" x:Name="PlotView" />
+    </Grid>
+</Window>
