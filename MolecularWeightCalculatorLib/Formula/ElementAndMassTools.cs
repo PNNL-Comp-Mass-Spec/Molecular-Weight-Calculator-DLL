@@ -1606,8 +1606,7 @@ namespace MolecularWeightCalculator.Formula
             for (var charIndex = 0; charIndex < workText.Length; charIndex++)
             {
                 var workChar = workText.Substring(charIndex, 1);
-                if (highlightCharFollowingPercentSign &&
-                    (workChar == "%" || errorData.ErrorPosition <= charIndex && charIndex < errorEndPosition))
+                if (highlightCharFollowingPercentSign && workChar == "%")
                 {
                     // An error was found and marked by a % sign
                     // Highlight the character at the % sign, and remove the % sign
@@ -1657,7 +1656,7 @@ namespace MolecularWeightCalculator.Formula
                                 break;
                         }
                     }
-                    else if (workChar == "%")
+                    else
                     {
                         // Highlight next character and skip % sign
                         workChar = workText.Substring(charIndex + 1, 1);
@@ -1667,14 +1666,15 @@ namespace MolecularWeightCalculator.Formula
                         rtf += @"{\cf1 " + workChar + "}";
                         charIndex++;
                     }
-                    else
-                    {
-                        // Highlight current character
-                        // Handle curly brackets
-                        if (workChar == "{" || workChar == "}")
-                            workChar = @"\" + workChar;
-                        rtf += @"{\cf1 " + workChar + "}";
-                    }
+                }
+                else if (highlightCharFollowingPercentSign && errorData.ErrorPosition <= charIndex && charIndex < errorEndPosition)
+                {
+                    // An error was found and reported in errorData
+                    // Highlight current character
+                    // Handle curly brackets
+                    if (workChar == "{" || workChar == "}")
+                        workChar = @"\" + workChar;
+                    rtf += @"{\cf1 " + workChar + "}";
                 }
                 else if (workChar == "^")
                 {
