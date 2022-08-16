@@ -13,9 +13,9 @@ namespace MolecularWeightCalculator.Sequence
         public FragmentationSpectrumIntensities IntensityOptions { get; set; } = new();
         public IonTypeOptions[] IonTypeOptions { get; }
         public bool DoubleChargeIonsShow { get; set; }
-        public float DoubleChargeIonsThreshold { get; set; }
+        public double DoubleChargeIonsThreshold { get; set; }
         public bool TripleChargeIonsShow { get; set; }
-        public float TripleChargeIonsThreshold { get; set; }
+        public double TripleChargeIonsThreshold { get; set; }
 
         public FragmentationSpectrumOptions()
         {

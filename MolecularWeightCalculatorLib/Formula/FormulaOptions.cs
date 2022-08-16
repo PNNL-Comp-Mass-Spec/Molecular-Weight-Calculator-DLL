@@ -50,7 +50,7 @@ namespace MolecularWeightCalculator.Formula
         /// Rich text size
         /// </summary>
         /// <remarks>Default is 10</remarks>
-        public short RtfFontSize { get; set; }
+        public int RtfFontSize { get; set; }
 
         /// <summary>
         /// Standard deviation mode

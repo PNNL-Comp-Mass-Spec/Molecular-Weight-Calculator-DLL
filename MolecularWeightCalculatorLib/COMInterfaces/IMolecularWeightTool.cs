@@ -46,7 +46,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         float ProgressPercentComplete { get; }
 
         string RtfFontName { get; set; }
-        short RtfFontSize { get; set; }
+        int RtfFontSize { get; set; }
         bool ShowErrorDialogs { get; set; }
         StdDevMode StdDevMode { get; set; }
 
@@ -79,7 +79,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="headerIntensity">Header to use in <paramref name="results"/></param>
         /// <returns>True if success, false if an error</returns>
         bool ComputeIsotopicAbundances(
-            ref string formulaIn, short chargeState, out string results,
+            ref string formulaIn, int chargeState, out string results,
             out double[,] convolutedMSData2DOneBased, out int convolutedMSDataCount,
             bool addProtonChargeCarrier = true,
             string headerIsotopicAbundances = "Isotopic Abundances for",
@@ -106,7 +106,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="currentCharge">Current charge (0 means neutral mass)</param>
         /// <param name="desiredCharge">Desired charge (0 means neutral mass)</param>
         /// <param name="chargeCarrierMass">Custom charge carrier mass (0 means use default, usually 1.00727649)</param>
-        double ConvoluteMass(double massMz, short currentCharge, short desiredCharge = 1, double chargeCarrierMass = 0);
+        double ConvoluteMass(double massMz, int currentCharge, int desiredCharge = 1, double chargeCarrierMass = 0);
 
         /// <summary>
         /// Get an abbreviation, by ID
@@ -203,7 +203,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="charge">Charge</param>
         /// <param name="isotopeCount">Number of isotopes</param>
         /// <returns>True if success, false if atomicNumber is invalid</returns>
-        bool GetElement(short atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount);
+        bool GetElement(int atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount);
 
         /// <summary>
         /// Returns the number of elements in memory
@@ -225,7 +225,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="isotopeMasses"></param>
         /// <param name="isotopeAbundances"></param>
         /// <returns>True if success, false if atomicNumber is invalid</returns>
-        bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances);
+        bool GetElementIsotopes(int atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances);
 
         /// <summary>
         /// Returns the isotope masses and abundances for the given element
@@ -252,7 +252,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         /// <param name="atomicNumber"></param>
-        string GetElementSymbol(short atomicNumber);
+        string GetElementSymbol(int atomicNumber);
 
         /// <summary>
         /// Returns a single bit of information about a single element
@@ -260,7 +260,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         /// <param name="atomicNumber">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
-        double GetElementStat(short atomicNumber, ElementStatsType elementStat);
+        double GetElementStat(int atomicNumber, ElementStatsType elementStat);
 
         /// <summary>
         /// Get message text using message ID
@@ -284,7 +284,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         void RemoveAllAbbreviations();
         void RemoveAllCautionStatements();
         double MassToPPM(double massToConvert, double currentMz);
-        double MonoMassToMz(double monoisotopicMass, short charge, double chargeCarrierMass = 0);
+        double MonoMassToMz(double monoisotopicMass, int charge, double chargeCarrierMass = 0);
 
         /// <summary>
         /// Recomputes the Mass for all of the loaded abbreviations
@@ -300,7 +300,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         bool RemoveCautionStatement(string cautionSymbol);
         void ResetAbbreviations();
         void ResetCautionStatements();
-        void ResetElement(short atomicNumber, ElementStatsType specificStatToReset);
+        void ResetElement(int atomicNumber, ElementStatsType specificStatToReset);
         void ResetMessageStatements();
 
         /// <summary>

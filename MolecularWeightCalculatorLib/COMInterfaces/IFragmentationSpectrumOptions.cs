@@ -12,8 +12,8 @@ namespace MolecularWeightCalculator.COMInterfaces
         FragmentationSpectrumIntensities IntensityOptions { get; set; }
         IonTypeOptions[] IonTypeOptions { get; }
         bool DoubleChargeIonsShow { get; set; }
-        float DoubleChargeIonsThreshold { get; set; }
+        double DoubleChargeIonsThreshold { get; set; }
         bool TripleChargeIonsShow { get; set; }
-        float TripleChargeIonsThreshold { get; set; }
+        double TripleChargeIonsThreshold { get; set; }
     }
 }

@@ -96,7 +96,7 @@ namespace MolecularWeightCalculator.Formula
             return ErrorDescription;
         }
 
-        public bool ElementPresent(short atomicNumber)
+        public bool ElementPresent(int atomicNumber)
         {
             // Returns True if the element is present
             if (atomicNumber is >= 1 and <= ElementsAndAbbrevs.ELEMENT_COUNT)
@@ -123,7 +123,7 @@ namespace MolecularWeightCalculator.Formula
             return ErrorDescription;
         }
 
-        public double GetAtomCountForElement(short atomicNumber)
+        public double GetAtomCountForElement(int atomicNumber)
         {
             // Return the number of atoms of a given element that are present in the formula
             // Note that the number of atoms is not necessarily an integer (e.g. C5.5)
@@ -136,7 +136,7 @@ namespace MolecularWeightCalculator.Formula
             return 0d;
         }
 
-        public double GetPercentCompositionForElement(short atomicNumber)
+        public double GetPercentCompositionForElement(int atomicNumber)
         {
             // Returns the percent composition for element
             // Returns -1 if an invalid ID
@@ -154,7 +154,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <param name="atomicNumber"></param>
         /// <param name="includeStandardDeviation"></param>
-        public string GetPercentCompositionForElementAsString(short atomicNumber, bool includeStandardDeviation = true)
+        public string GetPercentCompositionForElementAsString(int atomicNumber, bool includeStandardDeviation = true)
         {
             // Returns the percent composition and standard deviation for element
             // Returns "" if an invalid ID

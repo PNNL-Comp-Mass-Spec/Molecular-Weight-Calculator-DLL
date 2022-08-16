@@ -260,7 +260,7 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>True if success, false if an error</returns>
         internal bool ComputeIsotopicAbundances(
             ref string formulaIn,
-            short chargeState,
+            int chargeState,
             out string results,
             out double[,] convolutedMSData2D,
             out int convolutedMSDataCount,
@@ -313,7 +313,7 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>List of mass and intensity pairs; empty list on error or abort</returns>
         internal IReadOnlyList<MassAbundanceImmutable> ComputeIsotopicAbundances(
             ref string formulaIn,
-            short chargeState,
+            int chargeState,
             out string results,
             bool addProtonChargeCarrier = true,
             string headerIsotopicAbundances = "Isotopic Abundances for",
@@ -1000,8 +1000,8 @@ namespace MolecularWeightCalculator.Formula
         /// <returns>The new m/z value</returns>
         internal double ConvoluteMass(
             double massMz,
-            short currentCharge,
-            short desiredCharge = 1,
+            int currentCharge,
+            int desiredCharge = 1,
             double chargeCarrierMass = 0)
         {
             const double defaultChargeCarrierMassMonoiso = 1.00727649d;
@@ -1480,7 +1480,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="chargeCarrierMass">If this is 0, uses mChargeCarrierMass</param>
         internal double MonoMassToMz(
             double monoisotopicMass,
-            short charge,
+            int charge,
             double chargeCarrierMass = 0)
         {
             if (Math.Abs(chargeCarrierMass) < float.Epsilon)

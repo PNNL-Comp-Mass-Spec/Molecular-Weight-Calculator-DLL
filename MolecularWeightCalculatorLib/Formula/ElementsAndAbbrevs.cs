@@ -355,7 +355,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="isotopeCount">Number of isotopes</param>
         /// <returns>True if success, false if atomicNumber is invalid</returns>
         internal bool GetElement(
-            short atomicNumber,
+            int atomicNumber,
             out string symbol,
             out double mass,
             out double uncertainty,
@@ -408,7 +408,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="isotopeMasses">output, 0-based array</param>
         /// <param name="isotopeAbundances">output, 0-based array</param>
         /// <returns>True if success, false if atomicNumber is invalid</returns>
-        internal bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
+        internal bool GetElementIsotopes(int atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
             if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
             {
@@ -450,7 +450,7 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         /// <param name="atomicNumber"></param>
-        internal string GetElementSymbol(short atomicNumber)
+        internal string GetElementSymbol(int atomicNumber)
         {
             if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
             {
@@ -471,7 +471,7 @@ namespace MolecularWeightCalculator.Formula
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         /// <param name="atomicNumber">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
-        internal double GetElementStat(short atomicNumber, ElementStatsType elementStat)
+        internal double GetElementStat(int atomicNumber, ElementStatsType elementStat)
         {
             if (atomicNumber is >= 1 and <= ELEMENT_COUNT)
             {
@@ -615,7 +615,7 @@ namespace MolecularWeightCalculator.Formula
         /// </remarks>
         public void MemoryLoadElements(
             ElementMassMode elementMode = ElementMassMode.Average,
-            short specificElement = 0,
+            int specificElement = 0,
             ElementStatsType specificStatToReset = ElementStatsType.Mass)
         {
             const double defaultChargeCarrierMassAvg = 1.00739d;
@@ -925,7 +925,7 @@ namespace MolecularWeightCalculator.Formula
         /// <param name="validateFormula"></param>
         /// <returns>0 if success, otherwise an error ID</returns>
         internal int SetAbbreviationById(
-            short abbrevId, string symbol,
+            int abbrevId, string symbol,
             string formula, float charge,
             bool isAminoAcid,
             string oneLetterSymbol = "",

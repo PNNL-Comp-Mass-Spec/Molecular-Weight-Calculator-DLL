@@ -299,7 +299,7 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// Font size to use when copying a formula to the clipboard as rich formatted text
         /// </summary>
-        public short RtfFontSize
+        public int RtfFontSize
         {
             get => ElementAndMass.ComputationOptions.RtfFontSize;
             set
@@ -386,7 +386,7 @@ namespace MolecularWeightCalculator
         /// <param name="headerIntensity">Header to use in <paramref name="results"/></param>
         /// <returns>True if success, false if an error</returns>
         public bool ComputeIsotopicAbundances(
-            ref string formulaIn, short chargeState, out string results,
+            ref string formulaIn, int chargeState, out string results,
             out double[,] convolutedMSData2D, out int convolutedMSDataCount,
             bool addProtonChargeCarrier = true,
             string headerIsotopicAbundances = "Isotopic Abundances for",
@@ -419,7 +419,7 @@ namespace MolecularWeightCalculator
         /// <param name="currentCharge">Current charge (0 means neutral mass)</param>
         /// <param name="desiredCharge">Desired charge (0 means neutral mass)</param>
         /// <param name="chargeCarrierMass">Custom charge carrier mass (0 means use default, usually 1.00727649)</param>
-        public double ConvoluteMass(double massMz, short currentCharge, short desiredCharge = 1, double chargeCarrierMass = 0)
+        public double ConvoluteMass(double massMz, int currentCharge, int desiredCharge = 1, double chargeCarrierMass = 0)
         {
             return ElementAndMass.ConvoluteMass(massMz, currentCharge, desiredCharge, chargeCarrierMass);
         }
@@ -600,7 +600,7 @@ namespace MolecularWeightCalculator
         /// <param name="charge">Charge</param>
         /// <param name="isotopeCount">Number of isotopes</param>
         /// <returns>True if success, false if atomicNumber is invalid</returns>
-        public bool GetElement(short atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount)
+        public bool GetElement(int atomicNumber, out string symbol, out double mass, out double uncertainty, out float charge, out short isotopeCount)
         {
             return ElementAndMass.Elements.GetElement(atomicNumber, out symbol, out mass, out uncertainty, out charge, out isotopeCount);
         }
@@ -631,7 +631,7 @@ namespace MolecularWeightCalculator
         /// <param name="isotopeMasses">Output: 0-based array of isotope masses</param>
         /// <param name="isotopeAbundances">Output: 0-based array of relative abundances</param>
         /// <returns>True if success, false if atomicNumber is invalid</returns>
-        public bool GetElementIsotopes(short atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
+        public bool GetElementIsotopes(int atomicNumber, out short isotopeCount, out double[] isotopeMasses, out float[] isotopeAbundances)
         {
             return ElementAndMass.Elements.GetElementIsotopes(atomicNumber, out isotopeCount, out isotopeMasses, out isotopeAbundances);
         }
@@ -678,7 +678,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <remarks>1 is Hydrogen, 2 is Helium, etc.</remarks>
         /// <param name="atomicNumber"></param>
-        public string GetElementSymbol(short atomicNumber)
+        public string GetElementSymbol(int atomicNumber)
         {
             return ElementAndMass.Elements.GetElementSymbol(atomicNumber);
         }
@@ -689,7 +689,7 @@ namespace MolecularWeightCalculator
         /// <remarks>Since a value may be negative, simply returns 0 if an error</remarks>
         /// <param name="atomicNumber">Element ID</param>
         /// <param name="elementStat">Value to obtain: mass, charge, or uncertainty</param>
-        public double GetElementStat(short atomicNumber, ElementStatsType elementStat)
+        public double GetElementStat(int atomicNumber, ElementStatsType elementStat)
         {
             return ElementAndMass.Elements.GetElementStat(atomicNumber, elementStat);
         }
@@ -757,7 +757,7 @@ namespace MolecularWeightCalculator
         /// <param name="monoisotopicMass"></param>
         /// <param name="charge"></param>
         /// <param name="chargeCarrierMass"></param>
-        public double MonoMassToMz(double monoisotopicMass, short charge, double chargeCarrierMass = 0)
+        public double MonoMassToMz(double monoisotopicMass, int charge, double chargeCarrierMass = 0)
         {
             return ElementAndMass.MonoMassToMz(monoisotopicMass, charge, chargeCarrierMass);
         }
@@ -825,7 +825,7 @@ namespace MolecularWeightCalculator
         /// </summary>
         /// <param name="atomicNumber"></param>
         /// <param name="specificStatToReset"></param>
-        public void ResetElement(short atomicNumber, ElementStatsType specificStatToReset)
+        public void ResetElement(int atomicNumber, ElementStatsType specificStatToReset)
         {
             ElementAndMass.Elements.MemoryLoadElements(GetElementMode(), atomicNumber, specificStatToReset);
         }
@@ -888,7 +888,7 @@ namespace MolecularWeightCalculator
             string comment = "",
             bool validateFormula = true)
         {
-            return ElementAndMass.Elements.SetAbbreviationById((short)abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
+            return ElementAndMass.Elements.SetAbbreviationById(abbrevId, symbol, formula, charge, isAminoAcid, oneLetterSymbol, comment, validateFormula);
         }
 
         /// <summary>

@@ -13,24 +13,24 @@ namespace MolecularWeightCalculator.COMInterfaces
         string EmpiricalFormula { get; }
 
         //// Commented out because it's not compatible with COM interop. See GetElementCounts() instead.
-        //Dictionary<string, int> CountsByElement { get; }
+        //IReadOnlyList<ElementCount> CountsByElement { get; }
 
-        double Mass { get; set; }
+        double Mass { get; }
 
-        double DeltaMass { get; set; }
+        double DeltaMass { get; }
 
-        bool DeltaMassIsPPM { get; set; }
+        bool DeltaMassIsPPM { get; }
 
-        double Mz { get; set; }
+        double Mz { get; }
 
-        int ChargeState { get; set; }
+        int ChargeState { get; }
 
         ///// <summary>
         ///// Percent composition results (only valid if matching percent compositions)
         ///// </summary>
         ///// <remarks>Keys are element or abbreviation symbols, values are percent composition, between 0 and 100</remarks>
         //// Commented out because it's not compatible with COM interop. See GetPercentCompositions() instead.
-        //Dictionary<string, double> PercentComposition { get; set; }
+        //IReadOnlyList<ElementPercent> PercentComposition { get; }
 
         string ToString();
 

@@ -288,7 +288,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// </summary>
         /// <param name="proteinResidues"></param>
         /// <param name="desiredPeptideNumber"></param>
-        string GetTrypticPeptideByFragmentNumber(string proteinResidues, short desiredPeptideNumber);
+        string GetTrypticPeptideByFragmentNumber(string proteinResidues, int desiredPeptideNumber);
 
         /// <summary>
         /// Obtain the desired tryptic peptide from proteinResidues
@@ -303,7 +303,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="ignoreCase"></param>
         string GetTrypticPeptideByFragmentNumber(
             string proteinResidues,
-            short desiredPeptideNumber,
+            int desiredPeptideNumber,
             out int returnResidueStart,
             out int returnResidueEnd,
             string ruleResidues = Peptide.TRYPTIC_RULE_RESIDUES,
@@ -495,7 +495,7 @@ namespace MolecularWeightCalculator.COMInterfaces
         /// <param name="modificationCount"></param>
         /// <param name="modificationIDs">0-based array</param>
         /// <returns>True if success, false if an error</returns>
-        bool SetResidueModifications(int residueIndex, short modificationCount, int[] modificationIDs);
+        bool SetResidueModifications(int residueIndex, int modificationCount, int[] modificationIDs);
 
         /// <summary>
         /// Defines the peptide sequence

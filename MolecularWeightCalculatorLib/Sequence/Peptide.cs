@@ -443,7 +443,7 @@ namespace MolecularWeightCalculator.Sequence
             }
 
             var showCharge = new bool[4];
-            var chargeThreshold = new float[4];
+            var chargeThreshold = new double[4];
 
             // Copy some of the values from mFragSpectrumOptions to local variables to make things easier to read
             for (IonType ionType = 0; ionType <= ION_TYPE_MAX; ionType++)
@@ -860,7 +860,7 @@ namespace MolecularWeightCalculator.Sequence
                 return residue.ModificationIDs.Count;
             }
 
-            modificationIDs = new int[1];
+            modificationIDs = Array.Empty<int>();
 
             return 0;
         }
@@ -1515,7 +1515,7 @@ namespace MolecularWeightCalculator.Sequence
         /// </summary>
         /// <param name="proteinResidues"></param>
         /// <param name="desiredPeptideNumber"></param>
-        public string GetTrypticPeptideByFragmentNumber(string proteinResidues, short desiredPeptideNumber)
+        public string GetTrypticPeptideByFragmentNumber(string proteinResidues, int desiredPeptideNumber)
         {
             return GetTrypticPeptideByFragmentNumber(proteinResidues, desiredPeptideNumber, out _, out _);
         }
@@ -1545,7 +1545,7 @@ namespace MolecularWeightCalculator.Sequence
         // ReSharper enable CommentTypo
         public string GetTrypticPeptideByFragmentNumber(
             string proteinResidues,
-            short desiredPeptideNumber,
+            int desiredPeptideNumber,
             out int returnResidueStart,
             out int returnResidueEnd,
             string ruleResidues = TRYPTIC_RULE_RESIDUES,
@@ -2359,7 +2359,7 @@ namespace MolecularWeightCalculator.Sequence
         /// <param name="modificationCount"></param>
         /// <param name="modificationIDs">0-based array</param>
         /// <returns>True if success, false if an error</returns>
-        public bool SetResidueModifications(int residueIndex, short modificationCount, int[] modificationIDs)
+        public bool SetResidueModifications(int residueIndex, int modificationCount, int[] modificationIDs)
         {
             if (residueIndex < 0 || residueIndex >= mResidues.Count || modificationCount < 0)
                 return false;
