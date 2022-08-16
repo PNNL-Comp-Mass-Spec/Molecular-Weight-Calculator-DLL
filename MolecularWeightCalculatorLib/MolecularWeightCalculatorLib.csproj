@@ -88,10 +88,14 @@
     <Compile Include="Formula\SymbolLookupInfo.cs" />
     <Compile Include="FormulaFinder\CandidateElement.cs" />
     <Compile Include="FormulaFinder\CandidateElementTolerances.cs" />
+    <Compile Include="FormulaFinder\ElementCount.cs" />
+    <Compile Include="FormulaFinder\ElementPercent.cs" />
     <Compile Include="FormulaFinder\FormulaSearcher.cs" />
     <Compile Include="FormulaFinder\FormulaSearchModes.cs" />
+    <Compile Include="FormulaFinder\FormulaValidator.cs" />
     <Compile Include="FormulaFinder\SearchOptions.cs" />
     <Compile Include="FormulaFinder\SearchResult.cs" />
+    <Compile Include="FormulaFinder\SearchResultsSortMode.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="MoleMassDilution.cs" />

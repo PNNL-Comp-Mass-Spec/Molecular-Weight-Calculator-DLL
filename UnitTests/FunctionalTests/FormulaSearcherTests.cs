@@ -143,7 +143,7 @@ namespace UnitTests.FunctionalTests
                 var percentCompInfo = string.Empty;
                 if (percentCompositionSearch)
                 {
-                    percentCompInfo = string.Join(" ", result.PercentComposition.Select(x => $"{x.Key}={x.Value:0.00}%"));
+                    percentCompInfo = string.Join(" ", result.PercentComposition.Select(x => $"{x.Symbol}={x.Percent:0.00}%"));
                 }
 
                 Console.WriteLine("{0,-15} {1,8:F4} {2,9:" + deltaMassFormat + "} {3,6} {4,9:F3} {5}", result.EmpiricalFormula, result.Mass, result.DeltaMass, result.ChargeState, mz, percentCompInfo);

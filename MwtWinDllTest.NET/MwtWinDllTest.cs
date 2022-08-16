@@ -696,7 +696,7 @@ namespace MwtWinDllTest
 
                     foreach (var percentCompValue in result.PercentComposition)
                     {
-                        percentCompInfo.AppendFormat(" {0}={1:F2}%", percentCompValue.Key, percentCompValue.Value);
+                        percentCompInfo.AppendFormat(" {0}={1:F2}%", percentCompValue.Symbol, percentCompValue.Percent);
                     }
 
                     newRow["PercentCompInfo"] = percentCompInfo.ToString().TrimStart();
