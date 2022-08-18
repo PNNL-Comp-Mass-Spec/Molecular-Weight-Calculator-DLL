@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace MolecularWeightCalculatorGUI
 {
@@ -10,6 +11,16 @@ namespace MolecularWeightCalculatorGUI
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Close_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void CanClose(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
         }
     }
 }

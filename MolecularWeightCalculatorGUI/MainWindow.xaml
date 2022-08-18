@@ -10,6 +10,19 @@
         x:Name="This"
         WindowStartupLocation="CenterScreen"
         Title="Molecular Weight Calculator" Height="450" Width="500" Visibility="{Binding MainWindowVisible, Converter={StaticResource BoolToVis}}">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Close" Executed="Close_OnClick" CanExecute="CanClose" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="Close" />
+        <KeyBinding Modifiers="Control" Key="M" Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Mole/Mass Converter... -->
+        <KeyBinding Modifiers="Control" Key="L" Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- m/z Conversion... -->
+        <KeyBinding Modifiers="Control" Key="N" Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Amino Acid Notation Converter... -->
+        <KeyBinding Modifiers="Control" Key="P" Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Peptide Sequence Fragmentation Modelling... -->
+        <KeyBinding Modifiers="Control" Key="I" Command="{Binding OpenIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Isotopic Distribution Modelling... -->
+        <KeyBinding Modifiers="Control" Key="D" Command="{Binding OpenSelectedIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Show Isotopic Distribution for Current Formula -->
+        <KeyBinding Modifiers="Control" Key="Y" Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Capillary Flow Calculator... -->
+    </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -48,16 +61,16 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
-                <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
+                <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+M" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
+                <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+L" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
                 <MenuItem Header="Formula Finder..." /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
-                <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
+                <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+N" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
                 <Separator />
-                <MenuItem Header="Peptide Sequence Fragmentation Modelling..." Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
-                <MenuItem Header="Isotopic Distribution Modelling..." Command="{Binding OpenIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
-                <MenuItem Header="Show Isotopic Distribution for Current Formula" Command="{Binding OpenSelectedIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
+                <MenuItem Header="Peptide Sequence Fragmentation Modelling..." Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+P" /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
+                <MenuItem Header="Isotopic Distribution Modelling..." Command="{Binding OpenIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+I" /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
+                <MenuItem Header="Show Isotopic Distribution for Current Formula" Command="{Binding OpenSelectedIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+D" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />
-                <MenuItem Header="Capillary Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
+                <MenuItem Header="Capillary Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+Y" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
             </MenuItem>
             <MenuItem Header="Options">
                 <MenuItem Header="Choose Language..." />

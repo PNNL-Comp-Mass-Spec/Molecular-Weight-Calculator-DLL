@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using MolecularWeightCalculator;
+using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Sequence;
 using MolecularWeightCalculatorGUI.CapillaryFlowUI;
 using MolecularWeightCalculatorGUI.FormulaCalc;
@@ -37,6 +38,9 @@ namespace MolecularWeightCalculatorGUI
             OpenCapillaryFlowWindowCommand = ReactiveCommand.Create<Window>(OpenCapillaryFlowWindow);
             OpenIsotopicDistributionWindowCommand = ReactiveCommand.Create<Window>(OpenIsotopicDistributionWindow);
             OpenSelectedIsotopicDistributionWindowCommand = ReactiveCommand.Create<Window>(OpenSelectedIsotopicDistributionWindow);
+
+            mwt.SetElementMode(ElementMassMode.Isotopic);
+            FormulaCalc.ElementModeIsotopic = true;
         }
 
         private readonly MolecularWeightTool mwt;

@@ -44,7 +44,7 @@
         <Button Grid.Row="3" Grid.Column="5" Margin="5" MinWidth="120" Content="Copy Viscosity" Command="{Binding CopyMeCNViscosityToCapillaryFlowCommand}" />
         <!--<Button Grid.Row="4" Grid.Column="5" Margin="5" MinWidth="120" Content="Show Viscosity Plot" Command="{Binding ShowViscosityPlotCommand}" />-->
         <Button Grid.Row="5" Grid.Column="5" Margin="5" MinWidth="120" Content="Defaults" Command="{Binding SetDefaultsCommand}" />
-        <Button Grid.Row="5" Grid.Column="6" Margin="5" MinWidth="80" Content="Close" IsCancel="True" Click="Close_OnClick" />
+        <Button Grid.Row="5" Grid.Column="6" Margin="5" MinWidth="80" Content="Cl_ose" IsCancel="True" Click="Close_OnClick" />
 
         <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Percent Acetonitrile" />
         <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" Margin="5,3" MinWidth="50" ShowButtonSpinner="False" Minimum="0" Maximum="100" Value="{Binding PercentAcetonitrile}" />

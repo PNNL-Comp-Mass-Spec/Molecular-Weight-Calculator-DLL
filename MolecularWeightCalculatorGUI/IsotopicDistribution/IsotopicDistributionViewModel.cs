@@ -361,7 +361,6 @@ namespace MolecularWeightCalculatorGUI.IsotopicDistribution
 
         private void CopyResults()
         {
-
             Clipboard.Clear();
             Clipboard.SetText(Results, TextDataFormat.Text);
         }

@@ -22,6 +22,7 @@ namespace MolecularWeightCalculatorGUI.Utilities
             // Display result in 0.000 notation rather than exponential
             return "0.0#####";
         }
+
         public static string GetDisplayFormatStringShort(double number)
         {
             // Equivalent(ish) to VB6 'FormatLabel'
