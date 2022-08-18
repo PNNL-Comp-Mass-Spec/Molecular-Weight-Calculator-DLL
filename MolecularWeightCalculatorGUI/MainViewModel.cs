@@ -4,6 +4,7 @@ using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Sequence;
 using MolecularWeightCalculatorGUI.CapillaryFlowUI;
 using MolecularWeightCalculatorGUI.FormulaCalc;
+using MolecularWeightCalculatorGUI.FormulaFinder;
 using MolecularWeightCalculatorGUI.IsotopicDistribution;
 using MolecularWeightCalculatorGUI.MassChargeConversion;
 using MolecularWeightCalculatorGUI.MoleMassDilutionUI;
@@ -24,6 +25,7 @@ namespace MolecularWeightCalculatorGUI
             FormulaCalc = new FormulaCalcViewModel(mwt);
             moleMassDilutionVm = new MoleMassDilutionViewModel();
             mzCalcVm = new MzCalculationsViewModel();
+            formulaFinderVm = new FormulaFinderViewModel(mwt);
             switchElementModesVm = new SwitchElementModesViewModel(mwt); // TODO: synchronize the element mode when it changes...
             fragModellingVm = new FragmentationModellingViewModel(mwt);
             aminoAcidConvertVm = new AminoAcidConverterViewModel(FormulaCalc, new Peptide(mwt.ElementAndMass), switchElementModesVm, fragModellingVm);
@@ -33,6 +35,7 @@ namespace MolecularWeightCalculatorGUI
             ShowAboutCommand = ReactiveCommand.Create<Window>(ShowAboutWindow);
             OpenMoleMassDilutionWindowCommand = ReactiveCommand.Create<Window>(OpenMoleMassDilutionWindow);
             OpenMassChargeConversionsWindowCommand = ReactiveCommand.Create<Window>(OpenMassChargeConversionsWindow);
+            OpenFormulaFinderWindowCommand = ReactiveCommand.Create<Window>(OpenFormulaFinderWindow);
             OpenAminoAcidConverterWindowCommand = ReactiveCommand.Create<Window>(OpenAminoAcidConverterWindow);
             OpenFragmentationModellingWindowCommand = ReactiveCommand.Create<Window>(OpenFragmentationModellingWindow);
             OpenCapillaryFlowWindowCommand = ReactiveCommand.Create<Window>(OpenCapillaryFlowWindow);
@@ -46,6 +49,7 @@ namespace MolecularWeightCalculatorGUI
         private readonly MolecularWeightTool mwt;
         private readonly MoleMassDilutionViewModel moleMassDilutionVm;
         private readonly MzCalculationsViewModel mzCalcVm;
+        private readonly FormulaFinderViewModel formulaFinderVm;
         private readonly SwitchElementModesViewModel switchElementModesVm;
         private readonly AminoAcidConverterViewModel aminoAcidConvertVm;
         private readonly FragmentationModellingViewModel fragModellingVm;
@@ -58,6 +62,7 @@ namespace MolecularWeightCalculatorGUI
         public ReactiveCommand<Window, RxUnit> ShowAboutCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenMoleMassDilutionWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenMassChargeConversionsWindowCommand { get; }
+        public ReactiveCommand<Window, RxUnit> OpenFormulaFinderWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenAminoAcidConverterWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenFragmentationModellingWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenCapillaryFlowWindowCommand { get; }
@@ -95,6 +100,19 @@ namespace MolecularWeightCalculatorGUI
         {
             //MainWindowVisible = false;
             var window = new MzCalculationsWindow { DataContext = mzCalcVm, Owner = parent };
+            // TODO: ShowDialog() breaks this.WhenAnyValue(...)
+            //window.ShowDialog();
+            window.Show();
+            //MainWindowVisible = true;
+        }
+
+        private void OpenFormulaFinderWindow(Window parent)
+        {
+            // Check or change mode
+            switchElementModesVm.ShowWindow(false, parent);
+            //MainWindowVisible = false;
+            formulaFinderVm.ElementMode = mwt.GetElementMode();
+            var window = new FormulaFinderWindow() { DataContext = formulaFinderVm, Owner = parent };
             // TODO: ShowDialog() breaks this.WhenAnyValue(...)
             //window.ShowDialog();
             window.Show();

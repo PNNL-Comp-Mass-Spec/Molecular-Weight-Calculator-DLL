@@ -87,6 +87,11 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// </summary>
         public double PercentComplete { get; private set; }
 
+        /// <summary>
+        /// Progress reporter, reports <see cref="PercentComplete"/> whenever it is updated, if it's not null
+        /// </summary>
+        public IProgress<double> ProgressReporter { get; set; }
+
         public event MessageEventEventHandler MessageEvent;
         public event ErrorEventEventHandler ErrorEvent;
         public event WarningEventEventHandler WarningEvent;
@@ -171,7 +176,14 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             searchOptions ??= new SearchOptions();
 
-            var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, true);
+            var candidateElementsStats = ValidateMatchesByMassInputs(targetMass, massToleranceDa, searchOptions);
+
+            if (candidateElementsStats.Count == 0)
+            {
+                return new List<SearchResult>();
+            }
+
+            var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, candidateElementsStats, true);
             results.Sort();
             return results;
         }
@@ -197,7 +209,14 @@ namespace MolecularWeightCalculator.FormulaFinder
         {
             searchOptions ??= new SearchOptions();
 
-            var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, false);
+            var candidateElementsStats = ValidateMatchesByMassInputs(targetMass, massToleranceDa, searchOptions);
+
+            if (candidateElementsStats.Count == 0)
+            {
+                return new List<SearchResult>();
+            }
+
+            var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, candidateElementsStats, false);
 
             results.Sort();
             return results;
@@ -228,7 +247,32 @@ namespace MolecularWeightCalculator.FormulaFinder
         {
             searchOptions ??= new SearchOptions();
 
-            var results = FindMatchesByPercentCompositionWork(maximumFormulaMass, percentTolerance, searchOptions);
+            // Validate the Inputs
+            if (!ValidateSettings(CalculationMode.MatchPercentComposition))
+            {
+                return new List<SearchResult>();
+            }
+
+            if (maximumFormulaMass <= 0d)
+            {
+                ReportError("Maximum molecular weight must be greater than 0");
+                return new List<SearchResult>();
+            }
+
+            if (percentTolerance < 0d)
+            {
+                ReportError("Percent tolerance cannot be negative");
+                return new List<SearchResult>();
+            }
+
+            var candidateElementsStats = GetCandidateElements(searchOptions.SearchMode, percentTolerance);
+
+            if (candidateElementsStats.Count == 0)
+            {
+                return new List<SearchResult>();
+            }
+
+            var results = FindMatchesByPercentComposition(maximumFormulaMass, searchOptions, candidateElementsStats);
 
             results.Sort();
             return results;
@@ -515,37 +559,63 @@ namespace MolecularWeightCalculator.FormulaFinder
             }
         }
 
-        private List<SearchResult> FindMatchesByMass(
+        /// <summary>
+        /// Perform input validation for finding matches by mass
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massToleranceDa"></param>
+        /// <param name="searchOptions"></param>
+        /// <returns>List of <see cref="CandidateElements"/> if inputs of valid. List is empty if validation failed.</returns>
+        private List<CandidateElement> ValidateMatchesByMassInputs(
             double targetMass,
             double massToleranceDa,
-            SearchOptions searchOptions,
-            bool ppmMode)
+            SearchOptions searchOptions)
         {
             // Validate the Inputs
             if (!ValidateSettings(CalculationMode.MatchMolecularWeight))
             {
-                return new List<SearchResult>();
+                return new List<CandidateElement>();
             }
 
             if (targetMass <= 0d)
             {
                 ReportError("Target molecular weight must be greater than 0");
-                return new List<SearchResult>();
+                return new List<CandidateElement>();
             }
 
             if (massToleranceDa < 0d)
             {
                 ReportError("Mass tolerance cannot be negative");
-                return new List<SearchResult>();
+                return new List<CandidateElement>();
             }
 
             var candidateElementsStats = GetCandidateElements(searchOptions.SearchMode);
 
             if (candidateElementsStats.Count == 0)
             {
-                return new List<SearchResult>();
+                return new List<CandidateElement>();
             }
 
+            return candidateElementsStats;
+        }
+
+        /// <summary>
+        /// Find matches by mass, using already-validated inputs
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massToleranceDa"></param>
+        /// <param name="searchOptions"></param>
+        /// <param name="candidateElementsStats"></param>
+        /// <param name="ppmMode"></param>
+        /// <returns></returns>
+        internal List<SearchResult> FindMatchesByMass(
+            double targetMass,
+            double massToleranceDa,
+            SearchOptions searchOptions,
+            List<CandidateElement> candidateElementsStats,
+            bool ppmMode)
+        {
+            // NOTE: Assumes the inputs have already been validated!!!
             var sortedElementStats = candidateElementsStats.OrderByDescending(x => x.Mass).ToList();
 
             EstimateNumberOfOperations(sortedElementStats.Count);
@@ -572,31 +642,19 @@ namespace MolecularWeightCalculator.FormulaFinder
             return results;
         }
 
-        private List<SearchResult> FindMatchesByPercentCompositionWork(
+        /// <summary>
+        /// Find matched by percent composition, using already-validated inputs
+        /// </summary>
+        /// <param name="maximumFormulaMass"></param>
+        /// <param name="searchOptions"></param>
+        /// <param name="candidateElementsStats"></param>
+        /// <returns></returns>
+        internal List<SearchResult> FindMatchesByPercentComposition(
             double maximumFormulaMass,
-            double percentTolerance,
-            SearchOptions searchOptions)
+            SearchOptions searchOptions,
+            List<CandidateElement> candidateElementsStats)
         {
-            // Validate the Inputs
-            if (!ValidateSettings(CalculationMode.MatchPercentComposition))
-            {
-                return new List<SearchResult>();
-            }
-
-            if (maximumFormulaMass <= 0d)
-            {
-                ReportError("Maximum molecular weight must be greater than 0");
-                return new List<SearchResult>();
-            }
-
-            if (percentTolerance < 0d)
-            {
-                ReportError("Percent tolerance cannot be negative");
-                return new List<SearchResult>();
-            }
-
-            var candidateElementsStats = GetCandidateElements(searchOptions.SearchMode, percentTolerance);
-
+            // NOTE: Assumes the inputs have already been validated!!!
             if (candidateElementsStats.Count == 0)
             {
                 return new List<SearchResult>();
@@ -795,7 +853,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// </summary>
         /// <param name="results"></param>
         /// <param name="searchOptions"></param>
-        /// <param name="ppmMode"></param>
+        /// <param name="ppmMode">Used to properly flag the units for the results DeltaMass</param>
         /// <param name="sortedElementStats">Candidate elements, including mass and charge. Sorted by descending mass</param>
         /// <param name="targetMass"></param>
         /// <param name="massToleranceDa"></param>
@@ -1079,6 +1137,8 @@ namespace MolecularWeightCalculator.FormulaFinder
             if (recursiveCount <= maxRecursiveCount)
             {
                 PercentComplete = recursiveCount / (float)maxRecursiveCount * 100f;
+
+                ProgressReporter?.Report(PercentComplete);
             }
         }
 

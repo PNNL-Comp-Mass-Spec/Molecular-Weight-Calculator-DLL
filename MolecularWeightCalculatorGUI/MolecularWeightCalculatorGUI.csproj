@@ -91,6 +91,20 @@
       <DependentUpon>FormulaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="FormulaCalc\FormulaViewModel.cs" />
+    <Compile Include="FormulaFinder\ElementConfiguration.cs" />
+    <Compile Include="FormulaFinder\ElementConfigurationView.xaml.cs">
+      <DependentUpon>ElementConfigurationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FormulaFinder\FinderResult.cs" />
+    <Compile Include="FormulaFinder\FormulaFinderBindingProxy.cs" />
+    <Compile Include="FormulaFinder\FormulaFinderOptionsViewModel.cs" />
+    <Compile Include="FormulaFinder\FormulaFinderOptionsWindow.xaml.cs">
+      <DependentUpon>FormulaFinderOptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FormulaFinder\FormulaFinderViewModel.cs" />
+    <Compile Include="FormulaFinder\FormulaFinderWindow.xaml.cs">
+      <DependentUpon>FormulaFinderWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IsotopicDistribution\IsotopicDistributionViewModel.cs" />
     <Compile Include="IsotopicDistribution\IsotopicDistributionWindow.xaml.cs">
@@ -132,6 +146,9 @@
     <Compile Include="Utilities\CollectionUtils.cs" />
     <Compile Include="Utilities\EnumDescriptionConverter.cs" />
     <Compile Include="Utilities\GraphPoint.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\HideableColumnDefinition.cs" />
+    <Compile Include="Utilities\HideableRowDefinition.cs" />
     <Compile Include="Utilities\InvertBoolConverter.cs" />
     <Compile Include="Utilities\NumberDisplayShortConverter.cs" />
     <Compile Include="Utilities\NumberFormatter.cs" />
@@ -168,6 +185,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FormulaCalc\FormulaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FormulaFinder\ElementConfigurationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FormulaFinder\FormulaFinderOptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FormulaFinder\FormulaFinderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,230 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.FormulaFinder.FormulaFinderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.FormulaFinder"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:utilities="clr-namespace:MolecularWeightCalculatorGUI.Utilities"
+        xmlns:formula="clr-namespace:MolecularWeightCalculator.Formula;assembly=MolecularWeightCalculator"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:FormulaFinderViewModel}, IsDesignTimeCreatable=True}"
+        x:Name="This"
+        WindowStartupLocation="CenterOwner"
+        Closing="Window_Closing"
+        Title="Formula Finder" Height="450" Width="750" SizeToContent="Height" Activated="FormulaFinderWindow_OnActivated"
+        Loaded="FormulaFinderWindow_OnLoaded">
+    <Window.Style>
+        <Style BasedOn="{StaticResource {x:Type Window}}" TargetType="{x:Type Window}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ShowWaitCursor}" Value="True">
+                    <Setter Property="Cursor" Value="Wait" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ShowAppStartingCursor}" Value="True">
+                    <Setter Property="Cursor" Value="AppStarting" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Close" Executed="Close_OnClick" CanExecute="CanClose" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="Close" />
+        <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenFormulaFinderOptionsCommand}" CommandParameter="{x:Reference This}" />
+    </Window.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"    />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Margin="3" TextWrapping="Wrap" Text="Select appropriate elements or add your own, enter a molecular weight or percent compositions, then select calculate to find compounds that match the specifications." />
+        <Button Grid.Row="0" Grid.Column="7" Margin="3" MinWidth="100" Content="Formul_a Finder&#xa;     Options" Command="{Binding OpenFormulaFinderOptionsCommand}" CommandParameter="{x:Reference This}" />
+
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="8" IsSharedSizeScope="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" /> <!-- We know we have 10 rows, and the height of a single row can be appropriately set by a TextBox -->
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="Auto" SharedSizeGroup="ElementRow" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <utilities:HideableColumnDefinition Width="Auto" MinWidth="50" SharedSizeGroup="ColumnMinMax" Visible="{Binding ShowMinMaxColumns}" />
+                <utilities:HideableColumnDefinition Width="Auto" MinWidth="50" SharedSizeGroup="ColumnMinMax" Visible="{Binding ShowMinMaxColumns}" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="ElementCheck" />
+                <utilities:HideableColumnDefinition Width="Auto" MinWidth="70" SharedSizeGroup="ElementPercent" Visible="{Binding Options.MatchPercentCompositions}" />
+                <ColumnDefinition Width="Auto" MinWidth="70" SharedSizeGroup="ElementWeight" />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <local:FormulaFinderBindingProxy x:Key="BaseDC" Data="{Binding}" />
+            </Grid.Resources>
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="3">
+                <TextBlock.Style>
+                    <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                        <Setter Property="Text" Value="(using average atomic weights)" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementMode}" Value="{x:Static formula:ElementMassMode.Isotopic}">
+                                <Setter Property="Text" Value="(using isotopic elemental weights)" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementMode}" Value="{x:Static formula:ElementMassMode.Integer}">
+                                <Setter Property="Text" Value="(using integer elemental weights)" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Margin="3" HorizontalAlignment="Right" Text="{Binding ProgressStatus}" Visibility="{Binding IsCalculating, Converter={StaticResource BoolToVis}}" />
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Margin="3" HorizontalAlignment="Right" Text="{Binding CompletionNote}" Visibility="{Binding IsNotCalculating, Converter={StaticResource BoolToVis}}">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CompletionWarning}" Value="True">
+                                <Setter Property="Background" Value="Yellow" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="3">
+                Compounds found: <Run Text="{Binding FinderResults.Count, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="1" Margin="3" Text="Min" Visibility="{Binding ShowMinMaxColumns, Converter={StaticResource BoolToVis}}" />
+            <TextBlock Grid.Row="1" Grid.Column="2" Margin="3" Text="Max" Visibility="{Binding ShowMinMaxColumns, Converter={StaticResource BoolToVis}}" />
+            <TextBlock Grid.Row="1" Grid.Column="3" Margin="3" Text="Element" />
+            <TextBlock Grid.Row="1" Grid.Column="4" Margin="3" Text="Percent" Visibility="{Binding Options.MatchPercentCompositions, Converter={StaticResource BoolToVis}}" />
+            <TextBlock Grid.Row="1" Grid.Column="5" Margin="3" Text="Max Hits" />
+            <xctk:IntegerUpDown Grid.Row="2" Grid.Column="5" Margin="3" x:Name="MaxHitsBox" ShowButtonSpinner="False" Minimum="0" Maximum="1000000" Value="{Binding MaxHits}" ToolTip="Maximum number of target compounds to find" IsEnabled="{Binding IsNotCalculating}" />
+            <TextBlock Grid.Row="5" Grid.Column="5" Margin="3" VerticalAlignment="Bottom" Text="Atomic Wt." />
+
+            <!-- TODO: Assign font name and size from MolecularWeightTool.RtfFontName and MolecularWeightTool.RtfFontSize? -->
+            <ListBox Grid.Row="2" Grid.RowSpan="11" Grid.Column="0" Margin="3" x:Name="ResultsBox" IsEnabled="True" ItemsSource="{Binding FinderResults}" SelectedItem="{Binding SelectedResult}" HorizontalContentAlignment="Stretch" SelectionMode="Extended" SelectionChanged="ResultsBox_OnSelectionChanged">
+                <!--Visibility="{Binding IsCalculating, Converter={StaticResource BoolToVis}}">-->
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:FinderResult}">
+                        <!-- A TextBlock binding doesn't allow for superscript or subscript unless I use encode them with unicode, which has undesirable side effects -->
+                        <!-- The RichTextBox makes every line a TextBox, which also isn't wanted and is much heaver -->
+                        <!-- Generating a WPF TextBlock object allows using it a ContentPresenter, and setting superscript/subscript using a TextBlock and 'Run's -->
+                        <ContentPresenter Content="{Binding DisplayWpf}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="_Copy" Command="{Binding CopySelectedResultsCommand}" />
+                        <Separator />
+                        <MenuItem Header="Select _All" Click="SelectAll_OnClick" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.InputBindings>
+                    <KeyBinding Modifiers="Control" Key="X" Command="{Binding CopySelectedResultsCommand}" />
+                    <KeyBinding Modifiers="Control" Key="C" Command="{Binding CopySelectedResultsCommand}" />
+                    <KeyBinding Modifiers="Control" Key="D" Command="{Binding DisplayIsotopicAbundanceCommand}" />
+                    <KeyBinding Modifiers="Alt" Key="D" Command="{Binding DisplayIsotopicAbundanceCommand}" />
+                </ListBox.InputBindings>
+            </ListBox>
+
+            <!-- Use this text box to display input validation errors; hide it when there are no errors (empty string) -->
+            <!-- Using a border to provide a bright red background, while leaving a white background behind all text. -->
+            <Border Grid.Row="2" Grid.RowSpan="11" Grid.Column="0" Margin="3" Background="OrangeRed">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding InputErrorText}" Value="">
+                                <Setter Property="Visibility" Value="Hidden" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBox HorizontalAlignment="Center" VerticalAlignment="Center" IsReadOnly="True" Text="{Binding InputErrorText}" TextWrapping="Wrap" />
+            </Border>
+
+            <!--
+            Originally tried using ItemsControl, which did work, but also had some odd behavior with the row height and column widths/visibility.
+            While this has sub-grids, there are no concerns about needing to synchronize row heights, and column widths seem to work better with the fixed number of items
+            -->
+            <local:ElementConfigurationView Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element00}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}"  IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element01}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}"  IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element02}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}"  IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element03}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}"  IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element04}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}"  IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element05}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}"  IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element06}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}"  IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element07}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}"  IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element08}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}" IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+            <local:ElementConfigurationView Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="5" DataContext="{Binding Element09}" MinMaxVisible="{Binding Data.ShowMinMaxColumns, Source={StaticResource BaseDC}}" PercentVisible="{Binding Data.Options.MatchPercentCompositions, Source={StaticResource BaseDC}}" IsEnabled="{Binding Data.IsNotCalculating, Source={StaticResource BaseDC}}" />
+        </Grid>
+
+        <!-- Set the 'Molecular Weight Of Target' Caption based on the FormulaFinderOptionsViewModel.FindMz box -->
+        <TextBlock Grid.Row="3" Grid.Column="1" Margin="3" Visibility="{Binding Options.MatchMolecularWeight, Converter={StaticResource BoolToVis}}">
+            <TextBlock.Style>
+                <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                    <Setter Property="Text" Value="Molecular Weight of Target:" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Options.FindTargetMz}" Value="True">
+                            <Setter Property="Text" Value="Mass/Charge Ratio of Target:" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="2" Margin="3" MinWidth="100" ShowButtonSpinner="False" Minimum="0" Value="{Binding TargetMolMass}" IsEnabled="{Binding IsNotCalculating}" Visibility="{Binding Options.MatchMolecularWeight, Converter={StaticResource BoolToVis}}" />
+        <TextBlock Grid.Row="3" Grid.Column="1" Margin="3" Text="Maximum Weight of Formula:" Visibility="{Binding Options.MatchPercentCompositions, Converter={StaticResource BoolToVis}}" />
+        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="2" Margin="3" MinWidth="100" ShowButtonSpinner="False" Minimum="0" Value="{Binding PercentMaxMass}" IsEnabled="{Binding IsNotCalculating}" Visibility="{Binding Options.MatchPercentCompositions, Converter={StaticResource BoolToVis}}" />
+        <TextBlock Grid.Row="4" Grid.Column="1" Margin="3" Text="Weight Tolerance:" Visibility="{Binding Options.MatchMolecularWeight, Converter={StaticResource BoolToVis}}" />
+        <xctk:DoubleUpDown Grid.Row="4" Grid.Column="2" Margin="3" MinWidth="100" ShowButtonSpinner="False" Minimum="0" Value="{Binding MassTolerance}" IsEnabled="{Binding IsNotCalculating}" Visibility="{Binding Options.MatchMolecularWeight, Converter={StaticResource BoolToVis}}" ToolTip="Amount that target compound's weight can be from the target weight" />
+        <TextBlock Grid.Row="4" Grid.Column="1" Margin="3" Text="Percent Tolerance:" Visibility="{Binding Options.MatchPercentCompositions, Converter={StaticResource BoolToVis}}" />
+        <xctk:DoubleUpDown Grid.Row="4" Grid.Column="2" Margin="3" MinWidth="100" ShowButtonSpinner="False" Minimum="0" Value="{Binding PercentTolerance}" IsEnabled="{Binding IsNotCalculating}" Visibility="{Binding Options.MatchPercentCompositions, Converter={StaticResource BoolToVis}}" ToolTip="Amount that elemental percent compositions can be from the target percentage" />
+        <CheckBox Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="3" Margin="10,3,3,3" VerticalContentAlignment="Center" IsChecked="{Binding PpmMode}" Content="Ppm Mode" IsEnabled="{Binding IsNotCalculating}" Visibility="{Binding Options.MatchMolecularWeight, Converter={StaticResource BoolToVis}}" />
+        <CheckBox Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="3" Margin="10,3,3,3" VerticalContentAlignment="Center" IsChecked="{Binding ShowDeltaMass}" IsEnabled="{Binding IsNotCalculating}" Content="ShowDeltaMass" ToolTip="Note: Delta mass notation will change as the standard deviation mode is changed (F12 in the main window)" />
+
+        <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" Orientation="Vertical">
+            <RadioButton VerticalContentAlignment="Center" GroupName="MatchMode" IsChecked="{Binding Options.MatchMolecularWeight}" Content="Match _Molecular Weight" IsEnabled="{Binding IsNotCalculating}" />
+            <RadioButton VerticalContentAlignment="Center" GroupName="MatchMode" IsChecked="{Binding Options.MatchPercentCompositions}" Content="Match _Percent Compositions" IsEnabled="{Binding IsNotCalculating}" />
+        </StackPanel>
+
+        <Button Grid.Row="3" Grid.RowSpan="2" Grid.Column="6" Margin="3" MinWidth="80" MinHeight="25" VerticalAlignment="Bottom" Content="Copy as RT_F" Command="{Binding CopyAsRtfCommand}" IsEnabled="{Binding IsNotCalculating}" />
+        <Button Grid.Row="3" Grid.RowSpan="2" Grid.Column="7" Margin="3" MinWidth="50" VerticalAlignment="Bottom" Content=" _Display Iso&#xa;Abundance" Command="{Binding DisplayIsotopicAbundanceCommand}" CommandParameter="{x:Reference This}" IsEnabled="{Binding IsNotCalculating}" />
+        <Button Grid.Row="5" Grid.Column="4" Margin="3" MinWidth="60" Content="_Calculate" Command="{Binding CalculateCommand}" ToolTip="Find the compounds that match the specified parameters">
+            <Button.Style>
+                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCalculating}" Value="True">
+                            <Setter Property="Visibility" Value="Hidden" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Grid.Row="5" Grid.Column="4" Margin="3" MinWidth="60" Content="Abort" Command="{Binding AbortCommand}" Visibility="{Binding IsCalculating, Converter={StaticResource BoolToVis}}" />
+        <Button Grid.Row="5" Grid.Column="5" Margin="3" MinWidth="60" Content="Prin_t..." Command="{Binding PrintCommand}" IsEnabled="{Binding IsNotCalculating}" />
+        <Button Grid.Row="5" Grid.Column="6" Margin="3" MinWidth="60" Content="Cop_y" Command="{Binding CopyResultsCommand}" IsEnabled="{Binding IsNotCalculating}" />
+        <Button Grid.Row="5" Grid.Column="7" Margin="3" MinWidth="60" Content="Cl_ose" IsCancel="True" Command="{Binding CloseCommand}" CommandParameter="{x:Reference This}" />
+    </Grid>
+</Window>

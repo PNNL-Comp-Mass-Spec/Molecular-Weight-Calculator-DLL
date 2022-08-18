@@ -17,6 +17,7 @@
         <KeyBinding Key="Escape" Command="Close" />
         <KeyBinding Modifiers="Control" Key="M" Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Mole/Mass Converter... -->
         <KeyBinding Modifiers="Control" Key="L" Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- m/z Conversion... -->
+        <KeyBinding Modifiers="Control" Key="F" Command="{Binding OpenFormulaFinderWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Formula Finder... -->
         <KeyBinding Modifiers="Control" Key="N" Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Amino Acid Notation Converter... -->
         <KeyBinding Modifiers="Control" Key="P" Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Peptide Sequence Fragmentation Modelling... -->
         <KeyBinding Modifiers="Control" Key="I" Command="{Binding OpenIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Isotopic Distribution Modelling... -->
@@ -63,7 +64,7 @@
             <MenuItem Header="Tools">
                 <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+M" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
                 <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+L" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
-                <MenuItem Header="Formula Finder..." /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
+                <MenuItem Header="Formula Finder..." Command="{Binding OpenFormulaFinderWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+F" /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
                 <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+N" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
                 <Separator />
                 <MenuItem Header="Peptide Sequence Fragmentation Modelling..." Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+P" /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->

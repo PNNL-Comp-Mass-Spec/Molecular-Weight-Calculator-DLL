@@ -1,0 +1,63 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.FormulaFinder.FormulaFinderOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.FormulaFinder"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:formulaFinder="clr-namespace:MolecularWeightCalculator.FormulaFinder;assembly=MolecularWeightCalculator"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:FormulaFinderOptionsViewModel}, IsDesignTimeCreatable=True}"
+        x:Name="This"
+        WindowStartupLocation="CenterOwner"
+        Title="Finder Options" Height="210" Width="450" SizeToContent="WidthAndHeight">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="40" MinWidth="40" MaxWidth="40" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="40" MinWidth="40" MaxWidth="40" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="10" MinWidth="10" MaxWidth="10" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="3" TextWrapping="Wrap" Text="Use the checkboxes to select various options&#xa;for the Formula Finder." />
+        <Button Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="3" Margin="3" MinWidth="40" IsDefault="True" Click="CloseWindow" Content="_OK" />
+        <CheckBox Grid.Row="2" Grid.Column="0" Margin="3" VerticalContentAlignment="Center" Content="Find _Charge" IsChecked="{Binding FindCharge}" IsEnabled="{Binding AllowChanges}" />
+        <CheckBox Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="3" VerticalContentAlignment="Center" Content="Limit Charge _Range" IsChecked="{Binding LimitChargeRange}" IsEnabled="{Binding AllowLimitChargeRange}" />
+        <TextBlock Grid.Row="1" Grid.Column="5" Margin="3" Text="Min" Visibility="{Binding LimitChargeRange, Converter={StaticResource BoolToVis}}" />
+        <TextBlock Grid.Row="1" Grid.Column="7" Margin="3" Text="Max" Visibility="{Binding LimitChargeRange, Converter={StaticResource BoolToVis}}" />
+        <xctk:IntegerUpDown Grid.Row="2" Grid.Column="5" Margin="3" ShowButtonSpinner="False" Minimum="-20" Maximum="20" Value="{Binding ChargeMin}" ToolTip="Minimum charge to limit compounds to" Visibility="{Binding LimitChargeRange, Converter={StaticResource BoolToVis}}" IsEnabled="{Binding AllowChanges}" />
+        <xctk:IntegerUpDown Grid.Row="2" Grid.Column="7" Margin="3" ShowButtonSpinner="False" Minimum="-20" Maximum="20" Value="{Binding ChargeMax}" ToolTip="Maximum charge to limit compounds to" Visibility="{Binding LimitChargeRange, Converter={StaticResource BoolToVis}}" IsEnabled="{Binding AllowChanges}" />
+        <CheckBox Grid.Row="3" Grid.Column="0" Margin="3" VerticalContentAlignment="Center" Content="Find m/_z" IsChecked="{Binding FindMz}" IsEnabled="{Binding AllowFindMz}" />
+        <CheckBox Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="3" VerticalContentAlignment="Center" Content="Find _Target m/z" IsChecked="{Binding FindTargetMz}" IsEnabled="{Binding FindMzLimitedChargeRange}" />
+        <CheckBox Grid.Row="4" Grid.Column="0" Margin="3" VerticalContentAlignment="Center" Content="So_rt Results" IsChecked="{Binding SortResults}" />
+        <CheckBox Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="3" VerticalContentAlignment="Center" Content="_Smart H atoms" IsChecked="{Binding VerifyHydrogens}" IsEnabled="{Binding EnableVerifyHydrogens}" />
+        <ComboBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="3" MinWidth="80" ItemsSource="{Binding ResultSortModeOptions}" SelectedItem="{Binding ResultsSortMode}" IsEnabled="{Binding SortResults}" ToolTip="Resorts the results the list.">
+            <ComboBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type formulaFinder:SearchResultsSortMode}">
+                    <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <ComboBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="3" MinWidth="80" ItemsSource="{Binding FormulaSearchModeOptions}" SelectedItem="{Binding SearchMode}" IsEnabled="{Binding AllowChanges}" ToolTip="Choose converting between different amounts or molarity calculation in a solvent">
+            <ComboBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type formulaFinder:FormulaSearchModes}">
+                    <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <CheckBox Grid.Row="6" Grid.RowSpan="2" Grid.Column="3" Grid.ColumnSpan="5" Margin="15,3" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="_Automatically adjust Min and&#xa;Max in bounded search." IsChecked="{Binding AutoSetBounds}" IsEnabled="{Binding EnableAutoSetBounds}" />
+    </Grid>
+</Window>
