@@ -55,6 +55,15 @@
             <Run Text="Version" />
             <Run x:Name="Version" />
         </TextBlock>
+        <Image
+            Grid.Row="5"
+            Grid.RowSpan="6"
+            Grid.Column="1"
+            Margin="10,3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Source="/MolecularWeightCalculator.ico"
+            Stretch="None" />
         <TextBlock
             x:Name="Build"
             Grid.Row="2"
@@ -77,16 +86,6 @@
             Grid.Column="0"
             Margin="3,0"
             Text="Written in C# and WPF" />
-        <!--  TODO: Is there a higher-res version of this image?  -->
-        <Image
-            Grid.Row="4"
-            Grid.RowSpan="6"
-            Grid.Column="1"
-            Margin="10,3"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Source="mwtwin.ico"
-            Stretch="None" />
         <TextBox
             Grid.Row="6"
             Grid.Column="0"

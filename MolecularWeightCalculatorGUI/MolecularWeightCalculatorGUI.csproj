@@ -36,7 +36,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>mwtwin.ico</ApplicationIcon>
+    <ApplicationIcon>MolecularWeightCalculator.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -290,7 +290,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="mwtwin.ico" />
+    <Resource Include="MolecularWeightCalculator.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\DownArrow.gif" />
