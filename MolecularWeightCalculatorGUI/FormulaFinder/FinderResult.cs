@@ -98,6 +98,7 @@ namespace MolecularWeightCalculatorGUI.FormulaFinder
             var deltaMassPpmFormat = "#0.0";
             var mzFormat = "#0.000";
 
+#pragma warning disable CS0162
             if ( /* TODO: frmProgramPreferences.optStdDevType(1).value == true */ false)
             {
                 // Use scientific notation instead
@@ -105,6 +106,7 @@ namespace MolecularWeightCalculatorGUI.FormulaFinder
                 deltaMassPpmFormat = "0.0####E+00";
                 mzFormat = "0.0######E+00";
             }
+#pragma warning restore CS0162
 
             formulaText = EmpiricalFormula;
             statsText = "";

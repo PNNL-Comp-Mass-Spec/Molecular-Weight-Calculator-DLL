@@ -680,13 +680,8 @@ namespace MolecularWeightCalculatorGUI.FormulaFinder
 
                 IsCalculating = false;
             }
-            catch (OutOfMemoryException ex)
-            {
-                MessageBox.Show("A memory error has occurred.  The results list is probably full.  Results so far are shown.", "Out of Memory", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
             catch (Exception ex)
             {
-                // Change mouse pointer to default
                 ElementAndMass.GeneralErrorHandler("FormulaFinderViewModel|Calculate", ex);
             }
 
