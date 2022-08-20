@@ -30,7 +30,7 @@
             </molecularWeightCalculatorGui:RichTextBoxMulti.InputBindings>
             <FlowDocument />
         </molecularWeightCalculatorGui:RichTextBoxMulti>
-        <TextBlock Grid.Row="1" Grid.Column="1" Margin="1,0">
+        <molecularWeightCalculatorGui:SelectableTextBlock Grid.Row="1" Grid.Column="1" Margin="1,0">
             <TextBlock.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Copy" Command="{Binding CopyMolecularWeightCommand}" />
@@ -39,7 +39,7 @@
             <Run Text="MW =" />
             <Run Text="{Binding Mass, StringFormat={}{0:0.000##}}" />
             <Run Text="{Binding StandardDeviation, StringFormat=(&#x00B1;{0:F3})}" />
-        </TextBlock>
+        </molecularWeightCalculatorGui:SelectableTextBlock>
         <!-- TODO: <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="2" Grid.Column="1" Margin="1,0" TextXaml="{Binding FormulaXaml, Mode=OneWay}">
             <FlowDocument />
         </molecularWeightCalculatorGui:RichTextBoxMulti>-->

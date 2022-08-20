@@ -143,6 +143,7 @@
     <Compile Include="Plotting\PlotViewModel.cs" />
     <Compile Include="Plotting\ReusablePlotModel.cs" />
     <Compile Include="RichTextBoxMulti.cs" />
+    <Compile Include="SelectableTextBlock.cs" />
     <Compile Include="Utilities\CollectionUtils.cs" />
     <Compile Include="Utilities\EnumDescriptionConverter.cs" />
     <Compile Include="Utilities\GraphPoint.cs" />
