@@ -7,13 +7,18 @@
         xmlns:molecularWeightCalculatorGui="clr-namespace:MolecularWeightCalculatorGUI"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:sequence="clr-namespace:MolecularWeightCalculator.Sequence;assembly=MolecularWeightCalculator"
-        xmlns:wpfExtras="clr-namespace:WpfExtras;assembly=WpfExtras"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:FragmentationModellingViewModel}, IsDesignTimeCreatable=True}"
         x:Name="This"
         WindowStartupLocation="CenterOwner"
         DataContextChanged="OnDataContextChanged"
         Title="Peptide Sequence Fragmentation Modelling" MinHeight="550" Width="700" SizeToContent="WidthAndHeight">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Close" Executed="Close_OnClick" CanExecute="CanClose" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control" Key="W" Command="{Binding CopyMolecularWeightCommand}" />
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -37,21 +42,21 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7">
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7" x:Name="MenuBar">
             <MenuItem Header="File">
                 <MenuItem Header="Load Sequence Info..." /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
                 <MenuItem Header="Save Sequence Info..." /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
                 <Separator />
                 <MenuItem Header="Load List of Ions or .Dta file to Match..." /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />
-                <MenuItem Header="Close" Click="Close_OnClick" />
+                <MenuItem Header="Close" Command="Close" />
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Copy Predicted Ions" />
                 <MenuItem Header="Copy Predicted Ions as RTF" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
                 <MenuItem Header="Copy Predicted Ions as HTML" />
                 <Separator />
-                <MenuItem Header="Copy Sequence Molecular Weight" /> <!-- TODO: keyboard shortcuts, "Ctrl+W" -->
+                <MenuItem Header="Copy Sequence Molecular Weight" Command="{Binding CopyMolecularWeightCommand}" InputGestureText="Ctrl+W" />
                 <Separator />
                 <MenuItem Header="Paste List of Ions to Match" />
                 <MenuItem Header="Clear Match Ion List" />
@@ -72,9 +77,9 @@
                 <MenuItem Header="Fragmentation Modelling" />
             </MenuItem>
         </Menu>
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="Sequence:" />
-        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" Margin="5" MinHeight="40" Text="{Binding Sequence, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
-        <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding NotationOptionsSource}" SelectedItem="{Binding SelectedAminoAcidNotation}">
+        <Label Grid.Row="1" Grid.Column="0" Margin="5" Content="_Sequence:" Target="{Binding ElementName=SequenceBox}" />
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" Margin="5" MinHeight="40" x:Name="SequenceBox"  Text="{Binding Sequence, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" ToolTip="Enter amino acid sequence here" />
+        <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" x:Name="NotationOptions" ItemsSource="{Binding NotationOptionsSource}" SelectedItem="{Binding SelectedAminoAcidNotation}" ToolTip="Amino acid sequence notation type">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:AminoAcidNotationMode}">
                     <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
@@ -127,16 +132,16 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Text="N" />
-                <ComboBox Grid.Row="0" Grid.Column="1" Margin="5,3" ItemsSource="{Binding NTerminusGroupOptions}" SelectedItem="{Binding NTerminusGroup}">
+                <Label Grid.Row="0" Grid.Column="0" Margin="5" Content="N" Target="{Binding ElementName=NTerminusBox}" />
+                <ComboBox Grid.Row="0" Grid.Column="1" Margin="5,3" x:Name="NTerminusBox" ItemsSource="{Binding NTerminusGroupOptions}" SelectedItem="{Binding NTerminusGroup}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type sequence:NTerminusGroupType}">
                             <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="C" />
-                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,3" ItemsSource="{Binding CTerminusGroupOptions}" SelectedItem="{Binding CTerminusGroup}">
+                <Label Grid.Row="1" Grid.Column="0" Margin="5" Content="C" Target="{Binding ElementName=CTerminusBox}" />
+                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,3" x:Name="CTerminusBox" ItemsSource="{Binding CTerminusGroupOptions}" SelectedItem="{Binding CTerminusGroup}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type sequence:CTerminusGroupType}">
                             <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}"/>
@@ -200,9 +205,9 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Text="Threshold" />
                 <CheckBox Grid.Row="1" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="_2+ ions" IsChecked="{Binding Show2PlusCharges}" />
-                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,3" ItemsSource="{Binding ChargeThresholdOptions}" SelectedItem="{Binding TwoPlusChargesThreshold}" IsEnabled="{Binding Show2PlusCharges}" />
+                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,3" ItemsSource="{Binding ChargeThresholdOptions}" SelectedItem="{Binding TwoPlusChargesThreshold}" IsEnabled="{Binding Show2PlusCharges}" ToolTip="The 2+ m/z value will be computed for ions above this m/z" />
                 <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="_3+ ions" IsChecked="{Binding Show3PlusCharges}" />
-                <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,3" ItemsSource="{Binding ChargeThresholdOptions}" SelectedItem="{Binding ThreePlusChargesThreshold}" IsEnabled="{Binding Show3PlusCharges}" />
+                <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,3" ItemsSource="{Binding ChargeThresholdOptions}" SelectedItem="{Binding ThreePlusChargesThreshold}" IsEnabled="{Binding Show3PlusCharges}" ToolTip="The 3+ m/z value will be computed for ions above this m/z" />
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Header="Ion Masses">

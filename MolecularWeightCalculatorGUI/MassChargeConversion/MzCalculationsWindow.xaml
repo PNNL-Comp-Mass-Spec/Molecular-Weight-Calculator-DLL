@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MzCalculationsViewModel}, IsDesignTimeCreatable=True}"
         WindowStartupLocation="CenterOwner"
-        Title="Mass-to-Charge Conversion" MinHeight="100" MinWidth="400" SizeToContent="WidthAndHeight">
+        Title="Mass-to-Charge Conversion" MinHeight="100" MinWidth="400" SizeToContent="WidthAndHeight" Loaded="MzCalculationsWindow_OnLoaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -37,7 +37,7 @@
             <RadioButton Margin="5,0" GroupName="elementMode" Content="Isotopic" IsChecked="{Binding ElementModeIsotopic}" />
         </StackPanel>
         <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="5" VerticalAlignment="Center" Text="Mass Error" />
-        <xctk:DoubleUpDown Grid.Row="0" Grid.Column="4" Margin="5" Minimum="0" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding MassError}" />
+        <xctk:DoubleUpDown Grid.Row="0" Grid.Column="4" Margin="5" MinWidth="50" Minimum="0" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding MassError}" />
         <ComboBox Grid.Row="0" Grid.Column="5" Margin="5" ItemsSource="{Binding MassErrorModeOptions}" SelectedItem="{Binding MassErrorMode}">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type molecularWeightCalculatorGui:MassErrorMode}">
@@ -54,10 +54,10 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" Margin="5" Minimum="0" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding MassCharge1}" />
+        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" Margin="5" MinWidth="80" Minimum="0" ShowButtonSpinner="False" FormatString="0.######" Value="{Binding MassCharge1}" />
         <TextBlock Grid.Row="3" Grid.Column="2" Margin="5" VerticalAlignment="Center" Text="m/z" />
-        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" Margin="5" Minimum="0" ShowButtonSpinner="False" IsReadOnly="True" FormatString="0.######" Value="{Binding MassCharge1Start, Mode=OneWay}" />
-        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="5" Margin="5" Minimum="0" ShowButtonSpinner="False" IsReadOnly="True" FormatString="0.######" Value="{Binding MassCharge1End, Mode=OneWay}" />
+        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" Margin="5" MinWidth="70" Minimum="0" ShowButtonSpinner="False" IsReadOnly="True" FormatString="0.######" Value="{Binding MassCharge1Start, Mode=OneWay}" />
+        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="5" Margin="5" MinWidth="70" Minimum="0" ShowButtonSpinner="False" IsReadOnly="True" FormatString="0.######" Value="{Binding MassCharge1End, Mode=OneWay}" />
         <ComboBox Grid.Row="4" Grid.Column="0" Margin="5" MinWidth="100" ItemsSource="{Binding MassChargeLevelOptions}" SelectedItem="{Binding MassChargeLevel2}">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type molecularWeightCalculatorGui:MassChargeLevel}">

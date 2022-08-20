@@ -14,11 +14,24 @@ namespace MolecularWeightCalculatorGUI.FormulaCalc
             InitializeComponent();
         }
 
-        private void TextBox_OnGotFocus(object sender, RoutedEventArgs e)
+        private void Control_OnClickOrGotFocus(object sender, RoutedEventArgs e)
         {
             if (DataContext is FormulaViewModel fvm)
             {
                 fvm.LastFocusTime = DateTime.Now;
+            }
+        }
+
+        private void FormulaView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.OldValue is FormulaViewModel fvmOld)
+            {
+                fvmOld.SetRichTextBoxControl(null);
+            }
+
+            if (e.NewValue is FormulaViewModel fvm)
+            {
+                fvm.SetRichTextBoxControl(RichText);
             }
         }
     }

@@ -16,5 +16,13 @@ namespace MolecularWeightCalculatorGUI.MassChargeConversion
         {
             Close();
         }
+
+        private void MzCalculationsWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // Allow the auto-sizing when the window is first opened, but disable it afterward
+            Width = ActualWidth;
+            Height = ActualHeight;
+            SizeToContent = SizeToContent.Manual;
+        }
     }
 }

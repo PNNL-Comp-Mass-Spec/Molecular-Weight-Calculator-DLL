@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Windows;
 using DynamicData.Binding;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Sequence;
 using MolecularWeightCalculatorGUI.Utilities;
 using ReactiveUI;
+using RxUnit = System.Reactive.Unit;
 
 namespace MolecularWeightCalculatorGUI.PeptideUI
 {
@@ -34,17 +36,19 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             NeutralLossIonTypes = new ObservableCollectionExtended<IonType>(new IonType[] { IonType.BIon, IonType.YIon });
 
             this.WhenAnyValue(x => x.ShowAIons, x => x.ShowBIons, x => x.ShowCIons, x => x.ShowYIons, x => x.ShowZIons)
-                .Subscribe(x => UpdateShownIons());
+                .SubscribeOnChange(x => UpdateShownIons());
             this.WhenAnyValue(x => x.NeutralLossIonTypes.Count, x => x.NeutralLossWater, x => x.NeutralLossAmmonia,
-                x => x.NeutralLossPhosphate).Subscribe(x => UpdateNeutralLossIons());
+                x => x.NeutralLossPhosphate).SubscribeOnChange(x => UpdateNeutralLossIons());
             this.WhenAnyValue(x => x.Show2PlusCharges, x => x.TwoPlusChargesThreshold, x => x.Show3PlusCharges,
-                x => x.ThreePlusChargesThreshold).Subscribe(x => UpdateIonCharges());
+                x => x.ThreePlusChargesThreshold).SubscribeOnChange(x => UpdateIonCharges());
             this.WhenAnyValue(x => x.Sequence, x => x.NTerminusGroup, x => x.CTerminusGroup,
-                x => x.SelectedAminoAcidNotation).Subscribe(x => UpdateSequence());
-            this.WhenAnyValue(x => x.IonMassDigits).Subscribe(x => UpdateFragments());
-            this.WhenAnyValue(x => x.MassChargeLevel).Subscribe(x => UpdateMasses());
+                x => x.SelectedAminoAcidNotation).SubscribeOnChange(x => UpdateSequence());
+            this.WhenAnyValue(x => x.IonMassDigits).SubscribeOnChange(x => UpdateFragments());
+            this.WhenAnyValue(x => x.MassChargeLevel).SubscribeOnChange(x => UpdateMasses());
             this.WhenAnyValue(x => x.ElementModeAverage, x => x.ElementModeIsotopic)
-                .Subscribe(x => UpdateElementMode());
+                .SubscribeOnChange(x => UpdateElementMode());
+
+            CopyMolecularWeightCommand = ReactiveCommand.Create(CopySequenceMW);
 
             UpdateShownIons(false);
             UpdateNeutralLossIons(false);
@@ -88,6 +92,7 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
         public IReadOnlyList<int> ChargeThresholdOptions { get; }
         public IReadOnlyList<int> IonMassDigitsOptions { get; }
 
+        public ReactiveCommand<RxUnit, RxUnit> CopyMolecularWeightCommand { get; }
         public string Sequence
         {
             get => sequence;
@@ -395,6 +400,11 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             }
 
             FragmentationDataTable = table;
+        }
+
+        private void CopySequenceMW()
+        {
+            Clipboard.SetText(peptide.GetPeptideMass().ToString(), TextDataFormat.Text);
         }
     }
 }

@@ -33,7 +33,6 @@
         <CommandBinding Command="ApplicationCommands.Close" Executed="Close_OnClick" CanExecute="CanClose" />
     </Window.CommandBindings>
     <Window.InputBindings>
-        <KeyBinding Key="Escape" Command="Close" />
         <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenFormulaFinderOptionsCommand}" CommandParameter="{x:Reference This}" />
     </Window.InputBindings>
     <Grid>

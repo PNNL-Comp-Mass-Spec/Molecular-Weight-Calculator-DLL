@@ -43,16 +43,19 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" VerticalAlignment="Center" Text="Formula:" />
+            <Label Grid.Row="0" Grid.Column="0" Margin="3" VerticalAlignment="Center" Content="_Formula:" Target="{Binding ElementName=FormulaBox}" />
             <!--<TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6" Margin="3" Text="{Binding Formula}" />-->
-            <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6" Margin="3" TextRtf="{Binding FormulaRtf, Mode=OneWay}" TextPlain="{Binding Formula}">
+            <molecularWeightCalculatorGui:RichTextBoxMulti Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6" Margin="3" x:Name="FormulaBox" TextRtf="{Binding FormulaRtf, Mode=OneWay}" TextPlain="{Binding Formula, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" AcceptsTab="False" AcceptsReturn="False">
+                <molecularWeightCalculatorGui:RichTextBoxMulti.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding ComputeCommand}" />
+                </molecularWeightCalculatorGui:RichTextBoxMulti.InputBindings>
                 <FlowDocument />
             </molecularWeightCalculatorGui:RichTextBoxMulti>
             <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" MinWidth="80" Content="_Compute" Command="{Binding ComputeCommand}" />
             <Button Grid.Row="2" Grid.Column="2" Margin="3" MinWidth="80" Content="Cop_y" Command="{Binding CopyCommand}" />
             <Button Grid.Row="2" Grid.Column="3" Margin="3" MinWidth="80" Content="Cl_ose" Command="{Binding CloseCommand}" Click="Close_OnClick" />
-            <TextBlock Grid.Row="2" Grid.Column="5" Margin="3" VerticalAlignment="Center" Text="Charge state:" />
-            <xctk:IntegerUpDown Grid.Row="2" Grid.Column="6" Margin="3" MinWidth="50" Minimum="0" Maximum="10000" Value="{Binding ChargeState}" />
+            <Label Grid.Row="2" Grid.Column="5" Margin="3" VerticalAlignment="Center" Content="C_harge state:" Target="{Binding ElementName=ChargeStateBox}" />
+            <xctk:IntegerUpDown Grid.Row="2" Grid.Column="6" Margin="3" MinWidth="50" x:Name="ChargeStateBox"  Minimum="0" Maximum="10000" Value="{Binding ChargeState}" />
             <CheckBox Grid.Row="3" Grid.RowSpan="2" Grid.Column="5" Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Add Proton" IsChecked="{Binding AddProtonChargeCarrier}" />
             <TextBlock Grid.Row="4" Grid.Column="0" Margin="3" VerticalAlignment="Center" Text="Results:" />
             <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="7" Margin="3" Text="{Binding Results}" IsReadOnly="True" FontFamily="Courier New" />

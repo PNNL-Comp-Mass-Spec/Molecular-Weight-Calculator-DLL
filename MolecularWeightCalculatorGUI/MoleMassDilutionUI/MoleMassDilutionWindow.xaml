@@ -150,8 +150,8 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Initial Concentration" />
-                    <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.InitialConcentration}">
+                    <Label Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="_Initial Concentration" Target="{Binding ElementName=InitialConcBox}" />
+                    <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" Margin="5" MinWidth="100" x:Name="InitialConcBox" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.InitialConcentration}">
                         <xctk:DoubleUpDown.Style>
                             <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
                                 <Style.Triggers>
@@ -172,8 +172,8 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <TextBlock Grid.Row="4" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Initial Solution Volume" />
-                    <xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.InitialVolume}">
+                    <Label Grid.Row="4" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="Initial _Solution Volume" Target="{Binding ElementName=InitialVolumeBox}" />
+                    <xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" Margin="5" MinWidth="100" x:Name="InitialVolumeBox" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.InitialVolume}">
                         <xctk:DoubleUpDown.Style>
                             <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
                                 <Style.Triggers>
@@ -194,8 +194,8 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <TextBlock Grid.Row="5" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Final Concentration" />
-                    <xctk:DoubleUpDown Grid.Row="5" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.FinalConcentration}">
+                    <Label Grid.Row="5" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="_Final Concentration" Target="{Binding ElementName=FinalConcBox}" />
+                    <xctk:DoubleUpDown Grid.Row="5" Grid.Column="1" Margin="5" MinWidth="100" x:Name="FinalConcBox" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.FinalConcentration}">
                         <xctk:DoubleUpDown.Style>
                             <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
                                 <Style.Triggers>
@@ -216,8 +216,8 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <TextBlock Grid.Row="6" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Volume of Solvent Added" />
-                    <xctk:DoubleUpDown Grid.Row="6" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.AddedSolventVolume}">
+                    <Label Grid.Row="6" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="Volume of Solvent A_dded" Target="{Binding ElementName=AddedVolumeBox}" />
+                    <xctk:DoubleUpDown Grid.Row="6" Grid.Column="1" Margin="5" MinWidth="100" x:Name="AddedVolumeBox" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.AddedSolventVolume}">
                         <xctk:DoubleUpDown.Style>
                             <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
                                 <Style.Triggers>
@@ -238,8 +238,8 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <TextBlock Grid.Row="7" Grid.Column="0" Margin="5" VerticalAlignment="Center" Text="Final Solution Volume" />
-                    <xctk:DoubleUpDown Grid.Row="7" Grid.Column="1" Margin="5" MinWidth="100" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.FinalVolume}">
+                    <Label Grid.Row="7" Grid.Column="0" Margin="5" VerticalAlignment="Center" Content="Final Solu_tion Volume" Target="{Binding ElementName=FinalVolumeBox}" />
+                    <xctk:DoubleUpDown Grid.Row="7" Grid.Column="1" Margin="5" MinWidth="100" x:Name="FinalVolumeBox" ShowButtonSpinner="False" Minimum="0" TextAlignment="Left" Value="{Binding Data.FinalVolume}">
                         <xctk:DoubleUpDown.Style>
                             <Style TargetType="{x:Type xctk:DoubleUpDown}" BasedOn="{StaticResource {x:Type xctk:DoubleUpDown}}">
                                 <Style.Triggers>

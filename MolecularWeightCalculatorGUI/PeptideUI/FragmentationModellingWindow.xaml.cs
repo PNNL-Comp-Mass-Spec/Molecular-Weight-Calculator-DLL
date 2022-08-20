@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using DynamicData;
 using MolecularWeightCalculator.Sequence;
 
@@ -19,6 +20,11 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
         private void Close_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void CanClose(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
         }
 
         private void NeutralLossIonTypes_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

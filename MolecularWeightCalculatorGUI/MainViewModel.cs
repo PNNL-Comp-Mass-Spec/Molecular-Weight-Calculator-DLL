@@ -42,6 +42,20 @@ namespace MolecularWeightCalculatorGUI
             OpenIsotopicDistributionWindowCommand = ReactiveCommand.Create<Window>(OpenIsotopicDistributionWindow);
             OpenSelectedIsotopicDistributionWindowCommand = ReactiveCommand.Create<Window>(OpenSelectedIsotopicDistributionWindow);
 
+            CutCommand = ReactiveCommand.Create(() => FormulaCalc.LastFocusedFormula.CutSelected());
+            CopyCommand = ReactiveCommand.Create(() => FormulaCalc.LastFocusedFormula.CopySelected());
+            PasteCommand = ReactiveCommand.Create(() => FormulaCalc.LastFocusedFormula.Paste());
+            CopyCurrentFormulaAsRtfCommand = ReactiveCommand.Create(() => FormulaCalc.LastFocusedFormula.CopyFormulaRtf());
+            CopyCurrentMolecularWeightCommand = ReactiveCommand.Create(() => FormulaCalc.LastFocusedFormula.CopyMolecularWeight());
+            CopyPercentCompositionCommand = ReactiveCommand.Create(() => FormulaCalc.LastFocusedFormula.CopyPercentComposition());
+            DuplicateCurrentFormulaCommand = ReactiveCommand.Create(() => FormulaCalc.AddDuplicateFormula());
+            EraseAllFormulasCommand = ReactiveCommand.Create<Window>(x => FormulaCalc.ClearAll(x));
+            EraseCurrentFormulaCommand = ReactiveCommand.Create<Window>(x => FormulaCalc.LastFocusedFormula.ClearWithConfirmation(x));
+            RemoveCurrentFormulaCommand = ReactiveCommand.Create<Window>(x => FormulaCalc.RemoveFormula(x));
+            ExpandAbbreviationsCommand = ReactiveCommand.Create<Window>(x => FormulaCalc.LastFocusedFormula.ExpandAbbreviations(x));
+            ConvertToEmpiricalCommand = ReactiveCommand.Create<Window>(x => FormulaCalc.LastFocusedFormula.ConvertToEmpirical(x));
+            ToggleStayOnTopCommand = ReactiveCommand.Create(() => StayOnTop = !StayOnTop);
+
             mwt.SetElementMode(ElementMassMode.Isotopic);
             FormulaCalc.ElementModeIsotopic = true;
         }
@@ -56,6 +70,7 @@ namespace MolecularWeightCalculatorGUI
         private readonly CapillaryFlowViewModel capillaryFlowVm;
         private readonly IsotopicDistributionViewModel isotopicDistributionVm;
         private bool mainWindowVisible = true;
+        private bool stayOnTop = false;
 
         public FormulaCalcViewModel FormulaCalc { get; }
 
@@ -69,10 +84,30 @@ namespace MolecularWeightCalculatorGUI
         public ReactiveCommand<Window, RxUnit> OpenIsotopicDistributionWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenSelectedIsotopicDistributionWindowCommand { get; }
 
+        public ReactiveCommand<RxUnit, RxUnit> CutCommand { get; }
+        public ReactiveCommand<RxUnit, RxUnit> CopyCommand { get; }
+        public ReactiveCommand<RxUnit, RxUnit> PasteCommand { get; }
+        public ReactiveCommand<RxUnit, RxUnit> CopyCurrentFormulaAsRtfCommand { get; }
+        public ReactiveCommand<RxUnit, RxUnit> CopyCurrentMolecularWeightCommand { get; }
+        public ReactiveCommand<RxUnit, RxUnit> CopyPercentCompositionCommand { get; }
+        public ReactiveCommand<RxUnit, RxUnit> DuplicateCurrentFormulaCommand { get; }
+        public ReactiveCommand<Window, RxUnit> EraseAllFormulasCommand { get; }
+        public ReactiveCommand<Window, RxUnit> EraseCurrentFormulaCommand { get; }
+        public ReactiveCommand<Window, RxUnit> RemoveCurrentFormulaCommand { get; }
+        public ReactiveCommand<Window, RxUnit> ExpandAbbreviationsCommand { get; }
+        public ReactiveCommand<Window, RxUnit> ConvertToEmpiricalCommand { get; }
+        public ReactiveCommand<RxUnit, bool> ToggleStayOnTopCommand { get; }
+
         public bool MainWindowVisible
         {
             get => mainWindowVisible;
             private set => this.RaiseAndSetIfChanged(ref mainWindowVisible, value);
+        }
+
+        public bool StayOnTop
+        {
+            get => stayOnTop;
+            set => this.RaiseAndSetIfChanged(ref stayOnTop, value);
         }
 
         private void ShowAboutWindow(Window parent)
