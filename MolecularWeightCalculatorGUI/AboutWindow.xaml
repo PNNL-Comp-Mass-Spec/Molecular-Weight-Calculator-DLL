@@ -4,12 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:molecularWeightCalculatorGui="clr-namespace:MolecularWeightCalculatorGUI"
     Title="About MWT"
     MinWidth="450"
-    MinHeight="260"
-    SizeToContent="WidthAndHeight"
+    MinHeight="250"
+    SizeToContent="Height"
     WindowStartupLocation="CenterOwner"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Width="470">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -17,12 +18,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="6" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="6" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="6" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -57,7 +53,6 @@
         </TextBlock>
         <Image
             Grid.Row="5"
-            Grid.RowSpan="6"
             Grid.Column="1"
             Margin="10,3"
             HorizontalAlignment="Left"
@@ -86,45 +81,80 @@
             Grid.Column="0"
             Margin="3,0"
             Text="Written in C# and WPF" />
-        <TextBox
-            Grid.Row="6"
-            Grid.Column="0"
-            Margin="3,0"
-            BorderThickness="0"
-            IsReadOnly="True"
-            Text="proteomics@pnnl.gov" />
-        <TextBox
-            Grid.Row="8"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="3,0"
-            BorderThickness="0"
-            IsReadOnly="True"
-            Text="https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator" />
-        <TextBox
-            Grid.Row="9"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="3,0"
-            BorderThickness="0"
-            IsReadOnly="True"
-            Text="https://pnnl-comp-mass-spec.github.io/" />
-        <TextBox
-            Grid.Row="10"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="3,0"
-            BorderThickness="0"
-            IsReadOnly="True"
-            Text="http://www.alchemistmatt.com/" />
+
+        <Grid Grid.Row="5" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <molecularWeightCalculatorGui:SelectableTextBlock
+                Grid.Row="1"
+                Margin="3,0">
+                <!-- Empty additional 'inlines' with Runs to allow selection; do not add a newline, because that will add spaces -->
+                <Run Text="" /><Hyperlink x:Name="Email" NavigateUri="mailto:proteomics@pnnl.gov" RequestNavigate="OnRequestNavigate">
+                    <Hyperlink.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Click="CopyEmailLink" />
+                        </ContextMenu>
+                    </Hyperlink.ContextMenu>
+                    proteomics@pnnl.gov
+                </Hyperlink><Run Text="" />
+            </molecularWeightCalculatorGui:SelectableTextBlock>
+            <molecularWeightCalculatorGui:SelectableTextBlock
+                Grid.Row="3"
+                Margin="3,0"
+                TextWrapping="Wrap">
+                <!-- Empty additional 'inlines' with Runs to allow selection; do not add a newline, because that will add spaces -->
+                <Run Text="" /><Hyperlink x:Name="GitHubRepo" NavigateUri="https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator" RequestNavigate="OnRequestNavigate">
+                    <Hyperlink.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Click="CopyGitHubRepoLink" />
+                        </ContextMenu>
+                    </Hyperlink.ContextMenu>
+                    https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator
+                </Hyperlink><Run Text="" />
+            </molecularWeightCalculatorGui:SelectableTextBlock>
+            <molecularWeightCalculatorGui:SelectableTextBlock
+                Grid.Row="4"
+                Margin="3,0">
+                <!-- Empty additional 'inlines' with Runs to allow selection; do not add a newline, because that will add spaces -->
+                <Run Text="" /><Hyperlink x:Name="GitHubPage" NavigateUri="https://pnnl-comp-mass-spec.github.io/" RequestNavigate="OnRequestNavigate">
+                    <Hyperlink.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Click="CopyGitHubPageLink" />
+                        </ContextMenu>
+                    </Hyperlink.ContextMenu>
+                    https://pnnl-comp-mass-spec.github.io/
+                </Hyperlink><Run Text="" />
+            </molecularWeightCalculatorGui:SelectableTextBlock>
+            <molecularWeightCalculatorGui:SelectableTextBlock
+                Grid.Row="5"
+                Margin="3,0">
+                <!-- Empty additional 'inlines' with Runs to allow selection; do not add a newline, because that will add spaces -->
+                <Run Text="" /><Hyperlink x:Name="AlchemistMatt" NavigateUri="https://www.alchemistmatt.com/" RequestNavigate="OnRequestNavigate">
+                    <Hyperlink.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Click="CopyAlchemistMattPageLink" />
+                        </ContextMenu>
+                    </Hyperlink.ContextMenu>
+                    https://www.alchemistmatt.com/
+                </Hyperlink><Run Text="" />
+            </molecularWeightCalculatorGui:SelectableTextBlock>
+        </Grid>
+
         <TextBlock
-            Grid.Row="12"
+            Grid.Row="7"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="3,0"
             Text="This program is Freeware; distribute freely" />
         <Button
-            Grid.Row="13"
+            Grid.Row="8"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             MinWidth="80"
