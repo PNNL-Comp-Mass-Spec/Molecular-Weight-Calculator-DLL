@@ -8,6 +8,8 @@ namespace MolecularWeightCalculatorGUI
     public class SelectableTextBlock : TextBlock
     {
         // https://stackoverflow.com/questions/136435/any-way-to-make-a-wpf-textblock-selectable
+
+        // NOTE: With hyperlinks, there needs to be a non-hyperlink text (or a blank Run) before and after the hyperlink; starting selection within the hyperlink is not possible
         static SelectableTextBlock()
         {
             FocusableProperty.OverrideMetadata(typeof(SelectableTextBlock), new FrameworkPropertyMetadata(true));
