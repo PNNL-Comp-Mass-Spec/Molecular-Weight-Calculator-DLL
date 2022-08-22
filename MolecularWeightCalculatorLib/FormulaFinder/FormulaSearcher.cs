@@ -893,10 +893,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                 var lastMin = 0;
                 if (currentIndex == sortedElementStats.Count - 1)
                 {
-                    // TODO: Fix comment
-                    // On the last candidate element; just add a bunch of it until we are near in range, to minimize additional recursion
-                    // But first, if adding the lightest element (i.e. the last in the list),
-                    // add a bunch of it until the potential compound's weight is close to the target
+                    // On the last/lightest candidate element; just add a bunch of it until we are near in range, to minimize additional recursion/looping
                     var diff = targetMass - massToleranceDa - startingMass;
                     lastMin = (int)Math.Floor(diff / sortedElementStats[currentIndex].Mass);
                 }

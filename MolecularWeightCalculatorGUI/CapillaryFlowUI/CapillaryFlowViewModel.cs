@@ -11,7 +11,6 @@ using RxUnit = System.Reactive.Unit;
 
 namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
 {
-    // TODO: The VB6 GUI apparently keeps 2 sets of backing data objects, one for open capillary and one for packed
     internal class CapillaryFlowViewModel : ReactiveObject
     {
         public CapillaryFlowViewModel()
@@ -90,6 +89,8 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
         private readonly CapillaryFlow capFlow = new CapillaryFlow();
         private readonly MassRate massRate = new MassRate();
         private readonly ExtraColumnBroadening extraCol = new ExtraColumnBroadening();
+
+        // Keep 2 sets of backing data objects, one for open capillary and one for packed
         private readonly CapillaryFlowData openCapillaryData = new CapillaryFlowData(CapillaryType.OpenTubularCapillary);
         private readonly CapillaryFlowData packedCapillaryData = new CapillaryFlowData(CapillaryType.PackedCapillary);
         private CapillaryFlowData data;
@@ -124,6 +125,9 @@ namespace MolecularWeightCalculatorGUI.CapillaryFlowUI
             set => this.RaiseAndSetIfChanged(ref calculationMode, value);
         }
 
+        /// <summary>
+        /// The backing data for the currently loaded mode
+        /// </summary>
         public CapillaryFlowData Data
         {
             get => data;
