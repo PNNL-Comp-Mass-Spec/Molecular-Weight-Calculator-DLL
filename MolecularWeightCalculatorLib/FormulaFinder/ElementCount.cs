@@ -20,7 +20,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <summary>
         /// ToString override - allows use of string.Concat(IEnumerable&lt;ElementCount&gt;) to create an empirical formula
         /// </summary>
-        /// <returns></returns>
         public override string ToString()
         {
             return Symbol + (Count > 1 ? Count : "");

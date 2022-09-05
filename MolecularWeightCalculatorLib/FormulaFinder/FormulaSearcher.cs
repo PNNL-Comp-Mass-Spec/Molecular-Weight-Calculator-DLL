@@ -607,7 +607,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="searchOptions"></param>
         /// <param name="candidateElementsStats"></param>
         /// <param name="ppmMode"></param>
-        /// <returns></returns>
         internal List<SearchResult> FindMatchesByMass(
             double targetMass,
             double massToleranceDa,
@@ -648,7 +647,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="maximumFormulaMass"></param>
         /// <param name="searchOptions"></param>
         /// <param name="candidateElementsStats"></param>
-        /// <returns></returns>
         internal List<SearchResult> FindMatchesByPercentComposition(
             double maximumFormulaMass,
             SearchOptions searchOptions,
