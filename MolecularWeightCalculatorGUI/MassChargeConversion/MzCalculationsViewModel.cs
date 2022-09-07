@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using MolecularWeightCalculator;
 using MolecularWeightCalculator.Formula;
 using ReactiveUI;
 
@@ -21,11 +22,13 @@ namespace MolecularWeightCalculatorGUI.MassChargeConversion
         private double massCharge2 = 1001.007276;
         private double massCharge2Start = 1000.907175;
         private double massCharge2End = 1001.107377;
-        private readonly ElementAndMassTools massCalc = new ElementAndMassTools();
+        private readonly ElementAndMassTools massCalc;
         private bool calculating = false;
 
-        public MzCalculationsViewModel()
+        public MzCalculationsViewModel(MolecularWeightTool mwt)
         {
+            massCalc = mwt.ElementAndMass;
+
             MassErrorModeOptions = Enum.GetValues(typeof(MassErrorMode)).Cast<MassErrorMode>().ToList();
             MassChargeLevelOptions = Enum.GetValues(typeof(MassChargeLevel)).Cast<MassChargeLevel>().ToList();
 
@@ -181,6 +184,27 @@ namespace MolecularWeightCalculatorGUI.MassChargeConversion
 
             massRangeStart = mass - massErrorDelta;
             massRangeEnd = mass + massErrorDelta;
+        }
+
+        public void WindowActivated()
+        {
+            // Display correct weight mode selection
+            switch (massCalc.Elements.GetElementMode())
+            {
+                case ElementMassMode.Average:
+                    ElementModeAverage = true;
+                    ElementModeIsotopic = false;
+                    break;
+                case ElementMassMode.Isotopic:
+                    ElementModeIsotopic = true;
+                    ElementModeAverage = false;
+                    break;
+                default:
+                    massCalc.Elements.SetElementMode(ElementMassMode.Isotopic);
+                    ElementModeIsotopic = true;
+                    ElementModeAverage = false;
+                    break;
+            }
         }
     }
 }

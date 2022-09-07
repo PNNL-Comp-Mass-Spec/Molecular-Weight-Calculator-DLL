@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace MolecularWeightCalculatorGUI.MassChargeConversion
 {
@@ -23,6 +24,14 @@ namespace MolecularWeightCalculatorGUI.MassChargeConversion
             Width = ActualWidth;
             Height = ActualHeight;
             SizeToContent = SizeToContent.Manual;
+        }
+
+        private void MzCalculationsWindow_OnActivated(object sender, EventArgs e)
+        {
+            if (DataContext is MzCalculationsViewModel mcvm)
+            {
+                mcvm.WindowActivated();
+            }
         }
     }
 }

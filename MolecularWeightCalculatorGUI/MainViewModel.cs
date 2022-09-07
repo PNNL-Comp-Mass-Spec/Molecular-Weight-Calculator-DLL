@@ -24,7 +24,7 @@ namespace MolecularWeightCalculatorGUI
             mwt = new MolecularWeightTool();
             FormulaCalc = new FormulaCalcViewModel(mwt);
             moleMassDilutionVm = new MoleMassDilutionViewModel();
-            mzCalcVm = new MzCalculationsViewModel();
+            mzCalcVm = new MzCalculationsViewModel(mwt);
             formulaFinderVm = new FormulaFinderViewModel(mwt);
             switchElementModesVm = new SwitchElementModesViewModel(mwt); // TODO: synchronize the element mode when it changes...
             fragModellingVm = new FragmentationModellingViewModel(mwt);
@@ -200,6 +200,29 @@ namespace MolecularWeightCalculatorGUI
         {
             isotopicDistributionVm.Formula = FormulaCalc.LastFocusedFormula.Formula;
             OpenIsotopicDistributionWindow(parent);
+        }
+
+        public void WindowActivated()
+        {
+            // Display correct weight mode selection
+            switch (mwt.GetElementMode())
+            {
+                case ElementMassMode.Average:
+                    FormulaCalc.ElementModeAverage = true;
+                    FormulaCalc.ElementModeIsotopic = false;
+                    FormulaCalc.ElementModeInteger = false;
+                    break;
+                case ElementMassMode.Isotopic:
+                    FormulaCalc.ElementModeIsotopic = true;
+                    FormulaCalc.ElementModeAverage = false;
+                    FormulaCalc.ElementModeInteger = false;
+                    break;
+                case ElementMassMode.Integer:
+                    FormulaCalc.ElementModeInteger = true;
+                    FormulaCalc.ElementModeAverage = false;
+                    FormulaCalc.ElementModeIsotopic = false;
+                    break;
+            }
         }
     }
 }

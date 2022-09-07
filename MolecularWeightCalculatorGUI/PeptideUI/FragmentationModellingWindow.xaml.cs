@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -57,6 +58,14 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             }
 
             initializingSelection = false;
+        }
+
+        private void FragmentationModellingWindow_OnActivated(object sender, EventArgs e)
+        {
+            if (DataContext is FragmentationModellingViewModel fmvm)
+            {
+                fmvm.ActivateWindow();
+            }
         }
     }
 }

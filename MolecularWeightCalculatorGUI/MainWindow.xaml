@@ -9,7 +9,7 @@
         d:DataContext="{d:DesignInstance {x:Type local:MainViewModel}, IsDesignTimeCreatable=True}"
         x:Name="This"
         WindowStartupLocation="CenterScreen"
-        Title="Molecular Weight Calculator" Height="450" Width="500" Visibility="{Binding MainWindowVisible, Converter={StaticResource BoolToVis}}" Topmost="{Binding StayOnTop}">
+        Title="Molecular Weight Calculator" Height="450" Width="500" Visibility="{Binding MainWindowVisible, Converter={StaticResource BoolToVis}}" Topmost="{Binding StayOnTop}" Activated="MainWindow_OnActivated">
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Close" Executed="Close_OnClick" CanExecute="CanClose" />
     </Window.CommandBindings>

@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MzCalculationsViewModel}, IsDesignTimeCreatable=True}"
         WindowStartupLocation="CenterOwner"
-        Title="Mass-to-Charge Conversion" MinHeight="100" MinWidth="400" SizeToContent="WidthAndHeight" Loaded="MzCalculationsWindow_OnLoaded">
+        Title="Mass-to-Charge Conversion" MinHeight="100" MinWidth="400" SizeToContent="WidthAndHeight" Loaded="MzCalculationsWindow_OnLoaded" Activated="MzCalculationsWindow_OnActivated">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

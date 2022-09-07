@@ -12,7 +12,7 @@
         x:Name="This"
         WindowStartupLocation="CenterOwner"
         DataContextChanged="OnDataContextChanged"
-        Title="Peptide Sequence Fragmentation Modelling" MinHeight="550" Width="700" SizeToContent="WidthAndHeight">
+        Title="Peptide Sequence Fragmentation Modelling" MinHeight="550" Width="700" SizeToContent="WidthAndHeight" Activated="FragmentationModellingWindow_OnActivated">
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Close" Executed="Close_OnClick" CanExecute="CanClose" />
     </Window.CommandBindings>

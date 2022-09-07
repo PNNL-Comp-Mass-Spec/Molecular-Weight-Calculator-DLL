@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace MolecularWeightCalculatorGUI
@@ -21,6 +22,14 @@ namespace MolecularWeightCalculatorGUI
         private void CanClose(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void MainWindow_OnActivated(object sender, EventArgs e)
+        {
+            if (DataContext is MainViewModel mvm)
+            {
+                mvm.WindowActivated();
+            }
         }
     }
 }

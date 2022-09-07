@@ -57,6 +57,27 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             UpdateFragments();
         }
 
+        internal void ActivateWindow()
+        {
+            switch (mwt.GetElementMode())
+            {
+                case ElementMassMode.Average:
+                    ElementModeIsotopic = false;
+                    ElementModeAverage = true;
+                    break;
+                case ElementMassMode.Isotopic:
+                    ElementModeAverage = false;
+                    ElementModeIsotopic = true;
+                    break;
+                default:
+                    // TODO: Coerce Isotopic Mode when opening...
+                    mwt.SetElementMode(ElementMassMode.Isotopic);
+                    ElementModeAverage = false;
+                    ElementModeIsotopic = true;
+                    break;
+            }
+        }
+
         private readonly MolecularWeightTool mwt;
         private readonly Peptide peptide;
         private string sequence = "Arg-His-Pro-Glu-Tyr-Ala-Val";

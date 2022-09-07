@@ -12,8 +12,6 @@ namespace MolecularWeightCalculatorGUI.MoleMassDilutionUI
 {
     internal class MoleMassDilutionViewModel : ReactiveObject
     {
-        // TODO: Requires a reference to a mass/molecular weight (may need to re-design the UI, since other conversions do not use the mass: False (find concentration may use it, same with dilution))
-
         public MoleMassDilutionViewModel()
         {
             Data = new MoleMassData();
