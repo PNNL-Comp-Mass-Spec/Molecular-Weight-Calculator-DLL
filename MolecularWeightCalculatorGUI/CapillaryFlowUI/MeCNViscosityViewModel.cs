@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using DynamicData.Binding;
 using MolecularWeightCalculator;
-using MolecularWeightCalculatorGUI.Utilities;
+using MolecularWeightCalculatorGUI.Plotting;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;

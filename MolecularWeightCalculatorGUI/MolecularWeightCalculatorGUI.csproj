@@ -136,6 +136,7 @@
     <Compile Include="PeptideUI\FragmentationModellingWindow.xaml.cs">
       <DependentUpon>FragmentationModellingWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Plotting\GraphPoint.cs" />
     <Compile Include="Plotting\PlotMode.cs" />
     <Compile Include="Plotting\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
@@ -146,7 +147,6 @@
     <Compile Include="SelectableTextBlock.cs" />
     <Compile Include="Utilities\CollectionUtils.cs" />
     <Compile Include="Utilities\EnumDescriptionConverter.cs" />
-    <Compile Include="Utilities\GraphPoint.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\HideableColumnDefinition.cs" />
     <Compile Include="Utilities\HideableRowDefinition.cs" />
