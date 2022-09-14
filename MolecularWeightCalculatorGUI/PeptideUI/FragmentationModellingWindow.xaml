@@ -12,12 +12,13 @@
         x:Name="This"
         WindowStartupLocation="CenterOwner"
         DataContextChanged="OnDataContextChanged"
-        Title="Peptide Sequence Fragmentation Modelling" MinHeight="550" Width="700" SizeToContent="WidthAndHeight" Activated="FragmentationModellingWindow_OnActivated">
+        Title="Peptide Sequence Fragmentation Modelling" MinHeight="580" Width="700" SizeToContent="WidthAndHeight" Activated="FragmentationModellingWindow_OnActivated" Loaded="FragmentationModellingWindow_OnLoaded">
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Close" Executed="Close_OnClick" CanExecute="CanClose" />
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="W" Command="{Binding CopyMolecularWeightCommand}" />
+        <KeyBinding Modifiers="Control" Key="E" Command="{Binding ShowEditResidueModificationSymbolsCommand}" CommandParameter="{x:Reference This}" />
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -44,37 +45,39 @@
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7" x:Name="MenuBar">
             <MenuItem Header="File">
-                <MenuItem Header="Load Sequence Info..." /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
-                <MenuItem Header="Save Sequence Info..." /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
+                <MenuItem Header="Load Sequence Info..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
+                <MenuItem Header="Save Sequence Info..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
                 <Separator />
-                <MenuItem Header="Load List of Ions or .Dta file to Match..." /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
+                <MenuItem Header="Load List of Ions or .Dta file to Match..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />
                 <MenuItem Header="Close" Command="Close" />
             </MenuItem>
             <MenuItem Header="Edit">
-                <MenuItem Header="Copy Predicted Ions" />
-                <MenuItem Header="Copy Predicted Ions as RTF" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
-                <MenuItem Header="Copy Predicted Ions as HTML" />
+                <MenuItem Header="Copy Predicted Ions" IsEnabled="False" />
+                <MenuItem Header="Copy Predicted Ions as RTF" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
+                <MenuItem Header="Copy Predicted Ions as HTML" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="Copy Sequence Molecular Weight" Command="{Binding CopyMolecularWeightCommand}" InputGestureText="Ctrl+W" />
                 <Separator />
-                <MenuItem Header="Paste List of Ions to Match" />
-                <MenuItem Header="Clear Match Ion List" />
+                <MenuItem Header="Paste List of Ions to Match" IsEnabled="False" />
+                <MenuItem Header="Clear Match Ion List" IsEnabled="False" />
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="List of Ions to Match" IsCheckable="True" /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
+                <MenuItem Header="List of Ions to Match" IsCheckable="True" IsEnabled="False" InputGestureText="Ctrl+I" />
                 <Separator />
-                <MenuItem Header="Mass Spectrum..." /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
-                <MenuItem Header="Update Spectrum on Change" IsCheckable="True" /> <!-- TODO: keyboard shortcuts, "Ctrl+U" -->
+                <MenuItem Header="Mass Spectrum..." IsEnabled="False" InputGestureText="Ctrl+M" />
+                <MenuItem Header="Update Spectrum on Change" IsCheckable="True" IsEnabled="False" InputGestureText="Ctrl+U" />
+                <Separator Visibility="Hidden" />
+                <MenuItem Header="Spectrum File _Browser" IsEnabled="False" Visibility="Hidden" />
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Ion Match List Options..." /> <!-- TODO: keyboard shortcuts, "Ctrl+O" -->
-                <MenuItem Header="Edit Residue Modification Symbols" /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
+                <MenuItem Header="Ion Match List Options..." IsEnabled="False" InputGestureText="Ctrl+O" />
+                <MenuItem Header="Edit Residue Modification Symbols" Command="{Binding ShowEditResidueModificationSymbolsCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+E" /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
                 <Separator />
-                <MenuItem Header="Automatically Align Ions to Match..." />
+                <MenuItem Header="Automatically Align Ions to Match..." IsEnabled="False" />
             </MenuItem>
             <MenuItem Header="Help">
-                <MenuItem Header="Fragmentation Modelling" />
+                <MenuItem Header="Fragmentation Modelling" IsEnabled="False" />
             </MenuItem>
         </Menu>
         <Label Grid.Row="1" Grid.Column="0" Margin="5" Content="_Sequence:" Target="{Binding ElementName=SequenceBox}" />
@@ -86,7 +89,7 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <GroupBox Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="4" Header="Mass Information">
+        <GroupBox Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="5" Header="Mass Information" HorizontalAlignment="Left">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -99,8 +102,8 @@
                     <ColumnDefinition Width="Auto" MinWidth="30" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Margin="5">
-                    MW = <Run Text="{Binding Mass}" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,15,5">
+                    MW = <Run Text="{Binding PeptideMass}" />
                 </TextBlock>
                 <TextBlock Grid.Row="0" Grid.Column="1" Margin="5" Text="[M+H]1+" />
                 <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" MinWidth="80" ItemsSource="{Binding MassChargeLevelOptions}" SelectedItem="{Binding MassChargeLevel}">
@@ -121,8 +124,8 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <DataGrid Grid.Row="4" Grid.RowSpan="5" Grid.Column="2" Grid.ColumnSpan="3" Margin="5" ItemsSource="{Binding FragmentationDataTable}" IsReadOnly="True" />
-        <GroupBox Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Header="N and C Terminus">
+        <DataGrid Grid.Row="4" Grid.RowSpan="5" Grid.Column="2" Grid.ColumnSpan="3" Margin="5" Name="FragGrid" ItemsSource="{Binding FragmentationDataTable}" IsReadOnly="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" />
+        <GroupBox Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Header="N and C Terminus" x:Name="TerminusOptions">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -140,7 +143,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Label Grid.Row="1" Grid.Column="0" Margin="5" Content="C" Target="{Binding ElementName=CTerminusBox}" />
+                    <Label Grid.Row="1" Grid.Column="0" Margin="5" Content="C" Target="{Binding ElementName=CTerminusBox}" />
                 <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,3" x:Name="CTerminusBox" ItemsSource="{Binding CTerminusGroupOptions}" SelectedItem="{Binding CTerminusGroup}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type sequence:CTerminusGroupType}">
@@ -150,7 +153,7 @@
                 </ComboBox>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="Ion Types">
+        <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="Ion Types" x:Name="IonTypeOptions">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -169,7 +172,7 @@
                 <CheckBox Grid.Row="2" Grid.Column="2" Margin="5,3" Content="_Z Ions" IsChecked="{Binding ShowZIons}" />
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Header="Neutral Losses">
+        <GroupBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Header="Neutral Losses" x:Name="NeutralLossOptions">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -180,7 +183,7 @@
                     <ColumnDefinition Width="Auto" MinWidth="50" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ListBox x:Name="NeutralLossIons" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="5,3" ItemsSource="{Binding IonTypesList}" SelectionMode="Multiple" SelectionChanged="NeutralLossIonTypes_OnSelectionChanged">
+                <ListBox x:Name="NeutralLossIons" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="5,3" ItemsSource="{Binding IonTypesList}" SelectionMode="Multiple" SelectionChanged="NeutralLossIonTypes_OnSelectionChanged" ToolTip="Choose ions to which losses will be applied">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type sequence:IonType}">
                             <TextBlock Text="{Binding Converter={StaticResource EnumDescription}}" />
@@ -192,7 +195,7 @@
                 <CheckBox Grid.Row="2" Grid.Column="1" Margin="5,3" Content="Loss of PO4" IsChecked="{Binding NeutralLossPhosphate}" />
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Header="Charges">
+        <GroupBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Header="Charges" x:Name="ChargeOptions">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -210,7 +213,7 @@
                 <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,3" ItemsSource="{Binding ChargeThresholdOptions}" SelectedItem="{Binding ThreePlusChargesThreshold}" IsEnabled="{Binding Show3PlusCharges}" ToolTip="The 3+ m/z value will be computed for ions above this m/z" />
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Header="Ion Masses">
+        <GroupBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Header="Ion Masses" x:Name="IonMassOptions">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

@@ -131,7 +131,17 @@
     <Compile Include="PeptideUI\AminoAcidConverterWindow.xaml.cs">
       <DependentUpon>AminoAcidConverterWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PeptideUI\AminoAcidModificationsViewModel.cs" />
+    <Compile Include="PeptideUI\AminoAcidModificationsWindow.xaml.cs">
+      <DependentUpon>AminoAcidModificationsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PeptideUI\AminoAcidNotationMode.cs" />
+    <Compile Include="PeptideUI\DataRowViewIonValueConverter.cs" />
+    <Compile Include="PeptideUI\EditModSymbolDetailsViewModel.cs" />
+    <Compile Include="PeptideUI\EditModSymbolDetailsWindow.xaml.cs">
+      <DependentUpon>EditModSymbolDetailsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PeptideUI\FragmentationGridIon.cs" />
     <Compile Include="PeptideUI\FragmentationModellingViewModel.cs" />
     <Compile Include="PeptideUI\FragmentationModellingWindow.xaml.cs">
       <DependentUpon>FragmentationModellingWindow.xaml</DependentUpon>
@@ -220,6 +230,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PeptideUI\AminoAcidConverterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PeptideUI\AminoAcidModificationsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PeptideUI\EditModSymbolDetailsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

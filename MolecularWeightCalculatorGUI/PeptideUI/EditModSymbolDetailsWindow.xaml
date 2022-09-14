@@ -1,0 +1,39 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.PeptideUI.EditModSymbolDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.PeptideUI"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:EditModSymbolDetailsViewModel}, IsDesignTimeCreatable=True}"
+        WindowStartupLocation="CenterOwner"
+        Title="Amino Acid Modification Symbols Editor" Height="180" Width="500" SizeToContent="WidthAndHeight" Topmost="True">
+    <Grid IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" SharedSizeGroup="Row" />
+            <RowDefinition Height="Auto" SharedSizeGroup="Row" />
+            <RowDefinition Height="Auto" SharedSizeGroup="Row" />
+            <RowDefinition Height="Auto" SharedSizeGroup="Row" />
+            <RowDefinition Height="Auto" SharedSizeGroup="Row" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="80" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" MinWidth="80" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="3" Margin="3,3,10,3" MaxWidth="400" TextWrapping="Wrap">
+            The amino acid symbol modification will be updated with the parameters below.  Select Remove to delete the modification symbol or Cancel to ignore any changes.
+        </TextBlock>
+        <Label Grid.Row="2" Grid.Column="0" Margin="3" Content="_Symbol" Target="{Binding ElementName=SymbolBox}" />
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Name="SymbolBox" Text="{Binding Symbol}" />
+        <Label Grid.Row="3" Grid.Column="0" Margin="3" Content="_Mass" Target="{Binding ElementName=MassBox}" />
+        <xctk:DoubleUpDown Grid.Row="3" Grid.Column="1" Margin="3" Name="MassBox" Value="{Binding Mass}" />
+        <Label Grid.Row="4" Grid.Column="0" Margin="3" Content="Commen_t" Target="{Binding ElementName=CommentBox}" />
+        <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Margin="3" Name="CommentBox" Text="{Binding Comment}" TextWrapping="Wrap" />
+        <Button Grid.Row="0" Grid.Column="3" Margin="3" Content="_Ok" Command="{Binding CloseCommand}" CommandParameter="{x:Static local:EditWindowResult.Ok}" Click="CloseWindow" />
+        <Button Grid.Row="1" Grid.Column="3" Margin="3" Content="_Cancel" IsDefault="True" IsCancel="True" Command="{Binding CloseCommand}" CommandParameter="{x:Static local:EditWindowResult.Cancel}" Click="CloseWindow" />
+        <Button Grid.Row="2" Grid.Column="3" Margin="3" Content="_Remove" Command="{Binding CloseCommand}" CommandParameter="{x:Static local:EditWindowResult.Remove}" Click="CloseWindow" />
+    </Grid>
+</Window>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using DynamicData.Binding;
 using MolecularWeightCalculator;
@@ -36,25 +37,53 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             NeutralLossIonTypes = new ObservableCollectionExtended<IonType>(new IonType[] { IonType.BIon, IonType.YIon });
 
             this.WhenAnyValue(x => x.ShowAIons, x => x.ShowBIons, x => x.ShowCIons, x => x.ShowYIons, x => x.ShowZIons)
-                .SubscribeOnChange(x => UpdateShownIons());
+                .SubscribeOnChange(x => UpdateMassesGridAndSpectrum());
             this.WhenAnyValue(x => x.NeutralLossIonTypes.Count, x => x.NeutralLossWater, x => x.NeutralLossAmmonia,
-                x => x.NeutralLossPhosphate).SubscribeOnChange(x => UpdateNeutralLossIons());
+                x => x.NeutralLossPhosphate)
+                .SubscribeOnChange(x => UpdateMassesGridAndSpectrum());
             this.WhenAnyValue(x => x.Show2PlusCharges, x => x.TwoPlusChargesThreshold, x => x.Show3PlusCharges,
-                x => x.ThreePlusChargesThreshold).SubscribeOnChange(x => UpdateIonCharges());
-            this.WhenAnyValue(x => x.Sequence, x => x.NTerminusGroup, x => x.CTerminusGroup,
-                x => x.SelectedAminoAcidNotation).SubscribeOnChange(x => UpdateSequence());
-            this.WhenAnyValue(x => x.IonMassDigits).SubscribeOnChange(x => UpdateFragments());
-            this.WhenAnyValue(x => x.MassChargeLevel).SubscribeOnChange(x => UpdateMasses());
+                x => x.ThreePlusChargesThreshold)
+                .SubscribeOnChange(x => UpdateMassesGridAndSpectrum());
+            this.WhenAnyValue(x => x.Sequence).SubscribeOnChange(x =>
+            {
+                if (mDelayUpdate)
+                    return;
+
+                CheckSequenceTerminii();
+                UpdatePredictedFragMasses();
+            });
+            this.WhenAnyValue(x => x.NTerminusGroup, x => x.CTerminusGroup, x => x.SelectedAminoAcidNotation)
+                .SubscribeOnChange(x => UpdatePredictedFragMasses());
+            this.WhenAnyValue(x => x.IonMassDigits).SubscribeOnChange(x => UpdateGridNumberFormat(FragmentationDataTable));
+            this.WhenAnyValue(x => x.MassProtonated, x => x.MassChargeLevel).SubscribeOnChange(x => ConvertSequenceMH(true));
+            this.WhenAnyValue(x => x.MassAtChargeLevel).SubscribeOnChange(x => ConvertSequenceMH(false));
             this.WhenAnyValue(x => x.ElementModeAverage, x => x.ElementModeIsotopic)
                 .SubscribeOnChange(x => UpdateElementMode());
 
             CopyMolecularWeightCommand = ReactiveCommand.Create(CopySequenceMW);
+            ShowEditResidueModificationSymbolsCommand = ReactiveCommand.Create<Window>(x =>
+            {
+                var vm = new AminoAcidModificationsViewModel(mwt);
+                var window = new AminoAcidModificationsWindow() { DataContext = vm, Owner = x };
+                window.ShowDialog();
 
-            UpdateShownIons(false);
-            UpdateNeutralLossIons(false);
-            UpdateIonCharges(false);
-            UpdateSequence(false);
-            UpdateFragments();
+                UpdatePredictedFragMasses();
+            });
+
+            var currentTask = "";
+
+            try
+            {
+                currentTask = "Loading FragmentationModellingViewModel";
+
+                UpdateStandardMasses();
+
+                UpdateMassesGridAndSpectrum();
+            }
+            catch (Exception ex)
+            {
+                ElementAndMass.GeneralErrorHandler("FragmentationModellingViewModel|Constructor", new Exception("Error " + currentTask + ": " + ex.Message, ex));
+            }
         }
 
         internal void ActivateWindow()
@@ -70,7 +99,6 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
                     ElementModeIsotopic = true;
                     break;
                 default:
-                    // TODO: Coerce Isotopic Mode when opening...
                     mwt.SetElementMode(ElementMassMode.Isotopic);
                     ElementModeAverage = false;
                     ElementModeIsotopic = true;
@@ -79,16 +107,28 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
         }
 
         private readonly MolecularWeightTool mwt;
+        private ElementAndMassTools ElementAndMass => mwt.ElementAndMass;
         private readonly Peptide peptide;
-        private string sequence = "Arg-His-Pro-Glu-Tyr-Ala-Val";
+
+        /* First: is not allowed mod symbol
+         * See ElementAndMassTools.IsModSymbol()
+         * Then:
+         * Numbers, parentheses not allowed. TODO: Possibly allow them for side-chains
+         * Spaces, dash/negative sign, decimal point (. or ,), lower and uppercase letters allowed.
+         * NOTE: Beyond all of this, the parsing code ignores invalid characters.
+         */
+        private readonly Regex blockedCharacters = new Regex(@"[""()/:;<>=[\]{}\\|0-9]", RegexOptions.Compiled);
+
+        //private string sequence = "Arg-His-Pro-Glu-Tyr-Ala-Val";
+        private string sequence = "GlyLeuTyrProGluProThrIleAspGluMetAlaThrThrHisGluTrp";
         private AminoAcidNotationMode selectedAminoAcidNotation = AminoAcidNotationMode.ThreeLetterNotation;
-        private double mass = 870.43478;
+        private double peptideMass = 870.43478;
         private MassChargeLevel massChargeLevel = MassChargeLevel.MPlus2H;
         private double massProtonated = 871.442056;
         private double massAtChargeLevel = 436.224666;
         private bool elementModeAverage;
         private bool elementModeIsotopic = true;
-        private DataTable fragmentationDataTable = null;
+        private DataTable fragmentationDataTable = new DataTable();
         private NTerminusGroupType nTerminusGroup = NTerminusGroupType.Hydrogen;
         private CTerminusGroupType cTerminusGroup = CTerminusGroupType.Hydroxyl;
         private bool showAIons;
@@ -104,6 +144,27 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
         private bool show3PlusCharges;
         private int threePlusChargesThreshold = 900;
         private int ionMassDigits = 2;
+        private const string SHOULDER_ION_PREFIX = "Shoulder-";
+
+        private readonly struct FragDetailGridLocation
+        {
+            public FragmentationSpectrumData Details { get; }
+            public int Row { get; }
+            public int Col { get; }
+
+            public FragDetailGridLocation(FragmentationSpectrumData details, int row, int col)
+            {
+                Details = details;
+                Row = row;
+                Col = col;
+            }
+        }
+
+        // fragSpectrumDetails[] contains detailed information on the fragmentation spectrum data, sorted by mass
+        // along with the row and column indices in FragmentationDataTable that the values in fragSpectrumDetails[] are displayed at
+        private readonly List<FragDetailGridLocation> fragSpectrumDetails = new List<FragDetailGridLocation>();
+
+        private bool mDelayUpdate;
 
         public IReadOnlyList<AminoAcidNotationMode> NotationOptionsSource { get; }
         public IReadOnlyList<MassChargeLevel> MassChargeLevelOptions { get; }
@@ -114,10 +175,30 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
         public IReadOnlyList<int> IonMassDigitsOptions { get; }
 
         public ReactiveCommand<RxUnit, RxUnit> CopyMolecularWeightCommand { get; }
+        public ReactiveCommand<Window, RxUnit> ShowEditResidueModificationSymbolsCommand { get; }
+
         public string Sequence
         {
             get => sequence;
-            set => this.RaiseAndSetIfChanged(ref sequence, value);
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    // Validate the input, and drop invalid characters.
+                    var x = blockedCharacters.Replace(value, "");
+                    if (!value.Equals(x))
+                    {
+                        value = x;
+                        if (value.Equals(sequence))
+                        {
+                            // Force UI refresh to remove invalid characters
+                            this.RaisePropertyChanged();
+                        }
+                    }
+                }
+
+                this.RaiseAndSetIfChanged(ref sequence, value);
+            }
         }
 
         public AminoAcidNotationMode SelectedAminoAcidNotation
@@ -126,10 +207,10 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             set => this.RaiseAndSetIfChanged(ref selectedAminoAcidNotation, value);
         }
 
-        public double Mass
+        public double PeptideMass
         {
-            get => mass;
-            set => this.RaiseAndSetIfChanged(ref mass, value);
+            get => peptideMass;
+            set => this.RaiseAndSetIfChanged(ref peptideMass, value);
         }
 
         public MassChargeLevel MassChargeLevel
@@ -160,12 +241,6 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
         {
             get => elementModeIsotopic;
             set => this.RaiseAndSetIfChanged(ref elementModeIsotopic, value);
-        }
-
-        public DataTable FragmentationDataTable
-        {
-            get => fragmentationDataTable;
-            private set => this.RaiseAndSetIfChanged(ref fragmentationDataTable, value);
         }
 
         public NTerminusGroupType NTerminusGroup
@@ -260,172 +335,367 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             set => this.RaiseAndSetIfChanged(ref ionMassDigits, value);
         }
 
-        private void UpdateShownIons(bool updateFragments = true)
+        public DataTable FragmentationDataTable
         {
-            var options = peptide.GetFragmentationSpectrumOptions();
-            options.IonTypeOptions[(int)IonType.AIon].ShowIon = ShowAIons;
-            options.IonTypeOptions[(int)IonType.BIon].ShowIon = ShowBIons;
-            options.IonTypeOptions[(int)IonType.CIon].ShowIon = ShowCIons;
-            options.IonTypeOptions[(int)IonType.YIon].ShowIon = ShowYIons;
-            options.IonTypeOptions[(int)IonType.ZIon].ShowIon = ShowZIons;
-
-            if (updateFragments)
-            {
-                UpdateFragments();
-            }
+            get => fragmentationDataTable;
+            private set => this.RaiseAndSetIfChanged(ref fragmentationDataTable, value);
         }
 
-        private void UpdateNeutralLossIons(bool updateFragments = true)
+        private void CheckSequenceTerminii()
         {
-            var options = peptide.GetFragmentationSpectrumOptions();
+            // If 3 letter codes are enabled, then checks to see if the sequence begins with H and ends with OH
+            // If so, makes sure the first three letters are not an amino acid
+            // If they're not, removes the H and OH and sets cboNTerminus and cboCTerminus accordingly
 
-            foreach (var ionType in IonTypesList)
+            mDelayUpdate = true;
+
+            if (Sequence.Length > 3 && SelectedAminoAcidNotation == AminoAcidNotationMode.ThreeLetterNotation &&
+                Sequence.StartsWith("H", StringComparison.OrdinalIgnoreCase) &&
+                Sequence.EndsWith("OH", StringComparison.OrdinalIgnoreCase))
             {
-                var settings = options.IonTypeOptions[(int)ionType];
-                if (NeutralLossIonTypes.Contains(ionType))
+                int abbrevId;
+                if (char.IsLetter(Sequence[1]) && char.IsLetter(Sequence[2]))
                 {
-                    settings.NeutralLossWater = NeutralLossWater;
-                    settings.NeutralLossAmmonia = NeutralLossAmmonia;
-                    settings.NeutralLossPhosphate = NeutralLossPhosphate;
+                    abbrevId = mwt.GetAbbreviationId(Sequence.Substring(0, 3));
+                    if (abbrevId > 0)
+                    {
+                        // Matched an abbreviation; is it an amino acid?
+                        mwt.GetAbbreviation(abbrevId, out _, out _, out _, out var isAminoAcid);
+                        if (!isAminoAcid)
+                        {
+                            // Matched an abbreviation, but it's not an amino acid
+                            abbrevId = 0;
+                        }
+                    }
                 }
                 else
                 {
-                    settings.NeutralLossWater = false;
-                    settings.NeutralLossAmmonia = false;
-                    settings.NeutralLossPhosphate = false;
+                    abbrevId = 0;
+                }
+
+                if (abbrevId == 0)
+                {
+                    // The first three characters do not represent a 3 letter amino acid code
+                    // Remove the H and OH
+                    Sequence = Sequence.Substring(1, Sequence.Length - 3).Trim('-');
+
+                    NTerminusGroup = NTerminusGroupType.Hydrogen;
+                    CTerminusGroup = CTerminusGroupType.Hydroxyl;
                 }
             }
 
-            if (updateFragments)
-            {
-                UpdateFragments();
-            }
+            mDelayUpdate = false;
         }
 
-        private void UpdateIonCharges(bool updateFragments = true)
+        private bool calculatingMass = false;
+        private void ConvertSequenceMH(bool favorMH)
         {
-            var options = peptide.GetFragmentationSpectrumOptions();
-            options.DoubleChargeIonsShow = Show2PlusCharges;
-            options.DoubleChargeIonsThreshold = TwoPlusChargesThreshold;
-            options.TripleChargeIonsShow = Show3PlusCharges;
-            options.TripleChargeIonsThreshold = ThreePlusChargesThreshold;
+            // When favorMH = true then computes MHAlt using MH
+            // Otherwise, computes MH using MHAlt
 
-            if (updateFragments)
+            if (calculatingMass)
+                return;
+            calculatingMass = true;
+
+            var charge = (int)MassChargeLevel;
+            if (charge < 1)
+                charge = 1;
+
+            if (favorMH)
             {
-                UpdateFragments();
-            }
-        }
-
-        private void UpdateSequence(bool updateFragments = true)
-        {
-            // TODO: Where to set this?
-            var options = peptide.GetFragmentationSpectrumOptions();
-            options.IntensityOptions.BYIonShoulder = 0;
-
-            peptide.SetSequence(Sequence, NTerminusGroup, CTerminusGroup, SelectedAminoAcidNotation == AminoAcidNotationMode.ThreeLetterNotation);
-            UpdateMasses();
-
-            if (updateFragments)
-            {
-                UpdateFragments();
-            }
-        }
-
-        private void UpdateMasses()
-        {
-            Mass = peptide.GetPeptideMass();
-            MassProtonated = mwt.ConvoluteMass(Mass, 0, 1);
-            MassAtChargeLevel = mwt.ConvoluteMass(Mass, 0, (short) MassChargeLevel);
-        }
-
-        private void UpdateElementMode()
-        {
-            if (ElementModeAverage)
-            {
-                mwt.SetElementMode(ElementMassMode.Average);
+                MassAtChargeLevel = 0d;
+                if (MassProtonated > 0d)
+                {
+                    MassAtChargeLevel = mwt.ConvoluteMass(MassProtonated, 1, charge);
+                }
             }
             else
             {
-                mwt.SetElementMode(ElementMassMode.Isotopic);
-            }
-
-            UpdateSequence();
-        }
-
-        private void UpdateFragments()
-        {
-            var fragData = peptide.GetFragmentationMasses();
-
-            // Process the fragments for the display table
-            var numberFormat = $"F{IonMassDigits}";
-            var table = new DataTable();
-            var ionTypeHeaders = fragData.Select(x => x.SymbolGeneric).Distinct().OrderBy(x => x).ToList();
-            table.Columns.Add("#");
-            table.Columns.Add("Immon");
-
-            var ionSymbolY = peptide.LookupIonTypeString(IonType.YIon);
-            var ionSymbolZ = peptide.LookupIonTypeString(IonType.ZIon);
-
-            var seqColumnAdded = false;
-
-            foreach (var header in ionTypeHeaders)
-            {
-                if (!seqColumnAdded && (header[0] == ionSymbolY[0] || header[0] == ionSymbolZ[0]))
+                MassProtonated = 0d;
+                if (MassAtChargeLevel > 0d)
                 {
-                    table.Columns.Add("Seq");
-                    seqColumnAdded = true;
-                }
-
-                table.Columns.Add(header);
-            }
-
-            if (!seqColumnAdded)
-            {
-                table.Columns.Add("Seq");
-            }
-
-            table.Columns.Add("#C");
-
-            // Populate data
-            var residueCount = peptide.GetResidueCount();
-            var dataBlank = new object[table.Columns.Count];
-            for (var i = 0; i < residueCount; i++)
-            {
-                table.Rows.Add(dataBlank);
-                var row = table.Rows[i];
-                row["#"] = i + 1;
-                row["#C"] = residueCount - i;
-                if (peptide.GetResidue(i, out var residueSymbol, out var residueMass, out _, out _))
-                {
-                    row["Immon"] = peptide.ComputeImmoniumMass(residueMass).ToString(numberFormat);
-                    if (SelectedAminoAcidNotation == AminoAcidNotationMode.ThreeLetterNotation)
-                    {
-                        row["Seq"] = residueSymbol;
-                    }
-                    else
-                    {
-                        var oneLetter = mwt.GetAminoAcidSymbolConversion(residueSymbol, false);
-                        if (string.IsNullOrWhiteSpace(oneLetter)) oneLetter = residueSymbol;
-                        if (oneLetter == "Xxx") oneLetter = "X";
-
-                        row["Seq"] = oneLetter;
-                    }
+                    MassProtonated = mwt.ConvoluteMass(MassAtChargeLevel, charge, 1);
                 }
             }
 
-            // TODO: Figure out how to do cell highlighting for matched ions...
-            foreach (var entry in fragData)
-            {
-                var row = table.Rows[entry.SourceResidueNumber];
-                row[entry.SymbolGeneric] = entry.Mass.ToString(numberFormat);
-            }
-
-            FragmentationDataTable = table;
+            calculatingMass = false;
         }
 
         private void CopySequenceMW()
         {
             Clipboard.SetText(peptide.GetPeptideMass().ToString(), TextDataFormat.Text);
+        }
+
+        // TODO: Probably calling this many times when it doesn't need to be.
+        private void DisplayPredictedIonMasses()
+        {
+            // Call mwt to get the predicted fragmentation spectrum masses and intensities
+            // Use this data to populate FragmentationDataTable
+
+            try
+            {
+                UpdateFragmentationSpectrumOptions();
+
+                var numberFormat = $"F{IonMassDigits}";
+
+                // The GetFragmentationMasses() function computes the masses, intensities, and symbols for the given sequence
+                var fragSpectrum = peptide.GetFragmentationMasses();
+
+                // Initialize (and clear) FragmentationDataTable
+                // Examine fragSpectrum[].Symbol to make a list of the possible ion types present
+                // Exclude shoulder ions and duplicates, and sort alphabetically (a, b, y, c, or z)
+                var columnHeadersToAdd = fragSpectrum.Where(x => !x.IsShoulderIon).Select(x => x.SymbolGeneric).Distinct().OrderBy(x => x).ToList();
+
+                // There are at a minimum 4 columns (#, Immon., Seq., and #C)
+                // NOTE: .NET DataTable does not allow duplicate column names; using '#C' since it is from the C-Terminus anyway
+                // NOTE: C#/WPF can have issues with spaces and periods in column names; using the ".Caption" value with code-behind to resolve this.
+                // We'll start with # and Immon.
+                var table = new DataTable();
+                var seqColumn = new DataColumn("Seq", typeof(string)) { Caption = "Seq." };
+                var nTermResidueNumberColumn = new DataColumn("#", typeof(int));
+                var immoniumColumn = new DataColumn("Immon", typeof(FragmentationGridIon)) { Caption = "Immon." };
+                var cTermResidueNumberColumn = new DataColumn("#C", typeof(int));
+
+                table.Columns.Add(nTermResidueNumberColumn);
+                table.Columns.Add(immoniumColumn);
+
+                var yIonSymbol = peptide.LookupIonTypeString(IonType.YIon);
+                var zIonSymbol = peptide.LookupIonTypeString(IonType.ZIon);
+
+                var seqColumnAdded = false;
+
+                // Append the items in columnHeadersToAdd[] to columnHeaders
+                foreach (var header in columnHeadersToAdd)
+                {
+                    // Check if this column is the first y-ion or z-ion column
+                    if (!seqColumnAdded && (header[0] == yIonSymbol[0] || header[0] == zIonSymbol[0]))
+                    {
+                        table.Columns.Add(seqColumn);
+                        seqColumnAdded = true;
+                    }
+
+                    table.Columns.Add(new DataColumn(header, typeof(FragmentationGridIon)));
+                }
+
+                // If the sequence column still wasn't added, then add it now
+                if (!seqColumnAdded)
+                {
+                    table.Columns.Add(seqColumn);
+                }
+
+                // The final column is a duplicate of the zeroth column
+                table.Columns.Add(cTermResidueNumberColumn);
+
+                // Now populate FragmentationDataTable with the data
+                var residueCount = peptide.GetResidueCount();
+                var use3LetterSymbol = SelectedAminoAcidNotation == AminoAcidNotationMode.ThreeLetterNotation;
+                var blankRow = new object[FragmentationDataTable.Columns.Count];
+                for (var residueIndex = 0; residueIndex < residueCount; residueIndex++)
+                {
+                    var success = peptide.GetResidue(residueIndex, out var symbol, out var residueMass, out var isModified, out _);
+
+                    var modSymbolForThisResidue = "";
+                    if (isModified)
+                    {
+                        peptide.GetResidueModificationIDs(residueIndex, out var modIDs);
+                        foreach (var modId in modIDs)
+                        {
+                            peptide.GetModificationSymbol(modId, out var modSymbol, out _, out _, out _);
+                            modSymbolForThisResidue += modSymbol;
+                        }
+                    }
+
+                    if (!success)
+                    {
+                        throw new Exception("Unable to retrieve peptide residue, which is an error, and not simply corrected.");
+                    }
+
+                    // Add a new row to FragmentationDataTable
+                    table.Rows.Add(blankRow); // Add the blank row first, then get it back out as a DataRow (now has connections to the columns)
+                    var rowData = table.Rows[residueIndex];
+
+                    // Add residue number, reverse residue number, and immonium ion to their respective columns
+                    rowData[nTermResidueNumberColumn] = residueIndex;
+                    rowData[cTermResidueNumberColumn] = residueCount - residueIndex + 1;
+                    rowData[immoniumColumn] = new FragmentationGridIon(peptide.ComputeImmoniumMass(residueMass), numberFormat);
+
+                    // Add the residue symbol
+                    if (use3LetterSymbol)
+                    {
+                        rowData[seqColumn] = symbol + modSymbolForThisResidue;
+                    }
+                    else
+                    {
+                        var symbol1Letter = mwt.GetAminoAcidSymbolConversion(symbol, false);
+                        if (string.IsNullOrWhiteSpace(symbol1Letter)) symbol1Letter = symbol;
+                        if (symbol1Letter == "Xxx") symbol1Letter = "X";
+                        rowData[seqColumn] = symbol1Letter + modSymbolForThisResidue;
+                    }
+                }
+
+                // Initialize fragSpectrumDetails[]
+                fragSpectrumDetails.Clear();
+                fragSpectrumDetails.Capacity = fragSpectrum.Count;
+
+                // Finally, step through fragSpectrum and populate FragmentationDataTable with the ion masses
+                // Shoulder ion masses are not displayed, but indices are stored for all others is updated with the associated primary ion
+                foreach (var ionDetails in fragSpectrum)
+                {
+                    var symbolGeneric = ionDetails.SymbolGeneric;
+                    if (ionDetails.IsShoulderIon)
+                    {
+                        symbolGeneric = symbolGeneric.Replace(SHOULDER_ION_PREFIX, "");
+                    }
+
+                    var row = table.Rows[ionDetails.SourceResidueNumber];
+                    var columnIndex = table.Columns[symbolGeneric].Ordinal;
+
+                    if (!ionDetails.IsShoulderIon)
+                    {
+                        // Only display if not a Shoulder Ion
+                        row[columnIndex] = new FragmentationGridIon(ionDetails.Mass, numberFormat);
+                    }
+
+                    // Store ionDetails with the Row Index and Column Index
+                    fragSpectrumDetails.Add(new FragDetailGridLocation(ionDetails, ionDetails.SourceResidueNumber, columnIndex));
+                }
+
+                FragmentationDataTable = table;
+            }
+            catch (Exception ex)
+            {
+                ElementAndMass.GeneralErrorHandler("FragmentationModellingViewModel|DisplayPredictedIonMasses", ex);
+            }
+        }
+
+        private void UpdateGridNumberFormat(DataTable grid)
+        {
+            var numberFormat = $"F{IonMassDigits}";
+            foreach (DataColumn column in grid.Columns)
+            {
+                if (column.DataType == typeof(FragmentationGridIon))
+                {
+                    foreach (DataRow row in grid.Rows)
+                    {
+                        (row[column] as FragmentationGridIon)?.SetFormat(numberFormat);
+                    }
+                }
+            }
+        }
+
+        public void PasteNewSequence(string newSequence, bool is3LetterCode)
+        {
+            SelectedAminoAcidNotation = is3LetterCode ? AminoAcidNotationMode.ThreeLetterNotation : AminoAcidNotationMode.OneLetterNotation;
+
+            // Validate newSequence
+            peptide.SetSequence(newSequence, default, default, is3LetterCode);
+
+            Sequence = peptide.GetSequence(is3LetterCode);
+        }
+
+        private void UpdateElementMode()
+        {
+            var newWeightMode = ElementMassMode.Isotopic;
+
+            if (ElementModeAverage)
+            {
+                newWeightMode = ElementMassMode.Average;
+            }
+
+            if (newWeightMode != mwt.GetElementMode())
+            {
+                mwt.SetElementMode(newWeightMode);
+                // TODO: Also re-calculate all formulas
+
+                UpdateStandardMasses();
+            }
+        }
+
+        private void UpdateFragmentationSpectrumOptions()
+        {
+            if (peptide is null)
+                return;
+
+            try
+            {
+                // TODO: Don't need to re-assign the value...
+                // Initialize to the current values
+                var options = peptide.GetFragmentationSpectrumOptions();
+
+                options.DoubleChargeIonsShow = Show2PlusCharges;
+                options.TripleChargeIonsShow = Show3PlusCharges;
+
+                options.DoubleChargeIonsThreshold = TwoPlusChargesThreshold;
+                options.TripleChargeIonsThreshold = ThreePlusChargesThreshold;
+
+                options.IonTypeOptions[(int)IonType.AIon].ShowIon = ShowAIons;
+                options.IonTypeOptions[(int)IonType.BIon].ShowIon = ShowBIons;
+                options.IonTypeOptions[(int)IonType.CIon].ShowIon = ShowCIons;
+                options.IonTypeOptions[(int)IonType.YIon].ShowIon = ShowYIons;
+                options.IonTypeOptions[(int)IonType.ZIon].ShowIon = ShowZIons;
+
+                foreach (var ionType in Enum.GetValues(typeof(IonType)).Cast<IonType>())
+                {
+                    var modifyIon = NeutralLossIonTypes.Contains(ionType);
+
+                    options.IonTypeOptions[(int)ionType].NeutralLossWater = modifyIon && NeutralLossWater;
+                    options.IonTypeOptions[(int)ionType].NeutralLossAmmonia = modifyIon && NeutralLossAmmonia;
+                    options.IonTypeOptions[(int)ionType].NeutralLossPhosphate = modifyIon && NeutralLossPhosphate;
+                }
+
+                // Note: 'A' ions can have ammonia and phosphate loss, but not water loss, so always set this to false
+                options.IonTypeOptions[(int)IonType.AIon].NeutralLossWater = false;
+            }
+            catch (Exception ex)
+            {
+                ElementAndMass.GeneralErrorHandler("FragmentationModellingViewModel|UpdateFragmentationSpectrumOptions", ex);
+            }
+        }
+
+        private void UpdateMassesGridAndSpectrum()
+        {
+            // Display predicted ions & intensities in grid
+            DisplayPredictedIonMasses();
+        }
+
+        private void UpdatePredictedFragMasses()
+        {
+            // Determines the masses of the expected ions for the given sequence
+
+            if (mDelayUpdate)
+                return;
+
+            peptide.SetSequence(Sequence, NTerminusGroup, CTerminusGroup, SelectedAminoAcidNotation == AminoAcidNotationMode.ThreeLetterNotation);
+
+            if (peptide.GetResidueCount() > 0)
+            {
+                PeptideMass = peptide.GetPeptideMass();
+                if (PeptideMass == 0d)
+                {
+                    MassProtonated = 0;
+                }
+                else if (NTerminusGroup == NTerminusGroupType.HydrogenPlusProton)
+                {
+                    // Don't need to add a proton
+                    MassProtonated = PeptideMass;
+                }
+                else
+                {
+                    MassProtonated = PeptideMass + mwt.GetChargeCarrierMass();
+                }
+            }
+            else
+            {
+                PeptideMass = 0d;
+                MassProtonated = 0;
+            }
+
+            UpdateMassesGridAndSpectrum();
+        }
+
+        private void UpdateStandardMasses()
+        {
+            UpdatePredictedFragMasses();
         }
     }
 }

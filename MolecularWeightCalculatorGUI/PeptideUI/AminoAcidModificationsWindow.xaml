@@ -1,0 +1,127 @@
+﻿<Window x:Class="MolecularWeightCalculatorGUI.PeptideUI.AminoAcidModificationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MolecularWeightCalculatorGUI.PeptideUI"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance {x:Type local:AminoAcidModificationsViewModel}, IsDesignTimeCreatable=True}"
+        x:Name="This"
+        WindowStartupLocation="CenterOwner"
+        Title="Amino Acid Modification Symbols Editor" Height="500" Width="800" Closing="OnClosing">
+    <Window.Resources>
+        <local:GridRowWindowDataConverter x:Key="MultiConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="15" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="15" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="15" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" TextWrapping="Wrap">
+            Modified residues in an amino acid sequence are notated by placing a modification symbol directly after the residue's 1 letter or 3 letter abbreviation.
+            The phosphorylation symbol is defined separately because phosphorylated residues can lose a phosphate group during fragmentation.
+            As an example, if the phosphorylation symbol is *, then in the sequence 'GlyLeuTyr*' the tyrosine residue is phosphorylated.
+            Allowable symbols for user-defined modifications are ! # $ % &amp; ' * + ? ^ _ ` and ~.
+            Modification symbols can be more than 1 character long, though it is suggested that you keep them to just 1 character long to make it easier for the parsing routine to correctly parse residues with multiple modifications.
+            If a residue has multiple modifications, then simply place the appropriate modification symbols after the residue, for example in 'FLE*#L' the E residue is modified by both the * and # modifications.
+            Modification masses can be negative values, as well as positive values.
+        </TextBlock>
+        <DockPanel Grid.Row="2" Grid.Column="0" LastChildFill="False">
+            <TextBlock DockPanel.Dock="Left" Margin="3" Text="Phosphorylation Symbol:" />
+            <!-- Works, but relies more on font support: <TextBlock DockPanel.Dock="Right" Margin="3">[HPO<Run Typography.Variants="Subscript" Text="3" />], 79.966</TextBlock>-->
+            <TextBlock DockPanel.Dock="Right" Margin="3">[HPO<Run BaselineAlignment="Subscript" FontSize="8" Text="3" />], <Run Text="{Binding PhosphorylationMass, StringFormat={}{0:F3}, Mode=OneWay}" /></TextBlock>
+            <TextBox DockPanel.Dock="Right" Margin="3" Width="40" MaxLength="1" Text="{Binding PhosphorylationSymbol}" />
+        </DockPanel>
+        <TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Modification Symbols Defined" />
+        <TextBlock Grid.Row="5" Grid.Column="0" Margin="3" Text="Single click to edit or remove. Click in blank row to add." />
+        <TextBlock Grid.Row="5" Grid.Column="1" Margin="3" Text="Standard Modifications" />
+        <DataGrid Grid.Row="6" Grid.Column="0" Margin="3" ItemsSource="{Binding ModSymbols}" ToolTip="Click to change a modification symbol" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Symbol" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:ModificationSymbolEdit}">
+                            <TextBlock Text="{Binding Symbol, Mode=OneWay}">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.GridClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AminoAcidModificationsWindow}}}">
+                                        <MouseBinding.CommandParameter>
+                                            <MultiBinding Converter="{StaticResource MultiConverter}">
+                                                <Binding ElementName="This" />
+                                                <Binding />
+                                            </MultiBinding>
+                                        </MouseBinding.CommandParameter>
+                                    </MouseBinding>
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Mass" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:ModificationSymbolEdit}">
+                            <TextBlock Text="{Binding ModificationMass, Mode=OneWay, StringFormat={}{0:0.00###}}">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.GridClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AminoAcidModificationsWindow}}}">
+                                        <MouseBinding.CommandParameter>
+                                            <MultiBinding Converter="{StaticResource MultiConverter}">
+                                                <Binding ElementName="This" />
+                                                <Binding />
+                                            </MultiBinding>
+                                        </MouseBinding.CommandParameter>
+                                    </MouseBinding>
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Comment" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:ModificationSymbolEdit}">
+                            <TextBlock Text="{Binding Comment, Mode=OneWay}">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.GridClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AminoAcidModificationsWindow}}}">
+                                        <MouseBinding.CommandParameter>
+                                            <MultiBinding Converter="{StaticResource MultiConverter}">
+                                                <Binding ElementName="This" />
+                                                <Binding />
+                                            </MultiBinding>
+                                        </MouseBinding.CommandParameter>
+                                    </MouseBinding>
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <ListBox Grid.Row="6" Grid.Column="1" Margin="3" x:Name="StandardMods" ItemsSource="{Binding StandardModifications}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:ModificationSymbolImmutable}">
+                    <TextBlock>
+                        <Run Text="{Binding Symbol, Mode=OneWay}" />,<Run Text="{Binding ModificationMass, StringFormat={}{0:0.00###}, Mode=OneWay}" />,<Run Text="{Binding Comment, Mode=OneWay}" />
+                        <TextBlock.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.AddStandardModificationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AminoAcidModificationsWindow}}}" CommandParameter="{Binding }" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <DockPanel Grid.Row="8" Grid.Column="0" LastChildFill="False">
+            <Button DockPanel.Dock="Left" Margin="3" MinWidth="60" Content="_OK" Command="{Binding OkCommand}" CommandParameter="{x:Reference This}" />
+            <Button DockPanel.Dock="Left" Margin="3" MinWidth="60" Content="_Cancel" IsCancel="True" Command="{Binding CancelCommand}" CommandParameter="{x:Reference This}" />
+            <Button DockPanel.Dock="Right" Margin="3" MinWidth="130" Content="Reset to _Defaults" Command="{Binding ResetToDefaultsCommand}" />
+        </DockPanel>
+        <Button Grid.Row="8" Grid.Column="1" Margin="3" MinWidth="140" MaxWidth="200" VerticalAlignment="Center"  Content="_Add selected to list" Command="{Binding AddStandardModificationCommand}" CommandParameter="{Binding SelectedItem, ElementName=StandardMods}" ToolTip="Resets modification symbols to defaults" />
+    </Grid>
+</Window>
