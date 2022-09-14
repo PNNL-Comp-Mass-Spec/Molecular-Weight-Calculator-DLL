@@ -540,7 +540,7 @@ namespace MolecularWeightCalculatorGUI.IsotopicDistribution
                         // TODO: Filter this list based on values in the Gaussian data
                         // TODO: Best results would include some peak detection (Magnitude-Concavity)
                         // TODO: Simple results: hide if the y-value in the Gaussian data is more than 'x' more than the original value (from peak combining), otherwise update with the y-value from the Gaussian data
-                        Spectrum.SetAnnotations(origData);
+                        Spectrum.SetAnnotations(seriesNumber, origData);
 
                         // Add additional space to the Y-axis to display the annotations in the default zoom mode
                         Spectrum.SetMaxY(origData.Max(x => x.Y) + 30);

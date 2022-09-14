@@ -137,12 +137,14 @@
       <DependentUpon>FragmentationModellingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plotting\GraphPoint.cs" />
+    <Compile Include="Plotting\PlotDataMode.cs" />
     <Compile Include="Plotting\PlotMode.cs" />
     <Compile Include="Plotting\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plotting\PlotViewModel.cs" />
     <Compile Include="Plotting\ReusablePlotModel.cs" />
+    <Compile Include="Plotting\SeriesData.cs" />
     <Compile Include="RichTextBoxMulti.cs" />
     <Compile Include="SelectableTextBlock.cs" />
     <Compile Include="Utilities\CollectionUtils.cs" />

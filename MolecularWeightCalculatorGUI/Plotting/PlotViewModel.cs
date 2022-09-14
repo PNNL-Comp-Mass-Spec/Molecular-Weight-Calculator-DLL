@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Windows.Media;
 using DynamicData;
-using DynamicData.Binding;
 using MolecularWeightCalculator.Data;
-using MolecularWeightCalculatorGUI.Utilities;
 using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Legends;
 using OxyPlot.Series;
 using ReactiveUI;
+using HorizontalAlignment = OxyPlot.HorizontalAlignment;
+using VerticalAlignment = OxyPlot.VerticalAlignment;
 
 namespace MolecularWeightCalculatorGUI.Plotting
 {
@@ -21,23 +20,17 @@ namespace MolecularWeightCalculatorGUI.Plotting
         private PlotModel plot = null;
         private LinearAxis plotYAxis = null;
         private LinearAxis plotXAxis = null;
-        private readonly List<Series> seriesList = new List<Series>();
-        private readonly List<ObservableCollectionExtended<GraphPoint>> seriesDataList = new List<ObservableCollectionExtended<GraphPoint>>();
+        private readonly List<SeriesData> seriesList = new List<SeriesData>();
         private int seriesCount = 1;
 
         public PlotViewModel()
         {
-            var series = new LineSeries { MarkerType = MarkerType.None, DataFieldX = "X", DataFieldY = "Y" };
-            var data = new ObservableCollectionExtended<GraphPoint>();
-            series.ItemsSource = data;
-            seriesList.Add(series);
-            seriesDataList.Add(data);
+            var seriesData = new SeriesData(1);
+            seriesList.Add(seriesData);
             PreparePlot();
 
             ResetZoomCommand = ReactiveCommand.Create(ResetZoom);
         }
-
-        public ObservableCollectionExtended<GraphPoint> PlotPoints { get; } = new ObservableCollectionExtended<GraphPoint>();
 
         public PlotModel Plot
         {
@@ -70,7 +63,7 @@ namespace MolecularWeightCalculatorGUI.Plotting
 
         public int GetSeriesCount()
         {
-            return seriesCount = 2;
+            return seriesCount;
         }
 
         public void SetSeriesCount(int count)
@@ -78,18 +71,14 @@ namespace MolecularWeightCalculatorGUI.Plotting
             if (count > seriesCount)
             {
                 seriesList.Capacity = count;
-                seriesDataList.Capacity = count;
                 for (var i = seriesCount; i < count; i++)
                 {
-                    var series = new LineSeries { MarkerType = MarkerType.None, DataFieldX = "X", DataFieldY = "Y" };
-                    var data = new ObservableCollectionExtended<GraphPoint>();
-                    series.ItemsSource = data;
-                    Plot.Series.Add(series);
-                    seriesList.Add(series);
-                    seriesDataList.Add(data);
+                    var seriesData = new SeriesData(i + 1);
+                    seriesList.Add(seriesData);
+                    Plot.Series.Add(seriesData.Series);
                 }
             }
-            seriesCount = 2;
+            seriesCount = count;
             // TODO: handle reduction, also removing now-removed series from the plot...
         }
 
@@ -101,7 +90,8 @@ namespace MolecularWeightCalculatorGUI.Plotting
             }
 
             var color = OxyColors.Blue;
-            var oldSeries = seriesList[seriesNumber - 1];
+            var seriesData = seriesList[seriesNumber - 1];
+            var oldSeries = seriesData.Series;
             if (oldSeries is LineSeries ols)
             {
                 color = ols.Color;
@@ -111,6 +101,7 @@ namespace MolecularWeightCalculatorGUI.Plotting
                 color = obs.StrokeColor;
             }
 
+            seriesData.DataMode = PlotDataMode.Discrete;
             XYAxisSeries series;
             switch (plotMode)
             {
@@ -119,6 +110,7 @@ namespace MolecularWeightCalculatorGUI.Plotting
                     break;
                 case PlotMode.Lines:
                     series = new LineSeries { MarkerType = MarkerType.None, Color = color, DataFieldX = "X", DataFieldY = "Y" };
+                    seriesData.DataMode = PlotDataMode.Continuous;
                     break;
                 case PlotMode.StickToZero:
                     series = new StemSeries { MarkerType = MarkerType.None, Color = color, DataFieldX = "X", DataFieldY = "Y" };
@@ -132,16 +124,14 @@ namespace MolecularWeightCalculatorGUI.Plotting
                     break;
             }
 
-            series.ItemsSource = seriesDataList[seriesNumber - 1];
+            series.ItemsSource = seriesData.Points;
             //Mapping = item => new DataPoint(((GraphPoint)item).X, ((GraphPoint)item).Y),
             series.Title = oldSeries.Title;
 
-            seriesList[seriesNumber - 1] = series;
+            seriesData.Series = series;
 
-            //Plot.Series.Remove(oldSeries);
-            //Plot.Series.Add(series);
             Plot.Series.Clear();
-            Plot.Series.AddRange(seriesList);
+            Plot.Series.AddRange(seriesList.Select(x => x.Series));
         }
 
         public void ClearAnnotations()
@@ -149,8 +139,15 @@ namespace MolecularWeightCalculatorGUI.Plotting
             Plot.Annotations.Clear();
         }
 
-        public void SetAnnotations(IEnumerable<XYPointImmutable> points)
+        public void SetAnnotations(int seriesNumber, IEnumerable<XYPointImmutable> points)
         {
+            if (seriesNumber <= 0 && seriesNumber > seriesCount)
+            {
+                return;
+            }
+
+            var seriesData = seriesList[seriesNumber - 1];
+
             foreach (var point in points)
             {
                 var ann = new LineAnnotation
@@ -168,6 +165,7 @@ namespace MolecularWeightCalculatorGUI.Plotting
                     TextVerticalAlignment = VerticalAlignment.Middle,
                 };
 
+                seriesData.Annotations.Add(ann);
                 Plot.Annotations.Add(ann);
             }
         }
@@ -181,7 +179,8 @@ namespace MolecularWeightCalculatorGUI.Plotting
         {
             if (seriesToClear > 0 && seriesToClear <= seriesCount)
             {
-                seriesDataList[seriesToClear - 1].Clear();
+                seriesList[seriesToClear - 1].Points.Clear();
+                seriesList[seriesToClear - 1].Initialized = false;
             }
         }
 
@@ -189,7 +188,9 @@ namespace MolecularWeightCalculatorGUI.Plotting
         {
             if (seriesNumber > 0 && seriesNumber <= seriesCount)
             {
-                var series = seriesList[seriesNumber - 1];
+                var seriesData = seriesList[seriesNumber - 1];
+                var series = seriesData.Series;
+                seriesData.Color = newColor;
                 var color = OxyColor.FromArgb(newColor.A, newColor.R, newColor.G, newColor.B);
                 if (series is LineSeries ls)
                 {
@@ -204,7 +205,7 @@ namespace MolecularWeightCalculatorGUI.Plotting
             }
         }
 
-        public void SetDataXvsY(int seriesNumber, List<double> xData, List<double> yData, int dataCount, string legendCaption = "", double originalMaximumIntensity = 0d)
+        public void SetDataXvsY(int seriesNumber, IReadOnlyList<double> xData, IReadOnlyList<double> yData, string legendCaption = "", double originalMaximumIntensity = 0d)
         {
             if (seriesNumber > seriesCount)
             {
@@ -217,8 +218,10 @@ namespace MolecularWeightCalculatorGUI.Plotting
                 points.Add(new GraphPoint(xData[i], yData[i]));
             }
 
-            seriesDataList[seriesNumber - 1].Load(points);
-            seriesList[seriesNumber - 1].Title = legendCaption;
+            var seriesData = seriesList[seriesNumber - 1];
+            seriesData.Points.Load(points);
+            seriesData.Series.Title = legendCaption;
+            seriesData.Initialized = true;
         }
 
         public void SetDataXvsY(int seriesNumber, IReadOnlyList<XYPointImmutable> data, string legendCaption = "", double originalMaximumIntensity = 0d)
@@ -231,66 +234,27 @@ namespace MolecularWeightCalculatorGUI.Plotting
             var points = new List<GraphPoint>(data.Count);
             points.AddRange(data.Select(x => new GraphPoint(x.X, x.Y)));
 
-            seriesDataList[seriesNumber - 1].Load(points);
-            seriesList[seriesNumber - 1].Title = legendCaption;
+            var seriesData = seriesList[seriesNumber - 1];
+            seriesData.Points.Load(points);
+            seriesData.Series.Title = legendCaption;
+        }
+
+        public void SetDataXvsY(int seriesNumber, IReadOnlyList<GraphPoint> data, string legendCaption = "", double originalMaximumIntensity = 0d)
+        {
+            if (seriesNumber > seriesCount)
+            {
+                SetSeriesCount(seriesNumber);
+            }
+
+            var seriesData = seriesList[seriesNumber - 1];
+            seriesData.Points.Load(data);
+            seriesData.Series.Title = legendCaption;
         }
 
         public void GetRangeX(out double minimum, out double maximum)
         {
             minimum = plotXAxis.ActualMinimum;
             maximum = plotXAxis.ActualMaximum;
-        }
-
-        private void Calculate()
-        {
-            var points = new List<GraphPoint>(401);
-            const string xUnits = "%";
-            var yUnits = "Intensity";
-            var maxY = 0.0;
-            var minY = double.MaxValue;
-            for (var i = 0; i <= 400; i++)
-            {
-                var pct = i / 4.0;
-                var viscosity = 300;
-                maxY = Math.Max(maxY, viscosity);
-                minY = Math.Min(minY, viscosity);
-                var pt = new GraphPoint(pct, viscosity, xUnits, yUnits);
-                points.Add(pt);
-            }
-
-            PlotPoints.Load(points);
-
-            // Adjust the Y axis according to the values being plotted
-            if (plotYAxis != null)
-            {
-                var diff = maxY - minY;
-
-                // Determine the tick label interval
-                var step = 1.0;
-                if (diff < 1)
-                {
-                    while (step > diff)
-                    {
-                        step /= 10.0;
-                    }
-                }
-                else if (diff > 1)
-                {
-                    while (step < diff)
-                    {
-                        step *= 10.0;
-                    }
-
-                    step /= 10.0;
-                }
-
-                // Use the next lowest and highest tick labels for the minimum and maximum, respectively
-                plotYAxis.Minimum = Math.Floor(minY / step) * step;
-                plotYAxis.Maximum = Math.Ceiling(maxY / step) * step;
-                plotYAxis.MajorStep = step;
-
-                Plot?.InvalidatePlot(true);
-            }
         }
 
         private void PreparePlot()
@@ -331,7 +295,7 @@ namespace MolecularWeightCalculatorGUI.Plotting
             plot.Axes.Add(xAxis);
             plot.Axes.Add(yAxis);
 
-            plot.Series.AddRange(seriesList);
+            plot.Series.AddRange(seriesList.Select(x => x.Series));
             plot.InvalidatePlot(true);
 
             Plot = plot;
