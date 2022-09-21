@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define ReleaseVersion GetFileVersion('..\MolecularWeightCalculatorGUI\bin\Release\MolecularWeightCalculatorGUI.exe')
-#define MyAppName "Molecular Weight Calculator"      
+#define MyAppName "Molecular Weight Calculator"
 #define MyAppExeName "MolecularWeightCalculator.exe"
 #define MyAppVersion ReleaseVersion
 #define MySource "..\MolecularWeightCalculatorGUI"
@@ -10,7 +10,7 @@
 #define MyAppURL "https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator"
 #define InstallerFolder "..\GUIInstaller\Output"
 #if ReleaseVersion == ""
-     #error MolecularWeightCalculator.dll was not found in the Release directory; rebuild the app in Release mode
+     #error "MolecularWeightCalculatorGUI.exe was not found in the Release directory; rebuild the app in Release mode"
 #endif
 
 [Setup]
@@ -33,7 +33,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir={#InstallerFolder}
-OutputBaseFilename=MolecularWeightCalcGUIInstaller
+OutputBaseFilename=MolWtCalc_GUI_Installer
 AppCopyright=© PNNL
 VersionInfoVersion={#MyAppVersion}
 VersionInfoCompany=PNNL
@@ -43,16 +43,16 @@ SourceDir={#MySource}
 Compression=lzma
 SolidCompression=yes
 DisableWelcomePage=no
-WizardStyle=modern   
-; Don't install to all users, instead install to the current user only. May install to all users if running as administrator 
-PrivilegesRequired=lowest    
+WizardStyle=modern
+; Don't install to all users, instead install to the current user only. May install to all users if running as administrator
+PrivilegesRequired=lowest
 ; Allow overriding the install mode via dialog or commandline (hides dialog)
 ; Command-line flags: /ALLUSERS, /CURRENTUSER
 PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl" 
-   
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
@@ -63,11 +63,11 @@ Source: "MolecularWeightCalculator.ico";                            DestDir: "{a
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "..\Readme.md"; DestName: "Readme.txt";                     DestDir: "{app}"; Flags: ignoreversion isreadme
 Source: "..\RevisionHistory.txt";                                   DestDir: "{app}"; Flags: ignoreversion
-    
+
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\IconImage.ico"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\MolecularWeightCalculator.ico"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Code]
 function InitializeSetup(): Boolean;
