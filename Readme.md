@@ -1,17 +1,19 @@
-# Molecular Weight Calculator Library
+# Molecular Weight Calculator
 
-MolecularWeightCalculator.dll is a C# library with utility functions for calculating the
-molecular weight and percent composition of chemical formulas and amino acids.
-It recognizes user-definable abbreviations and custom elemental isotopes.
-It also includes a Mole/Mass Converter, Formula Finder, Capillary Flow 
-Modeller, Amino Acid Notation Converter, Isotopic Distribution Calculator, 
-and Peptide Sequence Fragmentation Modeller.
-* To use, simply include the DLL in a .NET project.
+The Molecular Weight Calculator can be used to calculate the molecular weight and percent composition 
+of chemical formulas and amino acids (peptides). It recognizes user-definable abbreviations and 
+custom elemental isotopes. It also includes a Mole/Mass Converter, Mass-to-Charge Converter, 
+Formula Finder, Capillary Flow Calculator, Amino Acid Notation Converter, Isotopic Distribution Calculator, 
+and Peptide Sequence Fragmentation Modeler. 
+
+The Molecular Weight Calculator is available as either a Windows-based GUI application or as a C# DLL.
+* To use the GUI, either download the zip file with MolecularWeightCalculatorGUI.exe or download and run the installer
+* To use the C# DLL, add it to a .NET project
 
 ## Downloads
 
-Release versions of the DLL can be found on GitHub at\
-https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL/releases
+Release versions of the GUI and DLL can be found on GitHub at\
+https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator/releases
 
 ### Continuous Integration
 
@@ -130,15 +132,15 @@ demonstrating use of MolecularWeightCalculator.dll to compute formula masses.
 
 ## Contacts
 
-Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) \
+Written by Matthew Monroe and Bryson Gibbons for the Department of Energy (PNNL, Richland, WA) \
 Based on Molecular Weight Calculator, v6.20 code (VB6), written by Matthew Monroe 1995-2002 \
 VB6 ActiveX Dll version written by Matthew Monroe in 2002 \
 Ported to VB.NET by Nikša Blonder and Matthew Monroe in 2005 \
-Ported to C# by Bryson Gibbons in 2021 \
+Ported to C# by Bryson Gibbons in 2021
 
 E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov \
 Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics/
-Source code: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator-DLL
+Source code: https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator
 
 ## License
 
