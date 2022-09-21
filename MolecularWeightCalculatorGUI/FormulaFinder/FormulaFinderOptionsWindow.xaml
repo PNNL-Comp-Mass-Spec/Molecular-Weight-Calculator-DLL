@@ -33,7 +33,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="3" TextWrapping="Wrap" Text="Use the checkboxes to select various options&#xa;for the Formula Finder." />
-        <Button Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="3" Margin="3" MinWidth="40" IsDefault="True" Click="CloseWindow" Content="_OK" />
+        <Button Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="3" Margin="3" MinWidth="40" IsDefault="True" IsCancel="True" Click="CloseWindow" Content="_OK" />
         <CheckBox Grid.Row="2" Grid.Column="0" Margin="3" VerticalContentAlignment="Center" Content="Find _Charge" IsChecked="{Binding FindCharge}" IsEnabled="{Binding AllowChanges}" />
         <CheckBox Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="3" VerticalContentAlignment="Center" Content="Limit Charge _Range" IsChecked="{Binding LimitChargeRange}" IsEnabled="{Binding AllowLimitChargeRange}" />
         <TextBlock Grid.Row="1" Grid.Column="5" Margin="3" Text="Min" Visibility="{Binding LimitChargeRange, Converter={StaticResource BoolToVis}}" />

@@ -79,7 +79,7 @@
                 <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="Equations" />
             </Grid>
         </Button>
-        <Button Grid.Row="1" Grid.RowSpan="2" Grid.Column="5" Margin="5" MinWidth="80" Click="Close_OnClick" VerticalAlignment="Center" Content="Cl_ose" />
+        <Button Grid.Row="1" Grid.RowSpan="2" Grid.Column="5" Margin="5" MinWidth="80" IsCancel="True" Click="Close_OnClick" VerticalAlignment="Center" Content="Cl_ose" />
         <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="6" Margin="10,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
