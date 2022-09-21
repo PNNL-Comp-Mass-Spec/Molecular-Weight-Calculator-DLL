@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:formulaCalc="clr-namespace:MolecularWeightCalculatorGUI.FormulaCalc"
         xmlns:local="clr-namespace:MolecularWeightCalculatorGUI"
+        xmlns:utilities="clr-namespace:MolecularWeightCalculatorGUI.Utilities"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MainViewModel}, IsDesignTimeCreatable=True}"
         x:Name="This"
@@ -30,12 +31,16 @@
         <KeyBinding Modifiers="Control" Key="Y" Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" /> <!-- Capillary Flow Calculator... -->
         <KeyBinding Modifiers="Control" Key="S" Command="{Binding ToggleStayOnTopCommand}" CommandParameter="{x:Reference This}" /> <!-- Stay on Top" IsCheckable="True" IsChecked="{Binding StayOnTop} -->
     </Window.InputBindings>
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Menu Grid.Row ="0">
             <MenuItem Header="File">
                 <MenuItem Header="Edit Elements Table..." IsEnabled="False" />
                 <MenuItem Header="Edit Abbreviations..." IsEnabled="False" />
-                <MenuItem Header="Calculate weights from text file..." IsEnabled="False" />
+                <MenuItem Header="Calculate weights from text file..." Command="{Binding RunBatchProcessingCommand}" CommandParameter="{x:Reference This}" />
                 <Separator />
                 <MenuItem Header="Print Results..." IsEnabled="False" />
                 <Separator />
@@ -97,6 +102,7 @@
                 <MenuItem Header="About MWT..." Command="{Binding ShowAboutCommand}" CommandParameter="{x:Reference This}" />
             </MenuItem>
         </Menu>
-        <formulaCalc:FormulaCalcView DataContext="{Binding FormulaCalc}" />
-    </DockPanel>
+        <formulaCalc:FormulaCalcView Grid.Row="1" DataContext="{Binding FormulaCalc}" />
+        <utilities:ProgressView Grid.Row="0" Grid.RowSpan="2" DataContext="{Binding BatchProcessor}" Visibility="{Binding ShowProgress, Converter={StaticResource BoolToVis}}" />
+    </Grid>
 </Window>

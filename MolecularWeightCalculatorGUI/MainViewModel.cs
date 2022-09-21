@@ -31,6 +31,7 @@ namespace MolecularWeightCalculatorGUI
             aminoAcidConvertVm = new AminoAcidConverterViewModel(FormulaCalc, new Peptide(mwt.ElementAndMass), switchElementModesVm, fragModellingVm);
             capillaryFlowVm = new CapillaryFlowViewModel();
             isotopicDistributionVm = new IsotopicDistributionViewModel(mwt);
+            BatchProcessor = new BatchProcessingGuiWrapper(mwt);
 
             ShowAboutCommand = ReactiveCommand.Create<Window>(ShowAboutWindow);
             OpenMoleMassDilutionWindowCommand = ReactiveCommand.Create<Window>(OpenMoleMassDilutionWindow);
@@ -41,6 +42,7 @@ namespace MolecularWeightCalculatorGUI
             OpenCapillaryFlowWindowCommand = ReactiveCommand.Create<Window>(OpenCapillaryFlowWindow);
             OpenIsotopicDistributionWindowCommand = ReactiveCommand.Create<Window>(OpenIsotopicDistributionWindow);
             OpenSelectedIsotopicDistributionWindowCommand = ReactiveCommand.Create<Window>(OpenSelectedIsotopicDistributionWindow);
+            RunBatchProcessingCommand = ReactiveCommand.CreateFromTask<Window>(parent => BatchProcessor.BatchProcessTextFile(parent));
 
             CutCommand = ReactiveCommand.Create(() => FormulaCalc.LastFocusedFormula.CutSelected());
             CopyCommand = ReactiveCommand.Create(() => FormulaCalc.LastFocusedFormula.CopySelected());
@@ -73,6 +75,7 @@ namespace MolecularWeightCalculatorGUI
         private bool stayOnTop = false;
 
         public FormulaCalcViewModel FormulaCalc { get; }
+        public BatchProcessingGuiWrapper BatchProcessor { get; }
 
         public ReactiveCommand<Window, RxUnit> ShowAboutCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenMoleMassDilutionWindowCommand { get; }
@@ -83,6 +86,7 @@ namespace MolecularWeightCalculatorGUI
         public ReactiveCommand<Window, RxUnit> OpenCapillaryFlowWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenIsotopicDistributionWindowCommand { get; }
         public ReactiveCommand<Window, RxUnit> OpenSelectedIsotopicDistributionWindowCommand { get; }
+        public ReactiveCommand<Window, RxUnit> RunBatchProcessingCommand { get; }
 
         public ReactiveCommand<RxUnit, RxUnit> CutCommand { get; }
         public ReactiveCommand<RxUnit, RxUnit> CopyCommand { get; }

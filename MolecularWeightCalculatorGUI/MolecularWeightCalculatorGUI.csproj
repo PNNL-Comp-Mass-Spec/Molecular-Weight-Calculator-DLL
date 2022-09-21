@@ -67,6 +67,8 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BatchProcessing.cs" />
+    <Compile Include="BatchProcessingGuiWrapper.cs" />
     <Compile Include="CapillaryFlowUI\BroadeningEquationsWindow.xaml.cs">
       <DependentUpon>BroadeningEquationsWindow.xaml</DependentUpon>
     </Compile>
@@ -163,8 +165,12 @@
     <Compile Include="Utilities\HideableColumnDefinition.cs" />
     <Compile Include="Utilities\HideableRowDefinition.cs" />
     <Compile Include="Utilities\InvertBoolConverter.cs" />
+    <Compile Include="Utilities\IProgressViewModel.cs" />
     <Compile Include="Utilities\NumberDisplayShortConverter.cs" />
     <Compile Include="Utilities\NumberFormatter.cs" />
+    <Compile Include="Utilities\ProgressView.xaml.cs">
+      <DependentUpon>ProgressView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\StringKeyValuePair.cs" />
     <Compile Include="Utilities\SwitchElementModesViewModel.cs" />
     <Compile Include="Utilities\SwitchElementModesWindow.xaml.cs">
@@ -246,6 +252,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Plotting\PlotView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Utilities\ProgressView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
