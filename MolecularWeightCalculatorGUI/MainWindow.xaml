@@ -37,7 +37,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Menu Grid.Row ="0">
-            <MenuItem Header="File">
+            <MenuItem Header="_File">
                 <MenuItem Header="Edit Elements Table..." IsEnabled="False" />
                 <MenuItem Header="Edit Abbreviations..." IsEnabled="False" />
                 <MenuItem Header="Calculate weights from text file..." Command="{Binding RunBatchProcessingCommand}" CommandParameter="{x:Reference This}" />
@@ -46,7 +46,7 @@
                 <Separator />
                 <MenuItem Header="Exit..." Command="Close" InputGestureText="Alt+F4" /> <!-- TODO: keyboard shortcuts, "Esc or Alt+F4" -->
             </MenuItem>
-            <MenuItem Header="Edit">
+            <MenuItem Header="_Edit">
                 <MenuItem Header="Cut" Command="{Binding CutCommand}" InputGestureText="Ctrl+X" /> <!-- TODO: keyboard shortcuts, "Ctrl+X" -->
                 <MenuItem Header="Copy" Command="{Binding CopyCommand}" InputGestureText="Ctrl+C" /> <!-- TODO: keyboard shortcuts, "Ctrl+C" -->
                 <MenuItem Header="Paste" Command="{Binding PasteCommand}" InputGestureText="Ctrl+V" /> <!-- TODO: keyboard shortcuts, "Ctrl+V" -->
@@ -63,7 +63,7 @@
                 <MenuItem Header="Expand Abbreviations..." Command="{Binding ExpandAbbreviationsCommand}" CommandParameter="{x:Reference This}" />
                 <MenuItem Header="Convert to Empirical Formula..." Command="{Binding ConvertToEmpiricalCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+E" /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
             </MenuItem>
-            <MenuItem Header="View">
+            <MenuItem Header="_View">
                 <MenuItem Header="Multi View" IsCheckable="True" InputGestureText="F8" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "F8" -->
                 <MenuItem Header="Single View" IsCheckable="True" InputGestureText="F8" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "F8" -->
                 <Separator />
@@ -72,7 +72,7 @@
                     <MenuItem Header="On" IsCheckable="True" IsEnabled="False" />
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="Tools">
+            <MenuItem Header="_Tools">
                 <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+M" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
                 <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+L" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
                 <MenuItem Header="Formula Finder..." Command="{Binding OpenFormulaFinderWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+F" /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
@@ -84,7 +84,7 @@
                 <Separator />
                 <MenuItem Header="Capillary Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+Y" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
             </MenuItem>
-            <MenuItem Header="Options">
+            <MenuItem Header="_Options">
                 <MenuItem Header="Choose Language..." IsEnabled="False" />
                 <MenuItem Header="Change Program Preferences..." InputGestureText="Ctrl+O" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+O" -->
                 <MenuItem Header="Change Formula Font..." InputGestureText="Ctrl+T" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+T" -->
@@ -95,7 +95,7 @@
                     <MenuItem Header="Save Values and Formulas Now!" IsEnabled="False" />
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="Help">
+            <MenuItem Header="_Help">
                 <MenuItem Header="Program Overview" IsEnabled="False" />
                 <MenuItem Header="Show Tool Tips" IsCheckable="True" IsEnabled="False" />
                 <Separator />
