@@ -172,9 +172,22 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="searchOptions">If null, uses default search options</param>
         public List<SearchResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, SearchOptions searchOptions = null)
         {
+            return FindMatchesByMassPPM(targetMass, massTolerancePPM, out _, searchOptions);
+        }
+
+        /// <summary>
+        /// Find empirical formulas that match the given target mass, with the given ppm tolerance
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massTolerancePPM"></param>
+        /// <param name="symbolMasses">The list of symbols that may be present in the results, with their respective mass values</param>
+        /// <param name="searchOptions">If null, uses default search options</param>
+        public List<SearchResult> FindMatchesByMassPPM(double targetMass, double massTolerancePPM, out IReadOnlyList<KeyValuePair<string, double>> symbolMasses, SearchOptions searchOptions = null)
+        {
             var massToleranceDa = massTolerancePPM * targetMass / 1000000.0d;
 
             searchOptions ??= new SearchOptions();
+            symbolMasses = Array.Empty<KeyValuePair<string, double>>();
 
             var candidateElementsStats = ValidateMatchesByMassInputs(targetMass, massToleranceDa, searchOptions);
 
@@ -182,6 +195,8 @@ namespace MolecularWeightCalculator.FormulaFinder
             {
                 return new List<SearchResult>();
             }
+
+            symbolMasses = candidateElementsStats.ConvertAll(x => new KeyValuePair<string, double>(x.Symbol, x.Mass));
 
             var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, candidateElementsStats, true);
             results.Sort();
@@ -207,7 +222,20 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// <param name="searchOptions">If null, uses default search options</param>
         public List<SearchResult> FindMatchesByMass(double targetMass, double massToleranceDa, SearchOptions searchOptions = null)
         {
+            return FindMatchesByMass(targetMass, massToleranceDa, out _, searchOptions);
+        }
+
+        /// <summary>
+        /// Find empirical formulas that match the given target mass, with the given tolerance
+        /// </summary>
+        /// <param name="targetMass"></param>
+        /// <param name="massToleranceDa"></param>
+        /// <param name="symbolMasses">The list of symbols that may be present in the results, with their respective mass values</param>
+        /// <param name="searchOptions">If null, uses default search options</param>
+        public List<SearchResult> FindMatchesByMass(double targetMass, double massToleranceDa, out IReadOnlyList<KeyValuePair<string, double>> symbolMasses, SearchOptions searchOptions = null)
+        {
             searchOptions ??= new SearchOptions();
+            symbolMasses = Array.Empty<KeyValuePair<string, double>>();
 
             var candidateElementsStats = ValidateMatchesByMassInputs(targetMass, massToleranceDa, searchOptions);
 
@@ -215,6 +243,8 @@ namespace MolecularWeightCalculator.FormulaFinder
             {
                 return new List<SearchResult>();
             }
+
+            symbolMasses = candidateElementsStats.ConvertAll(x => new KeyValuePair<string, double>(x.Symbol, x.Mass));
 
             var results = FindMatchesByMass(targetMass, massToleranceDa, searchOptions, candidateElementsStats, false);
 
@@ -243,9 +273,27 @@ namespace MolecularWeightCalculator.FormulaFinder
         public List<SearchResult> FindMatchesByPercentComposition(
             double maximumFormulaMass,
             double percentTolerance,
+            SearchOptions searchOptions = null)
+        {
+            return FindMatchesByPercentComposition(maximumFormulaMass, percentTolerance, out _, searchOptions);
+        }
+
+        /// <summary>
+        /// Find empirical formulas that match target percent composition values
+        /// </summary>
+        /// <param name="maximumFormulaMass"></param>
+        /// <param name="percentTolerance"></param>
+        /// <param name="symbolMasses">The list of symbols that may be present in the results, with their respective mass values</param>
+        /// <param name="searchOptions"></param>
+        /// <returns>Search results, as a list</returns>
+        public List<SearchResult> FindMatchesByPercentComposition(
+            double maximumFormulaMass,
+            double percentTolerance,
+            out IReadOnlyList<KeyValuePair<string, double>> symbolMasses,
             SearchOptions searchOptions)
         {
             searchOptions ??= new SearchOptions();
+            symbolMasses = Array.Empty<KeyValuePair<string, double>>();
 
             // Validate the Inputs
             if (!ValidateSettings(CalculationMode.MatchPercentComposition))
@@ -271,6 +319,8 @@ namespace MolecularWeightCalculator.FormulaFinder
             {
                 return new List<SearchResult>();
             }
+
+            symbolMasses = candidateElementsStats.ConvertAll(x => new KeyValuePair<string, double>(x.Symbol, x.Mass));
 
             var results = FindMatchesByPercentComposition(maximumFormulaMass, searchOptions, candidateElementsStats);
 
