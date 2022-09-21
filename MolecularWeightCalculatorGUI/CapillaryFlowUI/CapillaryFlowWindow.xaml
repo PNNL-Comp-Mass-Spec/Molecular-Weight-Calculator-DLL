@@ -10,7 +10,7 @@
         d:DataContext="{d:DesignInstance {x:Type local:CapillaryFlowViewModel}, IsDesignTimeCreatable=True}"
         x:Name="This"
         WindowStartupLocation="CenterOwner"
-        Title="Capillary Flow and Mass Rate Calculations" Icon="../mwtwin.ico" MinHeight="380" MinWidth="680" SizeToContent="WidthAndHeight">
+        Title="Capillary Flow and Mass Rate Calculations" Icon="../MolecularWeightCalculator.ico" MinHeight="380" MinWidth="680" SizeToContent="WidthAndHeight">
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

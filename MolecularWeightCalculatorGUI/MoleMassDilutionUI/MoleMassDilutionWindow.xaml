@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:MoleMassDilutionViewModel}, IsDesignTimeCreatable=True}"
         WindowStartupLocation="CenterOwner"
-        Title="Mole/Mass Converter and Dilution Calculator" Icon="../mwtwin.ico" MinHeight="320" MinWidth="740" SizeToContent="WidthAndHeight">
+        Title="Mole/Mass Converter and Dilution Calculator" Icon="../MolecularWeightCalculator.ico" MinHeight="320" MinWidth="740" SizeToContent="WidthAndHeight">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

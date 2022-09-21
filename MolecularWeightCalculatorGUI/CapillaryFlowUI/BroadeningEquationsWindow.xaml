@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type local:EquationsViewModel}, IsDesignTimeCreatable=True}"
         WindowStartupLocation="CenterOwner"
-        Title="Extra-column broadening equations" Height="480" Width="650" SizeToContent="WidthAndHeight" Icon="../mwtwin.ico">
+        Title="Extra-column broadening equations" Height="480" Width="650" SizeToContent="WidthAndHeight" Icon="../MolecularWeightCalculator.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
