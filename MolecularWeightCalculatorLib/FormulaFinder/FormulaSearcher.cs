@@ -681,71 +681,72 @@ namespace MolecularWeightCalculator.FormulaFinder
         private List<CandidateElement> GetCandidateElements(FormulaSearchModes searchMode, double percentTolerance = 0d)
         {
             var candidateElementsStats = new List<CandidateElement>();
-
             var customElementCounter = 0;
 
             foreach (var item in candidateElements)
             {
+                if (string.IsNullOrWhiteSpace(item.Key))
+                {
+                    // Too short
+                    ReportError("Custom elemental weight is empty; if letters are used, they must be for a single valid elemental symbol or abbreviation");
+                    return new List<CandidateElement>();
+                }
+
                 float charge;
                 double mass;
                 var symbol = item.Key;
-                if (elementAndMassRoutines.Elements.IsValidElementSymbol(item.Key))
+                var abbrevSymbolRef = -1;
+                IFormulaParseData parseData = null;
+                if (double.TryParse(item.Key, out var customMass))
+                {
+                    // Custom element, only weight given so charge is 0
+                    mass = customMass;
+                    charge = 0;
+
+                    customElementCounter++;
+
+                    // Custom elements are named C1_ or C2_ or C3_ etc.
+                    symbol = "C" + customElementCounter + "_";
+                }
+                else if (elementAndMassRoutines.Elements.IsValidElementSymbol(item.Key))
                 {
                     var atomicNumber = elementAndMassRoutines.Elements.GetAtomicNumber(item.Key);
 
                     elementAndMassRoutines.Elements.GetElement(atomicNumber, out _, out mass, out _, out charge, out _);
                 }
+                else if ((abbrevSymbolRef = elementAndMassRoutines.Elements.GetAbbreviationId(item.Key)) >= 0)
+                {
+                    // A single element or abbreviation was entered
+
+                    // Convert input to default format of first letter capitalized and rest lowercase
+
+                    // Found a normal abbreviation
+                    elementAndMassRoutines.Elements.GetAbbreviation(abbrevSymbolRef, out _, out var abbrevFormula, out charge, out _);
+
+                    mass = elementAndMassRoutines.Parser.ComputeFormulaWeight(abbrevFormula);
+                }
+                else if ((parseData = elementAndMassRoutines.Parser.ParseFormula(item.Key)).ErrorData.ErrorId == 0)
+                {
+                    // A formula was entered. Treat it like an abbreviation (but wrap in parentheses for clarity)
+                    symbol = $"({parseData.Formula})";
+                    mass = parseData.Mass;
+                    charge = parseData.Charge;
+                }
                 else
                 {
-                    // Working with an abbreviation or simply a mass
-
-                    if (double.TryParse(item.Key, out var customMass))
+                    // Not parseable as a number, element, abbreviation, or formula. Report it to the user.
+                    foreach (var currentChar in item.Key)
                     {
-                        // Custom element, only weight given so charge is 0
-                        mass = customMass;
-                        charge = 0;
-
-                        customElementCounter++;
-
-                        // Custom elements are named C1_ or C2_ or C3_ etc.
-                        symbol = "C" + customElementCounter + "_";
-                    }
-                    else
-                    {
-                        // A single element or abbreviation was entered
-
-                        // Convert input to default format of first letter capitalized and rest lowercase
-                        var abbrevSymbol = item.Key.Substring(0, 1).ToUpper() + item.Key.Substring(1).ToLower();
-
-                        foreach (var currentChar in abbrevSymbol)
+                        if (!(char.IsLetter(currentChar) || currentChar.ToString() == "+" || currentChar.ToString() == "_"))
                         {
-                            if (!(char.IsLetter(currentChar) || currentChar.ToString() == "+" || currentChar.ToString() == "_"))
-                            {
-                                ReportError("Custom elemental weights must contain only numbers or only letters; if letters are used, they must be for a single valid elemental symbol or abbreviation");
-                                return new List<CandidateElement>();
-                            }
-                        }
-
-                        if (string.IsNullOrWhiteSpace(abbrevSymbol))
-                        {
-                            // Too short
-                            ReportError("Custom elemental weight is empty; if letters are used, they must be for a single valid elemental symbol or abbreviation");
+                            ReportError("Custom elemental weights must contain only numbers or only letters; if letters are used, they must be for a single valid elemental symbol or abbreviation");
                             return new List<CandidateElement>();
                         }
-
-                        // See if this is an abbreviation
-                        var symbolReference = elementAndMassRoutines.Elements.GetAbbreviationId(abbrevSymbol);
-                        if (symbolReference < 0)
-                        {
-                            ReportError("Unknown element or abbreviation for custom elemental weight: " + abbrevSymbol);
-                            return new List<CandidateElement>();
-                        }
-
-                        // Found a normal abbreviation
-                        elementAndMassRoutines.Elements.GetAbbreviation(symbolReference, out _, out var abbrevFormula, out charge, out _);
-
-                        mass = elementAndMassRoutines.Parser.ComputeFormulaWeight(abbrevFormula);
                     }
+
+                    // Report the generic error
+                    ReportError("Unknown element or abbreviation for custom elemental weight: " + item.Key);
+                    return new List<CandidateElement>();
                 }
 
                 var minCount = item.Value.MinimumCount;
