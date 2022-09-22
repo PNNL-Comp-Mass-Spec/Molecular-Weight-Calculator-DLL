@@ -2,8 +2,8 @@ MwtWinDll_SourceCode/
 SVN_Path.txt
 /.vs
 *.user
-/COMInstaller/Output
-/GUIInstaller/Output
+/Installers/COM_Installer
+/Installers/GUI
 /ZippedForGitHub/*.exe
 /ZippedForGitHub/*.zip
 /Docs/IsotopeMasses_All_Elements.txt
