@@ -1,10 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/master/src/NerdBank.GitVersioning/version.schema.json",
-  "version": "4.3",
+  "version": "4.4",
   "assemblyVersion": {
     "precision": "build"
   },
-  "__comment__": "Remove the versionHeightOffset line after updating to version 4.3",
-  "versionHeightOffset": 7779,
   "pathFilters": ["."]
 }

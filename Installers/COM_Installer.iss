@@ -2,6 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define ReleaseVersion GetFileVersion('..\MolecularWeightCalculatorLib\bin\Release\MolecularWeightCalculator.dll')
+#define Major 1
+#define Minor 1
+#define Build 1
+#define Revision 1
+#define FullVersion ParseVersion('..\MolecularWeightCalculatorLib\bin\Release\MolecularWeightCalculator.dll', Major, Minor, Build, Revision)
+#define ReleaseVersion Str(Major) + "." + Str(Minor) + "." + Str(Build)
 #define MyAppName "Molecular Weight Calculator COM DLL"
 #define MyAppVersion ReleaseVersion
 #define MySource "..\MolecularWeightCalculatorLib"
@@ -32,7 +38,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir={#InstallerFolder}
-OutputBaseFilename=MolWtCalc_COM_Installer
+OutputBaseFilename=MolWtCalc_COM_Installer_v{#ReleaseVersion}
 AppCopyright=© PNNL
 VersionInfoVersion={#MyAppVersion}
 VersionInfoCompany=PNNL
