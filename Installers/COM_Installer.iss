@@ -17,11 +17,12 @@
 #if ReleaseVersion == ""
      #error "MolecularWeightCalculator.dll was not found in the Release directory; rebuild the app in Release mode"
 #endif
+#define AppGuid "{CB85847E-14A0-42BE-8139-65AAE9FE968E}"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{CB85847E-14A0-42BE-8139-65AAE9FE968E}
+AppId={{#AppGuid}
 ; As AnyCPU, we can install as 32-bit or 64-bit, so allow installing on 32-bit Windows, but make sure it installs as 64-bit on 64-bit Windows
 ArchitecturesAllowed=x64 x86
 ArchitecturesInstallIn64BitMode=x64
@@ -61,6 +62,8 @@ Source: "bin\Release\MolecularWeightCalculator64.tlb";              DestDir: "{a
 Source: "..\Readme.md"; DestName: "Readme.txt";                     DestDir: "{app}"; Flags: ignoreversion isreadme
 Source: "..\RevisionHistory.txt";                                   DestDir: "{app}"; Flags: ignoreversion
 
+; For importing DLL functions at setup
+Source: "..\Installers\UninsIS.dll"; Flags: dontcopy
 
 [Run]
 ; Register with both 32-bit and 64-bit COM
@@ -69,7 +72,7 @@ Source: "..\RevisionHistory.txt";                                   DestDir: "{a
 Filename: "{dotnet40}\regasm.exe"; Parameters: "MolecularWeightCalculator.dll /codebase"; WorkingDir: "{app}"; Flags: runhidden
 Filename: "{dotnet4064}\regasm.exe"; Parameters: "MolecularWeightCalculator.dll /codebase"; WorkingDir: "{app}"; Flags: runhidden; Check: IsWin64
 
-[UninstallRun]    
+[UninstallRun]
 ; Unregister from both 32-bit and 64-bit COM
 Filename: "{dotnet40}\regasm.exe"; Parameters: /u MolecularWeightCalculator.dll; WorkingDir: {app}; Flags: runhidden
 Filename: "{dotnet4064}\regasm.exe"; Parameters: /u MolecularWeightCalculator.dll; WorkingDir: {app}; Flags: runhidden; Check: IsWin64;
@@ -98,4 +101,57 @@ begin
         MsgBox('This setup requires the .NET Framework version 4.7.2. Please install the .NET Framework and run this setup again.',
             mbInformation, MB_OK);
     end;
+end;
+
+// The below is all code that came from https://github.com/Bill-Stewart/UninsIS
+// This code enforces an automatic uninstall of the existing install before installing a new version
+// Using this to enforce un-registering existing DLLs before installing and registering new ones
+function DLLIsISPackageInstalled(AppId: string;
+  Is64BitInstallMode, IsAdminInstallMode: DWORD): DWORD;
+  external 'IsISPackageInstalled@files:UninsIS.dll stdcall setuponly';
+
+function DLLCompareISPackageVersion(AppId, InstallingVersion: string;
+  Is64BitInstallMode, IsAdminInstallMode: DWORD): longint;
+  external 'CompareISPackageVersion@files:UninsIS.dll stdcall setuponly';
+
+function DLLUninstallISPackage(AppId: string;
+  Is64BitInstallMode, IsAdminInstallMode: DWORD): DWORD;
+  external 'UninstallISPackage@files:UninsIS.dll stdcall setuponly';
+
+// Wrapper for UninsIS.dll IsISPackageInstalled() function
+// Returns true if package is detected as installed, or false otherwise
+function IsISPackageInstalled(): Boolean;
+begin
+  result := DLLIsISPackageInstalled('{#AppGUID}',  // AppId
+    DWORD(Is64BitInstallMode()),                        // Is64BitInstallMode
+    DWORD(IsAdminInstallMode())) = 1;                   // IsAdminInstallMode
+end;
+
+// Wrapper for UninsIS.dll CompareISPackageVersion() function
+// Returns:
+// < 0 if version we are installing is < installed version
+// 0   if version we are installing is = installed version
+// > 0 if version we are installing is > installed version
+function CompareISPackageVersion(): LongInt;
+begin
+  result := DLLCompareISPackageVersion('{#AppGUID}',  // AppId
+    '{#ReleaseVersion}',                                // InstallingVersion
+    DWORD(Is64BitInstallMode()),                           // Is64BitInstallMode
+    DWORD(IsAdminInstallMode()));                          // IsAdminInstallMode
+end;
+
+// Wrapper for UninsIS.dll UninstallISPackage() function
+// Returns 0 for success, non-zero for failure
+function UninstallISPackage(): DWORD;
+begin
+  result := DLLUninstallISPackage('{#AppGUID}',  // AppId
+    DWORD(Is64BitInstallMode()),                      // Is64BitInstallMode
+    DWORD(IsAdminInstallMode()));                     // IsAdminInstallMode
+end;
+
+function PrepareToInstall(var NeedsRestart: Boolean): string;
+begin
+  result := '';
+  if IsISPackageInstalled() and (CompareISPackageVersion() <> 0) then
+    UninstallISPackage();
 end;
