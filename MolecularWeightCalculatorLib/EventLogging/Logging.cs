@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
 
 namespace MolecularWeightCalculator.EventLogging
 {
     // Singleton class to handle logging to file
-    internal class Logging : EventReporter
+    internal class Logging : IDisposable
     {
+        // TODO: Change this class to use a writable path if the current path is not writable?
+        // TODO: Probably should only do that for executables that start with "MolecularWeightCalculator".
         public static Logging Logger { get; } = new Logging();
 
         internal static Messages Messages => Logger.mMessages;
@@ -45,11 +48,6 @@ namespace MolecularWeightCalculator.EventLogging
             Logger.LogMessageInternal(message, messageType);
         }
 
-        internal static void MwtWinDllErrorHandler(string callingProcedure, Exception ex)
-        {
-            Logger.MwtWinDllErrorHandlerInternal(callingProcedure, ex);
-        }
-
         private Logging()
         {
             mMessages = new Messages();
@@ -58,9 +56,25 @@ namespace MolecularWeightCalculator.EventLogging
             mLogFilePath = string.Empty;
         }
 
+        ~Logging()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!disposed)
+            {
+                GC.SuppressFinalize(this);
+                mLogFile?.Dispose();
+                disposed = true;
+            }
+        }
+
+        private bool disposed = false;
         private readonly Messages mMessages;
         private string mLogFilePath;
-        private System.IO.StreamWriter mLogFile;
+        private StreamWriter mLogFile;
 
         /// <summary>
         /// Log file folder
@@ -78,15 +92,15 @@ namespace MolecularWeightCalculator.EventLogging
             {
                 message += Environment.NewLine + ex.Message;
             }
-            
+
             LogMessageInternal(message, MessageType.Error);
 
             try
             {
-                var errorFilePath = System.IO.Path.Combine(Environment.CurrentDirectory, "ErrorLog.txt");
+                var errorFilePath = Path.Combine(Environment.CurrentDirectory, "ErrorLog.txt");
 
                 // Open the file and append a new error entry
-                using var outFile = new System.IO.StreamWriter(errorFilePath, true);
+                using var outFile = new StreamWriter(errorFilePath, true);
                 outFile.WriteLine(DateTime.Now + " -- " + message + Environment.NewLine);
             }
             catch
@@ -106,7 +120,7 @@ namespace MolecularWeightCalculator.EventLogging
             {
                 try
                 {
-                    mLogFilePath = System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                    mLogFilePath = Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location);
                     mLogFilePath += "_log_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
                     try
@@ -116,9 +130,9 @@ namespace MolecularWeightCalculator.EventLogging
                         if (mLogFolderPath.Length > 0)
                         {
                             // Create the log folder if it doesn't exist
-                            if (!System.IO.Directory.Exists(mLogFolderPath))
+                            if (!Directory.Exists(mLogFolderPath))
                             {
-                                System.IO.Directory.CreateDirectory(mLogFolderPath);
+                                Directory.CreateDirectory(mLogFolderPath);
                             }
                         }
                     }
@@ -129,12 +143,12 @@ namespace MolecularWeightCalculator.EventLogging
 
                     if (mLogFolderPath.Length > 0)
                     {
-                        mLogFilePath = System.IO.Path.Combine(mLogFolderPath, mLogFilePath);
+                        mLogFilePath = Path.Combine(mLogFolderPath, mLogFilePath);
                     }
 
-                    var openingExistingFile = System.IO.File.Exists(mLogFilePath);
+                    var openingExistingFile = File.Exists(mLogFilePath);
 
-                    mLogFile = new System.IO.StreamWriter(new System.IO.FileStream(mLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read))
+                    mLogFile = new StreamWriter(new FileStream(mLogFilePath, FileMode.Append, FileAccess.Write, FileShare.Read))
                     {
                         AutoFlush = true
                     };
@@ -169,30 +183,6 @@ namespace MolecularWeightCalculator.EventLogging
             {
                 mLogFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\t" +
                     messageTypeText + "\t" + message);
-            }
-        }
-
-        private void MwtWinDllErrorHandlerInternal(string callingProcedure, Exception ex)
-        {
-            string message;
-
-            if (ex is OverflowException)
-            {
-                message = mMessages.LookupMessage(590);
-
-                OnErrorEvent(mMessages.LookupMessage(350) + ": " + message);
-                LogMessageInternal(message, MessageType.Error);
-            }
-            else
-            {
-                message = mMessages.LookupMessage(600) + ": " + ex.Message + Environment.NewLine + " (" + callingProcedure + " handler)";
-                message += Environment.NewLine + mMessages.LookupMessage(605);
-
-                OnErrorEvent(mMessages.LookupMessage(350) + ": " + message);
-
-                // Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
-                // Note that GeneralErrorHandler will call LogMessage
-                GeneralErrorHandlerInternal(callingProcedure, ex);
             }
         }
     }
