@@ -8,24 +8,11 @@ namespace MolecularWeightCalculator.COMInterfaces
 {
     // Ignore Spelling: interop
 
-    [Guid("FCAEBB03-02BD-46D5-9E0B-C74D81F625B7"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch), ComVisible(true)]
-    public interface IFormulaSearcherEvents
-    {
-        event MessageEventEventHandler MessageEvent;
-        event ErrorEventEventHandler ErrorEvent;
-        event WarningEventEventHandler WarningEvent;
-    }
-
-    [Guid("DCDEBDEB-1B50-4FD9-B42A-D921C450E922"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
+    [Guid("11E2C20C-C3F5-434C-88C9-0E8F853FBE8C"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
     public interface IFormulaSearcher
     {
         // Commented out because COM does not support generic types, and the primary use of this is for testing.
         // Dictionary<string, FormulaFinder.CandidateElementTolerances> CandidateElements { get; set; }
-
-        /// <summary>
-        /// When true, echo messages to the console
-        /// </summary>
-        bool EchoMessagesToConsole { get; set; }
 
         /// <summary>
         /// Maximum number of results to report

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using MolecularWeightCalculator.Formula;
 
-namespace MolecularWeightCalculator.Formula
+namespace MolecularWeightCalculator.EventLogging
 {
     [ComVisible(false)]
     internal class Messages
@@ -12,18 +13,34 @@ namespace MolecularWeightCalculator.Formula
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="options"></param>
-        public Messages(FormulaOptions options)
+        public Messages()
         {
-            mOptions = options;
-
             mCautionStatements = new Dictionary<string, string>(50);
             mMessageStatements = new Dictionary<int, string>(220);
         }
 
         private const int MESSAGE_STATEMENT_DIM_COUNT = 1600;
         private const int MAX_CAUTION_STATEMENTS = 100;
-        private readonly FormulaOptions mOptions;
+        private FormulaOptions mOptions = new FormulaOptions();
+
+        /// <summary>
+        /// <see cref="FormulaOptions"/> so that some settings-specific issues are reported properly.
+        /// </summary>
+        internal FormulaOptions Options
+        {
+            get => mOptions;
+            set
+            {
+                if (value == null)
+                {
+                    mOptions = new FormulaOptions();
+                }
+                else
+                {
+                    mOptions = value;
+                }
+            }
+        }
 
         /// <summary>
         /// CautionStatements.Key holds the symbol combo to look for
@@ -155,14 +172,14 @@ namespace MolecularWeightCalculator.Formula
             // messageId's 1 and 18 may need to have an addendum added
             if (messageId == 1)
             {
-                if (mOptions.CaseConversion == CaseConversionMode.ExactCase)
+                if (Options.CaseConversion == CaseConversionMode.ExactCase)
                 {
                     message += " (" + LookupMessage(680) + ")";
                 }
             }
             else if (messageId == 18)
             {
-                if (!mOptions.BracketsAsParentheses)
+                if (!Options.BracketsAsParentheses)
                 {
                     message += " (" + LookupMessage(685) + ")";
                 }

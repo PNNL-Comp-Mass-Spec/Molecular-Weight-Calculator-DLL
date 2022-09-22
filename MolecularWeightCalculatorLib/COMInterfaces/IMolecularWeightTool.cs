@@ -10,15 +10,7 @@ namespace MolecularWeightCalculator.COMInterfaces
 {
     // Ignore Spelling: centroided, interop, xyVals
 
-    [Guid("5A9D3A30-60D4-4C36-AD67-C734678D1CEB"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch), ComVisible(true)]
-    public interface IMolecularWeightToolEvents
-    {
-        event ProgressResetEventHandler ProgressReset;
-        event ProgressChangedEventHandler ProgressChanged;
-        event ProgressCompleteEventHandler ProgressComplete;
-    }
-
-    [Guid("E19152E6-AE5D-4C9F-94F5-91B4D1655BC2"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
+    [Guid("093B01E2-8759-4860-B408-8BEA36F8FF1D"), InterfaceType(ComInterfaceType.InterfaceIsDual), ComVisible(true)]
     public interface IMolecularWeightTool
     {
         Compound Compound { get; set; }
@@ -47,7 +39,6 @@ namespace MolecularWeightCalculator.COMInterfaces
 
         string RtfFontName { get; set; }
         int RtfFontSize { get; set; }
-        bool ShowErrorDialogs { get; set; }
         StdDevMode StdDevMode { get; set; }
 
         void ClearError();

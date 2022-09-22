@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using MolecularWeightCalculator.Data;
-using MolecularWeightCalculator.Formula;
 
 namespace MolecularWeightCalculator.Tools
 {
@@ -28,11 +28,11 @@ namespace MolecularWeightCalculator.Tools
         /// <param name="resolutionMass">The m/z value at which the resolution applies</param>
         /// <param name="qualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
         /// <param name="fillGaps">When true, ensures at least one data point in the output for every 1% point in the data range</param>
-        /// <param name="elementAndMass">Reference to a <see cref="ElementAndMassTools"/> object for process abortion and error logging/messaging</param>
+        /// <param name="cancelToken">Cancellation token for process abortion</param>
         /// <returns>Gaussian spectrum data</returns>
-        public static List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> inputData, int resolution, double resolutionMass, int qualityFactor, bool fillGaps = true, ElementAndMassTools elementAndMass = null)
+        public static List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> inputData, int resolution, double resolutionMass, int qualityFactor, bool fillGaps = true, CancellationToken cancelToken = default)
         {
-            return ConvertStickDataToGaussian2DArray(inputData.ConvertAll(x => new XYPointImmutable(x)), resolution, resolutionMass, qualityFactor, fillGaps, elementAndMass).ConvertAll(x => x.ToKeyValuePair());
+            return ConvertStickDataToGaussian2DArray(inputData.ConvertAll(x => new XYPointImmutable(x)), resolution, resolutionMass, qualityFactor, fillGaps, cancelToken).ConvertAll(x => x.ToKeyValuePair());
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace MolecularWeightCalculator.Tools
         /// <param name="resolutionMass">The m/z value at which the resolution applies</param>
         /// <param name="qualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
         /// <param name="fillGaps">When true, ensures at least one data point in the output for every 1% point in the data range</param>
-        /// <param name="elementAndMass">Reference to a <see cref="ElementAndMassTools"/> object for process abortion and error logging/messaging</param>
+        /// <param name="cancelToken">Cancellation token for process abortion</param>
         /// <returns>Gaussian spectrum data</returns>
-        public static List<XYPointImmutable> ConvertStickDataToGaussian2DArray(IReadOnlyList<XYPointImmutable> inputData, int resolution, double resolutionMass, int qualityFactor, bool fillGaps = true, ElementAndMassTools elementAndMass = null)
+        public static List<XYPointImmutable> ConvertStickDataToGaussian2DArray(IReadOnlyList<XYPointImmutable> inputData, int resolution, double resolutionMass, int qualityFactor, bool fillGaps = true, CancellationToken cancelToken = default)
         {
             // inputData[] is 0-based (thus ranging from 0 to inputData.Count-1)
             // The arrays should contain stick data
@@ -59,123 +59,106 @@ namespace MolecularWeightCalculator.Tools
                 return new List<XYPointImmutable>();
             }
 
-            try
+            // Determine the data range for inputData[].X
+            double xRange;
+            if (inputData.Count > 1)
             {
-                // Determine the data range for inputData[].X
-                double xRange;
-                if (inputData.Count > 1)
-                {
-                    xRange = inputData.Last().X - inputData[0].X;
-                }
-                else
-                {
-                    xRange = 1d;
-                }
-
-                if (xRange < 1d)
-                    xRange = 1d;
-
-                if (resolution < 1)
-                    resolution = 1;
-
-                if (qualityFactor is < 1 or > 75)
-                    qualityFactor = 50;
-
-                // Compute deltaX using resolution and resolutionMass
-                // Do not allow the deltaX to be so small that the total points required > maxDataPoints
-                var deltaX = resolutionMass / resolution / qualityFactor;
-
-                // Make sure deltaX is a reasonable number
-                deltaX = MathTools.RoundToMultipleOf10(deltaX);
-
-                if (Math.Abs(deltaX) < float.Epsilon)
-                    deltaX = 1d;
-
-                var sigma = resolutionMass / resolution / Math.Sqrt(5.54d);
-
-                // Set the window range (the xValue window width range) to calculate the Gaussian representation for each data point
-                // The width at the base of a peak is 4 sigma
-                // Use a width of 2 * 6 sigma
-                var xWindowRange = 2 * 6 * sigma;
-
-                if (xRange / deltaX > maxDataPoints)
-                {
-                    // Delta x is too small; change to a reasonable value
-                    // This isn't a bug, but it may mean one of the default settings is inappropriate
-                    deltaX = xRange / maxDataPoints;
-                }
-
-                var gaussianPointCount = (int)Math.Round(xWindowRange / deltaX);
-
-                // Make sure gaussianPointCount is odd
-                if (gaussianPointCount % 2 == 0)
-                {
-                    gaussianPointCount++;
-                }
-
-                var gaussianPeak = new List<XYPointImmutable>(gaussianPointCount);
-                var apexIndex = gaussianPointCount / 2;
-
-                // Initialize summedData
-                var summedData = new List<XYPointImmutable>(inputData.Count * 10);
-
-                // Compute the Gaussian data for each point in inputData[].X
-                for (var stickIndex = 0; stickIndex < inputData.Count; stickIndex++)
-                {
-                    if (stickIndex % 25 == 0)
-                    {
-                        if (elementAndMass?.AbortProcessing ?? false)
-                            break;
-                    }
-
-                    gaussianPeak.Clear();
-
-                    // Construct the Gaussian representation for this data point
-                    var currentX = inputData[stickIndex].X;
-
-                    // Round currentX to the nearest deltaX
-                    // If currentX is not an even multiple of deltaX then bump up currentX until it is
-                    currentX = MathTools.RoundToEvenMultiple(currentX, deltaX, true);
-                    var refPoint = new XYPointImmutable(currentX, inputData[stickIndex].Y);
-
-                    for (var j = 0; j < gaussianPointCount; j++)
-                    {
-                        // Equation for Gaussian is: Amplitude * Exp[ -(x - mu)^2 / (2*sigma^2) ]
-                        // Use index, .Y, and deltaX
-                        var xOffSet = (apexIndex - j) * deltaX;
-
-                        var point = new XYPointImmutable(refPoint.X - xOffSet,
-                            refPoint.Y * Math.Exp(-Math.Pow(xOffSet, 2d) / (2d * Math.Pow(sigma, 2d))));
-
-                        gaussianPeak.Add(point);
-                    }
-
-                    // Now merge gaussianPeak into summedData
-                    var windowMinX = inputData[stickIndex].X - apexIndex * deltaX;
-                    CombineLists(summedData, gaussianPeak, windowMinX);
-                }
-
-                if (fillGaps)
-                {
-                    // return the filled gaussian data
-                    return FillGapsToOnePercent(summedData, xRange);
-                }
-
-                return summedData;
+                xRange = inputData.Last().X - inputData[0].X;
             }
-            catch (Exception ex)
+            else
             {
-                if (elementAndMass != null)
-                {
-                    elementAndMass.GeneralErrorHandler("ConvertStickDataToGaussian", ex);
-                }
-                else
-                {
-                    throw;
-                }
+                xRange = 1d;
             }
 
-            return new List<XYPointImmutable>();
+            if (xRange < 1d)
+                xRange = 1d;
+
+            if (resolution < 1)
+                resolution = 1;
+
+            if (qualityFactor is < 1 or > 75)
+                qualityFactor = 50;
+
+            // Compute deltaX using resolution and resolutionMass
+            // Do not allow the deltaX to be so small that the total points required > maxDataPoints
+            var deltaX = resolutionMass / resolution / qualityFactor;
+
+            // Make sure deltaX is a reasonable number
+            deltaX = MathTools.RoundToMultipleOf10(deltaX);
+
+            if (Math.Abs(deltaX) < float.Epsilon)
+                deltaX = 1d;
+
+            var sigma = resolutionMass / resolution / Math.Sqrt(5.54d);
+
+            // Set the window range (the xValue window width range) to calculate the Gaussian representation for each data point
+            // The width at the base of a peak is 4 sigma
+            // Use a width of 2 * 6 sigma
+            var xWindowRange = 2 * 6 * sigma;
+
+            if (xRange / deltaX > maxDataPoints)
+            {
+                // Delta x is too small; change to a reasonable value
+                // This isn't a bug, but it may mean one of the default settings is inappropriate
+                deltaX = xRange / maxDataPoints;
+            }
+
+            var gaussianPointCount = (int)Math.Round(xWindowRange / deltaX);
+
+            // Make sure gaussianPointCount is odd
+            if (gaussianPointCount % 2 == 0)
+            {
+                gaussianPointCount++;
+            }
+
+            var gaussianPeak = new List<XYPointImmutable>(gaussianPointCount);
+            var apexIndex = gaussianPointCount / 2;
+
+            // Initialize summedData
+            var summedData = new List<XYPointImmutable>(inputData.Count * 10);
+
+            // Compute the Gaussian data for each point in inputData[].X
+            for (var stickIndex = 0; stickIndex < inputData.Count; stickIndex++)
+            {
+                if (stickIndex % 25 == 0 && cancelToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                gaussianPeak.Clear();
+
+                // Construct the Gaussian representation for this data point
+                var currentX = inputData[stickIndex].X;
+
+                // Round currentX to the nearest deltaX
+                // If currentX is not an even multiple of deltaX then bump up currentX until it is
+                currentX = MathTools.RoundToEvenMultiple(currentX, deltaX, true);
+                var refPoint = new XYPointImmutable(currentX, inputData[stickIndex].Y);
+
+                for (var j = 0; j < gaussianPointCount; j++)
+                {
+                    // Equation for Gaussian is: Amplitude * Exp[ -(x - mu)^2 / (2*sigma^2) ]
+                    // Use index, .Y, and deltaX
+                    var xOffSet = (apexIndex - j) * deltaX;
+
+                    var point = new XYPointImmutable(refPoint.X - xOffSet,
+                        refPoint.Y * Math.Exp(-Math.Pow(xOffSet, 2d) / (2d * Math.Pow(sigma, 2d))));
+
+                    gaussianPeak.Add(point);
+                }
+
+                // Now merge gaussianPeak into summedData
+                var windowMinX = inputData[stickIndex].X - apexIndex * deltaX;
+                CombineLists(summedData, gaussianPeak, windowMinX);
+            }
+
+            if (fillGaps)
+            {
+                // return the filled gaussian data
+                return FillGapsToOnePercent(summedData, xRange);
+            }
+
+            return summedData;
         }
 
         private static void CombineLists(List<XYPointImmutable> summedData, IReadOnlyList<XYPointImmutable> newData, double windowMinX)

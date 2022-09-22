@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using MolecularWeightCalculator.COMInterfaces;
+using MolecularWeightCalculator.EventLogging;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.FormulaFinder;
 using MolecularWeightCalculator.Sequence;
@@ -44,8 +45,8 @@ namespace MolecularWeightCalculator
     /// Converted to C# by Bryson Gibbons in 2021
     /// </para>
     /// </remarks>
-    [Guid("9BB6C2DE-493F-48E8-BD5A-EE70ACC23C75"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IMolecularWeightToolEvents)), ComVisible(true)]
-    public class MolecularWeightTool : IMolecularWeightTool
+    [Guid("9BB6C2DE-493F-48E8-BD5A-EE70ACC23C75"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IEventReporterCOM)), ComVisible(true)]
+    public class MolecularWeightTool : EventReporter, IMolecularWeightTool
     {
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
@@ -85,9 +86,7 @@ namespace MolecularWeightCalculator
         public MolecularWeightTool(ElementMassMode elementMode)
         {
             ElementAndMass = new ElementAndMassTools();
-            ElementAndMass.ProgressChanged += ElementAndMassRoutines_ProgressChanged;
-            ElementAndMass.ProgressComplete += ElementAndMassRoutines_ProgressComplete;
-            ElementAndMass.ProgressReset += ElementAndMassRoutines_ProgressReset;
+            RegisterEvents(ElementAndMass);
 
             // Call mElementAndMassRoutines.MemoryLoadAll, which is required prior to instantiating the Peptide class.
             // We need to get the three letter abbreviations defined prior to the Peptide class calling method UpdateStandardMasses
@@ -105,6 +104,7 @@ namespace MolecularWeightCalculator
             ElementAndMass.ComputationOptions.DecimalSeparator = DetermineDecimalPoint();
 
             Peptide = new Peptide(ElementAndMass);
+            RegisterEvents(Peptide);
 
             // Does not re-load the elements or cause extra re-calculations because the masses loaded above were already the average masses
             // Use "false" to avoid re-loading all of the elements and isotopes unless it is actually necessary
@@ -142,21 +142,6 @@ namespace MolecularWeightCalculator
         /// Expose this internally for use with the GUI
         /// </summary>
         internal ElementAndMassTools ElementAndMass { get; }
-
-        /// <summary>
-        /// Progress reset
-        /// </summary>
-        public event ProgressResetEventHandler ProgressReset;
-
-        /// <summary>
-        /// Progress updated
-        /// </summary>
-        public event ProgressChangedEventHandler ProgressChanged;
-
-        /// <summary>
-        /// Processing complete
-        /// </summary>
-        public event ProgressCompleteEventHandler ProgressComplete;
 
         #endregion
 
@@ -314,11 +299,8 @@ namespace MolecularWeightCalculator
         /// <summary>
         /// If true, when an error occurs, show a message box with the error message, requiring the user to click OK to continue
         /// </summary>
-        public bool ShowErrorDialogs
-        {
-            get => ElementAndMass.ShowErrorMessageDialogs;
-            set => ElementAndMass.SetShowErrorMessageDialogs(value);
-        }
+        [Obsolete("Use event handling (ErrorEvent) instead; does not do anything", true)]
+        public bool ShowErrorDialogs { get; set; }
 
         /// <summary>
         /// Standard deviation mode
@@ -409,7 +391,7 @@ namespace MolecularWeightCalculator
         /// <returns>Gaussian spectrum data</returns>
         public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor = 50)
         {
-            return Gaussian.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor, true, ElementAndMass);
+            return Gaussian.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor);
         }
 
         /// <summary>
@@ -1048,21 +1030,6 @@ namespace MolecularWeightCalculator
             Peptide = null;
             CapFlow = null;
             Compound = null;
-        }
-
-        private void ElementAndMassRoutines_ProgressChanged(string taskDescription, float percentComplete)
-        {
-            ProgressChanged?.Invoke(taskDescription, percentComplete);
-        }
-
-        private void ElementAndMassRoutines_ProgressComplete()
-        {
-            ProgressComplete?.Invoke();
-        }
-
-        private void ElementAndMassRoutines_ProgressReset()
-        {
-            ProgressReset?.Invoke();
         }
     }
 }

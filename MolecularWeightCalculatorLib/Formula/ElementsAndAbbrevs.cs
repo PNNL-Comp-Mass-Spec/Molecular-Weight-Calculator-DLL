@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using MolecularWeightCalculator.EventLogging;
 
 namespace MolecularWeightCalculator.Formula
 {
     [ComVisible(false)]
-    internal class ElementsAndAbbrevs
+    internal class ElementsAndAbbrevs : EventReporter
     {
         // Ignore Spelling: ElementAlph, Func, Isoelectric, unprotonated
 
@@ -1122,7 +1123,7 @@ namespace MolecularWeightCalculator.Formula
             }
             catch (Exception ex)
             {
-                mMassCalc.GeneralErrorHandler("ElementAndMassTools.SetElementMode", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("ElementAndMassTools.SetElementMode", ex));
             }
         }
 

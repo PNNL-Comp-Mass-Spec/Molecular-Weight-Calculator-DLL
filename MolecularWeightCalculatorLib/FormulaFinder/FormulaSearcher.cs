@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using MolecularWeightCalculator.COMInterfaces;
+using MolecularWeightCalculator.EventLogging;
 using MolecularWeightCalculator.Formula;
 
 namespace MolecularWeightCalculator.FormulaFinder
@@ -10,8 +11,8 @@ namespace MolecularWeightCalculator.FormulaFinder
     /// <summary>
     /// Formula finder class
     /// </summary>
-    [Guid("B24497AD-A29D-4266-A33A-EF97B86EA578"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IFormulaSearcherEvents)), ComVisible(true)]
-    public class FormulaSearcher : IFormulaSearcher, IFormulaSearcherEvents
+    [Guid("87E2110F-EAB1-4EE7-9482-3D68C1BFF825"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IEventReporterCOM)), ComVisible(true)]
+    public class FormulaSearcher : EventReporter, IFormulaSearcher
     {
         // Ignore Spelling: Da, interop, MtoZ
 
@@ -61,8 +62,6 @@ namespace MolecularWeightCalculator.FormulaFinder
             }
         }
 
-        public bool EchoMessagesToConsole { get; set; }
-
         public int MaximumHits
         {
             get => maximumHits;
@@ -92,10 +91,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         /// </summary>
         public IProgress<double> ProgressReporter { get; set; }
 
-        public event MessageEventEventHandler MessageEvent;
-        public event ErrorEventEventHandler ErrorEvent;
-        public event WarningEventEventHandler WarningEvent;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -103,8 +98,6 @@ namespace MolecularWeightCalculator.FormulaFinder
         {
             elementAndMassRoutines = elementAndMassTools;
             candidateElements = new Dictionary<string, CandidateElementTolerances>();
-
-            EchoMessagesToConsole = true;
 
             Reset();
         }
@@ -303,13 +296,13 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             if (maximumFormulaMass <= 0d)
             {
-                ReportError("Maximum molecular weight must be greater than 0");
+                OnErrorEvent("Maximum molecular weight must be greater than 0");
                 return new List<SearchResult>();
             }
 
             if (percentTolerance < 0d)
             {
-                ReportError("Percent tolerance cannot be negative");
+                OnErrorEvent("Percent tolerance cannot be negative");
                 return new List<SearchResult>();
             }
 
@@ -452,7 +445,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             }
             catch (Exception ex)
             {
-                elementAndMassRoutines.GeneralErrorHandler("ConstructAndVerifyCompound", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("ConstructAndVerifyCompound", ex));
                 empiricalResultSymbols = new List<ElementCount>();
                 correctedCharge = totalCharge;
                 return false;
@@ -629,13 +622,13 @@ namespace MolecularWeightCalculator.FormulaFinder
 
             if (targetMass <= 0d)
             {
-                ReportError("Target molecular weight must be greater than 0");
+                OnErrorEvent("Target molecular weight must be greater than 0");
                 return new List<CandidateElement>();
             }
 
             if (massToleranceDa < 0d)
             {
-                ReportError("Mass tolerance cannot be negative");
+                OnErrorEvent("Mass tolerance cannot be negative");
                 return new List<CandidateElement>();
             }
 
@@ -738,7 +731,7 @@ namespace MolecularWeightCalculator.FormulaFinder
                 if (string.IsNullOrWhiteSpace(item.Key))
                 {
                     // Too short
-                    ReportError("Custom elemental weight is empty; if letters are used, they must be for a single valid elemental symbol or abbreviation");
+                    OnErrorEvent("Custom elemental weight is empty; if letters are used, they must be for a single valid elemental symbol or abbreviation");
                     return new List<CandidateElement>();
                 }
 
@@ -789,13 +782,13 @@ namespace MolecularWeightCalculator.FormulaFinder
                     {
                         if (!(char.IsLetter(currentChar) || currentChar.ToString() == "+" || currentChar.ToString() == "_"))
                         {
-                            ReportError("Custom elemental weights must contain only numbers or only letters; if letters are used, they must be for a single valid elemental symbol or abbreviation");
+                            OnErrorEvent("Custom elemental weights must contain only numbers or only letters; if letters are used, they must be for a single valid elemental symbol or abbreviation");
                             return new List<CandidateElement>();
                         }
                     }
 
                     // Report the generic error
-                    ReportError("Unknown element or abbreviation for custom elemental weight: " + item.Key);
+                    OnErrorEvent("Unknown element or abbreviation for custom elemental weight: " + item.Key);
                     return new List<CandidateElement>();
                 }
 
@@ -861,7 +854,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             }
             catch (Exception ex)
             {
-                elementAndMassRoutines.GeneralErrorHandler("GetSearchResult", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("GetSearchResult", ex));
                 return new SearchResult(new List<ElementCount>(), 0, 0);
             }
         }
@@ -1003,7 +996,7 @@ namespace MolecularWeightCalculator.FormulaFinder
             }
             catch (Exception ex)
             {
-                elementAndMassRoutines.GeneralErrorHandler("RecursiveMWFinder", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("RecursiveMWFinder", ex));
                 mAbortProcessing = true;
             }
         }
@@ -1149,31 +1142,8 @@ namespace MolecularWeightCalculator.FormulaFinder
             }
             catch (Exception ex)
             {
-                elementAndMassRoutines.GeneralErrorHandler("RecursivePCompFinder", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("RecursivePCompFinder", ex));
             }
-        }
-
-        protected void ReportError(string errorMessage)
-        {
-            if (EchoMessagesToConsole)
-                Console.WriteLine(errorMessage);
-
-            ErrorEvent?.Invoke(errorMessage);
-        }
-
-        protected void ReportWarning(string warningMessage)
-        {
-            if (EchoMessagesToConsole)
-                Console.WriteLine(warningMessage);
-
-            WarningEvent?.Invoke(warningMessage);
-        }
-
-        protected void ShowMessage(string message)
-        {
-            if (EchoMessagesToConsole)
-                Console.WriteLine(message);
-            MessageEvent?.Invoke(message);
         }
 
         private void UpdateStatus()
@@ -1228,7 +1198,7 @@ namespace MolecularWeightCalculator.FormulaFinder
         {
             if (candidateElements.Count == 0)
             {
-                ReportError("No candidate elements are defined; use method AddCandidateElement or property CandidateElements");
+                OnErrorEvent("No candidate elements are defined; use method AddCandidateElement or property CandidateElements");
                 return false;
             }
 
@@ -1240,7 +1210,7 @@ namespace MolecularWeightCalculator.FormulaFinder
 
                 if (Math.Abs(totalTargetPercentComp - 100d) > float.Epsilon)
                 {
-                    ReportError("Sum of the target percentages must be 100%; it is currently " + totalTargetPercentComp.ToString("0.0") + "%");
+                    OnErrorEvent("Sum of the target percentages must be 100%; it is currently " + totalTargetPercentComp.ToString("0.0") + "%");
                     return false;
                 }
             }

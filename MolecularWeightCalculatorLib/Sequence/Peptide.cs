@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using MolecularWeightCalculator.COMInterfaces;
+using MolecularWeightCalculator.EventLogging;
 using MolecularWeightCalculator.Formula;
 
 namespace MolecularWeightCalculator.Sequence
@@ -10,7 +11,7 @@ namespace MolecularWeightCalculator.Sequence
     /// Molecular Weight Calculator routines with ActiveX Class interfaces: Peptide
     /// </summary>
     [Guid("1E33887D-563A-4A5F-909B-A3DF18E03EDC"), ClassInterface(ClassInterfaceType.None), ComVisible(true)]
-    public class Peptide : IPeptide
+    public class Peptide : EventReporter, IPeptide
     {
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2004
@@ -54,7 +55,7 @@ namespace MolecularWeightCalculator.Sequence
             }
             catch (Exception ex)
             {
-                mElementAndMassRoutines.GeneralErrorHandler("Peptide.Constructor", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("Peptide.Constructor", ex));
             }
         }
 
@@ -2111,7 +2112,7 @@ namespace MolecularWeightCalculator.Sequence
             }
             catch (Exception ex)
             {
-                mElementAndMassRoutines.GeneralErrorHandler("Peptide.SetDefaultModificationSymbols", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("Peptide.SetDefaultModificationSymbols", ex));
             }
         }
 
@@ -2167,7 +2168,7 @@ namespace MolecularWeightCalculator.Sequence
             }
             catch (Exception ex)
             {
-                mElementAndMassRoutines.GeneralErrorHandler("Peptide.SetDefaultOptions", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("Peptide.SetDefaultOptions", ex));
             }
         }
 
@@ -2793,7 +2794,7 @@ namespace MolecularWeightCalculator.Sequence
             }
             catch (Exception ex)
             {
-                mElementAndMassRoutines.GeneralErrorHandler("Peptide.UpdateStandardMasses", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("Peptide.UpdateStandardMasses", ex));
             }
         }
     }

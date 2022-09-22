@@ -1,4 +1,4 @@
-﻿namespace MolecularWeightCalculator.Formula
+﻿namespace MolecularWeightCalculator.EventLogging
 {
     public enum MessageID
     {
@@ -100,8 +100,8 @@
         MaximumHitsMustBeGreaterThan0 = 705,
         MaximumHitsMustBeLessThan = 710,
         MinimumNumberOfElementsTooSmall = 715,
-        MinimumnumberOfElementsMustBeLessThanMaximum = 720,
-        MinimumnumberOfElementsTooLarge = 725,
+        MinimumNumberOfElementsMustBeLessThanMaximum = 720,
+        MinimumNumberOfElementsTooLarge = 725,
         MissingAtomicWeightForCustomElements = 730,
         InvalidAtomicWeightForCustomElements = 735,
         MissingTargetMolecularWeight = 740,
@@ -164,7 +164,7 @@
 
         AllFiles = 1500,
         TextFiles = 1510,
-        TExtFileExtension = 1515,
+        TextFileExtension = 1515,
         DataFiles = 1520,
         CsvFileExtension = 1525,
         SequenceFiles = 1530,

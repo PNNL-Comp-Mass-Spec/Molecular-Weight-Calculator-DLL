@@ -13,6 +13,7 @@ using System.Windows.Documents;
 using DynamicData;
 using DynamicData.Binding;
 using MolecularWeightCalculator;
+using MolecularWeightCalculator.EventLogging;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.FormulaFinder;
 using MolecularWeightCalculatorGUI.IsotopicDistribution;
@@ -682,7 +683,7 @@ namespace MolecularWeightCalculatorGUI.FormulaFinder
             }
             catch (Exception ex)
             {
-                ElementAndMass.GeneralErrorHandler("FormulaFinderViewModel|Calculate", ex);
+                Logging.GeneralErrorHandler("FormulaFinderViewModel|Calculate", ex);
             }
 
             // Change mouse pointer to default

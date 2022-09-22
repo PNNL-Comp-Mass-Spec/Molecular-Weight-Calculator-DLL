@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 using MolecularWeightCalculator;
+using MolecularWeightCalculator.EventLogging;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.FormulaFinder;
 using MolecularWeightCalculator.Sequence;
@@ -23,7 +24,7 @@ namespace MolecularWeightCalculatorGUI
 
             Finder.WarningEvent += Finder_WarningEvent;
             Finder.ErrorEvent += Finder_ErrorEvent;
-            Finder.MessageEvent += Finder_MessageEvent;
+            Finder.StatusEvent += Finder_StatusEvent;
 
             compound = new Compound(mwt.ElementAndMass);
         }
@@ -925,14 +926,14 @@ namespace MolecularWeightCalculatorGUI
 
         private readonly List<string> finderMessages = new List<string>();
 
-        private void Finder_MessageEvent(string message)
+        private void Finder_StatusEvent(string message)
         {
             finderMessages.Add("Note: " + message);
         }
 
-        private void Finder_ErrorEvent(string errorMessage)
+        private void Finder_ErrorEvent(string errorMessage, Exception ex)
         {
-            finderMessages.Add("Error: " + errorMessage);
+            finderMessages.Add("Error: " + errorMessage + ": " + ex.Message);
         }
 
         private void Finder_WarningEvent(string warningMessage)

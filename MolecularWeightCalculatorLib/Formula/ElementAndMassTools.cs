@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using MolecularWeightCalculator.Data;
+using MolecularWeightCalculator.EventLogging;
 using MolecularWeightCalculator.Tools;
 
 namespace MolecularWeightCalculator.Formula
@@ -13,7 +12,7 @@ namespace MolecularWeightCalculator.Formula
     /// Molecular Weight Calculator routines with ActiveX Class interfaces: ElementAndMassTools
     /// </summary>
     [ComVisible(false)]
-    public class ElementAndMassTools
+    public class ElementAndMassTools : EventReporter
     {
         // -------------------------------------------------------------------------------
         // Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2003
@@ -44,125 +43,20 @@ namespace MolecularWeightCalculator.Formula
         public ElementAndMassTools()
         {
             // Messages: no reverse dependencies.
-            Messages = new Messages(ComputationOptions);
+            Messages = Logging.Messages;
+            Messages.Options = ComputationOptions;
 
             // Load the parser before elements - initialization does not rely on existing data.
             Parser = new FormulaParser(this);
+            RegisterEvents(Parser);
 
             // ElementsAndAbbrevs: requires a valid parser to load abbreviations.
             Elements = new ElementsAndAbbrevs(this);
+            RegisterEvents(Elements);
 
             mProgressStepDescription = string.Empty;
             mProgressPercentComplete = 0f;
-
-            mLogFolderPath = string.Empty;
-            mLogFilePath = string.Empty;
-
-            ShowErrorMessageDialogs = false;
         }
-
-        #region "Constants and Enums"
-
-        private enum MessageType
-        {
-            Normal = 0,
-            Error = 1,
-            Warning = 2
-        }
-
-        #endregion
-
-        #region "Data classes"
-
-        private class IsoResultsByElement
-        {
-            /// <summary>
-            /// Index of element in ElementStats[] array; look in ElementStats[] to get information on its isotopes
-            /// </summary>
-            public int AtomicNumber { get; }
-
-            /// <summary>
-            /// True if this class is tracking stats related to an isotope explicitly listed in the formula, e.g. ^13C6H6
-            /// </summary>
-            public bool ExplicitIsotope { get; }
-
-            /// <summary>
-            /// Explicit mass
-            /// </summary>
-            /// <remarks>
-            /// User-supplied isotopic mass, e.g. 13 for ^13C6H6
-            /// </remarks>
-            public double ExplicitMass { get; }
-
-            /// <summary>
-            /// Number of atoms of this element in the formula being parsed
-            /// </summary>
-            public int AtomCount { get; }
-
-            /// <summary>
-            /// Number of masses in MassAbundances; changed at times for data filtering purposes
-            /// </summary>
-            public int ResultsCount { get; set; }
-
-            /// <summary>
-            /// Starting mass of the results for this element
-            /// </summary>
-            public int StartingResultsMass { get; set; }
-
-            /// <summary>
-            /// Abundance of each mass, starting with StartingResultsMass; 0-based array (can't change to a list)
-            /// </summary>
-            public float[] MassAbundances { get; private set; }
-
-            /// <summary>
-            /// Constructor
-            /// </summary>
-            /// <param name="atomicNumber"></param>
-            /// <param name="atomCount"></param>
-            /// <param name="explicitMass"></param>
-            /// <param name="explicitIsotope">True if this class is tracking stats related to an isotope explicitly listed in the formula, e.g. ^13C6H6</param>
-            public IsoResultsByElement(int atomicNumber, int atomCount, double explicitMass, bool explicitIsotope = false)
-            {
-                AtomicNumber = atomicNumber;
-                AtomCount = atomCount;
-                ExplicitMass = explicitMass;
-                ExplicitIsotope = explicitIsotope;
-
-                ResultsCount = 0;
-                MassAbundances = new float[1];
-            }
-
-            public void SetArraySize(int count)
-            {
-                MassAbundances = new float[count];
-            }
-
-            /// <summary>
-            /// Show the element atomic number and atom count
-            /// </summary>
-            public override string ToString()
-            {
-                return string.Format("Element {0}: {1} atoms", AtomicNumber, AtomCount);
-            }
-        }
-
-        private class IsoResultsOverallData
-        {
-            public float Abundance { get; set; }
-            public int Multiplicity { get; set; }
-
-            /// <summary>
-            /// Show the abundance
-            /// </summary>
-            public override string ToString()
-            {
-                return string.Format("{0:F2}", Abundance);
-            }
-        }
-
-        #endregion
-
-        #region "Class wide Variables"
 
         public FormulaOptions ComputationOptions { get; } = new();
 
@@ -176,21 +70,6 @@ namespace MolecularWeightCalculator.Formula
 
         protected bool mAbortProcessing;
 
-        protected bool mLogMessagesToFile;
-        protected string mLogFilePath;
-        protected System.IO.StreamWriter mLogFile;
-
-        /// <summary>
-        /// Log file folder
-        /// If blank, mOutputFolderPath will be used
-        /// If mOutputFolderPath is also blank,  the log is created in the same folder as the executing assembly
-        /// </summary>
-        protected string mLogFolderPath;
-
-        public event ProgressResetEventHandler ProgressReset;
-        public event ProgressChangedEventHandler ProgressChanged;
-        public event ProgressCompleteEventHandler ProgressComplete;
-
         protected string mProgressStepDescription;
 
         /// <summary>
@@ -198,28 +77,24 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         protected float mProgressPercentComplete;
 
-        #endregion
-
-        #region "Interface properties and Methods"
-
         public bool AbortProcessing
         {
             get => mAbortProcessing;
             set => mAbortProcessing = value;
         }
 
-        public string LogFilePath => mLogFilePath;
+        public string LogFilePath => Logging.LogFilePath;
 
         public string LogFolderPath
         {
-            get => mLogFolderPath;
-            set => mLogFolderPath = value;
+            get => Logging.LogFolderPath;
+            set => Logging.LogFolderPath = value;
         }
 
         public bool LogMessagesToFile
         {
-            get => mLogMessagesToFile;
-            set => mLogMessagesToFile = value;
+            get => Logging.LogMessagesToFile;
+            set => Logging.LogMessagesToFile = value;
         }
 
         public virtual string ProgressStepDescription => mProgressStepDescription;
@@ -229,9 +104,8 @@ namespace MolecularWeightCalculator.Formula
         /// </summary>
         public float ProgressPercentComplete => (float)Math.Round(mProgressPercentComplete, 2);
 
+        [Obsolete("Use event handling (ErrorEvent) instead; does not do anything", true)]
         public bool ShowErrorMessageDialogs { get; set; }
-
-        #endregion
 
         public virtual void AbortProcessingNow()
         {
@@ -591,12 +465,9 @@ namespace MolecularWeightCalculator.Formula
                     if (predictedCombos > 10000000)
                     {
                         var message = "Too many combinations necessary for prediction of isotopic distribution: " + predictedCombos.ToString("#,##0") + Environment.NewLine + "Please use a simpler formula or reduce the isotopic range defined for the element (currently " + isotopeCount + ")";
-                        if (ShowErrorMessageDialogs)
-                        {
-                            MessageBox.Show(message);
-                        }
+                        OnErrorEvent(message);
 
-                        LogMessage(message, MessageType.Error);
+                        Logging.LogMessage(message, Logging.MessageType.Error);
                         return new List<MassAbundanceImmutable>();
                     }
 
@@ -967,26 +838,29 @@ namespace MolecularWeightCalculator.Formula
                 results = output;
                 return convolutedMSData.ConvertAll(x => x.ToReadOnly());
             }
-            catch (Exception ex)
+            catch (OverflowException)
             {
-                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools|ComputeIsotopicAbundances", ex);
+                var message = Messages.LookupMessage(590);
+
+                OnErrorEvent(Messages.LookupMessage(350) + ": " + message);
+                Logging.LogMessage(message, Logging.MessageType.Error);
                 mLastErrorId = 590;
                 return new List<MassAbundanceImmutable>();
             }
-        }
+            catch (Exception ex)
+            {
+                var callingProcedure = "MolecularWeightCalculator_ElementAndMassTools|ComputeIsotopicAbundances";
+                var message = Messages.LookupMessage(600) + ": " + ex.Message + Environment.NewLine + " (" + callingProcedure + " handler)";
+                message += Environment.NewLine + Messages.LookupMessage(605);
 
-        /// <summary>
-        /// Convert the centroided data (stick data) in XYVals to a Gaussian representation
-        /// </summary>
-        /// <param name="xyVals">XY data, as key-value pairs</param>
-        /// <param name="resolution">Effective instrument resolution (e.g. 1000 or 20000)</param>
-        /// <param name="resolutionMass">The m/z value at which the resolution applies</param>
-        /// <param name="qualityFactor">Gaussian quality factor (between 1 and 75, default is 50)</param>
-        /// <returns>Gaussian spectrum data</returns>
-        [Obsolete("Use MolecularWeightCalculator.Tools.Gaussian.ConvertStickDataToGaussian2DArray", true)]
-        public List<KeyValuePair<double, double>> ConvertStickDataToGaussian2DArray(List<KeyValuePair<double, double>> xyVals, int resolution, double resolutionMass, int qualityFactor)
-        {
-            return Gaussian.ConvertStickDataToGaussian2DArray(xyVals, resolution, resolutionMass, qualityFactor, true, this);
+                OnErrorEvent(Messages.LookupMessage(350) + ": " + message);
+
+                // Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
+                // Note that GeneralErrorHandler will call LogMessage
+                Logging.GeneralErrorHandler(callingProcedure, ex);
+                mLastErrorId = 590;
+                return new List<MassAbundanceImmutable>();
+            }
         }
 
         /// <summary>
@@ -1104,12 +978,6 @@ namespace MolecularWeightCalculator.Formula
                 return;
 
             iterations++;
-
-            if (iterations % 10000L == 0L)
-            {
-                Application.DoEvents();
-            }
-
             var newAbundance = workingAbundance * isoStats[isoStatsIndex].MassAbundances[workingRow];
             var newMassTotal = workingMassTotal + isoStats[isoStatsIndex].StartingResultsMass + workingRow;
 
@@ -1198,9 +1066,26 @@ namespace MolecularWeightCalculator.Formula
 
                 return runningSum[atomCount - 1];
             }
+            catch (OverflowException)
+            {
+                var message = Messages.LookupMessage(590);
+
+                OnErrorEvent(Messages.LookupMessage(350) + ": " + message);
+                Logging.LogMessage(message, Logging.MessageType.Error);
+                mLastErrorId = 590;
+                return -1;
+            }
             catch (Exception ex)
             {
-                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools.FindCombosPredictIterations", ex);
+                var callingProcedure = "MolecularWeightCalculator_ElementAndMassTools.FindCombosPredictIterations";
+                var message = Messages.LookupMessage(600) + ": " + ex.Message + Environment.NewLine + " (" + callingProcedure + " handler)";
+                message += Environment.NewLine + Messages.LookupMessage(605);
+
+                OnErrorEvent(Messages.LookupMessage(350) + ": " + message);
+
+                // Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
+                // Note that GeneralErrorHandler will call LogMessage
+                Logging.GeneralErrorHandler(callingProcedure, ex);
                 mLastErrorId = 590;
                 return -1;
             }
@@ -1295,40 +1180,6 @@ namespace MolecularWeightCalculator.Formula
             return currentRow;
         }
 
-        public void GeneralErrorHandler(string callingProcedure, Exception ex)
-        {
-            var message = "Error in " + callingProcedure + ": ";
-            if (!string.IsNullOrEmpty(ex.Message))
-            {
-                message += Environment.NewLine + ex.Message;
-            }
-
-            LogMessage(message, MessageType.Error);
-
-            if (ShowErrorMessageDialogs)
-            {
-                MessageBox.Show(message, "Error in MwtWinDll", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-            else
-            {
-                Console.WriteLine(message);
-            }
-
-            LogMessage(message, MessageType.Error);
-            try
-            {
-                var errorFilePath = System.IO.Path.Combine(Environment.CurrentDirectory, "ErrorLog.txt");
-
-                // Open the file and append a new error entry
-                using var outFile = new System.IO.StreamWriter(errorFilePath, true);
-                outFile.WriteLine(DateTime.Now + " -- " + message + Environment.NewLine);
-            }
-            catch
-            {
-                // Ignore errors here
-            }
-        }
-
         public string GetErrorDescription()
         {
             var errorId = GetErrorId();
@@ -1382,81 +1233,6 @@ namespace MolecularWeightCalculator.Formula
             };
         }
 
-        private void LogMessage(string message, MessageType messageType = MessageType.Normal)
-        {
-            // Note that CleanupFilePaths() will update mOutputFolderPath, which is used here if mLogFolderPath is blank
-            // Thus, be sure to call CleanupFilePaths (or update mLogFolderPath) before the first call to LogMessage
-
-            if (mLogFile == null && mLogMessagesToFile)
-            {
-                try
-                {
-                    mLogFilePath = System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                    mLogFilePath += "_log_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-
-                    try
-                    {
-                        mLogFolderPath ??= string.Empty;
-
-                        if (mLogFolderPath.Length > 0)
-                        {
-                            // Create the log folder if it doesn't exist
-                            if (!System.IO.Directory.Exists(mLogFolderPath))
-                            {
-                                System.IO.Directory.CreateDirectory(mLogFolderPath);
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        mLogFolderPath = string.Empty;
-                    }
-
-                    if (mLogFolderPath.Length > 0)
-                    {
-                        mLogFilePath = System.IO.Path.Combine(mLogFolderPath, mLogFilePath);
-                    }
-
-                    var openingExistingFile = System.IO.File.Exists(mLogFilePath);
-
-                    mLogFile = new System.IO.StreamWriter(new System.IO.FileStream(mLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read))
-                    {
-                        AutoFlush = true
-                    };
-
-                    if (!openingExistingFile)
-                    {
-                        mLogFile.WriteLine("Date" + "\t" +
-                            "Type" + "\t" +
-                            "Message");
-                    }
-                }
-                catch
-                {
-                    // Error creating the log file; set mLogMessagesToFile to false so we don't repeatedly try to create it
-                    mLogMessagesToFile = false;
-                }
-            }
-
-            var messageTypeText = messageType switch
-            {
-                MessageType.Normal => "Normal",
-                MessageType.Error => "Error",
-                MessageType.Warning => "Warning",
-                _ => "Unknown"
-            };
-
-            if (mLogFile == null)
-            {
-                Console.WriteLine(messageTypeText + "\t" + message);
-            }
-            else
-            {
-                mLogFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\t" +
-                    messageTypeText + "\t" + message);
-            }
-        }
-
         /// <summary>
         /// Converts <paramref name="massToConvert"/> to ppm, based on the value of <paramref name="currentMz"/>
         /// </summary>
@@ -1495,44 +1271,6 @@ namespace MolecularWeightCalculator.Formula
             Elements.MemoryLoadAllElements(elementMode);
 
             Messages.MemoryLoadAllStatements();
-        }
-
-        internal void MwtWinDllErrorHandler(string callingProcedure, Exception ex)
-        {
-            string message;
-
-            if (ex is OverflowException)
-            {
-                message = Messages.LookupMessage(590);
-                if (ShowErrorMessageDialogs)
-                {
-                    MessageBox.Show(Messages.LookupMessage(590), Messages.LookupMessage(350), MessageBoxButtons.OK);
-                }
-
-                LogMessage(message, MessageType.Error);
-            }
-            else
-            {
-                message = Messages.LookupMessage(600) + ": " + ex.Message + Environment.NewLine + " (" + callingProcedure + " handler)";
-                message += Environment.NewLine + Messages.LookupMessage(605);
-
-                if (ShowErrorMessageDialogs)
-                {
-                    MessageBox.Show(message, Messages.LookupMessage(350), MessageBoxButtons.OK);
-                }
-
-                // Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
-                // Note that GeneralErrorHandler will call LogMessage
-
-                // Make sure mShowErrorMessageDialogs is false when calling GeneralErrorHandler
-
-                var showErrorMessageDialogsSaved = ShowErrorMessageDialogs;
-                ShowErrorMessageDialogs = false;
-
-                GeneralErrorHandler(callingProcedure, ex);
-
-                ShowErrorMessageDialogs = showErrorMessageDialogsSaved;
-            }
         }
 
         /// <summary>
@@ -1977,13 +1715,13 @@ namespace MolecularWeightCalculator.Formula
 
         protected void ResetProgress()
         {
-            ProgressReset?.Invoke();
+            OnProgressReset();
         }
 
         protected void ResetProgress(string progressStepDescription)
         {
             UpdateProgress(progressStepDescription, 0f);
-            ProgressReset?.Invoke();
+            OnProgressReset();
         }
 
         public string ReturnFormattedMassAndStdDev(double mass,
@@ -2045,6 +1783,7 @@ namespace MolecularWeightCalculator.Formula
                             {
                                 result += "(" + '±' + stdDevShort + ")";
                             }
+
                             result += pctSign;
                             break;
 
@@ -2055,6 +1794,7 @@ namespace MolecularWeightCalculator.Formula
                             {
                                 result += " (" + '±' + stdDev.ToString("0.000E+00") + ")";
                             }
+
                             break;
 
                         default:
@@ -2064,15 +1804,32 @@ namespace MolecularWeightCalculator.Formula
                             {
                                 result += " (" + '±' + roundedStdDev + ")";
                             }
+
                             break;
                     }
                 }
 
                 return result;
             }
+            catch (OverflowException)
+            {
+                var message = Messages.LookupMessage(590);
+
+                OnErrorEvent(Messages.LookupMessage(350) + ": " + message);
+                Logging.LogMessage(message, Logging.MessageType.Error);
+                mLastErrorId = -10;
+            }
             catch (Exception ex)
             {
-                MwtWinDllErrorHandler("MolecularWeightCalculator_ElementAndMassTools.ReturnFormattedMassAndStdDev", ex);
+                var callingProcedure = "MolecularWeightCalculator_ElementAndMassTools.ReturnFormattedMassAndStdDev";
+                var message = Messages.LookupMessage(600) + ": " + ex.Message + Environment.NewLine + " (" + callingProcedure + " handler)";
+                message += Environment.NewLine + Messages.LookupMessage(605);
+
+                OnErrorEvent(Messages.LookupMessage(350) + ": " + message);
+
+                // Call GeneralErrorHandler so that the error gets logged to ErrorLog.txt
+                // Note that GeneralErrorHandler will call LogMessage
+                Logging.GeneralErrorHandler(callingProcedure, ex);
                 mLastErrorId = -10;
             }
 
@@ -2080,34 +1837,6 @@ namespace MolecularWeightCalculator.Formula
                 return string.Empty;
 
             return result;
-        }
-
-        [Obsolete("Use MolecularWeightCalculator.Tools.MathTools.RoundToMultipleOf10", true)]
-        public double RoundToMultipleOf10(double thisNum)
-        {
-            return MathTools.RoundToMultipleOf10(thisNum);
-        }
-
-        [Obsolete("Use MolecularWeightCalculator.Tools.MathTools.RoundToEvenMultiple", true)]
-        public double RoundToEvenMultiple(double valueToRound, double multipleValue, bool roundUp)
-        {
-            return MathTools.RoundToEvenMultiple(valueToRound, multipleValue, roundUp);
-        }
-
-        public void SetShowErrorMessageDialogs(bool value)
-        {
-            ShowErrorMessageDialogs = value;
-        }
-
-        /// <summary>
-        /// Adds spaces to <paramref name="work"/> until the length is <paramref name="length"/>
-        /// </summary>
-        /// <param name="work"></param>
-        /// <param name="length"></param>
-        [Obsolete("Use MolecularWeightCalculator.Tools.StringTools.SpacePad", true)]
-        public string SpacePad(string work, short length)
-        {
-            return StringTools.SpacePad(work, length);
         }
 
         /// <summary>
@@ -2153,20 +1882,15 @@ namespace MolecularWeightCalculator.Formula
             {
                 if (Math.Abs(mProgressPercentComplete) < float.Epsilon)
                 {
-                    LogMessage(mProgressStepDescription);
+                    Logging.LogMessage(mProgressStepDescription);
                 }
                 else
                 {
-                    LogMessage(mProgressStepDescription + " (" + mProgressPercentComplete.ToString("0.0") + "% complete)");
+                    Logging.LogMessage(mProgressStepDescription + " (" + mProgressPercentComplete.ToString("0.0") + "% complete)");
                 }
             }
 
-            ProgressChanged?.Invoke(ProgressStepDescription, ProgressPercentComplete);
-        }
-
-        protected void OperationComplete()
-        {
-            ProgressComplete?.Invoke();
+            OnProgressUpdate(ProgressStepDescription, ProgressPercentComplete);
         }
     }
 }

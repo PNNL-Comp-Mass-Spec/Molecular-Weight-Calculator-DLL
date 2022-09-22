@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using MolecularWeightCalculator;
 using MolecularWeightCalculator.Data;
+using MolecularWeightCalculator.EventLogging;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Tools;
 using MolecularWeightCalculatorGUI.Plotting;
@@ -355,7 +356,7 @@ namespace MolecularWeightCalculatorGUI.IsotopicDistribution
             catch (Exception ex)
             {
                 UpdateComparisonListStatus();
-                mwt.ElementAndMass.GeneralErrorHandler("IsotopicDistribution|ComparisonIonListPaste", ex);
+                Logging.GeneralErrorHandler("IsotopicDistribution|ComparisonIonListPaste", ex);
             }
         }
 
@@ -496,7 +497,7 @@ namespace MolecularWeightCalculatorGUI.IsotopicDistribution
             }
             catch (Exception ex)
             {
-                mwt.ElementAndMass.GeneralErrorHandler("IsotopicDistribution|PlotIsotopicDistribution", ex);
+                Logging.GeneralErrorHandler("IsotopicDistribution|PlotIsotopicDistribution", ex);
             }
 
             isPlotUpdating = false;
@@ -511,7 +512,7 @@ namespace MolecularWeightCalculatorGUI.IsotopicDistribution
                 if (isoPlotMode == IsotopicPlotMode.Gaussian)
                 {
                     // Note that xVals[] and yVals[] will be replaced with Gaussian representations of the peaks by the following function
-                    data = Gaussian.ConvertStickDataToGaussian2DArray(data, EffectiveResolution, EffectiveResolutionMass, GaussianQualityFactor, false, mwt.ElementAndMass);
+                    data = Gaussian.ConvertStickDataToGaussian2DArray(data, EffectiveResolution, EffectiveResolutionMass, GaussianQualityFactor, false /* , TODO: cancellation token? */);
                 }
 
                 var plotMode = isoPlotMode == IsotopicPlotMode.SticksToZero ? PlotMode.StickToZero : PlotMode.Lines;
@@ -557,7 +558,7 @@ namespace MolecularWeightCalculatorGUI.IsotopicDistribution
             }
             catch (Exception ex)
             {
-                mwt.ElementAndMass.GeneralErrorHandler("IsotopicDistribution|PlotIsotopicDistributionWork", ex);
+                Logging.GeneralErrorHandler("IsotopicDistribution|PlotIsotopicDistributionWork", ex);
             }
         }
 
@@ -608,7 +609,7 @@ namespace MolecularWeightCalculatorGUI.IsotopicDistribution
             }
             catch (Exception ex)
             {
-                mwt.ElementAndMass.GeneralErrorHandler("IsotopicDistribution|StartIsotopicDistributionCalcs", ex);
+                Logging.GeneralErrorHandler("IsotopicDistribution|StartIsotopicDistributionCalcs", ex);
             }
         }
 

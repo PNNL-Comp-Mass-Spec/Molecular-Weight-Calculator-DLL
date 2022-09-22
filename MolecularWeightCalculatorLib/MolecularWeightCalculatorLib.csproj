@@ -38,8 +38,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +49,7 @@
     <Compile Include="CapillaryFlowTools\UnitConversions.cs" />
     <Compile Include="COMInterfaces\ICapillaryFlow.cs" />
     <Compile Include="COMInterfaces\ICompound.cs" />
+    <Compile Include="COMInterfaces\IEventReporterCOM.cs" />
     <Compile Include="COMInterfaces\IFormulaFinderSearchOptions.cs" />
     <Compile Include="COMInterfaces\IFormulaFinderSearchResult.cs" />
     <Compile Include="COMInterfaces\IFormulaSearcher.cs" />
@@ -65,7 +64,12 @@
     <Compile Include="Data\MassAbundanceImmutable.cs" />
     <Compile Include="Data\XYPoint.cs" />
     <Compile Include="Data\XYPointImmutable.cs" />
-    <Compile Include="EventHandlerDelegates.cs" />
+    <Compile Include="EventLogging\Annotations.cs" />
+    <Compile Include="EventLogging\EventReporter.cs" />
+    <Compile Include="EventLogging\IEventReporter.cs" />
+    <Compile Include="EventLogging\Logging.cs" />
+    <Compile Include="EventLogging\MessageEnums.cs" />
+    <Compile Include="EventLogging\Messages.cs" />
     <Compile Include="Formula\AbbrevStatsData.cs" />
     <Compile Include="Formula\Compound.cs" />
     <Compile Include="Formula\ComputationStats.cs" />
@@ -80,10 +84,10 @@
     <Compile Include="Formula\FormulaParser.cs" />
     <Compile Include="Formula\FormulaParsingDataClasses.cs" />
     <Compile Include="Formula\IFormulaParseData.cs" />
+    <Compile Include="Formula\IsoResultsByElement.cs" />
+    <Compile Include="Formula\IsoResultsOverallData.cs" />
     <Compile Include="Formula\IsotopeInfo.cs" />
     <Compile Include="Formula\IsotopicAtomInfo.cs" />
-    <Compile Include="Formula\MessageEnums.cs" />
-    <Compile Include="Formula\Messages.cs" />
     <Compile Include="Formula\PercentCompositionInfo.cs" />
     <Compile Include="Formula\SymbolLookupInfo.cs" />
     <Compile Include="FormulaFinder\CandidateElement.cs" />

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using DynamicData.Binding;
 using MolecularWeightCalculator;
+using MolecularWeightCalculator.EventLogging;
 using MolecularWeightCalculator.Formula;
 using MolecularWeightCalculator.Sequence;
 using MolecularWeightCalculatorGUI.Utilities;
@@ -82,7 +83,7 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             }
             catch (Exception ex)
             {
-                ElementAndMass.GeneralErrorHandler("FragmentationModellingViewModel|Constructor", new Exception("Error " + currentTask + ": " + ex.Message, ex));
+                Logging.GeneralErrorHandler("FragmentationModellingViewModel|Constructor", new Exception("Error " + currentTask + ": " + ex.Message, ex));
             }
         }
 
@@ -564,7 +565,7 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             }
             catch (Exception ex)
             {
-                ElementAndMass.GeneralErrorHandler("FragmentationModellingViewModel|DisplayPredictedIonMasses", ex);
+                Logging.GeneralErrorHandler("FragmentationModellingViewModel|DisplayPredictedIonMasses", ex);
             }
         }
 
@@ -648,7 +649,7 @@ namespace MolecularWeightCalculatorGUI.PeptideUI
             }
             catch (Exception ex)
             {
-                ElementAndMass.GeneralErrorHandler("FragmentationModellingViewModel|UpdateFragmentationSpectrumOptions", ex);
+                Logging.GeneralErrorHandler("FragmentationModellingViewModel|UpdateFragmentationSpectrumOptions", ex);
             }
         }
 

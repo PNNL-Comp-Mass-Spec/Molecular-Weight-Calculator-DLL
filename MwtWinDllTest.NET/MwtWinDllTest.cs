@@ -146,8 +146,9 @@ namespace MwtWinDllTest
 
         private void InitializeControls()
         {
-            mMwtWin = new MolecularWeightTool { ShowErrorDialogs = true };
-            mMwtWin.ProgressChanged += mMwtWin_ProgressChanged;
+            mMwtWin = new MolecularWeightTool();
+            mMwtWin.ErrorEvent += MMwtWin_ErrorEvent;
+            mMwtWin.ProgressUpdate += mMwtWin_ProgressUpdate;
             mMwtWin.ProgressComplete += mMwtWin_ProgressComplete;
             mMwtWin.ProgressReset += mMwtWin_ProgressReset;
 
@@ -871,7 +872,7 @@ namespace MwtWinDllTest
         {
             if (mMwtWin != null)
             {
-                mMwtWin.ProgressChanged -= mMwtWin_ProgressChanged;
+                mMwtWin.ProgressUpdate -= mMwtWin_ProgressUpdate;
                 mMwtWin.ProgressComplete -= mMwtWin_ProgressComplete;
                 mMwtWin.ProgressReset -= mMwtWin_ProgressReset;
             }
@@ -929,7 +930,12 @@ namespace MwtWinDllTest
 
         private DateTime lastUpdateTime = DateTime.MinValue;
 
-        private void mMwtWin_ProgressChanged(string taskDescription, float percentComplete)
+        private void MMwtWin_ErrorEvent(string message, Exception ex)
+        {
+            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        private void mMwtWin_ProgressUpdate(string taskDescription, float percentComplete)
         {
             lblProgress.Text = mMwtWin.ProgressStepDescription + "; " + percentComplete.ToString("0.0") + "% complete";
 

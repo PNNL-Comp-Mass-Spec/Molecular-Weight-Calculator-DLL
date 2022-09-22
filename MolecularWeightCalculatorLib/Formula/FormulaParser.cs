@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using MolecularWeightCalculator.EventLogging;
 
 namespace MolecularWeightCalculator.Formula
 {
@@ -11,7 +12,7 @@ namespace MolecularWeightCalculator.Formula
     /// Formula parser
     /// </summary>
     [ComVisible(false)]
-    public class FormulaParser
+    public class FormulaParser : EventReporter
     {
         // Ignore Spelling: Alph, UniMod
 
@@ -519,7 +520,7 @@ namespace MolecularWeightCalculator.Formula
             }
             catch (Exception ex)
             {
-                mElementTools.GeneralErrorHandler("FormulaParser.ParseFormula", ex);
+                OnErrorEvent(Logging.GeneralErrorHandler("FormulaParser.ParseFormula", ex));
             }
 
             return formulaData;
