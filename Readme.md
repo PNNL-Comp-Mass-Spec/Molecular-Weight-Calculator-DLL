@@ -112,7 +112,7 @@ On the Excel worksheet, enter this in cell A1: \
 `H2O`
 
 Enter this in cell A2: \
-`=ComputeMass(A1)`
+`=ComputeIsotopicMass(A1)`
 
 When you press enter to finalize the formula, cell A2 will show \
 `18.01528`
