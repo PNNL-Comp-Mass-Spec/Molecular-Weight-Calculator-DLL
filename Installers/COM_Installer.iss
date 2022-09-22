@@ -32,7 +32,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir={#InstallerFolder}
-OutputBaseFilename=MolecularWeightCalcCOMInstaller
+OutputBaseFilename=MolWtCalc_COM_Installer
 AppCopyright=© PNNL
 VersionInfoVersion={#MyAppVersion}
 VersionInfoCompany=PNNL
