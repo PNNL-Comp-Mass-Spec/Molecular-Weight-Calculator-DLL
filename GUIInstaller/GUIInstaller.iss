@@ -29,9 +29,9 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\MolecularWeightCalculator
 DefaultGroupName={#MyAppName}
+UninstallDisplayIcon={app}\MolecularWeightCalculator.ico
+SetupIconFile={#MySource}\MolecularWeightCalculator.ico
 DisableProgramGroupPage=yes
-; Uncomment the following line to run in non administrative install mode (install for current user only.)
-;PrivilegesRequired=lowest
 OutputDir={#InstallerFolder}
 OutputBaseFilename=MolWtCalc_GUI_Installer
 AppCopyright=© PNNL
