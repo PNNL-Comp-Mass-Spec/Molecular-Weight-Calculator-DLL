@@ -97,7 +97,7 @@
                 <Hyperlink x:Name="Email" NavigateUri="mailto:proteomics@pnnl.gov" RequestNavigate="OnRequestNavigate" ToolTip="{Binding NavigateUri, ElementName=Email}">
                     <Hyperlink.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Copy Email" Click="CopyEmailLink" />
+                            <MenuItem Header="_Copy Email" Click="CopyEmailLink" />
                         </ContextMenu>
                     </Hyperlink.ContextMenu>
                     proteomics@pnnl.gov
@@ -110,7 +110,7 @@
                 <Hyperlink x:Name="GitHubRepo" NavigateUri="https://github.com/PNNL-Comp-Mass-Spec/Molecular-Weight-Calculator" RequestNavigate="OnRequestNavigate" ToolTip="{Binding NavigateUri, ElementName=GitHubRepo}">
                     <Hyperlink.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Copy Link" Click="CopyGitHubRepoLink" />
+                            <MenuItem Header="_Copy Link" Click="CopyGitHubRepoLink" />
                         </ContextMenu>
                     </Hyperlink.ContextMenu>
                     GitHub Repo
@@ -122,7 +122,7 @@
                 <Hyperlink x:Name="GitHubPage" NavigateUri="https://pnnl-comp-mass-spec.github.io/" RequestNavigate="OnRequestNavigate" ToolTip="{Binding NavigateUri, ElementName=GitHubPage}">
                     <Hyperlink.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Copy Link" Click="CopyGitHubPageLink" />
+                            <MenuItem Header="_Copy Link" Click="CopyGitHubPageLink" />
                         </ContextMenu>
                     </Hyperlink.ContextMenu>
                     PNNL-Comp-Mass-Spec site
@@ -134,7 +134,7 @@
                 <Hyperlink x:Name="AlchemistMatt" NavigateUri="https://www.alchemistmatt.com/" RequestNavigate="OnRequestNavigate" ToolTip="{Binding NavigateUri, ElementName=AlchemistMatt}">
                     <Hyperlink.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Copy Link" Click="CopyAlchemistMattPageLink" />
+                            <MenuItem Header="_Copy Link" Click="CopyAlchemistMattPageLink" />
                         </ContextMenu>
                     </Hyperlink.ContextMenu>
                     alchemistmatt.com

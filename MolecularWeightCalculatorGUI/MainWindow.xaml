@@ -38,68 +38,68 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row ="0">
             <MenuItem Header="_File">
-                <MenuItem Header="Edit Elements Table..." IsEnabled="False" />
-                <MenuItem Header="Edit Abbreviations..." IsEnabled="False" />
-                <MenuItem Header="Calculate weights from text file..." Command="{Binding RunBatchProcessingCommand}" CommandParameter="{x:Reference This}" />
+                <MenuItem Header="Edit _Elements Table..." IsEnabled="False" />
+                <MenuItem Header="Edit _Abbreviations..." IsEnabled="False" />
+                <MenuItem Header="_Calculate weights from text file..." Command="{Binding RunBatchProcessingCommand}" CommandParameter="{x:Reference This}" />
                 <Separator />
-                <MenuItem Header="Print Results..." IsEnabled="False" />
+                <MenuItem Header="_Print Results..." IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Exit..." Command="Close" InputGestureText="Alt+F4" /> <!-- TODO: keyboard shortcuts, "Esc or Alt+F4" -->
+                <MenuItem Header="E_xit..." Command="Close" InputGestureText="Alt+F4" /> <!-- TODO: keyboard shortcuts, "Esc or Alt+F4" -->
             </MenuItem>
             <MenuItem Header="_Edit">
-                <MenuItem Header="Cut" Command="{Binding CutCommand}" InputGestureText="Ctrl+X" /> <!-- TODO: keyboard shortcuts, "Ctrl+X" -->
-                <MenuItem Header="Copy" Command="{Binding CopyCommand}" InputGestureText="Ctrl+C" /> <!-- TODO: keyboard shortcuts, "Ctrl+C" -->
-                <MenuItem Header="Paste" Command="{Binding PasteCommand}" InputGestureText="Ctrl+V" /> <!-- TODO: keyboard shortcuts, "Ctrl+V" -->
-                <MenuItem Header="Copy Current Formula as RTF" Command="{Binding CopyCurrentFormulaAsRtfCommand}" InputGestureText="Ctrl+R" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
+                <MenuItem Header="Cu_t" Command="{Binding CutCommand}" InputGestureText="Ctrl+X" /> <!-- TODO: keyboard shortcuts, "Ctrl+X" -->
+                <MenuItem Header="_Copy" Command="{Binding CopyCommand}" InputGestureText="Ctrl+C" /> <!-- TODO: keyboard shortcuts, "Ctrl+C" -->
+                <MenuItem Header="_Paste" Command="{Binding PasteCommand}" InputGestureText="Ctrl+V" /> <!-- TODO: keyboard shortcuts, "Ctrl+V" -->
+                <MenuItem Header="Copy Current Formula as _RTF" Command="{Binding CopyCurrentFormulaAsRtfCommand}" InputGestureText="Ctrl+R" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
                 <Separator />
-                <MenuItem Header="Copy Current Molecular Weight" Command="{Binding CopyCurrentMolecularWeightCommand}" InputGestureText="Ctrl+W" /> <!-- TODO: keyboard shortcuts, "Ctrl+W" -->
-                <MenuItem Header="Copy Percent Composition Data" Command="{Binding CopyPercentCompositionCommand}" />
+                <MenuItem Header="Copy Current _Molecular Weight" Command="{Binding CopyCurrentMolecularWeightCommand}" InputGestureText="Ctrl+W" /> <!-- TODO: keyboard shortcuts, "Ctrl+W" -->
+                <MenuItem Header="Copy P_ercent Composition Data" Command="{Binding CopyPercentCompositionCommand}" />
                 <Separator />
-                <MenuItem Header="Duplicate Current Formula" Command="{Binding DuplicateCurrentFormulaCommand}" InputGestureText="F2" /> <!-- TODO: keyboard shortcuts, "F2" -->
-                <MenuItem Header="Erase All Formulas..." Command="{Binding EraseAllFormulasCommand}" CommandParameter="{x:Reference This}" InputGestureText="F5" /> <!-- TODO: keyboard shortcuts, "F5" -->
-                <MenuItem Header="Erase Current Formula..." Command="{Binding EraseCurrentFormulaCommand}" CommandParameter="{x:Reference This}" InputGestureText="F6" /> <!-- TODO: keyboard shortcuts, "F6" -->
-                <MenuItem Header="Remove Current Formula..." Command="{Binding RemoveCurrentFormulaCommand}" CommandParameter="{x:Reference This}" />
+                <MenuItem Header="Duplicate Current _Formula" Command="{Binding DuplicateCurrentFormulaCommand}" InputGestureText="F2" /> <!-- TODO: keyboard shortcuts, "F2" -->
+                <MenuItem Header="Erase _All Formulas..." Command="{Binding EraseAllFormulasCommand}" CommandParameter="{x:Reference This}" InputGestureText="F5" /> <!-- TODO: keyboard shortcuts, "F5" -->
+                <MenuItem Header="Erase C_urrent Formula..." Command="{Binding EraseCurrentFormulaCommand}" CommandParameter="{x:Reference This}" InputGestureText="F6" /> <!-- TODO: keyboard shortcuts, "F6" -->
+                <MenuItem Header="Re_move Current Formula..." Command="{Binding RemoveCurrentFormulaCommand}" CommandParameter="{x:Reference This}" />
                 <Separator />
-                <MenuItem Header="Expand Abbreviations..." Command="{Binding ExpandAbbreviationsCommand}" CommandParameter="{x:Reference This}" />
-                <MenuItem Header="Convert to Empirical Formula..." Command="{Binding ConvertToEmpiricalCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+E" /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
+                <MenuItem Header="E_xpand Abbreviations..." Command="{Binding ExpandAbbreviationsCommand}" CommandParameter="{x:Reference This}" />
+                <MenuItem Header="Convert to Empirical F_ormula..." Command="{Binding ConvertToEmpiricalCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+E" /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
             </MenuItem>
             <MenuItem Header="_View">
-                <MenuItem Header="Multi View" IsCheckable="True" InputGestureText="F8" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "F8" -->
-                <MenuItem Header="Single View" IsCheckable="True" InputGestureText="F8" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "F8" -->
+                <MenuItem Header="_Multi View" IsCheckable="True" InputGestureText="F8" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "F8" -->
+                <MenuItem Header="_Single View" IsCheckable="True" InputGestureText="F8" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "F8" -->
                 <Separator />
-                <MenuItem Header="Percent Solver" InputGestureText="F11" IsEnabled="False"> <!-- TODO: keyboard shortcuts, "F11" -->
-                    <MenuItem Header="Off" IsCheckable="True" IsEnabled="False" />
-                    <MenuItem Header="On" IsCheckable="True" IsEnabled="False" />
+                <MenuItem Header="_Percent Solver" InputGestureText="F11" IsEnabled="False"> <!-- TODO: keyboard shortcuts, "F11" -->
+                    <MenuItem Header="O_ff" IsCheckable="True" IsEnabled="False" />
+                    <MenuItem Header="_On" IsCheckable="True" IsEnabled="False" />
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Tools">
-                <MenuItem Header="Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+M" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
-                <MenuItem Header="m/z Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+L" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
-                <MenuItem Header="Formula Finder..." Command="{Binding OpenFormulaFinderWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+F" /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
-                <MenuItem Header="Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+N" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
+                <MenuItem Header="_Mole/Mass Converter..." Command="{Binding OpenMoleMassDilutionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+M" /> <!-- TODO: keyboard shortcuts, "Ctrl+M" -->
+                <MenuItem Header="m/z _Conversion..." Command="{Binding OpenMassChargeConversionsWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+L" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
+                <MenuItem Header="_Formula Finder..." Command="{Binding OpenFormulaFinderWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+F" /> <!-- TODO: keyboard shortcuts, "Ctrl+F" -->
+                <MenuItem Header="_Amino Acid Notation Converter..." Command="{Binding OpenAminoAcidConverterWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+N" /> <!-- TODO: keyboard shortcuts, "Ctrl+N" -->
                 <Separator />
-                <MenuItem Header="Peptide Sequence Fragmentation Modelling..." Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+P" /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
-                <MenuItem Header="Isotopic Distribution Modelling..." Command="{Binding OpenIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+I" /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
-                <MenuItem Header="Show Isotopic Distribution for Current Formula" Command="{Binding OpenSelectedIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+D" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
+                <MenuItem Header="_Peptide Sequence Fragmentation Modelling..." Command="{Binding OpenFragmentationModellingWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+P" /> <!-- TODO: keyboard shortcuts, "Ctrl+P" -->
+                <MenuItem Header="_Isotopic Distribution Modelling..." Command="{Binding OpenIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+I" /> <!-- TODO: keyboard shortcuts, "Ctrl+I" -->
+                <MenuItem Header="Show Isotopic _Distribution for Current Formula" Command="{Binding OpenSelectedIsotopicDistributionWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+D" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />
-                <MenuItem Header="Capillary Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+Y" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
+                <MenuItem Header="Capillar_y Flow Calculator..." Command="{Binding OpenCapillaryFlowWindowCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+Y" /> <!-- TODO: keyboard shortcuts, "Ctrl+Y" -->
             </MenuItem>
             <MenuItem Header="_Options">
-                <MenuItem Header="Choose Language..." IsEnabled="False" />
-                <MenuItem Header="Change Program Preferences..." InputGestureText="Ctrl+O" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+O" -->
-                <MenuItem Header="Change Formula Font..." InputGestureText="Ctrl+T" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+T" -->
-                <MenuItem Header="Stay on Top" IsCheckable="True" IsChecked="{Binding StayOnTop, Mode=OneWay}" Command="{Binding ToggleStayOnTopCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+S" /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
+                <MenuItem Header="Choose _Language..." IsEnabled="False" />
+                <MenuItem Header="Change Program _Preferences..." InputGestureText="Ctrl+O" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+O" -->
+                <MenuItem Header="Change _Formula Font..." InputGestureText="Ctrl+T" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+T" -->
+                <MenuItem Header="Stay on _Top" IsCheckable="True" IsChecked="{Binding StayOnTop, Mode=OneWay}" Command="{Binding ToggleStayOnTopCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+S" /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
                 <Separator />
-                <MenuItem Header="Save and Restore Default Values">
-                    <MenuItem Header="Restore Default Values and Formulas..." IsEnabled="False" />
-                    <MenuItem Header="Save Values and Formulas Now!" IsEnabled="False" />
+                <MenuItem Header="_Save and Restore Default Values">
+                    <MenuItem Header="_Restore Default Values and Formulas..." IsEnabled="False" />
+                    <MenuItem Header="Save _Values and Formulas Now!" IsEnabled="False" />
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Help">
-                <MenuItem Header="Program Overview" IsEnabled="False" />
-                <MenuItem Header="Show Tool Tips" IsCheckable="True" IsEnabled="False" />
+                <MenuItem Header="_Program Overview" IsEnabled="False" />
+                <MenuItem Header="_Show Tool Tips" IsCheckable="True" IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="About MWT..." Command="{Binding ShowAboutCommand}" CommandParameter="{x:Reference This}" />
+                <MenuItem Header="_About MWT..." Command="{Binding ShowAboutCommand}" CommandParameter="{x:Reference This}" />
             </MenuItem>
         </Menu>
         <formulaCalc:FormulaCalcView Grid.Row="1" DataContext="{Binding FormulaCalc}" />

@@ -44,40 +44,40 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7" x:Name="MenuBar">
-            <MenuItem Header="File">
-                <MenuItem Header="Load Sequence Info..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
-                <MenuItem Header="Save Sequence Info..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
+            <MenuItem Header="_File">
+                <MenuItem Header="_Load Sequence Info..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+L" -->
+                <MenuItem Header="_Save Sequence Info..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+S" -->
                 <Separator />
-                <MenuItem Header="Load List of Ions or .Dta file to Match..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
+                <MenuItem Header="Load List of _Ions or .Dta file to Match..." IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+D" -->
                 <Separator />
-                <MenuItem Header="Close" Command="Close" />
+                <MenuItem Header="_Close" Command="Close" />
             </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Copy Predicted Ions" IsEnabled="False" />
-                <MenuItem Header="Copy Predicted Ions as RTF" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Copy Predicted Ions" IsEnabled="False" />
+                <MenuItem Header="Copy Predicted Ions as _RTF" IsEnabled="False" /> <!-- TODO: keyboard shortcuts, "Ctrl+R" -->
                 <MenuItem Header="Copy Predicted Ions as HTML" IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Copy Sequence Molecular Weight" Command="{Binding CopyMolecularWeightCommand}" InputGestureText="Ctrl+W" />
+                <MenuItem Header="Copy Sequence Molecular _Weight" Command="{Binding CopyMolecularWeightCommand}" InputGestureText="Ctrl+W" />
                 <Separator />
-                <MenuItem Header="Paste List of Ions to Match" IsEnabled="False" />
-                <MenuItem Header="Clear Match Ion List" IsEnabled="False" />
+                <MenuItem Header="_Paste List of Ions to Match" IsEnabled="False" />
+                <MenuItem Header="Clear Match Ion _List" IsEnabled="False" />
             </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Header="List of Ions to Match" IsCheckable="True" IsEnabled="False" InputGestureText="Ctrl+I" />
+            <MenuItem Header="_View">
+                <MenuItem Header="List of _Ions to Match" IsCheckable="True" IsEnabled="False" InputGestureText="Ctrl+I" />
                 <Separator />
-                <MenuItem Header="Mass Spectrum..." IsEnabled="False" InputGestureText="Ctrl+M" />
-                <MenuItem Header="Update Spectrum on Change" IsCheckable="True" IsEnabled="False" InputGestureText="Ctrl+U" />
+                <MenuItem Header="_Mass Spectrum..." IsEnabled="False" InputGestureText="Ctrl+M" />
+                <MenuItem Header="_Update Spectrum on Change" IsCheckable="True" IsEnabled="False" InputGestureText="Ctrl+U" />
                 <Separator Visibility="Hidden" />
                 <MenuItem Header="Spectrum File _Browser" IsEnabled="False" Visibility="Hidden" />
             </MenuItem>
-            <MenuItem Header="Tools">
-                <MenuItem Header="Ion Match List Options..." IsEnabled="False" InputGestureText="Ctrl+O" />
-                <MenuItem Header="Edit Residue Modification Symbols" Command="{Binding ShowEditResidueModificationSymbolsCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+E" /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Ion Match List _Options..." IsEnabled="False" InputGestureText="Ctrl+O" />
+                <MenuItem Header="Edit Residue _Modification Symbols" Command="{Binding ShowEditResidueModificationSymbolsCommand}" CommandParameter="{x:Reference This}" InputGestureText="Ctrl+E" /> <!-- TODO: keyboard shortcuts, "Ctrl+E" -->
                 <Separator />
-                <MenuItem Header="Automatically Align Ions to Match..." IsEnabled="False" />
+                <MenuItem Header="_Automatically Align Ions to Match..." IsEnabled="False" />
             </MenuItem>
-            <MenuItem Header="Help">
-                <MenuItem Header="Fragmentation Modelling" IsEnabled="False" />
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Fragmentation Modelling" IsEnabled="False" />
             </MenuItem>
         </Menu>
         <Label Grid.Row="1" Grid.Column="0" Margin="5" Content="_Sequence:" Target="{Binding ElementName=SequenceBox}" />

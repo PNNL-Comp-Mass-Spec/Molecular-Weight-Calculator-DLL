@@ -33,16 +33,16 @@
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
         </Grid.Resources>
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6">
-            <MenuItem Header="File">
-                <MenuItem Header="Load Values..." IsEnabled="False" />
-                <MenuItem Header="Save Values..." IsEnabled="False" />
+            <MenuItem Header="_File">
+                <MenuItem Header="_Load Values..." IsEnabled="False" />
+                <MenuItem Header="_Save Values..." IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="ResetToDefaults" IsEnabled="False" />
+                <MenuItem Header="Reset To _Defaults" IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Close" Click="Close_OnClick" />
+                <MenuItem Header="_Close" Click="Close_OnClick" />
             </MenuItem>
-            <MenuItem Header="Help">
-                <MenuItem Header="Capillary Flow Calculations" IsEnabled="False" />
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Capillary Flow Calculations" IsEnabled="False" />
             </MenuItem>
         </Menu>
         <ComboBox Grid.Row="1" Grid.Column="0" Margin="15,3,5,3" ItemsSource="{Binding CapillaryTypeOptions}" SelectedItem="{Binding CapillaryType}">
